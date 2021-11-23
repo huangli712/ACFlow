@@ -15,6 +15,8 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
             n_fit = niw - n + 1
         end
 
+        𝐶 = diagm(𝐺.covar)[2 * n - 1 : 2 * (n + n_fit - 1), 2 * n - 1 : 2 * (n + n_fit - 1)]
+
         𝑋 = zeros(F64, 2 * n_fit, 2 * n_c)
         for j = 1:n_c
             for i = n:(n + n_fit - 1)
@@ -25,10 +27,7 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 #error()
             end 
         end
-
-        𝐶 = diagm(𝐺.covar)[2 * n - 1 : 2 * (n + n_fit - 1), 2 * n - 1 : 2 * (n + n_fit - 1)]
         #@show diag(𝐶)
-
         𝐴 = 𝑋' * inv(𝐶) * 𝑋
 
         𝐻 = F64[]
@@ -39,10 +38,12 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
             #@show i, real(v)
             #@show i, imag(v)
         end
+        𝐵 = 𝑋' * inv(𝐶) * 𝐻
 
-        𝑀 = 𝑋' * inv(𝐶) * 𝐻
+        𝑀 = 𝐴 \ 𝐵
 
         @show size(𝑀)
+        @show 𝑀
         #@show 𝑋
         error()
     end
