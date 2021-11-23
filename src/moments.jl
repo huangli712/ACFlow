@@ -30,8 +30,19 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         #@show diag(𝐶)
 
         𝐴 = 𝑋' * inv(𝐶) * 𝑋
-        
 
+        𝐻 = F64[]
+        for i = n:(n + n_fit - 1)
+            v = 𝐺.value[i]
+            push!(𝐻, real(v))
+            push!(𝐻, imag(v))
+            #@show i, real(v)
+            #@show i, imag(v)
+        end
+
+        𝑀 = 𝑋' * inv(𝐶) * 𝐻
+
+        @show size(𝑀)
         #@show 𝑋
         error()
     end
