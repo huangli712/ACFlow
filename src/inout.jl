@@ -15,7 +15,12 @@ function read_data!(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
             arr = parse.(F64, line_to_array(fin))
             @assert ω.grid[i] == arr[1]
             push!(𝐺.error, arr[2] + arr[3] * im)
+            push!(𝐺.covar, arr[2]^2)
+            push!(𝐺.covar, arr[3]^2)
         end
+    end
+    for i = 1:length(𝐺.covar)
+        println(i, " ", 𝐺.covar[i])
     end
 end
 

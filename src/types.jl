@@ -3,10 +3,11 @@ abstract type AbstractData end
 struct GreenData <: AbstractData
     value :: Vector{N64}
     error :: Vector{N64}
+    covar :: Vector{N64}
 end
 
 function GreenData()
-    return GreenData(Vector{N64}[], Vector{N64}[])
+    return GreenData(Vector{N64}[], Vector{N64}[], Vector{N64}[])
 end
 
 struct SigmaData <: AbstractData end
