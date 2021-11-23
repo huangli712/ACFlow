@@ -45,6 +45,6 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         @show size(𝑀)
         @show 𝑀
         #@show 𝑋
-        error()
+        #error()
     end
 end
