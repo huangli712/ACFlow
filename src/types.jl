@@ -12,27 +12,21 @@ end
 struct SigmaData <: AbstractData end
 struct ChiData <: AbstractData end
 
-
-
-
 abstract type AbstractGrid end
 struct RealFrequencyGrid <: AbstractGrid end
 
 struct ImaginaryTimeGrid <: AbstractGrid
-    β :: F64
     grid :: Vector{F64}
 end
 
 struct FermionicMatsubaraGrid <: AbstractGrid
-    β :: F64
     grid :: Vector{F64}
 end
 
 function FermionicMatsubaraGrid()
-    return FermionicMatsubaraGrid(0.0, Vector{F64}[])
+    return FermionicMatsubaraGrid(Vector{F64}[])
 end
 
 struct BosonicMatsubaraGrid <: AbstractGrid
-    β :: F64
     grid :: Vector{F64}
 end

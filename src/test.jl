@@ -4,4 +4,5 @@ function test_maxent()
     ω = FermionicMatsubaraGrid()
     𝐺 = GreenData()
     read_data!(ω, 𝐺)
+    
 end
