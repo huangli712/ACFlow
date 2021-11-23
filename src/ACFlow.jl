@@ -1,6 +1,8 @@
 
 module ACFlow
 
+using LinearAlgebra
+
 include("global.jl")
 include("types.jl")
 include("util.jl")
