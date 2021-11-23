@@ -5,6 +5,10 @@ struct GreenData <: AbstractData
     error :: Vector{N64}
 end
 
+function GreenData()
+    return GreenData(Vector{N64}[], Vector{N64}[])
+end
+
 struct SigmaData <: AbstractData end
 struct ChiData <: AbstractData end
 
@@ -22,6 +26,10 @@ end
 struct FermionicMatsubaraGrid <: AbstractGrid
     β :: F64
     grid :: Vector{F64}
+end
+
+function FermionicMatsubaraGrid()
+    return FermionicMatsubaraGrid(0.0, Vector{F64}[])
 end
 
 struct BosonicMatsubaraGrid <: AbstractGrid
