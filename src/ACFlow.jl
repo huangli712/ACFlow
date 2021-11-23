@@ -7,8 +7,10 @@ include("util.jl")
 include("inout.jl")
 include("moments.jl")
 include("maxent.jl")
-include("test.jl")
 
-export test_maxent
+export FermionicMatsubaraGrid
+export GreenData
+export calc_moments
+export read_data!
 
 end

@@ -1,3 +1,4 @@
 
-function calc_moments()
+function calc_moments(𝐺::GreenData)
+    println("hello world")
 end
