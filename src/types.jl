@@ -13,6 +13,13 @@ end
 struct SigmaData <: AbstractData end
 struct ChiData <: AbstractData end
 
+struct MomentsData <: AbstractData
+    𝑀₀ :: F64
+    𝑀₁ :: F64
+    𝑀₂ :: F64
+    𝑀₃ :: F64
+end
+
 abstract type AbstractGrid end
 struct RealFrequencyGrid <: AbstractGrid end
 

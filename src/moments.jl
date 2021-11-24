@@ -43,17 +43,17 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         end
         𝐵 = 𝑋' * inv(𝐶) * 𝐻
 
-        𝑀 = 𝐴 \ 𝐵
+        𝑉 = 𝐴 \ 𝐵
 
         #@show n
-        #@show 𝑀
+        #@show 𝑉
         #@show 𝑋
         #error()
 
-        push!(V𝑀₀, 𝑀[1])
-        push!(V𝑀₁, 𝑀[2])
-        push!(V𝑀₂, 𝑀[3])
-        push!(V𝑀₃, 𝑀[4])
+        push!(V𝑀₀, 𝑉[1])
+        push!(V𝑀₁, 𝑉[2])
+        push!(V𝑀₂, 𝑉[3])
+        push!(V𝑀₃, 𝑉[4])
     end
 
     var𝑀₀ = F64[]
@@ -74,5 +74,24 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         push!(var𝑀₃, var(V𝑀₃[j - n_v + 1: j + n_v + 1]))
     end
 
+    _, j₀ = findmin(var𝑀₀)
+    _, j₁ = findmin(var𝑀₁)
+    _, j₂ = findmin(var𝑀₂)
+    _, j₃ = findmin(var𝑀₃)
+    #@show j₀, j₁, j₂, j₃
+
+    j₀ = j₀ + n_v
+    j₁ = j₁ + n_v
+    j₂ = j₂ + n_v
+    j₃ = j₃ + n_v
+
+    𝑀₀ = mean(V𝑀₀[j₀ - n_v:j₀ + n_v])
+    𝑀₁ = mean(V𝑀₁[j₁ - n_v:j₁ + n_v])
+    𝑀₂ = mean(V𝑀₂[j₂ - n_v:j₂ + n_v])
+    𝑀₃ = mean(V𝑀₃[j₃ - n_v:j₃ + n_v])
+    #@show V𝑀₃[j₃ - n_v:j₃ + n_v]
+
+    # std_omega = sqrt(𝑀₂ / 𝑀₀ - (𝑀₁ / 𝑀₀)^2)
     
+    return MomentsData(𝑀₀, 𝑀₁, 𝑀₂, 𝑀₃)
 end
