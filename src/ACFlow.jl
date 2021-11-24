@@ -2,6 +2,7 @@
 module ACFlow
 
 using LinearAlgebra
+using Statistics
 
 include("global.jl")
 include("types.jl")
