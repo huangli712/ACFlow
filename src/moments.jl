@@ -7,7 +7,6 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     n_c = 3
     n_min = 2
     n_max = niw - 2 * n_c  - 4
-    #@show n_min, n_max
 
     V𝑀₀ = F64[]
     V𝑀₁ = F64[]
@@ -25,12 +24,8 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
             for i = n:(n + n_fit - 1)
                 𝑋[2 * (i - n) + 1, 2 * j - 0] = (-1)^j / (ω.grid[i])^(2*j)
                 𝑋[2 * (i - n) + 2, 2 * j - 1] = (-1)^j / (ω.grid[i])^(2*j-1)
-                #println(2 * (i - n) + 0, " ", 2 * j - 1, " ", 𝑋[2 * (i - n) + 1, 2 * j - 0])
-                #println(2 * (i - n) + 1, " ", 2 * j - 2, " ", 𝑋[2 * (i - n) + 2, 2 * j - 1])
-                #error()
             end 
         end
-        #@show diag(𝐶)
         𝐴 = 𝑋' * inv(𝐶) * 𝑋
 
         𝐻 = F64[]
@@ -38,17 +33,10 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
             v = 𝐺.value[i]
             push!(𝐻, real(v))
             push!(𝐻, imag(v))
-            #@show i, real(v)
-            #@show i, imag(v)
         end
         𝐵 = 𝑋' * inv(𝐶) * 𝐻
 
         𝑉 = 𝐴 \ 𝐵
-
-        #@show n
-        #@show 𝑉
-        #@show 𝑋
-        #error()
 
         push!(V𝑀₀, 𝑉[1])
         push!(V𝑀₁, 𝑉[2])
@@ -67,7 +55,6 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     end
 
     for j = n_v : n_max - n_min - n_v
-        # @show j
         push!(var𝑀₀, var(V𝑀₀[j - n_v + 1: j + n_v + 1]))
         push!(var𝑀₁, var(V𝑀₁[j - n_v + 1: j + n_v + 1]))
         push!(var𝑀₂, var(V𝑀₂[j - n_v + 1: j + n_v + 1]))
@@ -78,7 +65,6 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     _, j₁ = findmin(var𝑀₁)
     _, j₂ = findmin(var𝑀₂)
     _, j₃ = findmin(var𝑀₃)
-    #@show j₀, j₁, j₂, j₃
 
     j₀ = j₀ + n_v
     j₁ = j₁ + n_v
@@ -89,9 +75,6 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑀₁ = mean(V𝑀₁[j₁ - n_v:j₁ + n_v])
     𝑀₂ = mean(V𝑀₂[j₂ - n_v:j₂ + n_v])
     𝑀₃ = mean(V𝑀₃[j₃ - n_v:j₃ + n_v])
-    #@show V𝑀₃[j₃ - n_v:j₃ + n_v]
 
-    # std_omega = sqrt(𝑀₂ / 𝑀₀ - (𝑀₁ / 𝑀₀)^2)
-    
     return MomentsData(𝑀₀, 𝑀₁, 𝑀₂, 𝑀₃)
 end
