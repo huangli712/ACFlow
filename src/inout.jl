@@ -19,10 +19,9 @@ function read_data!(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
             push!(𝐺.covar, arr[3]^2)
         end
     end
-    #
-    #for i = 1:length(𝐺.covar)
-    #    println(i, " ", 𝐺.covar[i])
-    #end
+end
+
+function read_data!(ω::BosonicMatsubaraGrid, G::GreenData)
 end
 
 function read_data!(τ::ImaginaryTimeGrid, 𝐺::GreenData)

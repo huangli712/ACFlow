@@ -1,5 +1,6 @@
 
 abstract type AbstractData end
+
 struct GreenData <: AbstractData
     value :: Vector{N64}
     error :: Vector{N64}
@@ -11,7 +12,14 @@ function GreenData()
 end
 
 struct SigmaData <: AbstractData end
+
+function SigmaData()
+end
+
 struct ChiData <: AbstractData end
+
+function ChiData()
+end
 
 struct MomentsData <: AbstractData
     𝑀₀ :: F64
@@ -20,11 +28,22 @@ struct MomentsData <: AbstractData
     𝑀₃ :: F64
 end
 
+function MomentsData()
+    return MomentsData(zero(F64), zero(F64), zero(F64), zero(F64))
+end
+
 abstract type AbstractGrid end
+
 struct RealFrequencyGrid <: AbstractGrid end
+
+function RealFrequencyGrid()
+end
 
 struct ImaginaryTimeGrid <: AbstractGrid
     grid :: Vector{F64}
+end
+
+function ImaginaryTimeGrid()
 end
 
 struct FermionicMatsubaraGrid <: AbstractGrid
@@ -37,4 +56,7 @@ end
 
 struct BosonicMatsubaraGrid <: AbstractGrid
     grid :: Vector{F64}
+end
+
+function BosonicMatsubaraGrid()
 end
