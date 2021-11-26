@@ -8,6 +8,7 @@
 #
 
 abstract type AbstractData end
+abstract type AbstractGrid end
 
 struct GreenData <: AbstractData
     value :: Vector{N64}
@@ -49,8 +50,6 @@ end
 function MomentsData(::T) where {T <: N64}
     return MomentsData(zero(T), zero(T), zero(T), zero(T))
 end
-
-abstract type AbstractGrid end
 
 struct ImaginaryTimeGrid <: AbstractGrid
     grid :: Vector{F64}
