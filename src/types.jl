@@ -52,16 +52,20 @@ end
 
 abstract type AbstractGrid end
 
-struct RealFrequencyGrid <: AbstractGrid end
-
-function RealFrequencyGrid()
-end
-
 struct ImaginaryTimeGrid <: AbstractGrid
     grid :: Vector{F64}
 end
 
 function ImaginaryTimeGrid()
+    return ImaginaryTimeGrid(Vector{F64}[])
+end
+
+struct RealFrequencyGrid <: AbstractGrid
+    grid :: Vector{F64}
+end
+
+function RealFrequencyGrid()
+    return RealFrequencyGrid(Vector{F64}[])
 end
 
 struct FermionicMatsubaraGrid <: AbstractGrid
@@ -77,4 +81,5 @@ struct BosonicMatsubaraGrid <: AbstractGrid
 end
 
 function BosonicMatsubaraGrid()
+    return BosonicMatsubaraGrid(Vector{F64}[])
 end
