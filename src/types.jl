@@ -1,10 +1,10 @@
 #
-# Project : Pansy
-# Source  : ZenCore.jl
+# Project : Gardenia
+# Source  : ACFlow.jl
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/19
+# Last modified: 2021/11/26
 #
 
 abstract type AbstractData end
@@ -20,26 +20,34 @@ function GreenData()
 end
 
 struct SigmaData <: AbstractData
-    
+    value :: Vector{N64}
+    error :: Vector{N64}
+    covar :: Vector{N64}    
 end
 
 function SigmaData()
+    return SigmaData(Vector{N64}[], Vector{N64}[], Vector{N64}[])
 end
 
-struct ChiData <: AbstractData end
+struct ChiData <: AbstractData
+    value :: Vector{N64}
+    error :: Vector{N64}
+    covar :: Vector{N64}
+end
 
 function ChiData()
+    return ChiData(Vector{N64}[], Vector{N64}[], Vector{N64}[])
 end
 
 struct MomentsData <: AbstractData
-    𝑀₀ :: F64
-    𝑀₁ :: F64
-    𝑀₂ :: F64
-    𝑀₃ :: F64
+    𝑀₀ :: N64
+    𝑀₁ :: N64
+    𝑀₂ :: N64
+    𝑀₃ :: N64
 end
 
-function MomentsData()
-    return MomentsData(zero(F64), zero(F64), zero(F64), zero(F64))
+function MomentsData(::T) where {T <: N64}
+    return MomentsData(zero(T), zero(T), zero(T), zero(T))
 end
 
 abstract type AbstractGrid end
