@@ -11,7 +11,9 @@ function GreenData()
     return GreenData(Vector{N64}[], Vector{N64}[], Vector{N64}[])
 end
 
-struct SigmaData <: AbstractData end
+struct SigmaData <: AbstractData
+    
+end
 
 function SigmaData()
 end

@@ -1,4 +1,4 @@
-push!(LOAD_PATH, ".")
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
 
 using ACFlow
 
