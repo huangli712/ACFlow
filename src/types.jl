@@ -1,6 +1,6 @@
 #
 # Project : Gardenia
-# Source  : ACFlow.jl
+# Source  : types.jl
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
