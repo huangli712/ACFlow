@@ -4,8 +4,17 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/26
+# Last modified: 2021/11/28
 #
+
+"""
+    sorry()
+
+Print an error message to the screen.
+"""
+function sorry()
+    error("Sorry, this feature has not been implemented")
+end
 
 """
     line_to_array(io::IOStream)

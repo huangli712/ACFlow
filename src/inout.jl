@@ -4,8 +4,11 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/27
+# Last modified: 2021/11/28
 #
+
+function read_data!(τ::ImaginaryTimeGrid, 𝐺::GreenData)
+end
 
 function read_data!(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     niw = 64
@@ -30,7 +33,4 @@ function read_data!(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 end
 
 function read_data!(ω::BosonicMatsubaraGrid, G::GreenData)
-end
-
-function read_data!(τ::ImaginaryTimeGrid, 𝐺::GreenData)
 end
