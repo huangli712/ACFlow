@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/27
+# Last modified: 2021/11/28
 #
 
 module ACFlow
@@ -28,6 +28,7 @@ include("maxent.jl")
 export FermionicMatsubaraGrid
 export GreenData
 export calc_moments
+export calc_mesh
 export read_data!
 
 end
