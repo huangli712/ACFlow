@@ -8,6 +8,13 @@
 #
 
 function calc_mesh(𝑀::MomentsData)
-    println("here")
-    println("SC: ", 𝑀.𝑀₁/𝑀.𝑀₀)
+    SC = 𝑀.𝑀₁ / 𝑀.𝑀₀
+    SW = sqrt(𝑀.𝑀₂ / 𝑀.𝑀₀ - SC^2) * 3
+    wl = SC - SW / 2
+    wr = SC + SW / 2
+    SW = wr - wl
+    println("SC: ", SC)
+    println("SW: ", SW)
+    println("wl: ", wl)
+    println("wr: ", wr)
 end
