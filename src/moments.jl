@@ -84,5 +84,5 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑀₂ = mean(V𝑀₂[j₂ - n_v:j₂ + n_v])
     𝑀₃ = mean(V𝑀₃[j₃ - n_v:j₃ + n_v])
 
-    return MomentsData(𝑀₀, 𝑀₁, 𝑀₂, 𝑀₃)
+    return MomentsData(𝑀₀, 𝑀₁, 𝑀₂, 𝑀₃), VectorMomentsData(V𝑀₀, V𝑀₁, V𝑀₂, V𝑀₃)
 end
