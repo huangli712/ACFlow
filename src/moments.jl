@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/27
+# Last modified: 2021/11/29
 #
 
 function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
@@ -63,10 +63,10 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     end
 
     for j = n_v : n_max - n_min - n_v
-        push!(var𝑀₀, var(V𝑀₀[j - n_v + 1: j + n_v + 1]))
-        push!(var𝑀₁, var(V𝑀₁[j - n_v + 1: j + n_v + 1]))
-        push!(var𝑀₂, var(V𝑀₂[j - n_v + 1: j + n_v + 1]))
-        push!(var𝑀₃, var(V𝑀₃[j - n_v + 1: j + n_v + 1]))
+        push!(var𝑀₀, var(V𝑀₀[j - n_v + 1 : j + n_v + 1]))
+        push!(var𝑀₁, var(V𝑀₁[j - n_v + 1 : j + n_v + 1]))
+        push!(var𝑀₂, var(V𝑀₂[j - n_v + 1 : j + n_v + 1]))
+        push!(var𝑀₃, var(V𝑀₃[j - n_v + 1 : j + n_v + 1]))
     end
 
     _, j₀ = findmin(var𝑀₀)
@@ -79,10 +79,40 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     j₂ = j₂ + n_v
     j₃ = j₃ + n_v
 
-    𝑀₀ = mean(V𝑀₀[j₀ - n_v:j₀ + n_v])
-    𝑀₁ = mean(V𝑀₁[j₁ - n_v:j₁ + n_v])
-    𝑀₂ = mean(V𝑀₂[j₂ - n_v:j₂ + n_v])
-    𝑀₃ = mean(V𝑀₃[j₃ - n_v:j₃ + n_v])
+    𝑀₀ = mean(V𝑀₀[j₀ - n_v : j₀ + n_v])
+    𝑀₁ = mean(V𝑀₁[j₁ - n_v : j₁ + n_v])
+    𝑀₂ = mean(V𝑀₂[j₂ - n_v : j₂ + n_v])
+    𝑀₃ = mean(V𝑀₃[j₃ - n_v : j₃ + n_v])
 
-    return MomentsData(𝑀₀, 𝑀₁, 𝑀₂, 𝑀₃), VectorMomentsData(V𝑀₀, V𝑀₁, V𝑀₂, V𝑀₃)
+    #@show j₀ - n_v, j₀ + n_v
+    #@show 𝑀₀, 𝑀₁, 𝑀₂, 𝑀₃
+    
+    j = n_v + 1
+    #@show abs(mean(V𝑀₀[j - n_v : j + n_v]))
+    while j < j₀ && ( abs(mean(V𝑀₀[j - n_v : j + n_v]) - 𝑀₀) / 𝑀₀ > 0.002 || 
+                      std(V𝑀₀[j - n_v : j + n_v]) / 𝑀₀ > 0.002 )
+        #@show j, j₀, abs(mean(V𝑀₀[j - n_v : j + n_v]) - 𝑀₀) / 𝑀₀, std(V𝑀₀[j - n_v : j + n_v]) / 𝑀₀
+        j = j + 1
+    end
+    #@show j
+    ωc = j + n_min - 2
+    #@show j, ω.grid[j], ω.grid[niw]
+
+    return ωc, MomentsData(𝑀₀, 𝑀₁, 𝑀₂, 𝑀₃), VectorMomentsData(V𝑀₀, V𝑀₁, V𝑀₂, V𝑀₃)
+end
+
+function trunc_data!(ωc::I64, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+    if ωc < 20
+        ωc = 20
+    end
+
+    resize!(ω.grid, ωc)
+
+    #@show ωc, ω.grid[ωc]
+    #@show ω.grid
+
+    resize!(𝐺.value, ωc)
+    resize!(𝐺.error, ωc)
+    resize!(𝐺.covar, ωc)
+    #@show 𝐺.value
 end
