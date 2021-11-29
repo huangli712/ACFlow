@@ -24,12 +24,12 @@ function calc_mesh(𝑀::MomentsData)
     origin = SC
     dw = SW / R_SW_STD_OMEGA / RMIN_SW_DW
 
-    println("SC: ", SC)
-    println("SW: ", SW)
-    println("wl: ", wl)
-    println("wr: ", wr)
-    println("origin: ", origin)
-    println("dw: ", dw)
+    #println("SC: ", SC)
+    #println("SW: ", SW)
+    #println("wl: ", wl)
+    #println("wr: ", wr)
+    #println("origin: ", origin)
+    #println("dw: ", dw)
 
     nwr = round(I64, (wr - origin) / dw)
     wr = origin + nwr * dw
