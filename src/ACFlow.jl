@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/29
+# Last modified: 2021/11/30
 #
 
 module ACFlow
@@ -31,6 +31,7 @@ export BosonicMatsubaraGrid
 export GreenData
 export calc_moments
 export calc_mesh
+export calc_model
 export read_data!
 export trunc_data!
 
