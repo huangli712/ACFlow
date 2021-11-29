@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/28
+# Last modified: 2021/11/29
 #
 
 module ACFlow
@@ -25,7 +25,9 @@ include("spectrum.jl")
 include("pade.jl")
 include("maxent.jl")
 
+export RealFrequencyGrid
 export FermionicMatsubaraGrid
+export BosonicMatsubaraGrid
 export GreenData
 export calc_moments
 export calc_mesh

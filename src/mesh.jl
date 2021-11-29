@@ -78,8 +78,10 @@ function calc_mesh(𝑀::MomentsData)
     #end
 
     w = [1.0 ./ ul .+ w0l; wc; 1.0 ./ ur .+ w0r]
-    @show length(w)
-    for i = 1:length(w)
-        @show i, w[i]
-    end
+    #@show length(w)
+    #for i = 1:length(w)
+    #    @show i, w[i]
+    #end
+
+    return RealFrequencyGrid(w)
 end
