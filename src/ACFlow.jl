@@ -12,6 +12,7 @@ module ACFlow
 using LinearAlgebra
 using Printf
 using Statistics
+using Base.Math: libm
 
 include("global.jl")
 include("util.jl")

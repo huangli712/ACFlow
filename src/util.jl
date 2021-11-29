@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/28
+# Last modified: 2021/11/30
 #
 
 """
@@ -32,4 +32,8 @@ Convert a string (AbstractString) to a string array.
 """
 @inline function line_to_array(str::AbstractString)
     split(str, " ", keepempty = false)
+end
+
+function gamma(x::F64)
+    ccall(("tgamma", libm), F64, (F64,), x)
 end
