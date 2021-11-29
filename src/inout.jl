@@ -34,3 +34,9 @@ end
 
 function read_data!(ω::BosonicMatsubaraGrid, G::GreenData)
 end
+
+function trunc_data!(V𝑀::VectorMomentsData, G::GreenData)
+    for i = 1:length(V𝑀.V𝑀₀)
+        @show i, V𝑀.V𝑀₀[i]
+    end
+end
