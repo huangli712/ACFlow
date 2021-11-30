@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/29
+# Last modified: 2021/11/30
 #
 
 abstract type AbstractData end
@@ -71,11 +71,18 @@ function ImaginaryTimeGrid()
 end
 
 struct RealFrequencyGrid <: AbstractGrid
+    nul :: I64
+    nur :: I64
+    w0l :: F64
+    wl  :: F64
+    w0r :: F64
+    wr  :: F64
+    dw  :: F64
     grid :: Vector{F64}
 end
 
 function RealFrequencyGrid()
-    return RealFrequencyGrid(Vector{F64}[])
+    return RealFrequencyGrid(0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, Vector{F64}[])
 end
 
 struct FermionicMatsubaraGrid <: AbstractGrid

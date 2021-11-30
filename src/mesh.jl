@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/29
+# Last modified: 2021/11/30
 #
 
 function calc_mesh(𝑀::MomentsData)
@@ -48,7 +48,7 @@ function calc_mesh(𝑀::MomentsData)
     wmin = SC - F_W_RANGE * SW / 2.0
     w0l = wl + sqrt(dw * (wl - wmin))
     #@show w0l
-    nul = ceil((w0l - wl) / dw)
+    nul = ceil(I64, (w0l - wl) / dw)
     w0l = wl + nul * dw
     dul = dw / (wl - dw - w0l) / (wl - w0l)
     wmin = -1.0 / dul + w0l
@@ -64,7 +64,7 @@ function calc_mesh(𝑀::MomentsData)
     wmax = SC + F_W_RANGE * SW / 2.0
     w0r = wr - sqrt(dw * (wmax - wr))
     #@show w0r
-    nur = ceil((wr - w0r) / dw)
+    nur = ceil(I64, (wr - w0r) / dw)
     w0r = wr - nur * dw
     dur = dw / (wr + dw - w0r) / (wr - w0r)
     wmax = 1.0 / dur + w0r
@@ -83,5 +83,8 @@ function calc_mesh(𝑀::MomentsData)
     #    @show i, w[i]
     #end
 
-    return RealFrequencyGrid(w)
+    #@show nul, nur, length(wc), length(w)
+    #@show w0l, wl, w0r, wr, dw
+
+    return RealFrequencyGrid(nul, nur, w0l, wl, w0r, wr, dw, w)
 end
