@@ -7,6 +7,8 @@
 # Last modified: 2021/11/30
 #
 
-function calc_kernel(ω::FermionicMatsubaraGrid)
+function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     println("here in calc_kernel()")
+    @show length(ω.grid)
+    @show length(rfg.grid)
 end
