@@ -33,6 +33,7 @@ export GreenData
 export calc_moments
 export calc_mesh
 export calc_model
+export calc_kernel
 export read_data!
 export trunc_data!
 

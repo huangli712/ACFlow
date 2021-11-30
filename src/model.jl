@@ -27,6 +27,6 @@ function calc_model(rfg::RealFrequencyGrid, 𝑀::MomentsData)
     for i = 1:length(rfg.grid)
         m = π * model_shape / model_width / gamma(1.0 / model_shape)
         m = m * exp(-abs((rfg.grid[i] - model_center) / model_width)^model_shape)
-        @show i, m
+        #@show i, m
     end
 end
