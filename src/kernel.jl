@@ -33,7 +33,7 @@ end
 function spline_matrix(rfg::RealFrequencyGrid)
     Mg = spline_matrix_g(rfg)
     #@show Mg
-    spline_matrix_c(rfg)
+    Mc = spline_matrix_c(rfg)
 end
 
 function spline_matrix_g(rfg::RealFrequencyGrid)
@@ -147,16 +147,16 @@ function spline_matrix_c(rfg::RealFrequencyGrid)
 
     B = zeros(F64, NCc, NCc)
     Ps = zeros(F64, NCc, Nx)
-    Pg = zeros(F64, 4 * Nc, 4 * Nc)
+    Pc = zeros(F64, 4 * Nc, 4 * Nc)
 
     B[1,1] = 1.0
 	B[1,2] = 1.0
 	B[2,1] = 3.0
 	B[2,2] = 2.0
-	B[2,5] = -RDc(0)
+	B[2,5] = -RDc[1]
 	B[3,1] = 6.0
 	B[3,2] = 2.0
-	B[3,4] = -2.0 * pow(RDc(0),2)
+	B[3,4] = -2.0 * (RDc[1])^2
 	
 	Ps[1,Ng+0] = ( rfg.grid[Ng+2] - rfg.grid[Ng+1] ) / ( rfg.grid[Ng+2] - rfg.grid[Ng] )
 	Ps[1,Ng+1] = -1.0
@@ -164,12 +164,67 @@ function spline_matrix_c(rfg::RealFrequencyGrid)
 	Ps[2,Ng+0] = +( rfg.grid[Ng+2] - rfg.grid[Ng+1] ) / ( rfg.grid[Ng+2] - rfg.grid[Ng] )
 	Ps[2,Ng+2] = -( rfg.grid[Ng+2] - rfg.grid[Ng+1] ) / ( rfg.grid[Ng+2] - rfg.grid[Ng] )
 	
-	Pg[1,1] = 1.0
-	Pg[2,2] = 1.0
-	Pg[3,NCc+1] = -( rfg.grid[Ng+2] - rfg.grid[Ng+1]) / ( rfg.grid[Ng+2] - rfg.grid[Ng] )
-	Pg[3,NCc+3] = +( rfg.grid[Ng+2] - rfg.grid[Ng+1]) / ( rfg.grid[Ng+2] - rfg.grid[Ng] )
-	Pg[4,NCc+2] = 1.0
+	Pc[1,1] = 1.0
+	Pc[2,2] = 1.0
+	Pc[3,NCc+1] = -( rfg.grid[Ng+2] - rfg.grid[Ng+1]) / ( rfg.grid[Ng+2] - rfg.grid[Ng] )
+	Pc[3,NCc+3] = +( rfg.grid[Ng+2] - rfg.grid[Ng+1]) / ( rfg.grid[Ng+2] - rfg.grid[Ng] )
+	Pc[4,NCc+2] = 1.0
 
+	for j = 1:Nc-2
+        B[3*j+1,3*j+0] = 1.0
+        B[3*j+1,3*j+1] = 1.0
+        B[3*j+1,3*j+2] = 1.0
+        B[3*j+2,3*j+0] = 3.0
+        B[3*j+2,3*j+1] = 2.0
+        B[3*j+2,3*j+2] = 1.0
+        B[3*j+2,3*j+5] = -RDc[j+1]
+        B[3*j+3,3*j+0] = 6.0
+        B[3*j+3,3*j+1] = 2.0
+        B[3*j+3,3*j+4] = -2.0 * (RDc[j+1])^2
+            
+        Ps[3*j+1,Ng+j+1] = -1.0
+        Ps[3*j+1,Ng+j+2] = +1.0
+            
+        Pc[4*j+1,3*j+0] = 1.0
+        Pc[4*j+2,3*j+1] = 1.0
+        Pc[4*j+3,3*j+2] = 1.0
+        Pc[4*j+4,NCc+j+2] = 1.0
+    end
+    
+	j = Nc - 1
+	B[3*j+1,3*j+0] = 1
+	B[3*j+1,3*j+1] = 1
+	B[3*j+1,3*j+2] = 1
+	B[3*j+2,3*j+0] = 3
+	B[3*j+2,3*j+1] = 2
+	B[3*j+2,3*j+2] = 1
+	
+    fdAc = rfg.grid[Ng + Nc + 1] - rfg.grid[Ng + Nc]
+    fdAc = fdAc / ( rfg.grid[Ng + Nc + 2] - rfg.grid[Ng + Nc] )
+    #@show fdAc
+
+	Ps[3*j+1,Ng+j+1] = -1
+	Ps[3*j+1,Ng+j+2] = 1
+	Ps[3*j+2,Ng+j+1] = -fdAc
+	Ps[3*j+2,Ng+j+3] = +fdAc
+	
+	Pc[4*j+1,3*j+0] = 1.0
+	Pc[4*j+2,3*j+1] = 1.0
+	Pc[4*j+3,3*j+2] = 1.0
+	Pc[4*j+4,NCc+j+2] = 1.0
+
+    IB = Matrix{F64}(I, NCc, NCc)
+    invB = B \ IB
+    #@show invB
+
+    IA = Matrix{F64}(I, Nx, Nx)
+    PA = IA[Ng:Ng+Nc,1:Nx]
+    Lc = vcat(invB * Ps, PA)
+    #@show Lc
+    Mc = Pc * Lc
+    #@show size(Mc)
+    #@show Mc
+    return Mc
 end
 
 function spline_matrix_d(rfg::RealFrequencyGrid)
