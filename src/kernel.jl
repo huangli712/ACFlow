@@ -47,11 +47,12 @@ function spline_matrix_g(rfg::RealFrequencyGrid)
     RDg = (v1 ./ v2) .* (v3 ./ v4)
     #@show RDg
 
-    NCg = 3 * rfg.nul - 1
+    Ng = rfg.nul
+    NCg = 3 * Ng - 1
     Nx = length(rfg.grid)
     B = zeros(F64, NCg, NCg)
     Ps = zeros(F64, NCg, Nx)
-    Pg = zeros(F64, 4 * rfg.nul, 4 * rfg.nul - 1)
+    Pg = zeros(F64, 4 * Ng, 4 * Ng - 1)
 
     B[1,1] = 1.0
 	B[1,2] = 1.0
@@ -69,7 +70,7 @@ function spline_matrix_g(rfg::RealFrequencyGrid)
 	Pg[2,2] = 1.0
 	Pg[4,NCg+1] = 1.0
 
-    for j = 1:rfg.nul-2
+    for j = 1:Ng-2
         B[3*j+1,3*j+0] = 1.0
         B[3*j+1,3*j+1] = 1.0
         B[3*j+1,3*j+2] = 1.0
@@ -90,7 +91,7 @@ function spline_matrix_g(rfg::RealFrequencyGrid)
         Pg[4*j+4,NCg+j+1] = 1.0
     end
 
-    j = rfg.nul - 1
+    j = Ng - 1
     B[3*j+1,3*j+0] = 1.0
 	B[3*j+1,3*j+1] = 1.0
 	B[3*j+1,3*j+2] = 1.0
@@ -117,7 +118,7 @@ function spline_matrix_g(rfg::RealFrequencyGrid)
     #@show invB
 
     IA = Matrix{F64}(I, Nx, Nx)
-    PA = IA[1:rfg.nul,1:Nx]
+    PA = IA[1:Ng,1:Nx]
     Lg = vcat(invB * Ps, PA)
     #@show Lg
     Mg = Pg * Lg
@@ -138,6 +139,7 @@ function spline_matrix_c(rfg::RealFrequencyGrid)
     RDc = (v1 .- v2) ./ (v3 .- v4)
     #@show RDc
 
+    Ng = rfg.nul
     Nc = nuc - 1
     NCc = 3 * Nc - 1
     Nx = length(rfg.grid)
@@ -146,7 +148,28 @@ function spline_matrix_c(rfg::RealFrequencyGrid)
     B = zeros(F64, NCc, NCc)
     Ps = zeros(F64, NCc, Nx)
     Pg = zeros(F64, 4 * Nc, 4 * Nc)
-    
+
+    B[0,0] = 1.0
+	B[0,1] = 1.0
+	B[1,0] = 3.0
+	B[1,1] = 2.0
+	B[1,4] = -RDc(0)
+	B[2,0] = 6.0
+	B[2,1] = 2.0
+	B[2,3] = -2.0 * pow(RDc(0),2)
+	
+	Ps[0,Ng-1]=(x(Ng+1)-x(Ng))/(x(Ng+1)-x(Ng-1))
+	Ps[0,Ng]=-1
+	Ps[0,Ng+1]=1-(x(Ng+1)-x(Ng))/(x(Ng+1)-x(Ng-1))
+	Ps[1,Ng-1]=(x(Ng+1)-x(Ng))/(x(Ng+1)-x(Ng-1))
+	Ps[1,Ng+1]=-(x(Ng+1)-x(Ng))/(x(Ng+1)-x(Ng-1))
+	
+	Pg[0,0]=1
+	Pg[1,1]=1
+	Pg[2,NCc]=-(x(Ng+1)-x(Ng))/(x(Ng+1)-x(Ng-1))
+	Pg[2,NCc+2]=(x(Ng+1)-x(Ng))/(x(Ng+1)-x(Ng-1))
+	Pg[3,NCc+1]=1
+
 end
 
 function spline_matrix_d(rfg::RealFrequencyGrid)
