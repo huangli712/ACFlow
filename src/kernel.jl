@@ -149,26 +149,26 @@ function spline_matrix_c(rfg::RealFrequencyGrid)
     Ps = zeros(F64, NCc, Nx)
     Pg = zeros(F64, 4 * Nc, 4 * Nc)
 
-    B[0,0] = 1.0
-	B[0,1] = 1.0
-	B[1,0] = 3.0
-	B[1,1] = 2.0
-	B[1,4] = -RDc(0)
-	B[2,0] = 6.0
-	B[2,1] = 2.0
-	B[2,3] = -2.0 * pow(RDc(0),2)
+    B[1,1] = 1.0
+	B[1,2] = 1.0
+	B[2,1] = 3.0
+	B[2,2] = 2.0
+	B[2,5] = -RDc(0)
+	B[3,1] = 6.0
+	B[3,2] = 2.0
+	B[3,4] = -2.0 * pow(RDc(0),2)
 	
-	Ps[0,Ng-1]=(x(Ng+1)-x(Ng))/(x(Ng+1)-x(Ng-1))
-	Ps[0,Ng]=-1
-	Ps[0,Ng+1]=1-(x(Ng+1)-x(Ng))/(x(Ng+1)-x(Ng-1))
-	Ps[1,Ng-1]=(x(Ng+1)-x(Ng))/(x(Ng+1)-x(Ng-1))
-	Ps[1,Ng+1]=-(x(Ng+1)-x(Ng))/(x(Ng+1)-x(Ng-1))
+	Ps[1,Ng+0] = ( rfg.grid[Ng+2] - rfg.grid[Ng+1] ) / ( rfg.grid[Ng+2] - rfg.grid[Ng] )
+	Ps[1,Ng+1] = -1.0
+	Ps[1,Ng+2] = 1.0 - ( rfg.grid[Ng+2] - rfg.grid[Ng+1] ) / ( rfg.grid[Ng+2] - rfg.grid[Ng] )
+	Ps[2,Ng+0] = +( rfg.grid[Ng+2] - rfg.grid[Ng+1] ) / ( rfg.grid[Ng+2] - rfg.grid[Ng] )
+	Ps[2,Ng+2] = -( rfg.grid[Ng+2] - rfg.grid[Ng+1] ) / ( rfg.grid[Ng+2] - rfg.grid[Ng] )
 	
-	Pg[0,0]=1
-	Pg[1,1]=1
-	Pg[2,NCc]=-(x(Ng+1)-x(Ng))/(x(Ng+1)-x(Ng-1))
-	Pg[2,NCc+2]=(x(Ng+1)-x(Ng))/(x(Ng+1)-x(Ng-1))
-	Pg[3,NCc+1]=1
+	Pg[1,1] = 1.0
+	Pg[2,2] = 1.0
+	Pg[3,NCc+1] = -( rfg.grid[Ng+2] - rfg.grid[Ng+1]) / ( rfg.grid[Ng+2] - rfg.grid[Ng] )
+	Pg[3,NCc+3] = +( rfg.grid[Ng+2] - rfg.grid[Ng+1]) / ( rfg.grid[Ng+2] - rfg.grid[Ng] )
+	Pg[4,NCc+2] = 1.0
 
 end
 
