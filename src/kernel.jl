@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/30
+# Last modified: 2021/12/01
 #
 
 function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
@@ -41,5 +41,47 @@ function spline_matrix(rfg::RealFrequencyGrid)
     RDg = (v1 ./ v2) .* (v3 ./ v4)
     #@show RDg
 
+    NCg = 3 * rfg.nul - 1
+    Nx = length(rfg.grid)
+    B = zeros(F64, NCg, NCg)
+    Ps = zeros(F64, NCg, Nx)
+    Pg = zeros(F64, 4 * rfg.nul, 4 * rfg.nul - 1)
+
+    B[1,1] = 1.0
+	B[1,2] = 1.0
+	B[2,1] = 3.0
+	B[2,2] = 2.0
+	B[2,5] = -RDg[1]
+	B[3,1] = 6.0
+	B[3,2] = 2.0
+	B[3,4] = -2.0 * (RDg[1])^2
+	
+	Ps[1,1] = -1.0
+	Ps[1,2] = 1.0
+	
+	Pg[1,1] = 1.0
+	Pg[2,2] = 1.0
+	Pg[4,NCg+1] = 1.0
+
+    for j = 1:Ng-1
+        B[3*j+1,3*j+0] = 1.0
+        B[3*j+1,3*j+1] = 1.0
+        B[3*j+1,3*j+2] = 1.0
+        B[3*j+2,3*j+0] = 3.0
+        B[3*j+2,3*j+1] = 2.0
+        B[3*j+2,3*j+2] = 1.0
+        B[3*j+2,3*j+5] = -RDg[j+1]
+        B[3*j+3,3*j+0] = 6.0
+        B[3*j+3,3*j+1] = 2.0
+        B[3*j+3,3*j+4] = -2.0 * (RDg[j+1])^2
+            
+        Ps[3*j+1,j+1] = -1.0
+        Ps[3*j+1,j+2] = 1.0
+            
+        Pg[4*j+1,3*j+0] = 1.0
+        Pg[4*j+2,3*j+1] = 1.0
+        Pg[4*j+3,3*j+2] = 1.0
+        Pg[4*j+4,NCg+j+1] = 1.0
+    end
     
 end
