@@ -63,7 +63,7 @@ function spline_matrix(rfg::RealFrequencyGrid)
 	Pg[2,2] = 1.0
 	Pg[4,NCg+1] = 1.0
 
-    for j = 1:Ng-1
+    for j = 1:rfg.nul-2
         B[3*j+1,3*j+0] = 1.0
         B[3*j+1,3*j+1] = 1.0
         B[3*j+1,3*j+2] = 1.0
@@ -83,5 +83,30 @@ function spline_matrix(rfg::RealFrequencyGrid)
         Pg[4*j+3,3*j+2] = 1.0
         Pg[4*j+4,NCg+j+1] = 1.0
     end
-    
+
+    j = rfg.nul - 1
+    B[3*j+1,3*j+0] = 1.0
+	B[3*j+1,3*j+1] = 1.0
+	B[3*j+1,3*j+2] = 1.0
+	B[3*j+2,3*j+0] = 3.0
+	B[3*j+2,3*j+1] = 2.0
+	B[3*j+2,3*j+2] = 1.0
+
+    fdAg = ( rfg.grid[j+2] - rfg.w0l ) / ( rfg.grid[j+1] - rfg.w0l )
+    fdAg = ( rfg.grid[j+2] - rfg.grid[j+1] ) / ( rfg.grid[j+3] - rfg.grid[j+1] ) * fdAg
+    @show fdAg
+
+	Ps[3*j+1,j+1] = -1.0
+	Ps[3*j+1,j+2] = 1.0
+	Ps[3*j+2,j+1] = -fdAg
+	Ps[3*j+2,j+3] = fdAg
+	
+	Pg[4*j+1,3*j+0] = 1.0
+	Pg[4*j+2,3*j+1] = 1.0
+	Pg[4*j+3,3*j+2] = 1.0
+	Pg[4*j+4,NCg+j+1] = 1.0
+
+    IB = Matrix{F64}(I, NCg, NCg)
+    invB = B \ IB
+    @show invB
 end
