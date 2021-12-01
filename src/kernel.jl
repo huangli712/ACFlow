@@ -31,7 +31,12 @@ function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
 end
 
 function spline_matrix(rfg::RealFrequencyGrid)
-    println("here is spline_matrix")
+    Mg = spline_matrix_g(rfg)
+    @show Mg
+end
+
+function spline_matrix_g(rfg::RealFrequencyGrid)
+    # println("here is spline_matrix")
 
     v1 = rfg.grid[3:rfg.nul+1] .- rfg.w0l
     v2 = rfg.grid[1:rfg.nul-1] .- rfg.w0l
@@ -108,5 +113,14 @@ function spline_matrix(rfg::RealFrequencyGrid)
 
     IB = Matrix{F64}(I, NCg, NCg)
     invB = B \ IB
-    @show invB
+    #@show invB
+
+    IA = Matrix{F64}(I, Nx, Nx)
+    PA = IA[1:rfg.nul,1:Nx]
+    Lg = vcat(invB * Ps, PA)
+    #@show Lg
+    Mg = Pg * Lg
+    #@show size(Mg)
+    #@show Mg
+    return Mg
 end
