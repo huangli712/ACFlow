@@ -32,7 +32,8 @@ end
 
 function spline_matrix(rfg::RealFrequencyGrid)
     Mg = spline_matrix_g(rfg)
-    @show Mg
+    #@show Mg
+    spline_matrix_c(rfg)
 end
 
 function spline_matrix_g(rfg::RealFrequencyGrid)
@@ -123,4 +124,17 @@ function spline_matrix_g(rfg::RealFrequencyGrid)
     #@show size(Mg)
     #@show Mg
     return Mg
+end
+
+function spline_matrix_c(rfg::RealFrequencyGrid)
+    nuc = length(rfg.grid) - rfg.nur - rfg.nul
+    @show rfg.nul, nuc, nuc + rfg.nul
+    v1 = rfg.grid[rfg.nul + 2 : rfg.nul + nuc - 1]
+    v2 = rfg.grid[rfg.nul + 1 : rfg.nul + nuc - 2]
+    v3 = rfg.grid[rfg.nul + 3 : rfg.nul + nuc - 0]
+    v4 = rfg.grid[rfg.nul + 2 : rfg.nul + nuc - 1]
+    @show v4
+end
+
+function spline_matrix_d(rfg::RealFrequencyGrid)
 end
