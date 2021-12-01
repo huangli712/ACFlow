@@ -133,7 +133,20 @@ function spline_matrix_c(rfg::RealFrequencyGrid)
     v2 = rfg.grid[rfg.nul + 1 : rfg.nul + nuc - 2]
     v3 = rfg.grid[rfg.nul + 3 : rfg.nul + nuc - 0]
     v4 = rfg.grid[rfg.nul + 2 : rfg.nul + nuc - 1]
-    @show v4
+    #@show v4
+
+    RDc = (v1 .- v2) ./ (v3 .- v4)
+    #@show RDc
+
+    Nc = nuc - 1
+    NCc = 3 * Nc - 1
+    Nx = length(rfg.grid)
+    @show NCc, Nc, Nx
+
+    B = zeros(F64, NCc, NCc)
+    Ps = zeros(F64, NCc, Nx)
+    Pg = zeros(F64, 4 * Nc, 4 * Nc)
+    
 end
 
 function spline_matrix_d(rfg::RealFrequencyGrid)
