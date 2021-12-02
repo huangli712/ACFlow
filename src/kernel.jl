@@ -265,10 +265,10 @@ function spline_matrix_d(rfg::RealFrequencyGrid)
 	Ps[2,Nx - Nd + 0] = +1.0
 	Ps[2,Nx - Nd + 1] = -1.0
 	
-	Pg[1,1] = 1.0
-	Pg[2,2] = 1.0
-	Pg[3,3] = 1.0
-	Pg[4,NCd + 1] = 1.0
+	Pd[1,1] = 1.0
+	Pd[2,2] = 1.0
+	Pd[3,3] = 1.0
+	Pd[4,NCd + 1] = 1.0
 
     for j = 1:Nd-2
         B[3*j+0,3*j+0] = -RDd[j]
@@ -287,10 +287,10 @@ function spline_matrix_d(rfg::RealFrequencyGrid)
         Ps[3*j+2,Nx-Nd+j+0] = +1.0
         Ps[3*j+2,Nx-Nd+j+1] = -1.0
             
-        Pg[4*j+1,3*j+1] = 1.0
-        Pg[4*j+2,3*j+2] = 1.0
-        Pg[4*j+3,3*j+3] = 1.0
-        Pg[4*j+4,NCd+j+1] = 1.0
+        Pd[4*j+1,3*j+1] = 1.0
+        Pd[4*j+2,3*j+2] = 1.0
+        Pd[4*j+3,3*j+3] = 1.0
+        Pd[4*j+4,NCd+j+1] = 1.0
     end
 
     j = Nd - 1
@@ -308,7 +308,7 @@ function spline_matrix_d(rfg::RealFrequencyGrid)
 	Ps[3*j+2,Nx-Nd+j+0] = +1.0
 	Ps[3*j+2,Nx-Nd+j+1] = -1.0
 	
-	Pg[4*j+1,3*j+1] = 1.0
-	Pg[4*j+2,3*j+2] = 1.0
-	Pg[4*j+4,NCd+j+1] = 1.0
+	Pd[4*j+1,3*j+1] = 1.0
+	Pd[4*j+2,3*j+2] = 1.0
+	Pd[4*j+4,NCd+j+1] = 1.0
 end
