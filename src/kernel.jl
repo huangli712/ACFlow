@@ -235,9 +235,17 @@ function spline_matrix_d(rfg::RealFrequencyGrid)
     Nd = rfg.nur
     NCd = 3 * Nd - 1
 
-    #v1 = x.rows(ind_xlims(1)+2,Nx-1) - x.rows(ind_xlims(1)+1,Nx-2)
-    #v2 = x.rows(ind_xlims(1)+1,Nx-2) - x.rows(ind_xlims(1),Nx-3)
-    #v3 = x.rows(ind_xlims(1),Nx-3)-x0d
-    #v4 = x.rows(ind_xlims(1)+2,Nx-1)-x0d
+    #Nx - Nd - 1
+    v1 = rfg.grid[Nx - Nd + 2 : Nx - 0] .- rfg.grid[Nx - Nd + 1 : Nx - 1]
+    v2 = rfg.grid[Nx - Nd + 1 : Nx - 1] .- rfg.grid[Nx - Nd + 0 : Nx - 2]
+    v3 = rfg.grid[Nx - Nd + 0 : Nx - 2] .- rfg.w0r
+    v4 = rfg.grid[Nx - Nd + 2 : Nx - 0] .- rfg.w0r
+    RDd = (v1 ./ v2) .* (v3 ./ v4)
+    #@show RDd
+    #@show length(RDd)
 
+    fdAd = ( rfg.grid[Nx - Nd] - rfg.w0r ) / ( rfg.grid[Nx - Nd + 1] - rfg.w0r )
+    fdAd = fdAd * ( rfg.grid[Nx - Nd] - rfg.grid[Nx - Nd + 1] )
+    fdAd = fdAd / ( rfg.grid[Nx - Nd + 1] - rfg.grid[Nx - Nd - 1] )
+    @show fdAd
 end
