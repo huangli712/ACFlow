@@ -311,4 +311,18 @@ function spline_matrix_d(rfg::RealFrequencyGrid)
 	Pd[4*j+1,3*j+1] = 1.0
 	Pd[4*j+2,3*j+2] = 1.0
 	Pd[4*j+4,NCd+j+1] = 1.0
+
+    IB = Matrix{F64}(I, NCd, NCd)
+    invB = B \ IB
+    #@show invB
+
+    IA = Matrix{F64}(I, Nx, Nx)
+    PA = IA[Nx-Nd+1:Nx,1:Nx]
+    Ld = vcat(invB * Ps, PA)
+    #@show Ld
+    Md = Pd * Ld
+    @show Md
+    @show size(Md)
+
+    return Md    
 end
