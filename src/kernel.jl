@@ -247,5 +247,27 @@ function spline_matrix_d(rfg::RealFrequencyGrid)
     fdAd = ( rfg.grid[Nx - Nd] - rfg.w0r ) / ( rfg.grid[Nx - Nd + 1] - rfg.w0r )
     fdAd = fdAd * ( rfg.grid[Nx - Nd] - rfg.grid[Nx - Nd + 1] )
     fdAd = fdAd / ( rfg.grid[Nx - Nd + 1] - rfg.grid[Nx - Nd - 1] )
-    @show fdAd
+    #@show fdAd
+
+    B = zeros(F64, NCd, NCd)
+    Ps = zeros(F64, NCd, Nx)
+    Pd = zeros(F64, 4 * Nd, 4 * Nd - 1)
+
+	B[1,1] = 3.0
+	B[1,2] = 2.0
+	B[1,3] = 1.0
+	B[2,1] = 1.0
+	B[2,2] = 1.0
+	B[2,3] = 1.0
+	
+	Ps[1,Nx - Nd - 1] = -fdAd
+	Ps[1,Nx - Nd + 1] = +fdAd
+	Ps[2,Nx - Nd + 0] = +1.0
+	Ps[2,Nx - Nd + 1] = -1.0
+	
+	Pg[1,1] = 1.0
+	Pg[2,2] = 1.0
+	Pg[3,3] = 1.0
+	Pg[4,NCd + 1] = 1.0
+
 end
