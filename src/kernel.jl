@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/01
+# Last modified: 2021/12/02
 #
 
 function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
@@ -34,6 +34,7 @@ function spline_matrix(rfg::RealFrequencyGrid)
     Mg = spline_matrix_g(rfg)
     #@show Mg
     Mc = spline_matrix_c(rfg)
+    spline_matrix_d(rfg)
 end
 
 function spline_matrix_g(rfg::RealFrequencyGrid)
@@ -228,4 +229,5 @@ function spline_matrix_c(rfg::RealFrequencyGrid)
 end
 
 function spline_matrix_d(rfg::RealFrequencyGrid)
+    println("here")
 end
