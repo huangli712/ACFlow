@@ -102,7 +102,7 @@ function spline_matrix_g(rfg::RealFrequencyGrid)
 
     fdAg = ( rfg.grid[j+2] - rfg.w0l ) / ( rfg.grid[j+1] - rfg.w0l )
     fdAg = ( rfg.grid[j+2] - rfg.grid[j+1] ) / ( rfg.grid[j+3] - rfg.grid[j+1] ) * fdAg
-    @show fdAg
+    #@show fdAg
 
 	Ps[3*j+1,j+1] = -1.0
 	Ps[3*j+1,j+2] = 1.0
@@ -130,7 +130,7 @@ end
 
 function spline_matrix_c(rfg::RealFrequencyGrid)
     nuc = length(rfg.grid) - rfg.nur - rfg.nul
-    @show rfg.nul, nuc, nuc + rfg.nul
+    #@show rfg.nul, nuc, nuc + rfg.nul
     v1 = rfg.grid[rfg.nul + 2 : rfg.nul + nuc - 1]
     v2 = rfg.grid[rfg.nul + 1 : rfg.nul + nuc - 2]
     v3 = rfg.grid[rfg.nul + 3 : rfg.nul + nuc - 0]
@@ -144,7 +144,7 @@ function spline_matrix_c(rfg::RealFrequencyGrid)
     Nc = nuc - 1
     NCc = 3 * Nc - 1
     Nx = length(rfg.grid)
-    @show NCc, Nc, Nx
+    #@show NCc, Nc, Nx
 
     B = zeros(F64, NCc, NCc)
     Ps = zeros(F64, NCc, Nx)
@@ -230,4 +230,14 @@ end
 
 function spline_matrix_d(rfg::RealFrequencyGrid)
     println("here")
+    
+    Nx = length(rfg.grid)
+    Nd = rfg.nur
+    NCd = 3 * Nd - 1
+
+    #v1 = x.rows(ind_xlims(1)+2,Nx-1) - x.rows(ind_xlims(1)+1,Nx-2)
+    #v2 = x.rows(ind_xlims(1)+1,Nx-2) - x.rows(ind_xlims(1),Nx-3)
+    #v3 = x.rows(ind_xlims(1),Nx-3)-x0d
+    #v4 = x.rows(ind_xlims(1)+2,Nx-1)-x0d
+
 end
