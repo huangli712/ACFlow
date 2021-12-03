@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/02
+# Last modified: 2021/12/03
 #
 
 function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
@@ -329,4 +329,22 @@ function spline_matrix_d(rfg::RealFrequencyGrid)
     #@show size(Md)
 
     return Md    
+end
+
+function _kernel_p_g()
+end
+
+function _kernel_p_c()
+end
+
+function _kernel_p_d()
+end
+
+function _kernel_k_g()
+end
+
+function _kernel_k_c()
+end
+
+function _kernel_k_d()
 end
