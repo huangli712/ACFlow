@@ -331,13 +331,13 @@ function spline_matrix_d(rfg::RealFrequencyGrid)
     return Md    
 end
 
-function _kernel_p_g()
+function _kernel_p_g(rfg::RealFrequencyGrid)
 end
 
-function _kernel_p_c()
+function _kernel_p_c(rfg::RealFrequencyGrid)
 end
 
-function _kernel_p_d()
+function _kernel_p_d(rfg::RealFrequencyGrid)
 end
 
 function _kernel_k_g()
