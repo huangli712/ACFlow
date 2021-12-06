@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/06
+# Last modified: 2021/12/07
 #
 
 function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
@@ -417,7 +417,7 @@ function _kernel_p_c(rfg::RealFrequencyGrid)
 end
 
 function _kernel_p_d(rfg::RealFrequencyGrid)
-    println("in _kernel_p_d()")
+    #println("in _kernel_p_d()")
     Nw = length(rfg.grid)
     NCfs = 4 * (Nw - 1)
     Nintd = rfg.nur
@@ -458,7 +458,8 @@ function _kernel_p_d(rfg::RealFrequencyGrid)
     
     Pa_d = (DD ^ 3.0) * Pa_d
     Pb_d = (DD ^ 2.0) * Pb_d
-    @show Pb_d
+    Pc_d = DD * Pc_d
+    #@show Pd_d
 end
 
 function _kernel_k_g()
