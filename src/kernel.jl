@@ -388,6 +388,7 @@ function _kernel_p_c(rfg::RealFrequencyGrid)
     NCfs = 4 * (Nw - 1)
     Nwc = Nw - rfg.nur - rfg.nul
     Nintc = Nwc - 1
+    NCg = 4 * rfg.nul
     @show Nintc, NCfs
 
     Pa_c = zeros(F64, Nintc, NCfs)
@@ -401,6 +402,18 @@ function _kernel_p_c(rfg::RealFrequencyGrid)
 		Pc_c[j+1,4*j+3+NCg] = 1.0
 		Pd_c[j+1,4*j+4+NCg] = 1.0
     end
+
+    vDC = 1.0 ./ (rfg.grid[rfg.nul+2:Nwc+rfg.nul+0] .- rfg.grid[rfg.nul+1:Nwc+rfg.nul-1])
+    #@show vDC
+    #@show length(vDC)
+
+    DC = diagm(vDC)
+
+    Pa_c = (DC ^ 3.0) * Pa_c
+    Pb_c = (DC ^ 2.0) * Pb_c
+    Pc_c = DC * Pc_c
+
+    #@show Pd_c
 end
 
 function _kernel_p_d(rfg::RealFrequencyGrid)
