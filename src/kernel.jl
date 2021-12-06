@@ -434,7 +434,31 @@ function _kernel_p_d(rfg::RealFrequencyGrid)
     Pc_d_r = zeros(F64, Nintd, NCfs)
     Pd_d_r = zeros(F64, Nintd, NCfs)
 
+    for j = 0:Nintd-1
+		Pa_d[j+1,4*j+1+NCgc] = 1.0
+		Pb_d_r[j+1,4*j+2+NCgc] = 1.0
+		Pc_d_r[j+1,4*j+3+NCgc] = 1.0
+		Pd_d_r[j+1,4*j+4+NCgc] = 1.0
+    end
+
+    #Nwc + rfg.nul - 1
+    vDD = (rfg.grid[Nwc+rfg.nul+1:Nw+0] .- rfg.w0r) .* (rfg.grid[Nwc+rfg.nul+0:Nw-1] .- rfg.w0r)
+    vDD = vDD ./ ( rfg.grid[Nwc+rfg.nul+1:Nw+0] - rfg.grid[Nwc+rfg.nul+0:Nw-1] )
+    #@show vDD
+    DD = diagm(vDD)
+
+    vDU = rfg.grid[Nwc+rfg.nul+0:Nw-1] .- rfg.w0r
+    vDU = vDU ./ ( rfg.grid[Nwc+rfg.nul+1:Nw-0] .- rfg.grid[Nwc+rfg.nul+0:Nw-1] )
+    #@show vDU
+    DU = diagm(vDU)
+
+    Pb_d = Pb_d_r - 3.0 * DU * Pa_d
+    Pc_d = Pc_d_r + 3.0 * (DU ^ 2.0) * Pa_d - 2.0 * DU * Pb_d_r
+    Pd_d = Pd_d_r - (DU ^ 3.0) * Pa_d + (DU ^ 2.0) * Pb_d_r - DU * Pc_d_r
     
+    Pa_d = (DD ^ 3.0) * Pa_d
+    Pb_d = (DD ^ 2.0) * Pb_d
+    @show Pb_d
 end
 
 function _kernel_k_g()
