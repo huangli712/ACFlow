@@ -353,6 +353,31 @@ function _kernel_p_g(rfg::RealFrequencyGrid)
         Pd_g_r[j+1,4*j+4] = 1.0
     end
     
+    vDG = ( rfg.grid[2:rfg.nul+1] .- rfg.w0l ) .* ( rfg.grid[1:rfg.nul+0] .- rfg.w0l )
+    vDG = vDG ./ ( rfg.grid[1:rfg.nul+0] .- rfg.grid[2:rfg.nul+1] )
+    #@show vDG
+    #@show length(vDG)
+    DG = diagm(vDG)
+
+    vDU = rfg.grid[2:rfg.nul+1] .- rfg.w0l
+    vDU = vDU ./ ( rfg.grid[1:rfg.nul+0] - rfg.grid[2:rfg.nul+1] )
+    #@show vDU
+    #@show length(vDU)
+    DU = diagm(vDU)
+
+    Pb_g = Pb_g_r - 3.0 * DU * Pa_g
+    #@show Pb_g
+
+    Pc_g = Pc_g_r + 3.0 * (DU ^ 2.0) * Pa_g - 2.0 * DU * Pb_g_r
+    #@show Pc_g
+
+    Pd_g = Pd_g_r - (DU ^ 3.0) * Pa_g + (DU ^ 2.0) * Pb_g_r - DU * Pc_g_r
+    #@show Pd_g
+
+    Pa_g = (DG ^ 3.0) * Pa_g
+    Pb_g = (DG ^ 2.0) * Pb_g
+    Pc_g = DG * Pc_g
+    #@show Pa_g
 end
 
 function _kernel_p_c(rfg::RealFrequencyGrid)
