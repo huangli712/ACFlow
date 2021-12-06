@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/04
+# Last modified: 2021/12/06
 #
 
 function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
@@ -31,6 +31,8 @@ function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     #println("here")
 
     _kernel_p_g(rfg)
+    _kernel_p_c(rfg)
+    _kernel_p_d(rfg)
 end
 
 function spline_matrix(rfg::RealFrequencyGrid)
@@ -334,7 +336,7 @@ function _spline_matrix_d(rfg::RealFrequencyGrid)
 end
 
 function _kernel_p_g(rfg::RealFrequencyGrid)
-    println("here")
+    #println("here")
     Nw = length(rfg.grid)
     NCfs = 4 * (Nw - 1)
     #@show NCfs
@@ -377,10 +379,28 @@ function _kernel_p_g(rfg::RealFrequencyGrid)
     Pa_g = (DG ^ 3.0) * Pa_g
     Pb_g = (DG ^ 2.0) * Pb_g
     Pc_g = DG * Pc_g
-    #@show Pa_g
+    #@show Pc_g
 end
 
 function _kernel_p_c(rfg::RealFrequencyGrid)
+    println("in _kernel_p_c")
+    Nw = length(rfg.grid)
+    NCfs = 4 * (Nw - 1)
+    Nwc = Nw - rfg.nur - rfg.nul
+    Nintc = Nwc - 1
+    @show Nintc, NCfs
+
+    Pa_c = zeros(F64, Nintc, NCfs)
+    Pb_c = zeros(F64, Nintc, NCfs)
+    Pc_c = zeros(F64, Nintc, NCfs)
+    Pd_c = zeros(F64, Nintc, NCfs)
+
+    for j = 0:Nintc-1
+        Pa_c[j+1,4*j+1+NCg] = 1.0
+		Pb_c[j+1,4*j+2+NCg] = 1.0
+		Pc_c[j+1,4*j+3+NCg] = 1.0
+		Pd_c[j+1,4*j+4+NCg] = 1.0
+    end
 end
 
 function _kernel_p_d(rfg::RealFrequencyGrid)
