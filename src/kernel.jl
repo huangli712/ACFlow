@@ -383,7 +383,7 @@ function _kernel_p_g(rfg::RealFrequencyGrid)
 end
 
 function _kernel_p_c(rfg::RealFrequencyGrid)
-    println("in _kernel_p_c")
+    #println("in _kernel_p_c")
     Nw = length(rfg.grid)
     NCfs = 4 * (Nw - 1)
     Nwc = Nw - rfg.nur - rfg.nul
@@ -417,6 +417,24 @@ function _kernel_p_c(rfg::RealFrequencyGrid)
 end
 
 function _kernel_p_d(rfg::RealFrequencyGrid)
+    println("in _kernel_p_d()")
+    Nw = length(rfg.grid)
+    NCfs = 4 * (Nw - 1)
+    Nintd = rfg.nur
+    #@show Nintd, NCfs
+    Nwc = Nw - rfg.nur - rfg.nul
+    Nintc = Nwc - 1
+    NCg = 4 * rfg.nul
+    NCgc = NCg + 4 * Nintc
+
+    #@show NCgc
+
+    Pa_d = zeros(F64, Nintd, NCfs)
+    Pb_d_r = zeros(F64, Nintd, NCfs)
+    Pc_d_r = zeros(F64, Nintd, NCfs)
+    Pd_d_r = zeros(F64, Nintd, NCfs)
+
+    
 end
 
 function _kernel_k_g()
