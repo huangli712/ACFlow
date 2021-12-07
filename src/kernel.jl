@@ -506,10 +506,18 @@ function _kernel_k_g(ug, ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
 
     #logg = log(
     logg1 = 1.0 .+ 2.0 * rfg.w0l .* Ug[:,2:Nintg+1] .+ ((Ug[:,2:Nintg+1]) .^ 2.0) .* ((Wng .^ 2.0) .+ (rfg.w0l)^2.0)
-    logg2 = 1.0 .+ 2.0 * rfg.w0l .* Ug[:,1,Nintg+0] .+ ((Ug[:,1:Nintg+0]) .^ 2.0) .* ((Wng .^ 2.0) .+ (rfg.w0l)^2.0)
+    logg2 = 1.0 .+ 2.0 * rfg.w0l .* Ug[:,1:Nintg+0] .+ ((Ug[:,1:Nintg+0]) .^ 2.0) .* ((Wng .^ 2.0) .+ (rfg.w0l)^2.0)
     logg = log.(logg1 ./ logg2)
     #);
-    @show logg
+    #@show logg
+
+    Ka_g = -( Ug[:,2:Nintg+1] - Ug[:,1:Nintg+0] ) ./ ((Wng .+ im * rfg.w0l) .^ 2.0)
+    #@show Ka_g
+    Ka_g = Ka_g .- im .* ( ((Ug[:,2:Nintg+1]) .^ 2.0) - ((Ug[:,1:Nintg+0]) .^ 2.0) ) ./ ( 2.0 .* ( Wng .+ im * rfg.w0l ) )
+    #@show Ka_g
+    Ka_g = Ka_g .+ atang ./ ((Wng .+ im * rfg.w0l) .^ 3.0)
+    Ka_g = Ka_g .+ im .* logg ./ (2.0 .* ((Wng .+ im * rfg.w0l) .^ 3.0))
+    @show Ka_g
 
 end
 
