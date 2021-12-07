@@ -469,10 +469,10 @@ function _kernel_k_g(ug, ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     Nintg = rfg.nul
     @show Nn, Nintg
 
-    Ka_g = zeros(C64, Nn, Nintg)
-    Kb_g = zeros(C64, Nn, Nintg)
-    Kc_g = zeros(C64, Nn, Nintg)
-    Kd_g = zeros(C64, Nn, Nintg)
+    #Ka_g = zeros(C64, Nn, Nintg)
+    #Kb_g = zeros(C64, Nn, Nintg)
+    #Kc_g = zeros(C64, Nn, Nintg)
+    #Kd_g = zeros(C64, Nn, Nintg)
 
     ug2 = copy(ug)
     push!(ug2, 1.0 / (rfg.wl - rfg.w0l))
