@@ -8,7 +8,7 @@
 #
 
 function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
-    println("here in calc_kernel()")
+    #println("here in calc_kernel()")
     @show length(ω.grid)
     @show length(rfg.grid)
 
@@ -33,6 +33,8 @@ function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     _kernel_p_g(rfg)
     _kernel_p_c(rfg)
     _kernel_p_d(rfg)
+
+    _kernel_k_g(ul, ω, rfg)
 end
 
 function spline_matrix(rfg::RealFrequencyGrid)
@@ -389,7 +391,7 @@ function _kernel_p_c(rfg::RealFrequencyGrid)
     Nwc = Nw - rfg.nur - rfg.nul
     Nintc = Nwc - 1
     NCg = 4 * rfg.nul
-    @show Nintc, NCfs
+    #@show Nintc, NCfs
 
     Pa_c = zeros(F64, Nintc, NCfs)
     Pb_c = zeros(F64, Nintc, NCfs)
@@ -462,7 +464,53 @@ function _kernel_p_d(rfg::RealFrequencyGrid)
     #@show Pd_d
 end
 
-function _kernel_k_g()
+function _kernel_k_g(ug, ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
+    Nn = length(ω.grid)
+    Nintg = rfg.nul
+    @show Nn, Nintg
+
+    Ka_g = zeros(C64, Nn, Nintg)
+    Kb_g = zeros(C64, Nn, Nintg)
+    Kc_g = zeros(C64, Nn, Nintg)
+    Kd_g = zeros(C64, Nn, Nintg)
+
+    ug2 = copy(ug)
+    push!(ug2, 1.0 / (rfg.wl - rfg.w0l))
+    @show length(ug2)
+
+    Wng = zeros(F64, Nn, Nintg)
+    Ug = zeros(F64, Nn, length(ug2))
+
+    for i = 1:Nn
+        for j = 1:Nintg
+            Wng[i,j] = ω.grid[i]
+        end
+        for j = 1:length(ug2)
+            Ug[i,j] = ug2[j]
+        end
+    end
+    #@show size(Ug)
+    #@show Ug
+    
+    #mat atang=atan(
+    #    (Wng % ( Ug.cols(1,Nintg) - Ug.cols(0,Nintg-1) ))
+        #@show Wng .* (Ug[:,2:Nintg+1] - Ug[:,1:Nintg+0])
+    #    /
+    #    ( 1 + w0l * ( Ug.cols(1,Nintg) + Ug.cols(0,Nintg-1) ) + ( pow(w0l,2) + pow(Wng,2) ) % Ug.cols(0,Nintg-1) % Ug.cols(1,Nintg) )
+    atang = 1.0 .+ rfg.w0l .* ( Ug[:,2:Nintg+1] + Ug[:,1:Nintg+0] )
+    atang = atang + ( (rfg.w0l ^ 2.0) .+ (Wng .^ 2.0) ) .* Ug[:,1:Nintg+0] .* Ug[:,2:Nintg+1]
+    atang = Wng .* (Ug[:,2:Nintg+1] - Ug[:,1:Nintg+0]) ./ atang
+    atang = atan.(atang)
+    #@show atang
+    #)
+
+    #logg = log(
+    logg1 = 1.0 .+ 2.0 * rfg.w0l .* Ug[:,2:Nintg+1] .+ ((Ug[:,2:Nintg+1]) .^ 2.0) .* ((Wng .^ 2.0) .+ (rfg.w0l)^2.0)
+    logg2 = 1.0 .+ 2.0 * rfg.w0l .* Ug[:,1,Nintg+0] .+ ((Ug[:,1:Nintg+0]) .^ 2.0) .* ((Wng .^ 2.0) .+ (rfg.w0l)^2.0)
+    logg = log.(logg1 ./ logg2)
+    #);
+    @show logg
+
 end
 
 function _kernel_k_c()
