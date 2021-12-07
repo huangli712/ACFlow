@@ -524,8 +524,15 @@ function _kernel_k_g(ug, ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     Kb_g = Kb_g .+ im .* atang ./ ((Wng .+ im * rfg.w0l) .^ 2.0)
     Kb_g = Kb_g .- logg ./ ( 2.0 .* ((Wng .+ im * rfg.w0l) .^ 2.0) )
 	Kb_g = -Kb_g / (2.0 * π)
-    @show Kb_g
+    #@show Kb_g
 
+    Kc_g = -atang ./ (Wng .+ im * rfg.w0l) .- im .* logg ./ ( 2.0 .* (Wng .+ im * rfg.w0l) )
+    Kc_g = -Kc_g / (2.0 * π)
+    #@show Kc_g
+	
+	Kd_g = -im .* atang .+ logg ./ 2 .- log.(Ug[:,2:Nintg+1] ./ Ug[:,1:Nintg+0])
+    Kd_g = -Kd_g / (2.0 * π)
+    #@show Kd_g
 end
 
 function _kernel_k_c()
