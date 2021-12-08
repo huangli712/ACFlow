@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/07
+# Last modified: 2021/12/08
 #
 
 function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
@@ -35,6 +35,7 @@ function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     _kernel_p_d(rfg)
 
     _kernel_k_g(ul, ω, rfg)
+    _kernel_k_c(ω, rfg)
 end
 
 function spline_matrix(rfg::RealFrequencyGrid)
@@ -535,7 +536,31 @@ function _kernel_k_g(ug, ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     #@show Kd_g
 end
 
-function _kernel_k_c()
+function _kernel_k_c(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
+    Nn = length(ω.grid)
+    Nintc = length(rfg.grid) - rfg.nur - rfg.nul - 1
+    @show Nn, Nintc
+
+    Ka_c = zeros(C64, Nn, Nintc)
+    Kb_c = zeros(C64, Nn, Nintc)
+    Kc_c = zeros(C64, Nn, Nintc)
+    Kd_c = zeros(C64, Nn, Nintc)
+
+    wc = rfg.grid[rfg.nul+1:rfg.nul+Nintc+1]
+    Wnc = zeros(F64, Nn, Nintc)
+    Wc = zeros(F64, Nn, length(wc))
+
+    for i = 1:Nn
+        for j = 1:Nintc
+            Wnc[i,j] = ω.grid[i]
+        end
+        for j = 1:length(wc)
+            Wc[i,j] = wc[j]
+        end
+    end
+    #@show Wnc
+    #@show wc
+    @show Wc
 end
 
 function _kernel_k_d()
