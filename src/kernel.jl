@@ -589,7 +589,7 @@ function _kernel_k_c(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     Kb_c = Kb_c ./ (2.0 * π)
     Kc_c = Kc_c ./ (2.0 * π)
     Kd_c = Kd_c ./ (2.0 * π)
-    @show Kb_c
+    @show Kd_c
 end
 
 function _kernel_k_d()
