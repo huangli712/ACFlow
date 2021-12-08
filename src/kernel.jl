@@ -560,7 +560,36 @@ function _kernel_k_c(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     end
     #@show Wnc
     #@show wc
-    @show Wc
+    #@show Wc
+
+    logc = (Wnc .^ 2.0) .+ ((Wc[:,2:Nintc+1]) .^ 2.0)
+    logc = logc ./ ((Wnc .^ 2.0) + ((Wc[:,1:Nintc+0]) .^ 2.0))
+    logc = log.(logc)
+    #@show logc
+
+    atanc2 = Wnc .* (Wc[:,2:Nintc+1] .- Wc[:,1:Nintc+0])
+    atanc2 = atanc2 ./ (Wc[:,2:Nintc+1] .* Wc[:,1:Nintc+0] .+ (Wnc .^ 2.0))
+    atanc2 = atan.(atanc2)
+    #@show atanc2
+
+    logc2 = logc ./ 2.0 .+ im .* atanc2
+    dWn = im .* Wnc .- Wc[:,1:Nintc+0]
+    dWc = Wc[:,2:Nintc+1] .- Wc[:,1:Nintc+0]
+
+    Ka_c = -(dWn .^ 2.0) .* dWc 
+    Ka_c = Ka_c .- dWn .* (dWc .^ 2.0) ./ 2.0
+    Ka_c = Ka_c .- (dWc .^ 3.0) ./ 3.0
+    Ka_c = Ka_c .- (dWn .^ 3.0) .* logc2
+
+    Kb_c = -dWn .* dWc - (dWc .^ 2.0) ./ 2.0 .- (dWn .^ 2.0) .* logc2
+	Kc_c = -dWc .- dWn .* logc2
+	Kd_c = -logc2
+
+    Ka_c = Ka_c ./ (2.0 * π)
+    Kb_c = Kb_c ./ (2.0 * π)
+    Kc_c = Kc_c ./ (2.0 * π)
+    Kd_c = Kd_c ./ (2.0 * π)
+    @show Kb_c
 end
 
 function _kernel_k_d()
