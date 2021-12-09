@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/08
+# Last modified: 2021/12/09
 #
 
 function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
@@ -36,6 +36,15 @@ function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
 
     _kernel_k_g(ul, ω, rfg)
     _kernel_k_c(ω, rfg)
+end
+
+function calc_kernel_p()
+end
+
+function calc_kernel_k()
+end
+
+function calc_kernel_m()
 end
 
 function spline_matrix(rfg::RealFrequencyGrid)
@@ -589,8 +598,17 @@ function _kernel_k_c(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     Kb_c = Kb_c ./ (2.0 * π)
     Kc_c = Kc_c ./ (2.0 * π)
     Kd_c = Kd_c ./ (2.0 * π)
-    @show Kd_c
+    #@show Kd_c
 end
 
-function _kernel_k_d()
+function _kernel_k_d(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
+end
+
+function _kernel_m_g()
+end
+
+function _kernel_m_c()
+end
+
+function _kernel_m_d()
 end
