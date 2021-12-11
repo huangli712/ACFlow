@@ -331,6 +331,17 @@ function _kernel_k_d(ud, ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     #@show size(Ud)
     #@show Ud
     #@show Wnd
+
+    #mat atand=atan(
+    #    (Wnd % (Ud.cols(1,Nintd)-Ud.cols(0,Nintd-1)))
+    #    /
+    #    (
+    #        1.0 + w0r*(Ud.cols(1,Nintd)+Ud.cols(0,Nintd-1)) + (pow(w0r,2) + pow(Wnd,2)) % Ud.cols(0,Nintd-1) % Ud.cols(1,Nintd)
+    #    )
+    #);
+    atand = 1.0 .+ rfg.w0r .* ( Ud[:,2:Nintd+1] .+ Ud[:,1:Nintd+0] )
+    atand = atand .+ ((rfg.w0r .^ 2.0) .+ (Wnd .^ 2.0)) .* Ud[:,1:Nintd+0] .* Ud[:,2:Nintd+1]
+
 end
 
 function _kernel_m_g()
