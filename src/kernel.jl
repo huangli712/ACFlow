@@ -341,7 +341,37 @@ function _kernel_k_d(ud, ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     #);
     atand = 1.0 .+ rfg.w0r .* ( Ud[:,2:Nintd+1] .+ Ud[:,1:Nintd+0] )
     atand = atand .+ ((rfg.w0r .^ 2.0) .+ (Wnd .^ 2.0)) .* Ud[:,1:Nintd+0] .* Ud[:,2:Nintd+1]
+    atand = (Wnd .* ( Ud[:,2:Nintd+1] - Ud[:,1:Nintd+0] )) ./ atand
+    atand = atan.(atand)
+    #@show atand
 
+    # mat logd=log(
+    logd1 = 1.0 .+ 2.0 * rfg.w0r .* Ud[:,2:Nintd+1] 
+    logd1 = logd1 .+ ((Ud[:,2:Nintd+1]) .^ 2.0) .* ((Wnd .^ 2.0) .+ (rfg.w0r ^ 2.0))
+    logd2 = 1.0 .+ 2.0 * rfg.w0r .* Ud[:,1:Nintd+0]
+    logd2 = logd2 .+ ((Ud[:,1:Nintd+0]) .^ 2.0) .* ((Wnd .^ 2.0) .+ (rfg.w0r ^ 2.0))
+    logd = log.(logd1 ./ logd2)
+    #);
+    #@show logd
+
+    Ka_d = -( Ud[:,2:Nintd+1] .- Ud[:,1:Nintd+0] ) ./ ((Wnd .+ im * rfg.w0r) .^ 2.0) 
+    Ka_d = Ka_d .- im .* ( ((Ud[:,2:Nintd+1]) .^ 2.0) .- ((Ud[:,1:Nintd+0]) .^ 2.0) ) ./ (2.0 .* (Wnd .+ im * rfg.w0r))
+    Ka_d = Ka_d .+ atand ./ ((Wnd .+ im * rfg.w0r) .^ 3.0) 
+    Ka_d = Ka_d .+ im .*logd ./ (2.0 .* ((Wnd .+ im * rfg.w0r) .^ 3.0))
+    Ka_d = -Ka_d ./ (2.0 * π)
+    #@show Ka_d
+
+    Kb_d = -im .* (Ud[:,2:Nintd+1] .- Ud[:,1:Nintd+0]) ./ (Wnd .+ im * rfg.w0r)
+    Kb_d = Kb_d .+ im .* atand ./ ((Wnd .+ im * rfg.w0r) .^ 2.0)    
+    Kb_d = Kb_d .- logd ./ (2.0 .* ((Wnd .+ im * rfg.w0r) .^ 2.0))
+	Kb_d = -Kb_d ./ (2.0 * π)
+    #@show Kb_d
+
+    Kc_d = -atand ./ (Wnd .+ im * rfg.w0r)
+    Kc_d = Kc_d .- im .* logd ./ (2.0 .* (Wnd .+ im * rfg.w0r))
+    Kc_d = -Kc_d ./ (2.0 * π)
+    @show Kc_d
+	
 end
 
 function _kernel_m_g()
