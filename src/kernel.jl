@@ -370,8 +370,12 @@ function _kernel_k_d(ud, ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     Kc_d = -atand ./ (Wnd .+ im * rfg.w0r)
     Kc_d = Kc_d .- im .* logd ./ (2.0 .* (Wnd .+ im * rfg.w0r))
     Kc_d = -Kc_d ./ (2.0 * π)
-    @show Kc_d
-	
+    #@show Kc_d
+
+    Kd_d = -im .* atand .- log.(Ud[:,2:Nintd+1] ./ Ud[:,1:Nintd+0])
+    Kd_d = Kd_d .+ logd ./ 2.0
+    Kd_d = -Kd_d ./ (2.0 * π)
+    @show Kd_d
 end
 
 function _kernel_m_g()
