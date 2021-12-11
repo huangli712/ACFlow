@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/10
+# Last modified: 2021/12/12
 #
 
 function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
@@ -37,6 +37,14 @@ function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     Ka_g, Kb_g, Kc_g, Kd_g = _kernel_k_g(ul, ω, rfg)
     Ka_c, Kb_c, Kc_c, Kd_c = _kernel_k_c(ω, rfg)
     Ka_d, Kb_d, Kc_d, Kd_d = _kernel_k_d(ur, ω, rfg)
+
+    KG = (Ka_g*Pa_g + Kb_g*Pb_g + Kc_g*Pc_g + Kd_g*Pd_g) * MM
+	KC = (Ka_c*Pa_c + Kb_c*Pb_c + Kc_c*Pc_c + Kd_c*Pd_c) * MM
+	KD = (Ka_d*Pa_d + Kb_d*Pb_d + Kc_d*Pc_d + Kd_d*Pd_d) * MM
+	
+	Kcx = KG + KC + KD
+    #@show size(Kcx)
+    #@show Kcx
 end
 
 function _kernel_p_g(rfg::RealFrequencyGrid)
@@ -380,13 +388,40 @@ function _kernel_k_d(ud, ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     return Ka_d, Kb_d, Kc_d, Kd_d
 end
 
-function _kernel_m_g()
+function _kernel_m0_g()
 end
 
-function _kernel_m_c()
+function _kernel_m0_c()
 end
 
-function _kernel_m_d()
+function _kernel_m0_d()
+end
+
+function _kernel_m1_g()
+end
+
+function _kernel_m1_c()
+end
+
+function _kernel_m1_d()
+end
+
+function _kernel_m2_g()
+end
+
+function _kernel_m2_c()
+end
+
+function _kernel_m2_d()
+end
+
+function _kernel_m3_g()
+end
+
+function _kernel_m3_c()
+end
+
+function _kernel_m3_d()
 end
 
 function _spline_matrix(rfg::RealFrequencyGrid)
