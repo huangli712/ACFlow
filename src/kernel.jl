@@ -27,7 +27,7 @@ function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     #@show ur
     #@show rfg.w0l, rfg.w0r
 
-    MM = spline_matrix(rfg)
+    MM = _spline_matrix(rfg)
     #println("here")
 
     _kernel_p_g(rfg)
@@ -314,7 +314,7 @@ end
 function _kernel_m_d()
 end
 
-function spline_matrix(rfg::RealFrequencyGrid)
+function _spline_matrix(rfg::RealFrequencyGrid)
     Mg = _spline_matrix_g(rfg)
     #@show Mg
     Mc = _spline_matrix_c(rfg)
