@@ -187,7 +187,7 @@ function _kernel_k_g(ug, ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
 
     ug2 = copy(ug)
     push!(ug2, 1.0 / (rfg.wl - rfg.w0l))
-    @show length(ug2)
+    #@show length(ug2)
 
     Wng = zeros(F64, Nn, Nintg)
     Ug = zeros(F64, Nn, length(ug2))
@@ -303,6 +303,34 @@ function _kernel_k_c(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
 end
 
 function _kernel_k_d(ud, ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
+    Nn = length(ω.grid)
+    Nintd = rfg.nur
+    @show Nn, Nintd
+
+    Ka_d = zeros(C64, Nn, Nintd)
+    Kb_d = zeros(C64, Nn, Nintd)
+    Kc_d = zeros(C64, Nn, Nintd)
+    Kd_d = zeros(C64, Nn, Nintd)
+
+    ud2 = copy(ud)
+    insert!(ud2, 1, 1.0 / (rfg.wr - rfg.w0r))
+    #@show length(ud2)
+    #@show ud2
+
+    Wnd = zeros(F64, Nn, Nintd)
+    Ud = zeros(F64, Nn, length(ud2))
+
+    for i = 1:Nn
+        for j = 1:Nintd
+            Wnd[i,j] = ω.grid[i]
+        end
+        for j = 1:length(ud2)
+            Ud[i,j] = ud2[j]
+        end
+    end
+    #@show size(Ud)
+    #@show Ud
+    #@show Wnd
 end
 
 function _kernel_m_g()
