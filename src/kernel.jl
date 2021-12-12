@@ -458,7 +458,7 @@ function _kernel_m_c(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid, Pa_c, P
 	KM1_c_c = KM0_b_c + Wjc' * KM0_c_c
 	KM1_d_c = KM0_c_c + Wjc' * KM0_d_c
 
-    @show (KM1_a_c' * Pa_c + KM1_b_c' * Pb_c + KM1_c_c' * Pc_c + KM1_d_c' * Pd_c) * MM ./ (2.0 * π)
+    KM1c = (KM1_a_c' * Pa_c + KM1_b_c' * Pb_c + KM1_c_c' * Pc_c + KM1_d_c' * Pd_c) * MM ./ (2.0 * π)
 
 end
 
@@ -481,6 +481,21 @@ function _kernel_m_d(ud, rfg::RealFrequencyGrid, Pa_d, Pb_d, Pc_d, Pd_d, MM)
     #@show KM0_a_d
 
     KM0d = (KM0_a_d' * Pa_d + KM0_b_d' * Pb_d + KM0_c_d' * Pc_d + KM0_d_d' * Pd_d) * MM / (2.0 * π)
+
+    KM1_a_d = zeros(F64, Nintd)
+	KM1_b_d = zeros(F64, Nintd)
+	KM1_c_d = zeros(F64, Nintd)
+	KM1_d_d = zeros(F64, Nintd)
+	
+	KM1_a_d = KM0_b_d
+	KM1_b_d = KM0_c_d
+	KM1_c_d = KM0_d_d
+	KM1_d_d = ( 1.0 ./ (ud2[2:Nud+1] .^ 2.0) - 1.0 ./ (ud2[1:Nud+0] .^ 2.0) ) ./ 2.0
+	
+	KM1d_t=(KM1_a_d' * Pa_d + KM1_b_d' * Pb_d + KM1_c_d' * Pc_d + KM1_d_d' * Pd_d) * MM ./ (2.0 * π);
+	
+	KM1d = rfg.w0r .* KM0d + KM1d_t
+    #@show KM1d
 end
 
 function _spline_matrix(rfg::RealFrequencyGrid)
