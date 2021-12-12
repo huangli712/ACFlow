@@ -46,7 +46,7 @@ function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     #@show size(Kcx)
     #@show Kcx
 
-    _kernel_m_g()
+    _kernel_m_g(ul, rfg)
     _kernel_m_c()
     _kernel_m_d()
 end
@@ -392,7 +392,26 @@ function _kernel_k_d(ud, ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     return Ka_d, Kb_d, Kc_d, Kd_d
 end
 
-function _kernel_m_g()
+function _kernel_m_g(ug, rfg::RealFrequencyGrid)
+    Nintg = rfg.nul
+    Nug = rfg.nul
+
+    KM0_a_g = zeros(F64, Nintg)
+    KM0_b_g = zeros(F64, Nintg)
+    KM0_c_g = zeros(F64, Nintg)
+    KM0_d_g = zeros(F64, Nintg)
+
+    ug2 = copy(ug)
+    push!(ug2, 1.0 / (rfg.wl - rfg.w0l))
+
+	KM0_a_g = -( (ug2[2:Nug+1] .^ 2.0) .- (ug2[1:Nug+0] .^ 2.0) ) ./ 2.0
+	KM0_b_g = -( ug2[2:Nug+1] .- ug2[1:Nug+0] )
+	KM0_c_g = -log.( ug2[2:Nug+1] ./ ug2[1:Nug+0] )
+	KM0_d_g = 1.0 ./ ug2[2:Nug+1] .- 1.0 ./ ug2[1:Nug+0]
+    @show KM0_b_g
+    @show KM0_c_g
+    @show KM0_d_g
+
 
 end
 
