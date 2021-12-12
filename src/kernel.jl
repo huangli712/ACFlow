@@ -45,6 +45,10 @@ function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
 	Kcx = KG + KC + KD
     #@show size(Kcx)
     #@show Kcx
+
+    _kernel_m_g()
+    _kernel_m_c()
+    _kernel_m_d()
 end
 
 function _kernel_p_g(rfg::RealFrequencyGrid)
@@ -388,40 +392,14 @@ function _kernel_k_d(ud, ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     return Ka_d, Kb_d, Kc_d, Kd_d
 end
 
-function _kernel_m0_g()
+function _kernel_m_g()
+
 end
 
-function _kernel_m0_c()
+function _kernel_m_c()
 end
 
-function _kernel_m0_d()
-end
-
-function _kernel_m1_g()
-end
-
-function _kernel_m1_c()
-end
-
-function _kernel_m1_d()
-end
-
-function _kernel_m2_g()
-end
-
-function _kernel_m2_c()
-end
-
-function _kernel_m2_d()
-end
-
-function _kernel_m3_g()
-end
-
-function _kernel_m3_c()
-end
-
-function _kernel_m3_d()
+function _kernel_m_d()
 end
 
 function _spline_matrix(rfg::RealFrequencyGrid)
