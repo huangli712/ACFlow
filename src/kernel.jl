@@ -48,7 +48,7 @@ function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
 
     _kernel_m_g(ul, rfg, Pa_g, Pb_g, Pc_g, Pd_g, MM)
     _kernel_m_c(ω, rfg, Pa_c, Pb_c, Pc_c, Pd_c, MM)
-    _kernel_m_d()
+    _kernel_m_d(ur, rfg, Pa_d, Pb_d, Pc_d, Pd_d, MM)
 end
 
 function _kernel_p_g(rfg::RealFrequencyGrid)
@@ -438,7 +438,7 @@ function _kernel_m_c(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid, Pa_c, P
 
 end
 
-function _kernel_m_d()
+function _kernel_m_d(ud, rfg::RealFrequencyGrid, Pa_d, Pb_d, Pc_d, Pd_d, MM)
 end
 
 function _spline_matrix(rfg::RealFrequencyGrid)
