@@ -439,6 +439,24 @@ function _kernel_m_c(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid, Pa_c, P
 end
 
 function _kernel_m_d(ud, rfg::RealFrequencyGrid, Pa_d, Pb_d, Pc_d, Pd_d, MM)
+    Nintd = rfg.nur
+    Nud = rfg.nur
+
+    KM0_a_d = zeros(F64, Nintd)
+    KM0_b_d = zeros(F64, Nintd)
+    KM0_c_d = zeros(F64, Nintd)
+    KM0_d_d = zeros(F64, Nintd)
+
+    ud2 = copy(ud)
+    insert!(ud2, 1, 1.0 / (rfg.wr - rfg.w0r))
+    
+    KM0_a_d = -( (ud2[2:Nud+1] .^ 2.0) .- (ud2[1:Nud+0] .^ 2.0) ) ./ 2.0
+	KM0_b_d = -( ud2[2:Nud+1] .- ud2[1:Nud+0] )
+	KM0_c_d = -log.( ud2[2:Nud+1] ./ ud2[1:Nud+0] )
+	KM0_d_d = 1.0 ./ ud2[2:Nud+1] .- 1.0 ./ ud2[1:Nud+0]
+    #@show KM0_a_d
+
+    KM0d = (KM0_a_d' * Pa_d + KM0_b_d' * Pb_d + KM0_c_d' * Pc_d + KM0_d_d' * Pd_d) * MM / (2.0 * π)
 end
 
 function _spline_matrix(rfg::RealFrequencyGrid)
