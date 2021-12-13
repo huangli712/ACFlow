@@ -438,13 +438,27 @@ function _kernel_m_g(ug, rfg::RealFrequencyGrid, Pa_g, Pb_g, Pc_g, Pd_g, MM)
 	KM2_a_g = KM0_c_g
 	KM2_b_g = KM0_d_g
 	KM2_c_g = KM1_d_g
-	KM2_d_g = ( 1.0 ./ (ug2[2:Nug+1] .^ 3.0) - 1.0 ./ (ug2[1:Nug+0] .^ 3.0) ) ./ 3.0
+	KM2_d_g = ( 1.0 ./ (ug2[2:Nug+1] .^ 3.0) .- 1.0 ./ (ug2[1:Nug+0] .^ 3.0) ) ./ 3.0
 	
 	KM2g_t = (KM2_a_g' * Pa_g + KM2_b_g' * Pb_g + KM2_c_g' * Pc_g + KM2_d_g' * Pd_g) * MM ./ (2.0 * π)
 	
 	KM2g = (rfg.w0l ^ 2.0) .* KM0g + 2.0 * rfg.w0l .* KM1g_t + KM2g_t
     #@show KM2g
 
+    KM3_a_g = zeros(F64, Nintg)
+	KM3_b_g = zeros(F64, Nintg)
+	KM3_c_g = zeros(F64, Nintg)
+	KM3_d_g = zeros(F64, Nintg)
+	
+	KM3_a_g = KM0_d_g
+	KM3_b_g = KM1_d_g
+	KM3_c_g = KM2_d_g
+	KM3_d_g = ( 1.0 ./ (ug2[2:Nug+1] .^ 4.0) .- 1.0 ./ (ug2[1:Nug+0] .^ 4.0) ) ./ 4.0
+	
+	KM3g_t = (KM3_a_g' * Pa_g + KM3_b_g' * Pb_g + KM3_c_g' * Pc_g + KM3_d_g' * Pd_g) * MM ./ (2.0 * π)
+	
+	KM3g = (rfg.w0l ^ 3.0) .* KM0g + 3.0 * (rfg.w0l ^ 2.0) .* KM1g_t + 3.0 * rfg.w0l .* KM2g_t + KM3g_t
+    @show KM3g
 end
 
 function _kernel_m_c(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid, Pa_c, Pb_c, Pc_c, Pd_c, MM)
@@ -535,7 +549,7 @@ function _kernel_m_d(ud, rfg::RealFrequencyGrid, Pa_d, Pb_d, Pc_d, Pd_d, MM)
 	KM2d_t = (KM2_a_d' * Pa_d + KM2_b_d' * Pb_d + KM2_c_d' * Pc_d + KM2_d_d' * Pd_d) * MM ./ (2.0 * π)
 	
 	KM2d = (rfg.w0r ^ 2.0) .* KM0d + 2.0 * rfg.w0r .* KM1d_t + KM2d_t
-    @show KM2d
+    #@show KM2d
 end
 
 function _spline_matrix(rfg::RealFrequencyGrid)
