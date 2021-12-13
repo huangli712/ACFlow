@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/12
+# Last modified: 2021/12/13
 #
 
 function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
@@ -53,8 +53,7 @@ function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     KM1 = KM1g + KM1c + KM1d
     KM2 = KM2g + KM2c + KM2d
     KM3 = KM3g + KM3c + KM3d
-    @show KM1
-
+    #@show KM3
 end
 
 function _kernel_p_g(rfg::RealFrequencyGrid)
