@@ -492,13 +492,23 @@ function _kernel_m_c(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid, Pa_c, P
 
     KM2_a_c_t = ((wc[2:Nwc+0] .- wc[1:Nwc-1]) .^ 6.0) ./ 6.0
 	
-	KM2_a_c = KM2_a_c_t + 2.0 .* Wjc * KM1_a_c_t + (Wjc .^ 2.0)' * KM0_a_c
-	KM2_b_c = KM1_a_c_t + 2.0 .* Wjc * KM0_a_c + (Wjc .^ 2.0)' * KM0_b_c
-	KM2_c_c = KM0_a_c + 2.0 .* Wjc * KM0_b_c + (Wjc .^ 2.0)' * KM0_c_c
-	KM2_d_c = KM0_b_c + 2.0 .* Wjc * KM0_c_c + (Wjc .^ 2.0)' * KM0_d_c
+	KM2_a_c = KM2_a_c_t + 2.0 .* Wjc' * KM1_a_c_t + (Wjc .^ 2.0)' * KM0_a_c
+	KM2_b_c = KM1_a_c_t + 2.0 .* Wjc' * KM0_a_c + (Wjc .^ 2.0)' * KM0_b_c
+	KM2_c_c = KM0_a_c + 2.0 .* Wjc' * KM0_b_c + (Wjc .^ 2.0)' * KM0_c_c
+	KM2_d_c = KM0_b_c + 2.0 .* Wjc' * KM0_c_c + (Wjc .^ 2.0)' * KM0_d_c
 
     KM2c = (KM2_a_c' * Pa_c + KM2_b_c' * Pb_c + KM2_c_c' * Pc_c + KM2_d_c' * Pd_c) * MM ./ (2.0 * π)
     #@show KM2c
+
+    KM3_a_c_t = ((wc[2:Nwc+0] .- wc[1:Nwc-1]) .^ 7.0) ./ 7.0
+	
+	KM3_a_c = KM3_a_c_t + 3.0 .* Wjc' * KM2_a_c_t + 3.0 .* (Wjc .^ 2.0)' * KM1_a_c_t + (Wjc .^ 3.0)' * KM0_a_c
+	KM3_b_c = KM2_a_c_t + 3.0 .* Wjc' * KM1_a_c_t + 3.0 .* (Wjc .^ 2.0)' * KM0_a_c + (Wjc .^ 3.0)' * KM0_b_c
+	KM3_c_c = KM1_a_c_t + 3.0 .* Wjc' * KM0_a_c + 3.0 .* (Wjc .^ 2.0)' * KM0_b_c + (Wjc .^ 3.0)' * KM0_c_c
+	KM3_d_c = KM0_a_c + 3.0 .* Wjc' * KM0_b_c + 3.0 .* (Wjc .^ 2.0)' * KM0_c_c + (Wjc .^ 3.0)' * KM0_d_c
+	
+	KM3c = (KM3_a_c' * Pa_c + KM3_b_c' * Pb_c + KM3_c_c' * Pc_c + KM3_d_c' * Pd_c) * MM ./ (2.0 * π)
+    @show KM3c
 end
 
 function _kernel_m_d(ud, rfg::RealFrequencyGrid, Pa_d, Pb_d, Pc_d, Pd_d, MM)
