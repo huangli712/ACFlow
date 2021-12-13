@@ -46,10 +46,15 @@ function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     #@show size(Kcx)
     #@show Kcx
 
-    _kernel_m_g(ul, rfg, Pa_g, Pb_g, Pc_g, Pd_g, MM)
-    _kernel_m_c(ω, rfg, Pa_c, Pb_c, Pc_c, Pd_c, MM)
-    _kernel_m_d(ur, rfg, Pa_d, Pb_d, Pc_d, Pd_d, MM)
-    #KM0=KM0g+KM0c+KM0d
+    KM0g, KM1g, KM2g, KM3g = _kernel_m_g(ul, rfg, Pa_g, Pb_g, Pc_g, Pd_g, MM)
+    KM0c, KM1c, KM2c, KM3c = _kernel_m_c(ω, rfg, Pa_c, Pb_c, Pc_c, Pd_c, MM)
+    KM0d, KM1d, KM2d, KM3d = _kernel_m_d(ur, rfg, Pa_d, Pb_d, Pc_d, Pd_d, MM)
+    KM0 = KM0g + KM0c + KM0d
+    KM1 = KM1g + KM1c + KM1d
+    KM2 = KM2g + KM2c + KM2d
+    KM3 = KM3g + KM3c + KM3d
+    @show KM1
+
 end
 
 function _kernel_p_g(rfg::RealFrequencyGrid)
@@ -458,7 +463,9 @@ function _kernel_m_g(ug, rfg::RealFrequencyGrid, Pa_g, Pb_g, Pc_g, Pd_g, MM)
 	KM3g_t = (KM3_a_g' * Pa_g + KM3_b_g' * Pb_g + KM3_c_g' * Pc_g + KM3_d_g' * Pd_g) * MM ./ (2.0 * π)
 	
 	KM3g = (rfg.w0l ^ 3.0) .* KM0g + 3.0 * (rfg.w0l ^ 2.0) .* KM1g_t + 3.0 * rfg.w0l .* KM2g_t + KM3g_t
-    @show KM3g
+    #@show KM3g
+
+    return KM0g, KM1g, KM2g, KM3g
 end
 
 function _kernel_m_c(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid, Pa_c, Pb_c, Pc_c, Pd_c, MM)
@@ -508,7 +515,9 @@ function _kernel_m_c(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid, Pa_c, P
 	KM3_d_c = KM0_a_c + 3.0 .* Wjc' * KM0_b_c + 3.0 .* (Wjc .^ 2.0)' * KM0_c_c + (Wjc .^ 3.0)' * KM0_d_c
 	
 	KM3c = (KM3_a_c' * Pa_c + KM3_b_c' * Pb_c + KM3_c_c' * Pc_c + KM3_d_c' * Pd_c) * MM ./ (2.0 * π)
-    @show KM3c
+    #@show KM3c
+
+    return KM0c, KM1c, KM2c, KM3c
 end
 
 function _kernel_m_d(ud, rfg::RealFrequencyGrid, Pa_d, Pb_d, Pc_d, Pd_d, MM)
@@ -560,6 +569,23 @@ function _kernel_m_d(ud, rfg::RealFrequencyGrid, Pa_d, Pb_d, Pc_d, Pd_d, MM)
 	
 	KM2d = (rfg.w0r ^ 2.0) .* KM0d + 2.0 * rfg.w0r .* KM1d_t + KM2d_t
     #@show KM2d
+
+    KM3_a_d = zeros(F64, Nintd)
+	KM3_b_d = zeros(F64, Nintd)
+	KM3_c_d = zeros(F64, Nintd)
+	KM3_d_d = zeros(F64, Nintd)
+	
+	KM3_a_d = KM0_d_d
+	KM3_b_d = KM1_d_d
+	KM3_c_d = KM2_d_d
+	KM3_d_d = ( 1.0 ./ (ud2[2:Nud+1] .^ 4.0) - 1.0 ./ (ud2[1:Nud+0] .^ 4.0) ) ./ 4.0
+	
+	KM3d_t = (KM3_a_d' * Pa_d + KM3_b_d' * Pb_d + KM3_c_d' * Pc_d + KM3_d_d' * Pd_d) * MM ./ (2.0 * π)
+	
+	KM3d = (rfg.w0r ^ 3.0) .* KM0d + 3.0 * (rfg.w0r ^ 2.0) .* KM1d_t + 3.0 * rfg.w0r .* KM2d_t + KM3d_t
+    #@show KM3d
+
+    return KM0d, KM1d, KM2d, KM3d
 end
 
 function _spline_matrix(rfg::RealFrequencyGrid)
