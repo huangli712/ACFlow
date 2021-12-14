@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/30
+# Last modified: 2021/12/14
 #
 
 function calc_model(rfg::RealFrequencyGrid, 𝑀::MomentsData)
@@ -28,5 +28,8 @@ function calc_model(rfg::RealFrequencyGrid, 𝑀::MomentsData)
         m = π * model_shape / model_width / gamma(1.0 / model_shape)
         m = m * exp(-abs((rfg.grid[i] - model_center) / model_width)^model_shape)
         #@show i, m
+        push!(default_model, m)
     end
+
+    return default_model
 end
