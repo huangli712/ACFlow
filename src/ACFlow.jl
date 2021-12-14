@@ -26,6 +26,9 @@ include("spectrum.jl")
 include("pade.jl")
 include("maxent.jl")
 
+export MomentsData
+export KernelData
+export KernelMomentsData
 export RealFrequencyGrid
 export FermionicMatsubaraGrid
 export BosonicMatsubaraGrid

@@ -55,8 +55,8 @@ function calc_kernel(ω::FermionicMatsubaraGrid, rfg::RealFrequencyGrid)
     KM3 = KM3g + KM3c + KM3d
     #@show KM3
 
-    @show size(Kcx), typeof(KM0), typeof(KM1), typeof(KM2), typeof(KM3)
-    return Kcx, [KM0, KM1, KM2, KM3]
+    #@show size(Kcx), typeof(KM0), typeof(KM1), typeof(KM2), typeof(KM3)
+    return KernelData(Kcx), KernelMomentsData(KM0, KM1, KM2, KM3)
 end
 
 function _kernel_p_g(rfg::RealFrequencyGrid)
