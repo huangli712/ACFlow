@@ -4,33 +4,42 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/28
+# Last modified: 2021/12/14
 #
 
-function read_data!(τ::ImaginaryTimeGrid, 𝐺::GreenData)
+function read_data!(::Type{ImaginaryTimeGrid})
+    error()
 end
 
-function read_data!(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function read_data!(::Type{FermionicMatsubaraGrid})
+    grid  = Vector{F64}[] 
+    value = Vector{F64}[]
+    error = Vector{F64}[]
+    covar = Vector{F64}[]
+
     niw = 64
     #
     open("giw.data", "r") do fin
         for i = 1:niw
             arr = parse.(F64, line_to_array(fin))
-            push!(ω.grid, arr[1])
-            push!(𝐺.value, arr[2] + arr[3] * im)
+            push!(grid, arr[1])
+            push!(value, arr[2] + arr[3] * im)
         end
     end
     #
     open("err.data", "r") do fin
         for i = 1:niw
             arr = parse.(F64, line_to_array(fin))
-            @assert ω.grid[i] == arr[1]
-            push!(𝐺.error, arr[2] + arr[3] * im)
-            push!(𝐺.covar, arr[2]^2)
-            push!(𝐺.covar, arr[3]^2)
+            @assert grid[i] == arr[1]
+            push!(error, arr[2] + arr[3] * im)
+            push!(covar, arr[2]^2)
+            push!(covar, arr[3]^2)
         end
     end
+
+    return FermionicMatsubaraGrid(grid), GreenData(value, error, covar)
 end
 
-function read_data!(ω::BosonicMatsubaraGrid, 𝐺::GreenData)
+function read_data!(::Type{BosonicMatsubaraGrid})
+    error()
 end
