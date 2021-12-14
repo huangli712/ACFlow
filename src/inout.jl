@@ -12,10 +12,10 @@ function read_data!(::Type{ImaginaryTimeGrid})
 end
 
 function read_data!(::Type{FermionicMatsubaraGrid})
-    grid  = Vector{F64}[] 
-    value = Vector{F64}[]
-    error = Vector{F64}[]
-    covar = Vector{F64}[]
+    grid  = F64[] 
+    value = C64[]
+    error = C64[]
+    covar = F64[]
 
     niw = 64
     #
