@@ -16,28 +16,16 @@ struct GreenData <: AbstractData
     covar :: Vector{N64}
 end
 
-function GreenData()
-    return GreenData(Vector{N64}[], Vector{N64}[], Vector{N64}[])
-end
-
 struct SigmaData <: AbstractData
     value :: Vector{N64}
     error :: Vector{N64}
     covar :: Vector{N64}    
 end
 
-function SigmaData()
-    return SigmaData(Vector{N64}[], Vector{N64}[], Vector{N64}[])
-end
-
 struct ChiData <: AbstractData
     value :: Vector{N64}
     error :: Vector{N64}
     covar :: Vector{N64}
-end
-
-function ChiData()
-    return ChiData(Vector{N64}[], Vector{N64}[], Vector{N64}[])
 end
 
 struct MomentsData <: AbstractData
@@ -47,10 +35,6 @@ struct MomentsData <: AbstractData
     𝑀₃ :: N64
 end
 
-function MomentsData(::T) where {T <: N64}
-    return MomentsData(zero(T), zero(T), zero(T), zero(T))
-end
-
 struct VectorMomentsData <: AbstractData
     V𝑀₀ :: Vector{N64}
     V𝑀₁ :: Vector{N64}
@@ -58,16 +42,8 @@ struct VectorMomentsData <: AbstractData
     V𝑀₃ :: Vector{N64}
 end
 
-function VectorMomentsData(::T) where {T <: N64}
-    return VectorMomentsData(Vector{N64}[], Vector{N64}[], Vector{N64}[], Vector{N64}[])
-end
-
 struct KernelData <: AbstractData
     𝐾 :: Matrix{N64}
-end
-
-function KernelData(::T) where {T <: N64}
-    return KernelData(1)
 end
 
 struct KernelMomentsData <: AbstractData
@@ -77,15 +53,8 @@ struct KernelMomentsData <: AbstractData
     𝐾𝑀₃ :: Matrix{N64}
 end
 
-function KernelMomentsData(::T) where {T <: N64}
-end
-
 struct ImaginaryTimeGrid <: AbstractGrid
     grid :: Vector{F64}
-end
-
-function ImaginaryTimeGrid()
-    return ImaginaryTimeGrid(Vector{F64}[])
 end
 
 struct RealFrequencyGrid <: AbstractGrid
@@ -99,22 +68,10 @@ struct RealFrequencyGrid <: AbstractGrid
     grid :: Vector{F64}
 end
 
-function RealFrequencyGrid()
-    return RealFrequencyGrid(0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, Vector{F64}[])
-end
-
 struct FermionicMatsubaraGrid <: AbstractGrid
     grid :: Vector{F64}
 end
 
-function FermionicMatsubaraGrid()
-    return FermionicMatsubaraGrid(Vector{F64}[])
-end
-
 struct BosonicMatsubaraGrid <: AbstractGrid
     grid :: Vector{F64}
-end
-
-function BosonicMatsubaraGrid()
-    return BosonicMatsubaraGrid(Vector{F64}[])
 end
