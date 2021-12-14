@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/30
+# Last modified: 2021/12/14
 #
 
 abstract type AbstractData end
@@ -60,6 +60,24 @@ end
 
 function VectorMomentsData(::T) where {T <: N64}
     return VectorMomentsData(Vector{N64}[], Vector{N64}[], Vector{N64}[], Vector{N64}[])
+end
+
+struct KernelData <: AbstractData
+    𝐾 :: Matrix{N64}
+end
+
+function KernelData(::T) where {T <: N64}
+    return KernelData(1)
+end
+
+struct KernelMomentsData <: AbstractData
+    𝐾𝑀₀ :: Matrix{N64}
+    𝐾𝑀₁ :: Matrix{N64}
+    𝐾𝑀₂ :: Matrix{N64}
+    𝐾𝑀₃ :: Matrix{N64}
+end
+
+function KernelMomentsData(::T) where {T <: N64}
 end
 
 struct ImaginaryTimeGrid <: AbstractGrid
