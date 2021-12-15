@@ -4,13 +4,14 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/29
+# Last modified: 2021/12/16
 #
 
 function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     niw = length(𝐺.value)
 
     N_FIT_MAX = 200
+    N_FIT_FIN = 300
     
     n_c = 3
     n_min = 2
@@ -98,7 +99,11 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     ωc = j + n_min - 2
     #@show j, ω.grid[j], ω.grid[niw]
 
-    return ωc, MomentsData(𝑀₀, 𝑀₁, 𝑀₂, 𝑀₃), VectorMomentsData(V𝑀₀, V𝑀₁, V𝑀₂, V𝑀₃)
+
+    n = j₀ + n_min - 1
+    @show n
+
+    return ωc, MomentsData(𝑀₀, 𝑀₁, 𝑀₂, 𝑀₃)
 end
 
 function trunc_data!(ωc::I64, ω::FermionicMatsubaraGrid, 𝐺::GreenData)

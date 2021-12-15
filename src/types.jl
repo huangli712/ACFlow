@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/14
+# Last modified: 2021/12/16
 #
 
 abstract type AbstractData end
@@ -35,12 +35,14 @@ struct MomentsData <: AbstractData
     𝑀₃ :: N64
 end
 
+#=
 struct VectorMomentsData <: AbstractData
     V𝑀₀ :: Vector{N64}
     V𝑀₁ :: Vector{N64}
     V𝑀₂ :: Vector{N64}
     V𝑀₃ :: Vector{N64}
 end
+=#
 
 struct KernelData <: AbstractData
     𝐾 :: Matrix{N64}
