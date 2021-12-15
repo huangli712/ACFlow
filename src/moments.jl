@@ -100,8 +100,31 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     #@show j, ω.grid[j], ω.grid[niw]
 
 
-    n = j₀ + n_min - 1
-    @show n
+    n = j₀ - 1 + n_min - 1
+    n_fit = N_FIT_FIN
+    if n_fit > niw - n + 1
+        n_fit = niw - n + 1
+    end
+    #@show n_fit, n_min, j₀ # 27 2 37
+    #error()
+    𝐶 = diagm(𝐺.covar)[2 * n - 1 : 2 * (n + n_fit - 1), 2 * n - 1 : 2 * (n + n_fit - 1)]
+    𝑋 = zeros(F64, 2 * n_fit, 2 * n_c)
+    for j = 1:n_c
+        for i = n:(n + n_fit - 1)
+            𝑋[2 * (i - n) + 1, 2 * j - 0] = (-1)^j / (ω.grid[i])^(2*j)
+            𝑋[2 * (i - n) + 2, 2 * j - 1] = (-1)^j / (ω.grid[i])^(2*j-1)
+        end
+    end
+    𝐴 = 𝑋' * inv(𝐶) * 𝑋
+    𝐴 = (𝐴 + 𝐴') ./ 2.0
+    COVM = (inv(𝐴))[1:4,1:4]
+    @show COVM
+
+    COVM[1,:] .= 0.0
+    COVM[:,1] .= 0.0
+    COVM[1,1] = 1.0E-4 ^ 2.0
+    #@show COVM
+    #error() 
 
     return ωc, MomentsData(𝑀₀, 𝑀₁, 𝑀₂, 𝑀₃)
 end
