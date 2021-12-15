@@ -117,16 +117,16 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     end
     𝐴 = 𝑋' * inv(𝐶) * 𝑋
     𝐴 = (𝐴 + 𝐴') ./ 2.0
-    COVM = (inv(𝐴))[1:4,1:4]
-    @show COVM
+    𝐶𝑀 = (inv(𝐴))[1:4,1:4]
+    @show 𝐶𝑀
 
-    COVM[1,:] .= 0.0
-    COVM[:,1] .= 0.0
-    COVM[1,1] = 1.0E-4 ^ 2.0
-    #@show COVM
+    𝐶𝑀[1,:] .= 0.0
+    𝐶𝑀[:,1] .= 0.0
+    𝐶𝑀[1,1] = 1.0E-4 ^ 2.0
+    #@show 𝐶𝑀
     #error() 
 
-    return ωc, MomentsData(𝑀₀, 𝑀₁, 𝑀₂, 𝑀₃)
+    return ωc, MomentsData(𝑀₀, 𝑀₁, 𝑀₂, 𝑀₃, 𝐶𝑀)
 end
 
 function trunc_data!(ωc::I64, ω::FermionicMatsubaraGrid, 𝐺::GreenData)

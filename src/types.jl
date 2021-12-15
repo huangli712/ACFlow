@@ -33,6 +33,7 @@ struct MomentsData <: AbstractData
     𝑀₁ :: N64
     𝑀₂ :: N64
     𝑀₃ :: N64
+    𝐶𝑀 :: Matrix{N64}
 end
 
 #=
