@@ -5,6 +5,7 @@ using ACFlow
 println("Hello world! This is a maxent code.")
 ω, 𝐺 = read_data!(FermionicMatsubaraGrid)
 ωc, 𝑀 = calc_moments(ω, 𝐺)
+diag_covar(𝑀)
 trunc_data!(ωc, ω, 𝐺)
 rfg = calc_mesh(𝑀)
 default_model = calc_model(rfg, 𝑀)

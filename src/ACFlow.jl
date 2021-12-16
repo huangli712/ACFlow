@@ -39,5 +39,6 @@ export calc_model
 export calc_kernel
 export read_data!
 export trunc_data!
+export diag_covar
 
 end

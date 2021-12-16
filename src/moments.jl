@@ -100,6 +100,7 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     #@show j, ω.grid[j], ω.grid[niw]
 
 
+
     n = j₀ - 1 + n_min - 1
     n_fit = N_FIT_FIN
     if n_fit > niw - n + 1
@@ -118,7 +119,7 @@ function calc_moments(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝐴 = 𝑋' * inv(𝐶) * 𝑋
     𝐴 = (𝐴 + 𝐴') ./ 2.0
     𝐶𝑀 = (inv(𝐴))[1:4,1:4]
-    @show 𝐶𝑀
+    #@show 𝐶𝑀
 
     𝐶𝑀[1,:] .= 0.0
     𝐶𝑀[:,1] .= 0.0
@@ -143,4 +144,28 @@ function trunc_data!(ωc::I64, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     resize!(𝐺.error, ωc)
     resize!(𝐺.covar, ωc)
     #@show 𝐺.value
+end
+
+function diag_covar(𝑀::MomentsData)
+    println("here")
+    #@show 𝑀.𝐶𝑀
+    #=
+    𝑀.𝐶𝑀 = [1.0000e-08        0e+00        0e+00        0e+00;
+            0e+00   3.8163e-11        0e+00   1.6561e-08;
+            0e+00        0e+00   7.9080e-05        0e+00;
+            0e+00   1.6561e-08        0e+00   7.3933e-06]
+    =#
+    𝐹 = eigen(𝑀.𝐶𝑀[2:4,2:4])
+    #@show 𝑀.𝐶𝑀[2:4,2:4]
+    #@show 𝐹.values
+    #@show 𝐹.vectors
+    #error()
+
+    VM = zeros(F64,4,4)
+    VM[1,1] = 1.0
+    VM[2:4,2:4] .= 𝐹.vectors
+
+    WM = diagm([sqrt(𝑀.𝐶𝑀[1,1]) sqrt.(𝐹.values)])
+    @show VM
+    @show WM
 end
