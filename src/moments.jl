@@ -171,5 +171,8 @@ function diag_covar(𝑀::MomentsData, 𝐾𝑀::KernelMomentsData)
 
     M_V = WM * VM' * [𝑀.𝑀₀; 𝑀.𝑀₁; 𝑀.𝑀₂; 𝑀.𝑀₃]
     @show M_V
+    #@show size(𝐾𝑀.𝐾𝑀₀), size(𝐾𝑀.𝐾𝑀₁)
+    KM_V = WM * VM' * vcat(𝐾𝑀.𝐾𝑀₀, 𝐾𝑀.𝐾𝑀₁, 𝐾𝑀.𝐾𝑀₂, 𝐾𝑀.𝐾𝑀₃)
+    @show KM_V
     error()
 end
