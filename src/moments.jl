@@ -165,7 +165,7 @@ function diag_covar(𝑀::MomentsData)
     VM[1,1] = 1.0
     VM[2:4,2:4] .= 𝐹.vectors
 
-    WM = diagm([sqrt(𝑀.𝐶𝑀[1,1]) sqrt.(𝐹.values)])
+    WM = diagm(1.0 ./ insert!(sqrt.(𝐹.values), 1, sqrt(𝑀.𝐶𝑀[1,1])))
     @show VM
     @show WM
 end
