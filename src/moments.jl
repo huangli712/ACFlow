@@ -146,7 +146,7 @@ function trunc_data!(ωc::I64, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     #@show 𝐺.value
 end
 
-function diag_covar(𝑀::MomentsData)
+function diag_covar(𝑀::MomentsData, 𝐾𝑀::KernelMomentsData)
     println("here")
     #@show 𝑀.𝐶𝑀
     #=
@@ -168,4 +168,8 @@ function diag_covar(𝑀::MomentsData)
     WM = diagm(1.0 ./ insert!(sqrt.(𝐹.values), 1, sqrt(𝑀.𝐶𝑀[1,1])))
     #@show VM
     #@show WM
+
+    M_V = WM * VM' * [𝑀.𝑀₀; 𝑀.𝑀₁; 𝑀.𝑀₂; 𝑀.𝑀₃]
+    @show M_V
+    error()
 end
