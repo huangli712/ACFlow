@@ -158,17 +158,17 @@ function diag_covar(𝑀::MomentsData, 𝐾𝑀::KernelMomentsData)
     𝐴 = [3.8163e-11        0e+00   1.6561e-08;
               0e+00   7.9080e-05        0e+00;
          1.6561e-08        0e+00   7.3933e-06]
-
-    @show typeof(Symmetric(𝐴))
     𝐹 = eigen(Symmetric(𝐴), 1:3)
     #@show 𝑀.𝐶𝑀[2:4,2:4]
+    @show 𝐴
     @show 𝐹.values
     @show 𝐹.vectors
 
-    A = [3.81631842971968e-11 -0.0 1.6561455252407786e-8;
-         0.0 7.907971584057321e-5 -0.0;
+    𝐵 = [3.81631842971968e-11 -0.0 1.6561455252407786e-8;
+         -0.0 7.907971584057321e-5 0.0;
          1.6561455252407786e-8 0.0 7.393321992039924e-6]
-    𝐹 = eigen(Symmetric(𝐴), 1:3)
+    𝐹 = eigen(Symmetric(𝐵), 1:3)
+    @show 𝐵
     @show 𝐹.values
     @show 𝐹.vectors
     error()
