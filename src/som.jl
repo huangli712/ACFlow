@@ -109,16 +109,16 @@ function som_run(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 end
 
 function som_try(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("here")
-    som_random(𝑆, ω)
-    error()
     Nf = P_SOM["Nf"]
+    #println("here")
+    som_random(𝑆, ω, 𝐺)
+    #error()
     for f = 1:Nf
         som_update(𝑆::T_SOM)
     end
 end
 
-function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid)
+function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     smin = P_SOM["smin"]
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
@@ -175,6 +175,93 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid)
     fill!(𝑆.att_elem_dev, zero(C64))
     #@show size(𝑆.att_conf)
 
+    #=
+    c = [
+        0.437433,
+4.35723,
+-4.86402,
+-8.52167,
+8.35216,
+0.131443,
+4.66806,
+-5.48925,
+2.18855,
+-7.10065,
+-8.64211,
+-7.61222,
+-1.01904,
+-7.64489,
+-6.92268,
+-0.296024,
+2.01579,
+5.21624,
+-0.430991,
+1.5215,
+-7.92062,
+7.95186,
+1.16635,
+-4.30618,
+5.27789
+    ]
+    =#
+#=
+    w = [
+        3.80198,
+9.33006,
+6.98871,
+0.282352,
+0.58726,
+6.56658,
+8.78425,
+2.47927,
+1.9538,
+2.65317,
+1.9506,
+4.59944,
+16.0818,
+4.70633,
+2.38606,
+16.4445,
+2.18616,
+2.21616,
+8.25936,
+13.7515,
+1.32354,
+1.37565,
+13.4274,
+2.7657,
+4.68898
+    ]
+=#
+    #=
+    h = [
+        0.00137267,
+0.000592927,
+0.000834196,
+0.0258451,
+0.0169977,
+0.000841944,
+0.00112916,
+0.00419728,
+0.00686794,
+0.00741652,
+0.0150182,
+0.00644669,
+0.00198957,
+0.00680902,
+0.0138929,
+0.00243363,
+0.0184623,
+0.0190627,
+0.00525481,
+0.00371801,
+0.0581247,
+0.0610346,
+0.00696474,
+0.0402057,
+0.0358903
+    ]
+    =#
     for k = 1:_Know
         c = ommin + wmin / 2.0 + (ommax - ommin - wmin) * rand(𝑆.rng, F64)
         w = wmin + (min(2 * (c - ommin), 2 * (ommax - c)) - wmin) * rand(𝑆.rng, F64)
@@ -182,6 +269,8 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid)
         push!(𝑆.att_conf, Rectangle(h, w, c))
         calc_dev_rec(Rectangle(h, w, c), k, 𝑆.att_elem_dev, ω)
     end
+    att_dev = calc_dev(𝑆.att_elem_dev, _Know, 𝐺)
+    #@show att_dev
 end
 
 function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::FermionicMatsubaraGrid)
@@ -197,6 +286,18 @@ function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::Fermioni
 end
 
 function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
+    Ngrid = P_SOM["Ngrid"]
+    
+    res = 0.0
+    for g = 1:Ngrid
+        δ = 0.0
+        for k = 1:nk
+            δ = δ + elem_dev[g,k]
+        end
+        res = res + abs((δ - 𝐺.value[g]) / 𝐺.error[g])
+    end
+
+    return res
 end
 
 function som_update(𝑆::T_SOM)
