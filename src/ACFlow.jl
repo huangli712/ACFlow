@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/14
+# Last modified: 2021/12/20
 #
 
 module ACFlow
@@ -25,6 +25,7 @@ include("kernel.jl")
 include("spectrum.jl")
 include("pade.jl")
 include("maxent.jl")
+include("som.jl")
 
 export MomentsData
 export KernelData
