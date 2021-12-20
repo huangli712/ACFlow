@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/20
+# Last modified: 2021/12/21
 #
 
 mutable struct Rectangle
@@ -118,8 +118,9 @@ function som_try(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     #println("here")
     som_random(𝑆, ω, 𝐺)
     #error()
+
     for f = 1:Nf
-        som_update(𝑆::T_SOM)
+        som_update(𝑆, ω, 𝐺)
     end
 end
 
@@ -180,7 +181,6 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     fill!(𝑆.att_elem_dev, zero(C64))
     #@show size(𝑆.att_conf)
 
-    #=
     c = [
         0.437433,
 4.35723,
@@ -208,8 +208,7 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 -4.30618,
 5.27789
     ]
-    =#
-#=
+
     w = [
         3.80198,
 9.33006,
@@ -237,8 +236,7 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 2.7657,
 4.68898
     ]
-=#
-    #=
+
     h = [
         0.00137267,
 0.000592927,
@@ -266,19 +264,19 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 0.0402057,
 0.0358903
     ]
-    =#
+
     for k = 1:_Know
-        c = ommin + wmin / 2.0 + (ommax - ommin - wmin) * rand(𝑆.rng, F64)
-        w = wmin + (min(2 * (c - ommin), 2 * (ommax - c)) - wmin) * rand(𝑆.rng, F64)
-        h = weight[k] / w
-        push!(𝑆.att_conf, Rectangle(h, w, c))
-        calc_dev_rec(Rectangle(h, w, c), k, 𝑆.att_elem_dev, ω)
+        #c = ommin + wmin / 2.0 + (ommax - ommin - wmin) * rand(𝑆.rng, F64)
+        #w = wmin + (min(2 * (c - ommin), 2 * (ommax - c)) - wmin) * rand(𝑆.rng, F64)
+        #h = weight[k] / w
+        push!(𝑆.att_conf, Rectangle(h[k], w[k], c[k]))
+        calc_dev_rec(Rectangle(h[k], w[k], c[k]), k, 𝑆.att_elem_dev, ω)
     end
     𝑆.att_dev = calc_dev(𝑆.att_elem_dev, _Know, 𝐺)
     #@show att_dev
 end
 
-function som_update(𝑆::T_SOM)
+function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Tmax = P_SOM["Tmax"]
     dmax = P_SOM["dmax"]
     T1 = rand(𝑆.rng, 1:Tmax)
@@ -293,13 +291,17 @@ function som_update(𝑆::T_SOM)
     𝑆.tmp_dev = 𝑆.att_dev
     𝑆.elem_dev = copy(𝑆.att_elem_dev)
 
+    @show 𝑆.tmp_conf
+    _som_add(𝑆, ω, 𝐺)
+    error()
+
     for i = 1:T1
         𝑆.dacc = d1
         update_type = rand(𝑆.rng, 1:7)
 
         @cswitch update_type begin
             @case 1
-                _som_add()
+                _som_add(𝑆, ω, 𝐺)
                 break
 
             @case 2
@@ -334,7 +336,7 @@ function som_update(𝑆::T_SOM)
 
         @cswitch update_type begin
             @case 1
-                _som_add()
+                _som_add(𝑆, ω, 𝐺)
                 break
 
             @case 2
@@ -364,8 +366,82 @@ function som_update(𝑆::T_SOM)
     end
 end
 
-function _som_add()
+function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     println("add Rectangle")
+    smin = P_SOM["smin"]
+    wmin = P_SOM["wmin"]
+    ommin = P_SOM["ommin"]
+    ommax = P_SOM["ommax"]
+    γ = P_SOM["gamma"]
+    t = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
+    t = 23
+    if 𝑆.tmp_conf[t].h * 𝑆.tmp_conf[t].w ≤ 2.0 * smin
+        return
+    end
+    #@show 𝑆.tmp_conf[t].h , 𝑆.tmp_conf[t].w
+
+    dx_min = smin
+    dx_max = 𝑆.tmp_conf[t].h * 𝑆.tmp_conf[t].w - smin
+    #@show dx_min, dx_max
+    if dx_max ≤ dx_min
+        return
+    end
+
+    c = (ommin + wmin / 2.0) + (ommax - ommin - wmin) * rand(𝑆.rng, F64)
+    c = -1.68255 # <----
+    w_new_max = 2.0 * min(ommax - c, c - ommin)
+    #@show c , w_new_max
+    dx = Pdx(dx_min, dx_max, γ, 𝑆.rng)
+    #@show dx
+
+    r = rand(𝑆.rng, F64)
+    r = 0.125254
+    𝑆.new_conf = copy(𝑆.tmp_conf)
+    𝑆.new_elem_dev = copy(𝑆.elem_dev)
+    h = dx / w_new_max + (dx / wmin - dx / w_new_max) * r
+    w = dx / h
+    #@show c, h, w
+    push!(𝑆.new_conf, Rectangle(h, w, c))
+    𝑆.new_conf[t].h = 𝑆.new_conf[t].h - dx / 𝑆.new_conf[t].w
+    #@show 𝑆.new_conf
+    calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
+    #@show 𝑆.new_conf[t]
+    calc_dev_rec(𝑆.new_conf[end], length(𝑆.new_conf), 𝑆.new_elem_dev, ω)
+    #@show 𝑆.new_conf[end]
+    𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
+    #@show 𝑆.new_dev
+
+    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
+        𝑆.tmp_conf = copy(𝑆.new_conf)
+        𝑆.tmp_dev = 𝑆.new_dev
+        𝑆.elem_dev = copy(𝑆.new_elem_dev)
+        𝑆.accepted_steps[1] = 𝑆.accepted_steps[1] + 1
+    end
+    𝑆.trial_steps[1] = 𝑆.trial_steps[1] + 1
+end
+
+function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
+    _X = max(abs(xmin), abs(xmax))
+    _lambda = γ / _X
+    _elx = exp(-1 * _lambda * abs(xmin))
+    _N = _lambda / ((xmin / abs(xmin)) * (exp(-1 * _lambda * abs(xmin)) - 1)
+        + (xmax / abs(xmax)) * (1 - exp(-1 * _lambda * abs(xmax))))
+ 
+    y = rand(rng, F64)
+    y = 0.56554
+    _lysn = _lambda * y / _N
+    if xmin ≥ 0
+        return -1 * log(_elx - _lysn) / _lambda
+    elseif xmax ≤ 0
+        return log(_lysn + _elx) / _lambda
+    else
+        _C1 = _N * (1 - _elx) / _lambda
+        if y <= _C1
+            return log(_lysn + _elx) / _lambda
+        else
+            return -1 * log(1 - _lysn + _lambda * _C1 / _N) / _lambda
+        end
+    end
 end
 
 function _som_remove()
@@ -399,7 +475,7 @@ function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::Fermioni
     for g = 1:Ngrid
         Gs = r.h * log((im * ω.grid[g] - r.c + 0.5 * r.w) / (im * ω.grid[g] - r.c - 0.5 * r.w))
         elem_dev[g,k] = Gs
-        #@show g, Gs
+        @show g, Gs
     end
     #error()
 end
