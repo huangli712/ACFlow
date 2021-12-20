@@ -29,6 +29,11 @@ mutable struct T_SOM
 
     trial_steps :: Vector{I64}
     accepted_steps :: Vector{I64}
+
+    att_dev :: F64
+    tmp_dev :: F64
+    new_dev :: F64
+    dacc    :: F64
 end
 
 const P_SOM = Dict{String, Any}(
@@ -97,7 +102,7 @@ function som_init()
                  elem_dev, 
                  new_elem_dev, 
                  trial_steps, 
-                 accepted_steps)
+                 accepted_steps, 0.0, 0.0, 0.0, 0.0)
 end
 
 function som_run(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
@@ -269,8 +274,122 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         push!(𝑆.att_conf, Rectangle(h, w, c))
         calc_dev_rec(Rectangle(h, w, c), k, 𝑆.att_elem_dev, ω)
     end
-    att_dev = calc_dev(𝑆.att_elem_dev, _Know, 𝐺)
+    𝑆.att_dev = calc_dev(𝑆.att_elem_dev, _Know, 𝐺)
     #@show att_dev
+end
+
+function som_update(𝑆::T_SOM)
+    Tmax = P_SOM["Tmax"]
+    dmax = P_SOM["dmax"]
+    T1 = rand(𝑆.rng, 1:Tmax)
+    #for i = 1:100
+    #    @show rand(𝑆.rng, 1:Tmax)
+    #end
+
+    d1 = rand(𝑆.rng, F64)
+    d2 = 1.0 + (dmax - 1.0) * rand(𝑆.rng, F64)
+
+    𝑆.tmp_conf = copy(𝑆.att_conf)
+    𝑆.tmp_dev = 𝑆.att_dev
+    𝑆.elem_dev = copy(𝑆.att_elem_dev)
+
+    for i = 1:T1
+        𝑆.dacc = d1
+        update_type = rand(𝑆.rng, 1:7)
+
+        @cswitch update_type begin
+            @case 1
+                _som_add()
+                break
+
+            @case 2
+                _som_remove()
+                break
+
+            @case 3
+                _som_shift()
+                break
+
+            @case 4
+                _som_change_width()
+                break
+
+            @case 5
+                _som_change_weight()
+                break
+
+            @case 6
+                _som_split()
+                break
+
+            @case 7
+                _som_merge()
+                break
+        end
+    end
+
+    for j = T1+1:Tmax
+        𝑆.dacc = d2
+        update_type = rand(𝑆.rng, 1:7)
+
+        @cswitch update_type begin
+            @case 1
+                _som_add()
+                break
+
+            @case 2
+                _som_remove()
+                break
+
+            @case 3
+                _som_shift()
+                break
+
+            @case 4
+                _som_change_width()
+                break
+
+            @case 5
+                _som_change_weight()
+                break
+
+            @case 6
+                _som_split()
+                break
+
+            @case 7
+                _som_merge()
+                break
+        end
+    end
+end
+
+function _som_add()
+    println("add Rectangle")
+end
+
+function _som_remove()
+    println("remove Rectangle")
+end
+
+function _som_shift()
+    println("shift Rectangle")
+end
+
+function _som_change_width()
+    println("change width of Rectangle")
+end
+
+function _som_change_weight()
+    println("change weight of Rectangle")
+end
+
+function _som_split()
+    println("split Rectangle")
+end
+
+function _som_merge()
+    println("Merge Rectangle")
 end
 
 function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::FermionicMatsubaraGrid)
@@ -298,25 +417,4 @@ function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
     end
 
     return res
-end
-
-function som_update(𝑆::T_SOM)
-end
-
-function _som_add()
-end
-
-function _som_remove()
-end
-
-function _som_split()
-end
-
-function _som_merge()
-end
-
-function _som_shift()
-end
-
-function _som_change()
 end
