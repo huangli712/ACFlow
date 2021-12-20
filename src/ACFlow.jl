@@ -42,4 +42,7 @@ export read_data!
 export trunc_data!
 export diag_covar
 
+export som_init
+export som_run
+
 end

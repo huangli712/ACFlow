@@ -2,6 +2,7 @@ push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
 
 using ACFlow
 
+#=
 println("Hello world! This is a maxent code.")
 ω, 𝐺 = read_data!(FermionicMatsubaraGrid)
 ωc, 𝑀 = calc_moments(ω, 𝐺)
@@ -14,3 +15,8 @@ diag_covar(𝑀, 𝐾𝑀)
 norm_DM_t = 𝐾𝑀.𝐾𝑀₀ * default_model
 defalut_model = 𝑀.𝑀₀ * default_model ./ norm_DM_t[1,:]
 @show default_model
+=#
+
+ω, 𝐺 = read_data!(FermionicMatsubaraGrid)
+𝑆 = som_init()
+som_run(𝑆)
