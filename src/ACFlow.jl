@@ -10,6 +10,7 @@
 module ACFlow
 
 using LinearAlgebra
+using Random
 using Printf
 using Statistics
 using Base.Math: libm
