@@ -129,8 +129,16 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-    _Know = 25
+    Kmax = P_SOM["Kmax"]
+
+    #_Know = 25
+    _Know = rand(𝑆.rng, 2:Kmax)
     _weight = zeros(F64, _Know)
+    for i = 1:_Know
+        _weight[i] = rand(𝑆.rng, F64)
+    end
+    _weight[end] = 1.0
+#=
     _weight = [
         0.139286,
         0.16858,
@@ -158,6 +166,7 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         0.762588,
         1.0
     ]
+=#
     sort!(_weight)
     weight = diff(_weight)
     insert!(weight, 1, _weight[1])
@@ -181,96 +190,98 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     fill!(𝑆.att_elem_dev, zero(C64))
     #@show size(𝑆.att_conf)
 
+#=
     c = [
         0.437433,
-4.35723,
--4.86402,
--8.52167,
-8.35216,
-0.131443,
-4.66806,
--5.48925,
-2.18855,
--7.10065,
--8.64211,
--7.61222,
--1.01904,
--7.64489,
--6.92268,
--0.296024,
-2.01579,
-5.21624,
--0.430991,
-1.5215,
--7.92062,
-7.95186,
-1.16635,
--4.30618,
-5.27789
+        4.35723,
+        -4.86402,
+        -8.52167,
+        8.35216,
+        0.131443,
+        4.66806,
+        -5.48925,
+        2.18855,
+        -7.10065,
+        -8.64211,
+        -7.61222,
+        -1.01904,
+        -7.64489,
+        -6.92268,
+        -0.296024,
+        2.01579,
+        5.21624,
+        -0.430991,
+        1.5215,
+        -7.92062,
+        7.95186,
+        1.16635,
+        -4.30618,
+        5.27789
     ]
 
     w = [
         3.80198,
-9.33006,
-6.98871,
-0.282352,
-0.58726,
-6.56658,
-8.78425,
-2.47927,
-1.9538,
-2.65317,
-1.9506,
-4.59944,
-16.0818,
-4.70633,
-2.38606,
-16.4445,
-2.18616,
-2.21616,
-8.25936,
-13.7515,
-1.32354,
-1.37565,
-13.4274,
-2.7657,
-4.68898
+        9.33006,
+        6.98871,
+        0.282352,
+        0.58726,
+        6.56658,
+        8.78425,
+        2.47927,
+        1.9538,
+        2.65317,
+        1.9506,
+        4.59944,
+        16.0818,
+        4.70633,
+        2.38606,
+        16.4445,
+        2.18616,
+        2.21616,
+        8.25936,
+        13.7515,
+        1.32354,
+        1.37565,
+        13.4274,
+        2.7657,
+        4.68898
     ]
 
     h = [
-        0.00137267,
-0.000592927,
-0.000834196,
-0.0258451,
-0.0169977,
-0.000841944,
-0.00112916,
-0.00419728,
-0.00686794,
-0.00741652,
-0.0150182,
-0.00644669,
-0.00198957,
-0.00680902,
-0.0138929,
-0.00243363,
-0.0184623,
-0.0190627,
-0.00525481,
-0.00371801,
-0.0581247,
-0.0610346,
-0.00696474,
-0.0402057,
-0.0358903
+        0.00137267, 
+        0.000592927,
+        0.000834196,
+        0.0258451,
+        0.0169977,
+        0.000841944,
+        0.00112916,
+        0.00419728,
+        0.00686794,
+        0.00741652,
+        0.0150182,
+        0.00644669,
+        0.00198957,
+        0.00680902,
+        0.0138929,
+        0.00243363,
+        0.0184623,
+        0.0190627,
+        0.00525481,
+        0.00371801,
+        0.0581247,
+        0.0610346,
+        0.00696474,
+        0.0402057,
+        0.0358903
     ]
+=#
 
     for k = 1:_Know
-        #c = ommin + wmin / 2.0 + (ommax - ommin - wmin) * rand(𝑆.rng, F64)
-        #w = wmin + (min(2 * (c - ommin), 2 * (ommax - c)) - wmin) * rand(𝑆.rng, F64)
-        #h = weight[k] / w
-        push!(𝑆.att_conf, Rectangle(h[k], w[k], c[k]))
-        calc_dev_rec(Rectangle(h[k], w[k], c[k]), k, 𝑆.att_elem_dev, ω)
+        c = ommin + wmin / 2.0 + (ommax - ommin - wmin) * rand(𝑆.rng, F64)
+        w = wmin + (min(2.0 * (c - ommin), 2.0 * (ommax - c)) - wmin) * rand(𝑆.rng, F64)
+        h = weight[k] / w
+        push!(𝑆.att_conf, Rectangle(h, w, c))
+        calc_dev_rec(Rectangle(h, w, c), k, 𝑆.att_elem_dev, ω)
     end
     𝑆.att_dev = calc_dev(𝑆.att_elem_dev, _Know, 𝐺)
     #@show att_dev
@@ -280,6 +291,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Tmax = P_SOM["Tmax"]
     dmax = P_SOM["dmax"]
     T1 = rand(𝑆.rng, 1:Tmax)
+
     #for i = 1:100
     #    @show rand(𝑆.rng, 1:Tmax)
     #end
@@ -291,9 +303,9 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.tmp_dev = 𝑆.att_dev
     𝑆.elem_dev = copy(𝑆.att_elem_dev)
 
-    @show 𝑆.tmp_conf
-    _som_merge(𝑆, ω, 𝐺)
-    error()
+    #@show 𝑆.tmp_conf
+    #_som_merge(𝑆, ω, 𝐺)
+    #error()
 
     for i = 1:T1
         𝑆.dacc = d1
@@ -373,8 +385,9 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
+
     t = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    t = 23
+    #t = 23
     if 𝑆.tmp_conf[t].h * 𝑆.tmp_conf[t].w ≤ 2.0 * smin
         return
     end
@@ -388,14 +401,14 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     end
 
     c = (ommin + wmin / 2.0) + (ommax - ommin - wmin) * rand(𝑆.rng, F64)
-    c = -1.68255 # <----
+    #c = -1.68255 # <----
     w_new_max = 2.0 * min(ommax - c, c - ommin)
     #@show c , w_new_max
     dx = Pdx(dx_min, dx_max, γ, 𝑆.rng)
     #@show dx
 
     r = rand(𝑆.rng, F64)
-    r = 0.125254
+    #r = 0.125254
     𝑆.new_conf = copy(𝑆.tmp_conf)
     𝑆.new_elem_dev = copy(𝑆.elem_dev)
     h = dx / w_new_max + (dx / wmin - dx / w_new_max) * r
@@ -427,8 +440,8 @@ function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
     t1 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    t1 = 23
-    t2 = 25
+    #t1 = 23
+    #t2 = 25
     if t1 == t2
         t2 = (t1 + 1) % length(𝑆.tmp_conf)
     end
@@ -472,7 +485,7 @@ function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     γ = P_SOM["gamma"]
 
     t = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    t = 23
+    #t = 23
 
     dx_min = ommin + 𝑆.tmp_conf[t].w / 2.0 - 𝑆.tmp_conf[t].c
     dx_max = ommax - 𝑆.tmp_conf[t].w / 2.0 - 𝑆.tmp_conf[t].c
@@ -511,11 +524,11 @@ function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenD
     γ = P_SOM["gamma"]
 
     t = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    t = 23
+    #t = 23
 
     weight = 𝑆.tmp_conf[t].h * 𝑆.tmp_conf[t].w
     dx_min = wmin - 𝑆.tmp_conf[t].w
-    dx_max = min(2 * (𝑆.tmp_conf[t].c - ommin), 2 * (ommax - 𝑆.tmp_conf[t].c)) - 𝑆.tmp_conf[t].w
+    dx_max = min(2.0 * (𝑆.tmp_conf[t].c - ommin), 2.0 * (ommax - 𝑆.tmp_conf[t].c)) - 𝑆.tmp_conf[t].w
     if dx_max ≤ dx_min
         return
     end
@@ -549,8 +562,8 @@ function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::Green
 
     t1 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    t1 = 23
-    t2 = 25
+    #t1 = 23
+    #t2 = 25
     if t1 == t2
         t2 = (t1 + 1) % length(𝑆.tmp_conf)
     end
@@ -585,7 +598,7 @@ function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::Green
         𝑆.accepted_steps[5] = 𝑆.accepted_steps[5] + 1
     end
     𝑆.trial_steps[5] = 𝑆.trial_steps[5] + 1
-    @show length(𝑆.tmp_conf)
+    #@show length(𝑆.tmp_conf)
 end
 
 function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
@@ -597,7 +610,7 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     γ = P_SOM["gamma"]
 
     t = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    t = 23
+    #t = 23
 
     old_conf = 𝑆.tmp_conf[t]
     if old_conf.w ≤ 2 * wmin || old_conf.w * old_conf.h ≤ 2.0 * smin
@@ -606,7 +619,7 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
     h = old_conf.h
     w1 = wmin + (old_conf.w - 2.0 * wmin) * rand(𝑆.rng, F64)
-    w1 = 5.5897
+    #w1 = 5.5897
     w2 = old_conf.w - w1
     if w1 > w2
         w1, w2 = w2, w1
@@ -628,10 +641,10 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     dc2 = -1.0 * w1 * dc1 / w2
     #@show dc2
 
-    if (c1 + dc1 ≥ ommin + w1 / 2) &&
-       (c1 + dc1 ≤ ommax - w1 / 2) && 
-       (c2 + dc2 ≥ ommin + w2 / 2) &&
-       (c2 + dc2 ≤ ommax - w2 / 2)
+    if (c1 + dc1 ≥ ommin + w1 / 2.0) &&
+       (c1 + dc1 ≤ ommax - w1 / 2.0) && 
+       (c2 + dc2 ≥ ommin + w2 / 2.0) &&
+       (c2 + dc2 ≤ ommax - w2 / 2.0)
 
         𝑆.new_conf[t] = 𝑆.new_conf[end]
         pop!(𝑆.new_conf)
@@ -664,8 +677,8 @@ function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
     t1 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    t1 = 23
-    t2 = 25
+    #t1 = 23
+    #t2 = 25
     if t1 == t2
         t2 = (t1 + 1) % length(𝑆.tmp_conf)
     end
@@ -718,6 +731,8 @@ function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         𝑆.accepted_steps[7] = 𝑆.accepted_steps[7] + 1
     end
     𝑆.trial_steps[7] = 𝑆.trial_steps[7] + 1
+
+    #@show length(𝑆.tmp_conf)
 end
 
 function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::FermionicMatsubaraGrid)
@@ -758,7 +773,7 @@ function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
         + (xmax / abs(xmax)) * (1 - exp(-1 * _lambda * abs(xmax))))
  
     y = rand(rng, F64)
-    y = 0.56554
+    #y = 0.56554
     _lysn = _lambda * y / _N
     if xmin ≥ 0
         return -1 * log(_elx - _lysn) / _lambda
