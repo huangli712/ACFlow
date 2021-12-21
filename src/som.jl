@@ -620,7 +620,40 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         return
     end
     dc1 = Pdx(dx_min, dx_max, γ, 𝑆.rng)
-    @show dc1
+    #@show dc1
+
+    _conf_size = length(𝑆.tmp_conf)
+    𝑆.new_conf = copy(𝑆.tmp_conf)
+    𝑆.new_elem_dev = copy(𝑆.elem_dev)
+    dc2 = -1.0 * w1 * dc1 / w2
+    #@show dc2
+
+    if (c1 + dc1 ≥ ommin + w1 / 2) &&
+       (c1 + dc1 ≤ ommax - w1 / 2) && 
+       (c2 + dc2 ≥ ommin + w2 / 2) &&
+       (c2 + dc2 ≤ ommax - w2 / 2)
+
+        𝑆.new_conf[t] = 𝑆.new_conf[end]
+        pop!(𝑆.new_conf)
+        push!(𝑆.new_conf, Rectangle(h, w1, c1 + dc1))
+        push!(𝑆.new_conf, Rectangle(h, w2, c2 + dc2))
+
+        if t < _conf_size
+            calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
+        end
+        calc_dev_rec(𝑆.new_conf[_conf_size], _conf_size, 𝑆.new_elem_dev, ω)
+        calc_dev_rec(𝑆.new_conf[_conf_size+1], _conf_size+1, 𝑆.new_elem_dev, ω)
+        𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
+        #@show 𝑆.new_dev
+        if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
+            𝑆.tmp_conf = copy(𝑆.new_conf)
+            𝑆.tmp_dev = 𝑆.new_dev
+            𝑆.elem_dev = copy(𝑆.new_elem_dev)
+            𝑆.accepted_steps[6] = 𝑆.accepted_steps[6] + 1
+        end
+    end
+    𝑆.trial_steps[6] = 𝑆.trial_steps[6] + 1
+    #@show length(𝑆.tmp_conf)
 end
 
 function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
