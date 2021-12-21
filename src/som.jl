@@ -292,7 +292,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.elem_dev = copy(𝑆.att_elem_dev)
 
     @show 𝑆.tmp_conf
-    _som_add(𝑆, ω, 𝐺)
+    _som_remove(𝑆)
     error()
 
     for i = 1:T1
@@ -305,7 +305,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 2
-                _som_remove()
+                _som_remove(𝑆)
                 break
 
             @case 3
@@ -340,7 +340,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 2
-                _som_remove()
+                _som_remove(𝑆)
                 break
 
             @case 3
@@ -418,9 +418,11 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         𝑆.accepted_steps[1] = 𝑆.accepted_steps[1] + 1
     end
     𝑆.trial_steps[1] = 𝑆.trial_steps[1] + 1
+
+    #@show length(𝑆.tmp_conf)
 end
 
-function _som_remove()
+function _som_remove(𝑆::T_SOM)
     println("remove Rectangle")
 end
 
