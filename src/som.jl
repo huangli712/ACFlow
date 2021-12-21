@@ -291,6 +291,7 @@ end
 
 function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Tmax = P_SOM["Tmax"]
+    Kmax = P_SOM["Kmax"]
     dmax = P_SOM["dmax"]
     T1 = rand(𝑆.rng, 1:Tmax)
 
@@ -315,11 +316,15 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
         @cswitch update_type begin
             @case 1
-                _som_add(𝑆, ω, 𝐺)
+                if length(𝑆.tmp_conf) < Kmax
+                    _som_add(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 2
-                _som_remove(𝑆, ω, 𝐺)
+                if length(𝑆.tmp_conf) > 1
+                    _som_remove(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 3
@@ -327,19 +332,27 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 4
-                _som_change_width(𝑆, ω, 𝐺)
+                if length(𝑆.tmp_conf) > 1
+                    _som_change_width(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 5
-                _som_change_weight(𝑆, ω, 𝐺)
+                if length(𝑆.tmp_conf) > 1
+                    _som_change_weight(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 6
-                _som_split(𝑆, ω, 𝐺)
+                if length(𝑆.tmp_conf) < Kmax
+                    _som_split(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 7
-                _som_merge(𝑆, ω, 𝐺)
+                if length(𝑆.tmp_conf) > 1
+                    _som_merge(𝑆, ω, 𝐺)
+                end
                 break
         end
     end
@@ -350,11 +363,15 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
         @cswitch update_type begin
             @case 1
-                _som_add(𝑆, ω, 𝐺)
+                if length(𝑆.tmp_conf) < Kmax
+                    _som_add(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 2
-                _som_remove(𝑆, ω, 𝐺)
+                if length(𝑆.tmp_conf) > 1
+                    _som_remove(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 3
@@ -362,26 +379,34 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 4
-                _som_change_width(𝑆, ω, 𝐺)
+                if length(𝑆.tmp_conf) > 1
+                    _som_change_width(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 5
-                _som_change_weight(𝑆, ω, 𝐺)
+                if length(𝑆.tmp_conf) > 1
+                    _som_change_weight(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 6
-                _som_split(𝑆, ω, 𝐺)
+                if length(𝑆.tmp_conf) < Kmax
+                    _som_split(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 7
-                _som_merge(𝑆, ω, 𝐺)
+                if length(𝑆.tmp_conf) > 1
+                    _som_merge(𝑆, ω, 𝐺)
+                end
                 break
         end
     end
 end
 
 function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("add Rectangle")
+    println("add Rectangle")
     smin = P_SOM["smin"]
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
@@ -438,7 +463,7 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 end
 
 function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("remove Rectangle")
+    println("remove Rectangle")
 
     t1 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
@@ -485,7 +510,7 @@ function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 end
 
 function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("shift Rectangle")
+    println("shift Rectangle")
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
@@ -523,7 +548,7 @@ function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 end
 
 function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("change width of Rectangle")
+    println("change width of Rectangle")
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
@@ -562,12 +587,13 @@ function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenD
 end
 
 function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("change weight of Rectangle")
+    println("change weight of Rectangle -->")
     smin = P_SOM["smin"]
     γ = P_SOM["gamma"]
 
     t1 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
+    @show t1, t2, length(𝑆.tmp_conf)
     #t1 = 23
     #t2 = 25
     #@show t1, t2, length(𝑆.tmp_conf)
@@ -578,6 +604,7 @@ function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::Green
     while t1 == t2
         t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     end
+    @show t1, t2
     w1 = 𝑆.tmp_conf[t1].w
     w2 = 𝑆.tmp_conf[t2].w
     h1 = 𝑆.tmp_conf[t1].h
@@ -612,7 +639,7 @@ function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::Green
 end
 
 function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("split Rectangle")
+    println("split Rectangle")
     wmin = P_SOM["wmin"]
     smin = P_SOM["smin"]
     ommin = P_SOM["ommin"]
@@ -680,7 +707,7 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 end
 
 function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("Merge Rectangle")
+    println("Merge Rectangle")
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
