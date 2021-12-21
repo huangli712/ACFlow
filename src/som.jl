@@ -292,7 +292,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.elem_dev = copy(𝑆.att_elem_dev)
 
     @show 𝑆.tmp_conf
-    _som_shift(𝑆, ω, 𝐺)
+    _som_change_width(𝑆, ω, 𝐺)
     error()
 
     for i = 1:T1
@@ -313,7 +313,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 4
-                _som_change_width()
+                _som_change_width(𝑆, ω, 𝐺)
                 break
 
             @case 5
@@ -348,7 +348,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 4
-                _som_change_width()
+                _som_change_width(𝑆, ω, 𝐺)
                 break
 
             @case 5
@@ -503,8 +503,35 @@ function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     #@show length(𝑆.tmp_conf)
 end
 
-function _som_change_width()
+function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     println("change width of Rectangle")
+    wmin = P_SOM["wmin"]
+    ommin = P_SOM["ommin"]
+    ommax = P_SOM["ommax"]
+    γ = P_SOM["gamma"]
+
+    t = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
+    t = 23
+
+    weight = 𝑆.tmp_conf[t].h * 𝑆.tmp_conf[t].w
+    dx_min = wmin - 𝑆.tmp_conf[t].w
+    dx_max = min(2 * (𝑆.tmp_conf[t].c - ommin), 2 * (ommax - 𝑆.tmp_conf[t].c)) - 𝑆.tmp_conf[t].w
+    if dx_max ≤ dx_min
+        return
+    end
+    dw = Pdx(dx_min, dx_max, γ, 𝑆.rng)
+    #@show weight, dx_min, dx_max, dw
+
+    _conf_size = length(𝑆.tmp_conf)
+    𝑆.new_conf = copy(𝑆.tmp_conf)
+    𝑆.new_elem_dev = copy(𝑆.elem_dev)
+    𝑆.new_conf[t].w = 𝑆.new_conf[t].w + dw
+    𝑆.new_conf[t].h = weight / 𝑆.new_conf[t].w
+    calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
+
+    𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
+    @show 𝑆.new_dev
+
 end
 
 function _som_change_weight()
