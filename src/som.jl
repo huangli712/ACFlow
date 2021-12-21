@@ -420,30 +420,6 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.trial_steps[1] = 𝑆.trial_steps[1] + 1
 end
 
-function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
-    _X = max(abs(xmin), abs(xmax))
-    _lambda = γ / _X
-    _elx = exp(-1 * _lambda * abs(xmin))
-    _N = _lambda / ((xmin / abs(xmin)) * (exp(-1 * _lambda * abs(xmin)) - 1)
-        + (xmax / abs(xmax)) * (1 - exp(-1 * _lambda * abs(xmax))))
- 
-    y = rand(rng, F64)
-    y = 0.56554
-    _lysn = _lambda * y / _N
-    if xmin ≥ 0
-        return -1 * log(_elx - _lysn) / _lambda
-    elseif xmax ≤ 0
-        return log(_lysn + _elx) / _lambda
-    else
-        _C1 = _N * (1 - _elx) / _lambda
-        if y <= _C1
-            return log(_lysn + _elx) / _lambda
-        else
-            return -1 * log(1 - _lysn + _lambda * _C1 / _N) / _lambda
-        end
-    end
-end
-
 function _som_remove()
     println("remove Rectangle")
 end
@@ -493,4 +469,28 @@ function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
     end
 
     return res
+end
+
+function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
+    _X = max(abs(xmin), abs(xmax))
+    _lambda = γ / _X
+    _elx = exp(-1 * _lambda * abs(xmin))
+    _N = _lambda / ((xmin / abs(xmin)) * (exp(-1 * _lambda * abs(xmin)) - 1)
+        + (xmax / abs(xmax)) * (1 - exp(-1 * _lambda * abs(xmax))))
+ 
+    y = rand(rng, F64)
+    y = 0.56554
+    _lysn = _lambda * y / _N
+    if xmin ≥ 0
+        return -1 * log(_elx - _lysn) / _lambda
+    elseif xmax ≤ 0
+        return log(_lysn + _elx) / _lambda
+    else
+        _C1 = _N * (1 - _elx) / _lambda
+        if y <= _C1
+            return log(_lysn + _elx) / _lambda
+        else
+            return -1 * log(1 - _lysn + _lambda * _C1 / _N) / _lambda
+        end
+    end
 end
