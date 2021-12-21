@@ -467,6 +467,40 @@ end
 
 function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     println("shift Rectangle")
+    ommin = P_SOM["ommin"]
+    ommax = P_SOM["ommax"]
+    γ = P_SOM["gamma"]
+
+    t = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
+    t = 23
+
+    dx_min = ommin + 𝑆.tmp_conf[t].w / 2.0 - 𝑆.tmp_conf[t].c
+    dx_max = ommax - 𝑆.tmp_conf[t].w / 2.0 - 𝑆.tmp_conf[t].c
+    if dx_max ≤ dx_min
+        return
+    end
+    #@show dx_min, dx_max
+
+    dc = Pdx(dx_min, dx_max, γ, 𝑆.rng)
+    #@show dc
+
+    _conf_size = length(𝑆.tmp_conf)
+    𝑆.new_conf = copy(𝑆.tmp_conf)
+    𝑆.new_elem_dev = copy(𝑆.elem_dev)
+    𝑆.new_conf[t].c = 𝑆.new_conf[t].c + dc
+
+    calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
+    𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
+    #@show 𝑆.new_dev
+
+    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
+        𝑆.tmp_conf = copy(𝑆.new_conf)
+        𝑆.tmp_dev = 𝑆.new_dev
+        𝑆.elem_dev = copy(𝑆.new_elem_dev)
+        𝑆.accepted_steps[3] = 𝑆.accepted_steps[3] + 1
+    end
+    𝑆.trial_steps[3] = 𝑆.trial_steps[3] + 1
+    #@show length(𝑆.tmp_conf)
 end
 
 function _som_change_width()
@@ -523,7 +557,7 @@ function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
         + (xmax / abs(xmax)) * (1 - exp(-1 * _lambda * abs(xmax))))
  
     y = rand(rng, F64)
-    y = 0.56554
+    y = 0.415661
     _lysn = _lambda * y / _N
     if xmin ≥ 0
         return -1 * log(_elx - _lysn) / _lambda
