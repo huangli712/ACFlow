@@ -292,7 +292,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.elem_dev = copy(𝑆.att_elem_dev)
 
     @show 𝑆.tmp_conf
-    _som_remove(𝑆)
+    _som_remove(𝑆, ω, 𝐺)
     error()
 
     for i = 1:T1
@@ -305,7 +305,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 2
-                _som_remove(𝑆)
+                _som_remove(𝑆, ω, 𝐺)
                 break
 
             @case 3
@@ -340,7 +340,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 2
-                _som_remove(𝑆)
+                _som_remove(𝑆, ω, 𝐺)
                 break
 
             @case 3
@@ -422,8 +422,47 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     #@show length(𝑆.tmp_conf)
 end
 
-function _som_remove(𝑆::T_SOM)
+function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     println("remove Rectangle")
+
+    t1 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
+    t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
+    t1 = 23
+    t2 = 25
+    if t1 == t2
+        t2 = (t1 + 1) % length(𝑆.tmp_conf)
+    end
+
+    _conf_size = length(𝑆.tmp_conf)
+    dx = 𝑆.tmp_conf[t1].h * 𝑆.tmp_conf[t1].w
+    #@show dx
+
+    𝑆.new_conf = copy(𝑆.tmp_conf)
+    𝑆.new_elem_dev = copy(𝑆.elem_dev)
+    𝑆.new_conf[t2].h = 𝑆.new_conf[t2].h + dx / 𝑆.new_conf[t2].w
+    𝑆.new_conf[t1] = 𝑆.new_conf[end]
+    pop!(𝑆.new_conf)
+
+    #@show 𝑆.new_conf
+    if t1 < _conf_size
+        calc_dev_rec(𝑆.new_conf[t1], t1, 𝑆.new_elem_dev, ω)
+    end
+
+    if t2 < _conf_size
+        calc_dev_rec(𝑆.new_conf[t2], t2, 𝑆.new_elem_dev, ω)
+    end
+
+    𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
+    #@show 𝑆.new_dev
+
+    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
+        𝑆.tmp_conf = copy(𝑆.new_conf)
+        𝑆.tmp_dev = 𝑆.new_dev
+        𝑆.elem_dev = copy(𝑆.new_elem_dev)
+        𝑆.accepted_steps[2] = 𝑆.accepted_steps[2] + 1
+    end
+    𝑆.trial_steps[2] = 𝑆.trial_steps[2] + 1
+
 end
 
 function _som_shift()
@@ -453,7 +492,7 @@ function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::Fermioni
     for g = 1:Ngrid
         Gs = r.h * log((im * ω.grid[g] - r.c + 0.5 * r.w) / (im * ω.grid[g] - r.c - 0.5 * r.w))
         elem_dev[g,k] = Gs
-        @show g, Gs
+        #@show g, Gs
     end
     #error()
 end
