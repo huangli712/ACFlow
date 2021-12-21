@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/21
+# Last modified: 2021/12/22
 #
 
 mutable struct Rectangle
@@ -109,6 +109,7 @@ function som_run(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Lmax = P_SOM["Lmax"]
     for l = 1:Lmax
         #@show rand(𝑆.rng, F64)
+        println("try: $l")
         som_try(𝑆, ω, 𝐺)
     end
 end
@@ -120,6 +121,7 @@ function som_try(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     #error()
 
     for f = 1:Nf
+        println("    update: $f")
         som_update(𝑆, ω, 𝐺)
     end
 end
@@ -379,7 +381,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 end
 
 function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    println("add Rectangle")
+    #println("add Rectangle")
     smin = P_SOM["smin"]
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
@@ -436,20 +438,24 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 end
 
 function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    println("remove Rectangle")
+    #println("remove Rectangle")
 
     t1 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     #t1 = 23
     #t2 = 25
-    if t1 == t2
-        t2 = (t1 + 1) % length(𝑆.tmp_conf)
+    #if t1 == t2
+    #    t2 = (t1 + 1) % length(𝑆.tmp_conf)
+    #end
+    while t1 == t2
+        t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     end
 
     _conf_size = length(𝑆.tmp_conf)
     dx = 𝑆.tmp_conf[t1].h * 𝑆.tmp_conf[t1].w
     #@show dx
 
+    #@show t1, t2, length(𝑆.tmp_conf)
     𝑆.new_conf = copy(𝑆.tmp_conf)
     𝑆.new_elem_dev = copy(𝑆.elem_dev)
     𝑆.new_conf[t2].h = 𝑆.new_conf[t2].h + dx / 𝑆.new_conf[t2].w
@@ -479,7 +485,7 @@ function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 end
 
 function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    println("shift Rectangle")
+    #println("shift Rectangle")
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
@@ -517,7 +523,7 @@ function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 end
 
 function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    println("change width of Rectangle")
+    #println("change width of Rectangle")
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
@@ -556,7 +562,7 @@ function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenD
 end
 
 function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    println("change weight of Rectangle")
+    #println("change weight of Rectangle")
     smin = P_SOM["smin"]
     γ = P_SOM["gamma"]
 
@@ -564,10 +570,14 @@ function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::Green
     t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     #t1 = 23
     #t2 = 25
-    if t1 == t2
-        t2 = (t1 + 1) % length(𝑆.tmp_conf)
+    #@show t1, t2, length(𝑆.tmp_conf)
+    #if t1 == t2
+    #    t2 = (t1 + 1) % length(𝑆.tmp_conf)
+    #end
+    #@show t1, t2
+    while t1 == t2
+        t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     end
-
     w1 = 𝑆.tmp_conf[t1].w
     w2 = 𝑆.tmp_conf[t2].w
     h1 = 𝑆.tmp_conf[t1].h
@@ -602,7 +612,7 @@ function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::Green
 end
 
 function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    println("split Rectangle")
+    #println("split Rectangle")
     wmin = P_SOM["wmin"]
     smin = P_SOM["smin"]
     ommin = P_SOM["ommin"]
@@ -670,7 +680,7 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 end
 
 function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    println("Merge Rectangle")
+    #println("Merge Rectangle")
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
@@ -679,8 +689,11 @@ function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     #t1 = 23
     #t2 = 25
-    if t1 == t2
-        t2 = (t1 + 1) % length(𝑆.tmp_conf)
+    #if t1 == t2
+    #    t2 = (t1 + 1) % length(𝑆.tmp_conf)
+    #end
+    while t1 == t2
+        t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     end
 
     old_conf1 = 𝑆.tmp_conf[t1]
