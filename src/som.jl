@@ -292,7 +292,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.elem_dev = copy(𝑆.att_elem_dev)
 
     @show 𝑆.tmp_conf
-    _som_change_width(𝑆, ω, 𝐺)
+    _som_change_weight(𝑆, ω, 𝐺)
     error()
 
     for i = 1:T1
@@ -317,15 +317,15 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 5
-                _som_change_weight()
+                _som_change_weight(𝑆, ω, 𝐺)
                 break
 
             @case 6
-                _som_split()
+                _som_split(𝑆, ω, 𝐺)
                 break
 
             @case 7
-                _som_merge()
+                _som_merge(𝑆, ω, 𝐺)
                 break
         end
     end
@@ -352,15 +352,15 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 5
-                _som_change_weight()
+                _som_change_weight(𝑆, ω, 𝐺)
                 break
 
             @case 6
-                _som_split()
+                _som_split(𝑆, ω, 𝐺)
                 break
 
             @case 7
-                _som_merge()
+                _som_merge(𝑆, ω, 𝐺)
                 break
         end
     end
@@ -540,18 +540,17 @@ function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenD
     end
     𝑆.trial_steps[4] = 𝑆.trial_steps[4] + 1
     #@show length(𝑆.tmp_conf)
-
 end
 
-function _som_change_weight()
+function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     println("change weight of Rectangle")
 end
 
-function _som_split()
+function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     println("split Rectangle")
 end
 
-function _som_merge()
+function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     println("Merge Rectangle")
 end
 
