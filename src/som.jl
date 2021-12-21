@@ -292,7 +292,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.elem_dev = copy(𝑆.att_elem_dev)
 
     @show 𝑆.tmp_conf
-    _som_change_weight(𝑆, ω, 𝐺)
+    _som_split(𝑆, ω, 𝐺)
     error()
 
     for i = 1:T1
@@ -590,6 +590,34 @@ end
 
 function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     println("split Rectangle")
+    wmin = P_SOM["wmin"]
+    smin = P_SOM["smin"]
+    ommin = P_SOM["ommin"]
+    ommax = P_SOM["ommax"]
+
+    t = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
+    t = 23
+
+    old_conf = 𝑆.tmp_conf[t]
+    if old_conf.w ≤ 2 * wmin || old_conf.w * old_conf.h ≤ 2.0 * smin
+        return
+    end
+
+    h = old_conf.h
+    w1 = wmin + (old_conf.w - 2.0 * wmin) * rand(𝑆.rng, F64)
+    w2 = old_conf.w - w1
+    if w1 > w2
+        w1, w2 = w2, w1
+    end
+
+    c1 = old_conf.c - old_conf.w / 2.0 + w1 / 2.0
+    c2 = old_conf.c + old_conf.w / 2.0 - w2 / 2.0
+    dx_min = ommin + w1 / 2.0 - c1
+    dx_max = ommax - w1 / 2.0 - c1
+    if dx_max <= dx_min
+        return
+    end
+    dc1 = Pdx(dx_min, dx_max, γ, 𝑆.rng)
 end
 
 function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
