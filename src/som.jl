@@ -292,7 +292,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.elem_dev = copy(𝑆.att_elem_dev)
 
     @show 𝑆.tmp_conf
-    _som_split(𝑆, ω, 𝐺)
+    _som_merge(𝑆, ω, 𝐺)
     error()
 
     for i = 1:T1
@@ -658,6 +658,66 @@ end
 
 function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     println("Merge Rectangle")
+    ommin = P_SOM["ommin"]
+    ommax = P_SOM["ommax"]
+    γ = P_SOM["gamma"]
+
+    t1 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
+    t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
+    t1 = 23
+    t2 = 25
+    if t1 == t2
+        t2 = (t1 + 1) % length(𝑆.tmp_conf)
+    end
+
+    old_conf1 = 𝑆.tmp_conf[t1]
+    old_conf2 = 𝑆.tmp_conf[t2]
+
+    weight = old_conf1.h * old_conf1.w + old_conf2.h * old_conf2.w
+    w_new = 0.5 * (old_conf1.w + old_conf2.w)
+    h_new = weight / w_new
+    c_new = old_conf1.c + (old_conf2.c - old_conf1.c) * old_conf2.h * old_conf2.w / weight
+    dx_min = ommin + w_new / 2.0 - c_new
+    dx_max = ommax - w_new / 2.0 - c_new
+    if dx_max ≤ dx_min
+        return
+    end
+    dc = Pdx(dx_min, dx_max, γ, 𝑆.rng)
+    #@show dc
+    #@show h_new, w_new, c_new
+
+    _conf_size = length(𝑆.tmp_conf)
+    𝑆.new_conf = copy(𝑆.tmp_conf)
+    𝑆.new_elem_dev = copy(𝑆.elem_dev)
+    𝑆.new_conf[t1] = 𝑆.new_conf[end]
+    pop!(𝑆.new_conf)
+    #@show 𝑆.new_conf
+    #println()
+    if t2 < _conf_size
+        𝑆.new_conf[t2] = 𝑆.new_conf[end]
+    end
+    pop!(𝑆.new_conf)
+    
+    push!(𝑆.new_conf, Rectangle(h_new, w_new, c_new + dc))
+    #@show 𝑆.new_conf
+
+    if t1 < _conf_size - 1
+        calc_dev_rec(𝑆.new_conf[t1], t1, 𝑆.new_elem_dev, ω)
+    end
+    if t2 < _conf_size - 1
+        calc_dev_rec(𝑆.new_conf[t2], t2, 𝑆.new_elem_dev, ω)
+    end
+    calc_dev_rec(𝑆.new_conf[_conf_size - 1], _conf_size - 1, 𝑆.new_elem_dev, ω)
+    𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
+    #@show 𝑆.new_dev
+
+    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
+        𝑆.tmp_conf = copy(𝑆.new_conf)
+        𝑆.tmp_dev = 𝑆.new_dev
+        𝑆.elem_dev = copy(𝑆.new_elem_dev)
+        𝑆.accepted_steps[7] = 𝑆.accepted_steps[7] + 1
+    end
+    𝑆.trial_steps[7] = 𝑆.trial_steps[7] + 1
 end
 
 function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::FermionicMatsubaraGrid)
