@@ -530,7 +530,16 @@ function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenD
     calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
 
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
-    @show 𝑆.new_dev
+    #@show 𝑆.new_dev
+
+    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
+        𝑆.tmp_conf = copy(𝑆.new_conf)
+        𝑆.tmp_dev = 𝑆.new_dev
+        𝑆.elem_dev = copy(𝑆.new_elem_dev)
+        𝑆.accepted_steps[4] = 𝑆.accepted_steps[4] + 1
+    end
+    𝑆.trial_steps[4] = 𝑆.trial_steps[4] + 1
+    #@show length(𝑆.tmp_conf)
 
 end
 
