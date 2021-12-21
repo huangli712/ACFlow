@@ -292,7 +292,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.elem_dev = copy(𝑆.att_elem_dev)
 
     @show 𝑆.tmp_conf
-    _som_remove(𝑆, ω, 𝐺)
+    _som_shift(𝑆, ω, 𝐺)
     error()
 
     for i = 1:T1
@@ -309,7 +309,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 3
-                _som_shift()
+                _som_shift(𝑆, ω, 𝐺)
                 break
 
             @case 4
@@ -344,7 +344,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 3
-                _som_shift()
+                _som_shift(𝑆, ω, 𝐺)
                 break
 
             @case 4
@@ -462,10 +462,10 @@ function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         𝑆.accepted_steps[2] = 𝑆.accepted_steps[2] + 1
     end
     𝑆.trial_steps[2] = 𝑆.trial_steps[2] + 1
-
+    #@show length(𝑆.tmp_conf)
 end
 
-function _som_shift()
+function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     println("shift Rectangle")
 end
 
@@ -510,6 +510,9 @@ function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
     end
 
     return res
+end
+
+function calc_kappa()
 end
 
 function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
