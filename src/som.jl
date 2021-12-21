@@ -544,6 +544,48 @@ end
 
 function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     println("change weight of Rectangle")
+    smin = P_SOM["smin"]
+    γ = P_SOM["gamma"]
+
+    t1 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
+    t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
+    t1 = 23
+    t2 = 25
+    if t1 == t2
+        t2 = (t1 + 1) % length(𝑆.tmp_conf)
+    end
+
+    w1 = 𝑆.tmp_conf[t1].w
+    w2 = 𝑆.tmp_conf[t2].w
+    h1 = 𝑆.tmp_conf[t1].h
+    h2 = 𝑆.tmp_conf[t2].h
+    dx_min = smin / w1 - h1
+    dx_max = (h2 - smin / w2) * w2 / w1
+    #@show dx_min, dx_max
+    if dx_max ≤ dx_min 
+        return
+    end
+    dh = Pdx(dx_min, dx_max, γ, 𝑆.rng)
+    #@show dh
+
+    _conf_size = length(𝑆.tmp_conf)
+    𝑆.new_conf = copy(𝑆.tmp_conf)
+    𝑆.new_elem_dev = copy(𝑆.elem_dev)
+    𝑆.new_conf[t1].h = 𝑆.new_conf[t1].h + dh
+    𝑆.new_conf[t2].h = 𝑆.new_conf[t2].h - dh * w1 / w2
+    calc_dev_rec(𝑆.new_conf[t1], t1, 𝑆.new_elem_dev, ω)
+    calc_dev_rec(𝑆.new_conf[t2], t2, 𝑆.new_elem_dev, ω)
+    𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
+    #@show 𝑆.new_dev
+
+    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
+        𝑆.tmp_conf = copy(𝑆.new_conf)
+        𝑆.tmp_dev = 𝑆.new_dev
+        𝑆.elem_dev = copy(𝑆.new_elem_dev)
+        𝑆.accepted_steps[5] = 𝑆.accepted_steps[5] + 1
+    end
+    𝑆.trial_steps[5] = 𝑆.trial_steps[5] + 1
+    @show length(𝑆.tmp_conf)
 end
 
 function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
@@ -592,7 +634,7 @@ function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
         + (xmax / abs(xmax)) * (1 - exp(-1 * _lambda * abs(xmax))))
  
     y = rand(rng, F64)
-    y = 0.415661
+    y = 0.56554
     _lysn = _lambda * y / _N
     if xmin ≥ 0
         return -1 * log(_elx - _lysn) / _lambda
