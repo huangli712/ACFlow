@@ -594,6 +594,7 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     smin = P_SOM["smin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
+    γ = P_SOM["gamma"]
 
     t = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     t = 23
@@ -605,6 +606,7 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
     h = old_conf.h
     w1 = wmin + (old_conf.w - 2.0 * wmin) * rand(𝑆.rng, F64)
+    w1 = 5.5897
     w2 = old_conf.w - w1
     if w1 > w2
         w1, w2 = w2, w1
@@ -618,6 +620,7 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         return
     end
     dc1 = Pdx(dx_min, dx_max, γ, 𝑆.rng)
+    @show dc1
 end
 
 function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
