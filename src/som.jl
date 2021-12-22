@@ -859,24 +859,23 @@ end
 
 function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
     _X = max(abs(xmin), abs(xmax))
-    _lambda = γ / _X
-    _elx = exp(-1.0 * _lambda * abs(xmin))
-    _N = _lambda / ((xmin / abs(xmin)) * (exp(-1.0 * _lambda * abs(xmin)) - 1.0)
-        + (xmax / abs(xmax)) * (1.0 - exp(-1.0 * _lambda * abs(xmax))))
+    _λ = γ / _X
+    _elx = exp(-1.0 * _λ * abs(xmin))
+    _N = _λ / ( (xmin / abs(xmin)) * (exp(-1.0 * _λ * abs(xmin)) - 1.0)
+              + (xmax / abs(xmax)) * (1.0 - exp(-1.0 * _λ * abs(xmax))) )
  
     y = rand(rng, F64)
-    #y = 0.56554
-    _lysn = _lambda * y / _N
+    _lysn = _λ * y / _N
     if xmin ≥ 0
-        return -1.0 * log(_elx - _lysn) / _lambda
+        return -1.0 * log(_elx - _lysn) / _λ
     elseif xmax ≤ 0
-        return log(_lysn + _elx) / _lambda
+        return log(_lysn + _elx) / _λ
     else
-        _C1 = _N * (1.0 - _elx) / _lambda
+        _C1 = _N * (1.0 - _elx) / _λ
         if y ≤ _C1
-            return log(_lysn + _elx) / _lambda
+            return log(_lysn + _elx) / _λ
         else
-            return -1.0 * log(1.0 - _lysn + _lambda * _C1 / _N) / _lambda
+            return -1.0 * log(1.0 - _lysn + _λ * _C1 / _N) / _λ
         end
     end
 end
