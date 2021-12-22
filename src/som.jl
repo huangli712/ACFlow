@@ -131,46 +131,6 @@ function som_try(l, 𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     #@show 𝑆.conf[l]
 end
 
-function som_output(count::I64, 𝑆::T_SOM)
-    println("output")
-    alpha = P_SOM["alpha"]
-    #Lmax = P_SOM["Lmax"]
-    Ngrid = P_SOM["Ngrid"]
-    ommin = P_SOM["ommin"]
-    ommax = P_SOM["ommax"]
-
-    dev_min = minimum(𝑆.dev[1:count])
-    @show dev_min
-    Lgood = 0
-    Aom = zeros(F64, Ngrid)
-    for l = 1:count
-        if alpha * dev_min - 𝑆.dev[l] > 0
-            Lgood = Lgood + 1
-            for w = 1:Ngrid
-                _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
-                for r = 1:length(𝑆.conf[l])
-                    R = 𝑆.conf[l][r]
-                    @show l, r, R
-                    if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
-                        Aom[w] = Aom[w] + R.h
-                    end
-                end
-            end
-        end
-    end
-
-    if Lgood > 0
-        @. Aom = Aom / Lgood
-    end
-
-    open("Aw.out", "w") do fout
-        for w = 1:Ngrid
-            _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
-            println(fout, _omega, " ", Aom[w])
-        end
-    end
-end
-
 function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     smin = P_SOM["smin"]
     wmin = P_SOM["wmin"]
@@ -449,10 +409,51 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         end
     end
 
+    @show 𝑆.tmp_dev, 𝑆.att_dev
     if 𝑆.tmp_dev < 𝑆.att_dev
         𝑆.att_conf = copy(𝑆.tmp_conf)
         𝑆.att_dev = 𝑆.tmp_dev
         𝑆.att_elem_dev = copy(𝑆.elem_dev)
+    end
+end
+
+function som_output(count::I64, 𝑆::T_SOM)
+    println("output")
+    alpha = P_SOM["alpha"]
+    #Lmax = P_SOM["Lmax"]
+    Ngrid = P_SOM["Ngrid"]
+    ommin = P_SOM["ommin"]
+    ommax = P_SOM["ommax"]
+
+    dev_min = minimum(𝑆.dev[1:count])
+    @show dev_min
+    Lgood = 0
+    Aom = zeros(F64, Ngrid)
+    for l = 1:count
+        if alpha * dev_min - 𝑆.dev[l] > 0
+            Lgood = Lgood + 1
+            for w = 1:Ngrid
+                _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
+                for r = 1:length(𝑆.conf[l])
+                    R = 𝑆.conf[l][r]
+                    @show l, r, R
+                    if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
+                        Aom[w] = Aom[w] + R.h
+                    end
+                end
+            end
+        end
+    end
+
+    if Lgood > 0
+        @. Aom = Aom / Lgood
+    end
+
+    open("Aw.out", "w") do fout
+        for w = 1:Ngrid
+            _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
+            println(fout, _omega, " ", Aom[w])
+        end
     end
 end
 
@@ -493,7 +494,7 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     w = dx / h
     #@show c, h, w
     push!(𝑆.new_conf, Rectangle(h, w, c))
-    @show "new h", dx, h
+    #@show "new h", dx, h
     𝑆.new_conf[t].h = 𝑆.new_conf[t].h - dx / 𝑆.new_conf[t].w
     #@show 𝑆.new_conf
     calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
