@@ -37,7 +37,7 @@ mutable struct T_SOM
 end
 
 const P_SOM = Dict{String, Any}(
-    "Lmax" => 1,
+    "Lmax" => 12,
     "Ngrid" => 64,
     "Nf" => 100,
     "Tmax" => 200,
@@ -127,7 +127,7 @@ function som_try(l, 𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     end
 
     𝑆.dev[l] = 𝑆.att_dev
-    𝑆.conf[l] = 𝑆.att_conf
+    𝑆.conf[l] = copy(𝑆.att_conf)
     #@show 𝑆.conf[l]
 end
 
@@ -150,7 +150,7 @@ function som_output(count::I64, 𝑆::T_SOM)
                 _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
                 for r = 1:length(𝑆.conf[l])
                     R = 𝑆.conf[l][r]
-                    @show r, R
+                    @show l, r, R
                     if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
                         Aom[w] = Aom[w] + R.h
                     end
@@ -860,23 +860,23 @@ end
 function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
     _X = max(abs(xmin), abs(xmax))
     _lambda = γ / _X
-    _elx = exp(-1 * _lambda * abs(xmin))
-    _N = _lambda / ((xmin / abs(xmin)) * (exp(-1 * _lambda * abs(xmin)) - 1)
-        + (xmax / abs(xmax)) * (1 - exp(-1 * _lambda * abs(xmax))))
+    _elx = exp(-1.0 * _lambda * abs(xmin))
+    _N = _lambda / ((xmin / abs(xmin)) * (exp(-1.0 * _lambda * abs(xmin)) - 1.0)
+        + (xmax / abs(xmax)) * (1.0 - exp(-1.0 * _lambda * abs(xmax))))
  
     y = rand(rng, F64)
     #y = 0.56554
     _lysn = _lambda * y / _N
     if xmin ≥ 0
-        return -1 * log(_elx - _lysn) / _lambda
+        return -1.0 * log(_elx - _lysn) / _lambda
     elseif xmax ≤ 0
         return log(_lysn + _elx) / _lambda
     else
-        _C1 = _N * (1 - _elx) / _lambda
-        if y <= _C1
+        _C1 = _N * (1.0 - _elx) / _lambda
+        if y ≤ _C1
             return log(_lysn + _elx) / _lambda
         else
-            return -1 * log(1 - _lysn + _lambda * _C1 / _N) / _lambda
+            return -1.0 * log(1.0 - _lysn + _lambda * _C1 / _N) / _lambda
         end
     end
 end
