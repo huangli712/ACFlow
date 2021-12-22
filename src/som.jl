@@ -536,7 +536,7 @@ function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.new_conf = copy(𝑆.tmp_conf)
     𝑆.new_elem_dev = copy(𝑆.elem_dev)
     𝑆.new_conf[t2].h = 𝑆.new_conf[t2].h + dx / 𝑆.new_conf[t2].w
-    𝑆.new_conf[t1] = 𝑆.new_conf[end]
+    𝑆.new_conf[t1] = deepcopy(𝑆.new_conf[end])
     pop!(𝑆.new_conf)
 
     #@show 𝑆.new_conf
@@ -718,7 +718,7 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     c2 = old_conf.c + old_conf.w / 2.0 - w2 / 2.0
     dx_min = ommin + w1 / 2.0 - c1
     dx_max = ommax - w1 / 2.0 - c1
-    if dx_max <= dx_min
+    if dx_max ≤ dx_min
         return
     end
     dc1 = Pdx(dx_min, dx_max, γ, 𝑆.rng)
@@ -735,7 +735,7 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
        (c2 + dc2 ≥ ommin + w2 / 2.0) &&
        (c2 + dc2 ≤ ommax - w2 / 2.0)
 
-        𝑆.new_conf[t] = 𝑆.new_conf[end]
+        𝑆.new_conf[t] = deepcopy(𝑆.new_conf[end])
         pop!(𝑆.new_conf)
         push!(𝑆.new_conf, Rectangle(h, w1, c1 + dc1))
         push!(𝑆.new_conf, Rectangle(h, w2, c2 + dc2))
@@ -774,6 +774,7 @@ function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     while t1 == t2
         t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     end
+    @assert t1 != t2
 
     old_conf1 = 𝑆.tmp_conf[t1]
     old_conf2 = 𝑆.tmp_conf[t2]
@@ -794,12 +795,12 @@ function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     _conf_size = length(𝑆.tmp_conf)
     𝑆.new_conf = copy(𝑆.tmp_conf)
     𝑆.new_elem_dev = copy(𝑆.elem_dev)
-    𝑆.new_conf[t1] = 𝑆.new_conf[end]
+    𝑆.new_conf[t1] = deepcopy(𝑆.new_conf[end])
     pop!(𝑆.new_conf)
     #@show 𝑆.new_conf
     #println()
     if t2 < _conf_size
-        𝑆.new_conf[t2] = 𝑆.new_conf[end]
+        𝑆.new_conf[t2] = deepcopy(𝑆.new_conf[end])
     end
     pop!(𝑆.new_conf)
     
