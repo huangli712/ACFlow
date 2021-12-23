@@ -40,7 +40,7 @@ const P_SOM = Dict{String, Any}(
     "Lmax" => 1,
     "Ngrid" => 64,
     "Nf" => 2000,
-    "Tmax" => 5000,
+    "Tmax" => 200,
     "Kmax" => 50,
     "nwout" => 100,
     "smin" => 0.005,
@@ -881,9 +881,6 @@ function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
     return res
 end
 
-function calc_kappa()
-end
-
 function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
     _X = max(abs(xmin), abs(xmax))
     _λ = γ / _X
@@ -892,7 +889,6 @@ function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
               + (xmax / abs(xmax)) * (1.0 - exp(-1.0 * _λ * abs(xmax))) )
  
     y = rand(rng, F64)
-    #y = 0.56554
     _lysn = _λ * y / _N
     if xmin ≥ 0
         return -1.0 * log(_elx - _lysn) / _λ
