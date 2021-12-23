@@ -37,10 +37,10 @@ mutable struct T_SOM
 end
 
 const P_SOM = Dict{String, Any}(
-    "Lmax" => 10,
+    "Lmax" => 1,
     "Ngrid" => 64,
     "Nf" => 2000,
-    "Tmax" => 1000,
+    "Tmax" => 2000,
     "Kmax" => 50,
     "nwout" => 100,
     "smin" => 0.005,
@@ -56,7 +56,7 @@ const P_SOM = Dict{String, Any}(
 )
 
 function som_init()
-    rng = MersenneTwister(25512)
+    rng = MersenneTwister(rand(1:1000000))
 
     #println("here")
     Lmax = P_SOM["Lmax"]
@@ -301,9 +301,9 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
     norm = 0.0
     for i = 1:length(𝑆.att_conf)
-        norm = norm + 𝑆.att_conf[i].h
+        norm = norm + 𝑆.att_conf[i].h * 𝑆.att_conf[i].w
     end
-    #@show norm
+    @show norm
     #error()
 end
 
@@ -342,15 +342,15 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
         @cswitch update_type begin
             @case 1
-                #if length(𝑆.tmp_conf) < Kmax - 1
-                #    _som_add(𝑆, ω, 𝐺)
-                #end
+                if length(𝑆.tmp_conf) < Kmax - 1
+                    _som_add(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 2
-                #if length(𝑆.tmp_conf) > 1
-                #    _som_remove(𝑆, ω, 𝐺)
-                #end
+                if length(𝑆.tmp_conf) > 1
+                    _som_remove(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 3
@@ -387,15 +387,15 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
         @cswitch update_type begin
             @case 1
-                #if length(𝑆.tmp_conf) < Kmax - 1
-                #    _som_add(𝑆, ω, 𝐺)
-                #end
+                if length(𝑆.tmp_conf) < Kmax - 1
+                    _som_add(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 2
-                #if length(𝑆.tmp_conf) > 1
-                #    _som_remove(𝑆, ω, 𝐺)
-                #end
+                if length(𝑆.tmp_conf) > 1
+                    _som_remove(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 3
@@ -426,7 +426,12 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         end
     end
 
-    @show 𝑆.tmp_dev, 𝑆.att_dev
+    norm = 0.0
+    for i = 1:length(𝑆.tmp_conf)
+        norm = norm + 𝑆.tmp_conf[i].h * 𝑆.tmp_conf[i].w
+    end
+
+    @show 𝑆.tmp_dev, 𝑆.att_dev, norm
     if 𝑆.tmp_dev < 𝑆.att_dev
         𝑆.att_conf = copy(𝑆.tmp_conf)
         𝑆.att_dev = 𝑆.tmp_dev
