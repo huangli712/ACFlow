@@ -37,10 +37,10 @@ mutable struct T_SOM
 end
 
 const P_SOM = Dict{String, Any}(
-    "Lmax" => 1,
+    "Lmax" => 10,
     "Ngrid" => 64,
     "Nf" => 2000,
-    "Tmax" => 200,
+    "Tmax" => 1000,
     "Kmax" => 50,
     "nwout" => 100,
     "smin" => 0.005,
@@ -56,7 +56,7 @@ const P_SOM = Dict{String, Any}(
 )
 
 function som_init()
-    rng = MersenneTwister(2345)
+    rng = MersenneTwister(25512)
 
     #println("here")
     Lmax = P_SOM["Lmax"]
@@ -124,8 +124,9 @@ function som_try(l, 𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     for f = 1:Nf
         println("    update: $f")
         som_update(𝑆, ω, 𝐺)
-        error()
+        #error()
     end
+    #error()
 
     𝑆.dev[l] = 𝑆.att_dev
     𝑆.conf[l] = copy(𝑆.att_conf)
@@ -341,15 +342,15 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
         @cswitch update_type begin
             @case 1
-                if length(𝑆.tmp_conf) < Kmax - 1
-                    _som_add(𝑆, ω, 𝐺)
-                end
+                #if length(𝑆.tmp_conf) < Kmax - 1
+                #    _som_add(𝑆, ω, 𝐺)
+                #end
                 break
 
             @case 2
-                if length(𝑆.tmp_conf) > 1
-                    _som_remove(𝑆, ω, 𝐺)
-                end
+                #if length(𝑆.tmp_conf) > 1
+                #    _som_remove(𝑆, ω, 𝐺)
+                #end
                 break
 
             @case 3
@@ -386,15 +387,15 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
         @cswitch update_type begin
             @case 1
-                if length(𝑆.tmp_conf) < Kmax - 1
-                    _som_add(𝑆, ω, 𝐺)
-                end
+                #if length(𝑆.tmp_conf) < Kmax - 1
+                #    _som_add(𝑆, ω, 𝐺)
+                #end
                 break
 
             @case 2
-                if length(𝑆.tmp_conf) > 1
-                    _som_remove(𝑆, ω, 𝐺)
-                end
+                #if length(𝑆.tmp_conf) > 1
+                #    _som_remove(𝑆, ω, 𝐺)
+                #end
                 break
 
             @case 3
