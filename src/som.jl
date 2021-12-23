@@ -341,7 +341,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
         @cswitch update_type begin
             @case 1
-                if length(𝑆.tmp_conf) < Kmax
+                if length(𝑆.tmp_conf) < Kmax - 1
                     _som_add(𝑆, ω, 𝐺)
                 end
                 break
@@ -357,9 +357,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 4
-                if length(𝑆.tmp_conf) > 1
-                    _som_change_width(𝑆, ω, 𝐺)
-                end
+                _som_change_width(𝑆, ω, 𝐺)
                 break
 
             @case 5
@@ -369,7 +367,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 6
-                if length(𝑆.tmp_conf) < Kmax
+                if length(𝑆.tmp_conf) < Kmax - 1
                     _som_split(𝑆, ω, 𝐺)
                 end
                 break
@@ -388,7 +386,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
         @cswitch update_type begin
             @case 1
-                if length(𝑆.tmp_conf) < Kmax
+                if length(𝑆.tmp_conf) < Kmax - 1
                     _som_add(𝑆, ω, 𝐺)
                 end
                 break
@@ -404,9 +402,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 4
-                if length(𝑆.tmp_conf) > 1
-                    _som_change_width(𝑆, ω, 𝐺)
-                end
+                _som_change_width(𝑆, ω, 𝐺)
                 break
 
             @case 5
@@ -416,7 +412,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 6
-                if length(𝑆.tmp_conf) < Kmax
+                if length(𝑆.tmp_conf) < Kmax - 1
                     _som_split(𝑆, ω, 𝐺)
                 end
                 break
@@ -911,125 +907,3 @@ function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
         end
     end
 end
-
-#=
-function Pdx_shift(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
-    _X = max(abs(xmin), abs(xmax))
-    _λ = γ / _X
-    _elx = exp(-1.0 * _λ * abs(xmin))
-    _N = _λ / ( (xmin / abs(xmin)) * (exp(-1.0 * _λ * abs(xmin)) - 1.0)
-              + (xmax / abs(xmax)) * (1.0 - exp(-1.0 * _λ * abs(xmax))) )
- 
-    y = rand(rng, F64)
-    y = 0.646673
-    _lysn = _λ * y / _N
-    if xmin ≥ 0
-        return -1.0 * log(_elx - _lysn) / _λ
-    elseif xmax ≤ 0
-        return log(_lysn + _elx) / _λ
-    else
-        _C1 = _N * (1.0 - _elx) / _λ
-        if y ≤ _C1
-            return log(_lysn + _elx) / _λ
-        else
-            return -1.0 * log(1.0 - _lysn + _λ * _C1 / _N) / _λ
-        end
-    end
-end
-
-function Pdx_width(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
-    _X = max(abs(xmin), abs(xmax))
-    _λ = γ / _X
-    _elx = exp(-1.0 * _λ * abs(xmin))
-    _N = _λ / ( (xmin / abs(xmin)) * (exp(-1.0 * _λ * abs(xmin)) - 1.0)
-              + (xmax / abs(xmax)) * (1.0 - exp(-1.0 * _λ * abs(xmax))) )
- 
-    y = rand(rng, F64)
-    y = 0.386478
-    _lysn = _λ * y / _N
-    if xmin ≥ 0
-        return -1.0 * log(_elx - _lysn) / _λ
-    elseif xmax ≤ 0
-        return log(_lysn + _elx) / _λ
-    else
-        _C1 = _N * (1.0 - _elx) / _λ
-        if y ≤ _C1
-            return log(_lysn + _elx) / _λ
-        else
-            return -1.0 * log(1.0 - _lysn + _λ * _C1 / _N) / _λ
-        end
-    end
-end
-
-function Pdx_weight(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
-    _X = max(abs(xmin), abs(xmax))
-    _λ = γ / _X
-    _elx = exp(-1.0 * _λ * abs(xmin))
-    _N = _λ / ( (xmin / abs(xmin)) * (exp(-1.0 * _λ * abs(xmin)) - 1.0)
-              + (xmax / abs(xmax)) * (1.0 - exp(-1.0 * _λ * abs(xmax))) )
- 
-    y = rand(rng, F64)
-    y = 0.651695
-    _lysn = _λ * y / _N
-    if xmin ≥ 0
-        return -1.0 * log(_elx - _lysn) / _λ
-    elseif xmax ≤ 0
-        return log(_lysn + _elx) / _λ
-    else
-        _C1 = _N * (1.0 - _elx) / _λ
-        if y ≤ _C1
-            return log(_lysn + _elx) / _λ
-        else
-            return -1.0 * log(1.0 - _lysn + _λ * _C1 / _N) / _λ
-        end
-    end
-end
-
-function Pdx_split(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
-    _X = max(abs(xmin), abs(xmax))
-    _λ = γ / _X
-    _elx = exp(-1.0 * _λ * abs(xmin))
-    _N = _λ / ( (xmin / abs(xmin)) * (exp(-1.0 * _λ * abs(xmin)) - 1.0)
-              + (xmax / abs(xmax)) * (1.0 - exp(-1.0 * _λ * abs(xmax))) )
- 
-    y = rand(rng, F64)
-    y = 0.140365
-    _lysn = _λ * y / _N
-    if xmin ≥ 0
-        return -1.0 * log(_elx - _lysn) / _λ
-    elseif xmax ≤ 0
-        return log(_lysn + _elx) / _λ
-    else
-        _C1 = _N * (1.0 - _elx) / _λ
-        if y ≤ _C1
-            return log(_lysn + _elx) / _λ
-        else
-            return -1.0 * log(1.0 - _lysn + _λ * _C1 / _N) / _λ
-        end
-    end
-end
-
-function Pdx_merge(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
-    _X = max(abs(xmin), abs(xmax))
-    _λ = γ / _X
-    _elx = exp(-1.0 * _λ * abs(xmin))
-    _N = _λ / ( (xmin / abs(xmin)) * (exp(-1.0 * _λ * abs(xmin)) - 1.0)
-              + (xmax / abs(xmax)) * (1.0 - exp(-1.0 * _λ * abs(xmax))) )
- 
-    y = rand(rng, F64)
-    y = 0.363415
-    _lysn = _λ * y / _N
-    if xmin ≥ 0
-        return -1.0 * log(_elx - _lysn) / _λ
-    elseif xmax ≤ 0
-        return log(_lysn + _elx) / _λ
-    else
-        _C1 = _N * (1.0 - _elx) / _λ
-        if y ≤ _C1
-            return log(_lysn + _elx) / _λ
-        else
-            return -1.0 * log(1.0 - _lysn + _λ * _C1 / _N) / _λ
-        end
-    end
-end
-=#
