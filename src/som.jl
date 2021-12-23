@@ -37,10 +37,10 @@ mutable struct T_SOM
 end
 
 const P_SOM = Dict{String, Any}(
-    "Lmax" => 12,
+    "Lmax" => 1,
     "Ngrid" => 64,
-    "Nf" => 100,
-    "Tmax" => 200,
+    "Nf" => 2000,
+    "Tmax" => 5000,
     "Kmax" => 50,
     "nwout" => 100,
     "smin" => 0.005,
@@ -124,6 +124,7 @@ function som_try(l, 𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     for f = 1:Nf
         println("    update: $f")
         som_update(𝑆, ω, 𝐺)
+        error()
     end
 
     𝑆.dev[l] = 𝑆.att_dev
@@ -296,6 +297,13 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.att_dev = calc_dev(𝑆.att_elem_dev, _Know, 𝐺)
     #@show 𝑆.att_dev
     #error()
+
+    norm = 0.0
+    for i = 1:length(𝑆.att_conf)
+        norm = norm + 𝑆.att_conf[i].h
+    end
+    #@show norm
+    #error()
 end
 
 function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
@@ -427,6 +435,8 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         𝑆.att_dev = 𝑆.tmp_dev
         𝑆.att_elem_dev = copy(𝑆.elem_dev)
     end
+    @show 𝑆.tmp_conf
+    #error()
 end
 
 function som_output(count::I64, 𝑆::T_SOM)
@@ -602,7 +612,7 @@ function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
     calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
-    @show 𝑆.new_dev
+    #@show 𝑆.new_dev
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = copy(𝑆.new_conf)
