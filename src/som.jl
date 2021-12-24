@@ -37,10 +37,10 @@ mutable struct T_SOM
 end
 
 const P_SOM = Dict{String, Any}(
-    "Lmax" => 1,
+    "Lmax" => 100,
     "Ngrid" => 64,
-    "Nf" => 2000,
-    "Tmax" => 2000,
+    "Nf" => 1000,
+    "Tmax" => 100,
     "Kmax" => 50,
     "nwout" => 100,
     "smin" => 0.005,
@@ -125,14 +125,14 @@ function som_try(l, 𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     #error()
 
     for f = 1:Nf
-        println("    update: $f")
+        #println("    update: $f")
         som_update(𝑆, ω, 𝐺)
         #error()
     end
     #error()
 
     𝑆.dev[l] = 𝑆.att_dev
-    𝑆.conf[l] = copy(𝑆.att_conf)
+    𝑆.conf[l] = deepcopy(𝑆.att_conf)
     #@show 𝑆.conf[l]
 end
 
@@ -323,9 +323,9 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     d1 = rand(𝑆.rng, F64)
     d2 = 1.0 + (dmax - 1.0) * rand(𝑆.rng, F64)
 
-    𝑆.tmp_conf = copy(𝑆.att_conf)
+    𝑆.tmp_conf = deepcopy(𝑆.att_conf)
     𝑆.tmp_dev = 𝑆.att_dev
-    𝑆.elem_dev = copy(𝑆.att_elem_dev)
+    𝑆.elem_dev = deepcopy(𝑆.att_elem_dev)
 
     #@show 𝑆.tmp_conf
     #_som_add(𝑆, ω, 𝐺)
@@ -429,16 +429,16 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         end
     end
 
-    norm = 0.0
-    for i = 1:length(𝑆.tmp_conf)
-        norm = norm + 𝑆.tmp_conf[i].h * 𝑆.tmp_conf[i].w
-    end
+    #norm = 0.0
+    #for i = 1:length(𝑆.tmp_conf)
+    #    norm = norm + 𝑆.tmp_conf[i].h * 𝑆.tmp_conf[i].w
+    #end
 
     #@show 𝑆.tmp_dev, 𝑆.att_dev, norm
     if 𝑆.tmp_dev < 𝑆.att_dev
-        𝑆.att_conf = copy(𝑆.tmp_conf)
+        𝑆.att_conf = deepcopy(𝑆.tmp_conf)
         𝑆.att_dev = 𝑆.tmp_dev
-        𝑆.att_elem_dev = copy(𝑆.elem_dev)
+        𝑆.att_elem_dev = deepcopy(𝑆.elem_dev)
     end
     #@show 𝑆.tmp_conf
     #error()
@@ -453,7 +453,7 @@ function som_output(count::I64, 𝑆::T_SOM)
     ommax = P_SOM["ommax"]
 
     dev_min = minimum(𝑆.dev[1:count])
-    @show dev_min
+    
     Lgood = 0
     Aom = zeros(F64, Ngrid)
     for l = 1:count
@@ -471,6 +471,8 @@ function som_output(count::I64, 𝑆::T_SOM)
             end
         end
     end
+
+    @show count, dev_min, Lgood
 
     if Lgood > 0
         @. Aom = Aom / Lgood
