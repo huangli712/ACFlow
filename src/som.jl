@@ -57,7 +57,7 @@ const P_SOM = Dict{String, Any}(
 
 function som_init()
     seed = rand(1:1000000)
-    seed = 230751
+    #seed = 230751
     rng = MersenneTwister(seed)
     @show "seed: ", seed
 
@@ -351,9 +351,9 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 2
-#                if length(𝑆.tmp_conf) > 1
-#                    _som_remove(𝑆, ω, 𝐺)
-#                end
+                if length(𝑆.tmp_conf) > 1
+                    _som_remove(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 3
@@ -396,9 +396,9 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 2
-#                if length(𝑆.tmp_conf) > 1
-#                    _som_remove(𝑆, ω, 𝐺)
-#                end
+                if length(𝑆.tmp_conf) > 1
+                    _som_remove(𝑆, ω, 𝐺)
+                end
                 break
 
             @case 3
@@ -567,31 +567,37 @@ function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
     _conf_size = length(𝑆.tmp_conf)
     dx = 𝑆.tmp_conf[t1].h * 𝑆.tmp_conf[t1].w
-    #@show dx
 
-    #@show t1, t2, length(𝑆.tmp_conf)
-    𝑆.new_conf = copy(𝑆.tmp_conf)
-    𝑆.new_elem_dev = copy(𝑆.elem_dev)
+    𝑆.new_conf = deepcopy(𝑆.tmp_conf)
+    𝑆.new_elem_dev = deepcopy(𝑆.elem_dev)
+
+    if t1 < t2
+        t1, t2 = t2, t1
+    end
+
     𝑆.new_conf[t2].h = 𝑆.new_conf[t2].h + dx / 𝑆.new_conf[t2].w
-    𝑆.new_conf[t1] = deepcopy(𝑆.new_conf[end])
+    if t1 < _conf_size
+        𝑆.new_conf[t1] = deepcopy(𝑆.new_conf[end])
+    else
+        @assert t1 == _conf_size
+    end
     pop!(𝑆.new_conf)
 
-    #@show 𝑆.new_conf
     if t1 < _conf_size
         calc_dev_rec(𝑆.new_conf[t1], t1, 𝑆.new_elem_dev, ω)
     end
-
-    if t2 < _conf_size
-        calc_dev_rec(𝑆.new_conf[t2], t2, 𝑆.new_elem_dev, ω)
-    end
+    calc_dev_rec(𝑆.new_conf[t2], t2, 𝑆.new_elem_dev, ω)
 
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
     #@show 𝑆.new_dev
 
+    println("in remove")
+    calc_norm(𝑆)
+
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
-        𝑆.tmp_conf = copy(𝑆.new_conf)
+        𝑆.tmp_conf = deepcopy(𝑆.new_conf)
         𝑆.tmp_dev = 𝑆.new_dev
-        𝑆.elem_dev = copy(𝑆.new_elem_dev)
+        𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
         𝑆.accepted_steps[2] = 𝑆.accepted_steps[2] + 1
         #@show "hh"
     end
