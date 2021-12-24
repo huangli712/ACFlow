@@ -56,7 +56,9 @@ const P_SOM = Dict{String, Any}(
 )
 
 function som_init()
-    rng = MersenneTwister(rand(1:1000000))
+    seed = rand(1:1000000)
+    rng = MersenneTwister(seed)
+    @show "seed: ", seed
 
     #println("here")
     Lmax = P_SOM["Lmax"]
@@ -530,7 +532,11 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     #@show 𝑆.new_dev
 
     println("in add")
+   # @show t, length(𝑆.tmp_conf)
+    #@show 𝑆.tmp_conf
+    #@show 𝑆.new_conf
     calc_norm(𝑆)
+    #error()
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(𝑆.new_conf)
@@ -654,14 +660,16 @@ function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenD
     #@show weight, dx_min, dx_max, dw
 
     _conf_size = length(𝑆.tmp_conf)
-    𝑆.new_conf = copy(𝑆.tmp_conf)
-    𝑆.new_elem_dev = copy(𝑆.elem_dev)
+    𝑆.new_conf = deepcopy(𝑆.tmp_conf)
+    𝑆.new_elem_dev = deepcopy(𝑆.elem_dev)
     𝑆.new_conf[t].w = 𝑆.new_conf[t].w + dw
     𝑆.new_conf[t].h = weight / 𝑆.new_conf[t].w
     calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
 
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
     #@show 𝑆.new_dev
+    println("in width")
+    calc_norm(𝑆)
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = copy(𝑆.new_conf)
