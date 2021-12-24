@@ -773,8 +773,8 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     #@show dc1
 
     _conf_size = length(𝑆.tmp_conf)
-    𝑆.new_conf = copy(𝑆.tmp_conf)
-    𝑆.new_elem_dev = copy(𝑆.elem_dev)
+    𝑆.new_conf = deepcopy(𝑆.tmp_conf)
+    𝑆.new_elem_dev = deepcopy(𝑆.elem_dev)
     dc2 = -1.0 * w1 * dc1 / w2
     #@show dc2
 
@@ -788,6 +788,9 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         push!(𝑆.new_conf, Rectangle(h, w1, c1 + dc1))
         push!(𝑆.new_conf, Rectangle(h, w2, c2 + dc2))
 
+        println("in split")
+        calc_norm(𝑆)
+    
         if t < _conf_size
             calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
         end
@@ -796,9 +799,9 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
         #@show 𝑆.new_dev
         if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
-            𝑆.tmp_conf = copy(𝑆.new_conf)
+            𝑆.tmp_conf = deepcopy(𝑆.new_conf)
             𝑆.tmp_dev = 𝑆.new_dev
-            𝑆.elem_dev = copy(𝑆.new_elem_dev)
+            𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
             𝑆.accepted_steps[6] = 𝑆.accepted_steps[6] + 1
             #@show "hhaaa"
         end
