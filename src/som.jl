@@ -495,83 +495,51 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     γ = P_SOM["gamma"]
 
     t = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    #t = 23
     if 𝑆.tmp_conf[t].h * 𝑆.tmp_conf[t].w ≤ 2.0 * smin
         return
     end
-    #@show 𝑆.tmp_conf[t].h , 𝑆.tmp_conf[t].w
 
     dx_min = smin
     dx_max = 𝑆.tmp_conf[t].h * 𝑆.tmp_conf[t].w - smin
-    #@show dx_min, dx_max
     if dx_max ≤ dx_min
         return
     end
 
     c = (ommin + wmin / 2.0) + (ommax - ommin - wmin) * rand(𝑆.rng, F64)
-    #c = -1.68255 # <----
     w_new_max = 2.0 * min(ommax - c, c - ommin)
-    #@show c , w_new_max
     dx = Pdx(dx_min, dx_max, γ, 𝑆.rng)
-    #@show dx
 
     r = rand(𝑆.rng, F64)
-    #r = 0.125254
     𝑆.new_conf = deepcopy(𝑆.tmp_conf)
     𝑆.new_elem_dev = deepcopy(𝑆.elem_dev)
     h = dx / w_new_max + (dx / wmin - dx / w_new_max) * r
     w = dx / h
-    #@show c, h, w
 
     push!(𝑆.new_conf, Rectangle(h, w, c))
-    #@show "new h", dx, h
     𝑆.new_conf[t].h = 𝑆.new_conf[t].h - dx / 𝑆.new_conf[t].w
-    #@show 𝑆.new_conf
     calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
-    #@show 𝑆.new_conf[t]
     calc_dev_rec(𝑆.new_conf[end], length(𝑆.new_conf), 𝑆.new_elem_dev, ω)
-    #@show 𝑆.new_conf[end]
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
-    #@show 𝑆.new_dev
-
-    #println("in add")
-   # @show t, length(𝑆.tmp_conf)
-    #@show 𝑆.tmp_conf
-    #@show 𝑆.new_conf
-    #calc_norm(𝑆)
-    #error()
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(𝑆.new_conf)
         𝑆.tmp_dev = 𝑆.new_dev
         𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
         𝑆.accepted_steps[1] = 𝑆.accepted_steps[1] + 1
-        #@show "hh"
     end
     𝑆.trial_steps[1] = 𝑆.trial_steps[1] + 1
-
-    #@show length(𝑆.tmp_conf)
 end
 
 function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("remove Rectangle")
-
     t1 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    #t1 = 3
-    #t2 = 16
-    #if t1 == t2
-    #    t2 = (t1 + 1) % length(𝑆.tmp_conf)
-    #end
     while t1 == t2
         t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     end
 
-    #    @show t1, t2
     if t1 < t2
         t1, t2 = t2, t1
     end
-#    @show t1, t2, _conf_size
 
     _conf_size = length(𝑆.tmp_conf)
     dx = 𝑆.tmp_conf[t1].h * 𝑆.tmp_conf[t1].w
@@ -594,40 +562,30 @@ function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     calc_dev_rec(𝑆.new_conf[t2], t2, 𝑆.new_elem_dev, ω)
 
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
-    #@show 𝑆.new_dev
-
-    #println("in remove")
-    #calc_norm(𝑆)
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(𝑆.new_conf)
         𝑆.tmp_dev = 𝑆.new_dev
         𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
         𝑆.accepted_steps[2] = 𝑆.accepted_steps[2] + 1
-        #@show "hh"
     end
     𝑆.trial_steps[2] = 𝑆.trial_steps[2] + 1
-    #@show length(𝑆.tmp_conf)
 end
 
 function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("shift Rectangle")
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
 
     t = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    #t = 19
 
     dx_min = ommin + 𝑆.tmp_conf[t].w / 2.0 - 𝑆.tmp_conf[t].c
     dx_max = ommax - 𝑆.tmp_conf[t].w / 2.0 - 𝑆.tmp_conf[t].c
     if dx_max ≤ dx_min
         return
     end
-    #@show dx_min, dx_max
 
     dc = Pdx(dx_min, dx_max, γ, 𝑆.rng)
-    #@show dc
 
     _conf_size = length(𝑆.tmp_conf)
     𝑆.new_conf = deepcopy(𝑆.tmp_conf)
@@ -636,31 +594,23 @@ function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
     calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
-    #@show 𝑆.new_dev
-
-    #println("in shift")
-    #calc_norm(𝑆)
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(𝑆.new_conf)
         𝑆.tmp_dev = 𝑆.new_dev
         𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
         𝑆.accepted_steps[3] = 𝑆.accepted_steps[3] + 1
-        #@show "hh"
     end
     𝑆.trial_steps[3] = 𝑆.trial_steps[3] + 1
-    #@show length(𝑆.tmp_conf)
 end
 
 function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("change width of Rectangle")
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
 
     t = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    #t = 19
 
     weight = 𝑆.tmp_conf[t].h * 𝑆.tmp_conf[t].w
     dx_min = wmin - 𝑆.tmp_conf[t].w
@@ -669,7 +619,6 @@ function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenD
         return
     end
     dw = Pdx(dx_min, dx_max, γ, 𝑆.rng)
-    #@show weight, dx_min, dx_max, dw
 
     _conf_size = length(𝑆.tmp_conf)
     𝑆.new_conf = deepcopy(𝑆.tmp_conf)
@@ -679,52 +628,35 @@ function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenD
     calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
 
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
-    #@show 𝑆.new_dev
-    #println("in width")
-    #calc_norm(𝑆)
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(𝑆.new_conf)
         𝑆.tmp_dev = 𝑆.new_dev
         𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
         𝑆.accepted_steps[4] = 𝑆.accepted_steps[4] + 1
-        #@show "hh"
     end
     𝑆.trial_steps[4] = 𝑆.trial_steps[4] + 1
-    #@show length(𝑆.tmp_conf)
 end
 
 function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("change weight of Rectangle -->")
     smin = P_SOM["smin"]
     γ = P_SOM["gamma"]
 
     t1 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    #@show t1, t2, length(𝑆.tmp_conf)
-    #t1 = 25
-    #t2 = 23
-    #@show t1, t2, length(𝑆.tmp_conf)
-    #if t1 == t2
-    #    t2 = (t1 + 1) % length(𝑆.tmp_conf)
-    #end
-    #@show t1, t2
     while t1 == t2
         t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     end
-    #@show t1, t2
     w1 = 𝑆.tmp_conf[t1].w
     w2 = 𝑆.tmp_conf[t2].w
     h1 = 𝑆.tmp_conf[t1].h
     h2 = 𝑆.tmp_conf[t2].h
     dx_min = smin / w1 - h1
     dx_max = (h2 - smin / w2) * w2 / w1
-    #@show dx_min, dx_max
-    if dx_max ≤ dx_min 
+    if dx_max ≤ dx_min
         return
     end
     dh = Pdx(dx_min, dx_max, γ, 𝑆.rng)
-    #@show dh
 
     _conf_size = length(𝑆.tmp_conf)
     𝑆.new_conf = deepcopy(𝑆.tmp_conf)
@@ -734,24 +666,17 @@ function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::Green
     calc_dev_rec(𝑆.new_conf[t1], t1, 𝑆.new_elem_dev, ω)
     calc_dev_rec(𝑆.new_conf[t2], t2, 𝑆.new_elem_dev, ω)
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
-    #@show 𝑆.new_dev
-
-    #println("in weight")
-    #calc_norm(𝑆)
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(𝑆.new_conf)
         𝑆.tmp_dev = 𝑆.new_dev
         𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
         𝑆.accepted_steps[5] = 𝑆.accepted_steps[5] + 1
-        #@show "aaaa"
     end
     𝑆.trial_steps[5] = 𝑆.trial_steps[5] + 1
-    #@show length(𝑆.tmp_conf)
 end
 
 function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("split Rectangle")
     wmin = P_SOM["wmin"]
     smin = P_SOM["smin"]
     ommin = P_SOM["ommin"]
@@ -759,7 +684,6 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     γ = P_SOM["gamma"]
 
     t = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    #t = 13
 
     old_conf = 𝑆.tmp_conf[t]
     if old_conf.w ≤ 2 * wmin || old_conf.w * old_conf.h ≤ 2.0 * smin
@@ -768,7 +692,6 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
     h = old_conf.h
     w1 = wmin + (old_conf.w - 2.0 * wmin) * rand(𝑆.rng, F64)
-    #w1 = 15.0175
     w2 = old_conf.w - w1
     if w1 > w2
         w1, w2 = w2, w1
@@ -782,16 +705,14 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         return
     end
     dc1 = Pdx(dx_min, dx_max, γ, 𝑆.rng)
-    #@show dc1
 
     _conf_size = length(𝑆.tmp_conf)
     𝑆.new_conf = deepcopy(𝑆.tmp_conf)
     𝑆.new_elem_dev = deepcopy(𝑆.elem_dev)
     dc2 = -1.0 * w1 * dc1 / w2
-    #@show dc2
 
     if (c1 + dc1 ≥ ommin + w1 / 2.0) &&
-       (c1 + dc1 ≤ ommax - w1 / 2.0) && 
+       (c1 + dc1 ≤ ommax - w1 / 2.0) &&
        (c2 + dc2 ≥ ommin + w2 / 2.0) &&
        (c2 + dc2 ≤ ommax - w2 / 2.0)
 
@@ -800,41 +721,29 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         push!(𝑆.new_conf, Rectangle(h, w1, c1 + dc1))
         push!(𝑆.new_conf, Rectangle(h, w2, c2 + dc2))
 
-        #println("in split")
-        #calc_norm(𝑆)
-    
         if t < _conf_size
             calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
         end
         calc_dev_rec(𝑆.new_conf[_conf_size], _conf_size, 𝑆.new_elem_dev, ω)
         calc_dev_rec(𝑆.new_conf[_conf_size+1], _conf_size+1, 𝑆.new_elem_dev, ω)
         𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
-        #@show 𝑆.new_dev
         if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
             𝑆.tmp_conf = deepcopy(𝑆.new_conf)
             𝑆.tmp_dev = 𝑆.new_dev
             𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
             𝑆.accepted_steps[6] = 𝑆.accepted_steps[6] + 1
-            #@show "hhaaa"
         end
     end
     𝑆.trial_steps[6] = 𝑆.trial_steps[6] + 1
-    #@show length(𝑆.tmp_conf)
 end
 
 function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("Merge Rectangle")
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
 
     t1 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
-    #t1 = 8
-    #t2 = 2
-    #if t1 == t2
-    #    t2 = (t1 + 1) % length(𝑆.tmp_conf)
-    #end
     while t1 == t2
         t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     end
@@ -853,8 +762,6 @@ function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         return
     end
     dc = Pdx(dx_min, dx_max, γ, 𝑆.rng)
-    #@show dc
-    #@show h_new, w_new, c_new
 
     _conf_size = length(𝑆.tmp_conf)
     𝑆.new_conf = deepcopy(𝑆.tmp_conf)
@@ -871,7 +778,7 @@ function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         @assert t2 == _conf_size
     end
     pop!(𝑆.new_conf)
-    
+
     calc_dev_rec(𝑆.new_conf[t1], t1, 𝑆.new_elem_dev, ω)
     if t2 < _conf_size
         calc_dev_rec(𝑆.new_conf[t2], t2, 𝑆.new_elem_dev, ω)
@@ -879,10 +786,6 @@ function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
     calc_dev_rec(𝑆.new_conf[_conf_size - 1], _conf_size - 1, 𝑆.new_elem_dev, ω)
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
-    #@show 𝑆.new_dev
-
-    #println("in merge")
-    #calc_norm(𝑆)
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(𝑆.new_conf)
@@ -892,8 +795,6 @@ function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         #@show "test"
     end
     𝑆.trial_steps[7] = 𝑆.trial_steps[7] + 1
-
-    #@show length(𝑆.tmp_conf)
 end
 
 function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::FermionicMatsubaraGrid)
@@ -906,7 +807,6 @@ end
 
 function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
     Ngrid = P_SOM["Ngrid"]
-    
     res = 0.0
     for g = 1:Ngrid
         δ = 0.0
@@ -943,7 +843,7 @@ function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
     _elx = exp(-1.0 * _λ * abs(xmin))
     _N = _λ / ( (xmin / abs(xmin)) * (exp(-1.0 * _λ * abs(xmin)) - 1.0)
               + (xmax / abs(xmax)) * (1.0 - exp(-1.0 * _λ * abs(xmax))) )
- 
+
     y = rand(rng, F64)
     _lysn = _λ * y / _N
     if xmin ≥ 0
