@@ -612,18 +612,21 @@ function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     #@show dc
 
     _conf_size = length(𝑆.tmp_conf)
-    𝑆.new_conf = copy(𝑆.tmp_conf)
-    𝑆.new_elem_dev = copy(𝑆.elem_dev)
+    𝑆.new_conf = deepcopy(𝑆.tmp_conf)
+    𝑆.new_elem_dev = deepcopy(𝑆.elem_dev)
     𝑆.new_conf[t].c = 𝑆.new_conf[t].c + dc
 
     calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
     #@show 𝑆.new_dev
 
+    println("in shift")
+    calc_norm(𝑆)
+
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
-        𝑆.tmp_conf = copy(𝑆.new_conf)
+        𝑆.tmp_conf = deepcopy(𝑆.new_conf)
         𝑆.tmp_dev = 𝑆.new_dev
-        𝑆.elem_dev = copy(𝑆.new_elem_dev)
+        𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
         𝑆.accepted_steps[3] = 𝑆.accepted_steps[3] + 1
         #@show "hh"
     end
