@@ -348,9 +348,9 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 2
-                if length(𝑆.tmp_conf) > 1
-                    _som_remove(𝑆, ω, 𝐺)
-                end
+#                if length(𝑆.tmp_conf) > 1
+#                    _som_remove(𝑆, ω, 𝐺)
+#                end
                 break
 
             @case 3
@@ -393,9 +393,9 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
                 break
 
             @case 2
-                if length(𝑆.tmp_conf) > 1
-                    _som_remove(𝑆, ω, 𝐺)
-                end
+#                if length(𝑆.tmp_conf) > 1
+#                    _som_remove(𝑆, ω, 𝐺)
+#                end
                 break
 
             @case 3
