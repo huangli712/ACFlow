@@ -431,13 +431,13 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         norm = norm + 𝑆.tmp_conf[i].h * 𝑆.tmp_conf[i].w
     end
 
-    @show 𝑆.tmp_dev, 𝑆.att_dev, norm
+    #@show 𝑆.tmp_dev, 𝑆.att_dev, norm
     if 𝑆.tmp_dev < 𝑆.att_dev
         𝑆.att_conf = copy(𝑆.tmp_conf)
         𝑆.att_dev = 𝑆.tmp_dev
         𝑆.att_elem_dev = copy(𝑆.elem_dev)
     end
-    @show 𝑆.tmp_conf
+    #@show 𝑆.tmp_conf
     #error()
 end
 
@@ -512,11 +512,12 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
     r = rand(𝑆.rng, F64)
     #r = 0.125254
-    𝑆.new_conf = copy(𝑆.tmp_conf)
-    𝑆.new_elem_dev = copy(𝑆.elem_dev)
+    𝑆.new_conf = deepcopy(𝑆.tmp_conf)
+    𝑆.new_elem_dev = deepcopy(𝑆.elem_dev)
     h = dx / w_new_max + (dx / wmin - dx / w_new_max) * r
     w = dx / h
     #@show c, h, w
+
     push!(𝑆.new_conf, Rectangle(h, w, c))
     #@show "new h", dx, h
     𝑆.new_conf[t].h = 𝑆.new_conf[t].h - dx / 𝑆.new_conf[t].w
@@ -528,10 +529,13 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
     #@show 𝑆.new_dev
 
+    println("in add")
+    calc_norm(𝑆)
+
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
-        𝑆.tmp_conf = copy(𝑆.new_conf)
+        𝑆.tmp_conf = deepcopy(𝑆.new_conf)
         𝑆.tmp_dev = 𝑆.new_dev
-        𝑆.elem_dev = copy(𝑆.new_elem_dev)
+        𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
         𝑆.accepted_steps[1] = 𝑆.accepted_steps[1] + 1
         #@show "hh"
     end
@@ -862,14 +866,10 @@ end
 
 function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::FermionicMatsubaraGrid)
     Ngrid = P_SOM["Ngrid"]
-
-    #@show r.h, r.w, r.c
     for g = 1:Ngrid
         Gs = r.h * log((im * ω.grid[g] - r.c + 0.5 * r.w) / (im * ω.grid[g] - r.c - 0.5 * r.w))
         elem_dev[g,k] = Gs
-        #@show g, Gs
     end
-    #error()
 end
 
 function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
@@ -885,6 +885,24 @@ function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
     end
 
     return res
+end
+
+function calc_norm(𝑆::T_SOM)
+    norm1 = 0.0
+    for i = 1:length(𝑆.tmp_conf)
+        norm1 = norm1 + 𝑆.tmp_conf[i].h * 𝑆.tmp_conf[i].w
+    end
+    println("tmp norm is: $norm1")
+
+    norm2 = 0.0
+    for i = 1:length(𝑆.new_conf)
+        norm2 = norm2 + 𝑆.new_conf[i].h * 𝑆.new_conf[i].w
+    end
+    println("new norm is: $norm2")
+
+    if abs(norm1 - norm2) > 0.0001
+        error()
+    end
 end
 
 function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
