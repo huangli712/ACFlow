@@ -57,7 +57,7 @@ const P_SOM = Dict{String, Any}(
 
 function som_init()
     seed = rand(1:1000000)
-    #seed = 230751
+#    seed = 571716
     rng = MersenneTwister(seed)
     @show "seed: ", seed
 
@@ -532,11 +532,11 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
     #@show 𝑆.new_dev
 
-    println("in add")
+    #println("in add")
    # @show t, length(𝑆.tmp_conf)
     #@show 𝑆.tmp_conf
     #@show 𝑆.new_conf
-    calc_norm(𝑆)
+    #calc_norm(𝑆)
     #error()
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
@@ -565,15 +565,18 @@ function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     end
 
+    #    @show t1, t2
+    if t1 < t2
+        t1, t2 = t2, t1
+    end
+#    @show t1, t2, _conf_size
+
     _conf_size = length(𝑆.tmp_conf)
     dx = 𝑆.tmp_conf[t1].h * 𝑆.tmp_conf[t1].w
 
     𝑆.new_conf = deepcopy(𝑆.tmp_conf)
     𝑆.new_elem_dev = deepcopy(𝑆.elem_dev)
 
-    if t1 < t2
-        t1, t2 = t2, t1
-    end
 
     𝑆.new_conf[t2].h = 𝑆.new_conf[t2].h + dx / 𝑆.new_conf[t2].w
     if t1 < _conf_size
@@ -591,8 +594,8 @@ function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
     #@show 𝑆.new_dev
 
-    println("in remove")
-    calc_norm(𝑆)
+    #println("in remove")
+    #calc_norm(𝑆)
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(𝑆.new_conf)
@@ -633,8 +636,8 @@ function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
     #@show 𝑆.new_dev
 
-    println("in shift")
-    calc_norm(𝑆)
+    #println("in shift")
+    #calc_norm(𝑆)
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(𝑆.new_conf)
@@ -675,8 +678,8 @@ function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenD
 
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
     #@show 𝑆.new_dev
-    println("in width")
-    calc_norm(𝑆)
+    #println("in width")
+    #calc_norm(𝑆)
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(𝑆.new_conf)
@@ -731,8 +734,8 @@ function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::Green
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
     #@show 𝑆.new_dev
 
-    println("in weight")
-    calc_norm(𝑆)
+    #println("in weight")
+    #calc_norm(𝑆)
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(𝑆.new_conf)
@@ -795,8 +798,8 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         push!(𝑆.new_conf, Rectangle(h, w1, c1 + dc1))
         push!(𝑆.new_conf, Rectangle(h, w2, c2 + dc2))
 
-        println("in split")
-        calc_norm(𝑆)
+        #println("in split")
+        #calc_norm(𝑆)
     
         if t < _conf_size
             calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
@@ -876,8 +879,8 @@ function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
     #@show 𝑆.new_dev
 
-    println("in merge")
-    calc_norm(𝑆)
+    #println("in merge")
+    #calc_norm(𝑆)
 
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(𝑆.new_conf)
