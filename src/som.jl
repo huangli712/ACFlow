@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/22
+# Last modified: 2021/12/24
 #
 
 mutable struct Rectangle
@@ -61,7 +61,6 @@ function som_init()
     rng = MersenneTwister(seed)
     @show "seed: ", seed
 
-    #println("here")
     Lmax = P_SOM["Lmax"]
     Kmax = P_SOM["Kmax"]
     Ngrid = P_SOM["Ngrid"]
@@ -92,26 +91,23 @@ function som_init()
 
     trial_steps = zeros(I64, 7)
     accepted_steps = zeros(I64, 7)
-    #@show size(conf)
-    #@show typeof(conf[1])
 
     return T_SOM(rng,
-                 dev, 
-                 conf, 
-                 att_conf, 
-                 tmp_conf, 
-                 new_conf, 
-                 att_elem_dev, 
-                 elem_dev, 
-                 new_elem_dev, 
-                 trial_steps, 
+                 dev,
+                 conf,
+                 att_conf,
+                 tmp_conf,
+                 new_conf,
+                 att_elem_dev,
+                 elem_dev,
+                 new_elem_dev,
+                 trial_steps,
                  accepted_steps, 0.0, 0.0, 0.0, 0.0)
 end
 
 function som_run(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Lmax = P_SOM["Lmax"]
     for l = 1:Lmax
-        #@show rand(𝑆.rng, F64)
         println("try: $l")
         som_try(l, 𝑆, ω, 𝐺)
         som_output(l, 𝑆)
@@ -120,20 +116,14 @@ end
 
 function som_try(l, 𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Nf = P_SOM["Nf"]
-    #println("here")
     som_random(𝑆, ω, 𝐺)
-    #error()
 
     for f = 1:Nf
-        #println("    update: $f")
         som_update(𝑆, ω, 𝐺)
-        #error()
     end
-    #error()
 
     𝑆.dev[l] = 𝑆.att_dev
     𝑆.conf[l] = deepcopy(𝑆.att_conf)
-    #@show 𝑆.conf[l]
 end
 
 function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
@@ -143,7 +133,6 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     ommax = P_SOM["ommax"]
     Kmax = P_SOM["Kmax"]
 
-    #_Know = 25
     _Know = rand(𝑆.rng, 2:Kmax)
     _weight = zeros(F64, _Know)
     for i = 1:_Know
@@ -151,41 +140,10 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     end
     _weight[end] = 1.0
 
-    #=
-    _weight = [
-        0.139286,
-        0.16858,
-        0.265188,
-        0.548449,
-        0.350178,
-        0.307434,
-        0.34026,
-        0.80599,
-        0.715488,
-        0.0402386,
-        0.543467,
-        0.71602,
-        0.631526,
-        0.580398,
-        0.578101,
-        0.917187,
-        0.949232,
-        0.74917,
-        0.959639,
-        0.245511,
-        0.133757,
-        0.0400198,
-        0.308264,
-        0.762588,
-        1.0
-    ]
-=#
     sort!(_weight)
     weight = diff(_weight)
     insert!(weight, 1, _weight[1])
-    #@show weight
     sort!(weight)
-    #@show weight
 
     plus_count = 1
     minus_count = _Know
@@ -197,97 +155,9 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         weight[minus_count] = weight[minus_count] - smin
         plus_count = plus_count + 1
     end
-    #@show weight
 
     empty!(𝑆.att_conf)
     fill!(𝑆.att_elem_dev, zero(C64))
-    #@show size(𝑆.att_conf)
-
-#=
-    c = [
-        0.437433,
-        4.35723,
-        -4.86402,
-        -8.52167,
-        8.35216,
-        0.131443,
-        4.66806,
-        -5.48925,
-        2.18855,
-        -7.10065,
-        -8.64211,
-        -7.61222,
-        -1.01904,
-        -7.64489,
-        -6.92268,
-        -0.296024,
-        2.01579,
-        5.21624,
-        -0.430991,
-        1.5215,
-        -7.92062,
-        7.95186,
-        1.16635,
-        -4.30618,
-        5.27789
-    ]
-
-    w = [
-        3.80198,
-        9.33006,
-        6.98871,
-        0.282352,
-        0.58726,
-        6.56658,
-        8.78425,
-        2.47927,
-        1.9538,
-        2.65317,
-        1.9506,
-        4.59944,
-        16.0818,
-        4.70633,
-        2.38606,
-        16.4445,
-        2.18616,
-        2.21616,
-        8.25936,
-        13.7515,
-        1.32354,
-        1.37565,
-        13.4274,
-        2.7657,
-        4.68898
-    ]
-
-    h = [
-        0.00137267, 
-        0.000592927,
-        0.000834196,
-        0.0258451,
-        0.0169977,
-        0.000841944,
-        0.00112916,
-        0.00419728,
-        0.00686794,
-        0.00741652,
-        0.0150182,
-        0.00644669,
-        0.00198957,
-        0.00680902,
-        0.0138929,
-        0.00243363,
-        0.0184623,
-        0.0190627,
-        0.00525481,
-        0.00371801,
-        0.0581247,
-        0.0610346,
-        0.00696474,
-        0.0402057,
-        0.0358903
-    ]
-=#
 
     for k = 1:_Know
         c = ommin + wmin / 2.0 + (ommax - ommin - wmin) * rand(𝑆.rng, F64)
@@ -295,19 +165,8 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         h = weight[k] / w
         push!(𝑆.att_conf, Rectangle(h, w, c))
         calc_dev_rec(Rectangle(h, w, c), k, 𝑆.att_elem_dev, ω)
-        #push!(𝑆.att_conf, Rectangle(h[k], w[k], c[k]))
-        #calc_dev_rec(Rectangle(h[k], w[k], c[k]), k, 𝑆.att_elem_dev, ω)
     end
     𝑆.att_dev = calc_dev(𝑆.att_elem_dev, _Know, 𝐺)
-    #@show 𝑆.att_dev
-    #error()
-
-    norm = 0.0
-    for i = 1:length(𝑆.att_conf)
-        norm = norm + 𝑆.att_conf[i].h * 𝑆.att_conf[i].w
-    end
-    @show norm
-    #error()
 end
 
 function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
@@ -316,28 +175,12 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     dmax = P_SOM["dmax"]
     T1 = rand(𝑆.rng, 1:Tmax)
 
-    #for i = 1:100
-    #    @show rand(𝑆.rng, 1:Tmax)
-    #end
-
     d1 = rand(𝑆.rng, F64)
     d2 = 1.0 + (dmax - 1.0) * rand(𝑆.rng, F64)
 
     𝑆.tmp_conf = deepcopy(𝑆.att_conf)
     𝑆.tmp_dev = 𝑆.att_dev
     𝑆.elem_dev = deepcopy(𝑆.att_elem_dev)
-
-    #@show 𝑆.tmp_conf
-    #_som_add(𝑆, ω, 𝐺)
-    #_som_remove(𝑆, ω, 𝐺)
-    #_som_shift(𝑆, ω, 𝐺)
-    #_som_change_width(𝑆, ω, 𝐺)
-    #_som_change_weight(𝑆, ω, 𝐺)
-    #_som_split(𝑆, ω, 𝐺)
-    #_som_merge(𝑆, ω, 𝐺)
-    #@show 𝑆.tmp_conf
-    #@show 𝑆.tmp_dev
-    #error()
 
     for i = 1:T1
         𝑆.dacc = d1
@@ -429,31 +272,22 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         end
     end
 
-    #norm = 0.0
-    #for i = 1:length(𝑆.tmp_conf)
-    #    norm = norm + 𝑆.tmp_conf[i].h * 𝑆.tmp_conf[i].w
-    #end
-
-    #@show 𝑆.tmp_dev, 𝑆.att_dev, norm
     if 𝑆.tmp_dev < 𝑆.att_dev
         𝑆.att_conf = deepcopy(𝑆.tmp_conf)
         𝑆.att_dev = 𝑆.tmp_dev
         𝑆.att_elem_dev = deepcopy(𝑆.elem_dev)
     end
-    #@show 𝑆.tmp_conf
-    #error()
 end
 
 function som_output(count::I64, 𝑆::T_SOM)
     println("output")
     alpha = P_SOM["alpha"]
-    #Lmax = P_SOM["Lmax"]
     Ngrid = P_SOM["Ngrid"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
 
     dev_min = minimum(𝑆.dev[1:count])
-    
+
     Lgood = 0
     Aom = zeros(F64, Ngrid)
     for l = 1:count
@@ -487,7 +321,6 @@ function som_output(count::I64, 𝑆::T_SOM)
 end
 
 function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    #println("add Rectangle")
     smin = P_SOM["smin"]
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
