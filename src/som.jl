@@ -16,7 +16,9 @@ end
 abstract type AbstractMonteCarlo end
 mutable struct SOMMonteCarlo <: AbstractMonteCarlo
     rng :: AbstractRNG
-    𝐶   :: Vector{Rectangle}
+    C   :: Vector{Rectangle}
+    Λ   :: Array{C64,2}
+    Δ   :: F64
 end
 
 mutable struct SOMContext
