@@ -21,18 +21,15 @@ mutable struct T_SOM
 
     att_conf :: Vector{Rectangle}
     tmp_conf :: Vector{Rectangle}
-    #new_conf :: Vector{Rectangle}
 
     att_elem_dev :: Array{C64,2}
     elem_dev :: Array{C64,2}
-    #new_elem_dev :: Array{C64,2}
 
     trial_steps :: Vector{I64}
     accepted_steps :: Vector{I64}
 
     att_dev :: F64
     tmp_dev :: F64
-    #new_dev :: F64
     dacc    :: F64
 end
 
@@ -78,16 +75,13 @@ function som_init()
 
     att_conf = Rectangle[]
     tmp_conf = Rectangle[]
-    new_conf = Rectangle[]
     for k = 1:Kmax
         push!(att_conf, Rectangle(0.0, 0.0, 0.0))
         push!(tmp_conf, Rectangle(0.0, 0.0, 0.0))
-        push!(new_conf, Rectangle(0.0, 0.0, 0.0))
     end
 
     att_elem_dev = zeros(C64, Ngrid, Kmax)
     elem_dev = zeros(C64, Ngrid, Kmax)
-    new_elem_dev = zeros(C64, Ngrid, Kmax)
 
     trial_steps = zeros(I64, 7)
     accepted_steps = zeros(I64, 7)
@@ -97,10 +91,8 @@ function som_init()
                  conf,
                  att_conf,
                  tmp_conf,
-#                 new_conf,
                  att_elem_dev,
                  elem_dev,
-#                 new_elem_dev,
                  trial_steps,
                  accepted_steps, 0.0, 0.0, 0.0)
 end
