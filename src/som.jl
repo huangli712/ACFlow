@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/24
+# Last modified: 2021/12/25
 #
 
 mutable struct Rectangle
@@ -13,7 +13,13 @@ mutable struct Rectangle
     c :: F64
 end
 
-mutable struct T_SOM
+abstract type AbstractMonteCarlo end
+mutable struct SOMMonteCarlo <: AbstractMonteCarlo
+    rng :: AbstractRNG
+    𝐶   :: Vector{Rectangle}
+end
+
+mutable struct SOMContext
     rng :: AbstractRNG
 
     dev :: Vector{F64}
@@ -86,7 +92,7 @@ function som_init()
     trial_steps = zeros(I64, 7)
     accepted_steps = zeros(I64, 7)
 
-    return T_SOM(rng,
+    return SOMContext(rng,
                  dev,
                  conf,
                  att_conf,
@@ -97,7 +103,7 @@ function som_init()
                  accepted_steps, 0.0, 0.0, 0.0)
 end
 
-function som_run(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function som_run(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Lmax = P_SOM["Lmax"]
     for l = 1:Lmax
         println("try: $l")
@@ -106,7 +112,7 @@ function som_run(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     end
 end
 
-function som_try(l, 𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function som_try(l, 𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Nf = P_SOM["Nf"]
     som_random(𝑆, ω, 𝐺)
 
@@ -118,7 +124,7 @@ function som_try(l, 𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.conf[l] = deepcopy(𝑆.att_conf)
 end
 
-function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function som_random(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     smin = P_SOM["smin"]
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
@@ -161,7 +167,7 @@ function som_random(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.att_dev = calc_dev(𝑆.att_elem_dev, _Know, 𝐺)
 end
 
-function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function som_update(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Tmax = P_SOM["Tmax"]
     Kmax = P_SOM["Kmax"]
     dmax = P_SOM["dmax"]
@@ -271,7 +277,7 @@ function som_update(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     end
 end
 
-function som_output(count::I64, 𝑆::T_SOM)
+function som_output(count::I64, 𝑆::SOMContext)
     println("output")
     alpha = P_SOM["alpha"]
     Ngrid = P_SOM["Ngrid"]
@@ -312,7 +318,7 @@ function som_output(count::I64, 𝑆::T_SOM)
     end
 end
 
-function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function _som_add(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     smin = P_SOM["smin"]
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
@@ -355,7 +361,7 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.trial_steps[1] = 𝑆.trial_steps[1] + 1
 end
 
-function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function _som_remove(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     t1 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     t2 = rand(𝑆.rng, 1:length(𝑆.tmp_conf))
     while t1 == t2
@@ -397,7 +403,7 @@ function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.trial_steps[2] = 𝑆.trial_steps[2] + 1
 end
 
-function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function _som_shift(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
@@ -429,7 +435,7 @@ function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.trial_steps[3] = 𝑆.trial_steps[3] + 1
 end
 
-function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function _som_change_width(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
@@ -463,7 +469,7 @@ function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenD
     𝑆.trial_steps[4] = 𝑆.trial_steps[4] + 1
 end
 
-function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function _som_change_weight(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     smin = P_SOM["smin"]
     γ = P_SOM["gamma"]
 
@@ -501,7 +507,7 @@ function _som_change_weight(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::Green
     𝑆.trial_steps[5] = 𝑆.trial_steps[5] + 1
 end
 
-function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function _som_split(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     wmin = P_SOM["wmin"]
     smin = P_SOM["smin"]
     ommin = P_SOM["ommin"]
@@ -562,7 +568,7 @@ function _som_split(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     𝑆.trial_steps[6] = 𝑆.trial_steps[6] + 1
 end
 
-function _som_merge(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function _som_merge(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
@@ -644,7 +650,7 @@ function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
     return res
 end
 
-function calc_norm(𝑆::T_SOM)
+function calc_norm(𝑆::SOMContext)
     norm1 = 0.0
     for i = 1:length(𝑆.tmp_conf)
         norm1 = norm1 + 𝑆.tmp_conf[i].h * 𝑆.tmp_conf[i].w
