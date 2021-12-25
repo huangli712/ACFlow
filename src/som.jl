@@ -358,9 +358,9 @@ function _som_add(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         𝑆.tmp_conf = deepcopy(new_conf)
         𝑆.tmp_dev = new_dev
         𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
-        𝑆.accepted_steps[1] = 𝑆.accepted_steps[1] + 1
+        MC.acc[1] = MC.acc[1] + 1
     end
-    𝑆.trial_steps[1] = 𝑆.trial_steps[1] + 1
+    MC.tri[1] = MC.tri[1] + 1
 end
 
 function _som_remove(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
@@ -400,9 +400,9 @@ function _som_remove(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubara
         𝑆.tmp_conf = deepcopy(new_conf)
         𝑆.tmp_dev = new_dev
         𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
-        𝑆.accepted_steps[2] = 𝑆.accepted_steps[2] + 1
+        MC.acc[2] = MC.acc[2] + 1
     end
-    𝑆.trial_steps[2] = 𝑆.trial_steps[2] + 1
+    MC.tri[2] = MC.tri[2] + 1
 end
 
 function _som_shift(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
@@ -432,9 +432,9 @@ function _som_shift(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         𝑆.tmp_conf = deepcopy(new_conf)
         𝑆.tmp_dev = new_dev
         𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
-        𝑆.accepted_steps[3] = 𝑆.accepted_steps[3] + 1
+        MC.acc[3] = MC.acc[3] + 1
     end
-    𝑆.trial_steps[3] = 𝑆.trial_steps[3] + 1
+    MC.tri[3] = MC.tri[3] + 1
 end
 
 function _som_change_width(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
@@ -466,9 +466,9 @@ function _som_change_width(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMat
         𝑆.tmp_conf = deepcopy(new_conf)
         𝑆.tmp_dev = new_dev
         𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
-        𝑆.accepted_steps[4] = 𝑆.accepted_steps[4] + 1
+        MC.acc[4] = MC.acc[4] + 1
     end
-    𝑆.trial_steps[4] = 𝑆.trial_steps[4] + 1
+    MC.tri[4] = MC.tri[4] + 1
 end
 
 function _som_change_weight(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
@@ -504,9 +504,9 @@ function _som_change_weight(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMa
         𝑆.tmp_conf = deepcopy(new_conf)
         𝑆.tmp_dev = new_dev
         𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
-        𝑆.accepted_steps[5] = 𝑆.accepted_steps[5] + 1
+        MC.acc[5] = MC.acc[5] + 1
     end
-    𝑆.trial_steps[5] = 𝑆.trial_steps[5] + 1
+    MC.tri[5] = MC.tri[5] + 1
 end
 
 function _som_split(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
@@ -564,10 +564,10 @@ function _som_split(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
             𝑆.tmp_conf = deepcopy(new_conf)
             𝑆.tmp_dev = new_dev
             𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
-            𝑆.accepted_steps[6] = 𝑆.accepted_steps[6] + 1
+            MC.acc[6] = MC.acc[6] + 1
         end
     end
-    𝑆.trial_steps[6] = 𝑆.trial_steps[6] + 1
+    MC.tri[6] = MC.tri[6] + 1
 end
 
 function _som_merge(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
@@ -624,10 +624,9 @@ function _som_merge(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         𝑆.tmp_conf = deepcopy(new_conf)
         𝑆.tmp_dev = new_dev
         𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
-        𝑆.accepted_steps[7] = 𝑆.accepted_steps[7] + 1
-        #@show "test"
+        MC.acc[7] = MC.acc[7] + 1
     end
-    𝑆.trial_steps[7] = 𝑆.trial_steps[7] + 1
+    MC.tri[7] = MC.tri[7] + 1
 end
 
 function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::FermionicMatsubaraGrid)
