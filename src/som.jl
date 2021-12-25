@@ -29,7 +29,7 @@ mutable struct SOMContext
     tmp_conf :: Vector{Rectangle}
 
     att_elem_dev :: Array{C64,2}
-    elem_dev :: Array{C64,2}
+    tmp_elem_dev :: Array{C64,2}
 
     trial_steps :: Vector{I64}
     accepted_steps :: Vector{I64}
@@ -87,7 +87,7 @@ function som_init()
     end
 
     att_elem_dev = zeros(C64, Ngrid, Kmax)
-    elem_dev = zeros(C64, Ngrid, Kmax)
+    tmp_elem_dev = zeros(C64, Ngrid, Kmax)
 
     trial_steps = zeros(I64, 7)
     accepted_steps = zeros(I64, 7)
@@ -98,7 +98,7 @@ function som_init()
                  att_conf,
                  tmp_conf,
                  att_elem_dev,
-                 elem_dev,
+                 tmp_elem_dev,
                  trial_steps,
                  accepted_steps, 0.0, 0.0, 0.0)
 end
@@ -178,7 +178,7 @@ function som_update(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenDat
 
     𝑆.tmp_conf = deepcopy(𝑆.att_conf)
     𝑆.tmp_dev = 𝑆.att_dev
-    𝑆.elem_dev = deepcopy(𝑆.att_elem_dev)
+    𝑆.tmp_elem_dev = deepcopy(𝑆.att_elem_dev)
 
     for i = 1:T1
         𝑆.dacc = d1
@@ -273,7 +273,7 @@ function som_update(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenDat
     if 𝑆.tmp_dev < 𝑆.att_dev
         𝑆.att_conf = deepcopy(𝑆.tmp_conf)
         𝑆.att_dev = 𝑆.tmp_dev
-        𝑆.att_elem_dev = deepcopy(𝑆.elem_dev)
+        𝑆.att_elem_dev = deepcopy(𝑆.tmp_elem_dev)
     end
 end
 
@@ -342,7 +342,7 @@ function _som_add(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
 
     r = rand(𝑆.rng, F64)
     new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.elem_dev)
+    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
     h = dx / w_new_max + (dx / wmin - dx / w_new_max) * r
     w = dx / h
 
@@ -355,7 +355,7 @@ function _som_add(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(new_conf)
         𝑆.tmp_dev = new_dev
-        𝑆.elem_dev = deepcopy(new_elem_dev)
+        𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
         𝑆.accepted_steps[1] = 𝑆.accepted_steps[1] + 1
     end
     𝑆.trial_steps[1] = 𝑆.trial_steps[1] + 1
@@ -376,7 +376,7 @@ function _som_remove(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenDa
     dx = 𝑆.tmp_conf[t1].h * 𝑆.tmp_conf[t1].w
 
     new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.elem_dev)
+    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
 
 
     new_conf[t2].h = new_conf[t2].h + dx / new_conf[t2].w
@@ -397,7 +397,7 @@ function _som_remove(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenDa
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(new_conf)
         𝑆.tmp_dev = new_dev
-        𝑆.elem_dev = deepcopy(new_elem_dev)
+        𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
         𝑆.accepted_steps[2] = 𝑆.accepted_steps[2] + 1
     end
     𝑆.trial_steps[2] = 𝑆.trial_steps[2] + 1
@@ -420,7 +420,7 @@ function _som_shift(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenDat
 
     _conf_size = length(𝑆.tmp_conf)
     new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.elem_dev)
+    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
     new_conf[t].c = new_conf[t].c + dc
 
     calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
@@ -429,7 +429,7 @@ function _som_shift(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenDat
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(new_conf)
         𝑆.tmp_dev = new_dev
-        𝑆.elem_dev = deepcopy(new_elem_dev)
+        𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
         𝑆.accepted_steps[3] = 𝑆.accepted_steps[3] + 1
     end
     𝑆.trial_steps[3] = 𝑆.trial_steps[3] + 1
@@ -453,7 +453,7 @@ function _som_change_width(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::G
 
     _conf_size = length(𝑆.tmp_conf)
     new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.elem_dev)
+    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
     new_conf[t].w = new_conf[t].w + dw
     new_conf[t].h = weight / new_conf[t].w
     calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
@@ -463,7 +463,7 @@ function _som_change_width(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::G
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(new_conf)
         𝑆.tmp_dev = new_dev
-        𝑆.elem_dev = deepcopy(new_elem_dev)
+        𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
         𝑆.accepted_steps[4] = 𝑆.accepted_steps[4] + 1
     end
     𝑆.trial_steps[4] = 𝑆.trial_steps[4] + 1
@@ -491,7 +491,7 @@ function _som_change_weight(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::
 
     _conf_size = length(𝑆.tmp_conf)
     new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.elem_dev)
+    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
     new_conf[t1].h = new_conf[t1].h + dh
     new_conf[t2].h = new_conf[t2].h - dh * w1 / w2
     calc_dev_rec(new_conf[t1], t1, new_elem_dev, ω)
@@ -501,7 +501,7 @@ function _som_change_weight(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(new_conf)
         𝑆.tmp_dev = new_dev
-        𝑆.elem_dev = deepcopy(new_elem_dev)
+        𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
         𝑆.accepted_steps[5] = 𝑆.accepted_steps[5] + 1
     end
     𝑆.trial_steps[5] = 𝑆.trial_steps[5] + 1
@@ -539,7 +539,7 @@ function _som_split(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenDat
 
     _conf_size = length(𝑆.tmp_conf)
     new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.elem_dev)
+    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
     dc2 = -1.0 * w1 * dc1 / w2
 
     if (c1 + dc1 ≥ ommin + w1 / 2.0) &&
@@ -561,7 +561,7 @@ function _som_split(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenDat
         if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + 𝑆.dacc))
             𝑆.tmp_conf = deepcopy(new_conf)
             𝑆.tmp_dev = new_dev
-            𝑆.elem_dev = deepcopy(new_elem_dev)
+            𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
             𝑆.accepted_steps[6] = 𝑆.accepted_steps[6] + 1
         end
     end
@@ -596,7 +596,7 @@ function _som_merge(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenDat
 
     _conf_size = length(𝑆.tmp_conf)
     new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.elem_dev)
+    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
 
     if t1 > t2
         t1, t2 = t2, t1
@@ -621,7 +621,7 @@ function _som_merge(𝑆::SOMContext, ω::FermionicMatsubaraGrid, 𝐺::GreenDat
     if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + 𝑆.dacc))
         𝑆.tmp_conf = deepcopy(new_conf)
         𝑆.tmp_dev = new_dev
-        𝑆.elem_dev = deepcopy(new_elem_dev)
+        𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
         𝑆.accepted_steps[7] = 𝑆.accepted_steps[7] + 1
         #@show "test"
     end
