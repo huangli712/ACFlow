@@ -21,18 +21,18 @@ mutable struct T_SOM
 
     att_conf :: Vector{Rectangle}
     tmp_conf :: Vector{Rectangle}
-    new_conf :: Vector{Rectangle}
+    #new_conf :: Vector{Rectangle}
 
     att_elem_dev :: Array{C64,2}
     elem_dev :: Array{C64,2}
-    new_elem_dev :: Array{C64,2}
+    #new_elem_dev :: Array{C64,2}
 
     trial_steps :: Vector{I64}
     accepted_steps :: Vector{I64}
 
     att_dev :: F64
     tmp_dev :: F64
-    new_dev :: F64
+    #new_dev :: F64
     dacc    :: F64
 end
 
@@ -97,12 +97,12 @@ function som_init()
                  conf,
                  att_conf,
                  tmp_conf,
-                 new_conf,
+#                 new_conf,
                  att_elem_dev,
                  elem_dev,
-                 new_elem_dev,
+#                 new_elem_dev,
                  trial_steps,
-                 accepted_steps, 0.0, 0.0, 0.0, 0.0)
+                 accepted_steps, 0.0, 0.0, 0.0)
 end
 
 function som_run(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
@@ -343,21 +343,21 @@ function _som_add(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     dx = Pdx(dx_min, dx_max, γ, 𝑆.rng)
 
     r = rand(𝑆.rng, F64)
-    𝑆.new_conf = deepcopy(𝑆.tmp_conf)
-    𝑆.new_elem_dev = deepcopy(𝑆.elem_dev)
+    new_conf = deepcopy(𝑆.tmp_conf)
+    new_elem_dev = deepcopy(𝑆.elem_dev)
     h = dx / w_new_max + (dx / wmin - dx / w_new_max) * r
     w = dx / h
 
-    push!(𝑆.new_conf, Rectangle(h, w, c))
-    𝑆.new_conf[t].h = 𝑆.new_conf[t].h - dx / 𝑆.new_conf[t].w
-    calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
-    calc_dev_rec(𝑆.new_conf[end], length(𝑆.new_conf), 𝑆.new_elem_dev, ω)
-    𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
+    push!(new_conf, Rectangle(h, w, c))
+    new_conf[t].h = new_conf[t].h - dx / new_conf[t].w
+    calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
+    calc_dev_rec(new_conf[end], length(new_conf), new_elem_dev, ω)
+    new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
-        𝑆.tmp_conf = deepcopy(𝑆.new_conf)
-        𝑆.tmp_dev = 𝑆.new_dev
-        𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
+    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + 𝑆.dacc))
+        𝑆.tmp_conf = deepcopy(new_conf)
+        𝑆.tmp_dev = new_dev
+        𝑆.elem_dev = deepcopy(new_elem_dev)
         𝑆.accepted_steps[1] = 𝑆.accepted_steps[1] + 1
     end
     𝑆.trial_steps[1] = 𝑆.trial_steps[1] + 1
@@ -377,29 +377,29 @@ function _som_remove(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     _conf_size = length(𝑆.tmp_conf)
     dx = 𝑆.tmp_conf[t1].h * 𝑆.tmp_conf[t1].w
 
-    𝑆.new_conf = deepcopy(𝑆.tmp_conf)
-    𝑆.new_elem_dev = deepcopy(𝑆.elem_dev)
+    new_conf = deepcopy(𝑆.tmp_conf)
+    new_elem_dev = deepcopy(𝑆.elem_dev)
 
 
-    𝑆.new_conf[t2].h = 𝑆.new_conf[t2].h + dx / 𝑆.new_conf[t2].w
+    new_conf[t2].h = new_conf[t2].h + dx / new_conf[t2].w
     if t1 < _conf_size
-        𝑆.new_conf[t1] = deepcopy(𝑆.new_conf[end])
+        new_conf[t1] = deepcopy(new_conf[end])
     else
         @assert t1 == _conf_size
     end
-    pop!(𝑆.new_conf)
+    pop!(new_conf)
 
     if t1 < _conf_size
-        calc_dev_rec(𝑆.new_conf[t1], t1, 𝑆.new_elem_dev, ω)
+        calc_dev_rec(new_conf[t1], t1, new_elem_dev, ω)
     end
-    calc_dev_rec(𝑆.new_conf[t2], t2, 𝑆.new_elem_dev, ω)
+    calc_dev_rec(new_conf[t2], t2, new_elem_dev, ω)
 
-    𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
+    new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
-        𝑆.tmp_conf = deepcopy(𝑆.new_conf)
-        𝑆.tmp_dev = 𝑆.new_dev
-        𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
+    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + 𝑆.dacc))
+        𝑆.tmp_conf = deepcopy(new_conf)
+        𝑆.tmp_dev = new_dev
+        𝑆.elem_dev = deepcopy(new_elem_dev)
         𝑆.accepted_steps[2] = 𝑆.accepted_steps[2] + 1
     end
     𝑆.trial_steps[2] = 𝑆.trial_steps[2] + 1
@@ -421,17 +421,17 @@ function _som_shift(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     dc = Pdx(dx_min, dx_max, γ, 𝑆.rng)
 
     _conf_size = length(𝑆.tmp_conf)
-    𝑆.new_conf = deepcopy(𝑆.tmp_conf)
-    𝑆.new_elem_dev = deepcopy(𝑆.elem_dev)
-    𝑆.new_conf[t].c = 𝑆.new_conf[t].c + dc
+    new_conf = deepcopy(𝑆.tmp_conf)
+    new_elem_dev = deepcopy(𝑆.elem_dev)
+    new_conf[t].c = new_conf[t].c + dc
 
-    calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
-    𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
+    calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
+    new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
-        𝑆.tmp_conf = deepcopy(𝑆.new_conf)
-        𝑆.tmp_dev = 𝑆.new_dev
-        𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
+    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + 𝑆.dacc))
+        𝑆.tmp_conf = deepcopy(new_conf)
+        𝑆.tmp_dev = new_dev
+        𝑆.elem_dev = deepcopy(new_elem_dev)
         𝑆.accepted_steps[3] = 𝑆.accepted_steps[3] + 1
     end
     𝑆.trial_steps[3] = 𝑆.trial_steps[3] + 1
@@ -454,18 +454,18 @@ function _som_change_width(𝑆::T_SOM, ω::FermionicMatsubaraGrid, 𝐺::GreenD
     dw = Pdx(dx_min, dx_max, γ, 𝑆.rng)
 
     _conf_size = length(𝑆.tmp_conf)
-    𝑆.new_conf = deepcopy(𝑆.tmp_conf)
-    𝑆.new_elem_dev = deepcopy(𝑆.elem_dev)
-    𝑆.new_conf[t].w = 𝑆.new_conf[t].w + dw
-    𝑆.new_conf[t].h = weight / 𝑆.new_conf[t].w
-    calc_dev_rec(𝑆.new_conf[t], t, 𝑆.new_elem_dev, ω)
+    new_conf = deepcopy(𝑆.tmp_conf)
+    new_elem_dev = deepcopy(𝑆.elem_dev)
+    new_conf[t].w = new_conf[t].w + dw
+    new_conf[t].h = weight / new_conf[t].w
+    calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
 
-    𝑆.new_dev = calc_dev(𝑆.new_elem_dev, length(𝑆.new_conf), 𝐺)
+    new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / 𝑆.new_dev) ^ (1.0 + 𝑆.dacc))
-        𝑆.tmp_conf = deepcopy(𝑆.new_conf)
-        𝑆.tmp_dev = 𝑆.new_dev
-        𝑆.elem_dev = deepcopy(𝑆.new_elem_dev)
+    if rand(𝑆.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + 𝑆.dacc))
+        𝑆.tmp_conf = deepcopy(new_conf)
+        𝑆.tmp_dev = new_dev
+        𝑆.elem_dev = deepcopy(new_elem_dev)
         𝑆.accepted_steps[4] = 𝑆.accepted_steps[4] + 1
     end
     𝑆.trial_steps[4] = 𝑆.trial_steps[4] + 1
