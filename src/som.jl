@@ -143,18 +143,18 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenDa
     return SOMElement(C, Λ, Δ)
 end
 
-function som_update(SA::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Tmax = P_SOM["Tmax"]
     Kmax = P_SOM["Kmax"]
     dmax = P_SOM["dmax"]
-    T1 = rand(MC.rng, 1:Tmax)
 
+    T1 = rand(MC.rng, 1:Tmax)
     d1 = rand(MC.rng, F64)
     d2 = 1.0 + (dmax - 1.0) * rand(MC.rng, F64)
 
-    ST = deepcopy(SA)
+    ST = deepcopy(SE)
 
-    for i = 1:T1
+    for _ = 1:T1
         update_type = rand(MC.rng, 1:7)
 
         @cswitch update_type begin
@@ -198,7 +198,7 @@ function som_update(SA::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         end
     end
 
-    for j = T1+1:Tmax
+    for _ = T1+1:Tmax
         update_type = rand(MC.rng, 1:7)
 
         @cswitch update_type begin
@@ -242,8 +242,8 @@ function som_update(SA::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         end
     end
 
-    if ST.Δ < SA.Δ
-        SA = deepcopy(ST)
+    if ST.Δ < SE.Δ
+        SE = deepcopy(ST)
     end
 end
 
