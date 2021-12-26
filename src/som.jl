@@ -268,7 +268,7 @@ function som_output(count::I64, 𝑆::SOMContext)
                 _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
                 for r = 1:length(𝑆.Cv[l])
                     R = 𝑆.Cv[l][r]
-                    @show l, r, R
+                    #@show l, r, R
                     if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
                         Aom[w] = Aom[w] + R.h
                     end
@@ -277,7 +277,7 @@ function som_output(count::I64, 𝑆::SOMContext)
         end
     end
 
-    @show count, dev_min, Lgood
+    @show count, 𝑆.Δv[1:count], dev_min, Lgood
 
     if Lgood > 0
         @. Aom = Aom / Lgood
