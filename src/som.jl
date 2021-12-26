@@ -176,9 +176,6 @@ function som_update(SA::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     d2 = 1.0 + (dmax - 1.0) * rand(MC.rng, F64)
 
     ST = deepcopy(SA)
-    #𝑆.tmp_conf = deepcopy(𝑆.att_conf)
-    #𝑆.tmp_dev = 𝑆.att_dev
-    #𝑆.tmp_elem_dev = deepcopy(𝑆.att_elem_dev)
 
     for i = 1:T1
         update_type = rand(MC.rng, 1:7)
@@ -270,9 +267,6 @@ function som_update(SA::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
 
     if ST.Δ < SA.Δ
         SA = deepcopy(ST)
-        #𝑆.att_conf = deepcopy(𝑆.tmp_conf)
-        #𝑆.att_dev = 𝑆.tmp_dev
-        #𝑆.att_elem_dev = deepcopy(𝑆.tmp_elem_dev)
     end
 end
 
