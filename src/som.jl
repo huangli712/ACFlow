@@ -65,7 +65,7 @@ function som_init()
         push!(Cv, C)
     end
 
-    seed = rand(1:1000000); # seed = 571716
+    seed = rand(1:1000000)#;  seed = 589450
     rng = MersenneTwister(seed)
     @show "seed: ", seed
     tri = zeros(I64, 7)
@@ -242,8 +242,11 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         end
     end
 
+    #@show ST.Δ, SE.Δ
     if ST.Δ < SE.Δ
-        SE = deepcopy(ST)
+        SE.C = deepcopy(ST.C)
+        SE.Λ = deepcopy(ST.Λ)
+        SE.Δ = ST.Δ
     end
 end
 
@@ -322,7 +325,9 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     calc_dev_rec(new_conf[end], length(new_conf), new_elem_dev, ω)
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
+    #println("add")
+    #calc_norm(𝑆.C, new_conf)
+    if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
         𝑆.Δ = new_dev
         𝑆.Λ = deepcopy(new_elem_dev)
@@ -364,6 +369,8 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
 
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
+    #println("remove")
+    #calc_norm(𝑆.C, new_conf)
     if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
         𝑆.Δ = new_dev
@@ -396,6 +403,8 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
+    #println("shift")
+    #calc_norm(𝑆.C, new_conf)
     if rand(MC.rng, F64) < ((𝑆.Δ / new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
         𝑆.Δ = new_dev
@@ -430,6 +439,8 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
 
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
+    #println("width")
+    #calc_norm(𝑆.C, new_conf)
     if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
         𝑆.Δ = new_dev
@@ -468,6 +479,8 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
     calc_dev_rec(new_conf[t2], t2, new_elem_dev, ω)
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
+    #println("weight")
+    #calc_norm(𝑆.C, new_conf)
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
         𝑆.Δ = new_dev
@@ -517,6 +530,10 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
        (c2 + dc2 ≥ ommin + w2 / 2.0) &&
        (c2 + dc2 ≤ ommax - w2 / 2.0)
 
+        #println("split")
+        #@show 𝑆.C
+        #calc_norm(𝑆.C, new_conf)
+
         new_conf[t] = deepcopy(new_conf[end])
         pop!(new_conf)
         push!(new_conf, Rectangle(h, w1, c1 + dc1))
@@ -528,6 +545,11 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         calc_dev_rec(new_conf[_conf_size], _conf_size, new_elem_dev, ω)
         calc_dev_rec(new_conf[_conf_size+1], _conf_size+1, new_elem_dev, ω)
         new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
+
+        #println("split")
+        #@show 𝑆.C
+        #calc_norm(𝑆.C, new_conf)
+        
         if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
             𝑆.C = deepcopy(new_conf)
             𝑆.Δ = new_dev
@@ -588,6 +610,8 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     calc_dev_rec(new_conf[_conf_size - 1], _conf_size - 1, new_elem_dev, ω)
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
+    #println("merge")
+    #calc_norm(𝑆.C, new_conf)
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
         𝑆.Δ = new_dev
@@ -619,16 +643,16 @@ function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
     return res
 end
 
-function calc_norm(𝑆::SOMContext)
+function calc_norm(V1::Vector{Rectangle}, V2::Vector{Rectangle})
     norm1 = 0.0
-    for i = 1:length(𝑆.tmp_conf)
-        norm1 = norm1 + 𝑆.tmp_conf[i].h * 𝑆.tmp_conf[i].w
+    for i = 1:length(V1)
+        norm1 = norm1 + V1[i].h * V1[i].w
     end
     println("tmp norm is: $norm1")
 
     norm2 = 0.0
-    for i = 1:length(𝑆.new_conf)
-        norm2 = norm2 + 𝑆.new_conf[i].h * 𝑆.new_conf[i].w
+    for i = 1:length(V2)
+        norm2 = norm2 + V2[i].h * V2[i].w
     end
     println("new norm is: $norm2")
 
