@@ -166,7 +166,7 @@ function som_random(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     𝑆.att_dev = calc_dev(𝑆.att_elem_dev, _Know, 𝐺)
 end
 
-function som_update(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function som_update(SA::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Tmax = P_SOM["Tmax"]
     Kmax = P_SOM["Kmax"]
     dmax = P_SOM["dmax"]
@@ -175,49 +175,50 @@ function som_update(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     d1 = rand(MC.rng, F64)
     d2 = 1.0 + (dmax - 1.0) * rand(MC.rng, F64)
 
-    𝑆.tmp_conf = deepcopy(𝑆.att_conf)
-    𝑆.tmp_dev = 𝑆.att_dev
-    𝑆.tmp_elem_dev = deepcopy(𝑆.att_elem_dev)
+    ST = deepcopy(SA)
+    #𝑆.tmp_conf = deepcopy(𝑆.att_conf)
+    #𝑆.tmp_dev = 𝑆.att_dev
+    #𝑆.tmp_elem_dev = deepcopy(𝑆.att_elem_dev)
 
     for i = 1:T1
         update_type = rand(MC.rng, 1:7)
 
         @cswitch update_type begin
             @case 1
-                if length(𝑆.tmp_conf) < Kmax - 1
-                    _som_add(𝑆, MC, ω, 𝐺, d1)
+                if length(ST.C) < Kmax - 1
+                    _som_add(ST, MC, ω, 𝐺, d1)
                 end
                 break
 
             @case 2
-                if length(𝑆.tmp_conf) > 1
-                    _som_remove(𝑆, MC, ω, 𝐺, d1)
+                if length(ST.C) > 1
+                    _som_remove(ST, MC, ω, 𝐺, d1)
                 end
                 break
 
             @case 3
-                _som_shift(𝑆, MC, ω, 𝐺, d1)
+                _som_shift(ST, MC, ω, 𝐺, d1)
                 break
 
             @case 4
-                _som_change_width(𝑆, MC, ω, 𝐺, d1)
+                _som_change_width(ST, MC, ω, 𝐺, d1)
                 break
 
             @case 5
-                if length(𝑆.tmp_conf) > 1
-                    _som_change_weight(𝑆, MC, ω, 𝐺, d1)
+                if length(ST.C) > 1
+                    _som_change_weight(ST, MC, ω, 𝐺, d1)
                 end
                 break
 
             @case 6
-                if length(𝑆.tmp_conf) < Kmax - 1
-                    _som_split(𝑆, MC, ω, 𝐺, d1)
+                if length(ST.C) < Kmax - 1
+                    _som_split(ST, MC, ω, 𝐺, d1)
                 end
                 break
 
             @case 7
-                if length(𝑆.tmp_conf) > 1
-                    _som_merge(𝑆, MC, ω, 𝐺, d1)
+                if length(ST.C) > 1
+                    _som_merge(ST, MC, ω, 𝐺, d1)
                 end
                 break
         end
@@ -228,49 +229,50 @@ function som_update(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
 
         @cswitch update_type begin
             @case 1
-                if length(𝑆.tmp_conf) < Kmax - 1
-                    _som_add(𝑆, MC, ω, 𝐺, d2)
+                if length(ST.C) < Kmax - 1
+                    _som_add(ST, MC, ω, 𝐺, d2)
                 end
                 break
 
             @case 2
-                if length(𝑆.tmp_conf) > 1
-                    _som_remove(𝑆, MC, ω, 𝐺, d2)
+                if length(ST.C) > 1
+                    _som_remove(ST, MC, ω, 𝐺, d2)
                 end
                 break
 
             @case 3
-                _som_shift(𝑆, MC, ω, 𝐺, d2)
+                _som_shift(ST, MC, ω, 𝐺, d2)
                 break
 
             @case 4
-                _som_change_width(𝑆, MC, ω, 𝐺, d2)
+                _som_change_width(ST, MC, ω, 𝐺, d2)
                 break
 
             @case 5
-                if length(𝑆.tmp_conf) > 1
-                    _som_change_weight(𝑆, MC, ω, 𝐺, d2)
+                if length(ST.C) > 1
+                    _som_change_weight(ST, MC, ω, 𝐺, d2)
                 end
                 break
 
             @case 6
-                if length(𝑆.tmp_conf) < Kmax - 1
-                    _som_split(𝑆, MC, ω, 𝐺, d2)
+                if length(ST.C) < Kmax - 1
+                    _som_split(ST, MC, ω, 𝐺, d2)
                 end
                 break
 
             @case 7
-                if length(𝑆.tmp_conf) > 1
-                    _som_merge(𝑆, MC, ω, 𝐺, d2)
+                if length(ST.C) > 1
+                    _som_merge(ST, MC, ω, 𝐺, d2)
                 end
                 break
         end
     end
 
-    if 𝑆.tmp_dev < 𝑆.att_dev
-        𝑆.att_conf = deepcopy(𝑆.tmp_conf)
-        𝑆.att_dev = 𝑆.tmp_dev
-        𝑆.att_elem_dev = deepcopy(𝑆.tmp_elem_dev)
+    if ST.Δ < SA.Δ
+        SA = deepcopy(ST)
+        #𝑆.att_conf = deepcopy(𝑆.tmp_conf)
+        #𝑆.att_dev = 𝑆.tmp_dev
+        #𝑆.att_elem_dev = deepcopy(𝑆.tmp_elem_dev)
     end
 end
 
