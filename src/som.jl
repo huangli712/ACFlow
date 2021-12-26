@@ -254,17 +254,17 @@ function som_output(count::I64, 𝑆::SOMContext)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
 
-    dev_min = minimum(𝑆.dev[1:count])
+    dev_min = minimum(𝑆.Δv[1:count])
 
     Lgood = 0
     Aom = zeros(F64, Ngrid)
     for l = 1:count
-        if alpha * dev_min - 𝑆.dev[l] > 0
+        if alpha * dev_min - 𝑆.Δv[l] > 0
             Lgood = Lgood + 1
             for w = 1:Ngrid
                 _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
-                for r = 1:length(𝑆.conf[l])
-                    R = 𝑆.conf[l][r]
+                for r = 1:length(𝑆.Cv[l])
+                    R = 𝑆.Cv[l][r]
                     @show l, r, R
                     if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
                         Aom[w] = Aom[w] + R.h
