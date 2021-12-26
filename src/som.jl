@@ -74,39 +74,30 @@ function som_init()
     return SOMContext(Cv, Δv), SOMMonteCarlo(rng, tri, acc)
 end
 
-function som_run(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function som_run(SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Lmax = P_SOM["Lmax"]
     for l = 1:Lmax
         println("try: $l")
-        som_try(l, 𝑆, MC, ω, 𝐺)
-        som_output(l, 𝑆)
+        som_try(l, SC, MC, ω, 𝐺)
+        som_output(l, SC)
     end
 end
 
-function som_try(l, 𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function som_try(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Nf = P_SOM["Nf"]
-    Ngrid = P_SOM["Ngrid"]
-    Kmax = P_SOM["Kmax"]
 
-    C = Rectangle[]
-    for k = 1:Kmax
-        push!(C, Rectangle(0.0, 0.0, 0.0))
-    end
-    Λ = zeros(C64, Ngrid, Kmax)
-    Δ = 0.0
-    SA = SOMElement(C, Λ, Δ)
+    SE = som_random(MC, ω, 𝐺)
+    error()
 
-    som_random(SA, MC, ω, 𝐺)
-
-    for f = 1:Nf
-        som_update(SA, MC, ω, 𝐺)
+    for _ = 1:Nf
+        som_update(SE, MC, ω, 𝐺)
     end
 
-    𝑆.dev[l] = SA.Δ
-    𝑆.conf[l] = deepcopy(SA.C)
+    SC.Δv[l] = SE.Δ
+    SC.Cv[l] = deepcopy(SE.C)
 end
 
-function som_random(SA::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     smin = P_SOM["smin"]
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
@@ -147,6 +138,15 @@ function som_random(SA::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         calc_dev_rec(Rectangle(h, w, c), k, SA.Λ, ω)
     end
     SA.Δ = calc_dev(SA.Λ, _Know, 𝐺)
+
+    C = Rectangle[]
+    for _ = 1:Kmax
+        push!(C, Rectangle(0.0, 0.0, 0.0))
+    end
+    Λ = zeros(C64, Ngrid, Kmax)
+    Δ = 0.0
+    SE = SOMElement(C, Λ, Δ)
+
 end
 
 function som_update(SA::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
