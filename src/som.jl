@@ -405,28 +405,28 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
 
-    t = rand(MC.rng, 1:length(𝑆.tmp_conf))
+    t = rand(MC.rng, 1:length(𝑆.C))
 
-    dx_min = ommin + 𝑆.tmp_conf[t].w / 2.0 - 𝑆.tmp_conf[t].c
-    dx_max = ommax - 𝑆.tmp_conf[t].w / 2.0 - 𝑆.tmp_conf[t].c
+    dx_min = ommin + 𝑆.C[t].w / 2.0 - 𝑆.C[t].c
+    dx_max = ommax - 𝑆.C[t].w / 2.0 - 𝑆.C[t].c
     if dx_max ≤ dx_min
         return
     end
 
     dc = Pdx(dx_min, dx_max, γ, MC.rng)
 
-    _conf_size = length(𝑆.tmp_conf)
-    new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
+    _conf_size = length(𝑆.C)
+    new_conf = deepcopy(𝑆.C)
+    new_elem_dev = deepcopy(𝑆.Λ)
     new_conf[t].c = new_conf[t].c + dc
 
     calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    if rand(MC.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + dacc))
-        𝑆.tmp_conf = deepcopy(new_conf)
-        𝑆.tmp_dev = new_dev
-        𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
+    if rand(MC.rng, F64) < ((𝑆.Δ / new_dev) ^ (1.0 + dacc))
+        𝑆.C = deepcopy(new_conf)
+        𝑆.Δ = new_dev
+        𝑆.Λ = deepcopy(new_elem_dev)
         MC.acc[3] = MC.acc[3] + 1
     end
     MC.tri[3] = MC.tri[3] + 1
@@ -438,29 +438,29 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
 
-    t = rand(MC.rng, 1:length(𝑆.tmp_conf))
+    t = rand(MC.rng, 1:length(𝑆.C))
 
-    weight = 𝑆.tmp_conf[t].h * 𝑆.tmp_conf[t].w
-    dx_min = wmin - 𝑆.tmp_conf[t].w
-    dx_max = min(2.0 * (𝑆.tmp_conf[t].c - ommin), 2.0 * (ommax - 𝑆.tmp_conf[t].c)) - 𝑆.tmp_conf[t].w
+    weight = 𝑆.C[t].h * 𝑆.C[t].w
+    dx_min = wmin - 𝑆.C[t].w
+    dx_max = min(2.0 * (𝑆.C[t].c - ommin), 2.0 * (ommax - 𝑆.C[t].c)) - 𝑆.C[t].w
     if dx_max ≤ dx_min
         return
     end
     dw = Pdx(dx_min, dx_max, γ, MC.rng)
 
-    _conf_size = length(𝑆.tmp_conf)
-    new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
+    _conf_size = length(𝑆.C)
+    new_conf = deepcopy(𝑆.C)
+    new_elem_dev = deepcopy(𝑆.Λ)
     new_conf[t].w = new_conf[t].w + dw
     new_conf[t].h = weight / new_conf[t].w
     calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
 
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    if rand(MC.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + dacc))
-        𝑆.tmp_conf = deepcopy(new_conf)
-        𝑆.tmp_dev = new_dev
-        𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
+    if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
+        𝑆.C = deepcopy(new_conf)
+        𝑆.Δ = new_dev
+        𝑆.Λ = deepcopy(new_elem_dev)
         MC.acc[4] = MC.acc[4] + 1
     end
     MC.tri[4] = MC.tri[4] + 1
