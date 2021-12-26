@@ -102,6 +102,7 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenDa
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     Kmax = P_SOM["Kmax"]
+    Ngrid = P_SOM["Ngrid"]
 
     _Know = rand(MC.rng, 2:Kmax)
     _weight = zeros(F64, _Know)
