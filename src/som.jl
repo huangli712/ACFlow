@@ -113,6 +113,8 @@ end
 
 function som_try(l, 𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Nf = P_SOM["Nf"]
+    Ngrid = P_SOM["Ngrid"]
+    Kmax = P_SOM["Kmax"]
 
     C = Rectangle[]
     for k = 1:Kmax
