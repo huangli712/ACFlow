@@ -113,14 +113,23 @@ end
 
 function som_try(l, 𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Nf = P_SOM["Nf"]
-    som_random(𝑆, MC, ω, 𝐺)
+
+    C = Rectangle[]
+    for k = 1:Kmax
+        push!(C, Rectangle(0.0, 0.0, 0.0))
+    end
+    Λ = zeros(C64, Ngrid, Kmax)
+    Δ = 0.0
+    SA = SOMElement(C, Λ, Δ)
+
+    som_random(SA, MC, ω, 𝐺)
 
     for f = 1:Nf
-        som_update(𝑆, MC, ω, 𝐺)
+        som_update(SA, MC, ω, 𝐺)
     end
 
-    𝑆.dev[l] = 𝑆.att_dev
-    𝑆.conf[l] = deepcopy(𝑆.att_conf)
+    𝑆.dev[l] = SA.Δ
+    𝑆.conf[l] = deepcopy(SA.C)
 end
 
 function som_random(SA::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
