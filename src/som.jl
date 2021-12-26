@@ -470,15 +470,15 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
     smin = P_SOM["smin"]
     γ = P_SOM["gamma"]
 
-    t1 = rand(MC.rng, 1:length(𝑆.tmp_conf))
-    t2 = rand(MC.rng, 1:length(𝑆.tmp_conf))
+    t1 = rand(MC.rng, 1:length(𝑆.C))
+    t2 = rand(MC.rng, 1:length(𝑆.C))
     while t1 == t2
-        t2 = rand(MC.rng, 1:length(𝑆.tmp_conf))
+        t2 = rand(MC.rng, 1:length(𝑆.C))
     end
-    w1 = 𝑆.tmp_conf[t1].w
-    w2 = 𝑆.tmp_conf[t2].w
-    h1 = 𝑆.tmp_conf[t1].h
-    h2 = 𝑆.tmp_conf[t2].h
+    w1 = 𝑆.C[t1].w
+    w2 = 𝑆.C[t2].w
+    h1 = 𝑆.C[t1].h
+    h2 = 𝑆.C[t2].h
     dx_min = smin / w1 - h1
     dx_max = (h2 - smin / w2) * w2 / w1
     if dx_max ≤ dx_min
@@ -486,19 +486,19 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
     end
     dh = Pdx(dx_min, dx_max, γ, MC.rng)
 
-    _conf_size = length(𝑆.tmp_conf)
-    new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
+    _conf_size = length(𝑆.C)
+    new_conf = deepcopy(𝑆.C)
+    new_elem_dev = deepcopy(𝑆.Λ)
     new_conf[t1].h = new_conf[t1].h + dh
     new_conf[t2].h = new_conf[t2].h - dh * w1 / w2
     calc_dev_rec(new_conf[t1], t1, new_elem_dev, ω)
     calc_dev_rec(new_conf[t2], t2, new_elem_dev, ω)
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    if rand(MC.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + dacc))
-        𝑆.tmp_conf = deepcopy(new_conf)
-        𝑆.tmp_dev = new_dev
-        𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
+    if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
+        𝑆.C = deepcopy(new_conf)
+        𝑆.Δ = new_dev
+        𝑆.Λ = deepcopy(new_elem_dev)
         MC.acc[5] = MC.acc[5] + 1
     end
     MC.tri[5] = MC.tri[5] + 1
@@ -511,9 +511,9 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
 
-    t = rand(MC.rng, 1:length(𝑆.tmp_conf))
+    t = rand(MC.rng, 1:length(𝑆.C))
 
-    old_conf = 𝑆.tmp_conf[t]
+    old_conf = 𝑆.C[t]
     if old_conf.w ≤ 2 * wmin || old_conf.w * old_conf.h ≤ 2.0 * smin
         return
     end
@@ -534,9 +534,9 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     end
     dc1 = Pdx(dx_min, dx_max, γ, MC.rng)
 
-    _conf_size = length(𝑆.tmp_conf)
-    new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
+    _conf_size = length(𝑆.C)
+    new_conf = deepcopy(𝑆.C)
+    new_elem_dev = deepcopy(𝑆.Λ)
     dc2 = -1.0 * w1 * dc1 / w2
 
     if (c1 + dc1 ≥ ommin + w1 / 2.0) &&
@@ -555,10 +555,10 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         calc_dev_rec(new_conf[_conf_size], _conf_size, new_elem_dev, ω)
         calc_dev_rec(new_conf[_conf_size+1], _conf_size+1, new_elem_dev, ω)
         new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
-        if rand(MC.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + dacc))
-            𝑆.tmp_conf = deepcopy(new_conf)
-            𝑆.tmp_dev = new_dev
-            𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
+        if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
+            𝑆.C = deepcopy(new_conf)
+            𝑆.Δ = new_dev
+            𝑆.Λ = deepcopy(new_elem_dev)
             MC.acc[6] = MC.acc[6] + 1
         end
     end
@@ -570,15 +570,15 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
 
-    t1 = rand(MC.rng, 1:length(𝑆.tmp_conf))
-    t2 = rand(MC.rng, 1:length(𝑆.tmp_conf))
+    t1 = rand(MC.rng, 1:length(𝑆.C))
+    t2 = rand(MC.rng, 1:length(𝑆.C))
     while t1 == t2
-        t2 = rand(MC.rng, 1:length(𝑆.tmp_conf))
+        t2 = rand(MC.rng, 1:length(𝑆.C))
     end
     @assert t1 != t2
 
-    old_conf1 = 𝑆.tmp_conf[t1]
-    old_conf2 = 𝑆.tmp_conf[t2]
+    old_conf1 = 𝑆.C[t1]
+    old_conf2 = 𝑆.C[t2]
 
     weight = old_conf1.h * old_conf1.w + old_conf2.h * old_conf2.w
     w_new = 0.5 * (old_conf1.w + old_conf2.w)
@@ -591,9 +591,9 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     end
     dc = Pdx(dx_min, dx_max, γ, MC.rng)
 
-    _conf_size = length(𝑆.tmp_conf)
-    new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
+    _conf_size = length(𝑆.C)
+    new_conf = deepcopy(𝑆.C)
+    new_elem_dev = deepcopy(𝑆.Λ)
 
     if t1 > t2
         t1, t2 = t2, t1
@@ -615,10 +615,10 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     calc_dev_rec(new_conf[_conf_size - 1], _conf_size - 1, new_elem_dev, ω)
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    if rand(MC.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + dacc))
-        𝑆.tmp_conf = deepcopy(new_conf)
-        𝑆.tmp_dev = new_dev
-        𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
+    if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
+        𝑆.C = deepcopy(new_conf)
+        𝑆.Δ = new_dev
+        𝑆.Λ = deepcopy(new_elem_dev)
         MC.acc[7] = MC.acc[7] + 1
     end
     MC.tri[7] = MC.tri[7] + 1
