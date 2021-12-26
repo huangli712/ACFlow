@@ -268,7 +268,6 @@ function som_output(count::I64, 𝑆::SOMContext)
                 _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
                 for r = 1:length(𝑆.Cv[l])
                     R = 𝑆.Cv[l][r]
-                    #@show l, r, R
                     if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
                         Aom[w] = Aom[w] + R.h
                     end
@@ -325,8 +324,6 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     calc_dev_rec(new_conf[end], length(new_conf), new_elem_dev, ω)
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    #println("add")
-    #calc_norm(𝑆.C, new_conf)
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
         𝑆.Δ = new_dev
@@ -369,8 +366,6 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
 
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    #println("remove")
-    #calc_norm(𝑆.C, new_conf)
     if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
         𝑆.Δ = new_dev
@@ -403,8 +398,6 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    #println("shift")
-    #calc_norm(𝑆.C, new_conf)
     if rand(MC.rng, F64) < ((𝑆.Δ / new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
         𝑆.Δ = new_dev
@@ -439,8 +432,6 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
 
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    #println("width")
-    #calc_norm(𝑆.C, new_conf)
     if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
         𝑆.Δ = new_dev
@@ -479,8 +470,6 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
     calc_dev_rec(new_conf[t2], t2, new_elem_dev, ω)
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    #println("weight")
-    #calc_norm(𝑆.C, new_conf)
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
         𝑆.Δ = new_dev
@@ -530,10 +519,6 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
        (c2 + dc2 ≥ ommin + w2 / 2.0) &&
        (c2 + dc2 ≤ ommax - w2 / 2.0)
 
-        #println("split")
-        #@show 𝑆.C
-        #calc_norm(𝑆.C, new_conf)
-
         new_conf[t] = deepcopy(new_conf[end])
         pop!(new_conf)
         push!(new_conf, Rectangle(h, w1, c1 + dc1))
@@ -546,10 +531,6 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         calc_dev_rec(new_conf[_conf_size+1], _conf_size+1, new_elem_dev, ω)
         new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-        #println("split")
-        #@show 𝑆.C
-        #calc_norm(𝑆.C, new_conf)
-        
         if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
             𝑆.C = deepcopy(new_conf)
             𝑆.Δ = new_dev
@@ -610,8 +591,6 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     calc_dev_rec(new_conf[_conf_size - 1], _conf_size - 1, new_elem_dev, ω)
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    #println("merge")
-    #calc_norm(𝑆.C, new_conf)
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
         𝑆.Δ = new_dev
