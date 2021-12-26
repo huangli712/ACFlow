@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/25
+# Last modified: 2021/12/26
 #
 
 mutable struct Rectangle
@@ -27,8 +27,6 @@ mutable struct SOMElement
 end
 
 mutable struct SOMContext
-#    rng :: AbstractRNG
-
     dev :: Vector{F64}
     conf :: Vector{Vector{Rectangle}}
 
@@ -37,9 +35,6 @@ mutable struct SOMContext
 
     att_elem_dev :: Array{C64,2}
     tmp_elem_dev :: Array{C64,2}
-
-#    trial_steps :: Vector{I64}
-#    accepted_steps :: Vector{I64}
 
     att_dev :: F64
     tmp_dev :: F64
@@ -320,20 +315,20 @@ function som_output(count::I64, 𝑆::SOMContext)
     end
 end
 
-function _som_add(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     smin = P_SOM["smin"]
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
 
-    t = rand(MC.rng, 1:length(𝑆.tmp_conf))
-    if 𝑆.tmp_conf[t].h * 𝑆.tmp_conf[t].w ≤ 2.0 * smin
+    t = rand(MC.rng, 1:length(𝑆.C))
+    if 𝑆.C[t].h * 𝑆.C[t].w ≤ 2.0 * smin
         return
     end
 
     dx_min = smin
-    dx_max = 𝑆.tmp_conf[t].h * 𝑆.tmp_conf[t].w - smin
+    dx_max = 𝑆.C[t].h * 𝑆.C[t].w - smin
     if dx_max ≤ dx_min
         return
     end
@@ -343,8 +338,8 @@ function _som_add(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     dx = Pdx(dx_min, dx_max, γ, MC.rng)
 
     r = rand(MC.rng, F64)
-    new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
+    new_conf = deepcopy(𝑆.C)
+    new_elem_dev = deepcopy(𝑆.Λ)
     h = dx / w_new_max + (dx / wmin - dx / w_new_max) * r
     w = dx / h
 
@@ -354,31 +349,31 @@ function _som_add(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     calc_dev_rec(new_conf[end], length(new_conf), new_elem_dev, ω)
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    if rand(MC.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + dacc))
-        𝑆.tmp_conf = deepcopy(new_conf)
-        𝑆.tmp_dev = new_dev
-        𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
+    if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
+        𝑆.C = deepcopy(new_conf)
+        𝑆.Δ = new_dev
+        𝑆.Λ = deepcopy(new_elem_dev)
         MC.acc[1] = MC.acc[1] + 1
     end
     MC.tri[1] = MC.tri[1] + 1
 end
 
-function _som_remove(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    t1 = rand(MC.rng, 1:length(𝑆.tmp_conf))
-    t2 = rand(MC.rng, 1:length(𝑆.tmp_conf))
+function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+    t1 = rand(MC.rng, 1:length(𝑆.C))
+    t2 = rand(MC.rng, 1:length(𝑆.C))
     while t1 == t2
-        t2 = rand(MC.rng, 1:length(𝑆.tmp_conf))
+        t2 = rand(MC.rng, 1:length(𝑆.C))
     end
 
     if t1 < t2
         t1, t2 = t2, t1
     end
 
-    _conf_size = length(𝑆.tmp_conf)
-    dx = 𝑆.tmp_conf[t1].h * 𝑆.tmp_conf[t1].w
+    _conf_size = length(𝑆.C)
+    dx = 𝑆.C[t1].h * 𝑆.C[t1].w
 
-    new_conf = deepcopy(𝑆.tmp_conf)
-    new_elem_dev = deepcopy(𝑆.tmp_elem_dev)
+    new_conf = deepcopy(𝑆.C)
+    new_elem_dev = deepcopy(𝑆.Λ)
 
 
     new_conf[t2].h = new_conf[t2].h + dx / new_conf[t2].w
@@ -396,16 +391,16 @@ function _som_remove(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubara
 
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    if rand(MC.rng, F64) < ((𝑆.tmp_dev / new_dev) ^ (1.0 + dacc))
-        𝑆.tmp_conf = deepcopy(new_conf)
-        𝑆.tmp_dev = new_dev
-        𝑆.tmp_elem_dev = deepcopy(new_elem_dev)
+    if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
+        𝑆.C = deepcopy(new_conf)
+        𝑆.Δ = new_dev
+        𝑆.Λ = deepcopy(new_elem_dev)
         MC.acc[2] = MC.acc[2] + 1
     end
     MC.tri[2] = MC.tri[2] + 1
 end
 
-function _som_shift(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
@@ -437,7 +432,7 @@ function _som_shift(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     MC.tri[3] = MC.tri[3] + 1
 end
 
-function _som_change_width(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
@@ -471,7 +466,7 @@ function _som_change_width(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMat
     MC.tri[4] = MC.tri[4] + 1
 end
 
-function _som_change_weight(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     smin = P_SOM["smin"]
     γ = P_SOM["gamma"]
 
@@ -509,7 +504,7 @@ function _som_change_weight(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMa
     MC.tri[5] = MC.tri[5] + 1
 end
 
-function _som_split(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     wmin = P_SOM["wmin"]
     smin = P_SOM["smin"]
     ommin = P_SOM["ommin"]
@@ -570,7 +565,7 @@ function _som_split(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     MC.tri[6] = MC.tri[6] + 1
 end
 
-function _som_merge(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
