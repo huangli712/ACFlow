@@ -30,14 +30,14 @@ mutable struct SOMContext
     dev :: Vector{F64}
     conf :: Vector{Vector{Rectangle}}
 
-    att_conf :: Vector{Rectangle}
-    tmp_conf :: Vector{Rectangle}
-
-    att_elem_dev :: Array{C64,2}
-    tmp_elem_dev :: Array{C64,2}
-
-    att_dev :: F64
-    tmp_dev :: F64
+#    att_conf :: Vector{Rectangle}
+#    tmp_conf :: Vector{Rectangle}
+#
+#    att_elem_dev :: Array{C64,2}
+#    tmp_elem_dev :: Array{C64,2}
+#
+#    att_dev :: F64
+#    tmp_dev :: F64
 end
 
 const P_SOM = Dict{String, Any}(
