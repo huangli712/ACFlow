@@ -123,7 +123,7 @@ function som_try(l, 𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     𝑆.conf[l] = deepcopy(𝑆.att_conf)
 end
 
-function som_random(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function som_random(SA::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     smin = P_SOM["smin"]
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
@@ -153,17 +153,17 @@ function som_random(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         plus_count = plus_count + 1
     end
 
-    empty!(𝑆.att_conf)
-    fill!(𝑆.att_elem_dev, zero(C64))
+    empty!(SA.C)
+    fill!(SA.Λ, zero(C64))
 
     for k = 1:_Know
         c = ommin + wmin / 2.0 + (ommax - ommin - wmin) * rand(MC.rng, F64)
         w = wmin + (min(2.0 * (c - ommin), 2.0 * (ommax - c)) - wmin) * rand(MC.rng, F64)
         h = weight[k] / w
-        push!(𝑆.att_conf, Rectangle(h, w, c))
-        calc_dev_rec(Rectangle(h, w, c), k, 𝑆.att_elem_dev, ω)
+        push!(SA.C, Rectangle(h, w, c))
+        calc_dev_rec(Rectangle(h, w, c), k, SA.Λ, ω)
     end
-    𝑆.att_dev = calc_dev(𝑆.att_elem_dev, _Know, 𝐺)
+    SA.Δ = calc_dev(SA.Λ, _Know, 𝐺)
 end
 
 function som_update(SA::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
