@@ -7,6 +7,25 @@
 # Last modified: 2021/12/26
 #
 
+const P_SOM = Dict{String, Any}(
+    "Lmax" => 100,
+    "Ngrid" => 64,
+    "Nf" => 1000,
+    "Tmax" => 100,
+    "Kmax" => 50,
+    "nwout" => 100,
+    "smin" => 0.005,
+    "wmin" => 0.05,
+    "gamma" => 2.0,
+    "dmax" => 2.0,
+    "ommax" => 10.0,
+    "ommin" => -10.0,
+    "alpha" => 2.0,
+    "temp" => 0.05,
+    "norm" => -1.0,
+    "monitor" => false,
+)
+
 mutable struct Rectangle
     h :: F64
     w :: F64
@@ -27,79 +46,32 @@ mutable struct SOMElement
 end
 
 mutable struct SOMContext
-    dev :: Vector{F64}
-    conf :: Vector{Vector{Rectangle}}
-
-#    att_conf :: Vector{Rectangle}
-#    tmp_conf :: Vector{Rectangle}
-#
-#    att_elem_dev :: Array{C64,2}
-#    tmp_elem_dev :: Array{C64,2}
-#
-#    att_dev :: F64
-#    tmp_dev :: F64
+    Cv :: Vector{Vector{Rectangle}}
+    Δv :: Vector{F64}
 end
 
-const P_SOM = Dict{String, Any}(
-    "Lmax" => 100,
-    "Ngrid" => 64,
-    "Nf" => 1000,
-    "Tmax" => 100,
-    "Kmax" => 50,
-    "nwout" => 100,
-    "smin" => 0.005,
-    "wmin" => 0.05,
-    "gamma" => 2.0,
-    "dmax" => 2.0,
-    "ommax" => 10.0,
-    "ommin" => -10.0,
-    "alpha" => 2.0,
-    "temp" => 0.05,
-    "norm" => -1.0,
-    "monitor" => false,
-)
-
 function som_init()
-    seed = rand(1:1000000)
-#    seed = 571716
-    rng = MersenneTwister(seed)
-    @show "seed: ", seed
-
     Lmax = P_SOM["Lmax"]
     Kmax = P_SOM["Kmax"]
-    Ngrid = P_SOM["Ngrid"]
 
-    dev = zeros(F64, Lmax)
+    Δv = zeros(F64, Lmax)
 
-    conf = []
-    for l = 1:Lmax
-        _conf = Rectangle[]
-        for k = 1:Kmax
-            push!(_conf, Rectangle(0.0, 0.0, 0.0))
+    Cv = []
+    for _ = 1:Lmax
+        C = Rectangle[]
+        for _ = 1:Kmax
+            push!(C, Rectangle(0.0, 0.0, 0.0))
         end
-        push!(conf, _conf)
+        push!(Cv, C)
     end
 
-    att_conf = Rectangle[]
-    tmp_conf = Rectangle[]
-    for k = 1:Kmax
-        push!(att_conf, Rectangle(0.0, 0.0, 0.0))
-        push!(tmp_conf, Rectangle(0.0, 0.0, 0.0))
-    end
+    seed = rand(1:1000000); # seed = 571716
+    rng = MersenneTwister(seed)
+    @show "seed: ", seed
+    tri = zeros(I64, 7)
+    acc = zeros(I64, 7)
 
-    att_elem_dev = zeros(C64, Ngrid, Kmax)
-    tmp_elem_dev = zeros(C64, Ngrid, Kmax)
-
-    trial_steps = zeros(I64, 7)
-    accepted_steps = zeros(I64, 7)
-
-    return SOMContext(dev,
-                 conf,
-                 att_conf,
-                 tmp_conf,
-                 att_elem_dev,
-                 tmp_elem_dev,
-                 0.0, 0.0), SOMMonteCarlo(rng, trial_steps, accepted_steps)
+    return SOMContext(Cv, Δv), SOMMonteCarlo(rng, tri, acc)
 end
 
 function som_run(𝑆::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
