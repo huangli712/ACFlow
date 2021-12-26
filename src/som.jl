@@ -87,7 +87,6 @@ function som_try(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsuba
     Nf = P_SOM["Nf"]
 
     SE = som_random(MC, ω, 𝐺)
-    error()
 
     for _ = 1:Nf
         som_update(SE, MC, ω, 𝐺)
@@ -127,26 +126,20 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenDa
         plus_count = plus_count + 1
     end
 
-    empty!(SA.C)
-    fill!(SA.Λ, zero(C64))
+    C = Rectangle[]
+    Λ = zeros(C64, Ngrid, Kmax)
+    Δ = 0.0
 
     for k = 1:_Know
         c = ommin + wmin / 2.0 + (ommax - ommin - wmin) * rand(MC.rng, F64)
         w = wmin + (min(2.0 * (c - ommin), 2.0 * (ommax - c)) - wmin) * rand(MC.rng, F64)
         h = weight[k] / w
-        push!(SA.C, Rectangle(h, w, c))
-        calc_dev_rec(Rectangle(h, w, c), k, SA.Λ, ω)
+        push!(C, Rectangle(h, w, c))
+        calc_dev_rec(Rectangle(h, w, c), k, Λ, ω)
     end
-    SA.Δ = calc_dev(SA.Λ, _Know, 𝐺)
+    Δ = calc_dev(Λ, _Know, 𝐺)
 
-    C = Rectangle[]
-    for _ = 1:Kmax
-        push!(C, Rectangle(0.0, 0.0, 0.0))
-    end
-    Λ = zeros(C64, Ngrid, Kmax)
-    Δ = 0.0
-    SE = SOMElement(C, Λ, Δ)
-
+    return SOMElement(C, Λ, Δ)
 end
 
 function som_update(SA::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
