@@ -382,36 +382,44 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     _conf_size = length(𝑆.C)
     dx = 𝑆.C[t1].h * 𝑆.C[t1].w
 
-    new_conf = deepcopy(𝑆.C)
-    new_elem_dev = deepcopy(𝑆.Λ)
-
-    new_conf[t2].h = new_conf[t2].h + dx / new_conf[t2].w
-    if t1 < _conf_size
-        new_conf[t1] = deepcopy(new_conf[end])
-    else
-        @assert t1 == _conf_size
-    end
-    pop!(new_conf)
-
-    if t1 < _conf_size
-        calc_dev_rec(new_conf[t1], t1, new_elem_dev, ω)
-    end
-    calc_dev_rec(new_conf[t2], t2, new_elem_dev, ω)
-    new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
+#    new_conf = deepcopy(𝑆.C)
+#    new_elem_dev = deepcopy(𝑆.Λ)
+#    new_conf[t2].h = new_conf[t2].h + dx / new_conf[t2].w
+#    if t1 < _conf_size
+#        new_conf[t1] = deepcopy(new_conf[end])
+#    else
+#        @assert t1 == _conf_size
+#    end
+#    pop!(new_conf)
+#    if t1 < _conf_size
+#        calc_dev_rec(new_conf[t1], t1, new_elem_dev, ω)
+#    end
+#    calc_dev_rec(new_conf[t2], t2, new_elem_dev, ω)
+#    new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
     R2 = 𝑆.C[t2]
     G2A = calc_dev_rec(R2, ω)
     G2B = calc_dev_rec(Rectangle(R2.h + dx / R2.w, R2.w, R2.c), ω)
     R1 = 𝑆.C[t1]
     G1 = calc_dev_rec(R1, ω)
-    new_dev1 = calc_dev(𝑆.G - G1 - G2A + G2B, 𝐺)
+    Re = 𝑆.C[end]
+    Ge = calc_dev_rec(Re, ω)
+    new_dev = calc_dev(𝑆.G - G1 - G2A + G2B, 𝐺)
 
-    @show new_dev, new_dev1
+    @show new_dev #, new_dev1
 
     if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
-        𝑆.C = deepcopy(new_conf)
+        𝑆.C[t2] = Rectangle(R2.h + dx / R2.w, R2.w, R2.c)
+        if t1 < _conf_size
+            𝑆.C[t1] = deepcopy(𝑆.C[end])
+        end
+        pop!(𝑆.C)
         𝑆.Δ = new_dev
-        𝑆.Λ = deepcopy(new_elem_dev)
+        @. 𝑆.G = 𝑆.G - G1 - G2A + G2B
+        @. 𝑆.Λ[:,t2] = G2B
+        if t1 < _conf_size
+            @. 𝑆.Λ[:,t1] = Ge
+        end
         MC.acc[2] = MC.acc[2] + 1
     end
     MC.tri[2] = MC.tri[2] + 1
