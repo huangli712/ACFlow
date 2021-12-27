@@ -66,7 +66,7 @@ function som_init()
         push!(Cv, C)
     end
 
-    seed = rand(1:1000000);  seed = 73728
+    seed = rand(1:1000000);  seed = 727408
     rng = MersenneTwister(seed)
     @show "seed: ", seed
     tri = zeros(I64, 7)
@@ -168,6 +168,7 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     _som_add(ST, MC, ω, 𝐺, d1)
     _som_remove(ST, MC, ω, 𝐺, d1)
     _som_change_weight(ST, MC, ω, 𝐺, d1)
+    _som_split(ST, MC, ω, 𝐺, d1)
 
     error()
 
@@ -570,6 +571,7 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
 end
 
 function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+    println("here split")
     wmin = P_SOM["wmin"]
     smin = P_SOM["smin"]
     ommin = P_SOM["ommin"]
@@ -620,6 +622,8 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         calc_dev_rec(new_conf[_conf_size], _conf_size, new_elem_dev, ω)
         calc_dev_rec(new_conf[_conf_size+1], _conf_size+1, new_elem_dev, ω)
         new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
+
+        @show new_dev
 
         if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
             𝑆.C = deepcopy(new_conf)
