@@ -163,9 +163,9 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     @show ST.G[1], ST.G[end]
     #error()
 
-    _som_change_width(ST, MC, ω, 𝐺, d1)
+    #_som_change_width(ST, MC, ω, 𝐺, d1)
 
-    error()
+    #error()
 
     for _ = 1:T1
         update_type = rand(MC.rng, 1:7)
@@ -423,7 +423,7 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
 end
 
 function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    println("here")
+    println("width here")
     @show 𝑆.G[1], 𝑆.G[end]
 
     wmin = P_SOM["wmin"]
@@ -456,10 +456,10 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
     G1 = calc_dev_rec(R, ω)
     G2 = calc_dev_rec(Rectangle(h, w, c), ω)
     new_dev = calc_dev(𝑆.G - G1 + G2, 𝐺)
-    #@show new_dev
+    @show new_dev
 
     if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
-        𝑆.C[t] = deepcopy(Rectangle(h, w, c))
+        𝑆.C[t] = Rectangle(h, w, c)
         𝑆.Δ = new_dev
         @. 𝑆.G = 𝑆.G - G1 + G2
         @. 𝑆.Λ[:,t] = G2
@@ -467,7 +467,7 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
     end
     MC.tri[4] = MC.tri[4] + 1
 
-#    error()
+    #error()
 end
 
 function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
