@@ -92,7 +92,7 @@ function som_try(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsuba
     #@timev 
     for _ = 1:Nf
         som_update(SE, MC, ω, 𝐺)
-    end
+     end
 
     SC.Δv[l] = SE.Δ
     SC.Cv[l] = deepcopy(SE.C)
@@ -268,6 +268,7 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     if ST.Δ < SE.Δ
         SE.C = deepcopy(ST.C)
         SE.Λ = deepcopy(ST.Λ)
+        SE.G = deepcopy(ST.G)
         SE.Δ = ST.Δ
     end
 end
@@ -313,7 +314,8 @@ function som_output(count::I64, 𝑆::SOMContext)
 end
 
 function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    #println("here add")
+    println("here add")
+
     smin = P_SOM["smin"]
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
@@ -368,10 +370,23 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         MC.acc[1] = MC.acc[1] + 1
     end
     MC.tri[1] = MC.tri[1] + 1
+
+    G = calc_gf(𝑆.Λ, length(𝑆.C))
+    if sum( abs.(G - 𝑆.G) ) / 64.0 > 0.00001
+        error()
+    end
+
+
+#    G = calc_gf(𝑆.Λ, length(𝑆.C))
+#    for i = 1:64
+#        @show i, G[i], 𝑆.G[i]
+#    end
+
+#    error()
 end
 
 function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    #println("here remove")
+    println("here remove")
     t1 = rand(MC.rng, 1:length(𝑆.C))
     t2 = rand(MC.rng, 1:length(𝑆.C))
     while t1 == t2
@@ -428,10 +443,24 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
         MC.acc[2] = MC.acc[2] + 1
     end
     MC.tri[2] = MC.tri[2] + 1
+
+    G = calc_gf(𝑆.Λ, length(𝑆.C))
+    if sum( abs.(G - 𝑆.G) ) / 64.0 > 0.00001
+        error()
+    end
+
+
+#    G = calc_gf(𝑆.Λ, length(𝑆.C))
+#    for i = 1:64
+#        @show i, G[i], 𝑆.G[i]
+#    end
+#
+#    error()
 end
 
 function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    #println("here shift")
+    println("here shift")
+
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
@@ -471,10 +500,23 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         MC.acc[3] = MC.acc[3] + 1
     end
     MC.tri[3] = MC.tri[3] + 1
+
+    G = calc_gf(𝑆.Λ, length(𝑆.C))
+    if sum( abs.(G - 𝑆.G) ) / 64.0 > 0.00001
+        error()
+    end
+
+
+#    G = calc_gf(𝑆.Λ, length(𝑆.C))
+#    for i = 1:64
+#        @show i, G[i], 𝑆.G[i]
+#    end
+
+#    error()
 end
 
 function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    #println("width here")
+    println("width here")
     #@show 𝑆.G[1], 𝑆.G[end]
 
     wmin = P_SOM["wmin"]
@@ -518,11 +560,21 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
     end
     MC.tri[4] = MC.tri[4] + 1
 
-    #error()
+    G = calc_gf(𝑆.Λ, length(𝑆.C))
+    if sum( abs.(G - 𝑆.G) ) / 64.0 > 0.00001
+        error()
+    end
+
+#    G = calc_gf(𝑆.Λ, length(𝑆.C))
+#    for i = 1:64
+#        @show i, G[i], 𝑆.G[i]
+#    end
+
+#    error()
 end
 
 function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    #println("here weight")
+    println("here weight")
     smin = P_SOM["smin"]
     γ = P_SOM["gamma"]
 
@@ -571,10 +623,23 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
         MC.acc[5] = MC.acc[5] + 1
     end
     MC.tri[5] = MC.tri[5] + 1
+
+#    G = calc_gf(𝑆.Λ, length(𝑆.C))
+#    for i = 1:64
+#        @show i, G[i], 𝑆.G[i]
+#    end
+
+#    error()
+
+    G = calc_gf(𝑆.Λ, length(𝑆.C))
+    if sum( abs.(G - 𝑆.G) ) / 64.0 > 0.00001
+        error()
+    end
+
 end
 
 function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    #println("here split")
+    println("here split")
     wmin = P_SOM["wmin"]
     smin = P_SOM["smin"]
     ommin = P_SOM["ommin"]
@@ -659,10 +724,22 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         end
     end
     MC.tri[6] = MC.tri[6] + 1
+
+#    G = calc_gf(𝑆.Λ, length(𝑆.C))
+#    for i = 1:64
+#        @show i, G[i], 𝑆.G[i]
+#    end
+
+#    error()
+    G = calc_gf(𝑆.Λ, length(𝑆.C))
+    if sum( abs.(G - 𝑆.G) ) / 64.0 > 0.00001
+        error()
+    end
+
 end
 
 function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    #println("here merge")
+    println("here merge")
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
@@ -738,6 +815,13 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         MC.acc[7] = MC.acc[7] + 1
     end
     MC.tri[7] = MC.tri[7] + 1
+
+    G = calc_gf(𝑆.Λ, length(𝑆.C))
+    if sum( abs.(G - 𝑆.G) ) / 64.0 > 0.00001
+        error()
+    end
+
+    #error()
 end
 
 function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::FermionicMatsubaraGrid)
