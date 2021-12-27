@@ -163,9 +163,10 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     @show ST.G[1], ST.G[end]
     #error()
 
-    #_som_change_width(ST, MC, ω, 𝐺, d1)
+    _som_change_width(ST, MC, ω, 𝐺, d1)
+    _som_shift(ST, MC, ω, 𝐺, d1)
 
-    #error()
+    error()
 
     for _ = 1:T1
         update_type = rand(MC.rng, 1:7)
@@ -391,6 +392,7 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
 end
 
 function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+    println("here shift")
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
@@ -412,6 +414,7 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
 
     calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
+    @show new_dev
 
     if rand(MC.rng, F64) < ((𝑆.Δ / new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
