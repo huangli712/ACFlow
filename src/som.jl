@@ -166,6 +166,7 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     _som_change_width(ST, MC, ω, 𝐺, d1)
     _som_shift(ST, MC, ω, 𝐺, d1)
     _som_add(ST, MC, ω, 𝐺, d1)
+    _som_remove(ST, MC, ω, 𝐺, d1)
 
     error()
 
@@ -357,19 +358,20 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         𝑆.Δ = new_dev
         @. 𝑆.G = 𝑆.G - G1 + G2 + G3
         @. 𝑆.Λ[:,t] = G2
-        @. 𝑆.Λ[:,length(𝑆.C)] = G3
+        _conf_size = length(𝑆.C)
+        @. 𝑆.Λ[:, _conf_size] = G3
         MC.acc[1] = MC.acc[1] + 1
     end
     MC.tri[1] = MC.tri[1] + 1
 end
 
 function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+    println("here remove")
     t1 = rand(MC.rng, 1:length(𝑆.C))
     t2 = rand(MC.rng, 1:length(𝑆.C))
     while t1 == t2
         t2 = rand(MC.rng, 1:length(𝑆.C))
     end
-
     if t1 < t2
         t1, t2 = t2, t1
     end
@@ -379,7 +381,6 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
 
     new_conf = deepcopy(𝑆.C)
     new_elem_dev = deepcopy(𝑆.Λ)
-
 
     new_conf[t2].h = new_conf[t2].h + dx / new_conf[t2].w
     if t1 < _conf_size
@@ -393,8 +394,23 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
         calc_dev_rec(new_conf[t1], t1, new_elem_dev, ω)
     end
     calc_dev_rec(new_conf[t2], t2, new_elem_dev, ω)
-
     new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
+
+    R2 = 𝑆.C[t2]
+    G2A = calc_dev_rec(R2, ω)
+    G2B = calc_dev_rec(Rectangle(R2.h + dx / R2.w, R2.w, R2.c), ω)
+
+    R1 = 𝑆.C[t1]
+    G1 = calc_dev_rec(R1, ω)
+    Ge = calc_dev_rec(𝑆.C[end], ω)
+    if t1 < _conf_size
+        new_dev1 = calc_dev(𝑆.G - G1 - G2A + G2B, 𝐺)
+    else
+        new_dev1 = calc_dev(𝑆.G - Ge - G2A + G2B, 𝐺)
+    end
+
+
+    @show new_dev, new_dev1
 
     if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
         𝑆.C = deepcopy(new_conf)
