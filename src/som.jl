@@ -94,7 +94,7 @@ function som_try(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsuba
         som_update(SE, MC, ω, 𝐺)
 
         G = calc_gf(SE.Λ, length(SE.C))
-        if sum( abs.(G - SE.G) ) / 64.0 > 0.001
+        if sum( abs.(G - SE.G) ) / 64.0 > 0.00001
             error()
         end    
      end
