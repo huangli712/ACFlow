@@ -158,20 +158,20 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     d1 = rand(MC.rng, F64)
     d2 = 1.0 + (dmax - 1.0) * rand(MC.rng, F64)
 
-    @show SE.G[1], SE.G[end]
+    #@show SE.G[1], SE.G[end]
     ST = deepcopy(SE)
-    @show ST.G[1], ST.G[end]
+    #@show ST.G[1], ST.G[end]
     #error()
 
-    _som_change_width(ST, MC, ω, 𝐺, d1)
-    _som_shift(ST, MC, ω, 𝐺, d1)
-    _som_add(ST, MC, ω, 𝐺, d1)
-    _som_remove(ST, MC, ω, 𝐺, d1)
-    _som_change_weight(ST, MC, ω, 𝐺, d1)
-    _som_split(ST, MC, ω, 𝐺, d1)
-    _som_merge(ST, MC, ω, 𝐺, d1)
+    #_som_change_width(ST, MC, ω, 𝐺, d1)
+    #_som_shift(ST, MC, ω, 𝐺, d1)
+    #_som_add(ST, MC, ω, 𝐺, d1)
+    #_som_remove(ST, MC, ω, 𝐺, d1)
+    #_som_change_weight(ST, MC, ω, 𝐺, d1)
+    #_som_split(ST, MC, ω, 𝐺, d1)
+    #_som_merge(ST, MC, ω, 𝐺, d1)
 
-    error()
+    #error()
 
     for _ = 1:T1
         update_type = rand(MC.rng, 1:7)
@@ -312,7 +312,7 @@ function som_output(count::I64, 𝑆::SOMContext)
 end
 
 function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    println("here add")
+    #println("here add")
     smin = P_SOM["smin"]
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
@@ -353,7 +353,7 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     G3 = calc_dev_rec(Rectangle(h, w, c), ω)
     new_dev = calc_dev(𝑆.G - G1 + G2 + G3, 𝐺)
 
-    @show new_dev#, new_dev1
+    #@show new_dev#, new_dev1
 
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
         𝑆.C[t] = Rnew
@@ -362,7 +362,7 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         @. 𝑆.G = 𝑆.G - G1 + G2 + G3
         @. 𝑆.Λ[:,t] = G2
         _conf_size = length(𝑆.C)
-        @show _conf_size
+        #@show _conf_size
         @. 𝑆.Λ[:, _conf_size] = G3
         MC.acc[1] = MC.acc[1] + 1
     end
@@ -370,7 +370,7 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
 end
 
 function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    println("here remove")
+    #println("here remove")
     t1 = rand(MC.rng, 1:length(𝑆.C))
     t2 = rand(MC.rng, 1:length(𝑆.C))
     while t1 == t2
@@ -410,7 +410,7 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     Ge = calc_dev_rec(Re, ω)
     new_dev = calc_dev(𝑆.G - G1 - G2A + G2B, 𝐺)
 
-    @show new_dev #, new_dev1
+    #@show new_dev #, new_dev1
 
     if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
         𝑆.C[t2] = Rectangle(R2.h + dx / R2.w, R2.w, R2.c)
@@ -430,7 +430,7 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
 end
 
 function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    println("here shift")
+    #println("here shift")
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
@@ -460,7 +460,7 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     G1 = calc_dev_rec(R, ω)
     G2 = calc_dev_rec(Rectangle(h, w, c), ω)
     new_dev = calc_dev(𝑆.G - G1 + G2, 𝐺)
-    @show new_dev
+    #@show new_dev
 
     if rand(MC.rng, F64) < ((𝑆.Δ / new_dev) ^ (1.0 + dacc))
         𝑆.C[t] = Rectangle(h, w, c)
@@ -473,8 +473,8 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
 end
 
 function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    println("width here")
-    @show 𝑆.G[1], 𝑆.G[end]
+    #println("width here")
+    #@show 𝑆.G[1], 𝑆.G[end]
 
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
@@ -506,7 +506,7 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
     G1 = calc_dev_rec(R, ω)
     G2 = calc_dev_rec(Rectangle(h, w, c), ω)
     new_dev = calc_dev(𝑆.G - G1 + G2, 𝐺)
-    @show new_dev
+    #@show new_dev
 
     if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
         𝑆.C[t] = Rectangle(h, w, c)
@@ -521,7 +521,7 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
 end
 
 function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    println("here weight")
+    #println("here weight")
     smin = P_SOM["smin"]
     γ = P_SOM["gamma"]
 
@@ -558,7 +558,7 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
     G2B = calc_dev_rec(Rectangle(R2.h - dh * w1 / w2, R2.w, R2.c), ω)
     new_dev = calc_dev(𝑆.G - G1A + G1B - G2A + G2B, 𝐺)
 
-    @show new_dev#, new_dev1
+    #@show new_dev#, new_dev1
 
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
         𝑆.C[t1] = Rectangle(R1.h + dh, R1.w, R1.c)
@@ -573,7 +573,7 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
 end
 
 function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    println("here split")
+    #println("here split")
     wmin = P_SOM["wmin"]
     smin = P_SOM["smin"]
     ommin = P_SOM["ommin"]
@@ -639,7 +639,7 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         G3 = calc_dev_rec(R3, ω)
         new_dev = calc_dev(𝑆.G - G1 + G2 + G3, 𝐺)
 
-        @show new_dev#, new_dev1
+        #@show new_dev#, new_dev1
 
         if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
             𝑆.C[t] = deepcopy(𝑆.C[end])
@@ -661,7 +661,7 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
 end
 
 function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    println("here merge")
+    #println("here merge")
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     γ = P_SOM["gamma"]
@@ -718,7 +718,7 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     Ge = calc_dev_rec(Re, ω)
     new_dev = calc_dev(𝑆.G - G1 - G2 + Gn, 𝐺)
 
-    @show new_dev#, new_dev1
+    #@show new_dev#, new_dev1
 
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
         𝑆.C[t1] = Rn
