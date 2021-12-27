@@ -282,7 +282,7 @@ function som_output(count::I64, 𝑆::SOMContext)
         @. Aom = Aom / Lgood
     end
 
-    open("Aw.out", "w") do fout
+    open("Aw.data", "w") do fout
         for w = 1:Ngrid
             _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
             println(fout, _omega, " ", Aom[w])
