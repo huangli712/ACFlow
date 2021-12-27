@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/26
+# Last modified: 2021/12/27
 #
 
 const P_SOM = Dict{String, Any}(
@@ -42,6 +42,7 @@ end
 mutable struct SOMElement
     C :: Vector{Rectangle}
     Λ :: Array{C64,2}
+    G :: Vector{C64}
     Δ :: F64
 end
 
@@ -65,7 +66,7 @@ function som_init()
         push!(Cv, C)
     end
 
-    seed = rand(1:1000000)#;  seed = 589450
+    seed = rand(1:1000000);  seed = 73728
     rng = MersenneTwister(seed)
     @show "seed: ", seed
     tri = zeros(I64, 7)
@@ -88,12 +89,14 @@ function som_try(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsuba
 
     SE = som_random(MC, ω, 𝐺)
 
-    for _ = 1:Nf
+    @timev for _ = 1:Nf
         som_update(SE, MC, ω, 𝐺)
     end
 
     SC.Δv[l] = SE.Δ
     SC.Cv[l] = deepcopy(SE.C)
+    @show SE.Δ
+    error()
 end
 
 function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
@@ -139,8 +142,11 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenDa
         calc_dev_rec(Rectangle(h, w, c), k, Λ, ω)
     end
     Δ = calc_dev(Λ, _Know, 𝐺)
-
-    return SOMElement(C, Λ, Δ)
+    G = calc_gf(Λ, _Know)
+    
+    #@show sum( abs.((G .- 𝐺.value) ./ (𝐺.error)) ), Δ
+    #error()
+    return SOMElement(C, Λ, G, Δ)
 end
 
 function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
@@ -152,10 +158,15 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     d1 = rand(MC.rng, F64)
     d2 = 1.0 + (dmax - 1.0) * rand(MC.rng, F64)
 
+    #@show SE.G[1], SE.G[end]
     ST = deepcopy(SE)
+    #@show ST.G[1], ST.G[end]
+    #error()
 
     for _ = 1:T1
         update_type = rand(MC.rng, 1:7)
+        @show update_type
+        error()
 
         @cswitch update_type begin
             @case 1
@@ -620,6 +631,18 @@ function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
     end
 
     return res
+end
+
+function calc_gf(elem_dev::Array{C64,2}, nk::I64)
+    Ngrid = P_SOM["Ngrid"]
+
+    G = zeros(C64, Ngrid)
+    for g = 1:Ngrid
+        for k = 1:nk
+            G[g] = G[g] + elem_dev[g,k]
+        end
+    end
+    return G
 end
 
 function calc_norm(V1::Vector{Rectangle}, V2::Vector{Rectangle})
