@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/27
+# Last modified: 2021/12/28
 #
 
 const P_SOM = Dict{String, Any}(
@@ -89,14 +89,15 @@ function som_try(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsuba
 
     SE = som_random(MC, ω, 𝐺)
 
-    @timev for _ = 1:Nf
+    #@timev 
+    for _ = 1:Nf
         som_update(SE, MC, ω, 𝐺)
     end
 
     SC.Δv[l] = SE.Δ
     SC.Cv[l] = deepcopy(SE.C)
-    @show SE.Δ
-    error()
+    #@show SE.Δ
+    #error()
 end
 
 function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
