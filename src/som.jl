@@ -167,6 +167,7 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     _som_shift(ST, MC, ω, 𝐺, d1)
     _som_add(ST, MC, ω, 𝐺, d1)
     _som_remove(ST, MC, ω, 𝐺, d1)
+    _som_change_weight(ST, MC, ω, 𝐺, d1)
 
     error()
 
@@ -517,6 +518,7 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
 end
 
 function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+    println("here weight")
     smin = P_SOM["smin"]
     γ = P_SOM["gamma"]
 
@@ -537,18 +539,31 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
     dh = Pdx(dx_min, dx_max, γ, MC.rng)
 
     _conf_size = length(𝑆.C)
-    new_conf = deepcopy(𝑆.C)
-    new_elem_dev = deepcopy(𝑆.Λ)
-    new_conf[t1].h = new_conf[t1].h + dh
-    new_conf[t2].h = new_conf[t2].h - dh * w1 / w2
-    calc_dev_rec(new_conf[t1], t1, new_elem_dev, ω)
-    calc_dev_rec(new_conf[t2], t2, new_elem_dev, ω)
-    new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
+    #new_conf = deepcopy(𝑆.C)
+    #new_elem_dev = deepcopy(𝑆.Λ)
+    #new_conf[t1].h = new_conf[t1].h + dh
+    #new_conf[t2].h = new_conf[t2].h - dh * w1 / w2
+    #calc_dev_rec(new_conf[t1], t1, new_elem_dev, ω)
+    #calc_dev_rec(new_conf[t2], t2, new_elem_dev, ω)
+    #new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
+
+    R1 = 𝑆.C[t1]
+    G1A = calc_dev_rec(R1, ω)
+    G1B = calc_dev_rec(Rectangle(R1.h + dh, R1.w, R1.c), ω)
+    R2 = 𝑆.C[t2]
+    G2A = calc_dev_rec(R2, ω)
+    G2B = calc_dev_rec(Rectangle(R2.h - dh * w1 / w2, R2.w, R2.c), ω)
+    new_dev = calc_dev(𝑆.G - G1A + G1B - G2A + G2B, 𝐺)
+
+    @show new_dev#, new_dev1
 
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
-        𝑆.C = deepcopy(new_conf)
+        𝑆.C[t1] = Rectangle(R1.h + dh, R1.w, R1.c)
+        𝑆.C[t2] = Rectangle(R2.h - dh * w1 / w2, R2.w, R2.c)
         𝑆.Δ = new_dev
-        𝑆.Λ = deepcopy(new_elem_dev)
+        @. 𝑆.G = 𝑆.G - G1A + G1B - G2A + G2B
+        @. 𝑆.Λ[:,t1] = G1B
+        @. 𝑆.Λ[:,t2] = G2B
         MC.acc[5] = MC.acc[5] + 1
     end
     MC.tri[5] = MC.tri[5] + 1
