@@ -158,15 +158,15 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     d1 = rand(MC.rng, F64)
     d2 = 1.0 + (dmax - 1.0) * rand(MC.rng, F64)
 
-    #@show SE.G[1], SE.G[end]
+    @show SE.G[1], SE.G[end]
     ST = deepcopy(SE)
-    #@show ST.G[1], ST.G[end]
+    @show ST.G[1], ST.G[end]
     #error()
 
     for _ = 1:T1
         update_type = rand(MC.rng, 1:7)
         @show update_type
-        error()
+        ##error()
 
         @cswitch update_type begin
             @case 1
@@ -419,6 +419,9 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
 end
 
 function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+    println("here")
+    @show 𝑆.G[1], 𝑆.G[end]
+
     wmin = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
@@ -435,21 +438,32 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
     dw = Pdx(dx_min, dx_max, γ, MC.rng)
 
     _conf_size = length(𝑆.C)
-    new_conf = deepcopy(𝑆.C)
-    new_elem_dev = deepcopy(𝑆.Λ)
-    new_conf[t].w = new_conf[t].w + dw
-    new_conf[t].h = weight / new_conf[t].w
-    calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
+    #new_conf = deepcopy(𝑆.C)
+    #new_elem_dev = deepcopy(𝑆.Λ)
+    #new_conf[t].w = new_conf[t].w + dw
+    #new_conf[t].h = weight / new_conf[t].w
+    #calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
+    #new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-    new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
+    R = 𝑆.C[t]
+    w = R.w + dw
+    h = weight / w
+    c = R.c
+    G1 = calc_dev_rec(R, ω)
+    G2 = calc_dev_rec(Rectangle(h, w, c), ω)
+    new_dev = calc_dev(𝑆.G - G1 + G2, 𝐺)
+    #@show new_dev
 
     if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
-        𝑆.C = deepcopy(new_conf)
+        𝑆.C[t] = deepcopy(Rectangle(h, w, c))
         𝑆.Δ = new_dev
-        𝑆.Λ = deepcopy(new_elem_dev)
+        @. 𝑆.G = 𝑆.G - G1 + G2
+        @. 𝑆.Λ[:,t] = G2
         MC.acc[4] = MC.acc[4] + 1
     end
     MC.tri[4] = MC.tri[4] + 1
+
+#    error()
 end
 
 function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
@@ -619,6 +633,15 @@ function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::Fermioni
     end
 end
 
+function calc_dev_rec(r::Rectangle, ω::FermionicMatsubaraGrid)
+    Ngrid = P_SOM["Ngrid"]
+    elem_dev = zeros(C64, Ngrid)
+    for g = 1:Ngrid
+        elem_dev[g] = r.h * log((im * ω.grid[g] - r.c + 0.5 * r.w) / (im * ω.grid[g] - r.c - 0.5 * r.w))
+    end
+    return elem_dev
+end
+
 function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
     Ngrid = P_SOM["Ngrid"]
     res = 0.0
@@ -631,6 +654,10 @@ function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
     end
 
     return res
+end
+
+function calc_dev(Gc::Vector{C64}, 𝐺::GreenData)
+    return sum( abs.((Gc .- 𝐺.value) ./ (𝐺.error)) )
 end
 
 function calc_gf(elem_dev::Array{C64,2}, nk::I64)
