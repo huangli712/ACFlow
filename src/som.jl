@@ -163,9 +163,13 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     @show ST.G[1], ST.G[end]
     #error()
 
+    _som_change_width(ST, MC, ω, 𝐺, d1)
+
+    error()
+
     for _ = 1:T1
         update_type = rand(MC.rng, 1:7)
-        @show update_type
+        #@show update_type
         ##error()
 
         @cswitch update_type begin
