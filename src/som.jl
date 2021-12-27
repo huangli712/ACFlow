@@ -375,6 +375,9 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     if t1 < t2
         t1, t2 = t2, t1
     end
+    #t1 = 38
+    #t2 = 10
+    #@show t1, t2, length(𝑆.C)
 
     _conf_size = length(𝑆.C)
     dx = 𝑆.C[t1].h * 𝑆.C[t1].w
@@ -399,16 +402,9 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     R2 = 𝑆.C[t2]
     G2A = calc_dev_rec(R2, ω)
     G2B = calc_dev_rec(Rectangle(R2.h + dx / R2.w, R2.w, R2.c), ω)
-
     R1 = 𝑆.C[t1]
     G1 = calc_dev_rec(R1, ω)
-    Ge = calc_dev_rec(𝑆.C[end], ω)
-    if t1 < _conf_size
-        new_dev1 = calc_dev(𝑆.G - G1 - G2A + G2B, 𝐺)
-    else
-        new_dev1 = calc_dev(𝑆.G - Ge - G2A + G2B, 𝐺)
-    end
-
+    new_dev1 = calc_dev(𝑆.G - G1 - G2A + G2B, 𝐺)
 
     @show new_dev, new_dev1
 
