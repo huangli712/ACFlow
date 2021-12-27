@@ -66,7 +66,7 @@ function som_init()
         push!(Cv, C)
     end
 
-    seed = rand(1:1000000);  seed = 727408
+    seed = rand(1:1000000);  seed = 840959
     rng = MersenneTwister(seed)
     @show "seed: ", seed
     tri = zeros(I64, 7)
@@ -361,6 +361,7 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         @. 𝑆.G = 𝑆.G - G1 + G2 + G3
         @. 𝑆.Λ[:,t] = G2
         _conf_size = length(𝑆.C)
+        @show _conf_size
         @. 𝑆.Λ[:, _conf_size] = G3
         MC.acc[1] = MC.acc[1] + 1
     end
@@ -579,6 +580,8 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     γ = P_SOM["gamma"]
 
     t = rand(MC.rng, 1:length(𝑆.C))
+    #t = 29
+    #@show t, length(𝑆.C)
 
     old_conf = 𝑆.C[t]
     if old_conf.w ≤ 2 * wmin || old_conf.w * old_conf.h ≤ 2.0 * smin
@@ -602,8 +605,8 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     dc1 = Pdx(dx_min, dx_max, γ, MC.rng)
 
     _conf_size = length(𝑆.C)
-    new_conf = deepcopy(𝑆.C)
-    new_elem_dev = deepcopy(𝑆.Λ)
+    #new_conf = deepcopy(𝑆.C)
+    #new_elem_dev = deepcopy(𝑆.Λ)
     dc2 = -1.0 * w1 * dc1 / w2
 
     if (c1 + dc1 ≥ ommin + w1 / 2.0) &&
@@ -611,24 +614,45 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
        (c2 + dc2 ≥ ommin + w2 / 2.0) &&
        (c2 + dc2 ≤ ommax - w2 / 2.0)
 
-        new_conf[t] = deepcopy(new_conf[end])
-        pop!(new_conf)
-        push!(new_conf, Rectangle(h, w1, c1 + dc1))
-        push!(new_conf, Rectangle(h, w2, c2 + dc2))
+        #new_conf[t] = deepcopy(new_conf[end])
+        #pop!(new_conf)
+        #push!(new_conf, Rectangle(h, w1, c1 + dc1))
+        #push!(new_conf, Rectangle(h, w2, c2 + dc2))
 
-        if t < _conf_size
-            calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
-        end
-        calc_dev_rec(new_conf[_conf_size], _conf_size, new_elem_dev, ω)
-        calc_dev_rec(new_conf[_conf_size+1], _conf_size+1, new_elem_dev, ω)
-        new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
+        #if t < _conf_size
+        #    calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
+        #end
+        #calc_dev_rec(new_conf[_conf_size], _conf_size, new_elem_dev, ω)
+        #calc_dev_rec(new_conf[_conf_size+1], _conf_size+1, new_elem_dev, ω)
+        #new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
 
-        @show new_dev
+        R1 = 𝑆.C[t]
+        G1 = calc_dev_rec(R1, ω)
+        Re = 𝑆.C[end]
+        Ge = calc_dev_rec(Re, ω)
+
+        R2 = Rectangle(h, w1, c1 + dc1)
+        G2 = calc_dev_rec(R2, ω)
+
+        R3 = Rectangle(h, w2, c2 + dc2)
+        G3 = calc_dev_rec(R3, ω)
+        new_dev = calc_dev(𝑆.G - G1 + G2 + G3, 𝐺)
+
+        @show new_dev#, new_dev1
 
         if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
-            𝑆.C = deepcopy(new_conf)
+            𝑆.C[t] = deepcopy(𝑆.C[end])
+            pop!(𝑆.C)
+            push!(𝑆.C, R2)
+            push!(𝑆.C, R3)
             𝑆.Δ = new_dev
-            𝑆.Λ = deepcopy(new_elem_dev)
+            @. 𝑆.G = 𝑆.G - G1 + G2 + G3
+            
+            if t < _conf_size
+                @. 𝑆.Λ[:,t] = Ge
+            end
+            @. 𝑆.Λ[:,_conf_size] = G2
+            @. 𝑆.Λ[:,_conf_size+1] = G3
             MC.acc[6] = MC.acc[6] + 1
         end
     end
