@@ -320,13 +320,11 @@ function som_output(count::I64, 𝑆::SOMContext)
 end
 
 function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-#    println("here add")
-
-    smin = P_SOM["smin"]
-    wmin = P_SOM["wmin"]
+    smin  = P_SOM["smin"]
+    wmin  = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-    γ = P_SOM["gamma"]
+    γ     = P_SOM["gamma"]
 
     t = rand(MC.rng, 1:length(𝑆.C))
     if 𝑆.C[t].h * 𝑆.C[t].w ≤ 2.0 * smin
@@ -344,8 +342,6 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     dx = Pdx(dx_min, dx_max, γ, MC.rng)
 
     r = rand(MC.rng, F64)
-    #new_conf = deepcopy(𝑆.C)
-    #new_elem_dev = deepcopy(𝑆.Λ)
     h = dx / w_new_max + (dx / wmin - dx / w_new_max) * r
     w = dx / h
 
@@ -362,8 +358,6 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     G3 = calc_dev_rec(Rectangle(h, w, c), ω)
     new_dev = calc_dev(𝑆.G - G1 + G2 + G3, 𝐺)
 
-    #@show new_dev#, new_dev1
-
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
         𝑆.C[t] = Rnew
         push!(𝑆.C, Rectangle(h, w, c))
@@ -371,23 +365,10 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         @. 𝑆.G = 𝑆.G - G1 + G2 + G3
         @. 𝑆.Λ[:,t] = G2
         _conf_size = length(𝑆.C)
-        #@show _conf_size
         @. 𝑆.Λ[:, _conf_size] = G3
         MC.acc[1] = MC.acc[1] + 1
     end
     MC.tri[1] = MC.tri[1] + 1
-
-#    G = calc_gf(𝑆.Λ, length(𝑆.C))
-#    if sum( abs.(G - 𝑆.G) ) / 64.0 > 0.00001
-#        error()
-#    end
-
-#    G = calc_gf(𝑆.Λ, length(𝑆.C))
-#    for i = 1:64
-#        @show i, G[i], 𝑆.G[i]
-#    end
-
-#    error()
 end
 
 function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
