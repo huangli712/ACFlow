@@ -743,29 +743,28 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
 end
 
 function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-#    println("here merge")
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-    γ = P_SOM["gamma"]
+    γ     = P_SOM["gamma"]
 
-    t1 = rand(MC.rng, 1:length(𝑆.C))
-    t2 = rand(MC.rng, 1:length(𝑆.C))
+    csize = length(𝑆.C)
+
+    t1 = rand(MC.rng, 1:csize)
+    t2 = rand(MC.rng, 1:csize)
     while t1 == t2
-        t2 = rand(MC.rng, 1:length(𝑆.C))
+        t2 = rand(MC.rng, 1:csize)
     end
-    @assert t1 != t2
-
     if t1 > t2
         t1, t2 = t2, t1
     end
 
-    old_conf1 = 𝑆.C[t1]
-    old_conf2 = 𝑆.C[t2]
+    R1 = 𝑆.C[t1]
+    R2 = 𝑆.C[t2]
 
-    weight = old_conf1.h * old_conf1.w + old_conf2.h * old_conf2.w
-    w_new = 0.5 * (old_conf1.w + old_conf2.w)
+    weight = R1.h * R1.w + R2.h * R2.w
+    w_new = 0.5 * (R1.w + R2.w)
     h_new = weight / w_new
-    c_new = old_conf1.c + (old_conf2.c - old_conf1.c) * old_conf2.h * old_conf2.w / weight
+    c_new = R1.c + (R2.c - R1.c) * R2.h * R2.w / weight
     dx_min = ommin + w_new / 2.0 - c_new
     dx_max = ommax - w_new / 2.0 - c_new
     if dx_max ≤ dx_min
@@ -773,38 +772,19 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     end
     dc = Pdx(dx_min, dx_max, γ, MC.rng)
 
-    _conf_size = length(𝑆.C)
-    #new_conf = deepcopy(𝑆.C)
-    #new_elem_dev = deepcopy(𝑆.Λ)
-    #new_conf[t1] = deepcopy(Rectangle(h_new, w_new, c_new + dc))
-    #if t2 < _conf_size
-    #    new_conf[t2] = deepcopy(new_conf[end])
-    #else
-    #    @assert t2 == _conf_size
-    #end
-    #pop!(new_conf)
-    #calc_dev_rec(new_conf[t1], t1, new_elem_dev, ω)
-    #if t2 < _conf_size
-    #    calc_dev_rec(new_conf[t2], t2, new_elem_dev, ω)
-    #end
-    #calc_dev_rec(new_conf[_conf_size - 1], _conf_size - 1, new_elem_dev, ω)
-    #new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
-
-    R1 = 𝑆.C[t1]
     G1 = calc_dev_rec(R1, ω)
-    R2 = 𝑆.C[t2]
     G2 = calc_dev_rec(R2, ω)
-    Rn = Rectangle(h_new, w_new, c_new + dc)
-    Gn = calc_dev_rec(Rn, ω)
-    Re = 𝑆.C[end]
-    Ge = calc_dev_rec(Re, ω)
-    new_dev = calc_dev(𝑆.G - G1 - G2 + Gn, 𝐺)
 
-    #@show new_dev#, new_dev1
+    Rn = Rectangle(h_new, w_new, c_new + dc)
+    Re = 𝑆.C[end]
+    Gn = calc_dev_rec(Rn, ω)
+    Ge = calc_dev_rec(Re, ω)
+
+    new_dev = calc_dev(𝑆.G - G1 - G2 + Gn, 𝐺)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
         𝑆.C[t1] = Rn
-        if t2 < _conf_size
+        if t2 < csize
             𝑆.C[t2] = deepcopy(𝑆.C[end])
         end
         pop!(𝑆.C)
@@ -812,20 +792,13 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         @. 𝑆.G = 𝑆.G - G1 - G2 + Gn
 
         @. 𝑆.Λ[:,t1] = Gn
-        if t2 < _conf_size
+        if t2 < csize
             @. 𝑆.Λ[:,t2] = Ge
         end
 
         MC.acc[7] = MC.acc[7] + 1
     end
     MC.tri[7] = MC.tri[7] + 1
-
-#    G = calc_gf(𝑆.Λ, length(𝑆.C))
-#    if sum( abs.(G - 𝑆.G) ) / 64.0 > 0.00001
-#        error()
-#    end
-
-    #error()
 end
 
 function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::FermionicMatsubaraGrid)
