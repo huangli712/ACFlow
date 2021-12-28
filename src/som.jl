@@ -577,19 +577,24 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
 end
 
 function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-#    println("here weight")
     smin = P_SOM["smin"]
-    γ = P_SOM["gamma"]
+    γ    = P_SOM["gamma"]
 
-    t1 = rand(MC.rng, 1:length(𝑆.C))
-    t2 = rand(MC.rng, 1:length(𝑆.C))
+    csize = length(𝑆.C)
+
+    t1 = rand(MC.rng, 1:csize)
+    t2 = rand(MC.rng, 1:csize)
     while t1 == t2
-        t2 = rand(MC.rng, 1:length(𝑆.C))
+        t2 = rand(MC.rng, 1:csize)
     end
-    w1 = 𝑆.C[t1].w
-    w2 = 𝑆.C[t2].w
-    h1 = 𝑆.C[t1].h
-    h2 = 𝑆.C[t2].h
+
+    R1 = 𝑆.C[t1]
+    R2 = 𝑆.C[t2]
+
+    w1 = R1.w
+    w2 = R2.w
+    h1 = R1.h
+    h2 = R2.h
     dx_min = smin / w1 - h1
     dx_max = (h2 - smin / w2) * w2 / w1
     if dx_max ≤ dx_min
@@ -597,28 +602,18 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
     end
     dh = Pdx(dx_min, dx_max, γ, MC.rng)
 
-    _conf_size = length(𝑆.C)
-    #new_conf = deepcopy(𝑆.C)
-    #new_elem_dev = deepcopy(𝑆.Λ)
-    #new_conf[t1].h = new_conf[t1].h + dh
-    #new_conf[t2].h = new_conf[t2].h - dh * w1 / w2
-    #calc_dev_rec(new_conf[t1], t1, new_elem_dev, ω)
-    #calc_dev_rec(new_conf[t2], t2, new_elem_dev, ω)
-    #new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
-
-    R1 = 𝑆.C[t1]
+    R1n = Rectangle(R1.h + dh, R1.w, R1.c)
     G1A = calc_dev_rec(R1, ω)
-    G1B = calc_dev_rec(Rectangle(R1.h + dh, R1.w, R1.c), ω)
-    R2 = 𝑆.C[t2]
+    G1B = calc_dev_rec(R1n, ω)
+    
+    R2n = Rectangle(R2.h - dh * w1 / w2, R2.w, R2.c)
     G2A = calc_dev_rec(R2, ω)
-    G2B = calc_dev_rec(Rectangle(R2.h - dh * w1 / w2, R2.w, R2.c), ω)
+    G2B = calc_dev_rec(R2n, ω)
     new_dev = calc_dev(𝑆.G - G1A + G1B - G2A + G2B, 𝐺)
 
-    #@show new_dev#, new_dev1
-
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
-        𝑆.C[t1] = Rectangle(R1.h + dh, R1.w, R1.c)
-        𝑆.C[t2] = Rectangle(R2.h - dh * w1 / w2, R2.w, R2.c)
+        𝑆.C[t1] = R1n
+        𝑆.C[t2] = R2n
         𝑆.Δ = new_dev
         @. 𝑆.G = 𝑆.G - G1A + G1B - G2A + G2B
         @. 𝑆.Λ[:,t1] = G1B
@@ -626,19 +621,6 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
         MC.acc[5] = MC.acc[5] + 1
     end
     MC.tri[5] = MC.tri[5] + 1
-
-#    G = calc_gf(𝑆.Λ, length(𝑆.C))
-#    for i = 1:64
-#        @show i, G[i], 𝑆.G[i]
-#    end
-
-#    error()
-
-#    G = calc_gf(𝑆.Λ, length(𝑆.C))
-#    if sum( abs.(G - 𝑆.G) ) / 64.0 > 0.00001
-#        error()
-#    end
-
 end
 
 function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
