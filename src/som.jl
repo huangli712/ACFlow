@@ -552,8 +552,8 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
        (c2 + dc2 ≥ ommin + w2 / 2.0) &&
        (c2 + dc2 ≤ ommax - w2 / 2.0)
 
-        G1 = deepcopy(𝑆.Λ[:,t])
-        Ge = deepcopy(𝑆.Λ[:,csize])
+        G1 = 𝑆.Λ[:,t]
+        Ge = 𝑆.Λ[:,csize]
 
         R2 = Rectangle(h, w1, c1 + dc1)
         G2 = calc_dev_rec(R2, ω)
