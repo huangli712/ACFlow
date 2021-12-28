@@ -66,7 +66,7 @@ function som_init()
         push!(Cv, C)
     end
 
-    seed = rand(1:1000000);  seed = 112414
+    seed = rand(1:1000000)#;  seed = 112414
     rng = MersenneTwister(seed)
     @show "seed: ", seed
     tri = zeros(I64, 7)
@@ -667,7 +667,7 @@ function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
 end
 
 function calc_dev(Gc::Vector{C64}, 𝐺::GreenData)
-    return sum( abs.((Gc .- 𝐺.value) ./ (𝐺.error)) )
+    return sum( @. abs((Gc - 𝐺.value) / 𝐺.error) )
 end
 
 function calc_gf(elem_dev::Array{C64,2}, nk::I64)
