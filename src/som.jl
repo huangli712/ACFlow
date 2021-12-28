@@ -98,6 +98,7 @@ function som_try(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsuba
             error()
         end    
      end
+     #error()
 
     SC.Δv[l] = SE.Δ
     SC.Cv[l] = deepcopy(SE.C)
