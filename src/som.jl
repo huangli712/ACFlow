@@ -66,7 +66,7 @@ function som_init()
         push!(Cv, C)
     end
 
-    seed = rand(1:1000000);  seed = 708553
+    seed = rand(1:1000000)#;  seed = 708553
     rng = MersenneTwister(seed)
     @show "seed: ", seed
     tri = zeros(I64, 7)
@@ -330,7 +330,7 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     Rnew = Rectangle(R.h - dx / R.w, R.w, R.c)
     Radd = Rectangle(h, w, c)
 
-    G1 = deepcopy(𝑆.Λ[:,t])   #calc_dev_rec(R, ω)
+    G1 = deepcopy(𝑆.Λ[:,t])
     G2 = calc_dev_rec(Rnew, ω)
     G3 = calc_dev_rec(Radd, ω)
     new_dev = calc_dev(𝑆.G - G1 + G2 + G3, 𝐺)
@@ -365,9 +365,9 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
 
     dx = R1.h * R1.w
 
-    G1 = deepcopy(𝑆.Λ[:,t1]) #calc_dev_rec(R1, ω)
-    G2 = deepcopy(𝑆.Λ[:,t2]) #calc_dev_rec(R2, ω)
-    Ge = deepcopy(𝑆.Λ[:,csize]) #calc_dev_rec(Re, ω)
+    G1 = deepcopy(𝑆.Λ[:,t1])
+    G2 = deepcopy(𝑆.Λ[:,t2])
+    Ge = deepcopy(𝑆.Λ[:,csize])
 
     R2n = Rectangle(R2.h + dx / R2.w, R2.w, R2.c)
     G2n = calc_dev_rec(R2n, ω)
@@ -409,7 +409,7 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     dc = Pdx(dx_min, dx_max, γ, MC.rng)
     
     Rn = Rectangle(R.h, R.w, R.c + dc)
-    G1 = deepcopy(𝑆.Λ[:,t]) #calc_dev_rec(R, ω)
+    G1 = deepcopy(𝑆.Λ[:,t])
     G2 = calc_dev_rec(Rn, ω)
     new_dev = calc_dev(𝑆.G - G1 + G2, 𝐺)
 
@@ -446,7 +446,7 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
     h = weight / w
     c = R.c
     Rn = Rectangle(h, w, c)
-    G1 = deepcopy(𝑆.Λ[:,t]) #calc_dev_rec(R, ω)
+    G1 = deepcopy(𝑆.Λ[:,t])
     G2 = calc_dev_rec(Rn, ω)
     new_dev = calc_dev(𝑆.G - G1 + G2, 𝐺)
 
@@ -487,11 +487,11 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
     dh = Pdx(dx_min, dx_max, γ, MC.rng)
 
     R1n = Rectangle(R1.h + dh, R1.w, R1.c)
-    G1A = deepcopy(𝑆.Λ[:,t1]) #calc_dev_rec(R1, ω)
+    G1A = deepcopy(𝑆.Λ[:,t1])
     G1B = calc_dev_rec(R1n, ω)
     
     R2n = Rectangle(R2.h - dh * w1 / w2, R2.w, R2.c)
-    G2A = deepcopy(𝑆.Λ[:,t2]) #calc_dev_rec(R2, ω)
+    G2A = deepcopy(𝑆.Λ[:,t2])
     G2B = calc_dev_rec(R2n, ω)
     new_dev = calc_dev(𝑆.G - G1A + G1B - G2A + G2B, 𝐺)
 
@@ -519,7 +519,6 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     t = rand(MC.rng, 1:csize)
 
     R1 = 𝑆.C[t]
-    Re = 𝑆.C[end]
 
     if R1.w ≤ 2 * wmin || R1.w * R1.h ≤ 2.0 * smin
         return
@@ -546,8 +545,8 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
        (c2 + dc2 ≥ ommin + w2 / 2.0) &&
        (c2 + dc2 ≤ ommax - w2 / 2.0)
 
-        G1 = deepcopy(𝑆.Λ[:,t]) #calc_dev_rec(R1, ω)
-        Ge = deepcopy(𝑆.Λ[:,csize]) #calc_dev_rec(Re, ω)
+        G1 = deepcopy(𝑆.Λ[:,t])
+        Ge = deepcopy(𝑆.Λ[:,csize])
 
         R2 = Rectangle(h, w1, c1 + dc1)
         G2 = calc_dev_rec(R2, ω)
@@ -557,7 +556,7 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         new_dev = calc_dev(𝑆.G - G1 + G2 + G3, 𝐺)
 
         if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
-            𝑆.C[t] = deepcopy(𝑆.C[end])
+            𝑆.C[t] = 𝑆.C[end]
             pop!(𝑆.C)
             push!(𝑆.C, R2)
             push!(𝑆.C, R3)
@@ -605,20 +604,19 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     end
     dc = Pdx(dx_min, dx_max, γ, MC.rng)
 
-    G1 = deepcopy(𝑆.Λ[:,t1]) #calc_dev_rec(R1, ω)
-    G2 = calc_dev_rec(R2, ω)
+    G1 = deepcopy(𝑆.Λ[:,t1])
+    G2 = deepcopy(𝑆.Λ[:,t2])
 
     Rn = Rectangle(h_new, w_new, c_new + dc)
-    Re = 𝑆.C[end]
     Gn = calc_dev_rec(Rn, ω)
-    Ge = calc_dev_rec(Re, ω)
+    Ge = deepcopy(𝑆.Λ[:,csize])
 
     new_dev = calc_dev(𝑆.G - G1 - G2 + Gn, 𝐺)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
         𝑆.C[t1] = Rn
         if t2 < csize
-            𝑆.C[t2] = deepcopy(𝑆.C[end])
+            𝑆.C[t2] = 𝑆.C[end]
         end
         pop!(𝑆.C)
         𝑆.Δ = new_dev
