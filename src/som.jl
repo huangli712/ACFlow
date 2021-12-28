@@ -641,11 +641,7 @@ function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::Fermioni
 end
 
 function calc_dev_rec(r::Rectangle, ω::FermionicMatsubaraGrid)
-    Ngrid = P_SOM["Ngrid"]
-    elem_dev = zeros(C64, Ngrid)
-    for g = 1:Ngrid
-        elem_dev[g] = r.h * log((im * ω.grid[g] - r.c + 0.5 * r.w) / (im * ω.grid[g] - r.c - 0.5 * r.w))
-    end
+    elem_dev = @. r.h * log((im * ω.grid - r.c + 0.5 * r.w) / (im * ω.grid - r.c - 0.5 * r.w))
     return elem_dev
 end
 
