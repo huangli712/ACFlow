@@ -326,46 +326,44 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     ommax = P_SOM["ommax"]
     γ     = P_SOM["gamma"]
 
-    t = rand(MC.rng, 1:length(𝑆.C))
-    if 𝑆.C[t].h * 𝑆.C[t].w ≤ 2.0 * smin
+    csize = length(𝑆.C)
+
+    t = rand(MC.rng, 1:csize)
+
+    R = 𝑆.C[t]
+    if R.h * R.w ≤ 2.0 * smin
         return
     end
 
     dx_min = smin
-    dx_max = 𝑆.C[t].h * 𝑆.C[t].w - smin
+    dx_max = R.h * R.w - smin
     if dx_max ≤ dx_min
         return
     end
 
-    c = (ommin + wmin / 2.0) + (ommax - ommin - wmin) * rand(MC.rng, F64)
+    r1 = rand(MC.rng, F64)
+    r2 = rand(MC.rng, F64)
+    c = (ommin + wmin / 2.0) + (ommax - ommin - wmin) * r1
     w_new_max = 2.0 * min(ommax - c, c - ommin)
     dx = Pdx(dx_min, dx_max, γ, MC.rng)
-
-    r = rand(MC.rng, F64)
-    h = dx / w_new_max + (dx / wmin - dx / w_new_max) * r
+    h = dx / w_new_max + (dx / wmin - dx / w_new_max) * r2
     w = dx / h
 
-    #push!(new_conf, Rectangle(h, w, c))
-    #new_conf[t].h = new_conf[t].h - dx / new_conf[t].w
-    #calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
-    #calc_dev_rec(new_conf[end], length(new_conf), new_elem_dev, ω)
-    #new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
-
-    R = 𝑆.C[t]
     Rnew = Rectangle(R.h - dx / R.w, R.w, R.c)
+    Radd = Rectangle(h, w, c)
+
     G1 = calc_dev_rec(R, ω)
     G2 = calc_dev_rec(Rnew, ω)
-    G3 = calc_dev_rec(Rectangle(h, w, c), ω)
+    G3 = calc_dev_rec(Radd, ω)
     new_dev = calc_dev(𝑆.G - G1 + G2 + G3, 𝐺)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
         𝑆.C[t] = Rnew
-        push!(𝑆.C, Rectangle(h, w, c))
+        push!(𝑆.C, Radd)
         𝑆.Δ = new_dev
         @. 𝑆.G = 𝑆.G - G1 + G2 + G3
         @. 𝑆.Λ[:,t] = G2
-        _conf_size = length(𝑆.C)
-        @. 𝑆.Λ[:, _conf_size] = G3
+        @. 𝑆.Λ[:,csize+1] = G3
         MC.acc[1] = MC.acc[1] + 1
     end
     MC.tri[1] = MC.tri[1] + 1
