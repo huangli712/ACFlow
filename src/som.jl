@@ -102,8 +102,6 @@ function som_try(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsuba
 
     SC.Δv[l] = SE.Δ
     SC.Cv[l] = deepcopy(SE.C)
-    #@show SE.Δ
-    #error()
 end
 
 function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
@@ -151,8 +149,6 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenDa
     Δ = calc_dev(Λ, _Know, 𝐺)
     G = calc_gf(Λ, _Know)
     
-    #@show sum( abs.((G .- 𝐺.value) ./ (𝐺.error)) ), Δ
-    #error()
     return SOMElement(C, Λ, G, Δ)
 end
 
@@ -165,25 +161,10 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     d1 = rand(MC.rng, F64)
     d2 = 1.0 + (dmax - 1.0) * rand(MC.rng, F64)
 
-    #@show SE.G[1], SE.G[end]
     ST = deepcopy(SE)
-    #@show ST.G[1], ST.G[end]
-    #error()
-
-    #_som_change_width(ST, MC, ω, 𝐺, d1)
-    #_som_shift(ST, MC, ω, 𝐺, d1)
-    #_som_add(ST, MC, ω, 𝐺, d1)
-    #_som_remove(ST, MC, ω, 𝐺, d1)
-    #_som_change_weight(ST, MC, ω, 𝐺, d1)
-    #_som_split(ST, MC, ω, 𝐺, d1)
-    #_som_merge(ST, MC, ω, 𝐺, d1)
-
-    #error()
 
     for _ = 1:T1
         update_type = rand(MC.rng, 1:7)
-        #@show update_type
-        ##error()
 
         @cswitch update_type begin
             @case 1
@@ -270,17 +251,16 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         end
     end
 
-    #@show ST.Δ, SE.Δ
     if ST.Δ < SE.Δ
-        SE.C = deepcopy(ST.C)
-        SE.Λ = deepcopy(ST.Λ)
-        SE.G = deepcopy(ST.G)
-        SE.Δ = ST.Δ
+        SE = deepcopy(ST)
+        #SE.C = deepcopy(ST.C)
+        #SE.Λ = deepcopy(ST.Λ)
+        #SE.G = deepcopy(ST.G)
+        #SE.Δ = ST.Δ
     end
 end
 
 function som_output(count::I64, 𝑆::SOMContext)
-    println("output")
     alpha = P_SOM["alpha"]
     Ngrid = P_SOM["Ngrid"]
     ommin = P_SOM["ommin"]
