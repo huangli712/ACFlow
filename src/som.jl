@@ -66,7 +66,7 @@ function som_init()
         push!(Cv, C)
     end
 
-    seed = rand(1:1000000)#;  seed = 840959
+    seed = rand(1:1000000);  seed = 708553
     rng = MersenneTwister(seed)
     @show "seed: ", seed
     tri = zeros(I64, 7)
@@ -89,16 +89,15 @@ function som_try(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsuba
 
     SE = som_random(MC, ω, 𝐺)
 
-    #@timev 
-    for _ = 1:Nf
+    @timev for _ = 1:Nf
         som_update(SE, MC, ω, 𝐺)
 
-        G = calc_gf(SE.Λ, length(SE.C))
-        if sum( abs.(G - SE.G) ) / 64.0 > 0.00001
-            error()
-        end    
+        #G = calc_gf(SE.Λ, length(SE.C))
+        #if sum( abs.(G - SE.G) ) / 64.0 > 0.00001
+        #    error()
+        #end    
      end
-     #error()
+     error()
 
     SC.Δv[l] = SE.Δ
     SC.Cv[l] = deepcopy(SE.C)
@@ -252,11 +251,10 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     end
 
     if ST.Δ < SE.Δ
-        SE = deepcopy(ST)
-        #SE.C = deepcopy(ST.C)
-        #SE.Λ = deepcopy(ST.Λ)
-        #SE.G = deepcopy(ST.G)
-        #SE.Δ = ST.Δ
+        SE.C = deepcopy(ST.C)
+        SE.Λ = deepcopy(ST.Λ)
+        SE.G = deepcopy(ST.G)
+        SE.Δ = ST.Δ
     end
 end
 
