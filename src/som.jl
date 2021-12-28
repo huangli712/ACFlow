@@ -66,7 +66,7 @@ function som_init()
         push!(Cv, C)
     end
 
-    seed = rand(1:1000000)#;  seed = 708553
+    seed = rand(1:1000000);  seed = 112414
     rng = MersenneTwister(seed)
     @show "seed: ", seed
     tri = zeros(I64, 7)
@@ -330,7 +330,7 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     Rnew = Rectangle(R.h - dx / R.w, R.w, R.c)
     Radd = Rectangle(h, w, c)
 
-    G1 = deepcopy(𝑆.Λ[:,t])
+    G1 = 𝑆.Λ[:,t]
     G2 = calc_dev_rec(Rnew, ω)
     G3 = calc_dev_rec(Radd, ω)
     new_dev = calc_dev(𝑆.G - G1 + G2 + G3, 𝐺)
@@ -365,9 +365,16 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
 
     dx = R1.h * R1.w
 
-    G1 = deepcopy(𝑆.Λ[:,t1])
-    G2 = deepcopy(𝑆.Λ[:,t2])
-    Ge = deepcopy(𝑆.Λ[:,csize])
+    #G1 = deepcopy(𝑆.Λ[:,t1])
+    #G2 = deepcopy(𝑆.Λ[:,t2])
+    #Ge = deepcopy(𝑆.Λ[:,csize])
+
+    #G1 = zeros(C64, 64)
+    #G2 = zeros(C64, 64)
+    #Ge = zeros(C64, 64)
+    G1 = 𝑆.Λ[:,t1]
+    G2 = 𝑆.Λ[:,t2]
+    Ge = 𝑆.Λ[:,csize]
 
     R2n = Rectangle(R2.h + dx / R2.w, R2.w, R2.c)
     G2n = calc_dev_rec(R2n, ω)
@@ -409,7 +416,7 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     dc = Pdx(dx_min, dx_max, γ, MC.rng)
     
     Rn = Rectangle(R.h, R.w, R.c + dc)
-    G1 = deepcopy(𝑆.Λ[:,t])
+    G1 = 𝑆.Λ[:,t]
     G2 = calc_dev_rec(Rn, ω)
     new_dev = calc_dev(𝑆.G - G1 + G2, 𝐺)
 
@@ -446,7 +453,7 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
     h = weight / w
     c = R.c
     Rn = Rectangle(h, w, c)
-    G1 = deepcopy(𝑆.Λ[:,t])
+    G1 = 𝑆.Λ[:,t]
     G2 = calc_dev_rec(Rn, ω)
     new_dev = calc_dev(𝑆.G - G1 + G2, 𝐺)
 
@@ -487,11 +494,11 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
     dh = Pdx(dx_min, dx_max, γ, MC.rng)
 
     R1n = Rectangle(R1.h + dh, R1.w, R1.c)
-    G1A = deepcopy(𝑆.Λ[:,t1])
+    G1A = 𝑆.Λ[:,t1]
     G1B = calc_dev_rec(R1n, ω)
     
     R2n = Rectangle(R2.h - dh * w1 / w2, R2.w, R2.c)
-    G2A = deepcopy(𝑆.Λ[:,t2])
+    G2A = 𝑆.Λ[:,t2]
     G2B = calc_dev_rec(R2n, ω)
     new_dev = calc_dev(𝑆.G - G1A + G1B - G2A + G2B, 𝐺)
 
