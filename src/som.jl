@@ -611,12 +611,12 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     end
     dc = Pdx(dx_min, dx_max, γ, MC.rng)
 
-    G1 = deepcopy(𝑆.Λ[:,t1])
-    G2 = deepcopy(𝑆.Λ[:,t2])
+    G1 = 𝑆.Λ[:,t1]
+    G2 = 𝑆.Λ[:,t2]
+    Ge = 𝑆.Λ[:,csize]
 
     Rn = Rectangle(h_new, w_new, c_new + dc)
     Gn = calc_dev_rec(Rn, ω)
-    Ge = deepcopy(𝑆.Λ[:,csize])
 
     new_dev = calc_dev(𝑆.G - G1 - G2 + Gn, 𝐺)
 
