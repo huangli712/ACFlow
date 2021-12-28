@@ -80,8 +80,8 @@ function som_run(SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 
     for l = 1:Lmax
         println("try: $l")
         som_try(l, SC, MC, ω, 𝐺)
-        som_output(l, SC)
     end
+    som_output(Lmax, SC)
 end
 
 function som_try(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
@@ -89,15 +89,16 @@ function som_try(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsuba
 
     SE = som_random(MC, ω, 𝐺)
 
-    @timev for _ = 1:Nf
+    #@timev 
+    for _ = 1:Nf
         som_update(SE, MC, ω, 𝐺)
 
-        G = calc_gf(SE.Λ, length(SE.C))
-        if sum( abs.(G - SE.G) ) / 64.0 > 0.00001
-            error()
-        end    
+        #G = calc_gf(SE.Λ, length(SE.C))
+        #if sum( abs.(G - SE.G) ) / 64.0 > 0.00001
+        #    error()
+        #end    
      end
-     error()
+     #error()
 
     SC.Δv[l] = SE.Δ
     SC.Cv[l] = deepcopy(SE.C)
