@@ -519,61 +519,40 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
 end
 
 function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-#    println("width here")
-    #@show 𝑆.G[1], 𝑆.G[end]
-
-    wmin = P_SOM["wmin"]
+    wmin  = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-    γ = P_SOM["gamma"]
+    γ     = P_SOM["gamma"]
 
-    t = rand(MC.rng, 1:length(𝑆.C))
+    csize = length(𝑆.C)
 
-    weight = 𝑆.C[t].h * 𝑆.C[t].w
-    dx_min = wmin - 𝑆.C[t].w
-    dx_max = min(2.0 * (𝑆.C[t].c - ommin), 2.0 * (ommax - 𝑆.C[t].c)) - 𝑆.C[t].w
+    t = rand(MC.rng, 1:csize)
+
+    R = 𝑆.C[t]
+    weight = R.h * R.w
+    dx_min = wmin - R.w
+    dx_max = min(2.0 * (R.c - ommin), 2.0 * (ommax - R.c)) - R.w
     if dx_max ≤ dx_min
         return
     end
     dw = Pdx(dx_min, dx_max, γ, MC.rng)
 
-    _conf_size = length(𝑆.C)
-    #new_conf = deepcopy(𝑆.C)
-    #new_elem_dev = deepcopy(𝑆.Λ)
-    #new_conf[t].w = new_conf[t].w + dw
-    #new_conf[t].h = weight / new_conf[t].w
-    #calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
-    #new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
-
-    R = 𝑆.C[t]
     w = R.w + dw
     h = weight / w
     c = R.c
+    Rn = Rectangle(h, w, c)
     G1 = calc_dev_rec(R, ω)
-    G2 = calc_dev_rec(Rectangle(h, w, c), ω)
+    G2 = calc_dev_rec(Rn, ω)
     new_dev = calc_dev(𝑆.G - G1 + G2, 𝐺)
-    #@show new_dev
 
     if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
-        𝑆.C[t] = Rectangle(h, w, c)
+        𝑆.C[t] = Rn
         𝑆.Δ = new_dev
         @. 𝑆.G = 𝑆.G - G1 + G2
         @. 𝑆.Λ[:,t] = G2
         MC.acc[4] = MC.acc[4] + 1
     end
     MC.tri[4] = MC.tri[4] + 1
-
-#    G = calc_gf(𝑆.Λ, length(𝑆.C))
-#    if sum( abs.(G - 𝑆.G) ) / 64.0 > 0.00001
-#        error()
-#    end
-
-#    G = calc_gf(𝑆.Λ, length(𝑆.C))
-#    for i = 1:64
-#        @show i, G[i], 𝑆.G[i]
-#    end
-
-#    error()
 end
 
 function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
