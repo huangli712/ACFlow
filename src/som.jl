@@ -642,41 +642,37 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
 end
 
 function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-#    println("here split")
-    wmin = P_SOM["wmin"]
-    smin = P_SOM["smin"]
+    wmin  = P_SOM["wmin"]
+    smin  = P_SOM["smin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-    γ = P_SOM["gamma"]
+    γ     = P_SOM["gamma"]
 
-    t = rand(MC.rng, 1:length(𝑆.C))
-    #t = 29
-    #@show t, length(𝑆.C)
+    csize = length(𝑆.C)
 
-    old_conf = 𝑆.C[t]
-    if old_conf.w ≤ 2 * wmin || old_conf.w * old_conf.h ≤ 2.0 * smin
+    t = rand(MC.rng, 1:csize)
+
+    R1 = 𝑆.C[t]
+    Re = 𝑆.C[end]
+
+    if R1.w ≤ 2 * wmin || R1.w * R1.h ≤ 2.0 * smin
         return
     end
 
-    h = old_conf.h
-    w1 = wmin + (old_conf.w - 2.0 * wmin) * rand(MC.rng, F64)
-    w2 = old_conf.w - w1
+    h = R1.h
+    w1 = wmin + (R1.w - 2.0 * wmin) * rand(MC.rng, F64)
+    w2 = R1.w - w1
     if w1 > w2
         w1, w2 = w2, w1
     end
-
-    c1 = old_conf.c - old_conf.w / 2.0 + w1 / 2.0
-    c2 = old_conf.c + old_conf.w / 2.0 - w2 / 2.0
+    c1 = R1.c - R1.w / 2.0 + w1 / 2.0
+    c2 = R1.c + R1.w / 2.0 - w2 / 2.0
     dx_min = ommin + w1 / 2.0 - c1
     dx_max = ommax - w1 / 2.0 - c1
     if dx_max ≤ dx_min
         return
     end
     dc1 = Pdx(dx_min, dx_max, γ, MC.rng)
-
-    _conf_size = length(𝑆.C)
-    #new_conf = deepcopy(𝑆.C)
-    #new_elem_dev = deepcopy(𝑆.Λ)
     dc2 = -1.0 * w1 * dc1 / w2
 
     if (c1 + dc1 ≥ ommin + w1 / 2.0) &&
@@ -684,21 +680,7 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
        (c2 + dc2 ≥ ommin + w2 / 2.0) &&
        (c2 + dc2 ≤ ommax - w2 / 2.0)
 
-        #new_conf[t] = deepcopy(new_conf[end])
-        #pop!(new_conf)
-        #push!(new_conf, Rectangle(h, w1, c1 + dc1))
-        #push!(new_conf, Rectangle(h, w2, c2 + dc2))
-
-        #if t < _conf_size
-        #    calc_dev_rec(new_conf[t], t, new_elem_dev, ω)
-        #end
-        #calc_dev_rec(new_conf[_conf_size], _conf_size, new_elem_dev, ω)
-        #calc_dev_rec(new_conf[_conf_size+1], _conf_size+1, new_elem_dev, ω)
-        #new_dev = calc_dev(new_elem_dev, length(new_conf), 𝐺)
-
-        R1 = 𝑆.C[t]
         G1 = calc_dev_rec(R1, ω)
-        Re = 𝑆.C[end]
         Ge = calc_dev_rec(Re, ω)
 
         R2 = Rectangle(h, w1, c1 + dc1)
@@ -708,8 +690,6 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         G3 = calc_dev_rec(R3, ω)
         new_dev = calc_dev(𝑆.G - G1 + G2 + G3, 𝐺)
 
-        #@show new_dev#, new_dev1
-
         if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
             𝑆.C[t] = deepcopy(𝑆.C[end])
             pop!(𝑆.C)
@@ -718,28 +698,15 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
             𝑆.Δ = new_dev
             @. 𝑆.G = 𝑆.G - G1 + G2 + G3
             
-            if t < _conf_size
+            if t < csize
                 @. 𝑆.Λ[:,t] = Ge
             end
-            @. 𝑆.Λ[:,_conf_size] = G2
-            @. 𝑆.Λ[:,_conf_size+1] = G3
+            @. 𝑆.Λ[:,csize] = G2
+            @. 𝑆.Λ[:,csize+1] = G3
             MC.acc[6] = MC.acc[6] + 1
         end
     end
     MC.tri[6] = MC.tri[6] + 1
-
-#    G = calc_gf(𝑆.Λ, length(𝑆.C))
-#    for i = 1:64
-#        @show i, G[i], 𝑆.G[i]
-#    end
-
-#    error()
-
-#    G = calc_gf(𝑆.Λ, length(𝑆.C))
-#    if sum( abs.(G - 𝑆.G) ) / 64.0 > 0.00001
-#        error()
-#    end
-
 end
 
 function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
