@@ -50,6 +50,18 @@ mutable struct SOMContext
     Δv :: Vector{F64}
 end
 
+function som_run(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+    Lmax = P_SOM["Lmax"]
+
+    SC, MC = som_init()
+
+    for l = 1:Lmax
+        println("try: $l")
+        som_core(l, SC, MC, ω, 𝐺)
+    end
+    som_output(Lmax, SC)
+end
+
 function som_init()
     Lmax = P_SOM["Lmax"]
     Kmax = P_SOM["Kmax"]
@@ -74,30 +86,15 @@ function som_init()
     return SOMContext(Cv, Δv), SOMMonteCarlo(rng, tri, acc)
 end
 
-function som_run(SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    Lmax = P_SOM["Lmax"]
-    for l = 1:Lmax
-        println("try: $l")
-        som_try(l, SC, MC, ω, 𝐺)
-    end
-    som_output(Lmax, SC)
-end
 
-function som_try(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
+function som_core(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Nf = P_SOM["Nf"]
 
     SE = som_random(MC, ω, 𝐺)
 
-    #@timev 
     for _ = 1:Nf
         som_update(SE, MC, ω, 𝐺)
-
-        #G = calc_gf(SE.Λ, length(SE.C))
-        #if sum( abs.(G - SE.G) ) / 64.0 > 0.00001
-        #    error()
-        #end    
-     end
-     #error()
+    end
 
     SC.Δv[l] = SE.Δ
     SC.Cv[l] = deepcopy(SE.C)
