@@ -205,7 +205,7 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
                 break
         end
 
-        @show calc_norm(ST.C)
+        #@show calc_norm(ST.C)
     end
 
     for _ = T1+1:Tmax
@@ -666,19 +666,21 @@ function calc_dev(Gc::Vector{C64}, 𝐺::GreenData)
     return sum( @. abs((Gc - 𝐺.value) / 𝐺.error) )
 end
 
-function calc_gf(elem_dev::Array{C64,2}, nk::I64)
-    Ngrid = P_SOM["Ngrid"]
+function som_calc_gf(Λ::Array{C64,2}, nk::I64)
+    Ngrid, Kmax = size(Λ)
+    @assert nk ≤ Kmax
 
     G = zeros(C64, Ngrid)
-    for g = 1:Ngrid
-        for k = 1:nk
+    for k = 1:nk
+        for g = 1:Ngrid
             G[g] = G[g] + elem_dev[g,k]
         end
     end
+
     return G
 end
 
-function calc_norm(C::Vector{Rectangle})
+function som_calc_norm(C::Vector{Rectangle})
     norm = sum(map(x -> x.h * x.w, C))
     return norm
 end
