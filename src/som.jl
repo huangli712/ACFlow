@@ -460,8 +460,7 @@ function _try_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
 end
 
 function _try_height(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
-    smin = P_SOM["smin"]
-
+    smin  = P_SOM["smin"]
     csize = length(𝑆.C)
 
     t1 = rand(MC.rng, 1:csize)
@@ -487,21 +486,22 @@ function _try_height(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     R1n = Rectangle(R1.h + dh, R1.w, R1.c)
     G1A = 𝑆.Λ[:,t1]
     G1B = _calc_lambda(R1n, ω)
-    
     R2n = Rectangle(R2.h - dh * w1 / w2, R2.w, R2.c)
     G2A = 𝑆.Λ[:,t2]
     G2B = _calc_lambda(R2n, ω)
-    new_dev = _calc_err(𝑆.G - G1A + G1B - G2A + G2B, 𝐺)
 
-    if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
+    Δ = _calc_err(𝑆.G - G1A + G1B - G2A + G2B, 𝐺)
+
+    if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t1] = R1n
         𝑆.C[t2] = R2n
-        𝑆.Δ = new_dev
+        𝑆.Δ = Δ
         @. 𝑆.G = 𝑆.G - G1A + G1B - G2A + G2B
         @. 𝑆.Λ[:,t1] = G1B
         @. 𝑆.Λ[:,t2] = G2B
         MC.acc[5] = MC.acc[5] + 1
     end
+
     MC.tri[5] = MC.tri[5] + 1
 end
 
