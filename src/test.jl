@@ -19,3 +19,12 @@ defalut_model = 𝑀.𝑀₀ * default_model ./ norm_DM_t[1,:]
 
 ω, 𝐺 = read_data!(FermionicMatsubaraGrid)
 som_run(ω, 𝐺)
+
+#=
+open("Aw.data", "w") do fout
+    for w = 1:Ngrid
+        _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
+        println(fout, _omega, " ", Aom[w])
+    end
+end
+=#

@@ -69,7 +69,7 @@ function som_run(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         SC.Cv[l] = deepcopy(SE.C)    
     end
 
-    som_output(Lmax, SC)
+    som_spectra(SC)
 end
 
 function som_init()
@@ -253,17 +253,18 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     end
 end
 
-function som_output(count::I64, 𝑆::SOMContext)
+function som_spectra(𝑆::SOMContext)
     alpha = P_SOM["alpha"]
     Ngrid = P_SOM["Ngrid"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
+    Lmax  = P_SOM["Lmax"]
 
-    dev_min = minimum(𝑆.Δv[1:count])
+    dev_min = minimum(𝑆.Δv)
 
     Lgood = 0
     Aom = zeros(F64, Ngrid)
-    for l = 1:count
+    for l = 1:Lmax
         if alpha * dev_min - 𝑆.Δv[l] > 0
             Lgood = Lgood + 1
             for w = 1:Ngrid
@@ -278,18 +279,13 @@ function som_output(count::I64, 𝑆::SOMContext)
         end
     end
 
-    @show count, 𝑆.Δv[1:count], dev_min, Lgood
+    @show count, 𝑆.Δv, dev_min, Lgood
 
     if Lgood > 0
         @. Aom = Aom / Lgood
     end
 
-    open("Aw.data", "w") do fout
-        for w = 1:Ngrid
-            _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
-            println(fout, _omega, " ", Aom[w])
-        end
-    end
+    return Aom
 end
 
 function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
