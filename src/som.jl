@@ -648,7 +648,7 @@ function calc_dev_rec(r::Rectangle, ω::FermionicMatsubaraGrid)
     return elem_dev
 end
 
-function som_calc_dev(Λ::Array{C64,2}, nk::I64, 𝐺::GreenData)
+function som_calc_err(Λ::Array{C64,2}, nk::I64, 𝐺::GreenData)
     Ngrid, Kmax = size(Λ)
     @assert nk ≤ Kmax
 
@@ -661,7 +661,7 @@ function som_calc_dev(Λ::Array{C64,2}, nk::I64, 𝐺::GreenData)
     return res
 end
 
-function som_calc_dev(Gc::Vector{C64}, 𝐺::GreenData)
+function som_calc_err(Gc::Vector{C64}, 𝐺::GreenData)
     return sum( @. abs((Gc - 𝐺.value) / 𝐺.error) )
 end
 
