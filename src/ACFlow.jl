@@ -9,6 +9,7 @@
 
 module ACFlow
 
+using Distributed
 using LinearAlgebra
 using Random
 using Printf
