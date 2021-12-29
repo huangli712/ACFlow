@@ -288,7 +288,18 @@ function som_spectra(𝑆::SOMContext)
     return Aom
 end
 
+function som_output(Aom::Vector{F64})
+    Ngrid = P_SOM["Ngrid"]
+    ommin = P_SOM["ommin"]
+    ommax = P_SOM["ommax"]
 
+    open("Aw.data", "w") do fout
+        for w = 1:Ngrid
+            _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
+            println(fout, _omega, " ", Aom[w])
+        end
+    end
+end
 
 function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     smin  = P_SOM["smin"]

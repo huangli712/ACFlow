@@ -44,5 +44,6 @@ export trunc_data!
 export diag_covar
 
 export som_run
+export som_output
 
 end
