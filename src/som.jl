@@ -574,7 +574,6 @@ end
 function _try_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-
     csize = length(𝑆.C)
 
     t1 = rand(MC.rng, 1:csize)
@@ -607,24 +606,23 @@ function _try_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     Rn = Rectangle(h_new, w_new, c_new + dc)
     Gn = _calc_lambda(Rn, ω)
 
-    new_dev = _calc_err(𝑆.G - G1 - G2 + Gn, 𝐺)
+    Δ = _calc_err(𝑆.G - G1 - G2 + Gn, 𝐺)
 
-    if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
+    if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t1] = Rn
         if t2 < csize
             𝑆.C[t2] = 𝑆.C[end]
         end
         pop!(𝑆.C)
-        𝑆.Δ = new_dev
+        𝑆.Δ = Δ
         @. 𝑆.G = 𝑆.G - G1 - G2 + Gn
-
         @. 𝑆.Λ[:,t1] = Gn
         if t2 < csize
             @. 𝑆.Λ[:,t2] = Ge
         end
-
         MC.acc[7] = MC.acc[7] + 1
     end
+    
     MC.tri[7] = MC.tri[7] + 1
 end
 
