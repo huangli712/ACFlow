@@ -304,7 +304,6 @@ function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     wmin  = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-
     csize = length(𝑆.C)
 
     t = rand(MC.rng, 1:csize)
@@ -319,7 +318,6 @@ function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     if dx_max ≤ dx_min
         return
     end
-
     r1 = rand(MC.rng, F64)
     r2 = rand(MC.rng, F64)
     c = (ommin + wmin / 2.0) + (ommax - ommin - wmin) * r1
@@ -334,17 +332,19 @@ function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     G1 = 𝑆.Λ[:,t]
     G2 = _calc_lambda(Rnew, ω)
     G3 = _calc_lambda(Radd, ω)
-    new_dev = _calc_err(𝑆.G - G1 + G2 + G3, 𝐺)
 
-    if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
+    Δ = _calc_err(𝑆.G - G1 + G2 + G3, 𝐺)
+
+    if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t] = Rnew
         push!(𝑆.C, Radd)
-        𝑆.Δ = new_dev
+        𝑆.Δ = Δ
         @. 𝑆.G = 𝑆.G - G1 + G2 + G3
         @. 𝑆.Λ[:,t] = G2
         @. 𝑆.Λ[:,csize+1] = G3
         MC.acc[1] = MC.acc[1] + 1
     end
+
     MC.tri[1] = MC.tri[1] + 1
 end
 
