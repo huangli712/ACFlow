@@ -253,9 +253,9 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     end
 
     if ST.Δ < SE.Δ
-        SE.C = deepcopy(ST.C)
-        SE.Λ = deepcopy(ST.Λ)
-        SE.G = deepcopy(ST.G)
+        SE.C .= ST.C
+        SE.Λ .= ST.Λ
+        SE.G .= ST.G
         SE.Δ = ST.Δ
     end
 end
