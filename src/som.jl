@@ -52,14 +52,12 @@ end
 
 function som_run(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     Lmax = P_SOM["Lmax"]
+    Nf = P_SOM["Nf"]
 
     SC, MC = som_init()
 
     for l = 1:Lmax
         println("try: $l")
-        som_core(l, SC, MC, ω, 𝐺)
-
-        Nf = P_SOM["Nf"]
 
         SE = som_random(MC, ω, 𝐺)
     
@@ -68,9 +66,9 @@ function som_run(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         end
     
         SC.Δv[l] = SE.Δ
-        SC.Cv[l] = deepcopy(SE.C)
-    
+        SC.Cv[l] = deepcopy(SE.C)    
     end
+
     som_output(Lmax, SC)
 end
 
