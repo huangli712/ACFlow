@@ -395,12 +395,12 @@ end
 function _try_position(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-
     csize = length(𝑆.C)
 
     t = rand(MC.rng, 1:csize)
 
     R = 𝑆.C[t]
+
     dx_min = ommin + R.w / 2.0 - R.c
     dx_max = ommax - R.w / 2.0 - R.c
     if dx_max ≤ dx_min
@@ -411,15 +411,17 @@ function _try_position(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsuba
     Rn = Rectangle(R.h, R.w, R.c + dc)
     G1 = 𝑆.Λ[:,t]
     G2 = _calc_lambda(Rn, ω)
-    new_dev = _calc_err(𝑆.G - G1 + G2, 𝐺)
 
-    if rand(MC.rng, F64) < ((𝑆.Δ / new_dev) ^ (1.0 + dacc))
+    Δ = _calc_err(𝑆.G - G1 + G2, 𝐺)
+
+    if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t] = Rn
-        𝑆.Δ = new_dev
+        𝑆.Δ = Δ
         @. 𝑆.G = 𝑆.G - G1 + G2
         @. 𝑆.Λ[:,t] = G2
         MC.acc[3] = MC.acc[3] + 1
     end
+
     MC.tri[3] = MC.tri[3] + 1
 end
 
