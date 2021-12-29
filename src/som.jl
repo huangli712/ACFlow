@@ -142,8 +142,9 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenDa
         c = ommin + wmin / 2.0 + (ommax - ommin - wmin) * rand(MC.rng, F64)
         w = wmin + (min(2.0 * (c - ommin), 2.0 * (ommax - c)) - wmin) * rand(MC.rng, F64)
         h = weight[k] / w
-        push!(C, Rectangle(h, w, c))
-        calc_dev_rec(Rectangle(h, w, c), k, Λ, ω)
+        R = Rectangle(h, w, c)
+        push!(C, R)
+        @. Λ[:,k] = _calc_lambda(R, ω)
     end
     Δ = _calc_err(Λ, _Know, 𝐺)
     G = _calc_gf(Λ, _Know)
@@ -634,17 +635,6 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     end
     MC.tri[7] = MC.tri[7] + 1
 end
-
-#=
-function _calc_lambda(r::Rectangle, k::I64, Λ::Array{C64,2}, ω::FermionicMatsubaraGrid)
-    Ngrid, Kmax = size(Λ)
-    @assert k ≤ Kmax
-    for g = 1:Ngrid
-        Gs = r.h * log((im * ω.grid[g] - r.c + 0.5 * r.w) / (im * ω.grid[g] - r.c - 0.5 * r.w))
-        elem_dev[g,k] = Gs
-    end
-end
-=#
 
 function _calc_lambda(r::Rectangle, ω::FermionicMatsubaraGrid)
     Λ = @. r.h * log((im * ω.grid - r.c + 0.5 * r.w) / (im * ω.grid - r.c - 0.5 * r.w))
