@@ -144,7 +144,7 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenDa
         h = weight[k] / w
         R = Rectangle(h, w, c)
         push!(C, R)
-        @. Λ[:,k] = _calc_lambda(R, ω)
+        Λ[:,k] .= _calc_lambda(R, ω)
     end
     Δ = _calc_err(Λ, _Know, 𝐺)
     G = _calc_gf(Λ, _Know)
@@ -333,8 +333,8 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     Radd = Rectangle(h, w, c)
 
     G1 = 𝑆.Λ[:,t]
-    G2 = calc_dev_rec(Rnew, ω)
-    G3 = calc_dev_rec(Radd, ω)
+    G2 = _calc_lambda(Rnew, ω)
+    G3 = _calc_lambda(Radd, ω)
     new_dev = _calc_err(𝑆.G - G1 + G2 + G3, 𝐺)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
@@ -367,19 +367,12 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
 
     dx = R1.h * R1.w
 
-    #G1 = deepcopy(𝑆.Λ[:,t1])
-    #G2 = deepcopy(𝑆.Λ[:,t2])
-    #Ge = deepcopy(𝑆.Λ[:,csize])
-
-    #G1 = zeros(C64, 64)
-    #G2 = zeros(C64, 64)
-    #Ge = zeros(C64, 64)
     G1 = 𝑆.Λ[:,t1]
     G2 = 𝑆.Λ[:,t2]
     Ge = 𝑆.Λ[:,csize]
 
     R2n = Rectangle(R2.h + dx / R2.w, R2.w, R2.c)
-    G2n = calc_dev_rec(R2n, ω)
+    G2n = _calc_lambda(R2n, ω)
 
     new_dev = _calc_err(𝑆.G - G1 - G2 + G2n, 𝐺)
 
@@ -418,7 +411,7 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     
     Rn = Rectangle(R.h, R.w, R.c + dc)
     G1 = 𝑆.Λ[:,t]
-    G2 = calc_dev_rec(Rn, ω)
+    G2 = _calc_lambda(Rn, ω)
     new_dev = _calc_err(𝑆.G - G1 + G2, 𝐺)
 
     if rand(MC.rng, F64) < ((𝑆.Δ / new_dev) ^ (1.0 + dacc))
@@ -454,7 +447,7 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
     c = R.c
     Rn = Rectangle(h, w, c)
     G1 = 𝑆.Λ[:,t]
-    G2 = calc_dev_rec(Rn, ω)
+    G2 = _calc_lambda(Rn, ω)
     new_dev = _calc_err(𝑆.G - G1 + G2, 𝐺)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
@@ -494,11 +487,11 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
 
     R1n = Rectangle(R1.h + dh, R1.w, R1.c)
     G1A = 𝑆.Λ[:,t1]
-    G1B = calc_dev_rec(R1n, ω)
+    G1B = _calc_lambda(R1n, ω)
     
     R2n = Rectangle(R2.h - dh * w1 / w2, R2.w, R2.c)
     G2A = 𝑆.Λ[:,t2]
-    G2B = calc_dev_rec(R2n, ω)
+    G2B = _calc_lambda(R2n, ω)
     new_dev = _calc_err(𝑆.G - G1A + G1B - G2A + G2B, 𝐺)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
@@ -554,10 +547,10 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         Ge = 𝑆.Λ[:,csize]
 
         R2 = Rectangle(h, w1, c1 + dc1)
-        G2 = calc_dev_rec(R2, ω)
+        G2 = _calc_lambda(R2, ω)
 
         R3 = Rectangle(h, w2, c2 + dc2)
-        G3 = calc_dev_rec(R3, ω)
+        G3 = _calc_lambda(R3, ω)
         new_dev = _calc_err(𝑆.G - G1 + G2 + G3, 𝐺)
 
         if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
@@ -613,7 +606,7 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     Ge = 𝑆.Λ[:,csize]
 
     Rn = Rectangle(h_new, w_new, c_new + dc)
-    Gn = calc_dev_rec(Rn, ω)
+    Gn = _calc_lambda(Rn, ω)
 
     new_dev = _calc_err(𝑆.G - G1 - G2 + Gn, 𝐺)
 
