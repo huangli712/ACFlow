@@ -510,13 +510,11 @@ function _try_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     smin  = P_SOM["smin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-
     csize = length(𝑆.C)
 
     t = rand(MC.rng, 1:csize)
 
     R1 = 𝑆.C[t]
-
     if R1.w ≤ 2 * wmin || R1.w * R1.h ≤ 2.0 * smin
         return
     end
@@ -550,16 +548,15 @@ function _try_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
 
         R3 = Rectangle(h, w2, c2 + dc2)
         G3 = _calc_lambda(R3, ω)
-        new_dev = _calc_err(𝑆.G - G1 + G2 + G3, 𝐺)
+        Δ = _calc_err(𝑆.G - G1 + G2 + G3, 𝐺)
 
-        if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
+        if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
             𝑆.C[t] = 𝑆.C[end]
             pop!(𝑆.C)
             push!(𝑆.C, R2)
             push!(𝑆.C, R3)
-            𝑆.Δ = new_dev
+            𝑆.Δ = Δ
             @. 𝑆.G = 𝑆.G - G1 + G2 + G3
-            
             if t < csize
                 @. 𝑆.Λ[:,t] = Ge
             end
@@ -568,6 +565,7 @@ function _try_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
             MC.acc[6] = MC.acc[6] + 1
         end
     end
+
     MC.tri[6] = MC.tri[6] + 1
 end
 
@@ -622,7 +620,7 @@ function _try_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         end
         MC.acc[7] = MC.acc[7] + 1
     end
-    
+
     MC.tri[7] = MC.tri[7] + 1
 end
 
