@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/28
+# Last modified: 2021/12/29
 #
 
 const P_SOM = Dict{String, Any}(
@@ -16,7 +16,6 @@ const P_SOM = Dict{String, Any}(
     "nwout" => 100,
     "smin" => 0.005,
     "wmin" => 0.05,
-    "gamma" => 2.0,
     "dmax" => 2.0,
     "ommax" => 10.0,
     "ommin" => -10.0,
@@ -303,7 +302,6 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     wmin  = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-    γ     = P_SOM["gamma"]
 
     csize = length(𝑆.C)
 
@@ -324,7 +322,7 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     r2 = rand(MC.rng, F64)
     c = (ommin + wmin / 2.0) + (ommax - ommin - wmin) * r1
     w_new_max = 2.0 * min(ommax - c, c - ommin)
-    dx = Pdx(dx_min, dx_max, γ, MC.rng)
+    dx = Pdx(dx_min, dx_max, MC.rng)
     h = dx / w_new_max + (dx / wmin - dx / w_new_max) * r2
     w = dx / h
 
@@ -402,7 +400,6 @@ end
 function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-    γ     = P_SOM["gamma"]
 
     csize = length(𝑆.C)
 
@@ -414,7 +411,7 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     if dx_max ≤ dx_min
         return
     end
-    dc = Pdx(dx_min, dx_max, γ, MC.rng)
+    dc = Pdx(dx_min, dx_max, MC.rng)
     
     Rn = Rectangle(R.h, R.w, R.c + dc)
     G1 = 𝑆.Λ[:,t]
@@ -435,7 +432,6 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
     wmin  = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-    γ     = P_SOM["gamma"]
 
     csize = length(𝑆.C)
 
@@ -448,7 +444,7 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
     if dx_max ≤ dx_min
         return
     end
-    dw = Pdx(dx_min, dx_max, γ, MC.rng)
+    dw = Pdx(dx_min, dx_max, MC.rng)
 
     w = R.w + dw
     h = weight / w
@@ -470,7 +466,6 @@ end
 
 function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     smin = P_SOM["smin"]
-    γ    = P_SOM["gamma"]
 
     csize = length(𝑆.C)
 
@@ -492,7 +487,7 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
     if dx_max ≤ dx_min
         return
     end
-    dh = Pdx(dx_min, dx_max, γ, MC.rng)
+    dh = Pdx(dx_min, dx_max, MC.rng)
 
     R1n = Rectangle(R1.h + dh, R1.w, R1.c)
     G1A = 𝑆.Λ[:,t1]
@@ -520,7 +515,6 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     smin  = P_SOM["smin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-    γ     = P_SOM["gamma"]
 
     csize = length(𝑆.C)
 
@@ -545,7 +539,7 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     if dx_max ≤ dx_min
         return
     end
-    dc1 = Pdx(dx_min, dx_max, γ, MC.rng)
+    dc1 = Pdx(dx_min, dx_max, MC.rng)
     dc2 = -1.0 * w1 * dc1 / w2
 
     if (c1 + dc1 ≥ ommin + w1 / 2.0) &&
@@ -585,7 +579,6 @@ end
 function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-    γ     = P_SOM["gamma"]
 
     csize = length(𝑆.C)
 
@@ -610,7 +603,7 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     if dx_max ≤ dx_min
         return
     end
-    dc = Pdx(dx_min, dx_max, γ, MC.rng)
+    dc = Pdx(dx_min, dx_max, MC.rng)
 
     G1 = 𝑆.Λ[:,t1]
     G2 = 𝑆.Λ[:,t2]
@@ -701,15 +694,17 @@ function calc_norm(V1::Vector{Rectangle}, V2::Vector{Rectangle})
     end
 end
 
-function Pdx(xmin::F64, xmax::F64, γ::F64, rng::AbstractRNG)
+function Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
+    γ = 2.0
+    y = rand(rng, F64)
+
     _X = max(abs(xmin), abs(xmax))
     _λ = γ / _X
     _elx = exp(-1.0 * _λ * abs(xmin))
     _N = _λ / ( (xmin / abs(xmin)) * (exp(-1.0 * _λ * abs(xmin)) - 1.0)
               + (xmax / abs(xmax)) * (1.0 - exp(-1.0 * _λ * abs(xmax))) )
-
-    y = rand(rng, F64)
     _lysn = _λ * y / _N
+
     if xmin ≥ 0
         return -1.0 * log(_elx - _lysn) / _λ
     elseif xmax ≤ 0
