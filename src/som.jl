@@ -58,6 +58,18 @@ function som_run(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
     for l = 1:Lmax
         println("try: $l")
         som_core(l, SC, MC, ω, 𝐺)
+
+        Nf = P_SOM["Nf"]
+
+        SE = som_random(MC, ω, 𝐺)
+    
+        for _ = 1:Nf
+            som_update(SE, MC, ω, 𝐺)
+        end
+    
+        SC.Δv[l] = SE.Δ
+        SC.Cv[l] = deepcopy(SE.C)
+    
     end
     som_output(Lmax, SC)
 end
@@ -84,20 +96,6 @@ function som_init()
     acc = zeros(I64, 7)
 
     return SOMContext(Cv, Δv), SOMMonteCarlo(rng, tri, acc)
-end
-
-
-function som_core(l::I64, SC::SOMContext, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    Nf = P_SOM["Nf"]
-
-    SE = som_random(MC, ω, 𝐺)
-
-    for _ = 1:Nf
-        som_update(SE, MC, ω, 𝐺)
-    end
-
-    SC.Δv[l] = SE.Δ
-    SC.Cv[l] = deepcopy(SE.C)
 end
 
 function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
