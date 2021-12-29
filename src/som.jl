@@ -8,7 +8,7 @@
 #
 
 const P_SOM = Dict{String, Any}(
-    "Lmax" => 100,
+    "Lmax" => 200,
     "Ngrid" => 64,
     "Nf" => 1000,
     "Tmax" => 100,
