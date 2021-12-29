@@ -427,12 +427,12 @@ function _try_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     wmin  = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-
     csize = length(𝑆.C)
 
     t = rand(MC.rng, 1:csize)
 
     R = 𝑆.C[t]
+
     weight = R.h * R.w
     dx_min = wmin - R.w
     dx_max = min(2.0 * (R.c - ommin), 2.0 * (ommax - R.c)) - R.w
@@ -440,22 +440,24 @@ function _try_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         return
     end
     dw = Pdx(dx_min, dx_max, MC.rng)
-
     w = R.w + dw
     h = weight / w
     c = R.c
+
     Rn = Rectangle(h, w, c)
     G1 = 𝑆.Λ[:,t]
     G2 = _calc_lambda(Rn, ω)
-    new_dev = _calc_err(𝑆.G - G1 + G2, 𝐺)
 
-    if rand(MC.rng, F64) < ((𝑆.Δ/ new_dev) ^ (1.0 + dacc))
+    Δ = _calc_err(𝑆.G - G1 + G2, 𝐺)
+
+    if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t] = Rn
-        𝑆.Δ = new_dev
+        𝑆.Δ = Δ
         @. 𝑆.G = 𝑆.G - G1 + G2
         @. 𝑆.Λ[:,t] = G2
         MC.acc[4] = MC.acc[4] + 1
     end
+
     MC.tri[4] = MC.tri[4] + 1
 end
 
