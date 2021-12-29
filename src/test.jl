@@ -2,6 +2,19 @@ push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
 
 using ACFlow
 
+function som_output(Aom::Vector{F64})
+    Ngrid = P_SOM["Ngrid"]
+    ommin = P_SOM["ommin"]
+    ommax = P_SOM["ommax"]
+
+    open("Aw.data", "w") do fout
+        for w = 1:Ngrid
+            _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
+            println(fout, _omega, " ", Aom[w])
+        end
+    end
+end
+
 #=
 println("Hello world! This is a maxent code.")
 ω, 𝐺 = read_data!(FermionicMatsubaraGrid)
@@ -18,13 +31,5 @@ defalut_model = 𝑀.𝑀₀ * default_model ./ norm_DM_t[1,:]
 =#
 
 ω, 𝐺 = read_data!(FermionicMatsubaraGrid)
-som_run(ω, 𝐺)
-
-#=
-open("Aw.data", "w") do fout
-    for w = 1:Ngrid
-        _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
-        println(fout, _omega, " ", Aom[w])
-    end
-end
-=#
+Aom = som_run(ω, 𝐺)
+som_output(Aom)

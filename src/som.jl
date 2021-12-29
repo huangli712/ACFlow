@@ -69,7 +69,7 @@ function som_run(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         SC.Cv[l] = deepcopy(SE.C)    
     end
 
-    som_spectra(SC)
+    return som_spectra(SC)
 end
 
 function som_init()
@@ -97,11 +97,11 @@ function som_init()
 end
 
 function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData)
-    smin = P_SOM["smin"]
-    wmin = P_SOM["wmin"]
+    smin  = P_SOM["smin"]
+    wmin  = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-    Kmax = P_SOM["Kmax"]
+    Kmax  = P_SOM["Kmax"]
     Ngrid = P_SOM["Ngrid"]
 
     _Know = rand(MC.rng, 2:Kmax)
@@ -249,7 +249,7 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         SE.C = deepcopy(ST.C)
         SE.Λ .= ST.Λ
         SE.G .= ST.G
-        SE.Δ = ST.Δ
+        SE.Δ  = ST.Δ
     end
 end
 
@@ -279,7 +279,7 @@ function som_spectra(𝑆::SOMContext)
         end
     end
 
-    @show count, 𝑆.Δv, dev_min, Lgood
+    @show 𝑆.Δv, dev_min, Lgood
 
     if Lgood > 0
         @. Aom = Aom / Lgood
@@ -287,6 +287,8 @@ function som_spectra(𝑆::SOMContext)
 
     return Aom
 end
+
+
 
 function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     smin  = P_SOM["smin"]
