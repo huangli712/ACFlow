@@ -146,7 +146,7 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenDa
         calc_dev_rec(Rectangle(h, w, c), k, Λ, ω)
     end
     Δ = calc_dev(Λ, _Know, 𝐺)
-    G = calc_gf(Λ, _Know)
+    G = som_calc_gf(Λ, _Know)
     
     return SOMElement(C, Λ, G, Δ)
 end
@@ -648,21 +648,20 @@ function calc_dev_rec(r::Rectangle, ω::FermionicMatsubaraGrid)
     return elem_dev
 end
 
-function calc_dev(elem_dev::Array{C64,2}, nk::I64, 𝐺::GreenData)
-    Ngrid = P_SOM["Ngrid"]
+function som_calc_dev(Λ::Array{C64,2}, nk::I64, 𝐺::GreenData)
+    Ngrid, Kmax = size(Λ)
+    @assert nk ≤ Kmax
+
     res = 0.0
-    for g = 1:Ngrid
-        δ = 0.0
-        for k = 1:nk
-            δ = δ + elem_dev[g,k]
-        end
-        res = res + abs((δ - 𝐺.value[g]) / 𝐺.error[g])
+    for w = 1:Ngrid
+        g = sum(elem_dev[w,1:nk])
+        res = res + abs((g - 𝐺.value[w]) / 𝐺.error[w])
     end
 
     return res
 end
 
-function calc_dev(Gc::Vector{C64}, 𝐺::GreenData)
+function som_calc_dev(Gc::Vector{C64}, 𝐺::GreenData)
     return sum( @. abs((Gc - 𝐺.value) / 𝐺.error) )
 end
 
