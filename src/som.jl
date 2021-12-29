@@ -635,17 +635,20 @@ function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     MC.tri[7] = MC.tri[7] + 1
 end
 
-function calc_dev_rec(r::Rectangle, k::I64, elem_dev::Array{C64,2}, ω::FermionicMatsubaraGrid)
-    Ngrid = P_SOM["Ngrid"]
+#=
+function _calc_lambda(r::Rectangle, k::I64, Λ::Array{C64,2}, ω::FermionicMatsubaraGrid)
+    Ngrid, Kmax = size(Λ)
+    @assert k ≤ Kmax
     for g = 1:Ngrid
         Gs = r.h * log((im * ω.grid[g] - r.c + 0.5 * r.w) / (im * ω.grid[g] - r.c - 0.5 * r.w))
         elem_dev[g,k] = Gs
     end
 end
+=#
 
-function calc_dev_rec(r::Rectangle, ω::FermionicMatsubaraGrid)
-    elem_dev = @. r.h * log((im * ω.grid - r.c + 0.5 * r.w) / (im * ω.grid - r.c - 0.5 * r.w))
-    return elem_dev
+function _calc_lambda(r::Rectangle, ω::FermionicMatsubaraGrid)
+    Λ = @. r.h * log((im * ω.grid - r.c + 0.5 * r.w) / (im * ω.grid - r.c - 0.5 * r.w))
+    return Λ
 end
 
 function _calc_err(Λ::Array{C64,2}, nk::I64, 𝐺::GreenData)
