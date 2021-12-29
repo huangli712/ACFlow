@@ -204,6 +204,8 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
                 end
                 break
         end
+
+        @show calc_norm(ST.C)
     end
 
     for _ = T1+1:Tmax
@@ -676,22 +678,9 @@ function calc_gf(elem_dev::Array{C64,2}, nk::I64)
     return G
 end
 
-function calc_norm(V1::Vector{Rectangle}, V2::Vector{Rectangle})
-    norm1 = 0.0
-    for i = 1:length(V1)
-        norm1 = norm1 + V1[i].h * V1[i].w
-    end
-    println("tmp norm is: $norm1")
-
-    norm2 = 0.0
-    for i = 1:length(V2)
-        norm2 = norm2 + V2[i].h * V2[i].w
-    end
-    println("new norm is: $norm2")
-
-    if abs(norm1 - norm2) > 0.0001
-        error()
-    end
+function calc_norm(C::Vector{Rectangle})
+    norm = sum(map(x -> x.h * x.w, C))
+    return norm
 end
 
 function Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
