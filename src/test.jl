@@ -18,5 +18,4 @@ defalut_model = 𝑀.𝑀₀ * default_model ./ norm_DM_t[1,:]
 =#
 
 ω, 𝐺 = read_data!(FermionicMatsubaraGrid)
-#SC, MC = som_init()
 som_run(ω, 𝐺)
