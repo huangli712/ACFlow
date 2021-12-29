@@ -169,44 +169,43 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         @cswitch update_type begin
             @case 1
                 if length(ST.C) < Kmax - 1
-                    _som_add(ST, MC, ω, 𝐺, d1)
+                    _try_insert(ST, MC, ω, 𝐺, d1)
                 end
                 break
 
             @case 2
                 if length(ST.C) > 1
-                    _som_remove(ST, MC, ω, 𝐺, d1)
+                    _try_remove(ST, MC, ω, 𝐺, d1)
                 end
                 break
 
             @case 3
-                _som_shift(ST, MC, ω, 𝐺, d1)
+                _try_position(ST, MC, ω, 𝐺, d1)
                 break
 
             @case 4
-                _som_change_width(ST, MC, ω, 𝐺, d1)
+                _try_width(ST, MC, ω, 𝐺, d1)
                 break
 
             @case 5
                 if length(ST.C) > 1
-                    _som_change_weight(ST, MC, ω, 𝐺, d1)
+                    _try_height(ST, MC, ω, 𝐺, d1)
                 end
                 break
 
             @case 6
                 if length(ST.C) < Kmax - 1
-                    _som_split(ST, MC, ω, 𝐺, d1)
+                    _try_split(ST, MC, ω, 𝐺, d1)
                 end
                 break
 
             @case 7
                 if length(ST.C) > 1
-                    _som_merge(ST, MC, ω, 𝐺, d1)
+                    _try_merge(ST, MC, ω, 𝐺, d1)
                 end
                 break
         end
 
-        #@show calc_norm(ST.C)
     end
 
     for _ = T1+1:Tmax
@@ -215,39 +214,39 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
         @cswitch update_type begin
             @case 1
                 if length(ST.C) < Kmax - 1
-                    _som_add(ST, MC, ω, 𝐺, d2)
+                    _try_insert(ST, MC, ω, 𝐺, d2)
                 end
                 break
 
             @case 2
                 if length(ST.C) > 1
-                    _som_remove(ST, MC, ω, 𝐺, d2)
+                    _try_remove(ST, MC, ω, 𝐺, d2)
                 end
                 break
 
             @case 3
-                _som_shift(ST, MC, ω, 𝐺, d2)
+                _try_position(ST, MC, ω, 𝐺, d2)
                 break
 
             @case 4
-                _som_change_width(ST, MC, ω, 𝐺, d2)
+                _try_width(ST, MC, ω, 𝐺, d2)
                 break
 
             @case 5
                 if length(ST.C) > 1
-                    _som_change_weight(ST, MC, ω, 𝐺, d2)
+                    _try_height(ST, MC, ω, 𝐺, d2)
                 end
                 break
 
             @case 6
                 if length(ST.C) < Kmax - 1
-                    _som_split(ST, MC, ω, 𝐺, d2)
+                    _try_split(ST, MC, ω, 𝐺, d2)
                 end
                 break
 
             @case 7
                 if length(ST.C) > 1
-                    _som_merge(ST, MC, ω, 𝐺, d2)
+                    _try_merge(ST, MC, ω, 𝐺, d2)
                 end
                 break
         end
@@ -300,7 +299,7 @@ function som_output(count::I64, 𝑆::SOMContext)
     end
 end
 
-function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     smin  = P_SOM["smin"]
     wmin  = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
@@ -349,7 +348,7 @@ function _som_add(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
     MC.tri[1] = MC.tri[1] + 1
 end
 
-function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+function _try_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     csize = length(𝑆.C)
 
     t1 = rand(MC.rng, 1:csize)
@@ -393,7 +392,7 @@ function _som_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     MC.tri[2] = MC.tri[2] + 1
 end
 
-function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+function _try_position(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
 
@@ -424,7 +423,7 @@ function _som_shift(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     MC.tri[3] = MC.tri[3] + 1
 end
 
-function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+function _try_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     wmin  = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
@@ -460,7 +459,7 @@ function _som_change_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMat
     MC.tri[4] = MC.tri[4] + 1
 end
 
-function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+function _try_height(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     smin = P_SOM["smin"]
 
     csize = length(𝑆.C)
@@ -506,7 +505,7 @@ function _som_change_weight(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMa
     MC.tri[5] = MC.tri[5] + 1
 end
 
-function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+function _try_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     wmin  = P_SOM["wmin"]
     smin  = P_SOM["smin"]
     ommin = P_SOM["ommin"]
@@ -572,7 +571,7 @@ function _som_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     MC.tri[6] = MC.tri[6] + 1
 end
 
-function _som_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
+function _try_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenData, dacc)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
 
