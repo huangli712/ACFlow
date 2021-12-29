@@ -373,15 +373,15 @@ function _try_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     R2n = Rectangle(R2.h + dx / R2.w, R2.w, R2.c)
     G2n = _calc_lambda(R2n, ω)
 
-    new_dev = _calc_err(𝑆.G - G1 - G2 + G2n, 𝐺)
+    Δ = _calc_err(𝑆.G - G1 - G2 + G2n, 𝐺)
 
-    if rand(MC.rng, F64) < ((𝑆.Δ/new_dev) ^ (1.0 + dacc))
+    if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t2] = R2n
         if t1 < csize
             𝑆.C[t1] = Re
         end
         pop!(𝑆.C)
-        𝑆.Δ = new_dev
+        𝑆.Δ = Δ
         @. 𝑆.G = 𝑆.G - G1 - G2 + G2n
         @. 𝑆.Λ[:,t2] = G2n
         if t1 < csize
@@ -389,6 +389,7 @@ function _try_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
         end
         MC.acc[2] = MC.acc[2] + 1
     end
+
     MC.tri[2] = MC.tri[2] + 1
 end
 
