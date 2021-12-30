@@ -41,8 +41,28 @@ function read_data!(::Type{ImaginaryTimeGrid})
 
     # try to calculate mean value
     for i  = 1:ntau
-        
+        val = mean(bin_data[i,:])
+        push!(value, val)
     end
+    #@show value
+
+    seed = rand(1:1000000)
+    rng = MersenneTwister(seed)
+    nbootstrap = 5000
+    bootstrap = zeros(F64, ntau, nbootstrap)
+    for i = 1:nbootstrap
+        for b = 1:nbin
+            ind = rand(rng, 1:nbin)
+            @. bootstrap[:,i] = bootstrap[:,i] + bin_data[:,ind]
+        end
+    end
+    bootstrap = bootstrap ./ nbin
+    for i = 1:ntau
+        err = sum((bootstrap[i,:] .- value[i]) .^ 2.0)
+        err = sqrt((err / nbootstrap))
+        push!(error, err)
+    end
+    @show error
 end
 
 function read_data!(::Type{FermionicMatsubaraGrid})
