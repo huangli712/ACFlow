@@ -4,11 +4,45 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/14
+# Last modified: 2021/12/30
 #
 
 function read_data!(::Type{ImaginaryTimeGrid})
-    error()
+    grid = F64[]
+    value = F64[]
+    error = F64[]
+    covar = F64[]
+
+    nbin = 1000
+    ntau = 100
+
+    bin_data = zeros(F64, ntau, nbin)
+
+    open("tau.data", "r") do fin
+        readline(fin)
+        for i = 1:ntau
+            tau = parse(F64, readline(fin))
+            push!(grid, tau)
+        end
+    end
+    #@show grid
+
+    open("cor.data", "r") do fin
+        readline(fin)
+        for b = 1:nbin
+            readline(fin)
+            for i = 1:ntau
+                g = parse(F64, readline(fin))
+                bin_data[i,b] = g
+            end
+        end
+    end
+    #@show bin_data[:,end]
+
+    # try to calculate mean value
+    for i  = 1:ntau
+        
+    end
 end
 
 function read_data!(::Type{FermionicMatsubaraGrid})

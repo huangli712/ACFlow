@@ -1,6 +1,5 @@
-@everywhere push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
-
-@everywhere using ACFlow
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
+using ACFlow
 
 #=
 println("Hello world! This is a maxent code.")
@@ -17,6 +16,13 @@ defalut_model = 𝑀.𝑀₀ * default_model ./ norm_DM_t[1,:]
 @show default_model
 =#
 
+#=
+# For SOM PART
+
 ω, 𝐺 = read_data!(FermionicMatsubaraGrid)
 Aom = sum( pmap((x) -> som_run(ω, 𝐺), 1:nworkers()) ) ./ nworkers()
 som_output(Aom)
+
+=#
+
+read_data!(ImaginaryTimeGrid)
