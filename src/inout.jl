@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/30
+# Last modified: 2021/12/31
 #
 
 function read_data!(::Type{ImaginaryTimeGrid})
@@ -62,7 +62,23 @@ function read_data!(::Type{ImaginaryTimeGrid})
         err = sqrt((err / nbootstrap))
         push!(error, err)
     end
-    @show error
+    #@show error
+
+    unselected_tau = findall( x -> abs(x) ≥ 0.1, error[2:end] ./ value[2:end]) .+ 1
+    push!(unselected_tau, 1)
+    sort!(unselected_tau)
+    #@show unselected_tau
+
+    # Filter the data
+    g0 = value[1]
+    deleteat!(grid, unselected_tau)
+    deleteat!(value, unselected_tau)
+    deleteat!(error, unselected_tau)
+    bootstrap = bootstrap[setdiff(1:end, unselected_tau), :]
+
+    #@show grid
+    @show value / g0
+    #@show error
 end
 
 function read_data!(::Type{FermionicMatsubaraGrid})
