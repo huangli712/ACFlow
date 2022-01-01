@@ -77,8 +77,33 @@ function read_data!(::Type{ImaginaryTimeGrid})
     bootstrap = bootstrap[setdiff(1:end, unselected_tau), :]
 
     #@show grid
-    @show value / g0
+    #@show value
     #@show error
+
+    value = value / g0
+    error = error / g0
+    bootstrap = bootstrap / g0
+    #@show error
+    #@show size(value), size(error), size(bootstrap)
+
+    cov_mat_dim = length(value)
+    cov_mat = zeros(F64, cov_mat_dim, cov_mat_dim)
+
+    for i = 1:cov_mat_dim
+        for j = 1:cov_mat_dim
+            cov_mat[j,i] = sum((bootstrap[i,:] .- value[i]) .* ( bootstrap[j,:] .- value[j]))
+        end
+    end
+
+    #for i = 1:cov_mat_dim
+    #    for j = 1:cov_mat_dim
+    #        @show i, j, cov_mat[i,j]
+    #    end
+    #end
+
+    @show issymmetric(cov_mat)
+    F = eigen(Symmetric(cov_mat), 1:cov_mat_dim)
+    @show F.values
 end
 
 function read_data!(::Type{FermionicMatsubaraGrid})
