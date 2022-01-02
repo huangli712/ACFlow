@@ -101,9 +101,17 @@ function read_data!(::Type{ImaginaryTimeGrid})
     #    end
     #end
 
-    @show issymmetric(cov_mat)
-    F = eigen(Symmetric(cov_mat), 1:cov_mat_dim)
-    @show F.values
+    #@show issymmetric(cov_mat)
+    #F = eigen(Symmetric(cov_mat), 1:cov_mat_dim)
+    #@show F.values
+    #@show F.vectors
+
+    val, vec = LAPACK.syev!('V', 'U', cov_mat)
+    @show vec
+
+    #@show size(F.vectors), size(value)
+    #@show F.vectors * value
+    #@show value
 end
 
 function read_data!(::Type{FermionicMatsubaraGrid})
