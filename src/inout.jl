@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/12/31
+# Last modified: 2022/01/02
 #
 
 function read_data!(::Type{ImaginaryTimeGrid})
@@ -89,11 +89,23 @@ function read_data!(::Type{ImaginaryTimeGrid})
     cov_mat_dim = length(value)
     cov_mat = zeros(F64, cov_mat_dim, cov_mat_dim)
 
+    #@show cov_mat_dim
+
     for i = 1:cov_mat_dim
         for j = 1:cov_mat_dim
             cov_mat[j,i] = sum((bootstrap[i,:] .- value[i]) .* ( bootstrap[j,:] .- value[j]))
         end
     end
+
+    #=
+    open("test.data", "r") do fin
+        for i = 1:cov_mat_dim
+            for j = 1:cov_mat_dim
+                cov_mat[i,j] = parse(F64, line_to_array(fin)[3])
+            end
+        end
+    end
+    =#
 
     #for i = 1:cov_mat_dim
     #    for j = 1:cov_mat_dim
@@ -106,12 +118,16 @@ function read_data!(::Type{ImaginaryTimeGrid})
     #@show F.values
     #@show F.vectors
 
-    val, vec = LAPACK.syev!('V', 'U', cov_mat)
-    @show vec
+    eigs, evec = LAPACK.syev!('V', 'U', cov_mat)
+    #@show eigs
 
     #@show size(F.vectors), size(value)
     #@show F.vectors * value
     #@show value
+    #@show evec' * value
+    value = evec' * value
+
+    covar = sqrt(nbootstrap) ./ sqrt.(eigs)
 end
 
 function read_data!(::Type{FermionicMatsubaraGrid})
