@@ -26,4 +26,5 @@ som_output(Aom)
 =#
 
 #read_data!(ImaginaryTimeGrid)
-calc_grid()
+grid = calc_grid()
+@show grid
