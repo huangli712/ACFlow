@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/01/04
+# Last modified: 2022/01/05
 #
 
 const P_SAC = Dict{String,Any}(
@@ -55,4 +55,13 @@ function Grid2Spec(grid_index::I64, SG::SACGrid)
     @assert 1 ≤ grid_index ≤ SG.num_grid_index
     #@show (grid_index - 1) * SG.grid_interval / SG.spec_interval
     return floor(I64, (grid_index - 1) * SG.grid_interval / SG.spec_interval)
+end
+
+function init_spectrum(SG::SACGrid)
+    left_edge = -2.0
+    right_edge = 2.0
+    left_edge_index = Freq2GridIndex(left_edge, SG)
+    right_edge_index = Freq2GridIndex(right_edge, SG)
+    rectangle_len = right_edge_index - left_edge_index + 1
+    @shwo left_edge_index, right_edge_index, rectangle_len
 end
