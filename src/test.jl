@@ -27,4 +27,16 @@ som_output(Aom)
 
 #read_data!(ImaginaryTimeGrid)
 grid = calc_grid()
-@show grid
+#@show GridIndex2Freq(1, grid)
+#@show GridIndex2Freq(grid.num_grid_index, grid)
+#@show GridIndex2Freq(grid.num_grid_index-1, grid)
+#@show Freq2GridIndex(-10.0, grid);
+#@show Freq2GridIndex(9.99999, grid)
+#@show Freq2GridIndex(9.99998, grid)
+#@show SpecIndex2Freq(1, grid)
+#@show SpecIndex2Freq(grid.num_spec_index, grid)
+#@show SpecIndex2Freq(grid.num_spec_index-1, grid)
+
+@show Grid2Spec(1, grid)
+@show Grid2Spec(2, grid)
+@show Grid2Spec(2000, grid)

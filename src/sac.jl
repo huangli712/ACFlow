@@ -28,7 +28,6 @@ function calc_grid()
     ommin = P_SAC["ommin"]
     grid_interval = P_SAC["grid_interval"]
     spec_interval = P_SAC["spec_interval"]
-
     num_grid_index = ceil(I64, (ommax - ommin) / grid_interval)
     num_spec_index = ceil(I64, (ommax - ommin) / spec_interval)
     #@show num_grid_index, num_spec_index
@@ -44,6 +43,7 @@ function Freq2GridIndex(freq::F64, SG::SACGrid)
     @assert SG.ommin ≤ freq ≤ SG.ommax
     grid = ceil(I64, (freq - SG.ommin) / SG.grid_interval) + 1
     @assert 1 ≤ grid ≤ SG.num_grid_index
+    return grid
 end
 
 function SpecIndex2Freq(spec_index::I64, SG::SACGrid)
@@ -53,5 +53,6 @@ end
 
 function Grid2Spec(grid_index::I64, SG::SACGrid)
     @assert 1 ≤ grid_index ≤ SG.num_grid_index
-    return floor(I64, grid_index * SG.grid_interval / SG.spec_interval)
+    #@show (grid_index - 1) * SG.grid_interval / SG.spec_interval
+    return floor(I64, (grid_index - 1) * SG.grid_interval / SG.spec_interval)
 end
