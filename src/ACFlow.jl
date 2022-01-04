@@ -49,4 +49,6 @@ export diag_covar
 export som_run
 export som_output
 
+export calc_grid
+
 end
