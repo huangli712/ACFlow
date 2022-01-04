@@ -128,6 +128,8 @@ function read_data!(::Type{ImaginaryTimeGrid})
     value = evec' * value
 
     covar = sqrt(nbootstrap) ./ sqrt.(eigs)
+
+    return g0, GreenData(value, error, covar), ImaginaryTimeGrid(grid)
 end
 
 function read_data!(::Type{FermionicMatsubaraGrid})

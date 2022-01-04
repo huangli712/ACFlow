@@ -12,7 +12,14 @@ const P_SAC = Dict{String,Any}(
     "ommin" => -10.0,
     "grid_interval" => 1.0e-5,
     "spec_interval" => 1.0e-2,
+    "ndelta" => 1e3,
 )
+
+mutable struct SACElement
+    C :: Vector{I64}
+    A :: F64
+    W :: I64
+end
 
 struct SACGrid
     ommax :: F64
@@ -57,11 +64,28 @@ function Grid2Spec(grid_index::I64, SG::SACGrid)
     return floor(I64, (grid_index - 1) * SG.grid_interval / SG.spec_interval)
 end
 
-function init_spectrum(SG::SACGrid)
+function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::ImaginaryTimeGrid)
+    ndelta = P_SAC["ndelta"]
+
     left_edge = -2.0
     right_edge = 2.0
     left_edge_index = Freq2GridIndex(left_edge, SG)
     right_edge_index = Freq2GridIndex(right_edge, SG)
     rectangle_len = right_edge_index - left_edge_index + 1
-    @shwo left_edge_index, right_edge_index, rectangle_len
+    @show left_edge_index, right_edge_index, rectangle_len
+
+    position = I64[]
+    for i = 1:ndelta
+        push!(position, left_edge_index + (i - 1) % rectangle_len)
+    end
+    #@show position
+
+    amplitude = 1.0 / (scale_factor * ndelta)
+    @show amplitude
+
+    average_freq = abs(log(1.0/𝐺.value[end]) / τ.grid[end])
+    @show 𝐺.value[end]
+    @show τ.grid[end]
+    @show average_freq
+    #return SACElement(position)
 end
