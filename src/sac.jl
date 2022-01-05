@@ -12,7 +12,7 @@ const P_SAC = Dict{String,Any}(
     "ommin" => -10.0,
     "grid_interval" => 1.0e-5,
     "spec_interval" => 1.0e-2,
-    "ndelta" => 1e3,
+    "ndelta" => 1000,
     "beta" => 4.0,
 )
 
@@ -20,6 +20,11 @@ mutable struct SACElement
     C :: Vector{I64}
     A :: F64
     W :: I64
+end
+
+mutable struct SACContext
+    G1 :: Vector{F64}
+    G2 :: Vector{F64}
 end
 
 struct SACGrid
@@ -63,6 +68,14 @@ function Grid2Spec(grid_index::I64, SG::SACGrid)
     @assert 1 ≤ grid_index ≤ SG.num_grid_index
     #@show (grid_index - 1) * SG.grid_interval / SG.spec_interval
     return floor(I64, (grid_index - 1) * SG.grid_interval / SG.spec_interval)
+end
+
+function init_sac(τ::ImaginaryTimeGrid)
+    ntau = length(τ.grid)
+    G1 = zeros(F64, ntau)
+    G2 = zeros(F64, ntau)
+
+    return SACContext(G1, G2)
 end
 
 function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::ImaginaryTimeGrid)
@@ -120,4 +133,22 @@ function init_kernel(τ::ImaginaryTimeGrid, SG::SACGrid, Mrot::AbstractMatrix)
     #end
 
     return kernel
+end
+
+function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACContext)
+    ndelta = P_SAC["ndelta"]
+    @show size(kernel)
+
+    tmp_kernel = kernel[:, SE.C]
+    @show size(tmp_kernel), typeof(tmp_kernel)
+
+    amplitude = fill(SE.A, ndelta)
+
+    SC.G1 = tmp_kernel * amplitude
+
+    #@show amplitude
+    @show SC.G1
+end
+
+function compute_goodness()
 end

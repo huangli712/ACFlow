@@ -51,6 +51,6 @@ export som_output
 
 export calc_grid
 export GridIndex2Freq, Freq2GridIndex, Grid2Spec, SpecIndex2Freq
-export init_spectrum, init_kernel
+export init_spectrum, init_kernel, compute_corr_from_spec, compute_goodness, init_sac
 
 end
