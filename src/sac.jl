@@ -145,9 +145,8 @@ function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACC
     amplitude = fill(SE.A, ndelta)
 
     SC.G1 = tmp_kernel * amplitude
-
     #@show amplitude
-    @show SC.G1
+    #@show SC.G1
 end
 
 function compute_goodness()
