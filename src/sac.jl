@@ -85,11 +85,10 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     G2 = zeros(F64, ntau)
     χ2 = 0.0
     χ2min = 0.0
+    acc = 0.0
     freq = zeros(F64, SG.num_spec_index)
     spectrum = zeros(F64, SG.num_spec_index)
-    SC = SACContext(Gr, G1, G2, χ2, χ2min, freq, spectrum)
-
-    
+    SC = SACContext(Gr, G1, G2, χ2, χ2min, acc, freq, spectrum)
 
     SE = init_spectrum(scale_factor, SG, 𝐺, τ)
 
@@ -97,7 +96,10 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
 
     compute_corr_from_spec(kernel, SE, SC)
 
-    compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
+    χ = compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
+    SC.χ2 = χ
+    SC.χ2min = χ
+    @show SG.num_spec_index
 end
 
 function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::ImaginaryTimeGrid)
