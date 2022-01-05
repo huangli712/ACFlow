@@ -26,6 +26,7 @@ som_output(Aom)
 =#
 
 g0, 𝐺, τ = read_data!(ImaginaryTimeGrid)
+error()
 grid = calc_grid()
 #@show GridIndex2Freq(1, grid)
 #@show GridIndex2Freq(grid.num_grid_index, grid)

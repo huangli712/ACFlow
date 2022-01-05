@@ -97,7 +97,7 @@ function read_data!(::Type{ImaginaryTimeGrid})
         end
     end
 
-    #=
+
     open("test.data", "r") do fin
         for i = 1:cov_mat_dim
             for j = 1:cov_mat_dim
@@ -105,7 +105,7 @@ function read_data!(::Type{ImaginaryTimeGrid})
             end
         end
     end
-    =#
+
 
     #for i = 1:cov_mat_dim
     #    for j = 1:cov_mat_dim
@@ -119,15 +119,21 @@ function read_data!(::Type{ImaginaryTimeGrid})
     #@show F.vectors
 
     eigs, evec = LAPACK.syev!('V', 'U', cov_mat)
-    #@show eigs
+    #for i in eachindex(eigs)
+    #    @show eigs[i]
+    #end
 
     #@show size(F.vectors), size(value)
     #@show F.vectors * value
     #@show value
     #@show evec' * value
     value = evec' * value
+    #@show evec'[1,:]
+    #@show evec'[3,:]
+    #@show size(evec)
 
     covar = sqrt(nbootstrap) ./ sqrt.(eigs)
+    @show covar
 
     return g0, GreenData(value, error, covar), ImaginaryTimeGrid(grid)
 end
