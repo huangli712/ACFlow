@@ -14,6 +14,7 @@ const P_SAC = Dict{String,Any}(
     "spec_interval" => 1.0e-2,
     "ndelta" => 1000,
     "beta" => 4.0,
+    "anneal_length" => 5000
 )
 
 mutable struct SACElement
@@ -28,6 +29,7 @@ mutable struct SACContext
     G2 :: Vector{F64}
     χ2 :: F64
     χ2min :: F64
+    Θ :: F64
     acc :: F64
     freq :: Vector{F64}
     spectrum :: Vector{F64}
@@ -85,10 +87,11 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     G2 = zeros(F64, ntau)
     χ2 = 0.0
     χ2min = 0.0
+    Θ = 0.0
     acc = 0.0
     freq = zeros(F64, SG.num_spec_index)
     spectrum = zeros(F64, SG.num_spec_index)
-    SC = SACContext(Gr, G1, G2, χ2, χ2min, acc, freq, spectrum)
+    SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, acc, freq, spectrum)
 
     SE = init_spectrum(scale_factor, SG, 𝐺, τ)
 
@@ -99,7 +102,14 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     χ = compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
     SC.χ2 = χ
     SC.χ2min = χ
-    @show SG.num_spec_index
+    #@show SG.num_spec_index
+
+    return SG, SE, SC
+end
+
+function sac_run()
+    perform_annealing()
+    decide_sampling_theta()
 end
 
 function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::ImaginaryTimeGrid)
@@ -177,7 +187,14 @@ function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{N64})
 end
 
 function perform_annealing()
-    
+    anneal_length = P_SAC["anneal_length"]
+
+    for _ = 1:anneal_length
+        update_fixed_theta()
+    end
+end
+
+function decide_sampling_theta()
 end
 
 function update_fixed_theta()
