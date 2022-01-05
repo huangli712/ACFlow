@@ -70,12 +70,19 @@ function Grid2Spec(grid_index::I64, SG::SACGrid)
     return floor(I64, (grid_index - 1) * SG.grid_interval / SG.spec_interval)
 end
 
-function init_sac(τ::ImaginaryTimeGrid)
+function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mrot::AbstractMatrix)
     ntau = length(τ.grid)
     G1 = zeros(F64, ntau)
     G2 = zeros(F64, ntau)
+    SC = SACContext(G1, G2)
 
-    return SACContext(G1, G2)
+    SG = calc_grid()
+
+    SE = init_spectrum(scale_factor, SG, 𝐺, τ)
+
+    kernel = init_kernel(τ, SG, Mrot)
+
+    compute_corr_from_spec(kernel, SE, SC)
 end
 
 function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::ImaginaryTimeGrid)
@@ -146,7 +153,7 @@ function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACC
 
     SC.G1 = tmp_kernel * amplitude
     #@show amplitude
-    #@show SC.G1
+    @show SC.G1
 end
 
 function compute_goodness()
