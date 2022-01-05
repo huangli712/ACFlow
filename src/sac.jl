@@ -72,7 +72,7 @@ function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::Imag
     left_edge_index = Freq2GridIndex(left_edge, SG)
     right_edge_index = Freq2GridIndex(right_edge, SG)
     rectangle_len = right_edge_index - left_edge_index + 1
-    @show left_edge_index, right_edge_index, rectangle_len
+    #@show left_edge_index, right_edge_index, rectangle_len
 
     position = I64[]
     for i = 1:ndelta
@@ -81,11 +81,15 @@ function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::Imag
     #@show position
 
     amplitude = 1.0 / (scale_factor * ndelta)
-    @show amplitude
+    #@show amplitude
 
     average_freq = abs(log(1.0/𝐺.value[end]) / τ.grid[end])
-    @show 𝐺.value[end]
-    @show τ.grid[end]
-    @show average_freq
-    #return SACElement(position)
+    #@show 𝐺.value[end]
+    #@show τ.grid[end]
+    #@show average_freq
+
+    window_width = ceil(I64, 0.1 * average_freq / SG.grid_interval)
+    #@show window_width
+
+    return SACElement(position, amplitude, window_width)
 end

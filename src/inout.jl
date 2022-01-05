@@ -127,7 +127,9 @@ function read_data!(::Type{ImaginaryTimeGrid})
     #@show F.vectors * value
     #@show value
     #@show evec' * value
-    value = evec' * value
+
+    #value = evec' * value
+    
     #@show evec'[1,:]
     #@show evec'[3,:]
     #@show size(evec)
