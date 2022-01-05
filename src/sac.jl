@@ -14,8 +14,16 @@ const P_SAC = Dict{String,Any}(
     "spec_interval" => 1.0e-2,
     "ndelta" => 1000,
     "beta" => 4.0,
-    "anneal_length" => 5000
+    "anneal_length" => 5000,
+    "starting_theta" => 1e8,
+    "mc_bin_num" => 5,
+    "mc_bin_size" => 4000
 )
+
+mutable struct SACMonteCarlo <: AbstractMonteCarlo
+    rng :: AbstractRNG
+    acc :: F64
+end
 
 mutable struct SACElement
     C :: Vector{I64}
@@ -30,7 +38,6 @@ mutable struct SACContext
     χ2 :: F64
     χ2min :: F64
     Θ :: F64
-    acc :: F64
     freq :: Vector{F64}
     spectrum :: Vector{F64}
 end
@@ -87,11 +94,16 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     G2 = zeros(F64, ntau)
     χ2 = 0.0
     χ2min = 0.0
-    Θ = 0.0
-    acc = 0.0
+    Θ = P_SAC["starting_theta"]
     freq = zeros(F64, SG.num_spec_index)
     spectrum = zeros(F64, SG.num_spec_index)
-    SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, acc, freq, spectrum)
+    SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, freq, spectrum)
+
+    seed = rand(1:1000000)#;  seed = 112414
+    rng = MersenneTwister(seed)
+    @show "seed: ", seed
+    acc = 0.0
+    MC = SACMonteCarlo(rng, acc)
 
     SE = init_spectrum(scale_factor, SG, 𝐺, τ)
 
@@ -104,7 +116,7 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     SC.χ2min = χ
     #@show SG.num_spec_index
 
-    return SG, SE, SC
+    return SG, SE, SC, MC
 end
 
 function sac_run()
@@ -188,14 +200,35 @@ end
 
 function perform_annealing()
     anneal_length = P_SAC["anneal_length"]
+    #@show anneal_length
 
     for _ = 1:anneal_length
         update_fixed_theta()
     end
 end
 
-function decide_sampling_theta()
+function update_fixed_theta()
+    nbin = P_SAC["mc_bin_num"]
+    sbin = P_SAC["mc_bin_size"]
+    #@show nbin, sbin
+
+    for n = 1:nbin
+        for s = 1:sbin
+
+            if s % 10 == 1
+                #compute_goodness
+            end
+        end
+    end
 end
 
-function update_fixed_theta()
+function update_deltas_1step_single()
+    ndelta = P_SAC["ndelta"]
+
+    for i = 1:ndelta
+        select_delta = rand()
+    end
+end
+
+function decide_sampling_theta()
 end
