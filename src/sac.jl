@@ -116,11 +116,11 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     SC.χ2min = χ
     #@show SG.num_spec_index
 
-    return SG, SE, SC, MC
+    return SG, SE, SC, MC, kernel
 end
 
-function sac_run()
-    perform_annealing()
+function sac_run(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
+    perform_annealing(MC, SE, SC, SG, kernel, 𝐺)
     decide_sampling_theta()
 end
 
@@ -198,10 +198,11 @@ function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{N64})
     #@show χ
 end
 
-function perform_annealing()
+function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
     anneal_length = P_SAC["anneal_length"]
     #@show anneal_length
 
+    update_deltas_1step_single(MC, SE, SC, SG, kernel, 𝐺)
     for _ = 1:anneal_length
         update_fixed_theta()
     end
@@ -222,12 +223,57 @@ function update_fixed_theta()
     end
 end
 
-function update_deltas_1step_single()
+function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
     ndelta = P_SAC["ndelta"]
+    #@show SE
+
+    accept_count = 0.0
+    #try_count = 0
 
     for i = 1:ndelta
-        select_delta = rand()
+        select_delta = rand(MC.rng, 1:ndelta)
+        location_current = SE.C[select_delta]
+
+        if 1 < SE.W < SG.num_grid_index
+            move_width = rand(MC.rng, 1:SE.W)
+
+            #@show select_delta, location_current, move_width
+
+            if rand(MC.rng) > 0.5
+                location_updated = location_current + move_width
+            else
+                location_updated = location_current - move_width
+            end
+
+            if location_updated < 1 || location_updated > SG.num_grid_index
+                continue
+            end
+
+        elseif SE.W == SG.num_grid_index
+            location_updated = rand(MC.rng, 1:SG.num_grid_index)
+        else
+            error("BIG PROBLEM")
+        end
+
+        SC.G2 = SC.G1 + SE.A * (kernel[:,location_updated] - kernel[:,location_current])
+        chi2_updated = compute_goodness(SC.G2, SC.Gr, 𝐺.covar)
+
+        p = exp( (SC.χ2 - chi2_updated) / (2.0 * SC.Θ) )
+
+        if rand(MC.rng) > min(p, 1.0)
+            SE.C[select_delta] = location_updated
+            SC.G1 = deepcopy(SC.G2)
+            SC.χ2 = chi2_updated
+            if SC.χ2 < SC.χ2min
+                SC.χ2min < SC.χ2
+            end
+
+            accept_count = accept_count + 1.0
+        end
     end
+
+    MC.acc = accept_count / ndelta
+    error()
 end
 
 function decide_sampling_theta()

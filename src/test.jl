@@ -42,9 +42,10 @@ g0, 𝐺, τ, Mrot = read_data!(ImaginaryTimeGrid)
 #@show Grid2Spec(2, grid)
 #@show Grid2Spec(2000, grid)
 
-SG, SE, SC, MC = init_sac(g0, 𝐺, τ, Mrot)
+SG, SE, SC, MC, kernel = init_sac(g0, 𝐺, τ, Mrot)
 #SE = init_spectrum(g0, grid, 𝐺, τ)
 #kernel = init_kernel(τ, grid, Mrot)
 #compute_corr_from_spec(kernel, SE, SC)
+@show typeof(kernel)
 
-sac_run()
+sac_run(MC, SE, SC, SG, kernel, 𝐺)
