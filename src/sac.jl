@@ -13,6 +13,7 @@ const P_SAC = Dict{String,Any}(
     "grid_interval" => 1.0e-5,
     "spec_interval" => 1.0e-2,
     "ndelta" => 1e3,
+    "beta" => 4.0,
 )
 
 mutable struct SACElement
@@ -92,4 +93,27 @@ function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::Imag
     #@show window_width
 
     return SACElement(position, amplitude, window_width)
+end
+
+function init_kernel(τ::ImaginaryTimeGrid, SG::SACGrid)
+    @show size(τ.grid)
+    @show SG.num_grid_index
+    beta = P_SAC["beta"]
+
+    ntau = length(τ.grid)
+    nfreq = SG.num_grid_index
+    kernel = zeros(F64, ntau, nfreq)
+
+    for f = 1:nfreq
+        ω = GridIndex2Freq(f, SG)
+        de = 1.0 + exp(-beta * ω)
+        #for t = 1:ntau
+        #    kernel[t,f] = exp(-ω * τ.grid[t]) / de
+        #end
+        kernel[:,f] = exp.(-ω * τ.grid) / de
+    end
+
+    for t = 1:ntau
+        @show t, kernel[t,end]
+    end
 end
