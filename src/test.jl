@@ -25,7 +25,7 @@ som_output(Aom)
 
 =#
 
-g0, 𝐺, τ = read_data!(ImaginaryTimeGrid)
+g0, 𝐺, τ, Mrot = read_data!(ImaginaryTimeGrid)
 #error()
 grid = calc_grid()
 #@show GridIndex2Freq(1, grid)
@@ -42,4 +42,4 @@ grid = calc_grid()
 #@show Grid2Spec(2, grid)
 #@show Grid2Spec(2000, grid)
 init_spectrum(g0, grid, 𝐺, τ)
-@timev init_kernel(τ, grid)
+@timev init_kernel(τ, grid, Mrot)

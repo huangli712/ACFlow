@@ -95,7 +95,7 @@ function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::Imag
     return SACElement(position, amplitude, window_width)
 end
 
-function init_kernel(τ::ImaginaryTimeGrid, SG::SACGrid)
+function init_kernel(τ::ImaginaryTimeGrid, SG::SACGrid, Mrot::AbstractMatrix)
     @show size(τ.grid)
     @show SG.num_grid_index
     beta = P_SAC["beta"]
@@ -113,7 +113,11 @@ function init_kernel(τ::ImaginaryTimeGrid, SG::SACGrid)
         kernel[:,f] = exp.(-ω * τ.grid) / de
     end
 
-    for t = 1:ntau
-        @show t, kernel[t,end]
-    end
+    kernel = Mrot * kernel
+
+    #for t = 1:ntau
+    #    @show t, kernel[t,3]
+    #end
+
+    return kernel
 end
