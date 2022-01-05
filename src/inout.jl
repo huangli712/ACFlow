@@ -133,7 +133,7 @@ function read_data!(::Type{ImaginaryTimeGrid})
     #@show size(evec)
 
     covar = sqrt(nbootstrap) ./ sqrt.(eigs)
-    @show covar
+    #@show covar
 
     return g0, GreenData(value, error, covar), ImaginaryTimeGrid(grid)
 end
