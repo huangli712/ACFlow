@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/01/05
+# Last modified: 2022/01/06
 #
 
 const P_SAC = Dict{String,Any}(
@@ -23,6 +23,10 @@ const P_SAC = Dict{String,Any}(
 mutable struct SACMonteCarlo <: AbstractMonteCarlo
     rng :: AbstractRNG
     acc :: F64
+    sample_acc  :: Vector{F64}
+    sample_chi2 :: Vector{F64}
+    bin_acc :: Vector{F64}
+    bin_chi2 :: Vector{F64}
 end
 
 mutable struct SACElement
@@ -86,6 +90,9 @@ function Grid2Spec(grid_index::I64, SG::SACGrid)
 end
 
 function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mrot::AbstractMatrix)
+    nbin = P_SAC["mc_bin_num"]
+    sbin = P_SAC["mc_bin_size"]
+
     SG = calc_grid()
 
     ntau = length(τ.grid)
@@ -103,7 +110,11 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     rng = MersenneTwister(seed)
     @show "seed: ", seed
     acc = 0.0
-    MC = SACMonteCarlo(rng, acc)
+    sample_acc = zeros(F64, sbin)
+    sample_chi2 = zeros(F64, sbin)
+    bin_acc = zeros(F64, nbin)
+    bin_chi2 = zeros(F64, nbin)
+    MC = SACMonteCarlo(rng, acc, sample_acc, sample_chi2, bin_acc, bin_chi2)
 
     SE = init_spectrum(scale_factor, SG, 𝐺, τ)
 
@@ -202,13 +213,13 @@ function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG
     anneal_length = P_SAC["anneal_length"]
     #@show anneal_length
 
-    update_deltas_1step_single(MC, SE, SC, SG, kernel, 𝐺)
+    #update_deltas_1step_single(MC, SE, SC, SG, kernel, 𝐺)
     for _ = 1:anneal_length
-        update_fixed_theta()
+        update_fixed_theta(MC, SE, SC, SG, kernel, 𝐺)
     end
 end
 
-function update_fixed_theta()
+function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
     nbin = P_SAC["mc_bin_num"]
     sbin = P_SAC["mc_bin_size"]
     #@show nbin, sbin
@@ -217,10 +228,35 @@ function update_fixed_theta()
         for s = 1:sbin
 
             if s % 10 == 1
-                #compute_goodness
+                SC.χ2 = compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
+            end
+
+            update_deltas_1step_single(MC, SE, SC, SG, kernel, 𝐺)
+
+            MC.sample_chi2[s] = SC.χ2
+            MC.sample_acc[s] = MC.acc
+        end
+
+        MC.bin_chi2[n] = sum(MC.sample_chi2) / sbin
+        MC.bin_acc[n] = sum(MC.sample_acc) / sbin
+
+        # write log
+
+        if MC.bin_acc[n] > 0.5
+            r = SE.W * 1.5
+            if ceil(I64, r) < SG.num_grid_index
+                SE.W = ceil(I64, r)
+            else
+                SE.W = SG.num_grid_index
             end
         end
+
+        if MC.bin_acc[n] < 0.4
+            SE.W = ceil(I64, SE.W / 1.5)
+        end
     end
+    
+    error()
 end
 
 function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
@@ -275,7 +311,8 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
     end
 
     MC.acc = accept_count / ndelta
-    error()
+    #@show MC.acc
+    #error()
 end
 
 function decide_sampling_theta()
