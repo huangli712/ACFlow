@@ -23,8 +23,14 @@ mutable struct SACElement
 end
 
 mutable struct SACContext
+    Gr :: Vector{F64}
     G1 :: Vector{F64}
     G2 :: Vector{F64}
+    χ2 :: F64
+    χ2min :: F64
+    acc :: F64
+    freq :: Vector{F64}
+    spectrum :: Vector{F64}
 end
 
 struct SACGrid
@@ -71,18 +77,27 @@ function Grid2Spec(grid_index::I64, SG::SACGrid)
 end
 
 function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mrot::AbstractMatrix)
+    SG = calc_grid()
+
     ntau = length(τ.grid)
+    Gr = Mrot * 𝐺.value
     G1 = zeros(F64, ntau)
     G2 = zeros(F64, ntau)
-    SC = SACContext(G1, G2)
+    χ2 = 0.0
+    χ2min = 0.0
+    freq = zeros(F64, SG.num_spec_index)
+    spectrum = zeros(F64, SG.num_spec_index)
+    SC = SACContext(Gr, G1, G2, χ2, χ2min, freq, spectrum)
 
-    SG = calc_grid()
+    
 
     SE = init_spectrum(scale_factor, SG, 𝐺, τ)
 
     kernel = init_kernel(τ, SG, Mrot)
 
     compute_corr_from_spec(kernel, SE, SC)
+
+    compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
 end
 
 function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::ImaginaryTimeGrid)
@@ -156,5 +171,9 @@ function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACC
     @show SC.G1
 end
 
-function compute_goodness()
+function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{N64})
+    #@show size(G), size(Gr), size(Sigma)
+
+    χ = sum(((G .- Gr) .* Sigma) .^ 2.0)
+    @show χ
 end

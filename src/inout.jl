@@ -97,7 +97,7 @@ function read_data!(::Type{ImaginaryTimeGrid})
         end
     end
 
-
+#=
     open("test.data", "r") do fin
         for i = 1:cov_mat_dim
             for j = 1:cov_mat_dim
@@ -105,7 +105,7 @@ function read_data!(::Type{ImaginaryTimeGrid})
             end
         end
     end
-
+=#
 
     #for i = 1:cov_mat_dim
     #    for j = 1:cov_mat_dim
