@@ -133,8 +133,8 @@ function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::Imag
 end
 
 function init_kernel(τ::ImaginaryTimeGrid, SG::SACGrid, Mrot::AbstractMatrix)
-    @show size(τ.grid)
-    @show SG.num_grid_index
+    #@show size(τ.grid)
+    #@show SG.num_grid_index
     beta = P_SAC["beta"]
 
     ntau = length(τ.grid)
@@ -161,21 +161,24 @@ end
 
 function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACContext)
     ndelta = P_SAC["ndelta"]
-    @show size(kernel)
-
+    #@show size(kernel)
     tmp_kernel = kernel[:, SE.C]
-    @show size(tmp_kernel), typeof(tmp_kernel)
-
+    #@show size(tmp_kernel), typeof(tmp_kernel)
     amplitude = fill(SE.A, ndelta)
-
     SC.G1 = tmp_kernel * amplitude
     #@show amplitude
-    @show SC.G1
+    #@show SC.G1
 end
 
 function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{N64})
     #@show size(G), size(Gr), size(Sigma)
-
     χ = sum(((G .- Gr) .* Sigma) .^ 2.0)
-    @show χ
+    #@show χ
+end
+
+function perform_annealing()
+    
+end
+
+function update_fixed_theta()
 end
