@@ -241,12 +241,12 @@ function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, S
             end
 
             update_deltas_1step_single(MC, SE, SC, SG, kernel, 𝐺)
-            @show n, s, SC.χ2, SC.χ2min
+            #@show n, s, SC.χ2, SC.χ2min
 
             MC.sample_chi2[s] = SC.χ2
             MC.sample_acc[s] = MC.acc
         end
-        error()
+        #error()
 
         MC.bin_chi2[n] = sum(MC.sample_chi2) / sbin
         MC.bin_acc[n] = sum(MC.sample_acc) / sbin
@@ -265,6 +265,8 @@ function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, S
         if MC.bin_acc[n] < 0.4
             SE.W = ceil(I64, SE.W / 1.5)
         end
+
+        @show n, SC.χ2, SC.χ2min
     end
 
     error()
