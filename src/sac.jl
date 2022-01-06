@@ -97,6 +97,8 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
 
     ntau = length(τ.grid)
     Gr = Mrot * 𝐺.value
+    #@show Gr
+    #error()
     G1 = zeros(F64, ntau)
     G2 = zeros(F64, ntau)
     χ2 = 0.0
@@ -117,6 +119,8 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     MC = SACMonteCarlo(rng, acc, sample_acc, sample_chi2, bin_acc, bin_chi2)
 
     SE = init_spectrum(scale_factor, SG, 𝐺, τ)
+    #@show SE
+    #error()
 
     kernel = init_kernel(τ, SG, Mrot)
 
@@ -125,6 +129,8 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     χ = compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
     SC.χ2 = χ
     SC.χ2min = χ
+    #@show χ
+    #error()
     #@show SG.num_spec_index
 
     return SG, SE, SC, MC, kernel
@@ -188,6 +194,7 @@ function init_kernel(τ::ImaginaryTimeGrid, SG::SACGrid, Mrot::AbstractMatrix)
     #for t = 1:ntau
     #    @show t, kernel[t,3]
     #end
+    #error()
 
     return kernel
 end
@@ -200,8 +207,8 @@ function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACC
     amplitude = fill(SE.A, ndelta)
     SC.G1 = tmp_kernel * amplitude
     #@show amplitude
-#    @show SC.G1
-#    error()
+    #@show SC.G1
+    #error()
 end
 
 function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{N64})
@@ -268,18 +275,22 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
     #@show SE
     #@show SC.Θ
     #@show SG
-    #@show 𝐺
-    #@show SC.G1
+    #@show SC.Gr
 
-    error()
+    #error()
 
     @show SC.χ2
+#    error()
     for i = 1:ndelta
         select_delta = rand(MC.rng, 1:ndelta)
-        location_current = SE.C[select_delta]
+#        select_delta = 384 # debug
+        location_current = SE.C[select_delta]        
+#        @show location_current
+        #error()
 
         if 1 < SE.W < SG.num_grid_index
             move_width = rand(MC.rng, 1:SE.W)
+#            move_width = 5897
 
             if rand(MC.rng) > 0.5
                 location_updated = location_current + move_width
@@ -298,16 +309,21 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
         end
 
         SC.G2 = SC.G1 + SE.A .* (kernel[:,location_updated] .- kernel[:,location_current])
+        #@show SC.G1
+        #error()
+
         chi2_updated = compute_goodness(SC.G2, SC.Gr, 𝐺.covar)
 
         p = exp( (SC.χ2 - chi2_updated) / (2.0 * SC.Θ) )
+        @show p
+        #error()
 
-        if rand(MC.rng) > min(p, 1.0)
+        if rand(MC.rng) < min(p, 1.0)
             SE.C[select_delta] = location_updated
             SC.G1 = deepcopy(SC.G2)
             SC.χ2 = chi2_updated
             if SC.χ2 < SC.χ2min
-                SC.χ2min < SC.χ2
+                SC.χ2min = SC.χ2
             end
 
             accept_count = accept_count + 1.0
