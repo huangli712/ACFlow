@@ -406,7 +406,7 @@ function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement
         for j = 1:ndelta
             d_pos = SE.C[j]
             s_pos = Grid2Spec(d_pos, SG)
-            @show d_pos, s_pos
+            #@show d_pos, s_pos
             SC.spectrum[s_pos] = SC.spectrum[s_pos] + SE.A
         end
     end
