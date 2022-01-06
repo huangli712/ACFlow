@@ -92,7 +92,7 @@ end
 function Grid2Spec(grid_index::I64, SG::SACGrid)
     @assert 1 ≤ grid_index ≤ SG.num_grid_index
     #@show (grid_index - 1) * SG.grid_interval / SG.spec_interval
-    return floor(I64, (grid_index - 1) * SG.grid_interval / SG.spec_interval)
+    return floor(I64, grid_index * SG.grid_interval / SG.spec_interval)
 end
 
 function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mrot::AbstractMatrix)
@@ -114,7 +114,7 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     spectrum = zeros(F64, SG.num_spec_index)
     SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, freq, spectrum)
 
-    seed = rand(1:1000000)#;  seed = 112414
+    seed = rand(1:1000000);  seed = 840443
     rng = MersenneTwister(seed)
     @show "seed: ", seed
     acc = 0.0
@@ -406,6 +406,7 @@ function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement
         for j = 1:ndelta
             d_pos = SE.C[j]
             s_pos = Grid2Spec(d_pos, SG)
+            @show d_pos, s_pos
             SC.spectrum[s_pos] = SC.spectrum[s_pos] + SE.A
         end
     end
