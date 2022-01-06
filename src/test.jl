@@ -48,4 +48,4 @@ SG, SE, SC, MC, kernel = init_sac(g0, 𝐺, τ, Mrot)
 #compute_corr_from_spec(kernel, SE, SC)
 #@show typeof(kernel)
 
-sac_run(MC, SE, SC, SG, kernel, 𝐺)
+sac_run(g0, MC, SE, SC, SG, kernel, 𝐺)

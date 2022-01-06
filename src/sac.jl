@@ -142,10 +142,10 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     return SG, SE, SC, MC, kernel
 end
 
-function sac_run(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
+function sac_run(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
     anneal = perform_annealing(MC, SE, SC, SG, kernel, 𝐺)
     decide_sampling_theta(anneal, SC, SE, kernel, 𝐺)
-    sample_and_collect(MC, SE, SC, SG, kernel, 𝐺)
+    sample_and_collect(scale_factor, MC, SE, SC, SG, kernel, 𝐺)
 end
 
 function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::ImaginaryTimeGrid)
@@ -384,6 +384,37 @@ function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, SE::SACElem
     SC.χ2 = compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
 end
 
-function sample_and_collect(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::AbstractMatrix, 𝐺::GreenData)
+function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::AbstractMatrix, 𝐺::GreenData)
+    ndelta = P_SAC["ndelta"]
     update_fixed_theta(MC, SE, SC, SG, kernel, 𝐺)
+
+    for n = 1:SG.num_spec_index
+        SC.freq[n] = SpecIndex2Freq(n, SG)
+    end
+
+    collecting_steps = 100000
+    for i = 1:collecting_steps
+        if i % 10 == 1
+            SC.χ2 = compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
+        end
+
+        # update
+        update_deltas_1step_single(MC, SE, SC, SG, kernel, 𝐺)
+
+        # collecting
+        for j = 1:ndelta
+            d_pos = SE.C[j]
+            s_pos = Grid2Spec(d_pos, SG)
+            SC.spectrum[s_pos] = SC.spectrum[s_pos] + SE.A
+        end
+    end
+
+    factor = scale_factor / (collecting_steps * SG.spec_interval)
+    SC.spectrum = SC.spectrum * factor
+
+    open("SAC.spectrum", "w") do fout
+        for i = 1:SG.num_spec_index
+            println(fout, SC.freq[i], " ", SC.spectrum[i])
+        end
+    end
 end
