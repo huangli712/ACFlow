@@ -137,8 +137,8 @@ function read_data!(::Type{ImaginaryTimeGrid})
     covar = sqrt(nbootstrap) ./ sqrt.(eigs)
     #@show covar
 
-
     # FOR DEBUG
+#=
     @show cov_mat_dim
     open("test.data", "r") do fin
         for i = 1:cov_mat_dim
@@ -151,9 +151,10 @@ function read_data!(::Type{ImaginaryTimeGrid})
             covar[i] = parse(F64, readline(fin))
         end
     end
-
     return g0, GreenData(value, error, covar), ImaginaryTimeGrid(grid), evec
-    #return g0, GreenData(value, error, covar), ImaginaryTimeGrid(grid), evec'
+=#
+    
+    return g0, GreenData(value, error, covar), ImaginaryTimeGrid(grid), evec'
 end
 
 function read_data!(::Type{FermionicMatsubaraGrid})

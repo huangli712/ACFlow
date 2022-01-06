@@ -241,10 +241,12 @@ function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, S
             end
 
             update_deltas_1step_single(MC, SE, SC, SG, kernel, 𝐺)
+            @show n, s, SC.χ2, SC.χ2min
 
             MC.sample_chi2[s] = SC.χ2
             MC.sample_acc[s] = MC.acc
         end
+        error()
 
         MC.bin_chi2[n] = sum(MC.sample_chi2) / sbin
         MC.bin_acc[n] = sum(MC.sample_acc) / sbin
@@ -279,7 +281,7 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
 
     #error()
 
-    @show SC.χ2
+    #@show SC.χ2
 #    error()
     for i = 1:ndelta
         select_delta = rand(MC.rng, 1:ndelta)
@@ -315,7 +317,7 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
         chi2_updated = compute_goodness(SC.G2, SC.Gr, 𝐺.covar)
 
         p = exp( (SC.χ2 - chi2_updated) / (2.0 * SC.Θ) )
-        @show p
+        #@show p
         #error()
 
         if rand(MC.rng) < min(p, 1.0)
@@ -328,12 +330,12 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
 
             accept_count = accept_count + 1.0
         end
-        @show i, SC.χ2, SC.χ2min
+        #@show i, SC.χ2, SC.χ2min
     end
 
     MC.acc = accept_count / ndelta
     #@show MC.acc
-    error()
+    #error()
 end
 
 function decide_sampling_theta()
