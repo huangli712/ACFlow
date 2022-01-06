@@ -15,7 +15,7 @@ const P_SAC = Dict{String,Any}(
     "ndelta" => 1000,
     "beta" => 4.0,
     "anneal_length" => 5000,
-    "starting_theta" => 1e8,
+    "starting_theta" => 1e6,
     "mc_bin_num" => 5,
     "mc_bin_size" => 4000
 )
@@ -143,8 +143,8 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
 end
 
 function sac_run(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
-    anneal = perform_annealing(MC, SE, SC, SG, kernel, 𝐺)
-    decide_sampling_theta(anneal, SC, SE, kernel, 𝐺)
+    #anneal = perform_annealing(MC, SE, SC, SG, kernel, 𝐺)
+    #decide_sampling_theta(anneal, SC, SE, kernel, 𝐺)
     sample_and_collect(scale_factor, MC, SE, SC, SG, kernel, 𝐺)
 end
 
@@ -396,6 +396,7 @@ function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement
     for i = 1:collecting_steps
         if i % 10 == 1
             SC.χ2 = compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
+            @show i, SC.χ2, SC.χ2min
         end
 
         # update
