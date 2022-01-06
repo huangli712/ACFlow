@@ -55,6 +55,12 @@ struct SACGrid
     num_spec_index :: I64
 end
 
+struct SACAnnealing
+    Conf  :: Vector{SACElement}
+    Theta :: Vector{F64}
+    chi2  :: Vector{F64}
+end
+
 function calc_grid()
     ommax = P_SAC["ommax"]
     ommin = P_SAC["ommin"]
@@ -137,8 +143,8 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
 end
 
 function sac_run(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
-    perform_annealing(MC, SE, SC, SG, kernel, 𝐺)
-    decide_sampling_theta()
+    anneal = perform_annealing(MC, SE, SC, SG, kernel, 𝐺)
+    decide_sampling_theta(anneal, SC)
 end
 
 function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::ImaginaryTimeGrid)
@@ -223,16 +229,28 @@ function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG
     #@show anneal_length
 
     #update_deltas_1step_single(MC, SE, SC, SG, kernel, 𝐺)
+
+    Conf = SACElement[]
+    Theta = F64[]
+    Chi2 = F64[]
+
     for _ = 1:anneal_length
         update_fixed_theta(MC, SE, SC, SG, kernel, 𝐺)
 
         SC.χ2 = mean(MC.bin_chi2)
+
+        push!(Conf, SE)
+        push!(Theta, SC.Θ)
+        push!(Chi2, SC.χ2)
+
         if SC.χ2 - SC.χ2min < 1e-3
             break
         end
 
         SC.Θ = SC.Θ / 1.1
     end
+
+    return SACAnnealing(Conf, Theta, Chi2)
 end
 
 function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
@@ -347,5 +365,6 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
     #error()
 end
 
-function decide_sampling_theta()
+function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext)
+    
 end
