@@ -144,7 +144,8 @@ end
 
 function sac_run(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
     anneal = perform_annealing(MC, SE, SC, SG, kernel, 𝐺)
-    decide_sampling_theta(anneal, SC)
+    decide_sampling_theta(anneal, SC, SE, kernel, 𝐺)
+    sample_and_collect(MC, SE, SC, SG, kernel, 𝐺)
 end
 
 function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::ImaginaryTimeGrid)
@@ -365,6 +366,24 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
     #error()
 end
 
-function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext)
-    
+function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, SE::SACElement, kernel::AbstractMatrix, 𝐺::GreenData)
+    num_anneal = length(anneal.chi2)
+
+    c = num_anneal
+    while c ≥ 1
+        if anneal.chi2[c] > SC.χ2min + 2.0 * sqrt(SC.χ2min)
+            break
+        end
+        c = c - 1
+    end
+    @assert 1 ≤ c ≤ num_anneal
+
+    SE = deepcopy(anneal.Conf)
+    SC.Θ = anneal.Theta
+    compute_corr_from_spec(kernel, SE, SC)
+    SC.χ2 = compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
+end
+
+function sample_and_collect(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::AbstractMatrix, 𝐺::GreenData)
+    update_fixed_theta(MC, SE, SC, SG, kernel, 𝐺)
 end
