@@ -207,6 +207,7 @@ function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{N64})
     #@show size(G), size(Gr), size(Sigma)
     χ = sum(((G .- Gr) .* Sigma) .^ 2.0)
     #@show χ
+    return χ
 end
 
 function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
@@ -255,7 +256,7 @@ function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, S
             SE.W = ceil(I64, SE.W / 1.5)
         end
     end
-    
+
     error()
 end
 
