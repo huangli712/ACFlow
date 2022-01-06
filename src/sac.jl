@@ -225,6 +225,13 @@ function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG
     #update_deltas_1step_single(MC, SE, SC, SG, kernel, 𝐺)
     for _ = 1:anneal_length
         update_fixed_theta(MC, SE, SC, SG, kernel, 𝐺)
+
+        SC.χ2 = mean(MC.bin_chi2)
+        if SC.χ2 - SC.χ2min < 1e-3
+            break
+        end
+
+        SC.Θ = SC.Θ / 1.1
     end
 end
 
@@ -266,10 +273,10 @@ function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, S
             SE.W = ceil(I64, SE.W / 1.5)
         end
 
-        @show n, SC.χ2, SC.χ2min
+        @show n, SC.χ2, SC.χ2min, SC.Θ
     end
 
-    error()
+    #error()
 end
 
 function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
