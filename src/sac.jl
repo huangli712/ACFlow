@@ -200,7 +200,8 @@ function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACC
     amplitude = fill(SE.A, ndelta)
     SC.G1 = tmp_kernel * amplitude
     #@show amplitude
-    #@show SC.G1
+#    @show SC.G1
+#    error()
 end
 
 function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{N64})
@@ -262,10 +263,15 @@ end
 
 function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
     ndelta = P_SAC["ndelta"]
-    #@show SE
-
     accept_count = 0.0
-    #try_count = 0
+
+    #@show SE
+    #@show SC.Θ
+    #@show SG
+    #@show 𝐺
+    #@show SC.G1
+
+    error()
 
     @show SC.χ2
     for i = 1:ndelta
@@ -274,8 +280,6 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
 
         if 1 < SE.W < SG.num_grid_index
             move_width = rand(MC.rng, 1:SE.W)
-
-            #@show select_delta, location_current, move_width
 
             if rand(MC.rng) > 0.5
                 location_updated = location_current + move_width
@@ -293,7 +297,7 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
             error("BIG PROBLEM")
         end
 
-        SC.G2 = SC.G1 + SE.A * (kernel[:,location_updated] - kernel[:,location_current])
+        SC.G2 = SC.G1 + SE.A .* (kernel[:,location_updated] .- kernel[:,location_current])
         chi2_updated = compute_goodness(SC.G2, SC.Gr, 𝐺.covar)
 
         p = exp( (SC.χ2 - chi2_updated) / (2.0 * SC.Θ) )
@@ -313,7 +317,7 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
 
     MC.acc = accept_count / ndelta
     #@show MC.acc
-    #error()
+    error()
 end
 
 function decide_sampling_theta()
