@@ -77,6 +77,11 @@ function GridIndex2Freq(grid_index::I64, SG::SACGrid)
     return SG.ommin + (grid_index - 1) * SG.grid_interval
 end
 
+function SpecIndex2Freq(spec_index::I64, SG::SACGrid)
+    @assert 1 ≤ spec_index ≤ SG.num_spec_index
+    return SG.ommin + (spec_index - 1) * SG.spec_interval
+end
+
 function Freq2GridIndex(freq::F64, SG::SACGrid)
     @assert SG.ommin ≤ freq ≤ SG.ommax
     grid = ceil(I64, (freq - SG.ommin) / SG.grid_interval) + 1
@@ -84,15 +89,10 @@ function Freq2GridIndex(freq::F64, SG::SACGrid)
     return grid
 end
 
-function SpecIndex2Freq(spec_index::I64, SG::SACGrid)
-    @assert 1 ≤ spec_index ≤ SG.num_spec_index
-    return SG.ommin + (spec_index - 1) * SG.spec_interval
-end
-
 function Grid2Spec(grid_index::I64, SG::SACGrid)
     @assert 1 ≤ grid_index ≤ SG.num_grid_index
     #@show (grid_index - 1) * SG.grid_interval / SG.spec_interval
-    return floor(I64, grid_index * SG.grid_interval / SG.spec_interval)
+    return ceil(I64, grid_index * SG.grid_interval / SG.spec_interval)
 end
 
 function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mrot::AbstractMatrix)
