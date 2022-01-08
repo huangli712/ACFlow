@@ -114,7 +114,7 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     spectrum = zeros(F64, SG.num_spec_index)
     SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, freq, spectrum)
 
-    seed = rand(1:1000000);  seed = 840443
+    seed = rand(1:1000000)#;  seed = 840443
     rng = MersenneTwister(seed)
     @show "seed: ", seed
     acc = 0.0
