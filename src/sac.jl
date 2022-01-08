@@ -15,7 +15,7 @@ const P_SAC = Dict{String,Any}(
     "ndelta" => 1000,
     "beta" => 4.0,
     "anneal_length" => 5000,
-    "starting_theta" => 1e6,
+    "starting_theta" => 20.0,
     "mc_bin_num" => 5,
     "mc_bin_size" => 4000
 )
