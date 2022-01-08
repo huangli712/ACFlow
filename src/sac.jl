@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/01/06
+# Last modified: 2022/01/08
 #
 
 const P_SAC = Dict{String,Any}(
@@ -142,9 +142,10 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     return SG, SE, SC, MC, kernel
 end
 
-function sac_run(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
-    #anneal = perform_annealing(MC, SE, SC, SG, kernel, 𝐺)
-    #decide_sampling_theta(anneal, SC, SE, kernel, 𝐺)
+function sac_run(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mrot::AbstractMatrix)
+    SG, SE, SC, MC, kernel = init_sac(scale_factor, 𝐺, τ, Mrot)
+    anneal = perform_annealing(MC, SE, SC, SG, kernel, 𝐺)
+    decide_sampling_theta(anneal, SC, SE, kernel, 𝐺)
     sample_and_collect(scale_factor, MC, SE, SC, SG, kernel, 𝐺)
 end
 
