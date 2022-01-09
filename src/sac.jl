@@ -15,7 +15,7 @@ const P_SAC = Dict{String,Any}(
     "ndelta" => 1000,
     "beta" => 4.0,
     "anneal_length" => 5000,
-    "starting_theta" => 20.0,
+    "starting_theta" => 1e+8,
     "mc_bin_num" => 5,
     "mc_bin_size" => 4000
 )
@@ -245,6 +245,7 @@ function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG
         push!(Theta, SC.Θ)
         push!(Chi2, SC.χ2)
 
+        @show SC.χ2, SC.χ2min, SC.χ2 - SC.χ2min
         if SC.χ2 - SC.χ2min < 1e-3
             break
         end
@@ -258,6 +259,7 @@ end
 function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
     nbin = P_SAC["mc_bin_num"]
     sbin = P_SAC["mc_bin_size"]
+    ntau = length(𝐺.value)
     #@show nbin, sbin
 
     for n = 1:nbin
@@ -293,7 +295,7 @@ function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, S
             SE.W = ceil(I64, SE.W / 1.5)
         end
 
-        @show n, SC.χ2, SC.χ2min, SC.Θ
+        @show n, MC.bin_chi2[n] / ntau, SC.χ2min / ntau, MC.bin_chi2[n] - SC.χ2min, SC.Θ
     end
 
     #error()
@@ -379,8 +381,8 @@ function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, SE::SACElem
     end
     @assert 1 ≤ c ≤ num_anneal
 
-    SE = deepcopy(anneal.Conf)
-    SC.Θ = anneal.Theta
+    SE = deepcopy(anneal.Conf[c])
+    SC.Θ = anneal.Theta[c]
     compute_corr_from_spec(kernel, SE, SC)
     SC.χ2 = compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
 end
