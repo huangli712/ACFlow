@@ -26,7 +26,7 @@ include("model.jl")
 include("kernel.jl")
 include("spectrum.jl")
 include("pade.jl")
-include("maxent.jl")
+#include("maxent.jl")
 include("som.jl")
 include("sac.jl")
 
