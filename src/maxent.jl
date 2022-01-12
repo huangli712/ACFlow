@@ -4,8 +4,6 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/27
+# Last modified: 2022/01/12
 #
 
-function maxent_run()
-end
