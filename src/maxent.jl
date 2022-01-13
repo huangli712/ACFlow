@@ -7,6 +7,7 @@
 # Last modified: 2022/01/13
 #
 
+using Einsum
 using Statistics
 using LinearAlgebra
 
@@ -21,9 +22,10 @@ const C64 = ComplexF64
 abstract type AbstractData end
 abstract type AbstractGrid end
 
-struct GreenData <: AbstractData
+mutable struct GreenData <: AbstractData
     value :: Vector{C64}
     error :: Vector{F64}
+    imdata :: Vector{F64}
     var  :: Vector{F64}
     cov  :: Array{F64,2}
     ucov :: Array{F64,2}
@@ -31,6 +33,7 @@ end
 
 struct MaxEntGrid
     wmesh :: Vector{F64}
+    dw :: Vector{F64}
 end
 
 mutable struct MaxEntContext
@@ -46,6 +49,7 @@ function read_data!(::Type{FermionicMatsubaraGrid})
     grid  = F64[] 
     value = C64[]
     error = F64[]
+    imdata = F64[]
     var   = F64[]
 
     niw = 10
@@ -63,7 +67,7 @@ function read_data!(::Type{FermionicMatsubaraGrid})
     ucov = diagm(ones(niw))
     value = ucov' * value
 
-    return FermionicMatsubaraGrid(grid), GreenData(value, error, var, cov, ucov)
+    return FermionicMatsubaraGrid(grid), GreenData(value, error, imdata, var, cov, ucov)
 end
 
 function maxent_mesh()
@@ -74,7 +78,7 @@ function maxent_mesh()
     push!(test, wmesh[end])
     dw = diff(test)
 
-    return MaxEntGrid(wmesh)
+    return MaxEntGrid(wmesh, dw)
 end
 
 function maxent_model(g::MaxEntGrid)
@@ -99,10 +103,37 @@ end
 
 function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     E = 1.0 ./ G.var
-    #@show E
-    #@show mesh, ω
     kernel = maxent_kernel(mesh, ω)
     kernel = G.ucov' * kernel
+
+    # Only for fermionic frequency
+    G.var = vcat(G.var, G.var)
+    G.imdata = vcat(real(G.value), imag(G.value))
+    kernel = vcat(real(kernel), imag(kernel))
+    #@show kernel[:,1]
+    #@show kernel[:,33]
+    #@show kernel[:,end]
+    E = vcat(E, E)
+
+    F = svd(kernel)
+    U, S, V = F
+    #@show U[:,1]
+    #@show U[:,11]
+    #@show U[:,end]
+    #@show S
+    n_sv = count( x -> x ≥ 1e-10, S)
+    U_svd = U[:, 1:n_sv]
+    V_svd = V[:, 1:n_sv]
+    Xi_svd = S[1:n_sv]
+    @show size(V)
+    @show n_sv
+    @show size(U_svd), size(V_svd), size(Xi_svd)
+    
+    niw = length(mesh.wmesh)
+    W2 = zeros(F64, n_sv, niw)
+    dw = mesh.dw
+    model = maxent_model(mesh)
+    @einsum W2[m,l] = E[k] * U_svd[k,m] * Xi_svd[m] * U_svd[k,n] * Xi_svd[n] * V_svd[l,n] * dw[l] * model[l]
 
     return MaxEntContext(E, kernel)
 end
@@ -110,7 +141,6 @@ end
 println("hello")
 ω, G = read_data!(FermionicMatsubaraGrid)
 mesh = maxent_mesh()
-model = maxent_model(mesh)
 maxent_init(G, mesh, ω)
 
 
