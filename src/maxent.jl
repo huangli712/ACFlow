@@ -57,6 +57,12 @@ end
 
 function maxent_mesh()
     wmesh = collect(LinRange(-5.0, 5.0, 501))
+
+    test = (wmesh[2:end] + wmesh[1:end-1]) / 2.0
+    pushfirst!(test, wmesh[1])
+    push!(test, wmesh[end])
+    dw = diff(test)
+    
     return MaxEntGrid(wmesh)
 end
 
