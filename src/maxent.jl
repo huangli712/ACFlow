@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/01/12
+# Last modified: 2022/01/13
 #
 
 using Statistics
@@ -28,8 +28,8 @@ struct GreenData <: AbstractData
     covar :: Vector{N64}
 end
 
-struct ImaginaryTimeGrid <: AbstractGrid
-    grid :: Vector{F64}
+struct MaxEntGrid
+    wmesh :: Vector{F64}
 end
 
 struct FermionicMatsubaraGrid <: AbstractGrid
@@ -51,20 +51,24 @@ function read_data!(::Type{FermionicMatsubaraGrid})
             push!(value, arr[2] + arr[3] * im)
         end
     end
-    #=
-    open("err.data", "r") do fin
-        for i = 1:niw
-            arr = parse.(F64, line_to_array(fin))
-            @assert grid[i] == arr[1]
-            push!(error, arr[2] + arr[3] * im)
-            push!(covar, arr[2]^2)
-            push!(covar, arr[3]^2)
-        end
-    end
-    =#
 
     return FermionicMatsubaraGrid(grid), GreenData(value, error, covar)
 end
 
+function maxent_mesh()
+    wmesh = collect(LinRange(-5.0, 5.0, 501))
+    return MaxEntGrid(wmesh)
+end
+
+function maxent_model(g::MaxEntGrid)
+    len = length(g.wmesh)
+    model = ones(F64, len)
+    model = model / 10.0
+    #@show model
+end
+
 println("hello")
 ω, G = read_data!(FermionicMatsubaraGrid)
+mesh = maxent_mesh()
+model = maxent_model(mesh)
+
