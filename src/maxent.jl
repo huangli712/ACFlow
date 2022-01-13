@@ -62,9 +62,8 @@ end
 
 function maxent_model(g::MaxEntGrid)
     len = length(g.wmesh)
-    model = ones(F64, len)
-    model = model / 10.0
-    #@show model
+    model = ones(F64, len) / 10.0
+    return model
 end
 
 println("hello")
