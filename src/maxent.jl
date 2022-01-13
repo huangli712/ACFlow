@@ -49,6 +49,7 @@ function read_data!(::Type{FermionicMatsubaraGrid})
             arr = parse.(F64, line_to_array(fin))
             push!(grid, arr[1])
             push!(value, arr[2] + arr[3] * im)
+            push!(error, 0.0001)
         end
     end
 
@@ -62,7 +63,7 @@ function maxent_mesh()
     pushfirst!(test, wmesh[1])
     push!(test, wmesh[end])
     dw = diff(test)
-    
+
     return MaxEntGrid(wmesh)
 end
 
