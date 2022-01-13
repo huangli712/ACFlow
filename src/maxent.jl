@@ -17,21 +17,25 @@ end
 const I64 = Int64
 const F64 = Float64
 const C64 = ComplexF64
-const N64 = Union{I64,F64,C64}
 
 abstract type AbstractData end
 abstract type AbstractGrid end
 
 struct GreenData <: AbstractData
-    value :: Vector{N64}
-    error :: Vector{N64}
-    var  :: Vector{N64}
-    cov  :: Array{N64,2}
-    ucov :: Array{N64,2}
+    value :: Vector{C64}
+    error :: Vector{F64}
+    var  :: Vector{F64}
+    cov  :: Array{F64,2}
+    ucov :: Array{F64,2}
 end
 
 struct MaxEntGrid
     wmesh :: Vector{F64}
+end
+
+mutable struct MaxEntContext
+    E :: Vector{F64}
+    kernel :: Array{C64,2}
 end
 
 struct FermionicMatsubaraGrid <: AbstractGrid
@@ -57,8 +61,7 @@ function read_data!(::Type{FermionicMatsubaraGrid})
     end
     cov = diagm(var)
     ucov = diagm(ones(niw))
-    #@show ucov
-    #Base.error()
+    value = ucov' * value
 
     return FermionicMatsubaraGrid(grid), GreenData(value, error, var, cov, ucov)
 end
@@ -80,9 +83,34 @@ function maxent_model(g::MaxEntGrid)
     return model
 end
 
+function maxent_kernel(mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
+    niw = length(ω.grid)
+    nw = length(mesh.wmesh)
+    #@show niw, nw
+    kernel = zeros(C64, niw, nw)
+    for i = 1:nw
+        for j = 1:niw
+            kernel[j,i] = 1.0 / (im * ω.grid[j] - mesh.wmesh[i])
+        end
+    end
+
+    return kernel
+end
+
+function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
+    E = 1.0 ./ G.var
+    #@show E
+    #@show mesh, ω
+    kernel = maxent_kernel(mesh, ω)
+    kernel = G.ucov' * kernel
+
+    return MaxEntContext(E, kernel)
+end
+
 println("hello")
 ω, G = read_data!(FermionicMatsubaraGrid)
 mesh = maxent_mesh()
 model = maxent_model(mesh)
+maxent_init(G, mesh, ω)
 
 
