@@ -25,7 +25,9 @@ abstract type AbstractGrid end
 struct GreenData <: AbstractData
     value :: Vector{N64}
     error :: Vector{N64}
-    covar :: Vector{N64}
+    var  :: Vector{N64}
+    cov  :: Array{N64,2}
+    ucov :: Array{N64,2}
 end
 
 struct MaxEntGrid
@@ -39,8 +41,8 @@ end
 function read_data!(::Type{FermionicMatsubaraGrid})
     grid  = F64[] 
     value = C64[]
-    error = C64[]
-    covar = F64[]
+    error = F64[]
+    var   = F64[]
 
     niw = 10
     #
@@ -50,10 +52,15 @@ function read_data!(::Type{FermionicMatsubaraGrid})
             push!(grid, arr[1])
             push!(value, arr[2] + arr[3] * im)
             push!(error, 0.0001)
+            push!(var, 0.0001^2)
         end
     end
+    cov = diagm(var)
+    ucov = diagm(ones(niw))
+    #@show ucov
+    #Base.error()
 
-    return FermionicMatsubaraGrid(grid), GreenData(value, error, covar)
+    return FermionicMatsubaraGrid(grid), GreenData(value, error, var, cov, ucov)
 end
 
 function maxent_mesh()
@@ -77,4 +84,5 @@ println("hello")
 ω, G = read_data!(FermionicMatsubaraGrid)
 mesh = maxent_mesh()
 model = maxent_model(mesh)
+
 
