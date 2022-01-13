@@ -125,15 +125,31 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     U_svd = U[:, 1:n_sv]
     V_svd = V[:, 1:n_sv]
     Xi_svd = S[1:n_sv]
-    @show size(V)
-    @show n_sv
-    @show size(U_svd), size(V_svd), size(Xi_svd)
+    #@show size(V)
+    #@show n_sv
+    #@show size(U_svd), size(V_svd), size(Xi_svd)
     
     niw = length(mesh.wmesh)
     W2 = zeros(F64, n_sv, niw)
     dw = mesh.dw
     model = maxent_model(mesh)
     @einsum W2[m,l] = E[k] * U_svd[k,m] * Xi_svd[m] * U_svd[k,n] * Xi_svd[n] * V_svd[l,n] * dw[l] * model[l]
+    A = reshape(W2, (n_sv, 1, niw))
+    B = reshape(V_svd', (1, n_sv, niw))
+    W3 = zeros(F64, n_sv, n_sv, niw)
+    for i = 1:niw
+        W3[:,:,i] = A[:,:,i] * B[:,:,i]
+    end
+    #@show W3[:,:,end]
+
+    Evi = zeros(F64, n_sv)
+    imdata = G.imdata
+    @einsum Evi[m] = Xi_svd[m] * U_svd[k,m] * E[k] * imdata[k]
+    #@show Evi
+
+    d2chi2 = zeros(F64, niw, niw)
+    @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
+    #@show d2chi2[:,end]
 
     return MaxEntContext(E, kernel)
 end
