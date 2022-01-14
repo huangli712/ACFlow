@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/01/13
+# Last modified: 2022/01/14
 #
 
 using Einsum
@@ -39,6 +39,9 @@ end
 mutable struct MaxEntContext
     E :: Vector{F64}
     kernel :: Array{C64,2}
+    d2chi2
+    W2
+    W3
 end
 
 struct FermionicMatsubaraGrid <: AbstractGrid
@@ -90,7 +93,7 @@ end
 function maxent_kernel(mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     niw = length(ω.grid)
     nw = length(mesh.wmesh)
-    #@show niw, nw
+
     kernel = zeros(C64, niw, nw)
     for i = 1:nw
         for j = 1:niw
@@ -151,12 +154,15 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
     #@show d2chi2[:,end]
 
-    return MaxEntContext(E, kernel)
+    return MaxEntContext(E, kernel, d2chi2, W2, W3)
+end
+
+function maxent_run_bryan(mec::MaxEntContext)
 end
 
 println("hello")
 ω, G = read_data!(FermionicMatsubaraGrid)
 mesh = maxent_mesh()
-maxent_init(G, mesh, ω)
+mec = maxent_init(G, mesh, ω)
 
 
