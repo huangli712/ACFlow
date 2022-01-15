@@ -43,6 +43,7 @@ mutable struct MaxEntContext
     W2
     W3
     n_sv
+    V_svd
 end
 
 struct FermionicMatsubaraGrid <: AbstractGrid
@@ -155,7 +156,7 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
     #@show d2chi2[:,end]
 
-    return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv)
+    return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd)
 end
 
 function maxent_run_bryan(mec::MaxEntContext)
@@ -167,7 +168,8 @@ function maxent_run_bryan(mec::MaxEntContext)
     maxent_optimize(mec, alpha, ustart)
 end
 
-function function_and_jacobian()
+function function_and_jacobian(mec::MaxEntContext, u, alpha)
+    @show length(u), alpha
     return 3, 2
 end
 
@@ -183,9 +185,10 @@ function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobi
     max_hist = 1
     max_iter = 20000
     opt_size = mec.n_sv
-    props = deepcopy(ustart)
+    props = []
+    push!(props, ustart)
 
-    f, J = function_and_jacobian()
+    f, J = function_and_jacobian(mec, props[1], alpha)
     @show f, J
 end
 
