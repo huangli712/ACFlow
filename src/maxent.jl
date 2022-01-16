@@ -45,6 +45,7 @@ mutable struct MaxEntContext
     n_sv
     V_svd
     Evi
+    model
 end
 
 struct FermionicMatsubaraGrid <: AbstractGrid
@@ -179,7 +180,7 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
     #@show d2chi2[:,end]
 
-    return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi)
+    return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model)
 end
 
 function maxent_run_bryan(mec::MaxEntContext)
@@ -220,12 +221,26 @@ function function_and_jacobian(mec::MaxEntContext, u, alpha)
     return f, J
 end
 
+function singular_to_realspace_diag(mec::MaxEntContext, u)
+    return mec.model .* exp.(mec.V_svd * u)
+end
+
+function entropy_pos(mec::MaxEntContext, A, u)
+    f = A - mec.model - A .* (mec.V_svd * u)
+    @show f
+
+end
+
 function maxent_optimize(mec::MaxEntContext, alpha, ustart)
     use_bayes = false
     max_hist = 1
 
-    newton(mec, alpha, ustart, max_hist, function_and_jacobian)
-
+    solution, nfev = newton(mec, alpha, ustart, max_hist, function_and_jacobian)
+    u_opt = copy(solution)
+    A_opt = singular_to_realspace_diag(mec, solution) 
+    #@show u_opt
+    #@show A_opt
+    entropy_pos(mec, A_opt, u_opt)
 end
 
 function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobian)
@@ -281,7 +296,7 @@ function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobi
         error("max_iter is too small")
     end
 
-    @show result, counter
+    #@show result, counter
     return result, counter
 end
 
