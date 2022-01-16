@@ -134,6 +134,28 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     #@show size(V)
     #@show n_sv
     #@show size(U_svd), size(V_svd), size(Xi_svd)
+
+    open("svd.data", "r") do fin
+        for i = 1:20
+            for j = 1:20
+                U_svd[i,j] = parse(F64, line_to_array(fin)[3])
+            end
+        end
+        readline(fin)
+
+        for i = 1:501
+            for j = 1:20
+                V_svd[i,j] = parse(F64, line_to_array(fin)[3])
+            end
+        end
+        readline(fin)
+        for i = 1:20
+            Xi_svd[i] = parse(F64, line_to_array(fin)[2])
+        end
+    end
+
+    @show length(mesh.wmesh)
+    #error()
     
     niw = length(mesh.wmesh)
     W2 = zeros(F64, n_sv, niw)
@@ -211,11 +233,18 @@ function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobi
     max_iter = 20000
     opt_size = mec.n_sv
     props = []
+    res = []
     push!(props, ustart)
 
     f, J = function_and_jacobian(mec, props[1], alpha)
+    initial_result = iteration_function(props[1], f, J)
     #@show f, J
     #error()
+end
+
+function iteration_function(proposal, function_vector, jacobian_matrix)
+    increment = - pinv(jacobian_matrix) * function_vector
+    @show increment
 end
 
 println("hello")
