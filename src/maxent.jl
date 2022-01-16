@@ -217,9 +217,25 @@ function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
         push!(specarr, optarr[i][:A_opt])
     end
     
-    #probarr = probarr ./ trapz(alpharr, probarr)
-    @show probarr 
+    probarr = probarr ./ (-new_trapz(alpharr, probarr))
+    len = length(probarr)
+    niw = length(mesh.wmesh)
 
+    Spectra = zeros(F64, len, niw)
+    for i = 1:len
+        Spectra[i,:] = specarr[i] * probarr[i]
+    end
+
+    A_opt = zeros(F64, niw)
+    for i = 1:niw
+        A_opt[i] = -new_trapz(alpharr, Spectra[:,i])
+    end
+
+    open("mem.data", "w") do fout
+        for i = 1:niw
+            println(mesh.wmesh[i], " ", A_opt[i])
+        end
+    end
 end
 
 function function_and_jacobian(mec::MaxEntContext, u, alpha)
@@ -271,6 +287,15 @@ function trapz(x, y)
     end
     value = (h / 2.0) * (y[1] + y[end] + 2.0 * sum)
         
+    return value
+end
+
+function new_trapz(x, y)
+    len = length(x)
+    value = 0.0
+    for i = 1:len-1
+        value = value + (y[i] + y[i+1]) * (x[i+1] - x[i]) / 2.0
+    end
     return value
 end
 
