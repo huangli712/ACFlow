@@ -238,13 +238,39 @@ function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobi
 
     f, J = function_and_jacobian(mec, props[1], alpha)
     initial_result = iteration_function(props[1], f, J)
+    @show initial_result
     #@show f, J
     #error()
 end
 
 function iteration_function(proposal, function_vector, jacobian_matrix)
-    increment = - pinv(jacobian_matrix) * function_vector
-    @show increment
+    increment = nothing
+    try
+        increment = - pinv(jacobian_matrix) * function_vector
+        #@show increment
+    catch
+        increment = zeros(F64, length(proposal))
+    end
+    #@show increment
+    step_reduction = 1.0
+    significance_limit = 1e-4
+
+    #@. proposal = 1.0
+    if any(x -> x > significance_limit, abs.(proposal))
+        ratio = abs.(increment ./ proposal)
+        #@show ratio
+        #filter!(x -> abs(x) > significance_limit, ratio)
+        #@show ratio
+        max_ratio = maximum( ratio[ abs.(proposal) .> significance_limit ] )
+        #@show max_ratio
+        if max_ratio > 1.0
+            step_reduction = 1.0 / max_ratio
+        end
+        #@show step_reduction
+    end
+
+    result = proposal + step_reduction .* increment
+    return result
 end
 
 println("hello")
