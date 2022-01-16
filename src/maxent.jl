@@ -192,7 +192,34 @@ function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
     ustart = zeros(F64, mec.n_sv)
     #@show ustart
 
-    maxent_optimize(mec, alpha, ustart, mesh)
+    maxprob = 0.0
+    optarr = []
+    while true
+        o = maxent_optimize(mec, alpha, ustart, mesh)
+        ustart = copy(o[:u_opt])
+        push!(optarr, o)
+        alpha = alpha / 1.1
+        probability = o[:probability]
+        if probability > maxprob
+            maxprob = probability
+        elseif probability < 0.01 * maxprob
+            break
+        end
+    end
+
+    alpharr = []
+    probarr = []
+    specarr = []
+
+    for i in eachindex(optarr)
+        push!(alpharr, optarr[i][:alpha])
+        push!(probarr, optarr[i][:probability])
+        push!(specarr, optarr[i][:A_opt])
+    end
+    
+    #probarr = probarr ./ trapz(alpharr, probarr)
+    @show probarr 
+
 end
 
 function function_and_jacobian(mec::MaxEntContext, u, alpha)
@@ -329,7 +356,7 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid)
     result_dict[:blacktransform] = nothing
     result_dict[:norm] = norm
     result_dict[:Q] = alpha * entr - 0.5 * chisq
-    @show result_dict[:Q]
+    #@show result_dict[:Q]
 
     if use_bayes
         ng, tr, conv = bayes_conv(mec, A_opt, entr, alpha, mesh)
