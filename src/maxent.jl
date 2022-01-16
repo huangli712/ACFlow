@@ -233,7 +233,7 @@ function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
 
     open("mem.data", "w") do fout
         for i = 1:niw
-            println(mesh.wmesh[i], " ", A_opt[i])
+            println(fout, mesh.wmesh[i], " ", A_opt[i])
         end
     end
 end
