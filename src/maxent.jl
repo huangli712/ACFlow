@@ -261,8 +261,30 @@ function chi2(mec::MaxEntContext, A, mesh::MaxEntGrid)
     #mec.kernel * reshape(A, (1,length(A)))
 end
 
+function bayes_conv(mec::MaxEntContext, A, entr, alpha, mesh::MaxEntGrid)
+    T = sqrt.(A ./ mesh.dw)
+    len = length(T)
+    Tl = reshape(T, (len, 1))
+    Tr = reshape(T, (1, len))
+    #@show size(Tl), size(Tr), size(mec.d2chi2)
+    Λ = zeros(F64, len, len)
+    for i = 1:len
+        for j = 1:len
+            Λ[i,j] = Tl[i] * mec.d2chi2[i,j] * Tr[j]
+        end
+    end
+    #@show Λ[2,:]
+
+    lam = eigvals(Hermitian(Λ))
+    #@show lam
+    ng = -2.0 * alpha * entr
+    tr = sum(lam ./ (alpha .+ lam))
+    conv = tr / ng
+    return ng, tr, conv
+end
+
 function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid)
-    use_bayes = false
+    use_bayes = true
     max_hist = 1
 
     solution, nfev = newton(mec, alpha, ustart, max_hist, function_and_jacobian)
@@ -273,13 +295,33 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid)
     entr = entropy_pos(mec, A_opt, u_opt, mesh)
     #@show entr
     #@show size(mec.kernel)
-    chisq = chi2(mec, A_opt, mesh)
+    chisq = real(chi2(mec, A_opt, mesh))
     norm = trapz(mesh.wmesh, A_opt)
     #@show chisq
     #@show norm
 
     result_dict = Dict{Symbol,Any}()
+    result_dict[:u_opt] = u_opt
+    result_dict[:A_opt] = A_opt
 
+    result_dict[:alpha] = alpha
+    result_dict[:entropy] = entr
+    result_dict[:chi2] = chisq
+    result_dict[:blacktransform] = nothing
+    result_dict[:norm] = norm
+    result_dict[:Q] = alpha * entr - 0.5 * chisq
+    @show result_dict[:Q]
+
+    if use_bayes
+        ng, tr, conv = bayes_conv(mec, A_opt, entr, alpha, mesh)
+        #@show ng, tr, conv
+        #error()
+        result_dict[:n_good] = ng
+        result_dict[:trace] = tr
+        result_dict[:convergence] = conv
+
+
+    end
 end
 
 function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobian)
