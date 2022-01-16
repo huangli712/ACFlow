@@ -183,13 +183,13 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model)
 end
 
-function maxent_run_bryan(mec::MaxEntContext)
+function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
     println("hehe")
     alpha = 500
     ustart = zeros(F64, mec.n_sv)
     #@show ustart
 
-    maxent_optimize(mec, alpha, ustart)
+    maxent_optimize(mec, alpha, ustart, mesh)
 end
 
 function function_and_jacobian(mec::MaxEntContext, u, alpha)
@@ -225,13 +225,23 @@ function singular_to_realspace_diag(mec::MaxEntContext, u)
     return mec.model .* exp.(mec.V_svd * u)
 end
 
-function entropy_pos(mec::MaxEntContext, A, u)
+function entropy_pos(mec::MaxEntContext, A, u, mesh::MaxEntGrid)
     f = A - mec.model - A .* (mec.V_svd * u)
-    @show f
-
+    #@show f
+    trapz(mesh.wmesh, f)
 end
 
-function maxent_optimize(mec::MaxEntContext, alpha, ustart)
+function trapz(x, y)
+    h = x[2] - x[1]
+    sum = 0.0
+    for i = 1:length(x)-1
+        sum = sum + y[i]
+    end
+    value = (h / 2.0) * (y[1] + y[end] + 2.0 * sum)
+    return value
+end
+
+function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid)
     use_bayes = false
     max_hist = 1
 
@@ -240,7 +250,8 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart)
     A_opt = singular_to_realspace_diag(mec, solution) 
     #@show u_opt
     #@show A_opt
-    entropy_pos(mec, A_opt, u_opt)
+    entr = entropy_pos(mec, A_opt, u_opt, mesh)
+    @show entr
 end
 
 function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobian)
@@ -334,6 +345,6 @@ println("hello")
 ω, G = read_data!(FermionicMatsubaraGrid)
 mesh = maxent_mesh()
 mec = maxent_init(G, mesh, ω)
-maxent_run_bryan(mec)
+maxent_run_bryan(mec, mesh)
 
 
