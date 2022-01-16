@@ -46,6 +46,7 @@ mutable struct MaxEntContext
     V_svd
     Evi
     model
+    imdata
 end
 
 struct FermionicMatsubaraGrid <: AbstractGrid
@@ -117,6 +118,7 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     G.var = vcat(G.var, G.var)
     G.imdata = vcat(real(G.value), imag(G.value))
     kernel = vcat(real(kernel), imag(kernel))
+    #@show size(kernel)
     #@show kernel[:,1]
     #@show kernel[:,33]
     #@show kernel[:,end]
@@ -155,7 +157,7 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
         end
     end
 
-    @show length(mesh.wmesh)
+    #@show length(mesh.wmesh)
     #error()
     
     niw = length(mesh.wmesh)
@@ -180,7 +182,8 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
     #@show d2chi2[:,end]
 
-    return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model)
+    #@show size(kernel)
+    return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model, imdata)
 end
 
 function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
@@ -232,8 +235,8 @@ function entropy_pos(mec::MaxEntContext, A, u, mesh::MaxEntGrid)
 end
 
 function trapz(x, y)
-    @show x
-    @show y
+    #@show x
+    #@show y
     h = x[2] - x[1]
     sum = 0.0
     for i = 2:length(x)-1
@@ -242,6 +245,20 @@ function trapz(x, y)
     value = (h / 2.0) * (y[1] + y[end] + 2.0 * sum)
         
     return value
+end
+
+function chi2(mec::MaxEntContext, A, mesh::MaxEntGrid)
+    ndim, _ = size(mec.kernel)
+
+    T = zeros(C64, ndim)
+    for i = 1:ndim
+        T[i] = mec.imdata[i] - trapz(mesh.wmesh, mec.kernel[i,:] .* A)
+        #@show i, T[i]
+    end
+
+    value = sum(mec.E .* T .^ 2.0)
+    return value
+    #mec.kernel * reshape(A, (1,length(A)))
 end
 
 function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid)
@@ -254,7 +271,15 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid)
     #@show u_opt
     #@show A_opt
     entr = entropy_pos(mec, A_opt, u_opt, mesh)
-    @show entr
+    #@show entr
+    #@show size(mec.kernel)
+    chisq = chi2(mec, A_opt, mesh)
+    norm = trapz(mesh.wmesh, A_opt)
+    #@show chisq
+    #@show norm
+
+    result_dict = Dict{Symbol,Any}()
+
 end
 
 function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobian)
