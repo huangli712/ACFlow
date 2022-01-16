@@ -283,6 +283,25 @@ function bayes_conv(mec::MaxEntContext, A, entr, alpha, mesh::MaxEntGrid)
     return ng, tr, conv
 end
 
+function posterior_probability(mec::MaxEntContext, A, alpha, entr, chisq, mesh::MaxEntGrid)
+    T = sqrt.(A ./ mesh.dw)
+    len = length(T)
+    Tl = reshape(T, (len, 1))
+    Tr = reshape(T, (1, len))
+    #@show size(Tl), size(Tr), size(mec.d2chi2)
+    Λ = zeros(F64, len, len)
+    for i = 1:len
+        for j = 1:len
+            Λ[i,j] = Tl[i] * mec.d2chi2[i,j] * Tr[j]
+        end
+    end
+    lam = eigvals(Hermitian(Λ))
+
+    eig_sum = sum(log.(alpha ./ (alpha .+ lam)))
+    log_prob = alpha * entr - 0.5 * chisq + log(alpha) + 0.5 * eig_sum
+    return exp(log_prob)
+end
+
 function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid)
     use_bayes = true
     max_hist = 1
@@ -320,8 +339,14 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid)
         result_dict[:trace] = tr
         result_dict[:convergence] = conv
 
-
+        probability = posterior_probability(mec, A_opt, alpha, entr, chisq, mesh)
+        #@show probability
+        result_dict[:probability] = probability
     end
+
+    println("log10(alpha) = $(log10(alpha)) chi2 = $chisq S = $entr nfev = $nfev norm = $norm")
+
+    return result_dict
 end
 
 function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobian)
