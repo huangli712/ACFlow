@@ -232,15 +232,57 @@ function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobi
     max_hist = 1
     max_iter = 20000
     opt_size = mec.n_sv
+    mixing = 0.5
     props = []
     res = []
     push!(props, ustart)
 
     f, J = function_and_jacobian(mec, props[1], alpha)
     initial_result = iteration_function(props[1], f, J)
-    @show initial_result
+    #@show initial_result
     #@show f, J
     #error()
+
+    push!(res, initial_result)
+    #@show res
+
+    counter = 0
+    converged = false
+    result = nothing
+    while !converged
+        n_iter = length(props)
+        new_proposal = props[n_iter]
+        f_i = res[n_iter] - props[n_iter]
+        update = mixing * f_i
+        prop = new_proposal + update
+        #@show prop
+        #error()
+
+        f, J = function_and_jacobian(mec, prop, alpha)
+        #@show f
+        #@show J
+        #error()
+
+        result = iteration_function(prop, f, J)
+        #@show result
+
+        push!(props, prop)
+        push!(res, result)
+
+        converged = counter > max_iter || maximum( abs.(result - prop) ) < 1.e-4
+        counter = counter + 1
+        if any(isnan.(result))
+            error("have NaN")
+        end
+        #error()
+    end
+
+    if counter > max_iter
+        error("max_iter is too small")
+    end
+
+    @show result, counter
+    return result, counter
 end
 
 function iteration_function(proposal, function_vector, jacobian_matrix)
