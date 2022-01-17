@@ -358,6 +358,7 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid)
     use_bayes = true
     max_hist = 1
 
+    #@show mec.n_sv, alpha, ustart
     solution, nfev = newton(mec, alpha, ustart, max_hist, function_and_jacobian)
     u_opt = copy(solution)
     A_opt = singular_to_realspace_diag(mec, solution) 
@@ -444,6 +445,7 @@ function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobi
 
         converged = counter > max_iter || maximum( abs.(result - prop) ) < 1.e-4
         counter = counter + 1
+        #@show counter, maximum( abs.(result - prop) )
         if any(isnan.(result))
             error("have NaN")
         end
