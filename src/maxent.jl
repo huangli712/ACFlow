@@ -194,8 +194,9 @@ function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
 
     maxprob = 0.0
     optarr = []
+    use_bayes = true
     while true
-        o = maxent_optimize(mec, alpha, ustart, mesh)
+        o = maxent_optimize(mec, alpha, ustart, mesh, use_bayes)
         ustart = copy(o[:u_opt])
         push!(optarr, o)
         alpha = alpha / 1.1
@@ -354,8 +355,7 @@ function posterior_probability(mec::MaxEntContext, A, alpha, entr, chisq, mesh::
     return exp(log_prob)
 end
 
-function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid)
-    use_bayes = true
+function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid, use_bayes::Bool)
     max_hist = 1
 
     #@show mec.n_sv, alpha, ustart
