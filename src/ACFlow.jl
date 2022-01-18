@@ -13,7 +13,9 @@ using Distributed
 using LinearAlgebra
 using Random
 using Printf
+using TOML
 
+using LsqFit
 using Einsum
 
 end
