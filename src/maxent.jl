@@ -271,7 +271,13 @@ function maxent_run_historic(mec::MaxEntContext, mesh::MaxEntGrid)
 
     sol = maxent_optimize(mec, alpha_opt, ustart, mesh, use_bayes)
 
-
+    A_opt = sol[:A_opt]
+    niw = length(mesh.wmesh)
+    open("historic.data", "w") do fout
+        for i = 1:niw
+            println(fout, mesh.wmesh[i], " ", A_opt[i])
+        end
+    end
 end
 
 function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
