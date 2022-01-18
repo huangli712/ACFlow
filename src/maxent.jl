@@ -280,6 +280,9 @@ function maxent_run_historic(mec::MaxEntContext, mesh::MaxEntGrid)
     end
 end
 
+function maxent_run_classic(mec::MaxEntContext, mesh::MaxEntGrid)
+end
+
 function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
     println("hehe")
     alpha = 500
@@ -589,7 +592,8 @@ println("hello")
 mesh = maxent_mesh()
 mec = maxent_init(G, mesh, ω)
 ##maxent_run_bryan(mec, mesh)
-maxent_run_historic(mec, mesh)
+#maxent_run_historic(mec, mesh)
+maxent_run_classic(mec, mesh)
 
 #function myfun(a, b)
 #    #return a ^ 2.0 + b * a + 1.0
