@@ -281,6 +281,33 @@ function maxent_run_historic(mec::MaxEntContext, mesh::MaxEntGrid)
 end
 
 function maxent_run_classic(mec::MaxEntContext, mesh::MaxEntGrid)
+    println("Solving")
+    optarr = []
+    alpha = 10 ^ 6.0
+    ustart = zeros(F64, mec.n_sv)
+    converged = false
+    conv = 0.0
+
+    use_bayes = true
+    while conv < 1.0
+        o = maxent_optimize(mec, alpha, ustart, mesh, use_bayes)
+        push!(optarr, o)
+        alpha = alpha / 10.0
+        conv = o[:convergence]
+        ustart = copy(o[:u_opt])
+    end
+    #@show ustart, alpha
+
+    bayes_conv = [x[:convergence] for x in optarr]
+    alpharr = [x[:alpha] for x in optarr]
+    #@show bayes_conv
+    #@show alpharr
+    
+    exp_opt = ( log10(alpharr[end]) - log10(alpharr[end-1]) ) / ( log10(bayes_conv[end]) - log10(bayes_conv[end-1]) )
+    exp_opt = log10(alpharr[end-1]) - log10(bayes_conv[end-1]) * exp_opt
+    alpha_opt = 10 ^ exp_opt
+    #@show exp_opt, alpha_opt
+
 end
 
 function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
