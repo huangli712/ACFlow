@@ -385,6 +385,38 @@ function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
     end
 end
 
+function maxent_run_chi2kink(mec::MaxEntContext, mesh::MaxEntGrid)
+    alpha_start = 1e9
+    alpha_end = 1e-3
+    alpha_div = 10.0
+    fit_position = 2.5
+
+    alpha = alpha_start
+    chis = []
+    alphas = []
+    optarr = []
+    ustart = zeros(F64, mec.n_sv)
+
+    use_bayes = false
+    while true
+        o = maxent_optimize(mec, alpha, ustart, mesh, use_bayes)
+        push!(optarr, o)
+        ustart = copy(o[:u_opt])
+        push!(chis, o[:chi2])
+        push!(alphas, alpha)
+
+        alpha = alpha / 10.0
+        if alpha < alpha_end
+            break
+        end
+    end
+
+    @show alphas
+    @show chis
+
+
+end
+
 function function_and_jacobian(mec::MaxEntContext, u, alpha)
     #@show length(u), alpha
     v = mec.V_svd * u
@@ -642,7 +674,8 @@ mesh = maxent_mesh()
 mec = maxent_init(G, mesh, ω)
 ##maxent_run_bryan(mec, mesh)
 #maxent_run_historic(mec, mesh)
-maxent_run_classic(mec, mesh)
+#maxent_run_classic(mec, mesh)
+maxent_run_chi2kink(mec, mesh)
 
 #function myfun(a, b)
 #    #return a ^ 2.0 + b * a + 1.0
