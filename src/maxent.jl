@@ -255,19 +255,23 @@ function maxent_run_historic(mec::MaxEntContext, mesh::MaxEntGrid)
 
     ustart = optarr[end-1][:u_opt]
     alpha = optarr[end][:alpha]
-    @show ustart
-    @show alpha
+    #@show ustart
+    #@show alpha
 
     function root_fun(_alpha, _u)
         res = maxent_optimize(mec, _alpha, _u, mesh, use_bayes)
-        _u = copy(res[:u_opt])
-        @show niw / res[:chi2] - 1.0
-        @show _u
+        _u[:] = copy(res[:u_opt])
+        #@show niw / res[:chi2] - 1.0
+        #@show _u
         return niw / res[:chi2] - 1.0
     end
 
     alpha_opt = secant(root_fun, alpha, ustart)
-    @show ustart
+    #@show ustart, alpha_opt
+
+    sol = maxent_optimize(mec, alpha_opt, ustart, mesh, use_bayes)
+
+
 end
 
 function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
