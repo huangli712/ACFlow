@@ -186,6 +186,30 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model, imdata)
 end
 
+function maxent_run_historic(mec::MaxEntContext, mesh::MaxEntGrid)
+    println("Solving")
+    alpha = 10 ^ 6.0
+    ustart = zeros(F64, mec.n_sv)
+    optarr = []
+    converged = false
+    conv = 0.0
+
+    use_bayes = false
+    niw = 20
+    while conv < 1.0
+        o = maxent_optimize(mec, alpha, ustart, mesh, use_bayes)
+        push!(optarr, o)
+        alpha = alpha / 10.0
+        conv = niw / o[:chi2]
+        #@show alpha, conv
+    end
+
+    ustart = optarr[end-1][:u_opt]
+    alpha = optarr[end][:alpha]
+    @show ustart
+    @show alpha
+end
+
 function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
     println("hehe")
     alpha = 500
@@ -494,6 +518,7 @@ println("hello")
 ω, G = read_data!(FermionicMatsubaraGrid)
 mesh = maxent_mesh()
 mec = maxent_init(G, mesh, ω)
-maxent_run_bryan(mec, mesh)
+#maxent_run_bryan(mec, mesh)
+maxent_run_historic(mec, mesh)
 
 
