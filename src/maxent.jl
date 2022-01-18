@@ -308,6 +308,28 @@ function maxent_run_classic(mec::MaxEntContext, mesh::MaxEntGrid)
     alpha_opt = 10 ^ exp_opt
     #@show exp_opt, alpha_opt
 
+    ustart = optarr[end-1][:u_opt]
+
+    function root_fun(_alpha, _u)
+        res = maxent_optimize(mec, _alpha, _u, mesh, use_bayes)
+        _u[:] = copy(res[:u_opt])
+        #@show _u
+        return res[:convergence] - 1.0
+    end
+
+    alpha_opt = secant(root_fun, alpha_opt, ustart)
+    #@show alpha_opt
+    #@show ustart
+
+    sol = maxent_optimize(mec, alpha_opt, ustart, mesh, use_bayes)
+
+    A_opt = sol[:A_opt]
+    niw = length(mesh.wmesh)
+    open("classic.data", "w") do fout
+        for i = 1:niw
+            println(fout, mesh.wmesh[i], " ", A_opt[i])
+        end
+    end
 end
 
 function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
