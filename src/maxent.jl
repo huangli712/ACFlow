@@ -425,8 +425,23 @@ function maxent_run_chi2kink(mec::MaxEntContext, mesh::MaxEntGrid)
     fit = curve_fit(fitfun, log10.(alphas[good_numbers]), log10.(chis[good_numbers]), [0.0, 5.0, 2.0, 0.0])
     a, b, c, d = fit.param
 
-    alpha_opt = c - fit_position / d
-    @show alpha_opt
+    a_opt = c - fit_position / d
+    alpha_opt = 10.0 ^ a_opt
+
+    closest_idx = argmin( abs.( log10.(alphas) .- a_opt ) )
+    #@show alpha_opt, closest_idx
+    ustart = optarr[closest_idx][:u_opt]
+    #@show ustart
+
+    sol = maxent_optimize(mec, alpha_opt, ustart, mesh, use_bayes)
+
+    A_opt = sol[:A_opt]
+    niw = length(mesh.wmesh)
+    open("chi2kink.data", "w") do fout
+        for i = 1:niw
+            println(fout, mesh.wmesh[i], " ", A_opt[i])
+        end
+    end
 end
 
 function function_and_jacobian(mec::MaxEntContext, u, alpha)
