@@ -257,6 +257,17 @@ function maxent_run_historic(mec::MaxEntContext, mesh::MaxEntGrid)
     alpha = optarr[end][:alpha]
     @show ustart
     @show alpha
+
+    function root_fun(_alpha, _u)
+        res = maxent_optimize(mec, _alpha, _u, mesh, use_bayes)
+        _u = copy(res[:u_opt])
+        @show niw / res[:chi2] - 1.0
+        @show _u
+        return niw / res[:chi2] - 1.0
+    end
+
+    alpha_opt = secant(root_fun, alpha, ustart)
+    @show ustart
 end
 
 function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
@@ -567,7 +578,13 @@ println("hello")
 ω, G = read_data!(FermionicMatsubaraGrid)
 mesh = maxent_mesh()
 mec = maxent_init(G, mesh, ω)
-#maxent_run_bryan(mec, mesh)
+##maxent_run_bryan(mec, mesh)
 maxent_run_historic(mec, mesh)
 
+#function myfun(a, b)
+#    #return a ^ 2.0 + b * a + 1.0
+#    return a ^ 3.0 - b
+#end
 
+#s = secant(myfun, 1.0, 8.0)
+#println(s)
