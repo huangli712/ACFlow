@@ -7,6 +7,7 @@
 # Last modified: 2022/01/17
 #
 
+using LsqFit
 using Einsum
 using Statistics
 using LinearAlgebra
@@ -411,10 +412,21 @@ function maxent_run_chi2kink(mec::MaxEntContext, mesh::MaxEntGrid)
         end
     end
 
-    @show alphas
-    @show chis
+    #@show alphas
+    #@show chis
 
+    function fitfun(x, p)
+        #@show coefs
+        return @. p[1] + p[2] / (1.0 + exp(-p[4] * (x - p[3])))
+    end
 
+    good_numbers = isfinite.(chis)
+    #@show log10.(alphas[good_numbers])
+    fit = curve_fit(fitfun, log10.(alphas[good_numbers]), log10.(chis[good_numbers]), [0.0, 5.0, 2.0, 0.0])
+    a, b, c, d = fit.param
+
+    alpha_opt = c - fit_position / d
+    @show alpha_opt
 end
 
 function function_and_jacobian(mec::MaxEntContext, u, alpha)
