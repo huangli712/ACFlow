@@ -9,14 +9,8 @@
 
 module ACFlow
 
-using Distributed
-using LinearAlgebra
-using Random
 using Printf
 using TOML
-
-using LsqFit
-using Einsum
 
 include("global.jl")
 include("util.jl")
