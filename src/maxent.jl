@@ -7,6 +7,8 @@
 # Last modified: 2022/01/19
 #
 
+module MaxEnt
+
 using LsqFit
 using Einsum
 using Statistics
@@ -695,7 +697,7 @@ function iteration_function(proposal, function_vector, jacobian_matrix)
     return result
 end
 
-function maxent_run()
+function solve()
     println("hello")
     ω, G = read_data!(FermionicMatsubaraGrid)
     mesh = maxent_mesh()
@@ -704,6 +706,8 @@ function maxent_run()
     #maxent_run_historic(mec, mesh)
     #maxent_run_classic(mec, mesh)
     maxent_run_chi2kink(mec, mesh)
+end
+
 end
 
 #function myfun(a, b)

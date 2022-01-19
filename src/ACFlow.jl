@@ -19,7 +19,6 @@ using LsqFit
 using Einsum
 
 include("maxent.jl")
-
-export maxent_run
+export MaxEnt
 
 end
