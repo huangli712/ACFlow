@@ -15,7 +15,7 @@ using Statistics
 using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
-import ..ACFlow: line_to_array, secant
+import ..ACFlow: line_to_array, secant, trapz, new_trapz
 
 abstract type AbstractData end
 abstract type AbstractGrid end
@@ -431,28 +431,6 @@ function entropy_pos(mec::MaxEntContext, A, u, mesh::MaxEntGrid)
     trapz(mesh.wmesh, f)
 end
 
-function trapz(x, y)
-    #@show x
-    #@show y
-    h = x[2] - x[1]
-    sum = 0.0
-    for i = 2:length(x)-1
-        sum = sum + y[i]
-    end
-    value = (h / 2.0) * (y[1] + y[end] + 2.0 * sum)
-        
-    return value
-end
-
-function new_trapz(x, y)
-    len = length(x)
-    value = 0.0
-    for i = 1:len-1
-        value = value + (y[i] + y[i+1]) * (x[i+1] - x[i]) / 2.0
-    end
-    return value
-end
-
 function chi2(mec::MaxEntContext, A, mesh::MaxEntGrid)
     ndim, _ = size(mec.kernel)
 
@@ -654,11 +632,3 @@ function solve()
 end
 
 end
-
-#function myfun(a, b)
-#    #return a ^ 2.0 + b * a + 1.0
-#    return a ^ 3.0 - b
-#end
-
-#s = secant(myfun, 1.0, 8.0)
-#println(s)
