@@ -19,9 +19,9 @@ using LsqFit
 using Einsum
 
 include("global.jl")
-export C64
-
+include("util.jl")
 include("maxent.jl")
+
 export MaxEnt
 
 end
