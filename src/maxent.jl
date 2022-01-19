@@ -14,13 +14,12 @@ using Einsum
 using Statistics
 using LinearAlgebra
 
+import ..ACFlow :: C64
+
 @inline function line_to_array(io::IOStream)
     split(readline(io), " ", keepempty = false)
 end
 
-const I64 = Int64
-const F64 = Float64
-const C64 = ComplexF64
 
 abstract type AbstractData end
 abstract type AbstractGrid end

@@ -18,6 +18,9 @@ using TOML
 using LsqFit
 using Einsum
 
+include("global.jl")
+export C64
+
 include("maxent.jl")
 export MaxEnt
 
