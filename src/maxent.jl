@@ -11,7 +11,6 @@ module MaxEnt
 
 using LsqFit
 using Einsum
-using Statistics
 using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
