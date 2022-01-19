@@ -18,4 +18,8 @@ using TOML
 using LsqFit
 using Einsum
 
+include("maxent.jl")
+
+export maxent_run
+
 end

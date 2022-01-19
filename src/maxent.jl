@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/01/17
+# Last modified: 2022/01/19
 #
 
 using LsqFit
@@ -695,14 +695,16 @@ function iteration_function(proposal, function_vector, jacobian_matrix)
     return result
 end
 
-println("hello")
-ω, G = read_data!(FermionicMatsubaraGrid)
-mesh = maxent_mesh()
-mec = maxent_init(G, mesh, ω)
-##maxent_run_bryan(mec, mesh)
-#maxent_run_historic(mec, mesh)
-#maxent_run_classic(mec, mesh)
-maxent_run_chi2kink(mec, mesh)
+function maxent_run()
+    println("hello")
+    ω, G = read_data!(FermionicMatsubaraGrid)
+    mesh = maxent_mesh()
+    mec = maxent_init(G, mesh, ω)
+    ##maxent_run_bryan(mec, mesh)
+    #maxent_run_historic(mec, mesh)
+    #maxent_run_classic(mec, mesh)
+    maxent_run_chi2kink(mec, mesh)
+end
 
 #function myfun(a, b)
 #    #return a ^ 2.0 + b * a + 1.0
