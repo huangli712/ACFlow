@@ -54,10 +54,7 @@ function solve()
     ω, G = read_data!(FermionicMatsubaraGrid)
     mesh = maxent_mesh()
     mec = maxent_init(G, mesh, ω)
-    #try_bryan(mec, mesh)
-    #try_historic(mec, mesh)
-    #try_classic(mec, mesh)
-    try_chi2kink(mec, mesh)
+    maxent_run(mec, mesh)
 end
 
 function read_data!(::Type{FermionicMatsubaraGrid})
@@ -193,7 +190,11 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model, imdata)
 end
 
-function maxent_run()
+function maxent_run(mec::MaxEntContext, mesh::MaxEntGrid)
+    #try_bryan(mec, mesh)
+    #try_historic(mec, mesh)
+    #try_classic(mec, mesh)
+    try_chi2kink(mec, mesh)
 end
 
 function maxent_historic(mec::MaxEntContext, mesh::MaxEntGrid)
