@@ -50,6 +50,16 @@ struct FermionicMatsubaraGrid <: AbstractGrid
     grid :: Vector{F64}
 end
 
+function solve()
+    ω, G = read_data!(FermionicMatsubaraGrid)
+    mesh = maxent_mesh()
+    mec = maxent_init(G, mesh, ω)
+    #try_bryan(mec, mesh)
+    #try_historic(mec, mesh)
+    #try_classic(mec, mesh)
+    try_chi2kink(mec, mesh)
+end
+
 function read_data!(::Type{FermionicMatsubaraGrid})
     grid  = F64[] 
     value = C64[]
@@ -183,7 +193,10 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model, imdata)
 end
 
-function maxent_run_historic(mec::MaxEntContext, mesh::MaxEntGrid)
+function maxent_run()
+end
+
+function maxent_historic(mec::MaxEntContext, mesh::MaxEntGrid)
     println("Solving")
     alpha = 10 ^ 6.0
     ustart = zeros(F64, mec.n_sv)
@@ -228,7 +241,7 @@ function maxent_run_historic(mec::MaxEntContext, mesh::MaxEntGrid)
     end
 end
 
-function maxent_run_classic(mec::MaxEntContext, mesh::MaxEntGrid)
+function maxent_classic(mec::MaxEntContext, mesh::MaxEntGrid)
     println("Solving")
     optarr = []
     alpha = 10 ^ 6.0
@@ -280,7 +293,7 @@ function maxent_run_classic(mec::MaxEntContext, mesh::MaxEntGrid)
     end
 end
 
-function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
+function maxent_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
     println("hehe")
     alpha = 500
     ustart = zeros(F64, mec.n_sv)
@@ -333,7 +346,7 @@ function maxent_run_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
     end
 end
 
-function maxent_run_chi2kink(mec::MaxEntContext, mesh::MaxEntGrid)
+function maxent_chi2kink(mec::MaxEntContext, mesh::MaxEntGrid)
     alpha_start = 1e9
     alpha_end = 1e-3
     alpha_div = 10.0
@@ -391,6 +404,118 @@ function maxent_run_chi2kink(mec::MaxEntContext, mesh::MaxEntGrid)
     end
 end
 
+function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid, use_bayes::Bool)
+    max_hist = 1
+
+    #@show mec.n_sv, alpha, ustart
+    solution, nfev = newton(mec, alpha, ustart, max_hist, function_and_jacobian)
+    u_opt = copy(solution)
+    A_opt = singular_to_realspace_diag(mec, solution) 
+    #@show u_opt
+    #@show A_opt
+    entr = calc_entropy(mec, A_opt, u_opt, mesh)
+    #@show entr
+    #@show size(mec.kernel)
+    chisq = real(calc_chi2(mec, A_opt, mesh))
+    norm = trapz(mesh.wmesh, A_opt)
+    #@show chisq
+    #@show norm
+
+    result_dict = Dict{Symbol,Any}()
+    result_dict[:u_opt] = u_opt
+    result_dict[:A_opt] = A_opt
+
+    result_dict[:alpha] = alpha
+    result_dict[:entropy] = entr
+    result_dict[:chi2] = chisq
+    result_dict[:blacktransform] = nothing
+    result_dict[:norm] = norm
+    result_dict[:Q] = alpha * entr - 0.5 * chisq
+    #@show result_dict[:Q]
+
+    if use_bayes
+        ng, tr, conv = calc_bayes(mec, A_opt, entr, alpha, mesh)
+        #@show ng, tr, conv
+        #error()
+        result_dict[:n_good] = ng
+        result_dict[:trace] = tr
+        result_dict[:convergence] = conv
+
+        probability = calc_posterior(mec, A_opt, alpha, entr, chisq, mesh)
+        #@show probability
+        result_dict[:probability] = probability
+    end
+
+    println("log10(alpha) = $(log10(alpha)) chi2 = $chisq S = $entr nfev = $nfev norm = $norm")
+
+    return result_dict
+end
+
+function calc_entropy(mec::MaxEntContext, A, u, mesh::MaxEntGrid)
+    f = A - mec.model - A .* (mec.V_svd * u)
+    #@show f
+    trapz(mesh.wmesh, f)
+end
+
+function calc_chi2(mec::MaxEntContext, A, mesh::MaxEntGrid)
+    ndim, _ = size(mec.kernel)
+
+    T = zeros(C64, ndim)
+    for i = 1:ndim
+        T[i] = mec.imdata[i] - trapz(mesh.wmesh, mec.kernel[i,:] .* A)
+        #@show i, T[i]
+    end
+
+    value = sum(mec.E .* T .^ 2.0)
+    return value
+    #mec.kernel * reshape(A, (1,length(A)))
+end
+
+function calc_bayes(mec::MaxEntContext, A, entr, alpha, mesh::MaxEntGrid)
+    T = sqrt.(A ./ mesh.dw)
+    len = length(T)
+    Tl = reshape(T, (len, 1))
+    Tr = reshape(T, (1, len))
+    #@show size(Tl), size(Tr), size(mec.d2chi2)
+    Λ = zeros(F64, len, len)
+    for i = 1:len
+        for j = 1:len
+            Λ[i,j] = Tl[i] * mec.d2chi2[i,j] * Tr[j]
+        end
+    end
+    #@show Λ[2,:]
+
+    lam = eigvals(Hermitian(Λ))
+    #@show lam
+    ng = -2.0 * alpha * entr
+    tr = sum(lam ./ (alpha .+ lam))
+    conv = tr / ng
+    return ng, tr, conv
+end
+
+function calc_posterior(mec::MaxEntContext, A, alpha, entr, chisq, mesh::MaxEntGrid)
+    T = sqrt.(A ./ mesh.dw)
+    len = length(T)
+    Tl = reshape(T, (len, 1))
+    Tr = reshape(T, (1, len))
+    #@show size(Tl), size(Tr), size(mec.d2chi2)
+    Λ = zeros(F64, len, len)
+    for i = 1:len
+        for j = 1:len
+            Λ[i,j] = Tl[i] * mec.d2chi2[i,j] * Tr[j]
+        end
+    end
+    lam = eigvals(Hermitian(Λ))
+
+    eig_sum = sum(log.(alpha ./ (alpha .+ lam)))
+    log_prob = alpha * entr - 0.5 * chisq + log(alpha) + 0.5 * eig_sum
+    return exp(log_prob)
+end
+
+function singular_to_realspace_diag(mec::MaxEntContext, u)
+    return mec.model .* exp.(mec.V_svd * u)
+end
+
 function function_and_jacobian(mec::MaxEntContext, u, alpha)
     #@show length(u), alpha
     v = mec.V_svd * u
@@ -418,118 +543,6 @@ function function_and_jacobian(mec::MaxEntContext, u, alpha)
     #@show f
     #@show J
     return f, J
-end
-
-function singular_to_realspace_diag(mec::MaxEntContext, u)
-    return mec.model .* exp.(mec.V_svd * u)
-end
-
-function entropy_pos(mec::MaxEntContext, A, u, mesh::MaxEntGrid)
-    f = A - mec.model - A .* (mec.V_svd * u)
-    #@show f
-    trapz(mesh.wmesh, f)
-end
-
-function chi2(mec::MaxEntContext, A, mesh::MaxEntGrid)
-    ndim, _ = size(mec.kernel)
-
-    T = zeros(C64, ndim)
-    for i = 1:ndim
-        T[i] = mec.imdata[i] - trapz(mesh.wmesh, mec.kernel[i,:] .* A)
-        #@show i, T[i]
-    end
-
-    value = sum(mec.E .* T .^ 2.0)
-    return value
-    #mec.kernel * reshape(A, (1,length(A)))
-end
-
-function bayes_conv(mec::MaxEntContext, A, entr, alpha, mesh::MaxEntGrid)
-    T = sqrt.(A ./ mesh.dw)
-    len = length(T)
-    Tl = reshape(T, (len, 1))
-    Tr = reshape(T, (1, len))
-    #@show size(Tl), size(Tr), size(mec.d2chi2)
-    Λ = zeros(F64, len, len)
-    for i = 1:len
-        for j = 1:len
-            Λ[i,j] = Tl[i] * mec.d2chi2[i,j] * Tr[j]
-        end
-    end
-    #@show Λ[2,:]
-
-    lam = eigvals(Hermitian(Λ))
-    #@show lam
-    ng = -2.0 * alpha * entr
-    tr = sum(lam ./ (alpha .+ lam))
-    conv = tr / ng
-    return ng, tr, conv
-end
-
-function posterior_probability(mec::MaxEntContext, A, alpha, entr, chisq, mesh::MaxEntGrid)
-    T = sqrt.(A ./ mesh.dw)
-    len = length(T)
-    Tl = reshape(T, (len, 1))
-    Tr = reshape(T, (1, len))
-    #@show size(Tl), size(Tr), size(mec.d2chi2)
-    Λ = zeros(F64, len, len)
-    for i = 1:len
-        for j = 1:len
-            Λ[i,j] = Tl[i] * mec.d2chi2[i,j] * Tr[j]
-        end
-    end
-    lam = eigvals(Hermitian(Λ))
-
-    eig_sum = sum(log.(alpha ./ (alpha .+ lam)))
-    log_prob = alpha * entr - 0.5 * chisq + log(alpha) + 0.5 * eig_sum
-    return exp(log_prob)
-end
-
-function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid, use_bayes::Bool)
-    max_hist = 1
-
-    #@show mec.n_sv, alpha, ustart
-    solution, nfev = newton(mec, alpha, ustart, max_hist, function_and_jacobian)
-    u_opt = copy(solution)
-    A_opt = singular_to_realspace_diag(mec, solution) 
-    #@show u_opt
-    #@show A_opt
-    entr = entropy_pos(mec, A_opt, u_opt, mesh)
-    #@show entr
-    #@show size(mec.kernel)
-    chisq = real(chi2(mec, A_opt, mesh))
-    norm = trapz(mesh.wmesh, A_opt)
-    #@show chisq
-    #@show norm
-
-    result_dict = Dict{Symbol,Any}()
-    result_dict[:u_opt] = u_opt
-    result_dict[:A_opt] = A_opt
-
-    result_dict[:alpha] = alpha
-    result_dict[:entropy] = entr
-    result_dict[:chi2] = chisq
-    result_dict[:blacktransform] = nothing
-    result_dict[:norm] = norm
-    result_dict[:Q] = alpha * entr - 0.5 * chisq
-    #@show result_dict[:Q]
-
-    if use_bayes
-        ng, tr, conv = bayes_conv(mec, A_opt, entr, alpha, mesh)
-        #@show ng, tr, conv
-        #error()
-        result_dict[:n_good] = ng
-        result_dict[:trace] = tr
-        result_dict[:convergence] = conv
-
-        probability = posterior_probability(mec, A_opt, alpha, entr, chisq, mesh)
-        #@show probability
-        result_dict[:probability] = probability
-    end
-
-    println("log10(alpha) = $(log10(alpha)) chi2 = $chisq S = $entr nfev = $nfev norm = $norm")
-
-    return result_dict
 end
 
 function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobian)
@@ -618,16 +631,6 @@ function iteration_function(proposal, function_vector, jacobian_matrix)
 
     result = proposal + step_reduction .* increment
     return result
-end
-
-function solve()
-    ω, G = read_data!(FermionicMatsubaraGrid)
-    mesh = maxent_mesh()
-    mec = maxent_init(G, mesh, ω)
-    ##maxent_run_bryan(mec, mesh)
-    #maxent_run_historic(mec, mesh)
-    #maxent_run_classic(mec, mesh)
-    maxent_run_chi2kink(mec, mesh)
 end
 
 end
