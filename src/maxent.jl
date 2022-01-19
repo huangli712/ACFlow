@@ -142,6 +142,7 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     #@show n_sv
     #@show size(U_svd), size(V_svd), size(Xi_svd)
 
+    #=
     open("svd.data", "r") do fin
         for i = 1:20
             for j = 1:20
@@ -160,6 +161,7 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
             Xi_svd[i] = parse(F64, line_to_array(fin)[2])
         end
     end
+    =#
 
     #@show length(mesh.wmesh)
     #error()
@@ -191,10 +193,10 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
 end
 
 function maxent_run(mec::MaxEntContext, mesh::MaxEntGrid)
-    #try_bryan(mec, mesh)
-    #try_historic(mec, mesh)
-    #try_classic(mec, mesh)
-    try_chi2kink(mec, mesh)
+    #maxent_bryan(mec, mesh)
+    #maxent_historic(mec, mesh)
+    #maxent_classic(mec, mesh)
+    maxent_chi2kink(mec, mesh)
 end
 
 function maxent_historic(mec::MaxEntContext, mesh::MaxEntGrid)
