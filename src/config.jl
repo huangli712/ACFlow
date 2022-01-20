@@ -81,51 +81,46 @@ end
     fil_dict(cfg::Dict{String,Any})
 
 Transfer configurations from dict `cfg` to internal dicts (including
-`PCASE`, `PDFT`, `PDMFT`, `PIMP`, and `PSOLVER`).
+`PCOMM`, `PMaxEnt`, `PStochOM`, and `PStochAC`).
 
 See also: [`chk_dict`](@ref).
 """
 function fil_dict(cfg::Dict{String,Any})
-    # For case block
-    #
-    # Pay attention to that the case block only includes one child element
-    PCASE["case"][1] = cfg["case"]
-
     # For dft block
-    dft = cfg["dft"]
-    for key in keys(dft)
-        if haskey(PDFT, key)
-            PDFT[key][1] = dft[key]
+    COMM = cfg["COMM"]
+    for key in keys(COMM)
+        if haskey(PCOMM, key)
+            PCOMM[key][1] = COMM[key]
         else
             error("Sorry, $key is not supported currently")
         end
     end
 
-    # For dmft block
-    dmft = cfg["dmft"]
-    for key in keys(dmft)
-        if haskey(PDMFT, key)
-            PDMFT[key][1] = dmft[key]
+    # For MaxEnt block
+    MaxEnt = cfg["MaxEnt"]
+    for key in keys(MaxEnt)
+        if haskey(PMaxEnt, key)
+            PMaxEnt[key][1] = MaxEnt[key]
         else
             error("Sorry, $key is not supported currently")
         end
     end
 
-    # For impurity block
-    impurity = cfg["impurity"]
-    for key in keys(impurity)
-        if haskey(PIMP, key)
-            PIMP[key][1] = impurity[key]
+    # For StochOM block
+    StochOM = cfg["StochOM"]
+    for key in keys(StochOM)
+        if haskey(PStochOM, key)
+            PStochOM[key][1] = StochOM[key]
         else
             error("Sorry, $key is not supported currently")
         end
     end
 
-    # For solver block
-    solver = cfg["solver"]
-    for key in keys(solver)
-        if haskey(PSOLVER, key)
-            PSOLVER[key][1] = solver[key]
+    # For StochAC block
+    StochAC = cfg["StochAC"]
+    for key in keys(StochAC)
+        if haskey(PStochAC, key)
+            PStochAC[key][1] = StochAC[key]
         else
             error("Sorry, $key is not supported currently")
         end
