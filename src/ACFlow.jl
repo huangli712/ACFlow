@@ -13,10 +13,12 @@ using Printf
 using TOML
 
 include("global.jl")
+include("config.jl")
 include("util.jl")
 
 include("maxent.jl")
 
+export setup
 export MaxEnt
 
 end

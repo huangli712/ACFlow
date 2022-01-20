@@ -1,8 +1,10 @@
+#!/usr/bin/env julia
 
-include("ACFlow.jl")
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
 
-using .ACFlow
+using ACFlow
 
 println("hello world")
 
-MaxEnt.solve()
+setup()
+#MaxEnt.solve()
