@@ -2,6 +2,22 @@
     split(readline(io), " ", keepempty = false)
 end
 
+"""
+    query_args()
+
+Check whether the configuration file (`case.toml`) is provided.
+
+See also: [`setup_args`](@ref).
+"""
+function query_args()
+    nargs = length(ARGS)
+    if nargs < 1
+        error("Please specify the configuration file")
+    else
+        ARGS[1]
+    end
+end
+
 #function myfun(a, b)
 #    #return a ^ 2.0 + b * a + 1.0
 #    return a ^ 3.0 - b
