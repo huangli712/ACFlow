@@ -76,3 +76,58 @@ function inp_toml(f::String, necessary::Bool)
         end
     end
 end
+
+"""
+    fil_dict(cfg::Dict{String,Any})
+
+Transfer configurations from dict `cfg` to internal dicts (including
+`PCASE`, `PDFT`, `PDMFT`, `PIMP`, and `PSOLVER`).
+
+See also: [`chk_dict`](@ref).
+"""
+function fil_dict(cfg::Dict{String,Any})
+    # For case block
+    #
+    # Pay attention to that the case block only includes one child element
+    PCASE["case"][1] = cfg["case"]
+
+    # For dft block
+    dft = cfg["dft"]
+    for key in keys(dft)
+        if haskey(PDFT, key)
+            PDFT[key][1] = dft[key]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+
+    # For dmft block
+    dmft = cfg["dmft"]
+    for key in keys(dmft)
+        if haskey(PDMFT, key)
+            PDMFT[key][1] = dmft[key]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+
+    # For impurity block
+    impurity = cfg["impurity"]
+    for key in keys(impurity)
+        if haskey(PIMP, key)
+            PIMP[key][1] = impurity[key]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+
+    # For solver block
+    solver = cfg["solver"]
+    for key in keys(solver)
+        if haskey(PSOLVER, key)
+            PSOLVER[key][1] = solver[key]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+end
