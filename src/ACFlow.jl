@@ -14,6 +14,7 @@ using TOML
 
 include("global.jl")
 include("config.jl")
+include("inout.jl")
 include("util.jl")
 
 include("maxent.jl")
