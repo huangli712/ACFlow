@@ -10,6 +10,7 @@ const DType = Any
 const ADT = Array{DType,1}
 
 const PCOMM    = Dict{String,ADT}(
+    "finput" => [missing, 1, :String, ""],
     "solver" => [missing, 1, :String, ""],
     "kernel" => [missing, 1, :String, ""],
     "model"  => [missing, 1, :String, ""],
