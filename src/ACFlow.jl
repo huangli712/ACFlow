@@ -19,6 +19,7 @@ include("util.jl")
 include("maxent.jl")
 
 export setup
+export read_data
 export MaxEnt
 
 end

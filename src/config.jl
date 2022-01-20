@@ -140,3 +140,37 @@ function fil_dict(cfg::Dict{String,Any})
         end
     end
 end
+
+function chk_dict()
+end
+
+"""
+    get_c(key::String)
+
+Extract configurations from dict: PCOMM.
+
+See also: [`cat_c`](@ref), [`str_c`](@ref).
+"""
+@inline function get_c(key::String)
+    if haskey(PCOMM, key)
+        PCOMM[key][1]
+    else
+        error("Sorry, PCOMM does not contain key: $key")
+    end
+end
+
+"""
+    get_m(key::String)
+
+Extract configurations from dict: PMaxEnt.
+
+See also: [`cat_m`](@ref), [`str_m`](@ref).
+"""
+@inline function get_m(key::String)
+    if haskey(PMaxEnt, key)
+        PMaxEnt[key][1]
+    else
+        error("Sorry, PMaxEnt does not contain key: $key")
+    end
+end
+
