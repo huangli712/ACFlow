@@ -97,32 +97,38 @@ function fil_dict(cfg::Dict{String,Any})
     end
 
     # For MaxEnt block
-    MaxEnt = cfg["MaxEnt"]
-    for key in keys(MaxEnt)
-        if haskey(PMaxEnt, key)
-            PMaxEnt[key][1] = MaxEnt[key]
-        else
-            error("Sorry, $key is not supported currently")
+    if haskey(cfg, "MaxEnt")
+        MaxEnt = cfg["MaxEnt"]
+        for key in keys(MaxEnt)
+            if haskey(PMaxEnt, key)
+                PMaxEnt[key][1] = MaxEnt[key]
+            else
+                error("Sorry, $key is not supported currently")
+            end
         end
     end
 
     # For StochOM block
-    StochOM = cfg["StochOM"]
-    for key in keys(StochOM)
-        if haskey(PStochOM, key)
-            PStochOM[key][1] = StochOM[key]
-        else
-            error("Sorry, $key is not supported currently")
+    if haskey(cfg, "StochOM")
+        StochOM = cfg["StochOM"]
+        for key in keys(StochOM)
+            if haskey(PStochOM, key)
+                PStochOM[key][1] = StochOM[key]
+            else
+                error("Sorry, $key is not supported currently")
+            end
         end
     end
 
     # For StochAC block
-    StochAC = cfg["StochAC"]
-    for key in keys(StochAC)
-        if haskey(PStochAC, key)
-            PStochAC[key][1] = StochAC[key]
-        else
-            error("Sorry, $key is not supported currently")
+    if haskey(cfg, "StochAC")
+        StochAC = cfg["StochAC"]
+        for key in keys(StochAC)
+            if haskey(PStochAC, key)
+                PStochAC[key][1] = StochAC[key]
+            else
+                error("Sorry, $key is not supported currently")
+            end
         end
     end
 end
