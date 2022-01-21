@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/01/20
+# Last modified: 2022/01/21
 #
 
 module ACFlow
@@ -19,8 +19,8 @@ include("util.jl")
 
 include("maxent.jl")
 
-export setup
+export read_param
 export read_data
-export MaxEnt
+export solve
 
 end
