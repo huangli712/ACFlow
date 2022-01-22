@@ -1,16 +1,4 @@
-abstract type AbstractData end
 
-struct RawData{T} <: AbstractData
-    mesh  :: Vector{F64}
-    value :: Vector{T}
-    error :: Vector{T}
-end
-
-mutable struct GreenData <: AbstractData
-    value :: Vector{C64}
-    error :: Vector{F64}
-    var   :: Vector{F64}
-end
 
 function read_time_data(finput::String, ngrid::I64)
 end
