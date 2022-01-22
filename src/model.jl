@@ -1,5 +1,5 @@
 function make_model(um::UniformMesh)
-    model = get_c["model"]
+    model = get_c("model")
     if model == "flat"
         return make_flat_model(um)
     else
@@ -12,7 +12,7 @@ function make_flat_model(um::UniformMesh)
     norm = trapz(um.mesh, model)
     model = model ./ norm
 
-    return FlatModel(um.nmesh, model)
+    return model
 end
 
 function make_gaussian_model(um::UniformMesh)

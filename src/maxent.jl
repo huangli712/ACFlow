@@ -17,7 +17,7 @@ import ..ACFlow: I64, F64, C64
 import ..ACFlow: FermionicMatsubaraGrid, BosonicMatsubaraGrid
 import ..ACFlow: UniformMesh
 import ..ACFlow: RawData, GreenData
-import ..ACFlow: make_mesh
+import ..ACFlow: make_mesh, make_model
 import ..ACFlow: get_c
 import ..ACFlow: secant, trapz, new_trapz
 
@@ -82,7 +82,8 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
     niw = mesh.nmesh
     W2 = zeros(F64, n_sv, niw)
     dw = mesh.weight
-    model = maxent_model(mesh)
+    #model = maxent_model(mesh)
+    model = make_model(mesh)
     @einsum W2[m,l] = E[k] * U_svd[k,m] * Xi_svd[m] * U_svd[k,n] * Xi_svd[n] * V_svd[l,n] * dw[l] * model[l]
     A = reshape(W2, (n_sv, 1, niw))
     B = reshape(V_svd', (1, n_sv, niw))
@@ -111,6 +112,7 @@ function maxent_run(mec::MaxEntContext, mesh::UniformMesh)
     maxent_chi2kink(mec, mesh)
 end
 
+#=
 function maxent_model(g::UniformMesh)
     len = g.nmesh
     model = ones(F64, len)
@@ -119,6 +121,7 @@ function maxent_model(g::UniformMesh)
     #@show model
     return model
 end
+=#
 
 function maxent_kernel(mesh::UniformMesh, ω::FermionicMatsubaraGrid)
     niw = ω.ngrid
