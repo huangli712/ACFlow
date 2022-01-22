@@ -94,9 +94,9 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
     Xi_svd = S[1:n_sv]
 
     E = 1.0 ./ G.var
-    niw = length(mesh.wmesh)
+    niw = mesh.nmesh
     W2 = zeros(F64, n_sv, niw)
-    dw = mesh.dw
+    dw = mesh.weight
     model = maxent_model(mesh)
     @einsum W2[m,l] = E[k] * U_svd[k,m] * Xi_svd[m] * U_svd[k,n] * Xi_svd[n] * V_svd[l,n] * dw[l] * model[l]
     A = reshape(W2, (n_sv, 1, niw))
@@ -119,11 +119,11 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
     return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model, imdata), mesh
 end
 
-function maxent_run(mec::MaxEntContext, mesh::MaxEntGrid)
+function maxent_run(mec::MaxEntContext, mesh::UniformMesh)
     #maxent_bryan(mec, mesh)
-    #maxent_historic(mec, mesh)
+    maxent_historic(mec, mesh)
     #maxent_classic(mec, mesh)
-    maxent_chi2kink(mec, mesh)
+    #maxent_chi2kink(mec, mesh)
 end
 
 #=
@@ -141,9 +141,12 @@ function maxent_mesh()
 end
 =#
 
-function maxent_model(g::MaxEntGrid)
-    len = length(g.wmesh)
-    model = ones(F64, len) / 10.0
+function maxent_model(g::UniformMesh)
+    len = g.nmesh
+    model = ones(F64, len)
+    norm = trapz(g.mesh, model)
+    model = model ./ norm
+    #@show model
     return model
 end
 
@@ -258,7 +261,7 @@ function maxent_classic(mec::MaxEntContext, mesh::MaxEntGrid)
     end
 end
 
-function maxent_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
+function maxent_bryan(mec::MaxEntContext, mesh::UniformMesh)
     println("hehe")
     alpha = 500
     ustart = zeros(F64, mec.n_sv)
@@ -292,7 +295,7 @@ function maxent_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
     
     probarr = probarr ./ (-new_trapz(alpharr, probarr))
     len = length(probarr)
-    niw = length(mesh.wmesh)
+    niw = mesh.nmesh
 
     Spectra = zeros(F64, len, niw)
     for i = 1:len
@@ -306,12 +309,12 @@ function maxent_bryan(mec::MaxEntContext, mesh::MaxEntGrid)
 
     open("mem.data", "w") do fout
         for i = 1:niw
-            println(fout, mesh.wmesh[i], " ", A_opt[i])
+            println(fout, mesh[i], " ", A_opt[i])
         end
     end
 end
 
-function maxent_chi2kink(mec::MaxEntContext, mesh::MaxEntGrid)
+function maxent_chi2kink(mec::MaxEntContext, mesh::UniformMesh)
     alpha_start = 1e9
     alpha_end = 1e-3
     alpha_div = 10.0
@@ -361,15 +364,15 @@ function maxent_chi2kink(mec::MaxEntContext, mesh::MaxEntGrid)
     sol = maxent_optimize(mec, alpha_opt, ustart, mesh, use_bayes)
 
     A_opt = sol[:A_opt]
-    niw = length(mesh.wmesh)
+    niw = mesh.nmesh
     open("chi2kink.data", "w") do fout
         for i = 1:niw
-            println(fout, mesh.wmesh[i], " ", A_opt[i])
+            println(fout, mesh[i], " ", A_opt[i])
         end
     end
 end
 
-function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid, use_bayes::Bool)
+function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::UniformMesh, use_bayes::Bool)
     max_hist = 1
 
     #@show mec.n_sv, alpha, ustart
@@ -382,7 +385,7 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid, us
     #@show entr
     #@show size(mec.kernel)
     chisq = real(calc_chi2(mec, A_opt, mesh))
-    norm = trapz(mesh.wmesh, A_opt)
+    norm = trapz(mesh.mesh, A_opt)
     #@show chisq
     #@show norm
 
@@ -416,18 +419,18 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::MaxEntGrid, us
     return result_dict
 end
 
-function calc_entropy(mec::MaxEntContext, A, u, mesh::MaxEntGrid)
+function calc_entropy(mec::MaxEntContext, A, u, mesh::UniformMesh)
     f = A - mec.model - A .* (mec.V_svd * u)
     #@show f
-    trapz(mesh.wmesh, f)
+    trapz(mesh.mesh, f)
 end
 
-function calc_chi2(mec::MaxEntContext, A, mesh::MaxEntGrid)
+function calc_chi2(mec::MaxEntContext, A, mesh::UniformMesh)
     ndim, _ = size(mec.kernel)
 
     T = zeros(C64, ndim)
     for i = 1:ndim
-        T[i] = mec.imdata[i] - trapz(mesh.wmesh, mec.kernel[i,:] .* A)
+        T[i] = mec.imdata[i] - trapz(mesh.mesh, mec.kernel[i,:] .* A)
         #@show i, T[i]
     end
 
@@ -436,8 +439,8 @@ function calc_chi2(mec::MaxEntContext, A, mesh::MaxEntGrid)
     #mec.kernel * reshape(A, (1,length(A)))
 end
 
-function calc_bayes(mec::MaxEntContext, A, entr, alpha, mesh::MaxEntGrid)
-    T = sqrt.(A ./ mesh.dw)
+function calc_bayes(mec::MaxEntContext, A, entr, alpha, mesh::UniformMesh)
+    T = sqrt.(A ./ mesh.weight)
     len = length(T)
     Tl = reshape(T, (len, 1))
     Tr = reshape(T, (1, len))
@@ -458,8 +461,8 @@ function calc_bayes(mec::MaxEntContext, A, entr, alpha, mesh::MaxEntGrid)
     return ng, tr, conv
 end
 
-function calc_posterior(mec::MaxEntContext, A, alpha, entr, chisq, mesh::MaxEntGrid)
-    T = sqrt.(A ./ mesh.dw)
+function calc_posterior(mec::MaxEntContext, A, alpha, entr, chisq, mesh::UniformMesh)
+    T = sqrt.(A ./ mesh.weight)
     len = length(T)
     Tl = reshape(T, (len, 1))
     Tr = reshape(T, (1, len))
