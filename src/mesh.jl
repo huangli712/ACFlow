@@ -3,10 +3,20 @@ function Base.getindex(um::UniformMesh, ind::I64)
     return um.mesh[ind]
 end
 
+function make_mesh()
+    mesh = get_c("mesh")
+    if mesh == "uniform"
+        return make_uniform_mesh()
+    else
+        return make_non_uniform_mesh()
+    end
+end
+
 function make_uniform_mesh()
-    nmesh = get_c["nmesh"]
-    wmax = get_c["wmax"]
-    wmin = get_c["wmin"]
+    nmesh = get_c("nmesh")
+    wmax = get_c("wmax")
+    wmin = get_c("wmin")
+    @show nmesh, wmax, wmin
 
     mesh = collect(LinRange(wmin, wmax, nmesh))
     weight = (mesh[2:end] + mesh[1:end-1]) / 2.0
