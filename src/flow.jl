@@ -1,5 +1,3 @@
-
-
 function read_param()
     cfg = inp_toml(query_args(), true)
     fil_dict(cfg)
@@ -12,8 +10,13 @@ function read_data()
     @show finput, ngrid, grid
 
     if grid == "matsubara"
-        return read_matsubara_data(finput, ngrid)
+        return read_freq_data(finput, ngrid)
     else
-        return read_imaginary_time_data(finput, ngrid)
+        return read_time_data(finput, ngrid)
     end
+end
+
+function solve()
+    solver = get_c("solver")
+    @show solver
 end
