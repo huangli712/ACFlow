@@ -30,12 +30,6 @@ mutable struct GreenData <: AbstractData
     var   :: Vector{F64}
 end
 
-struct MaxEntGrid
-    wmesh :: Vector{F64}
-    dw :: Vector{F64}
-end
-
-
 mutable struct MaxEntContext
     E :: Vector{F64}
     kernel :: Array{C64,2}
@@ -125,21 +119,6 @@ function maxent_run(mec::MaxEntContext, mesh::UniformMesh)
     maxent_classic(mec, mesh)
     #maxent_chi2kink(mec, mesh)
 end
-
-#=
-function maxent_mesh()
-    wmesh = collect(LinRange(-5.0, 5.0, 501))
-
-    test = (wmesh[2:end] + wmesh[1:end-1]) / 2.0
-    pushfirst!(test, wmesh[1])
-    push!(test, wmesh[end])
-    dw = diff(test)
-    @show wmesh
-    @show dw
-
-    return MaxEntGrid(wmesh, dw)
-end
-=#
 
 function maxent_model(g::UniformMesh)
     len = g.nmesh
