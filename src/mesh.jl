@@ -1,3 +1,8 @@
+function Base.getindex(um::UniformMesh, ind::I64)
+    @assert 1 ≤ ind ≤ um.nmesh
+    return um.mesh[ind]
+end
+
 function make_uniform_mesh()
     nmesh = get_c["nmesh"]
     wmax = get_c["wmax"]
@@ -10,4 +15,7 @@ function make_uniform_mesh()
     weight = diff(weight)
 
     return UniformMesh(nmesh, wmax, wmin, mesh, weight)
+end
+
+function make_non_uniform_mesh()
 end
