@@ -85,17 +85,7 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
     mesh = maxent_mesh()
 
     kernel = maxent_kernel(mesh, ω)
-
-    # Only for fermionic frequency
-    #G.var = vcat(G.var, G.var)
-    #G.value = vcat(real(G.value), imag(G.value))
     kernel = vcat(real(kernel), imag(kernel))
-    #@show size(kernel)
-    #@show kernel[:,1]
-    #@show kernel[:,33]
-    #@show kernel[:,end]
-    #E = vcat(E, E)
-    E = 1.0 ./ G.var
 
     F = svd(kernel)
     U, S, V = F
@@ -135,6 +125,8 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
     #@show length(mesh.wmesh)
     #error()
     
+    E = 1.0 ./ G.var
+
     niw = length(mesh.wmesh)
     W2 = zeros(F64, n_sv, niw)
     dw = mesh.dw
@@ -168,29 +160,6 @@ function maxent_run(mec::MaxEntContext, mesh::MaxEntGrid)
     maxent_chi2kink(mec, mesh)
 end
 
-#=
-function read_data!(::Type{FermionicMatsubaraGrid})
-    grid  = F64[] 
-    value = C64[]
-    error = F64[]
-    var   = F64[]
-
-    niw = 10
-    #
-    open("green.data", "r") do fin
-        for i = 1:niw
-            arr = parse.(F64, line_to_array(fin))
-            push!(grid, arr[1])
-            push!(value, arr[2] + arr[3] * im)
-            push!(error, 0.0001)
-            push!(var, 0.0001^2)
-        end
-    end
-
-    return FermionicMatsubaraGrid(grid), GreenData(value, error, var)
-end
-=#
-
 function maxent_mesh()
     wmesh = collect(LinRange(-5.0, 5.0, 501))
 
@@ -209,20 +178,18 @@ function maxent_model(g::MaxEntGrid)
 end
 
 function maxent_kernel(mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
-    niw = length(ω.grid)
+    niw = ω.ngrid
     nw = length(mesh.wmesh)
 
     kernel = zeros(C64, niw, nw)
     for i = 1:nw
         for j = 1:niw
-            kernel[j,i] = 1.0 / (im * ω.grid[j] - mesh.wmesh[i])
+            kernel[j,i] = 1.0 / (im * ω[j] - mesh.wmesh[i])
         end
     end
 
     return kernel
 end
-
-
 
 function maxent_historic(mec::MaxEntContext, mesh::MaxEntGrid)
     println("Solving")
