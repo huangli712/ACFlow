@@ -46,13 +46,8 @@ mutable struct MaxEntContext
     imdata
 end
 
-#struct FermionicMatsubaraGrid <: AbstractGrid
-#    grid :: Vector{F64}
-#end
-
 function solve(rd::RawData)
     ω, G = maxent_unpack(rd)
-    #ω, G = read_data!(FermionicMatsubaraGrid)
     mec, mesh = maxent_init(G, ω)
     maxent_run(mec, mesh)
 end
@@ -89,44 +84,12 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
 
     F = svd(kernel)
     U, S, V = F
-    #@show U[:,1]
-    #@show U[:,11]
-    #@show U[:,end]
-    #@show S
     n_sv = count( x -> x ≥ 1e-10, S)
     U_svd = U[:, 1:n_sv]
     V_svd = V[:, 1:n_sv]
     Xi_svd = S[1:n_sv]
-    #@show size(V)
-    #@show n_sv
-    #@show size(U_svd), size(V_svd), size(Xi_svd)
 
-    #=
-    open("svd.data", "r") do fin
-        for i = 1:20
-            for j = 1:20
-                U_svd[i,j] = parse(F64, line_to_array(fin)[3])
-            end
-        end
-        readline(fin)
-
-        for i = 1:501
-            for j = 1:20
-                V_svd[i,j] = parse(F64, line_to_array(fin)[3])
-            end
-        end
-        readline(fin)
-        for i = 1:20
-            Xi_svd[i] = parse(F64, line_to_array(fin)[2])
-        end
-    end
-    =#
-
-    #@show length(mesh.wmesh)
-    #error()
-    
     E = 1.0 ./ G.var
-
     niw = length(mesh.wmesh)
     W2 = zeros(F64, n_sv, niw)
     dw = mesh.dw
@@ -138,7 +101,6 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
     for i = 1:niw
         W3[:,:,i] = A[:,:,i] * B[:,:,i]
     end
-    #@show W3[:,:,end]
 
     Evi = zeros(F64, n_sv)
     imdata = G.value
