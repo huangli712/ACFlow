@@ -5,7 +5,11 @@ struct BosonicImaginaryTimeKernel <: AbstractKernel end
 struct BosonicMatsubaraKernel <: AbstractKernel end
 
 abstract type AbstractModel end
-struct FlatModel <: AbstractModel end
+struct FlatModel <: AbstractModel
+    nmesh :: I64
+    model :: Vector{F64}
+end
+
 struct GaussianModel <: AbstractModel end
 
 abstract type AbstractMesh end
