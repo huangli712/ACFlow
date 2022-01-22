@@ -17,7 +17,7 @@ import ..ACFlow: I64, F64, C64
 import ..ACFlow: FermionicMatsubaraGrid, BosonicMatsubaraGrid
 import ..ACFlow: UniformMesh
 import ..ACFlow: RawData, GreenData
-import ..ACFlow: make_mesh, make_model
+import ..ACFlow: make_mesh, make_model, make_kernel
 import ..ACFlow: get_c
 import ..ACFlow: secant, trapz, new_trapz
 
@@ -68,7 +68,7 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
     #mesh = maxent_mesh()
     mesh = make_mesh() 
 
-    kernel = maxent_kernel(mesh, ω)
+    kernel = make_kernel(mesh, ω)
     kernel = vcat(real(kernel), imag(kernel))
 
     F = svd(kernel)
@@ -110,20 +110,6 @@ function maxent_run(mec::MaxEntContext, mesh::UniformMesh)
     #maxent_historic(mec, mesh)
     #maxent_classic(mec, mesh)
     maxent_chi2kink(mec, mesh)
-end
-
-function maxent_kernel(mesh::UniformMesh, ω::FermionicMatsubaraGrid)
-    niw = ω.ngrid
-    nw = mesh.nmesh
-
-    kernel = zeros(C64, niw, nw)
-    for i = 1:nw
-        for j = 1:niw
-            kernel[j,i] = 1.0 / (im * ω[j] - mesh[i])
-        end
-    end
-
-    return kernel
 end
 
 function maxent_historic(mec::MaxEntContext, mesh::UniformMesh)
