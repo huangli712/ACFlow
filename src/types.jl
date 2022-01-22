@@ -1,9 +1,3 @@
-abstract type AbstractKernel end
-struct FermionicImaginaryTimeKernel <: AbstractKernel end
-struct FermionicMatsubaraKernel <: AbstractKernel end
-struct BosonicImaginaryTimeKernel <: AbstractKernel end
-struct BosonicMatsubaraKernel <: AbstractKernel end
-
 abstract type AbstractMesh end
 struct UniformMesh <: AbstractMesh
     nmesh :: I64
