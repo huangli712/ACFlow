@@ -14,10 +14,11 @@ using TOML
 
 include("global.jl")
 include("types.jl")
+include("util.jl")
+
+include("flow.jl")
 include("config.jl")
 include("inout.jl")
-include("util.jl")
-include("flow.jl")
 include("kernel.jl")
 include("model.jl")
 include("mesh.jl")
