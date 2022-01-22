@@ -31,8 +31,15 @@ end
 struct BosonicImaginaryTimeGrid <: AbstractGrid end
 struct BosonicMatsubaraGrid <: AbstractGrid end
 
-struct RawData{T}
+abstract type AbstractData end
+struct RawData{T} <: AbstractData
     mesh  :: Vector{F64}
     value :: Vector{T}
     error :: Vector{T}
+end
+
+mutable struct GreenData <: AbstractData
+    value :: Vector{C64}
+    error :: Vector{F64}
+    var   :: Vector{F64}
 end

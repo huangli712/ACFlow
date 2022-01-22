@@ -16,19 +16,10 @@ using LinearAlgebra
 import ..ACFlow: I64, F64, C64
 import ..ACFlow: FermionicMatsubaraGrid, BosonicMatsubaraGrid
 import ..ACFlow: UniformMesh
-import ..ACFlow: RawData
+import ..ACFlow: RawData, GreenData
 import ..ACFlow: make_mesh
 import ..ACFlow: get_c
-import ..ACFlow: line_to_array, secant, trapz, new_trapz
-
-abstract type AbstractData end
-abstract type AbstractGrid end
-
-mutable struct GreenData <: AbstractData
-    value :: Vector{C64}
-    error :: Vector{F64}
-    var   :: Vector{F64}
-end
+import ..ACFlow: secant, trapz, new_trapz
 
 mutable struct MaxEntContext
     E :: Vector{F64}
@@ -116,8 +107,8 @@ end
 function maxent_run(mec::MaxEntContext, mesh::UniformMesh)
     #maxent_bryan(mec, mesh)
     #maxent_historic(mec, mesh)
-    maxent_classic(mec, mesh)
-    #maxent_chi2kink(mec, mesh)
+    #maxent_classic(mec, mesh)
+    maxent_chi2kink(mec, mesh)
 end
 
 function maxent_model(g::UniformMesh)
