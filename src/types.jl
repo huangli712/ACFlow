@@ -6,18 +6,15 @@ struct UniformMesh <: AbstractMesh
     mesh :: Vector{F64}
     weight :: Vector{F64}
 end
-
 struct NonUniformMesh <: AbstractMesh end
 
 abstract type AbstractGrid end
 struct FermionicImaginaryTimeGrid <: AbstractGrid end
-
 struct FermionicMatsubaraGrid <: AbstractGrid
     ngrid :: I64
     β :: F64
     ω :: Vector{F64}
 end
-
 struct BosonicImaginaryTimeGrid <: AbstractGrid end
 struct BosonicMatsubaraGrid <: AbstractGrid end
 
@@ -27,7 +24,6 @@ struct RawData{T} <: AbstractData
     value :: Vector{T}
     error :: Vector{T}
 end
-
 mutable struct GreenData <: AbstractData
     value :: Vector{C64}
     error :: Vector{F64}
