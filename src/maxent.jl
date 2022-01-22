@@ -121,8 +121,8 @@ end
 
 function maxent_run(mec::MaxEntContext, mesh::UniformMesh)
     #maxent_bryan(mec, mesh)
-    maxent_historic(mec, mesh)
-    #maxent_classic(mec, mesh)
+    #maxent_historic(mec, mesh)
+    maxent_classic(mec, mesh)
     #maxent_chi2kink(mec, mesh)
 end
 
@@ -164,7 +164,7 @@ function maxent_kernel(mesh::UniformMesh, ω::FermionicMatsubaraGrid)
     return kernel
 end
 
-function maxent_historic(mec::MaxEntContext, mesh::MaxEntGrid)
+function maxent_historic(mec::MaxEntContext, mesh::UniformMesh)
     println("Solving")
     alpha = 10 ^ 6.0
     ustart = zeros(F64, mec.n_sv)
@@ -201,15 +201,15 @@ function maxent_historic(mec::MaxEntContext, mesh::MaxEntGrid)
     sol = maxent_optimize(mec, alpha_opt, ustart, mesh, use_bayes)
 
     A_opt = sol[:A_opt]
-    niw = length(mesh.wmesh)
+    niw = mesh.nmesh
     open("historic.data", "w") do fout
         for i = 1:niw
-            println(fout, mesh.wmesh[i], " ", A_opt[i])
+            println(fout, mesh[i], " ", A_opt[i])
         end
     end
 end
 
-function maxent_classic(mec::MaxEntContext, mesh::MaxEntGrid)
+function maxent_classic(mec::MaxEntContext, mesh::UniformMesh)
     println("Solving")
     optarr = []
     alpha = 10 ^ 6.0
@@ -253,10 +253,10 @@ function maxent_classic(mec::MaxEntContext, mesh::MaxEntGrid)
     sol = maxent_optimize(mec, alpha_opt, ustart, mesh, use_bayes)
 
     A_opt = sol[:A_opt]
-    niw = length(mesh.wmesh)
+    niw = mesh.nmesh
     open("classic.data", "w") do fout
         for i = 1:niw
-            println(fout, mesh.wmesh[i], " ", A_opt[i])
+            println(fout, mesh[i], " ", A_opt[i])
         end
     end
 end
