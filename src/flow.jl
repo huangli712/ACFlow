@@ -18,5 +18,19 @@ end
 
 function solve()
     solver = get_c("solver")
-    @show solver
+    
+    @cswitch solver begin
+        @case "MaxEnt"
+            break
+
+        @case "StochOM"
+            break
+
+        @case "StochAC"
+            break
+
+        @default
+            sorry()
+            break
+    end
 end
