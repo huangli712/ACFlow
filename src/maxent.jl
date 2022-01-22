@@ -15,7 +15,9 @@ using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
 import ..ACFlow: FermionicMatsubaraGrid, BosonicMatsubaraGrid
+import ..ACFlow: UniformMesh
 import ..ACFlow: RawData
+import ..ACFlow: make_mesh
 import ..ACFlow: get_c
 import ..ACFlow: line_to_array, secant, trapz, new_trapz
 
@@ -32,6 +34,7 @@ struct MaxEntGrid
     wmesh :: Vector{F64}
     dw :: Vector{F64}
 end
+
 
 mutable struct MaxEntContext
     E :: Vector{F64}
@@ -77,7 +80,8 @@ function maxent_unpack(rd::RawData)
 end
 
 function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
-    mesh = maxent_mesh()
+    #mesh = maxent_mesh()
+    mesh = make_mesh() 
 
     kernel = maxent_kernel(mesh, ω)
     kernel = vcat(real(kernel), imag(kernel))
@@ -122,6 +126,7 @@ function maxent_run(mec::MaxEntContext, mesh::MaxEntGrid)
     maxent_chi2kink(mec, mesh)
 end
 
+#=
 function maxent_mesh()
     wmesh = collect(LinRange(-5.0, 5.0, 501))
 
@@ -134,6 +139,7 @@ function maxent_mesh()
 
     return MaxEntGrid(wmesh, dw)
 end
+=#
 
 function maxent_model(g::MaxEntGrid)
     len = length(g.wmesh)
@@ -141,14 +147,14 @@ function maxent_model(g::MaxEntGrid)
     return model
 end
 
-function maxent_kernel(mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
+function maxent_kernel(mesh::UniformMesh, ω::FermionicMatsubaraGrid)
     niw = ω.ngrid
-    nw = length(mesh.wmesh)
+    nw = mesh.nmesh
 
     kernel = zeros(C64, niw, nw)
     for i = 1:nw
         for j = 1:niw
-            kernel[j,i] = 1.0 / (im * ω[j] - mesh.wmesh[i])
+            kernel[j,i] = 1.0 / (im * ω[j] - mesh[i])
         end
     end
 

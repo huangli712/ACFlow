@@ -16,7 +16,7 @@ function make_uniform_mesh()
     nmesh = get_c("nmesh")
     wmax = get_c("wmax")
     wmin = get_c("wmin")
-    @show nmesh, wmax, wmin
+    #@show nmesh, wmax, wmin
 
     mesh = collect(LinRange(wmin, wmax, nmesh))
     weight = (mesh[2:end] + mesh[1:end-1]) / 2.0
@@ -24,6 +24,8 @@ function make_uniform_mesh()
     push!(weight, mesh[end])
     weight = diff(weight)
 
+    #@show weight
+    #@show mesh
     return UniformMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
