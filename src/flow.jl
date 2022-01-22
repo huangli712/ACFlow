@@ -7,12 +7,19 @@ function read_data()
     finput = get_c("finput")
     ngrid = get_c("ngrid")
     grid = get_c("grid")
-    @show finput, ngrid, grid
 
-    if grid == "matsubara"
-        return read_freq_data(finput, ngrid)
-    else
-        return read_time_data(finput, ngrid)
+    @cswitch grid begin
+        @case "matsubara"
+            return read_freq_data(finput, ngrid)
+            break
+
+        @case "time"
+            return read_time_data(finput, ngrid)
+            break
+
+        @default
+            sorry()
+            break
     end
 end
 
@@ -21,6 +28,7 @@ function solve()
     
     @cswitch solver begin
         @case "MaxEnt"
+            MaxEnt.solve()
             break
 
         @case "StochOM"

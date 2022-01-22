@@ -52,8 +52,7 @@ end
 
 function solve()
     ω, G = read_data!(FermionicMatsubaraGrid)
-    mesh = maxent_mesh()
-    mec = maxent_init(G, mesh, ω)
+    mec, mesh = maxent_init(G, ω)
     maxent_run(mec, mesh)
 end
 
@@ -113,7 +112,9 @@ function maxent_kernel(mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     return kernel
 end
 
-function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
+function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
+    mesh = maxent_mesh()
+
     E = 1.0 ./ G.var
     kernel = maxent_kernel(mesh, ω)
     kernel = G.ucov' * kernel
@@ -189,7 +190,7 @@ function maxent_init(G::GreenData, mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
     #@show d2chi2[:,end]
 
     #@show size(kernel)
-    return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model, imdata)
+    return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model, imdata), mesh
 end
 
 function maxent_run(mec::MaxEntContext, mesh::MaxEntGrid)
