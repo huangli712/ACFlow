@@ -129,6 +129,8 @@ function maxent_mesh()
     pushfirst!(test, wmesh[1])
     push!(test, wmesh[end])
     dw = diff(test)
+    @show wmesh
+    @show dw
 
     return MaxEntGrid(wmesh, dw)
 end

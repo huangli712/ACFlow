@@ -9,7 +9,14 @@ struct FlatModel <: AbstractModel end
 struct GaussianModel <: AbstractModel end
 
 abstract type AbstractMesh end
-struct UniformMesh <: AbstractMesh end
+struct UniformMesh <: AbstractMesh
+    nmesh :: I64
+    wmax  :: F64
+    wmin  :: F64
+    mesh :: Vector{F64}
+    weight :: Vector{F64}
+end
+
 struct NonUniformMesh <: AbstractMesh end
 
 abstract type AbstractGrid end
