@@ -112,17 +112,6 @@ function maxent_run(mec::MaxEntContext, mesh::UniformMesh)
     maxent_chi2kink(mec, mesh)
 end
 
-#=
-function maxent_model(g::UniformMesh)
-    len = g.nmesh
-    model = ones(F64, len)
-    norm = trapz(g.mesh, model)
-    model = model ./ norm
-    #@show model
-    return model
-end
-=#
-
 function maxent_kernel(mesh::UniformMesh, ω::FermionicMatsubaraGrid)
     niw = ω.ngrid
     nw = mesh.nmesh
