@@ -1,10 +1,7 @@
-
-
-
-function read_imaginary_time_data(finput::String, ngrid::I64)
+function read_time_data(finput::String, ngrid::I64)
 end
 
-function read_matsubara_data(finput::String, ngrid::I64)
+function read_freq_data(finput::String, ngrid::I64)
     mesh = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)

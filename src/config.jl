@@ -168,4 +168,3 @@ See also: [`cat_m`](@ref), [`str_m`](@ref).
         error("Sorry, PMaxEnt does not contain key: $key")
     end
 end
-
