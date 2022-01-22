@@ -6,5 +6,8 @@ using ACFlow
 
 println("hello world")
 
-setup()
+read_param()
+raw = read_data()
+@show raw
+
 #MaxEnt.solve()
