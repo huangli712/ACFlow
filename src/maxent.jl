@@ -14,6 +14,7 @@ using Einsum
 using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
+import ..ACFlow: FermionicMatsubaraGrid, BosonicMatsubaraGrid
 import ..ACFlow: RawData
 import ..ACFlow: get_c
 import ..ACFlow: line_to_array, secant, trapz, new_trapz
@@ -22,9 +23,9 @@ abstract type AbstractData end
 abstract type AbstractGrid end
 
 mutable struct GreenData <: AbstractData
-    value #:: Vector{C64}
+    value :: Vector{C64}
     error :: Vector{F64}
-    var  :: Vector{F64}
+    var   :: Vector{F64}
 end
 
 struct MaxEntGrid
@@ -45,37 +46,56 @@ mutable struct MaxEntContext
     imdata
 end
 
-struct FermionicMatsubaraGrid <: AbstractGrid
-    grid :: Vector{F64}
-end
+#struct FermionicMatsubaraGrid <: AbstractGrid
+#    grid :: Vector{F64}
+#end
 
 function solve(rd::RawData)
-    maxent_unpack(rd)
-    ω, G = read_data!(FermionicMatsubaraGrid)
+    ω, G = maxent_unpack(rd)
+    #ω, G = read_data!(FermionicMatsubaraGrid)
     mec, mesh = maxent_init(G, ω)
     maxent_run(mec, mesh)
 end
 
 function maxent_unpack(rd::RawData)
-    grid = get_c["grid"]
-    
+    grid = get_c("grid")
+    ngrid = get_c("ngrid")
+    kernel = get_c("kernel")
+
+    if grid == "matsubara"
+        @assert ngrid == length(rd.mesh)
+        if kernel == "fermionic"
+            β = π / rd.mesh[1]
+            @assert β == get_c("beta")
+            _grid = FermionicMatsubaraGrid(ngrid, β, rd.mesh)
+        else
+            β = get_c("beta")
+            _grid = BosonicMatsubaraGrid(ngrid, β, rd.mesh)
+        end
+        value = vcat(real(rd.value), imag(rd.value))
+        error = vcat(real(rd.error), imag(rd.error))
+        covar = error .^ 2.0
+        _data = GreenData(value, error, covar)
+        return _grid, _data
+    else
+    end
 end
 
 function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
     mesh = maxent_mesh()
 
-    E = 1.0 ./ G.var
     kernel = maxent_kernel(mesh, ω)
 
     # Only for fermionic frequency
-    G.var = vcat(G.var, G.var)
-    G.value = vcat(real(G.value), imag(G.value))
+    #G.var = vcat(G.var, G.var)
+    #G.value = vcat(real(G.value), imag(G.value))
     kernel = vcat(real(kernel), imag(kernel))
     #@show size(kernel)
     #@show kernel[:,1]
     #@show kernel[:,33]
     #@show kernel[:,end]
-    E = vcat(E, E)
+    #E = vcat(E, E)
+    E = 1.0 ./ G.var
 
     F = svd(kernel)
     U, S, V = F
@@ -148,6 +168,7 @@ function maxent_run(mec::MaxEntContext, mesh::MaxEntGrid)
     maxent_chi2kink(mec, mesh)
 end
 
+#=
 function read_data!(::Type{FermionicMatsubaraGrid})
     grid  = F64[] 
     value = C64[]
@@ -168,6 +189,7 @@ function read_data!(::Type{FermionicMatsubaraGrid})
 
     return FermionicMatsubaraGrid(grid), GreenData(value, error, var)
 end
+=#
 
 function maxent_mesh()
     wmesh = collect(LinRange(-5.0, 5.0, 501))

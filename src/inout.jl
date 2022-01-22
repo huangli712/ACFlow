@@ -11,6 +11,7 @@ function read_freq_data(finput::String, ngrid::I64)
             arr = parse.(F64, line_to_array(fin)[1:3])
             mesh[i] = arr[1]
             value[i] = arr[2] + im * arr[3]
+            error[i] = 0.0001 + 0.0001im
         end
     end
 
