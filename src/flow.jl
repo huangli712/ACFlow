@@ -23,12 +23,12 @@ function read_data()
     end
 end
 
-function solve()
+function solve(rd::RawData)
     solver = get_c("solver")
     
     @cswitch solver begin
         @case "MaxEnt"
-            MaxEnt.solve()
+            MaxEnt.solve(rd)
             break
 
         @case "StochOM"

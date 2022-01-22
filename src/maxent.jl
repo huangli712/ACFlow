@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/01/19
+# Last modified: 2022/01/22
 #
 
 module MaxEnt
@@ -14,6 +14,8 @@ using Einsum
 using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
+import ..ACFlow: RawData
+import ..ACFlow: get_c
 import ..ACFlow: line_to_array, secant, trapz, new_trapz
 
 abstract type AbstractData end
@@ -50,66 +52,12 @@ struct FermionicMatsubaraGrid <: AbstractGrid
     grid :: Vector{F64}
 end
 
-function solve()
+function solve(rd::RawData)
+    nmesh = get_c("nmesh")
+    @show nmesh
     ω, G = read_data!(FermionicMatsubaraGrid)
     mec, mesh = maxent_init(G, ω)
     maxent_run(mec, mesh)
-end
-
-function read_data!(::Type{FermionicMatsubaraGrid})
-    grid  = F64[] 
-    value = C64[]
-    error = F64[]
-    imdata = F64[]
-    var   = F64[]
-
-    niw = 10
-    #
-    open("green.data", "r") do fin
-        for i = 1:niw
-            arr = parse.(F64, line_to_array(fin))
-            push!(grid, arr[1])
-            push!(value, arr[2] + arr[3] * im)
-            push!(error, 0.0001)
-            push!(var, 0.0001^2)
-        end
-    end
-    cov = diagm(var)
-    ucov = diagm(ones(niw))
-    value = ucov' * value
-
-    return FermionicMatsubaraGrid(grid), GreenData(value, error, imdata, var, cov, ucov)
-end
-
-function maxent_mesh()
-    wmesh = collect(LinRange(-5.0, 5.0, 501))
-
-    test = (wmesh[2:end] + wmesh[1:end-1]) / 2.0
-    pushfirst!(test, wmesh[1])
-    push!(test, wmesh[end])
-    dw = diff(test)
-
-    return MaxEntGrid(wmesh, dw)
-end
-
-function maxent_model(g::MaxEntGrid)
-    len = length(g.wmesh)
-    model = ones(F64, len) / 10.0
-    return model
-end
-
-function maxent_kernel(mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
-    niw = length(ω.grid)
-    nw = length(mesh.wmesh)
-
-    kernel = zeros(C64, niw, nw)
-    for i = 1:nw
-        for j = 1:niw
-            kernel[j,i] = 1.0 / (im * ω.grid[j] - mesh.wmesh[i])
-        end
-    end
-
-    return kernel
 end
 
 function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
@@ -199,6 +147,64 @@ function maxent_run(mec::MaxEntContext, mesh::MaxEntGrid)
     #maxent_classic(mec, mesh)
     maxent_chi2kink(mec, mesh)
 end
+
+function read_data!(::Type{FermionicMatsubaraGrid})
+    grid  = F64[] 
+    value = C64[]
+    error = F64[]
+    imdata = F64[]
+    var   = F64[]
+
+    niw = 10
+    #
+    open("green.data", "r") do fin
+        for i = 1:niw
+            arr = parse.(F64, line_to_array(fin))
+            push!(grid, arr[1])
+            push!(value, arr[2] + arr[3] * im)
+            push!(error, 0.0001)
+            push!(var, 0.0001^2)
+        end
+    end
+    cov = diagm(var)
+    ucov = diagm(ones(niw))
+    value = ucov' * value
+
+    return FermionicMatsubaraGrid(grid), GreenData(value, error, imdata, var, cov, ucov)
+end
+
+function maxent_mesh()
+    wmesh = collect(LinRange(-5.0, 5.0, 501))
+
+    test = (wmesh[2:end] + wmesh[1:end-1]) / 2.0
+    pushfirst!(test, wmesh[1])
+    push!(test, wmesh[end])
+    dw = diff(test)
+
+    return MaxEntGrid(wmesh, dw)
+end
+
+function maxent_model(g::MaxEntGrid)
+    len = length(g.wmesh)
+    model = ones(F64, len) / 10.0
+    return model
+end
+
+function maxent_kernel(mesh::MaxEntGrid, ω::FermionicMatsubaraGrid)
+    niw = length(ω.grid)
+    nw = length(mesh.wmesh)
+
+    kernel = zeros(C64, niw, nw)
+    for i = 1:nw
+        for j = 1:niw
+            kernel[j,i] = 1.0 / (im * ω.grid[j] - mesh.wmesh[i])
+        end
+    end
+
+    return kernel
+end
+
+
 
 function maxent_historic(mec::MaxEntContext, mesh::MaxEntGrid)
     println("Solving")
