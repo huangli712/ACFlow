@@ -14,7 +14,13 @@ struct NonUniformMesh <: AbstractMesh end
 
 abstract type AbstractGrid end
 struct FermionicImaginaryTimeGrid <: AbstractGrid end
-struct FermionicMatsubaraGrid <: AbstractGrid end
+
+struct FermionicMatsubaraGrid <: AbstractGrid
+    ngrid :: I64
+    β :: F64
+    ω :: Vector{F64}
+end
+
 struct BosonicImaginaryTimeGrid <: AbstractGrid end
 struct BosonicMatsubaraGrid <: AbstractGrid end
 

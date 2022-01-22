@@ -22,12 +22,9 @@ abstract type AbstractData end
 abstract type AbstractGrid end
 
 mutable struct GreenData <: AbstractData
-    value :: Vector{C64}
+    value #:: Vector{C64}
     error :: Vector{F64}
-    imdata :: Vector{F64}
     var  :: Vector{F64}
-    cov  :: Array{F64,2}
-    ucov :: Array{F64,2}
 end
 
 struct MaxEntGrid
@@ -53,11 +50,15 @@ struct FermionicMatsubaraGrid <: AbstractGrid
 end
 
 function solve(rd::RawData)
-    nmesh = get_c("nmesh")
-    @show nmesh
+    maxent_unpack(rd)
     ω, G = read_data!(FermionicMatsubaraGrid)
     mec, mesh = maxent_init(G, ω)
     maxent_run(mec, mesh)
+end
+
+function maxent_unpack(rd::RawData)
+    grid = get_c["grid"]
+    
 end
 
 function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
@@ -65,11 +66,10 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
 
     E = 1.0 ./ G.var
     kernel = maxent_kernel(mesh, ω)
-    kernel = G.ucov' * kernel
 
     # Only for fermionic frequency
     G.var = vcat(G.var, G.var)
-    G.imdata = vcat(real(G.value), imag(G.value))
+    G.value = vcat(real(G.value), imag(G.value))
     kernel = vcat(real(kernel), imag(kernel))
     #@show size(kernel)
     #@show kernel[:,1]
@@ -129,7 +129,7 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
     #@show W3[:,:,end]
 
     Evi = zeros(F64, n_sv)
-    imdata = G.imdata
+    imdata = G.value
     @einsum Evi[m] = Xi_svd[m] * U_svd[k,m] * E[k] * imdata[k]
     #@show Evi
 
@@ -152,7 +152,6 @@ function read_data!(::Type{FermionicMatsubaraGrid})
     grid  = F64[] 
     value = C64[]
     error = F64[]
-    imdata = F64[]
     var   = F64[]
 
     niw = 10
@@ -166,11 +165,8 @@ function read_data!(::Type{FermionicMatsubaraGrid})
             push!(var, 0.0001^2)
         end
     end
-    cov = diagm(var)
-    ucov = diagm(ones(niw))
-    value = ucov' * value
 
-    return FermionicMatsubaraGrid(grid), GreenData(value, error, imdata, var, cov, ucov)
+    return FermionicMatsubaraGrid(grid), GreenData(value, error, var)
 end
 
 function maxent_mesh()
