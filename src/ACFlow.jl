@@ -13,7 +13,6 @@ using Printf
 using TOML
 
 include("global.jl")
-include("types.jl")
 include("util.jl")
 
 include("flow.jl")
