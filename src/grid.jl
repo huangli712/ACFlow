@@ -24,3 +24,9 @@ function make_grid(fg::FermionicMatsubaraGrid)
         fg.ω[n] = (2 * n - 1) * π / fg.β
     end
 end
+
+function make_grid(bg::BosonicMatsubaraGrid)
+    for n in eachindex(bg.ω)
+        bg.ω[n] = (2 * n - 2) * π / bg.β
+    end
+end
