@@ -1,9 +1,10 @@
-function make_model(um::UniformMesh)
+
+function make_model(m::AbstractMesh)
     model = get_c("model")
     if model == "flat"
-        return make_flat_model(um)
+        return make_flat_model(m)
     else
-        return make_gaussian_model(um)
+        return make_gaussian_model(m)
     end
 end
 
