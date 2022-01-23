@@ -12,9 +12,14 @@ function make_flat_model(um::UniformMesh)
     model = ones(F64, um.nmesh)
     norm = trapz(um.mesh, model)
     model = model ./ norm
-
     return model
 end
 
+function make_flat_model(num::NonUniformMesh)
+end
+
 function make_gaussian_model(um::UniformMesh)
+end
+
+function make_gaussian_model(num::NonUniformMesh)
 end
