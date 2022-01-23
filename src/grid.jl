@@ -1,7 +1,11 @@
 
+function Base.getindex(fg::FermionicImaginaryTimeGrid, ind::I64)
+    @assert 1 ≤ ind ≤ fg.ntime
+    return fg.τ[ind]
+end
 
 function Base.getindex(fg::FermionicMatsubaraGrid, ind::I64)
-    @assert 1 ≤ ind ≤ fg.ngrid
+    @assert 1 ≤ ind ≤ fg.nfreq
     return fg.ω[ind]
 end
 
