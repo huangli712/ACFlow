@@ -1,13 +1,22 @@
-function make_kernel(m::AbstractMesh, fg::FermionicMatsubaraGrid)
-    niw = fg.nfreq
-    nw = m.nmesh
+function make_kernel(m::AbstractMesh, fg::FermionicImaginaryTimeGrid)
+end
 
-    kernel = zeros(C64, niw, nw)
-    for i = 1:nw
-        for j = 1:niw
-            kernel[j,i] = 1.0 / (im * fg[j] - m[i])
+function make_kernel(m::AbstractMesh, fg::FermionicMatsubaraGrid)
+    nfreq = fg.nfreq
+    nmesh = am.nmesh
+
+    kernel = zeros(C64, nfreq, nmesh)
+    for i = 1:nmesh
+        for j = 1:nfreq
+            kernel[j,i] = 1.0 / (im * fg[j] - am[i])
         end
     end
 
     return kernel
+end
+
+function make_kernel(m::AbstractMesh, bg::BosonicImaginaryTimeGrid)
+end
+
+function make_kernel(m::AbstractMesh, bg::BosonicMatsubaraGrid)
 end
