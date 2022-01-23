@@ -1,5 +1,5 @@
 function make_kernel(um::UniformMesh, fg::FermionicMatsubaraGrid)
-    niw = fg.ngrid
+    niw = fg.nfreq
     nw = um.nmesh
 
     kernel = zeros(C64, niw, nw)
