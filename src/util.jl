@@ -162,3 +162,13 @@ function new_trapz(x, y)
     end
     return value
 end
+
+function trapz(x::UniformMesh, y::Vector{F64})
+    h = x[2] - x[1]
+    sum = 0.0
+    for i = 2:length(y)-1
+        sum = sum + y[i]
+    end
+    value = (h / 2.0) * (y[1] + y[end] + 2.0 * sum)
+    return value
+end
