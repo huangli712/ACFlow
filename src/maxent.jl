@@ -77,7 +77,7 @@ function maxent_historic(mec::MaxEntContext)
     use_bayes = false
     niw = 20
     while conv < 1.0
-        o = maxent_optimize(mec, alpha, ustart, mesh, use_bayes)
+        o = maxent_optimize(mec, alpha, ustart, use_bayes)
         push!(optarr, o)
         alpha = alpha / 10.0
         conv = niw / o[:chi2]
@@ -90,7 +90,7 @@ function maxent_historic(mec::MaxEntContext)
     #@show alpha
 
     function root_fun(_alpha, _u)
-        res = maxent_optimize(mec, _alpha, _u, mesh, use_bayes)
+        res = maxent_optimize(mec, _alpha, _u, use_bayes)
         _u[:] = copy(res[:u_opt])
         #@show niw / res[:chi2] - 1.0
         #@show _u
@@ -100,7 +100,7 @@ function maxent_historic(mec::MaxEntContext)
     alpha_opt = secant(root_fun, alpha, ustart)
     #@show ustart, alpha_opt
 
-    sol = maxent_optimize(mec, alpha_opt, ustart, mesh, use_bayes)
+    sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
     A_opt = sol[:A_opt]
     niw = mesh.nmesh
@@ -122,7 +122,7 @@ function maxent_classic(mec::MaxEntContext)
 
     use_bayes = true
     while conv < 1.0
-        o = maxent_optimize(mec, alpha, ustart, mesh, use_bayes)
+        o = maxent_optimize(mec, alpha, ustart, use_bayes)
         push!(optarr, o)
         alpha = alpha / 10.0
         conv = o[:convergence]
@@ -143,7 +143,7 @@ function maxent_classic(mec::MaxEntContext)
     ustart = optarr[end-1][:u_opt]
 
     function root_fun(_alpha, _u)
-        res = maxent_optimize(mec, _alpha, _u, mesh, use_bayes)
+        res = maxent_optimize(mec, _alpha, _u, use_bayes)
         _u[:] = copy(res[:u_opt])
         #@show _u
         return res[:convergence] - 1.0
@@ -153,7 +153,7 @@ function maxent_classic(mec::MaxEntContext)
     #@show alpha_opt
     #@show ustart
 
-    sol = maxent_optimize(mec, alpha_opt, ustart, mesh, use_bayes)
+    sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
     A_opt = sol[:A_opt]
     niw = mesh.nmesh
@@ -175,7 +175,7 @@ function maxent_bryan(mec::MaxEntContext)
     optarr = []
     use_bayes = true
     while true
-        o = maxent_optimize(mec, alpha, ustart, mesh, use_bayes)
+        o = maxent_optimize(mec, alpha, ustart, use_bayes)
         ustart = copy(o[:u_opt])
         push!(optarr, o)
         alpha = alpha / 1.1
@@ -233,7 +233,7 @@ function maxent_chi2kink(mec::MaxEntContext)
 
     use_bayes = false
     while true
-        o = maxent_optimize(mec, alpha, ustart, mesh, use_bayes)
+        o = maxent_optimize(mec, alpha, ustart, use_bayes)
         push!(optarr, o)
         ustart = copy(o[:u_opt])
         push!(chis, o[:chi2])
@@ -266,7 +266,7 @@ function maxent_chi2kink(mec::MaxEntContext)
     ustart = optarr[closest_idx][:u_opt]
     #@show ustart
 
-    sol = maxent_optimize(mec, alpha_opt, ustart, mesh, use_bayes)
+    sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
     A_opt = sol[:A_opt]
     niw = mesh.nmesh
@@ -277,7 +277,7 @@ function maxent_chi2kink(mec::MaxEntContext)
     end
 end
 
-function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::UniformMesh, use_bayes::Bool)
+function maxent_optimize(mec::MaxEntContext, alpha, ustart, use_bayes::Bool)
     max_hist = 1
 
     #@show alpha, ustart
@@ -290,7 +290,7 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::UniformMesh, u
     #@show entr
     #@show size(mec.kernel)
     chisq = real(calc_chi2(mec, A_opt))
-    norm = trapz(mesh, A_opt)
+    norm = trapz(mec.mesh, A_opt)
     #error()
     #@show chisq
     #@show norm
