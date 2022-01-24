@@ -28,12 +28,12 @@ mutable struct MaxEntContext
     imdata :: Vector{F64}
     E :: Vector{F64}
     kernel :: Array{F64,2}
+    V_svd :: Array{F64,2}
     d2chi2
     W2
     W3
     Bm
     n_sv
-    V_svd
 end
 
 function solve(rd::RawData)
@@ -77,7 +77,7 @@ function maxent_init(rd::RawData)
     d2chi2 = zeros(F64, niw, niw)
     @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
 
-    return MaxEntContext(mesh, model, imdata, E, kernel, d2chi2, W2, W3, Bm, n_sv, V_svd)
+    return MaxEntContext(mesh, model, imdata, E, kernel, V_svd, d2chi2, W2, W3, Bm, n_sv)
 end
 
 function maxent_run(mec::MaxEntContext)
