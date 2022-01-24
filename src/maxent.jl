@@ -41,11 +41,11 @@ function solve(rd::RawData)
 end
 
 function maxent_init(rd::RawData)
-    ω = make_grid(rd)
+    grid = make_grid(rd)
     G = make_data(rd)
     mesh = make_mesh() 
 
-    kernel = make_kernel(mesh, ω)
+    kernel = make_kernel(mesh, grid)
     kernel = vcat(real(kernel), imag(kernel))
 
     F = svd(kernel)
