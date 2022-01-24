@@ -33,7 +33,6 @@ mutable struct MaxEntContext
     W3 :: Array{F64,3}
     Bm :: Vector{F64}
     d2chi2 :: Array{F64,2}
-    n_sv :: I64
 end
 
 function solve(rd::RawData)
@@ -52,7 +51,6 @@ function maxent_init(rd::RawData)
     model = make_model(mesh)
     kernel = make_kernel(mesh, grid)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
-    n_sv = length(S_svd)
 
     niw = mesh.nmesh
     dw = mesh.weight
@@ -62,7 +60,7 @@ function maxent_init(rd::RawData)
     d2chi2 = zeros(F64, niw, niw)
     @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
 
-    return MaxEntContext(imdata, E, mesh, model, kernel, V_svd, W2, W3, Bm, d2chi2, n_sv)
+    return MaxEntContext(imdata, E, mesh, model, kernel, V_svd, W2, W3, Bm, d2chi2)
 end
 
 function maxent_run(mec::MaxEntContext)
@@ -75,7 +73,7 @@ end
 function maxent_historic(mec::MaxEntContext)
     println("Solving")
     alpha = 10 ^ 6.0
-    ustart = zeros(F64, mec.n_sv)
+    ustart = zeros(F64, length(mec.Bm))
     optarr = []
     converged = false
     conv = 0.0
@@ -122,7 +120,7 @@ function maxent_classic(mec::MaxEntContext)
     println("Solving")
     optarr = []
     alpha = 10 ^ 6.0
-    ustart = zeros(F64, mec.n_sv)
+    ustart = zeros(F64, length(mec.Bm))
     converged = false
     conv = 0.0
     mesh = mec.mesh
@@ -174,7 +172,7 @@ end
 function maxent_bryan(mec::MaxEntContext)
     println("hehe")
     alpha = 500
-    ustart = zeros(F64, mec.n_sv)
+    ustart = zeros(F64, length(mec.Bm))
     #@show ustart
     mesh = mec.mesh
 
@@ -235,7 +233,7 @@ function maxent_chi2kink(mec::MaxEntContext)
     chis = []
     alphas = []
     optarr = []
-    ustart = zeros(F64, mec.n_sv)
+    ustart = zeros(F64, length(mec.Bm))
     mesh = mec.mesh
 
     use_bayes = false
@@ -287,7 +285,7 @@ end
 function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::UniformMesh, use_bayes::Bool)
     max_hist = 1
 
-    #@show mec.n_sv, alpha, ustart
+    #@show alpha, ustart
     solution, nfev = newton(mec, alpha, ustart, max_hist, function_and_jacobian)
     u_opt = copy(solution)
     A_opt = singular_to_realspace_diag(mec, solution) 
@@ -425,32 +423,31 @@ function function_and_jacobian(mec::MaxEntContext, u, alpha)
     v = mec.V_svd * u
     w = exp.(v)
 
-    n_sv, niw = size(mec.W2)
-    term_1 = zeros(F64, n_sv)
-    term_2 = zeros(F64, n_sv, n_sv)
-    for i = 1:n_sv
+    n_svd, niw = size(mec.W2)
+    term_1 = zeros(F64, n_svd)
+    term_2 = zeros(F64, n_svd, n_svd)
+    for i = 1:n_svd
         term_1[i] = dot(mec.W2[i,:], w)
         #@show i, term_1[i]
     end
 
-    for i = 1:n_sv
-        for j = 1:n_sv
+    for i = 1:n_svd
+        for j = 1:n_svd
             term_2[i,j] = dot(mec.W3[i,j,:], w)
             #@show i, j, term_2[i,j]
         end
     end
 
     f = alpha * u + term_1 - mec.Bm
-    J = alpha * diagm(ones(n_sv)) + term_2
-    #@show f
-    #@show J
+    J = alpha * diagm(ones(n_svd)) + term_2
+
     return f, J
 end
 
 function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobian)
     max_hist = 1
     max_iter = 20000
-    opt_size = mec.n_sv
+    opt_size = length(ustart)
     mixing = 0.5
     props = []
     res = []
