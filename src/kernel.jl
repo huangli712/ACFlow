@@ -1,5 +1,4 @@
 
-
 function make_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
 end
 

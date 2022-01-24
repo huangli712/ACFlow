@@ -23,16 +23,16 @@ import ..ACFlow: get_c
 import ..ACFlow: secant, trapz
 
 mutable struct MaxEntContext
-    mesh :: AbstractMesh
-    model
     imdata :: Vector{F64}
     E :: Vector{F64}
+    mesh :: AbstractMesh
+    model
     kernel :: Array{F64,2}
     V_svd :: Array{F64,2}
-    d2chi2
     W2
     W3
     Bm
+    d2chi2
     n_sv
 end
 
@@ -43,17 +43,16 @@ end
 
 function maxent_init(rd::RawData)
     G = make_data(rd)
+    E = 1.0 ./ G.var
+    imdata = G.value
+
     grid = make_grid(rd)
     mesh = make_mesh()
 
     model = make_model(mesh)
-
     kernel = make_kernel(mesh, grid)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
     n_sv = length(S_svd)
-
-    E = 1.0 ./ G.var
-    imdata = G.value
 
     niw = mesh.nmesh
     dw = mesh.weight
@@ -77,7 +76,7 @@ function maxent_init(rd::RawData)
     d2chi2 = zeros(F64, niw, niw)
     @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
 
-    return MaxEntContext(mesh, model, imdata, E, kernel, V_svd, d2chi2, W2, W3, Bm, n_sv)
+    return MaxEntContext(imdata, E, mesh, model, kernel, V_svd, W2, W3, Bm, d2chi2, n_sv)
 end
 
 function maxent_run(mec::MaxEntContext)
