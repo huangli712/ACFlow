@@ -26,14 +26,14 @@ mutable struct MaxEntContext
     imdata :: Vector{F64}
     E :: Vector{F64}
     mesh :: AbstractMesh
-    model
+    model :: Vector{F64}
     kernel :: Array{F64,2}
     V_svd :: Array{F64,2}
-    W2
-    W3
-    Bm
-    d2chi2
-    n_sv
+    W2 :: Array{F64,2}
+    W3 :: Array{F64,3}
+    Bm :: Vector{F64}
+    d2chi2 :: Array{F64,2}
+    n_sv :: I64
 end
 
 function solve(rd::RawData)
