@@ -19,7 +19,7 @@ import ..ACFlow: UniformMesh
 import ..ACFlow: RawData, GreenData
 import ..ACFlow: make_mesh, make_model, make_kernel
 import ..ACFlow: get_c
-import ..ACFlow: secant, trapz, new_trapz
+import ..ACFlow: secant, trapz
 
 mutable struct MaxEntContext
     E :: Vector{F64}
@@ -241,7 +241,7 @@ function maxent_bryan(mec::MaxEntContext, mesh::UniformMesh)
         push!(specarr, optarr[i][:A_opt])
     end
     
-    probarr = probarr ./ (-new_trapz(alpharr, probarr))
+    probarr = probarr ./ (-trapz(alpharr, probarr))
     len = length(probarr)
     niw = mesh.nmesh
 
@@ -252,7 +252,7 @@ function maxent_bryan(mec::MaxEntContext, mesh::UniformMesh)
 
     A_opt = zeros(F64, niw)
     for i = 1:niw
-        A_opt[i] = -new_trapz(alpharr, Spectra[:,i])
+        A_opt[i] = -trapz(alpharr, Spectra[:,i])
     end
 
     open("mem.data", "w") do fout
@@ -333,7 +333,8 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::UniformMesh, u
     #@show entr
     #@show size(mec.kernel)
     chisq = real(calc_chi2(mec, A_opt, mesh))
-    norm = trapz(mesh.mesh, A_opt)
+    norm = trapz(mesh, A_opt)
+    #error()
     #@show chisq
     #@show norm
 
@@ -370,7 +371,7 @@ end
 function calc_entropy(mec::MaxEntContext, A, u, mesh::UniformMesh)
     f = A - mec.model - A .* (mec.V_svd * u)
     #@show f
-    trapz(mesh.mesh, f)
+    trapz(mesh, f)
 end
 
 function calc_chi2(mec::MaxEntContext, A, mesh::UniformMesh)
@@ -378,7 +379,7 @@ function calc_chi2(mec::MaxEntContext, A, mesh::UniformMesh)
 
     T = zeros(C64, ndim)
     for i = 1:ndim
-        T[i] = mec.imdata[i] - trapz(mesh.mesh, mec.kernel[i,:] .* A)
+        T[i] = mec.imdata[i] - trapz(mesh, mec.kernel[i,:] .* A)
         #@show i, T[i]
     end
 

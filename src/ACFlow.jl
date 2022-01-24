@@ -9,6 +9,7 @@
 
 module ACFlow
 
+using LinearAlgebra
 using Printf
 using TOML
 

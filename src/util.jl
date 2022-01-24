@@ -141,34 +141,28 @@ function secant(func, x0, args)
     end
 end
 
-function trapz(x, y)
-    #@show x
-    #@show y
-    h = x[2] - x[1]
-    sum = 0.0
-    for i = 2:length(x)-1
-        sum = sum + y[i]
+function trapz(x::Vector{F64}, y::Vector, uniform::Bool = false)
+    if uniform
+        h = x[2] - x[1]
+        _sum = sum(y[2:end-1])
+        value = (h / 2.0) * (y[1] + y[end] + 2.0 * _sum)
+    else
+        len = length(x)
+        value = 0.0
+        for i = 1:len-1
+            value = value + (y[i] + y[i+1]) * (x[i+1] - x[i])
+        end
+        value = value / 2.0    
     end
-    value = (h / 2.0) * (y[1] + y[end] + 2.0 * sum)
-        
+
     return value
 end
 
-function new_trapz(x, y)
-    len = length(x)
-    value = 0.0
-    for i = 1:len-1
-        value = value + (y[i] + y[i+1]) * (x[i+1] - x[i]) / 2.0
-    end
-    return value
-end
+#function new_trapz(x, y)
+#    return value
+#end
 
 function trapz(x::UniformMesh, y::Vector{F64})
-    h = x[2] - x[1]
-    sum = 0.0
-    for i = 2:length(y)-1
-        sum = sum + y[i]
-    end
-    value = (h / 2.0) * (y[1] + y[end] + 2.0 * sum)
+    value = dot(x.weight, y)
     return value
 end
