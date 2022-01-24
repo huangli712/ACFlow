@@ -53,10 +53,12 @@ function maxent_init(rd::RawData)
     n_sv = length(S_svd)
 
     E = 1.0 ./ G.var
+    imdata = G.value
+
     niw = mesh.nmesh
-    W2 = zeros(F64, n_sv, niw)
     dw = mesh.weight
-    
+    W2 = zeros(F64, n_sv, niw)
+
     @einsum W2[m,l] = E[k] * U_svd[k,m] * S_svd[m] * U_svd[k,n] * S_svd[n] * V_svd[l,n] * dw[l] * model[l]
     A = reshape(W2, (n_sv, 1, niw))
     B = reshape(V_svd', (1, n_sv, niw))
@@ -66,7 +68,6 @@ function maxent_init(rd::RawData)
     end
 
     Evi = zeros(F64, n_sv)
-    imdata = G.value
     @einsum Evi[m] = S_svd[m] * U_svd[k,m] * E[k] * imdata[k]
 
     d2chi2 = zeros(F64, niw, niw)
