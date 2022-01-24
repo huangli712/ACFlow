@@ -17,7 +17,7 @@ import ..ACFlow: I64, F64, C64
 import ..ACFlow: FermionicMatsubaraGrid, BosonicMatsubaraGrid
 import ..ACFlow: UniformMesh
 import ..ACFlow: RawData, GreenData
-import ..ACFlow: make_mesh, make_model, make_kernel
+import ..ACFlow: make_grid, make_mesh, make_model, make_kernel, make_data
 import ..ACFlow: get_c
 import ..ACFlow: secant, trapz
 
@@ -36,33 +36,11 @@ mutable struct MaxEntContext
 end
 
 function solve(rd::RawData)
-    ω, G = maxent_unpack(rd)
+    #ω, G = maxent_unpack(rd)
+    ω = make_grid(rd)
+    G = make_data(rd)
     mec = maxent_init(G, ω)
     maxent_run(mec)
-end
-
-function maxent_unpack(rd::RawData)
-    grid = get_c("grid")
-    ngrid = get_c("ngrid")
-    kernel = get_c("kernel")
-
-    if grid == "matsubara"
-        @assert ngrid == length(rd.mesh)
-        if kernel == "fermionic"
-            β = π / rd.mesh[1]
-            @assert β == get_c("beta")
-            _grid = FermionicMatsubaraGrid(ngrid, β, rd.mesh)
-        else
-            β = get_c("beta")
-            _grid = BosonicMatsubaraGrid(ngrid, β, rd.mesh)
-        end
-        value = vcat(real(rd.value), imag(rd.value))
-        error = vcat(real(rd.error), imag(rd.error))
-        covar = error .^ 2.0
-        _data = GreenData(value, error, covar)
-        return _grid, _data
-    else
-    end
 end
 
 function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
