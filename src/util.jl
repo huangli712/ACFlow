@@ -158,11 +158,7 @@ function trapz(x::Vector{F64}, y::Vector, uniform::Bool = false)
     return value
 end
 
-#function new_trapz(x, y)
-#    return value
-#end
-
-function trapz(x::UniformMesh, y::Vector{F64})
+function trapz(x::UniformMesh, y::Vector)
     value = dot(x.weight, y)
     return value
 end
