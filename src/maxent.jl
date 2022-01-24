@@ -15,15 +15,16 @@ using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
 import ..ACFlow: FermionicMatsubaraGrid, BosonicMatsubaraGrid
-import ..ACFlow: UniformMesh
+import ..ACFlow: AbstractMesh, UniformMesh
 import ..ACFlow: RawData, GreenData
 import ..ACFlow: make_grid, make_mesh, make_model, make_kernel, make_data
+import ..ACFlow: make_singular_space
 import ..ACFlow: get_c
 import ..ACFlow: secant, trapz
 
 mutable struct MaxEntContext
     E :: Vector{F64}
-    kernel :: Array{C64,2}
+    kernel :: Array{F64,2}
     d2chi2
     W2
     W3
@@ -32,7 +33,7 @@ mutable struct MaxEntContext
     Evi
     model
     imdata
-    mesh
+    mesh :: AbstractMesh
 end
 
 function solve(rd::RawData)
@@ -43,17 +44,21 @@ end
 function maxent_init(rd::RawData)
     G = make_data(rd)
     grid = make_grid(rd)
-    mesh = make_mesh() 
+    mesh = make_mesh()
+    #@show typeof(mesh)
 
     kernel = make_kernel(mesh, grid)
-    kernel = vcat(real(kernel), imag(kernel))
+    #kernel = vcat(real(kernel), imag(kernel))
 
-    F = svd(kernel)
-    U, S, V = F
-    n_sv = count( x -> x ≥ 1e-10, S)
-    U_svd = U[:, 1:n_sv]
-    V_svd = V[:, 1:n_sv]
-    Xi_svd = S[1:n_sv]
+    #F = svd(kernel)
+    #@show typeof(F)
+    #U, S, V = F
+    #n_sv = count( x -> x ≥ 1e-10, S)
+    #U_svd = U[:, 1:n_sv]
+    #V_svd = V[:, 1:n_sv]
+    #Xi_svd = S[1:n_sv]
+    U_svd, V_svd, Xi_svd = make_singular_space(kernel)
+    n_sv = length(Xi_svd)
 
     E = 1.0 ./ G.var
     niw = mesh.nmesh
