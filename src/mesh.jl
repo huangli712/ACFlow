@@ -12,13 +12,13 @@ end
 function make_mesh()
     mesh = get_c("mesh")
     if mesh == "uniform"
-        return make_uniform_mesh()
+        return build_uniform_mesh()
     else
-        return make_non_uniform_mesh()
+        return build_non_uniform_mesh()
     end
 end
 
-function make_uniform_mesh()
+function build_uniform_mesh()
     nmesh = get_c("nmesh")
     wmax = get_c("wmax")
     wmin = get_c("wmin")
@@ -32,5 +32,5 @@ function make_uniform_mesh()
     return UniformMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
-function make_non_uniform_mesh()
+function build_non_uniform_mesh()
 end
