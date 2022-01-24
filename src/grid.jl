@@ -50,13 +50,21 @@ function make_grid(v::Vector{F64})
     end
 end
 
-function make_grid(fg::FermionicMatsubaraGrid)
+function rebuild_grid(fg::FermionicImaginaryTimeGrid)
+    fg.τ = collect(LinRange(0.0, fg.β, fg.ntime))
+end
+
+function rebuild_grid(fg::FermionicMatsubaraGrid)
     for n in eachindex(fg.ω)
         fg.ω[n] = (2 * n - 1) * π / fg.β
     end
 end
 
-function make_grid(bg::BosonicMatsubaraGrid)
+function rebuild_grid(bg::BosonicImaginaryTimeGrid)
+    bg.τ = collect(LinRange(0.0, bg.β, bg.ntime))
+end
+
+function rebuild_grid(bg::BosonicMatsubaraGrid)
     for n in eachindex(bg.ω)
         bg.ω[n] = (2 * n - 2) * π / bg.β
     end
