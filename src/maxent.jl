@@ -55,10 +55,10 @@ function maxent_init(rd::RawData)
     niw = mesh.nmesh
     dw = mesh.weight
 
-    @timev W2, W3, Bm = precompute(imdata, E, mesh, model, U_svd, V_svd, S_svd)
+    @timev W2, W3, Bm, d2chi2 = precompute(imdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
 
-    d2chi2 = zeros(F64, niw, niw)
-    @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
+    #d2chi2 = zeros(F64, niw, niw)
+    #@einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
 
     return MaxEntContext(imdata, E, mesh, model, kernel, V_svd, W2, W3, Bm, d2chi2)
 end
@@ -332,6 +332,7 @@ end
 
 function precompute(imdata::Vector{F64}, E::Vector{F64}, 
                     mesh::AbstractMesh, model::Vector{F64},
+                    kernel::Matrix{F64},
                     U::Matrix{F64}, V::Matrix{F64}, S::Vector{F64})
     nmesh = mesh.nmesh
     weight = mesh.weight
@@ -340,6 +341,7 @@ function precompute(imdata::Vector{F64}, E::Vector{F64},
     W2 = zeros(F64, n_svd, nmesh)
     W3 = zeros(F64, n_svd, n_svd, nmesh)
     Bm = zeros(F64, n_svd)
+    d2chi2 = zeros(F64, nmesh, nmesh)
 
     @einsum W2[m,l] = E[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l] * model[l]
 
@@ -350,6 +352,8 @@ function precompute(imdata::Vector{F64}, E::Vector{F64},
     end
 
     @einsum Bm[m] = S[m] * U[k,m] * E[k] * imdata[k]
+
+    @einsum d2chi2[i,j] = weight[i] * weight[j] * kernel[k,i] * kernel[k,j] * E[k]
 
     return W2, W3, Bm
 end
