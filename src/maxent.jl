@@ -409,11 +409,8 @@ function singular_to_realspace_diag(mec::MaxEntContext, u)
 end
 
 function function_and_jacobian(mec::MaxEntContext, u, alpha)
-    #@show length(u), alpha
     v = mec.V_svd * u
     w = exp.(v)
-    #@show w
-    #@show size(mec.W2), size(mec.W3)
 
     n_sv, niw = size(mec.W2)
     term_1 = zeros(F64, n_sv)
