@@ -36,14 +36,13 @@ mutable struct MaxEntContext
 end
 
 function solve(rd::RawData)
-    #ω, G = maxent_unpack(rd)
-    ω = make_grid(rd)
-    G = make_data(rd)
-    mec = maxent_init(G, ω)
+    mec = maxent_init(rd)
     maxent_run(mec)
 end
 
-function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
+function maxent_init(rd::RawData)
+    ω = make_grid(rd)
+    G = make_data(rd)
     mesh = make_mesh() 
 
     kernel = make_kernel(mesh, ω)
@@ -75,8 +74,6 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
 
     d2chi2 = zeros(F64, niw, niw)
     @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
-
-    #@show kernel
 
     return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model, imdata, mesh)
 end
