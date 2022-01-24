@@ -65,7 +65,6 @@ function maxent_unpack(rd::RawData)
 end
 
 function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
-    #mesh = maxent_mesh()
     mesh = make_mesh() 
 
     kernel = make_kernel(mesh, ω)
@@ -82,7 +81,6 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
     niw = mesh.nmesh
     W2 = zeros(F64, n_sv, niw)
     dw = mesh.weight
-    #model = maxent_model(mesh)
     model = make_model(mesh)
     @einsum W2[m,l] = E[k] * U_svd[k,m] * Xi_svd[m] * U_svd[k,n] * Xi_svd[n] * V_svd[l,n] * dw[l] * model[l]
     A = reshape(W2, (n_sv, 1, niw))
@@ -95,13 +93,10 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
     Evi = zeros(F64, n_sv)
     imdata = G.value
     @einsum Evi[m] = Xi_svd[m] * U_svd[k,m] * E[k] * imdata[k]
-    #@show Evi
 
     d2chi2 = zeros(F64, niw, niw)
     @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
-    #@show d2chi2[:,end]
 
-    #@show size(kernel)
     return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model, imdata), mesh
 end
 
