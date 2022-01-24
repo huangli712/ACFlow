@@ -49,19 +49,20 @@ function maxent_init(rd::RawData)
     mesh = make_mesh()
 
     model = make_model(mesh)
+
     kernel = make_kernel(mesh, grid)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
 
-    @timev W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
+    W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
 
     return MaxEntContext(Gdata, E, mesh, model, kernel, V_svd, W₂, W₃, Bₘ, d2chi2)
 end
 
 function maxent_run(mec::MaxEntContext)
-    #maxent_bryan(mec)
+    maxent_bryan(mec)
     #maxent_historic(mec)
     #maxent_classic(mec)
-    maxent_chi2kink(mec)
+    #maxent_chi2kink(mec)
 end
 
 function maxent_historic(mec::MaxEntContext)
@@ -285,10 +286,10 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::UniformMesh, u
     A_opt = singular_to_realspace_diag(mec, solution) 
     #@show u_opt
     #@show A_opt
-    entr = calc_entropy(mec, A_opt, u_opt, mesh)
+    entr = calc_entropy(mec, A_opt, u_opt)
     #@show entr
     #@show size(mec.kernel)
-    chisq = real(calc_chi2(mec, A_opt, mesh))
+    chisq = real(calc_chi2(mec, A_opt))
     norm = trapz(mesh, A_opt)
     #error()
     #@show chisq
@@ -307,7 +308,7 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::UniformMesh, u
     #@show result_dict[:Q]
 
     if use_bayes
-        ng, tr, conv = calc_bayes(mec, A_opt, entr, alpha, mesh)
+        ng, tr, conv = calc_bayes(mec, A_opt, entr, alpha)
         #@show ng, tr, conv
         #error()
         result_dict[:n_good] = ng
@@ -352,28 +353,25 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
     return W₂, W₃, Bₘ, d2chi2
 end
 
-function calc_entropy(mec::MaxEntContext, A, u, mesh::UniformMesh)
+function calc_entropy(mec::MaxEntContext, A, u)
     f = A - mec.model - A .* (mec.V_svd * u)
-    #@show f
-    trapz(mesh, f)
+    trapz(mec.mesh, f)
 end
 
-function calc_chi2(mec::MaxEntContext, A, mesh::UniformMesh)
+function calc_chi2(mec::MaxEntContext, A)
     ndim, _ = size(mec.kernel)
 
     T = zeros(C64, ndim)
     for i = 1:ndim
-        T[i] = mec.Gdata[i] - trapz(mesh, mec.kernel[i,:] .* A)
-        #@show i, T[i]
+        T[i] = mec.Gdata[i] - trapz(mec.mesh, mec.kernel[i,:] .* A)
     end
 
     value = sum(mec.E .* T .^ 2.0)
     return value
-    #mec.kernel * reshape(A, (1,length(A)))
 end
 
-function calc_bayes(mec::MaxEntContext, A, entr, alpha, mesh::UniformMesh)
-    T = sqrt.(A ./ mesh.weight)
+function calc_bayes(mec::MaxEntContext, A, entr, alpha)
+    T = sqrt.(A ./ mec.mesh.weight)
     len = length(T)
     Tl = reshape(T, (len, 1))
     Tr = reshape(T, (1, len))
