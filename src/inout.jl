@@ -1,4 +1,23 @@
 
+function make_data(rd::RawData)
+    return make_data(rd.value, rd.error)
+end
+
+function make_data(val::Vector{T}, err::Vector{T}) where {T}
+    grid = get_c("grid")
+    if grid == "matsubara"
+        value = vcat(real(val), imag(val))
+        error = vcat(real(err), imag(err))
+        covar = error .^ 2.0
+        _data = GreenData(value, error, covar)
+        return _data
+    else
+        covar = err .^ 2.0
+        _data = GreenData(val, err, covar)
+        return _data
+    end
+end
+
 function read_time_data(finput::String, ngrid::I64)
 end
 
