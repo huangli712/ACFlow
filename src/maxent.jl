@@ -45,27 +45,19 @@ function maxent_init(rd::RawData)
     G = make_data(rd)
     grid = make_grid(rd)
     mesh = make_mesh()
-    #@show typeof(mesh)
+
+    model = make_model(mesh)
 
     kernel = make_kernel(mesh, grid)
-    #kernel = vcat(real(kernel), imag(kernel))
-
-    #F = svd(kernel)
-    #@show typeof(F)
-    #U, S, V = F
-    #n_sv = count( x -> x ≥ 1e-10, S)
-    #U_svd = U[:, 1:n_sv]
-    #V_svd = V[:, 1:n_sv]
-    #Xi_svd = S[1:n_sv]
-    U_svd, V_svd, Xi_svd = make_singular_space(kernel)
-    n_sv = length(Xi_svd)
+    U_svd, V_svd, S_svd = make_singular_space(kernel)
+    n_sv = length(S_svd)
 
     E = 1.0 ./ G.var
     niw = mesh.nmesh
     W2 = zeros(F64, n_sv, niw)
     dw = mesh.weight
-    model = make_model(mesh)
-    @einsum W2[m,l] = E[k] * U_svd[k,m] * Xi_svd[m] * U_svd[k,n] * Xi_svd[n] * V_svd[l,n] * dw[l] * model[l]
+    
+    @einsum W2[m,l] = E[k] * U_svd[k,m] * S_svd[m] * U_svd[k,n] * S_svd[n] * V_svd[l,n] * dw[l] * model[l]
     A = reshape(W2, (n_sv, 1, niw))
     B = reshape(V_svd', (1, n_sv, niw))
     W3 = zeros(F64, n_sv, n_sv, niw)
@@ -75,7 +67,7 @@ function maxent_init(rd::RawData)
 
     Evi = zeros(F64, n_sv)
     imdata = G.value
-    @einsum Evi[m] = Xi_svd[m] * U_svd[k,m] * E[k] * imdata[k]
+    @einsum Evi[m] = S_svd[m] * U_svd[k,m] * E[k] * imdata[k]
 
     d2chi2 = zeros(F64, niw, niw)
     @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
