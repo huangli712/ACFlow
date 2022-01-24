@@ -23,14 +23,14 @@ import ..ACFlow: get_c
 import ..ACFlow: secant, trapz
 
 mutable struct MaxEntContext
-    imdata :: Vector{F64}
+    Gdata :: Vector{F64}
     E :: Vector{F64}
     mesh :: AbstractMesh
     model :: Vector{F64}
     kernel :: Array{F64,2}
     V_svd :: Array{F64,2}
-    W2 :: Array{F64,2}
-    W3 :: Array{F64,3}
+    W₂ :: Array{F64,2}
+    W₃ :: Array{F64,3}
     Bm :: Vector{F64}
     d2chi2 :: Array{F64,2}
 end
@@ -43,7 +43,7 @@ end
 function maxent_init(rd::RawData)
     G = make_data(rd)
     E = 1.0 ./ G.var
-    imdata = G.value
+    Gdata = G.value
 
     grid = make_grid(rd)
     mesh = make_mesh()
@@ -52,15 +52,9 @@ function maxent_init(rd::RawData)
     kernel = make_kernel(mesh, grid)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
 
-    niw = mesh.nmesh
-    dw = mesh.weight
+    @timev W₂, W₃, Bm, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
 
-    @timev W2, W3, Bm, d2chi2 = precompute(imdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
-
-    #d2chi2 = zeros(F64, niw, niw)
-    #@einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
-
-    return MaxEntContext(imdata, E, mesh, model, kernel, V_svd, W2, W3, Bm, d2chi2)
+    return MaxEntContext(Gdata, E, mesh, model, kernel, V_svd, W₂, W₃, Bm, d2chi2)
 end
 
 function maxent_run(mec::MaxEntContext)
@@ -330,7 +324,7 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::UniformMesh, u
     return result_dict
 end
 
-function precompute(imdata::Vector{F64}, E::Vector{F64}, 
+function precompute(Gdata::Vector{F64}, E::Vector{F64}, 
                     mesh::AbstractMesh, model::Vector{F64},
                     kernel::Matrix{F64},
                     U::Matrix{F64}, V::Matrix{F64}, S::Vector{F64})
@@ -338,24 +332,24 @@ function precompute(imdata::Vector{F64}, E::Vector{F64},
     weight = mesh.weight
     n_svd = length(S)
 
-    W2 = zeros(F64, n_svd, nmesh)
-    W3 = zeros(F64, n_svd, n_svd, nmesh)
+    W₂ = zeros(F64, n_svd, nmesh)
+    W₃ = zeros(F64, n_svd, n_svd, nmesh)
     Bm = zeros(F64, n_svd)
     d2chi2 = zeros(F64, nmesh, nmesh)
 
-    @einsum W2[m,l] = E[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l] * model[l]
+    @einsum W₂[m,l] = E[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l] * model[l]
 
-    A = reshape(W2, (n_svd, 1, nmesh))
+    A = reshape(W₂, (n_svd, 1, nmesh))
     B = reshape(V', (1, n_svd, nmesh))
     for i = 1:nmesh
-        W3[:,:,i] = A[:,:,i] * B[:,:,i]
+        W₃[:,:,i] = A[:,:,i] * B[:,:,i]
     end
 
-    @einsum Bm[m] = S[m] * U[k,m] * E[k] * imdata[k]
+    @einsum Bm[m] = S[m] * U[k,m] * E[k] * Gdata[k]
 
     @einsum d2chi2[i,j] = weight[i] * weight[j] * kernel[k,i] * kernel[k,j] * E[k]
 
-    return W2, W3, Bm, d2chi2
+    return W₂, W₃, Bm, d2chi2
 end
 
 function calc_entropy(mec::MaxEntContext, A, u, mesh::UniformMesh)
@@ -369,7 +363,7 @@ function calc_chi2(mec::MaxEntContext, A, mesh::UniformMesh)
 
     T = zeros(C64, ndim)
     for i = 1:ndim
-        T[i] = mec.imdata[i] - trapz(mesh, mec.kernel[i,:] .* A)
+        T[i] = mec.Gdata[i] - trapz(mesh, mec.kernel[i,:] .* A)
         #@show i, T[i]
     end
 
@@ -427,17 +421,17 @@ function function_and_jacobian(mec::MaxEntContext, u, alpha)
     v = mec.V_svd * u
     w = exp.(v)
 
-    n_svd, niw = size(mec.W2)
+    n_svd, niw = size(mec.W₂)
     term_1 = zeros(F64, n_svd)
     term_2 = zeros(F64, n_svd, n_svd)
     for i = 1:n_svd
-        term_1[i] = dot(mec.W2[i,:], w)
+        term_1[i] = dot(mec.W₂[i,:], w)
         #@show i, term_1[i]
     end
 
     for i = 1:n_svd
         for j = 1:n_svd
-            term_2[i,j] = dot(mec.W3[i,j,:], w)
+            term_2[i,j] = dot(mec.W₃[i,j,:], w)
             #@show i, j, term_2[i,j]
         end
     end
