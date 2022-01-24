@@ -51,7 +51,7 @@ struct RawData{T} <: AbstractData
 end
 
 mutable struct GreenData <: AbstractData
-    value :: Vector{C64}
+    value :: Vector{F64}
     error :: Vector{F64}
     var   :: Vector{F64}
 end
