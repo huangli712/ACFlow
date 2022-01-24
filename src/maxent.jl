@@ -57,17 +57,7 @@ function maxent_init(rd::RawData)
     niw = mesh.nmesh
     dw = mesh.weight
 
-    #W2 = zeros(F64, n_sv, niw)
-    #@einsum W2[m,l] = E[k] * U_svd[k,m] * S_svd[m] * U_svd[k,n] * S_svd[n] * V_svd[l,n] * dw[l] * model[l]
-    #A = reshape(W2, (n_sv, 1, niw))
-    #B = reshape(V_svd', (1, n_sv, niw))
-    #W3 = zeros(F64, n_sv, n_sv, niw)
-    #for i = 1:niw
-    #    W3[:,:,i] = A[:,:,i] * B[:,:,i]
-    #end
-    #Bm = zeros(F64, n_sv)
-    #@einsum Bm[m] = S_svd[m] * U_svd[k,m] * E[k] * imdata[k]
-    W2, W3, Bm = precompute(imdata, E, mesh, model, U_svd, V_svd, S_svd)
+    @timev W2, W3, Bm = precompute(imdata, E, mesh, model, U_svd, V_svd, S_svd)
 
     d2chi2 = zeros(F64, niw, niw)
     @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
@@ -342,7 +332,9 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::UniformMesh, u
     return result_dict
 end
 
-function precompute(imdata, E, mesh::AbstractMesh, model, U, V, S)
+function precompute(imdata::Vector{F64}, E::Vector{F64}, 
+                    mesh::AbstractMesh, model::Vector{F64},
+                    U::Matrix{F64}, V::Matrix{F64}, S::Vector{F64})
     nmesh = mesh.nmesh
     weight = mesh.weight
     n_svd = length(S)
