@@ -315,7 +315,7 @@ function maxent_optimize(mec::MaxEntContext, alpha, ustart, mesh::UniformMesh, u
         result_dict[:trace] = tr
         result_dict[:convergence] = conv
 
-        probability = calc_posterior(mec, A_opt, alpha, entr, chisq, mesh)
+        probability = calc_posterior(mec, A_opt, alpha, entr, chisq)
         #@show probability
         result_dict[:probability] = probability
     end
@@ -392,8 +392,8 @@ function calc_bayes(mec::MaxEntContext, A, entr, alpha)
     return ng, tr, conv
 end
 
-function calc_posterior(mec::MaxEntContext, A, alpha, entr, chisq, mesh::UniformMesh)
-    T = sqrt.(A ./ mesh.weight)
+function calc_posterior(mec::MaxEntContext, A, alpha, entr, chisq)
+    T = sqrt.(A ./ mec.mesh.weight)
     len = length(T)
     Tl = reshape(T, (len, 1))
     Tr = reshape(T, (1, len))
