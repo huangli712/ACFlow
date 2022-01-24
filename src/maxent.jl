@@ -31,7 +31,7 @@ mutable struct MaxEntContext
     V_svd :: Array{F64,2}
     W₂ :: Array{F64,2}
     W₃ :: Array{F64,3}
-    Bm :: Vector{F64}
+    Bₘ :: Vector{F64}
     d2chi2 :: Array{F64,2}
 end
 
@@ -52,9 +52,9 @@ function maxent_init(rd::RawData)
     kernel = make_kernel(mesh, grid)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
 
-    @timev W₂, W₃, Bm, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
+    @timev W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
 
-    return MaxEntContext(Gdata, E, mesh, model, kernel, V_svd, W₂, W₃, Bm, d2chi2)
+    return MaxEntContext(Gdata, E, mesh, model, kernel, V_svd, W₂, W₃, Bₘ, d2chi2)
 end
 
 function maxent_run(mec::MaxEntContext)
@@ -67,7 +67,7 @@ end
 function maxent_historic(mec::MaxEntContext)
     println("Solving")
     alpha = 10 ^ 6.0
-    ustart = zeros(F64, length(mec.Bm))
+    ustart = zeros(F64, length(mec.Bₘ))
     optarr = []
     converged = false
     conv = 0.0
@@ -114,7 +114,7 @@ function maxent_classic(mec::MaxEntContext)
     println("Solving")
     optarr = []
     alpha = 10 ^ 6.0
-    ustart = zeros(F64, length(mec.Bm))
+    ustart = zeros(F64, length(mec.Bₘ))
     converged = false
     conv = 0.0
     mesh = mec.mesh
@@ -166,7 +166,7 @@ end
 function maxent_bryan(mec::MaxEntContext)
     println("hehe")
     alpha = 500
-    ustart = zeros(F64, length(mec.Bm))
+    ustart = zeros(F64, length(mec.Bₘ))
     #@show ustart
     mesh = mec.mesh
 
@@ -227,7 +227,7 @@ function maxent_chi2kink(mec::MaxEntContext)
     chis = []
     alphas = []
     optarr = []
-    ustart = zeros(F64, length(mec.Bm))
+    ustart = zeros(F64, length(mec.Bₘ))
     mesh = mec.mesh
 
     use_bayes = false
@@ -334,7 +334,7 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
 
     W₂ = zeros(F64, n_svd, nmesh)
     W₃ = zeros(F64, n_svd, n_svd, nmesh)
-    Bm = zeros(F64, n_svd)
+    Bₘ = zeros(F64, n_svd)
     d2chi2 = zeros(F64, nmesh, nmesh)
 
     @einsum W₂[m,l] = E[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l] * model[l]
@@ -345,11 +345,11 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
         W₃[:,:,i] = A[:,:,i] * B[:,:,i]
     end
 
-    @einsum Bm[m] = S[m] * U[k,m] * E[k] * Gdata[k]
+    @einsum Bₘ[m] = S[m] * U[k,m] * E[k] * Gdata[k]
 
     @einsum d2chi2[i,j] = weight[i] * weight[j] * kernel[k,i] * kernel[k,j] * E[k]
 
-    return W₂, W₃, Bm, d2chi2
+    return W₂, W₃, Bₘ, d2chi2
 end
 
 function calc_entropy(mec::MaxEntContext, A, u, mesh::UniformMesh)
@@ -436,7 +436,7 @@ function function_and_jacobian(mec::MaxEntContext, u, alpha)
         end
     end
 
-    f = alpha * u + term_1 - mec.Bm
+    f = alpha * u + term_1 - mec.Bₘ
     J = alpha * diagm(ones(n_svd)) + term_2
 
     return f, J
