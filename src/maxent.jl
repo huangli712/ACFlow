@@ -64,10 +64,10 @@ function maxent_init(rd::RawData)
 end
 
 function maxent_run(mec::MaxEntContext)
-    maxent_bryan(mec)
+    #maxent_bryan(mec)
     #maxent_historic(mec)
     #maxent_classic(mec)
-    #maxent_chi2kink(mec)
+    maxent_chi2kink(mec)
 end
 
 function maxent_historic(mec::MaxEntContext)
@@ -355,7 +355,7 @@ function precompute(imdata::Vector{F64}, E::Vector{F64},
 
     @einsum d2chi2[i,j] = weight[i] * weight[j] * kernel[k,i] * kernel[k,j] * E[k]
 
-    return W2, W3, Bm
+    return W2, W3, Bm, d2chi2
 end
 
 function calc_entropy(mec::MaxEntContext, A, u, mesh::UniformMesh)
