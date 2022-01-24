@@ -1,7 +1,7 @@
-function make_kernel(m::AbstractMesh, fg::FermionicImaginaryTimeGrid)
+function make_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
 end
 
-function make_kernel(m::AbstractMesh, fg::FermionicMatsubaraGrid)
+function make_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     nfreq = fg.nfreq
     nmesh = am.nmesh
 
@@ -15,8 +15,8 @@ function make_kernel(m::AbstractMesh, fg::FermionicMatsubaraGrid)
     return kernel
 end
 
-function make_kernel(m::AbstractMesh, bg::BosonicImaginaryTimeGrid)
+function make_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 end
 
-function make_kernel(m::AbstractMesh, bg::BosonicMatsubaraGrid)
+function make_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 end
