@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/01/22
+# Last modified: 2022/01/24
 #
 
 module MaxEnt
@@ -32,12 +32,13 @@ mutable struct MaxEntContext
     Evi
     model
     imdata
+    mesh
 end
 
 function solve(rd::RawData)
     ω, G = maxent_unpack(rd)
-    mec, mesh = maxent_init(G, ω)
-    maxent_run(mec, mesh)
+    mec = maxent_init(G, ω)
+    maxent_run(mec)
 end
 
 function maxent_unpack(rd::RawData)
@@ -97,23 +98,26 @@ function maxent_init(G::GreenData, ω::FermionicMatsubaraGrid)
     d2chi2 = zeros(F64, niw, niw)
     @einsum d2chi2[i,j] = dw[i] * dw[j] * kernel[k,i] * kernel[k,j] * E[k]
 
-    return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model, imdata), mesh
+    #@show kernel
+
+    return MaxEntContext(E, kernel, d2chi2, W2, W3, n_sv, V_svd, Evi, model, imdata, mesh)
 end
 
-function maxent_run(mec::MaxEntContext, mesh::UniformMesh)
-    #maxent_bryan(mec, mesh)
-    #maxent_historic(mec, mesh)
-    #maxent_classic(mec, mesh)
-    maxent_chi2kink(mec, mesh)
+function maxent_run(mec::MaxEntContext)
+    maxent_bryan(mec)
+    #maxent_historic(mec)
+    #maxent_classic(mec)
+    #maxent_chi2kink(mec)
 end
 
-function maxent_historic(mec::MaxEntContext, mesh::UniformMesh)
+function maxent_historic(mec::MaxEntContext)
     println("Solving")
     alpha = 10 ^ 6.0
     ustart = zeros(F64, mec.n_sv)
     optarr = []
     converged = false
     conv = 0.0
+    mesh = mec.mesh
 
     use_bayes = false
     niw = 20
@@ -152,13 +156,14 @@ function maxent_historic(mec::MaxEntContext, mesh::UniformMesh)
     end
 end
 
-function maxent_classic(mec::MaxEntContext, mesh::UniformMesh)
+function maxent_classic(mec::MaxEntContext)
     println("Solving")
     optarr = []
     alpha = 10 ^ 6.0
     ustart = zeros(F64, mec.n_sv)
     converged = false
     conv = 0.0
+    mesh = mec.mesh
 
     use_bayes = true
     while conv < 1.0
@@ -204,11 +209,12 @@ function maxent_classic(mec::MaxEntContext, mesh::UniformMesh)
     end
 end
 
-function maxent_bryan(mec::MaxEntContext, mesh::UniformMesh)
+function maxent_bryan(mec::MaxEntContext)
     println("hehe")
     alpha = 500
     ustart = zeros(F64, mec.n_sv)
     #@show ustart
+    mesh = mec.mesh
 
     maxprob = 0.0
     optarr = []
@@ -257,7 +263,7 @@ function maxent_bryan(mec::MaxEntContext, mesh::UniformMesh)
     end
 end
 
-function maxent_chi2kink(mec::MaxEntContext, mesh::UniformMesh)
+function maxent_chi2kink(mec::MaxEntContext)
     alpha_start = 1e9
     alpha_end = 1e-3
     alpha_div = 10.0
@@ -268,6 +274,7 @@ function maxent_chi2kink(mec::MaxEntContext, mesh::UniformMesh)
     alphas = []
     optarr = []
     ustart = zeros(F64, mec.n_sv)
+    mesh = mec.mesh
 
     use_bayes = false
     while true
