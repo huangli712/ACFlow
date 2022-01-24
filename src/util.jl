@@ -141,7 +141,7 @@ function secant(func, x0, args)
     end
 end
 
-function trapz(x::Vector{F64}, y::Vector, uniform::Bool = false)
+function trapz(x::Vector, y::Vector, uniform::Bool = false)
     if uniform
         h = x[2] - x[1]
         _sum = sum(y[2:end-1])
