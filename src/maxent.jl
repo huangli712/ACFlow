@@ -226,16 +226,11 @@ function maxent_chi2kink(mec::MaxEntContext)
         end
     end
 
-    #@show alphas
-    #@show chis
-
     function fitfun(x, p)
-        #@show coefs
         return @. p[1] + p[2] / (1.0 + exp(-p[4] * (x - p[3])))
     end
 
     good_numbers = isfinite.(chis)
-    #@show log10.(alphas[good_numbers])
     fit = curve_fit(fitfun, log10.(alphas[good_numbers]), log10.(chis[good_numbers]), [0.0, 5.0, 2.0, 0.0])
     a, b, c, d = fit.param
 
@@ -243,9 +238,7 @@ function maxent_chi2kink(mec::MaxEntContext)
     alpha_opt = 10.0 ^ a_opt
 
     closest_idx = argmin( abs.( log10.(alphas) .- a_opt ) )
-    #@show alpha_opt, closest_idx
     ustart = optarr[closest_idx][:u_opt]
-    #@show ustart
 
     sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
