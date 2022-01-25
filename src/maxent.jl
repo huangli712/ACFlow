@@ -163,8 +163,6 @@ function maxent_bryan(mec::MaxEntContext)
     ustart = zeros(F64, n_svd)
     optarr = []
 
-    mesh = mec.mesh
-
     maxprob = 0.0
     while true
         o = maxent_optimize(mec, alpha, ustart, use_bayes)
@@ -179,28 +177,19 @@ function maxent_bryan(mec::MaxEntContext)
         end
     end
 
-    #alpharr = []
-    probarr = []
-    specarr = []
-    for i in eachindex(optarr)
-        #push!(alpharr, optarr[i][:alpha])
-        push!(probarr, optarr[i][:probability])
-        push!(specarr, optarr[i][:A_opt])
-    end
-    alpharr = collect(x->x[:alpha], optarr)
-    
+    alpharr = map(x->x[:alpha], optarr)
+    probarr = map(x->x[:probability], optarr)
+    specarr = map(x->x[:A_opt], optarr)
     probarr = probarr ./ (-trapz(alpharr, probarr))
-    len = length(probarr)
-    
-    niw = mesh.nmesh
-    @show len, n_svd, niw
 
-    A_opt = zeros(F64, niw)
-    Spectra = zeros(F64, len, niw)
-    for i = 1:len
+    nprob = length(probarr)
+    nmesh = length(specarr[1])
+    A_opt = zeros(F64, nmesh)
+    Spectra = zeros(F64, nprob, nmesh)
+    for i = 1:nprob
         Spectra[i,:] = specarr[i] * probarr[i]
     end
-    for i = 1:niw
+    for i = 1:nmesh
         A_opt[i] = -trapz(alpharr, Spectra[:,i])
     end
 
