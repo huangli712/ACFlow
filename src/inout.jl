@@ -18,6 +18,15 @@ function make_data(val::Vector{T}, err::Vector{T}) where {T}
     end
 end
 
+function write_spectrum(am::AbstractMesh, spectra::Vector{F64})
+    @assert am.nmesh == length(spectra)
+    open("spectra.data", "w") do fout
+        for i = 1:am.nmesh
+            @printf(fout, "%16.12f %16.12f\n", am[i], spectra[i])
+        end
+    end
+end
+
 function read_time_data(finput::String, ngrid::I64)
 end
 

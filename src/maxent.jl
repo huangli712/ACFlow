@@ -98,6 +98,7 @@ function maxent_historic(mec::MaxEntContext)
     sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
     A_opt = sol[:A_opt]
+    println(typeof(A_opt))
     niw = mesh.nmesh
     open("historic.data", "w") do fout
         for i = 1:niw
