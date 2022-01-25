@@ -155,57 +155,59 @@ function maxent_classic(mec::MaxEntContext)
 end
 
 function maxent_bryan(mec::MaxEntContext)
-    println("hehe")
-    alpha = 500
-    ustart = zeros(F64, length(mec.Bₘ))
-    #@show ustart
+    println("Using bryan algorithm to solve the maximum entropy problem")
+
+    use_bayes = true
+    alpha = get_m("alpha")
+    n_svd = length(mec.Bₘ)
+    ustart = zeros(F64, n_svd)
+    optarr = []
+
     mesh = mec.mesh
 
     maxprob = 0.0
-    optarr = []
-    use_bayes = true
     while true
         o = maxent_optimize(mec, alpha, ustart, use_bayes)
         ustart = copy(o[:u_opt])
         push!(optarr, o)
         alpha = alpha / 1.1
-        probability = o[:probability]
-        if probability > maxprob
-            maxprob = probability
-        elseif probability < 0.01 * maxprob
+        prob = o[:probability]
+        if prob > maxprob
+            maxprob = prob
+        elseif prob < 0.01 * maxprob
             break
         end
     end
 
-    alpharr = []
+    #alpharr = []
     probarr = []
     specarr = []
-
     for i in eachindex(optarr)
-        push!(alpharr, optarr[i][:alpha])
+        #push!(alpharr, optarr[i][:alpha])
         push!(probarr, optarr[i][:probability])
         push!(specarr, optarr[i][:A_opt])
     end
+    alpharr = collect(x->x[:alpha], optarr)
     
     probarr = probarr ./ (-trapz(alpharr, probarr))
     len = length(probarr)
+    
     niw = mesh.nmesh
+    @show len, n_svd, niw
 
+    A_opt = zeros(F64, niw)
     Spectra = zeros(F64, len, niw)
     for i = 1:len
         Spectra[i,:] = specarr[i] * probarr[i]
     end
-
-    A_opt = zeros(F64, niw)
     for i = 1:niw
         A_opt[i] = -trapz(alpharr, Spectra[:,i])
     end
 
-    open("mem.data", "w") do fout
-        for i = 1:niw
-            println(fout, mesh[i], " ", A_opt[i])
-        end
-    end
+    sol = Dict{Symbol,Any}()
+    sol[:A_opt] = A_opt
+
+    return optarr, sol
 end
 
 function maxent_chi2kink(mec::MaxEntContext)
