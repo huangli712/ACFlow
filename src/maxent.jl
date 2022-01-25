@@ -14,6 +14,7 @@ using Einsum
 using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
+import ..ACFlow: @cswitch
 import ..ACFlow: FermionicMatsubaraGrid, BosonicMatsubaraGrid
 import ..ACFlow: AbstractMesh
 import ..ACFlow: RawData, GreenData
@@ -85,19 +86,19 @@ end
 
 function maxent_historic(mec::MaxEntContext)
     println("Using historic algorithm to solve the maximum entropy problem")
-    alpha = 10 ^ 6.0
-    ustart = zeros(F64, length(mec.Bₘ))
-    optarr = []
-    conv = 0.0
-    mesh = mec.mesh
 
     use_bayes = false
-    niw = 20
+    alpha = get_m("alpha")
+    n_svd = length(mec.Bₘ)
+    ustart = zeros(F64, n_svd)
+    optarr = []
+
+    conv = 0.0
     while conv < 1.0
-        o = maxent_optimize(mec, alpha, ustart, use_bayes)
-        push!(optarr, o)
+        sol = maxent_optimize(mec, alpha, ustart, use_bayes)
+        push!(optarr, sol)
         alpha = alpha / 10.0
-        conv = niw / o[:chi2]
+        conv = n_svd / o[:chi2]
     end
 
     ustart = optarr[end-1][:u_opt]
@@ -106,9 +107,8 @@ function maxent_historic(mec::MaxEntContext)
     function root_fun(_alpha, _u)
         res = maxent_optimize(mec, _alpha, _u, use_bayes)
         _u[:] = copy(res[:u_opt])
-        return niw / res[:chi2] - 1.0
+        return n_svd / res[:chi2] - 1.0
     end
-
     alpha_opt = secant(root_fun, alpha, ustart)
 
     sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
