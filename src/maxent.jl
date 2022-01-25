@@ -67,7 +67,7 @@ function maxent_run(mec::MaxEntContext)
 end
 
 function maxent_historic(mec::MaxEntContext)
-    println("Solving")
+    println("Using historic algorithm to solve the maximum entropy problem")
     alpha = 10 ^ 6.0
     ustart = zeros(F64, length(mec.Bₘ))
     optarr = []
@@ -82,24 +82,18 @@ function maxent_historic(mec::MaxEntContext)
         push!(optarr, o)
         alpha = alpha / 10.0
         conv = niw / o[:chi2]
-        #@show alpha, conv
     end
 
     ustart = optarr[end-1][:u_opt]
     alpha = optarr[end][:alpha]
-    #@show ustart
-    #@show alpha
 
     function root_fun(_alpha, _u)
         res = maxent_optimize(mec, _alpha, _u, use_bayes)
         _u[:] = copy(res[:u_opt])
-        #@show niw / res[:chi2] - 1.0
-        #@show _u
         return niw / res[:chi2] - 1.0
     end
 
     alpha_opt = secant(root_fun, alpha, ustart)
-    #@show ustart, alpha_opt
 
     sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
