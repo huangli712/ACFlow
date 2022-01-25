@@ -451,12 +451,8 @@ function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobi
 
     f, J = function_and_jacobian(mec, props[1], alpha)
     initial_result = iteration_function(props[1], f, J)
-    #@show initial_result
-    #@show f, J
-    #error()
 
     push!(res, initial_result)
-    #@show res
 
     counter = 0
     converged = false
