@@ -117,13 +117,13 @@ function maxent_historic(mec::MaxEntContext)
 end
 
 function maxent_classic(mec::MaxEntContext)
-    println("Solving")
+    println("Using historic algorithm to solve the maximum entropy problem")
+
     optarr = []
     alpha = 10 ^ 6.0
     ustart = zeros(F64, length(mec.Bₘ))
-    converged = false
+
     conv = 0.0
-    mesh = mec.mesh
 
     use_bayes = true
     while conv < 1.0
@@ -133,40 +133,27 @@ function maxent_classic(mec::MaxEntContext)
         conv = o[:convergence]
         ustart = copy(o[:u_opt])
     end
-    #@show ustart, alpha
 
     bayes_conv = [x[:convergence] for x in optarr]
     alpharr = [x[:alpha] for x in optarr]
-    #@show bayes_conv
-    #@show alpharr
     
     exp_opt = ( log10(alpharr[end]) - log10(alpharr[end-1]) ) / ( log10(bayes_conv[end]) - log10(bayes_conv[end-1]) )
     exp_opt = log10(alpharr[end-1]) - log10(bayes_conv[end-1]) * exp_opt
     alpha_opt = 10 ^ exp_opt
-    #@show exp_opt, alpha_opt
 
     ustart = optarr[end-1][:u_opt]
 
     function root_fun(_alpha, _u)
         res = maxent_optimize(mec, _alpha, _u, use_bayes)
         _u[:] = copy(res[:u_opt])
-        #@show _u
         return res[:convergence] - 1.0
     end
 
     alpha_opt = secant(root_fun, alpha_opt, ustart)
-    #@show alpha_opt
-    #@show ustart
 
     sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
-    A_opt = sol[:A_opt]
-    niw = mesh.nmesh
-    open("classic.data", "w") do fout
-        for i = 1:niw
-            println(fout, mesh[i], " ", A_opt[i])
-        end
-    end
+    return optarr, sol 
 end
 
 function maxent_bryan(mec::MaxEntContext)
