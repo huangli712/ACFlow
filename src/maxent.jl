@@ -130,26 +130,23 @@ function maxent_classic(mec::MaxEntContext)
         sol = maxent_optimize(mec, alpha, ustart, use_bayes)
         push!(optarr, sol)
         alpha = alpha / 10.0
+        @. ustart = sol[:u_opt]
         conv = sol[:convergence]
-        ustart = copy(sol[:u_opt])
     end
 
     bayes_conv = [x[:convergence] for x in optarr]
     alpharr = [x[:alpha] for x in optarr]
-    
     exp_opt = ( log10(alpharr[end]) - log10(alpharr[end-1]) ) / ( log10(bayes_conv[end]) - log10(bayes_conv[end-1]) )
     exp_opt = log10(alpharr[end-1]) - log10(bayes_conv[end-1]) * exp_opt
-    alpha_opt = 10 ^ exp_opt
-
+    alpha = 10.0 ^ exp_opt
     ustart = optarr[end-1][:u_opt]
 
     function root_fun(_alpha, _u)
         res = maxent_optimize(mec, _alpha, _u, use_bayes)
-        _u[:] = copy(res[:u_opt])
+        @. _u = res[:u_opt]
         return res[:convergence] - 1.0
     end
-
-    alpha_opt = secant(root_fun, alpha_opt, ustart)
+    alpha_opt = secant(root_fun, alpha, ustart)
 
     sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
