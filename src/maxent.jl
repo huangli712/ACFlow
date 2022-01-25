@@ -19,7 +19,7 @@ import ..ACFlow: AbstractMesh
 import ..ACFlow: RawData, GreenData
 import ..ACFlow: make_grid, make_mesh, make_model, make_kernel, make_data
 import ..ACFlow: make_singular_space
-import ..ACFlow: get_c
+import ..ACFlow: get_c, get_m
 import ..ACFlow: secant, trapz
 
 mutable struct MaxEntContext
@@ -59,10 +59,11 @@ function maxent_init(rd::RawData)
 end
 
 function maxent_run(mec::MaxEntContext)
-    maxent_bryan(mec)
-    #maxent_historic(mec)
-    #maxent_classic(mec)
-    #maxent_chi2kink(mec)
+    method = get_m("method")
+    method == "historic" && maxent_historic(mec)
+    method == "classic"  && maxent_classic(mec)
+    method == "bryan"    && maxent_bryan(mec)
+    method == "chi2kink" && maxent_chi2kink(mec)
 end
 
 function maxent_historic(mec::MaxEntContext)
