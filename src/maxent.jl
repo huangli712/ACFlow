@@ -119,19 +119,19 @@ end
 function maxent_classic(mec::MaxEntContext)
     println("Using historic algorithm to solve the maximum entropy problem")
 
+    use_bayes = true
+    alpha = get_m("alpha")
+    n_svd = length(mec.Bₘ)
+    ustart = zeros(F64, n_svd)
     optarr = []
-    alpha = 10 ^ 6.0
-    ustart = zeros(F64, length(mec.Bₘ))
 
     conv = 0.0
-
-    use_bayes = true
     while conv < 1.0
-        o = maxent_optimize(mec, alpha, ustart, use_bayes)
-        push!(optarr, o)
+        sol = maxent_optimize(mec, alpha, ustart, use_bayes)
+        push!(optarr, sol)
         alpha = alpha / 10.0
-        conv = o[:convergence]
-        ustart = copy(o[:u_opt])
+        conv = sol[:convergence]
+        ustart = copy(sol[:u_opt])
     end
 
     bayes_conv = [x[:convergence] for x in optarr]
