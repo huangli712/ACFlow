@@ -19,6 +19,7 @@ import ..ACFlow: AbstractMesh
 import ..ACFlow: RawData, GreenData
 import ..ACFlow: make_grid, make_mesh, make_model, make_kernel, make_data
 import ..ACFlow: make_singular_space
+import ..ACFlow: write_spectrum
 import ..ACFlow: get_c, get_m
 import ..ACFlow: secant, trapz
 
@@ -60,10 +61,26 @@ end
 
 function maxent_run(mec::MaxEntContext)
     method = get_m("method")
-    method == "historic" && maxent_historic(mec)
-    method == "classic"  && maxent_classic(mec)
-    method == "bryan"    && maxent_bryan(mec)
-    method == "chi2kink" && maxent_chi2kink(mec)
+
+    @cswitch method begin
+        @case "historic"
+            D, sol = maxent_historic(mec)
+            break
+
+        @case "classic"
+            D, sol = maxent_classic(mec)
+            break
+        
+        @case "bryan"
+            D, sol = maxent_bryan(mec)
+            break
+        
+        @case "chi2kink"
+            D, sol = maxent_chi2kink(mec)
+            break
+    end
+
+    write_spectrum(mec.mesh, sol[:A_opt])
 end
 
 function maxent_historic(mec::MaxEntContext)
@@ -71,7 +88,6 @@ function maxent_historic(mec::MaxEntContext)
     alpha = 10 ^ 6.0
     ustart = zeros(F64, length(mec.Bₘ))
     optarr = []
-    converged = false
     conv = 0.0
     mesh = mec.mesh
 
@@ -97,14 +113,7 @@ function maxent_historic(mec::MaxEntContext)
 
     sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
-    A_opt = sol[:A_opt]
-    println(typeof(A_opt))
-    niw = mesh.nmesh
-    open("historic.data", "w") do fout
-        for i = 1:niw
-            println(fout, mesh[i], " ", A_opt[i])
-        end
-    end
+    return optarr, sol
 end
 
 function maxent_classic(mec::MaxEntContext)
