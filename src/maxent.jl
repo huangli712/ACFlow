@@ -411,7 +411,7 @@ function iteration_function(prop::Vector{T}, fval::Vector{T}, jacob::Matrix{T}) 
     end
 
     if any(x -> x > limit, abs.(prop))
-        ratio = abs.(increment ./ prop)
+        ratio = abs.(resid ./ prop)
         max_ratio = maximum( ratio[ abs.(prop) .> limit ] )
         if max_ratio > 1.0
             step = 1.0 / max_ratio
