@@ -301,7 +301,7 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
     return W₂, W₃, Bₘ, d2chi2
 end
 
-function f_and_J(mec::MaxEntContext, u::Vector{F64}, alpha::F64)
+function f_and_J(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
     v = mec.V_svd * u
     w = exp.(v)
 
@@ -370,7 +370,7 @@ function newton(fun::Function, ustart, mec::MaxEntContext, alpha)
     res = []
     push!(props, ustart)
 
-    f, J = fun(mec, props[1], alpha)
+    f, J = fun(props[1], mec, alpha)
     initial_result = iteration_function(props[1], f, J)
 
     push!(res, initial_result)
@@ -384,7 +384,7 @@ function newton(fun::Function, ustart, mec::MaxEntContext, alpha)
         f_i = res[n_iter] - props[n_iter]
         update = mixing * f_i
         prop = new_proposal + update
-        f, J = fun(mec, prop, alpha)
+        f, J = fun(prop, mec, alpha)
         result = iteration_function(prop, f, J)
         push!(props, prop)
         push!(res, result)
