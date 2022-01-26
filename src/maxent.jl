@@ -131,10 +131,10 @@ function maxent_classic(mec::MaxEntContext)
         push!(optarr, sol)
         alpha = alpha / 10.0
         @. ustart = sol[:u_opt]
-        conv = sol[:convergence]
+        conv = sol[:conv]
     end
 
-    bayes_conv = [x[:convergence] for x in optarr]
+    bayes_conv = [x[:conv] for x in optarr]
     alpharr = [x[:alpha] for x in optarr]
     exp_opt = log10(alpharr[end] / alpharr[end-1])
     exp_opt = exp_opt / log10(bayes_conv[end] / bayes_conv[end-1])
@@ -145,7 +145,7 @@ function maxent_classic(mec::MaxEntContext)
     function root_fun(_alpha, _u)
         res = maxent_optimize(mec, _alpha, _u, use_bayes)
         @. _u = res[:u_opt]
-        return res[:convergence] - 1.0
+        return res[:conv] - 1.0
     end
     alpha_opt = secant(root_fun, alpha, ustart)
 
@@ -169,7 +169,7 @@ function maxent_bryan(mec::MaxEntContext)
         push!(optarr, sol)
         alpha = alpha / 1.1
         @. ustart = sol[:u_opt]
-        prob = sol[:probability]
+        prob = sol[:prob]
         if prob > maxprob
             maxprob = prob
         elseif prob < 0.01 * maxprob
@@ -178,7 +178,7 @@ function maxent_bryan(mec::MaxEntContext)
     end
 
     alpharr = map(x->x[:alpha], optarr)
-    probarr = map(x->x[:probability], optarr)
+    probarr = map(x->x[:prob], optarr)
     specarr = map(x->x[:A_opt], optarr)
     probarr = probarr ./ (-trapz(alpharr, probarr))
 
@@ -261,7 +261,6 @@ function maxent_optimize(mec::MaxEntContext,
     result_dict[:alpha] = alpha
     result_dict[:entropy] = entr
     result_dict[:chi2] = chisq
-    result_dict[:blacktransform] = nothing
     result_dict[:norm] = norm
     result_dict[:Q] = alpha * entr - 0.5 * chisq
 
@@ -269,10 +268,10 @@ function maxent_optimize(mec::MaxEntContext,
         ng, tr, conv = calc_bayes(mec, A_opt, entr, alpha)
         result_dict[:n_good] = ng
         result_dict[:trace] = tr
-        result_dict[:convergence] = conv
+        result_dict[:conv] = conv
 
-        probability = calc_posterior(mec, A_opt, alpha, entr, chisq)
-        result_dict[:probability] = probability
+        prob = calc_posterior(mec, A_opt, alpha, entr, chisq)
+        result_dict[:prob] = prob
     end
 
     println("log10(alpha) = $(log10(alpha)) chi2 = $chisq S = $entr nfev = $nfev norm = $norm")
