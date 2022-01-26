@@ -242,13 +242,14 @@ function maxent_chi2kink(mec::MaxEntContext)
 
     sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
-    A_opt = sol[:A_opt]
-    niw = mesh.nmesh
-    open("chi2kink.data", "w") do fout
-        for i = 1:niw
-            println(fout, mesh[i], " ", A_opt[i])
-        end
-    end
+    return optarr, sol
+    #A_opt = sol[:A_opt]
+    #niw = mesh.nmesh
+    #open("chi2kink.data", "w") do fout
+    #    for i = 1:niw
+    #        println(fout, mesh[i], " ", A_opt[i])
+    #    end
+    #end
 end
 
 function maxent_optimize(mec::MaxEntContext, alpha, ustart, use_bayes::Bool)
