@@ -399,23 +399,23 @@ function newton(fun::Function, guess, kwargs...)
     return result, counter
 end
 
-function iteration_function(proposal, function_vector, jacobian_matrix)
+function iteration_function(prop::Vector{T}, fval::Vector{T}, jacob::Matrix{T}) where {T}
     increment = nothing
-    try
-        increment = - pinv(jacobian_matrix) * function_vector
-    catch
-        increment = zeros(F64, length(proposal))
-    end
     step_reduction = 1.0
     significance_limit = 1e-4
-    if any(x -> x > significance_limit, abs.(proposal))
-        ratio = abs.(increment ./ proposal)
-        max_ratio = maximum( ratio[ abs.(proposal) .> significance_limit ] )
+    try
+        increment = - pinv(jacob) * fval
+    catch
+        increment = zeros(F64, length(prop))
+    end
+    if any(x -> x > significance_limit, abs.(prop))
+        ratio = abs.(increment ./ prop)
+        max_ratio = maximum( ratio[ abs.(prop) .> significance_limit ] )
         if max_ratio > 1.0
             step_reduction = 1.0 / max_ratio
         end
     end
-    result = proposal + step_reduction .* increment
+    result = prop + step_reduction .* increment
     return result
 end
 
