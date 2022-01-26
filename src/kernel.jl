@@ -22,6 +22,21 @@ function make_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 end
 
 function make_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
+    nfreq = bg.nfreq
+    nmesh = am.nmesh
+
+    kernel = zeros(F64, nfreq, nmesh)
+    for i = 1:nmesh
+        for j = 1:nfreq
+            kernel[j,i] = am[i] ^ 2.0 / ( bg[j] ^ 2.0 + am[i] ^ 2.0 )
+        end
+    end
+
+    if am[1] == 0.0 && bg[1] == 0.0
+        kernel[1,1] = 1.0
+    end
+
+    return kernel
 end
 
 function make_singular_space(kernel::Matrix{F64})
