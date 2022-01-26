@@ -339,22 +339,25 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, al
     return ng, tr, conv, exp(log_prob)
 end
 
-function function_and_jacobian(mec::MaxEntContext, u, alpha)
+function function_and_jacobian(mec::MaxEntContext, u::Vector{F64}, alpha::F64)
     v = mec.V_svd * u
     w = exp.(v)
 
-    n_svd, niw = size(mec.W₂)
+    n_svd = length(mec.Bₘ)
     term_1 = zeros(F64, n_svd)
     term_2 = zeros(F64, n_svd, n_svd)
     for i = 1:n_svd
         term_1[i] = dot(mec.W₂[i,:], w)
-        #@show i, term_1[i]
     end
+
+    #@show term_1
+    #term1 = mec.W₂ * w
+    #@show term_1
+    #error()
 
     for i = 1:n_svd
         for j = 1:n_svd
             term_2[i,j] = dot(mec.W₃[i,j,:], w)
-            #@show i, j, term_2[i,j]
         end
     end
 
@@ -371,7 +374,7 @@ function newton(function_and_jacobian, mec::MaxEntContext, alpha, ustart)
     res = []
     push!(props, ustart)
 
-    f, J = function_and_jacobian(mec, props[1], alpha)
+    @timev f, J = function_and_jacobian(mec, props[1], alpha)
     initial_result = iteration_function(props[1], f, J)
 
     push!(res, initial_result)
