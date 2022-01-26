@@ -263,7 +263,7 @@ function maxent_optimize(mec::MaxEntContext,
     result_dict[:Q] = alpha * entr - 0.5 * chisq
 
     if use_bayes
-        ng, tr, conv = calc_bayes(mec, A_opt, entr, alpha)
+        @timev ng, tr, conv = calc_bayes(mec, A_opt, entr, alpha)
         result_dict[:n_good] = ng
         result_dict[:trace] = tr
         result_dict[:conv] = conv
@@ -326,17 +326,12 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, alpha::F64)
     mesh = mec.mesh
     nmesh = mesh.nmesh
 
-    Λ = zeros(F64, nmesh, nmesh)
     T = sqrt.(A ./ mesh.weight)
     Tl = reshape(T, (nmesh, 1))
     Tr = reshape(T, (1, nmesh))
 
-    for i = 1:nmesh
-        for j = 1:nmesh
-            Λ[i,j] = Tl[i] * mec.d2chi2[i,j] * Tr[j]
-        end
-    end
-
+    Λ = (Tl * Tr) .* mec.d2chi2
+    
     lam = eigvals(Hermitian(Λ))
     ng = -2.0 * alpha * ent
     tr = sum(lam ./ (alpha .+ lam))
