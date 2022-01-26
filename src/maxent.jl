@@ -55,7 +55,7 @@ function maxent_init(rd::RawData)
     kernel = make_kernel(mesh, grid)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
 
-    W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
+    @timev W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
 
     return MaxEntContext(Gdata, E, mesh, model, kernel, V_svd, W₂, W₃, Bₘ, d2chi2)
 end
@@ -247,7 +247,7 @@ function maxent_optimize(mec::MaxEntContext,
                          use_bayes::Bool)
     solution, nfev = newton(function_and_jacobian, mec, alpha, ustart)
     u_opt = copy(solution)
-    A_opt = singular_to_realspace_diag(mec, solution) 
+    A_opt = svd_to_real(mec, solution) 
     entr = calc_entropy(mec, A_opt, u_opt)
     chisq = calc_chi2(mec, A_opt)
     norm = trapz(mec.mesh, A_opt)
@@ -263,7 +263,7 @@ function maxent_optimize(mec::MaxEntContext,
     result_dict[:Q] = alpha * entr - 0.5 * chisq
 
     if use_bayes
-        @timev ng, tr, conv, prob = calc_bayes(mec, A_opt, entr, chisq, alpha)
+        ng, tr, conv, prob = calc_bayes(mec, A_opt, entr, chisq, alpha)
         result_dict[:n_good] = ng
         result_dict[:trace] = tr
         result_dict[:conv] = conv
@@ -290,10 +290,8 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
 
     @einsum W₂[m,l] = E[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l] * model[l]
 
-    A = reshape(W₂, (n_svd, 1, nmesh))
-    B = reshape(V', (1, n_svd, nmesh))
     for i = 1:nmesh
-        W₃[:,:,i] = A[:,:,i] * B[:,:,i]
+        W₃[:,:,i] = W₂[:,i] * (V[i,:])'
     end
 
     @einsum Bₘ[m] = S[m] * U[k,m] * E[k] * Gdata[k]
@@ -301,6 +299,10 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
     @einsum d2chi2[i,j] = weight[i] * weight[j] * kernel[k,i] * kernel[k,j] * E[k]
 
     return W₂, W₃, Bₘ, d2chi2
+end
+
+function svd_to_real(mec::MaxEntContext, u::Vector{F64})
+    return mec.model .* exp.(mec.V_svd * u)
 end
 
 function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
@@ -322,13 +324,8 @@ end
 
 function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, alpha::F64)
     mesh = mec.mesh
-    nmesh = mesh.nmesh
 
     T = sqrt.(A ./ mesh.weight)
-    #Tl = reshape(T, (nmesh, 1))
-    #Tr = reshape(T, (1, nmesh))
-    #Λ = (Tl * Tr) .* mec.d2chi2
-
     Λ = (T * T') .* mec.d2chi2
     
     lam = eigvals(Hermitian(Λ))
@@ -340,10 +337,6 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, al
     log_prob = alpha * ent - 0.5 * chisq + log(alpha) + 0.5 * eig_sum
 
     return ng, tr, conv, exp(log_prob)
-end
-
-function singular_to_realspace_diag(mec::MaxEntContext, u)
-    return mec.model .* exp.(mec.V_svd * u)
 end
 
 function function_and_jacobian(mec::MaxEntContext, u, alpha)
