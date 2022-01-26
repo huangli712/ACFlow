@@ -363,7 +363,6 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, al
     return ng, tr, conv, exp(log_prob)
 end
 
-#function newton(fun::Function, ustart, mec::MaxEntContext, alpha)
 function newton(fun::Function, ustart, kwargs...)
     max_iter = 20000
     mixing = 0.5
@@ -371,7 +370,6 @@ function newton(fun::Function, ustart, kwargs...)
     res = []
     push!(props, ustart)
 
-    #f, J = fun(props[1], mec, alpha)
     f, J = fun(props[1], kwargs...)
     initial_result = iteration_function(props[1], f, J)
 
@@ -386,7 +384,6 @@ function newton(fun::Function, ustart, kwargs...)
         f_i = res[n_iter] - props[n_iter]
         update = mixing * f_i
         prop = new_proposal + update
-        #f, J = fun(prop, mec, alpha)
         f, J = fun(prop, kwargs...)
         result = iteration_function(prop, f, J)
         push!(props, prop)
@@ -408,28 +405,18 @@ function iteration_function(proposal, function_vector, jacobian_matrix)
     increment = nothing
     try
         increment = - pinv(jacobian_matrix) * function_vector
-        #@show increment
     catch
         increment = zeros(F64, length(proposal))
     end
-    #@show increment
     step_reduction = 1.0
     significance_limit = 1e-4
-
-    #@. proposal = 1.0
     if any(x -> x > significance_limit, abs.(proposal))
         ratio = abs.(increment ./ proposal)
-        #@show ratio
-        #filter!(x -> abs(x) > significance_limit, ratio)
-        #@show ratio
         max_ratio = maximum( ratio[ abs.(proposal) .> significance_limit ] )
-        #@show max_ratio
         if max_ratio > 1.0
             step_reduction = 1.0 / max_ratio
         end
-        #@show step_reduction
     end
-
     result = proposal + step_reduction .* increment
     return result
 end
