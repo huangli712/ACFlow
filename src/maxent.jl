@@ -263,12 +263,10 @@ function maxent_optimize(mec::MaxEntContext,
     result_dict[:Q] = alpha * entr - 0.5 * chisq
 
     if use_bayes
-        @timev ng, tr, conv = calc_bayes(mec, A_opt, entr, alpha)
+        @timev ng, tr, conv, prob = calc_bayes(mec, A_opt, entr, chisq, alpha)
         result_dict[:n_good] = ng
         result_dict[:trace] = tr
         result_dict[:conv] = conv
-
-        prob = calc_posterior(mec, A_opt, alpha, entr, chisq)
         result_dict[:prob] = prob
     end
 
@@ -322,41 +320,26 @@ function calc_chi2(mec::MaxEntContext, A::Vector{F64})
     return value
 end
 
-function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, alpha::F64)
+function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, alpha::F64)
     mesh = mec.mesh
     nmesh = mesh.nmesh
 
     T = sqrt.(A ./ mesh.weight)
-    Tl = reshape(T, (nmesh, 1))
-    Tr = reshape(T, (1, nmesh))
+    #Tl = reshape(T, (nmesh, 1))
+    #Tr = reshape(T, (1, nmesh))
+    #Λ = (Tl * Tr) .* mec.d2chi2
 
-    Λ = (Tl * Tr) .* mec.d2chi2
+    Λ = (T * T') .* mec.d2chi2
     
     lam = eigvals(Hermitian(Λ))
     ng = -2.0 * alpha * ent
     tr = sum(lam ./ (alpha .+ lam))
     conv = tr / ng
 
-    return ng, tr, conv
-end
-
-function calc_posterior(mec::MaxEntContext, A, alpha, entr, chisq)
-    T = sqrt.(A ./ mec.mesh.weight)
-    len = length(T)
-    Tl = reshape(T, (len, 1))
-    Tr = reshape(T, (1, len))
-    #@show size(Tl), size(Tr), size(mec.d2chi2)
-    Λ = zeros(F64, len, len)
-    for i = 1:len
-        for j = 1:len
-            Λ[i,j] = Tl[i] * mec.d2chi2[i,j] * Tr[j]
-        end
-    end
-    lam = eigvals(Hermitian(Λ))
-
     eig_sum = sum(log.(alpha ./ (alpha .+ lam)))
-    log_prob = alpha * entr - 0.5 * chisq + log(alpha) + 0.5 * eig_sum
-    return exp(log_prob)
+    log_prob = alpha * ent - 0.5 * chisq + log(alpha) + 0.5 * eig_sum
+
+    return ng, tr, conv, exp(log_prob)
 end
 
 function singular_to_realspace_diag(mec::MaxEntContext, u)
