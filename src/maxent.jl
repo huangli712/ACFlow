@@ -134,11 +134,11 @@ function maxent_classic(mec::MaxEntContext)
         conv = sol[:conv]
     end
 
-    bayes_conv = [x[:conv] for x in optarr]
+    convarr = [x[:conv] for x in optarr]
     alpharr = [x[:alpha] for x in optarr]
     exp_opt = log10(alpharr[end] / alpharr[end-1])
-    exp_opt = exp_opt / log10(bayes_conv[end] / bayes_conv[end-1])
-    exp_opt = log10(alpharr[end-1]) - log10(bayes_conv[end-1]) * exp_opt
+    exp_opt = exp_opt / log10(convarr[end] / convarr[end-1])
+    exp_opt = log10(alpharr[end-1]) - log10(convarr[end-1]) * exp_opt
     alpha = 10.0 ^ exp_opt
     ustart = optarr[end-1][:u_opt]
 
