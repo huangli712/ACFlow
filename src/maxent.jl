@@ -363,14 +363,16 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, al
     return ng, tr, conv, exp(log_prob)
 end
 
-function newton(fun::Function, ustart, mec::MaxEntContext, alpha)
+#function newton(fun::Function, ustart, mec::MaxEntContext, alpha)
+function newton(fun::Function, ustart, kwargs...)
     max_iter = 20000
     mixing = 0.5
     props = []
     res = []
     push!(props, ustart)
 
-    f, J = fun(props[1], mec, alpha)
+    #f, J = fun(props[1], mec, alpha)
+    f, J = fun(props[1], kwargs...)
     initial_result = iteration_function(props[1], f, J)
 
     push!(res, initial_result)
@@ -384,7 +386,8 @@ function newton(fun::Function, ustart, mec::MaxEntContext, alpha)
         f_i = res[n_iter] - props[n_iter]
         update = mixing * f_i
         prop = new_proposal + update
-        f, J = fun(prop, mec, alpha)
+        #f, J = fun(prop, mec, alpha)
+        f, J = fun(prop, kwargs...)
         result = iteration_function(prop, f, J)
         push!(props, prop)
         push!(res, result)
