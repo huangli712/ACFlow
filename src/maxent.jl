@@ -250,16 +250,9 @@ function maxent_optimize(mec::MaxEntContext,
     solution, nfev = newton(mec, alpha, ustart, max_hist, function_and_jacobian)
     u_opt = copy(solution)
     A_opt = singular_to_realspace_diag(mec, solution) 
-    #@show u_opt
-    #@show A_opt
     entr = calc_entropy(mec, A_opt, u_opt)
-    #@show entr
-    #@show size(mec.kernel)
     chisq = real(calc_chi2(mec, A_opt))
     norm = trapz(mec.mesh, A_opt)
-    #error()
-    #@show chisq
-    #@show norm
 
     result_dict = Dict{Symbol,Any}()
     result_dict[:u_opt] = u_opt
@@ -271,18 +264,14 @@ function maxent_optimize(mec::MaxEntContext,
     result_dict[:blacktransform] = nothing
     result_dict[:norm] = norm
     result_dict[:Q] = alpha * entr - 0.5 * chisq
-    #@show result_dict[:Q]
 
     if use_bayes
         ng, tr, conv = calc_bayes(mec, A_opt, entr, alpha)
-        #@show ng, tr, conv
-        #error()
         result_dict[:n_good] = ng
         result_dict[:trace] = tr
         result_dict[:convergence] = conv
 
         probability = calc_posterior(mec, A_opt, alpha, entr, chisq)
-        #@show probability
         result_dict[:probability] = probability
     end
 
