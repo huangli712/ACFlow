@@ -1,0 +1,16 @@
+[COMM]
+finput = "green.data"
+solver = "MaxEnt"
+kernel = "fermionic"
+model  = "flat"
+grid   = "matsubara"
+mesh   = "uniform"
+ngrid  = 10
+nmesh  = 501
+wmax   = 10.0
+wmin   = -10.0
+beta   = 10.0
+
+[MaxEnt]
+method = "bryan"
+alpha  = 500.0
