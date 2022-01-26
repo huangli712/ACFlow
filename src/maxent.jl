@@ -400,22 +400,26 @@ function newton(fun::Function, guess, kwargs...)
 end
 
 function iteration_function(prop::Vector{T}, fval::Vector{T}, jacob::Matrix{T}) where {T}
-    increment = nothing
-    step_reduction = 1.0
-    significance_limit = 1e-4
+    resid = nothing
+    step = 1.0
+    limit = 1e-4
+
     try
-        increment = - pinv(jacob) * fval
+        resid = - pinv(jacob) * fval
     catch
-        increment = zeros(F64, length(prop))
+        resid = zeros(F64, length(prop))
     end
-    if any(x -> x > significance_limit, abs.(prop))
+
+    if any(x -> x > limit, abs.(prop))
         ratio = abs.(increment ./ prop)
-        max_ratio = maximum( ratio[ abs.(prop) .> significance_limit ] )
+        max_ratio = maximum( ratio[ abs.(prop) .> limit ] )
         if max_ratio > 1.0
-            step_reduction = 1.0 / max_ratio
+            step = 1.0 / max_ratio
         end
     end
-    result = prop + step_reduction .* increment
+
+    result = prop + step .* resid
+
     return result
 end
 
