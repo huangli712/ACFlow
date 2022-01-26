@@ -245,9 +245,7 @@ function maxent_optimize(mec::MaxEntContext,
                          alpha::F64,
                          ustart::Vector{F64},
                          use_bayes::Bool)
-    max_hist = 1
-
-    solution, nfev = newton(mec, alpha, ustart, max_hist, function_and_jacobian)
+    solution, nfev = newton(mec, alpha, ustart, function_and_jacobian)
     u_opt = copy(solution)
     A_opt = singular_to_realspace_diag(mec, solution) 
     entr = calc_entropy(mec, A_opt, u_opt)
@@ -394,10 +392,8 @@ function function_and_jacobian(mec::MaxEntContext, u, alpha)
     return f, J
 end
 
-function newton(mec::MaxEntContext, alpha, ustart, max_hist, function_and_jacobian)
-    max_hist = 1
+function newton(mec::MaxEntContext, alpha, ustart, function_and_jacobian)
     max_iter = 20000
-    opt_size = length(ustart)
     mixing = 0.5
     props = []
     res = []
