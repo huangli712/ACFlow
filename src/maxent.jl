@@ -249,8 +249,9 @@ function maxent_optimize(mec::MaxEntContext,
     u_opt = copy(solution)
     A_opt = singular_to_realspace_diag(mec, solution) 
     entr = calc_entropy(mec, A_opt, u_opt)
-    chisq = real(calc_chi2(mec, A_opt))
+    chisq = calc_chi2(mec, A_opt)
     norm = trapz(mec.mesh, A_opt)
+    @show chisq
 
     result_dict = Dict{Symbol,Any}()
     result_dict[:u_opt] = u_opt
@@ -305,20 +306,20 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
     return W₂, W₃, Bₘ, d2chi2
 end
 
-function calc_entropy(mec::MaxEntContext, A, u)
+function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     f = A - mec.model - A .* (mec.V_svd * u)
-    trapz(mec.mesh, f)
+    return trapz(mec.mesh, f)
 end
 
-function calc_chi2(mec::MaxEntContext, A)
+function calc_chi2(mec::MaxEntContext, A::Vector{F64})
     ndim, _ = size(mec.kernel)
 
-    T = zeros(C64, ndim)
+    T = zeros(F64, ndim)
     for i = 1:ndim
         T[i] = mec.Gdata[i] - trapz(mec.mesh, mec.kernel[i,:] .* A)
     end
-
     value = sum(mec.E .* T .^ 2.0)
+
     return value
 end
 
