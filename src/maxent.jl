@@ -22,7 +22,7 @@ import ..ACFlow: make_grid, make_mesh, make_model, make_kernel, make_data
 import ..ACFlow: make_singular_space
 import ..ACFlow: write_spectrum
 import ..ACFlow: get_c, get_m
-import ..ACFlow: secant, trapz
+import ..ACFlow: secant, newton, trapz
 
 mutable struct MaxEntContext
     Gdata :: Vector{F64}
@@ -361,66 +361,6 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, al
     log_prob = alpha * ent - 0.5 * chisq + log(alpha) + 0.5 * eig_sum
 
     return ng, tr, conv, exp(log_prob)
-end
-
-function newton(fun::Function, guess, kwargs...)
-    max_iter = 20000
-    mixing = 0.5
-    counter = 0
-    result = nothing
-
-    function apply(prop::Vector{T}, f::Vector{T}, J::Matrix{T}) where {T}
-        resid = nothing
-        step = 1.0
-        limit = 1e-4
-    
-        try
-            resid = - pinv(J) * f
-        catch
-            resid = zeros(F64, length(prop))
-        end
-    
-        if any(x -> x > limit, abs.(prop))
-            ratio = abs.(resid ./ prop)
-            max_ratio = maximum( ratio[ abs.(prop) .> limit ] )
-            if max_ratio > 1.0
-                step = 1.0 / max_ratio
-            end
-        end
-    
-        result = prop + step .* resid
-    
-        return result
-    end
-
-    props = []
-    reals = []
-
-    f, J = fun(guess, kwargs...)
-    init = apply(guess, f, J)
-    push!(props, guess)
-    push!(reals, init)
-
-    while true
-        counter = counter + 1
-
-        prop = props[end] + mixing * (reals[end] - props[end])
-        f, J = fun(prop, kwargs...)
-        result = apply(prop, f, J)
-
-        push!(props, prop)
-        push!(reals, result)
-        
-        any(isnan.(result)) && error("Got NaN!")
-
-        if counter > max_iter || maximum( abs.(result - prop) ) < 1.e-4
-            break
-        end
-    end
-
-    counter > max_iter && error("The max_iter is too small!")
-
-    return result, counter
 end
 
 end
