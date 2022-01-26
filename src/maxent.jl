@@ -241,10 +241,12 @@ function maxent_chi2kink(mec::MaxEntContext)
     return optarr, sol
 end
 
-function maxent_optimize(mec::MaxEntContext, alpha, ustart, use_bayes::Bool)
+function maxent_optimize(mec::MaxEntContext,
+                         alpha::F64,
+                         ustart::Vector{F64},
+                         use_bayes::Bool)
     max_hist = 1
 
-    #@show alpha, ustart
     solution, nfev = newton(mec, alpha, ustart, max_hist, function_and_jacobian)
     u_opt = copy(solution)
     A_opt = singular_to_realspace_diag(mec, solution) 
