@@ -206,17 +206,16 @@ function maxent_chi2kink(mec::MaxEntContext)
     alpha = get_m("alpha")
     n_svd = length(mec.Bₘ)
     ustart = zeros(F64, n_svd)
-
-    chis = []
-    alphas = []
     optarr = []
+
+    chi_arr = []
+    alpharr = []
     while true
         sol = maxent_optimize(mec, alpha, ustart, use_bayes)
         push!(optarr, sol)
-        push!(chis, sol[:chi2])
-        push!(alphas, alpha)
+        push!(chi_arr, sol[:chi2])
+        push!(alpharr, alpha)
         @. ustart = sol[:u_opt]
-
         alpha = alpha / 10.0
         if alpha < 0.001
             break
@@ -227,16 +226,15 @@ function maxent_chi2kink(mec::MaxEntContext)
         return @. p[1] + p[2] / (1.0 + exp(-p[4] * (x - p[3])))
     end
 
-    good_numbers = isfinite.(chis)
-    fit = curve_fit(fitfun, log10.(alphas[good_numbers]), log10.(chis[good_numbers]), [0.0, 5.0, 2.0, 0.0])
-    a, b, c, d = fit.param
+    good_data = isfinite.(chi_arr)
+    fit = curve_fit(fitfun, log10.(alpharr[good_data]), log10.(chi_arr[good_data]), [0.0, 5.0, 2.0, 0.0])
+    _, _, c, d = fit.param
 
     fit_position = 2.5
     a_opt = c - fit_position / d
-    alpha_opt = 10.0 ^ a_opt
-
-    closest_idx = argmin( abs.( log10.(alphas) .- a_opt ) )
+    closest_idx = argmin( abs.( log10.(alpharr) .- a_opt ) )
     ustart = optarr[closest_idx][:u_opt]
+    alpha_opt = 10.0 ^ a_opt
 
     sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
