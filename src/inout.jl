@@ -5,15 +5,21 @@ end
 
 function make_data(val::Vector{T}, err::Vector{T}) where {T}
     grid = get_c("grid")
-    if grid == "matsubara"
+    kernel = get_c("kernel")
+
+    if grid == "matsubara" && kernel == "fermionic"
         value = vcat(real(val), imag(val))
         error = vcat(real(err), imag(err))
         covar = error .^ 2.0
         _data = GreenData(value, error, covar)
         return _data
-    else
-        covar = err .^ 2.0
-        _data = GreenData(val, err, covar)
+    end
+
+    if grid == "matsubara" && kernel == "bosonic"
+        value = real(val)
+        error = real(err)
+        covar = error .^ 2.0
+        _data = GreenData(value, error, covar)
         return _data
     end
 end
