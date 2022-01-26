@@ -363,40 +363,38 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, al
     return ng, tr, conv, exp(log_prob)
 end
 
-function newton(fun::Function, ustart, kwargs...)
+function newton(fun::Function, guess, kwargs...)
     max_iter = 20000
     mixing = 0.5
-    props = []
-    res = []
-    push!(props, ustart)
-
-    f, J = fun(props[1], kwargs...)
-    initial_result = iteration_function(props[1], f, J)
-
-    push!(res, initial_result)
-
     counter = 0
-    converged = false
-    result = nothing
-    while !converged
-        n_iter = length(props)
-        new_proposal = props[n_iter]
-        f_i = res[n_iter] - props[n_iter]
-        update = mixing * f_i
-        prop = new_proposal + update
+    #result = nothing
+
+    props = []
+    reals = []
+
+    f, J = fun(guess, kwargs...)
+    init = iteration_function(guess, f, J)
+    push!(props, guess)
+    push!(reals, init)
+
+    while true
+        counter = counter + 1
+
+        prop = props[end] + mixing * (reals[end] - props[end])
         f, J = fun(prop, kwargs...)
         result = iteration_function(prop, f, J)
+
         push!(props, prop)
-        push!(res, result)
-        converged = counter > max_iter || maximum( abs.(result - prop) ) < 1.e-4
-        counter = counter + 1
-        if any(isnan.(result))
-            error("have NaN")
+        push!(reals, result)
+        
+        any(isnan.(result)) && error("Got NaN!")
+
+        if counter > max_iter || maximum( abs.(result - prop) ) < 1.e-4
+            break
         end
     end
-    if counter > max_iter
-        error("max_iter is too small")
-    end
+
+    counter > max_iter && error("The max_iter is too small!")
 
     return result, counter
 end
