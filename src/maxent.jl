@@ -251,7 +251,6 @@ function maxent_optimize(mec::MaxEntContext,
     entr = calc_entropy(mec, A_opt, u_opt)
     chisq = calc_chi2(mec, A_opt)
     norm = trapz(mec.mesh, A_opt)
-    @show chisq
 
     result_dict = Dict{Symbol,Any}()
     result_dict[:u_opt] = u_opt
@@ -323,25 +322,26 @@ function calc_chi2(mec::MaxEntContext, A::Vector{F64})
     return value
 end
 
-function calc_bayes(mec::MaxEntContext, A, entr, alpha)
-    T = sqrt.(A ./ mec.mesh.weight)
-    len = length(T)
-    Tl = reshape(T, (len, 1))
-    Tr = reshape(T, (1, len))
-    #@show size(Tl), size(Tr), size(mec.d2chi2)
-    Λ = zeros(F64, len, len)
-    for i = 1:len
-        for j = 1:len
+function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, alpha::F64)
+    mesh = mec.mesh
+    nmesh = mesh.nmesh
+
+    Λ = zeros(F64, nmesh, nmesh)
+    T = sqrt.(A ./ mesh.weight)
+    Tl = reshape(T, (nmesh, 1))
+    Tr = reshape(T, (1, nmesh))
+
+    for i = 1:nmesh
+        for j = 1:nmesh
             Λ[i,j] = Tl[i] * mec.d2chi2[i,j] * Tr[j]
         end
     end
-    #@show Λ[2,:]
 
     lam = eigvals(Hermitian(Λ))
-    #@show lam
-    ng = -2.0 * alpha * entr
+    ng = -2.0 * alpha * ent
     tr = sum(lam ./ (alpha .+ lam))
     conv = tr / ng
+
     return ng, tr, conv
 end
 
