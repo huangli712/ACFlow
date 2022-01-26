@@ -165,11 +165,11 @@ function maxent_bryan(mec::MaxEntContext)
 
     maxprob = 0.0
     while true
-        o = maxent_optimize(mec, alpha, ustart, use_bayes)
-        ustart = copy(o[:u_opt])
-        push!(optarr, o)
+        sol = maxent_optimize(mec, alpha, ustart, use_bayes)
+        push!(optarr, sol)
         alpha = alpha / 1.1
-        prob = o[:probability]
+        @. ustart = sol[:u_opt]
+        prob = sol[:probability]
         if prob > maxprob
             maxprob = prob
         elseif prob < 0.01 * maxprob
@@ -200,28 +200,25 @@ function maxent_bryan(mec::MaxEntContext)
 end
 
 function maxent_chi2kink(mec::MaxEntContext)
-    alpha_start = 1e9
-    alpha_end = 1e-3
-    alpha_div = 10.0
-    fit_position = 2.5
+    println("Using chi2kink algorithm to solve the maximum entropy problem")
+    
+    use_bayes = false
+    alpha = get_m("alpha")
+    n_svd = length(mec.Bₘ)
+    ustart = zeros(F64, n_svd)
 
-    alpha = alpha_start
     chis = []
     alphas = []
     optarr = []
-    ustart = zeros(F64, length(mec.Bₘ))
-    mesh = mec.mesh
-
-    use_bayes = false
     while true
-        o = maxent_optimize(mec, alpha, ustart, use_bayes)
-        push!(optarr, o)
-        ustart = copy(o[:u_opt])
-        push!(chis, o[:chi2])
+        sol = maxent_optimize(mec, alpha, ustart, use_bayes)
+        push!(optarr, sol)
+        push!(chis, sol[:chi2])
         push!(alphas, alpha)
+        @. ustart = sol[:u_opt]
 
         alpha = alpha / 10.0
-        if alpha < alpha_end
+        if alpha < 0.001
             break
         end
     end
@@ -234,6 +231,7 @@ function maxent_chi2kink(mec::MaxEntContext)
     fit = curve_fit(fitfun, log10.(alphas[good_numbers]), log10.(chis[good_numbers]), [0.0, 5.0, 2.0, 0.0])
     a, b, c, d = fit.param
 
+    fit_position = 2.5
     a_opt = c - fit_position / d
     alpha_opt = 10.0 ^ a_opt
 
@@ -243,13 +241,6 @@ function maxent_chi2kink(mec::MaxEntContext)
     sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
     return optarr, sol
-    #A_opt = sol[:A_opt]
-    #niw = mesh.nmesh
-    #open("chi2kink.data", "w") do fout
-    #    for i = 1:niw
-    #        println(fout, mesh[i], " ", A_opt[i])
-    #    end
-    #end
 end
 
 function maxent_optimize(mec::MaxEntContext, alpha, ustart, use_bayes::Bool)
