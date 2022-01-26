@@ -245,7 +245,7 @@ function maxent_optimize(mec::MaxEntContext,
                          alpha::F64,
                          ustart::Vector{F64},
                          use_bayes::Bool)
-    solution, nfev = newton(function_and_jacobian, mec, alpha, ustart)
+    solution, nfev = newton(f_and_J, mec, alpha, ustart)
     u_opt = copy(solution)
     A_opt = svd_to_real(mec, solution) 
     entr = calc_entropy(mec, A_opt, u_opt)
@@ -301,6 +301,30 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
     return W₂, W₃, Bₘ, d2chi2
 end
 
+function f_and_J(mec::MaxEntContext, u::Vector{F64}, alpha::F64)
+    v = mec.V_svd * u
+    w = exp.(v)
+
+    n_svd = length(mec.Bₘ)
+    term_1 = zeros(F64, n_svd)
+    term_2 = zeros(F64, n_svd, n_svd)
+
+    for i = 1:n_svd
+        term_1[i] = dot(mec.W₂[i,:], w)
+    end
+
+    for j = 1:n_svd
+        for i = 1:n_svd
+            term_2[i,j] = dot(mec.W₃[i,j,:], w)
+        end
+    end
+
+    f = alpha * u + term_1 - mec.Bₘ
+    J = alpha * diagm(ones(n_svd)) + term_2
+
+    return f, J
+end
+
 function svd_to_real(mec::MaxEntContext, u::Vector{F64})
     return mec.model .* exp.(mec.V_svd * u)
 end
@@ -339,42 +363,14 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, al
     return ng, tr, conv, exp(log_prob)
 end
 
-function function_and_jacobian(mec::MaxEntContext, u::Vector{F64}, alpha::F64)
-    v = mec.V_svd * u
-    w = exp.(v)
-
-    n_svd = length(mec.Bₘ)
-    term_1 = zeros(F64, n_svd)
-    term_2 = zeros(F64, n_svd, n_svd)
-    for i = 1:n_svd
-        term_1[i] = dot(mec.W₂[i,:], w)
-    end
-
-    #@show term_1
-    #term1 = mec.W₂ * w
-    #@show term_1
-    #error()
-
-    for i = 1:n_svd
-        for j = 1:n_svd
-            term_2[i,j] = dot(mec.W₃[i,j,:], w)
-        end
-    end
-
-    f = alpha * u + term_1 - mec.Bₘ
-    J = alpha * diagm(ones(n_svd)) + term_2
-
-    return f, J
-end
-
-function newton(function_and_jacobian, mec::MaxEntContext, alpha, ustart)
+function newton(fun::Function, mec::MaxEntContext, alpha, ustart)
     max_iter = 20000
     mixing = 0.5
     props = []
     res = []
     push!(props, ustart)
 
-    @timev f, J = function_and_jacobian(mec, props[1], alpha)
+    f, J = fun(mec, props[1], alpha)
     initial_result = iteration_function(props[1], f, J)
 
     push!(res, initial_result)
@@ -388,34 +384,20 @@ function newton(function_and_jacobian, mec::MaxEntContext, alpha, ustart)
         f_i = res[n_iter] - props[n_iter]
         update = mixing * f_i
         prop = new_proposal + update
-        #@show prop
-        #error()
-
-        f, J = function_and_jacobian(mec, prop, alpha)
-        #@show f
-        #@show J
-        #error()
-
+        f, J = fun(mec, prop, alpha)
         result = iteration_function(prop, f, J)
-        #@show result
-
         push!(props, prop)
         push!(res, result)
-
         converged = counter > max_iter || maximum( abs.(result - prop) ) < 1.e-4
         counter = counter + 1
-        #@show counter, maximum( abs.(result - prop) )
         if any(isnan.(result))
             error("have NaN")
         end
-        #error()
     end
-
     if counter > max_iter
         error("max_iter is too small")
     end
 
-    #@show result, counter
     return result, counter
 end
 
