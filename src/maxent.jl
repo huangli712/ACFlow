@@ -367,7 +367,7 @@ function newton(fun::Function, guess, kwargs...)
     max_iter = 20000
     mixing = 0.5
     counter = 0
-    #result = nothing
+    result = nothing
 
     props = []
     reals = []
