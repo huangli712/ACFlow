@@ -369,11 +369,35 @@ function newton(fun::Function, guess, kwargs...)
     counter = 0
     result = nothing
 
+    function apply(prop::Vector{T}, f::Vector{T}, J::Matrix{T}) where {T}
+        resid = nothing
+        step = 1.0
+        limit = 1e-4
+    
+        try
+            resid = - pinv(J) * f
+        catch
+            resid = zeros(F64, length(prop))
+        end
+    
+        if any(x -> x > limit, abs.(prop))
+            ratio = abs.(resid ./ prop)
+            max_ratio = maximum( ratio[ abs.(prop) .> limit ] )
+            if max_ratio > 1.0
+                step = 1.0 / max_ratio
+            end
+        end
+    
+        result = prop + step .* resid
+    
+        return result
+    end
+
     props = []
     reals = []
 
     f, J = fun(guess, kwargs...)
-    init = iteration_function(guess, f, J)
+    init = apply(guess, f, J)
     push!(props, guess)
     push!(reals, init)
 
@@ -382,7 +406,7 @@ function newton(fun::Function, guess, kwargs...)
 
         prop = props[end] + mixing * (reals[end] - props[end])
         f, J = fun(prop, kwargs...)
-        result = iteration_function(prop, f, J)
+        result = apply(prop, f, J)
 
         push!(props, prop)
         push!(reals, result)
@@ -397,30 +421,6 @@ function newton(fun::Function, guess, kwargs...)
     counter > max_iter && error("The max_iter is too small!")
 
     return result, counter
-end
-
-function iteration_function(prop::Vector{T}, fval::Vector{T}, jacob::Matrix{T}) where {T}
-    resid = nothing
-    step = 1.0
-    limit = 1e-4
-
-    try
-        resid = - pinv(jacob) * fval
-    catch
-        resid = zeros(F64, length(prop))
-    end
-
-    if any(x -> x > limit, abs.(prop))
-        ratio = abs.(resid ./ prop)
-        max_ratio = maximum( ratio[ abs.(prop) .> limit ] )
-        if max_ratio > 1.0
-            step = 1.0 / max_ratio
-        end
-    end
-
-    result = prop + step .* resid
-
-    return result
 end
 
 end
