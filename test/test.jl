@@ -8,7 +8,6 @@ println("hello world")
 
 read_param()
 raw = read_data()
-#@show raw
 solve(raw)
 
 #MaxEnt.solve()
