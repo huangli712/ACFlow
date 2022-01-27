@@ -1,7 +1,17 @@
 
 function make_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
-    println("here")
-    error()
+    ntime = fg.ntime
+    nmesh = am.nmesh
+    β = fg.β
+
+    kernel = zeros(F64, ntime, nmesh)
+    for i = 1:nmesh
+        for j = 1:ntime
+            kernel[j,i] = exp(-fg[j] * am[i]) / (1.0 + exp(-β * am[i]))
+        end
+    end
+
+    return kernel
 end
 
 function make_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
