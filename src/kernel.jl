@@ -31,6 +31,18 @@ function make_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
 end
 
 function make_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
+    ntime = bg.ntime
+    nmesh = am.nmesh
+    β = bg.β
+
+    kernel = zeros(F64, ntime, nmesh)
+    for i = 1:nmesh
+        for j = 1:ntime
+            kernel[j,i] = 0.5 * am[i] * (exp(-am[i] * bg[j]) + exp(-am[i] * (β - bg[j]))) / (1. - exp(- β * am[i]))
+        end
+    end
+
+    return kernel
 end
 
 function make_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
