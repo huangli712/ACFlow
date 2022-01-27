@@ -1,5 +1,7 @@
 
 function make_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
+    println("here")
+    error()
 end
 
 function make_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
