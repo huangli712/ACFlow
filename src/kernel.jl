@@ -35,6 +35,9 @@ function make_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     nmesh = am.nmesh
     β = bg.β
 
+    #@show am.mesh
+    #@show bg.τ
+    #error()
     kernel = zeros(F64, ntime, nmesh)
     for i = 1:nmesh
         for j = 1:ntime
@@ -42,6 +45,7 @@ function make_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
         end
     end
 
+    @. kernel[:,1] = 1.0
     return kernel
 end
 
