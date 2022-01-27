@@ -22,6 +22,14 @@ function make_data(val::Vector{T}, err::Vector{T}) where {T}
         _data = GreenData(value, error, covar)
         return _data
     end
+
+    if grid == "time" && kernel == "fermionic"
+        value = real(val)
+        error = real(err)
+        covar = error .^ 2.0
+        _data = GreenData(value, error, covar)
+        return _data
+    end
 end
 
 function write_spectrum(am::AbstractMesh, spectra::Vector{F64})
