@@ -30,6 +30,14 @@ function make_data(val::Vector{T}, err::Vector{T}) where {T}
         _data = GreenData(value, error, covar)
         return _data
     end
+
+    if grid == "time" && kernel == "bosonic"
+        value = real(val)
+        error = real(err)
+        covar = error .^ 2.0
+        _data = GreenData(value, error, covar)
+        return _data
+    end
 end
 
 function write_spectrum(am::AbstractMesh, spectra::Vector{F64})
@@ -51,7 +59,8 @@ function read_time_data(finput::String, ngrid::I64)
             arr = parse.(F64, line_to_array(fin)[1:3])
             mesh[i] = arr[1]
             value[i] = arr[2]
-            error[i] = arr[3] * 10.0
+            error[i] = arr[3] * 10.0 # For test3
+            error[i] = arr[3] * 0.01 # For test3
         end
     end
 
