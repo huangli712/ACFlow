@@ -1,0 +1,16 @@
+[COMM]
+finput = "green.data"
+solver = "MaxEnt"
+kernel = "bosonic"
+model  = "flat"
+grid   = "time"
+mesh   = "uniform"
+ngrid  = 501
+nmesh  = 501
+wmax   = 15.0
+wmin   = 0.0
+beta   = 5.0
+
+[MaxEnt]
+method = "classic"
+alpha  = 1e6
