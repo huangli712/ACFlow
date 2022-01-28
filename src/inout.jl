@@ -60,7 +60,7 @@ function read_time_data(finput::String, ngrid::I64)
             mesh[i] = arr[1]
             value[i] = arr[2]
             error[i] = arr[3] * 10.0 # For test3
-            error[i] = arr[3] * 0.01 # For test3
+            error[i] = arr[3] * 0.01 # For test4
         end
     end
 
