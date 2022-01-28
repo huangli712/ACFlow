@@ -54,8 +54,6 @@ function maxent_init(rd::RawData)
 
     kernel = make_kernel(mesh, grid)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
-    @show S_svd
-    error()
 
     W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
 
