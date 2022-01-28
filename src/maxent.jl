@@ -49,20 +49,13 @@ function maxent_init(rd::RawData)
 
     grid = make_grid(rd)
     mesh = make_mesh()
-    #@show mesh.weight
-    #error()
 
     model = make_model(mesh)
 
     kernel = make_kernel(mesh, grid)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
-    #@show S_svd
-    #@show mesh
-    #error()
 
     W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
-    #@show Bₘ
-    #error()
 
     return MaxEntContext(Gdata, E, mesh, model, kernel, V_svd, W₂, W₃, Bₘ, d2chi2)
 end
