@@ -54,8 +54,13 @@ function maxent_init(rd::RawData)
 
     kernel = make_kernel(mesh, grid)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
+    #@show S_svd
+    #@show mesh
+    #error()
 
     W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
+    @show Bₘ
+    error()
 
     return MaxEntContext(Gdata, E, mesh, model, kernel, V_svd, W₂, W₃, Bₘ, d2chi2)
 end
@@ -117,7 +122,7 @@ function maxent_historic(mec::MaxEntContext)
 end
 
 function maxent_classic(mec::MaxEntContext)
-    println("Using historic algorithm to solve the maximum entropy problem")
+    println("Using classic algorithm to solve the maximum entropy problem")
 
     use_bayes = true
     alpha = get_m("alpha")
