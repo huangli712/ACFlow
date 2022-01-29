@@ -23,7 +23,7 @@ end
 
 abstract type AbstractGrid end
 
-struct FermionicImaginaryTimeGrid <: AbstractGrid
+mutable struct FermionicImaginaryTimeGrid <: AbstractGrid
     ntime :: I64
     β :: F64
     τ :: Vector{F64}
@@ -63,7 +63,7 @@ function Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
     return X
 end
 
-struct FermionicMatsubaraGrid <: AbstractGrid
+mutable struct FermionicMatsubaraGrid <: AbstractGrid
     nfreq :: I64
     β :: F64
     ω :: Vector{F64}
@@ -105,7 +105,7 @@ function Base.getindex(fg::FermionicMatsubaraGrid, I::UnitRange{I64})
     return X
 end
 
-struct BosonicImaginaryTimeGrid <: AbstractGrid
+mutable struct BosonicImaginaryTimeGrid <: AbstractGrid
     ntime :: I64
     β :: F64
     τ :: Vector{F64}
@@ -145,7 +145,7 @@ function Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
     return X
 end
 
-struct BosonicMatsubaraGrid <: AbstractGrid
+mutable struct BosonicMatsubaraGrid <: AbstractGrid
     nfreq :: I64
     β :: F64
     ω :: Vector{F64}
@@ -223,7 +223,7 @@ function rebuild_grid(fg::FermionicImaginaryTimeGrid)
 end
 
 function rebuild_grid(fg::FermionicMatsubaraGrid)
-    for n in eachindex(fg.ω)
+    for n in eachindex(fg)
         fg.ω[n] = (2 * n - 1) * π / fg.β
     end
 end
@@ -233,7 +233,7 @@ function rebuild_grid(bg::BosonicImaginaryTimeGrid)
 end
 
 function rebuild_grid(bg::BosonicMatsubaraGrid)
-    for n in eachindex(bg.ω)
+    for n in eachindex(bg)
         bg.ω[n] = (2 * n - 2) * π / bg.β
     end
 end

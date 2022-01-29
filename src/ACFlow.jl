@@ -31,5 +31,6 @@ export read_data
 export solve
 
 export FermionicImaginaryTimeGrid, FermionicMatsubaraGrid, BosonicImaginaryTimeGrid, BosonicMatsubaraGrid
+export rebuild_grid
 
 end
