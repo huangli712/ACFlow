@@ -30,8 +30,6 @@ export read_param
 export read_data
 export solve
 
-export FermionicImaginaryTimeGrid, FermionicMatsubaraGrid, BosonicImaginaryTimeGrid, BosonicMatsubaraGrid
-export rebuild_grid
-export NonUniformMesh
+export make_flat_model, UniformMesh
 
 end

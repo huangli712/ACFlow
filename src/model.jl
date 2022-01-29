@@ -1,3 +1,11 @@
+#
+# Project : Gardenia
+# Source  : model.jl
+# Author  : Li Huang (huangli@caep.cn)
+# Status  : Unstable
+#
+# Last modified: 2022/01/29
+#
 
 function make_model(m::AbstractMesh)
     model = get_c("model")
@@ -10,7 +18,7 @@ end
 
 function make_flat_model(um::UniformMesh)
     model = ones(F64, um.nmesh)
-    norm = trapz(um.mesh, model)
+    norm = dot(um.weight, model)
     model = model ./ norm
     return model
 end
