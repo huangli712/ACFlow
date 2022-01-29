@@ -30,6 +30,4 @@ export read_param
 export read_data
 export solve
 
-export make_flat_model, UniformMesh
-
 end

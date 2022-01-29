@@ -42,6 +42,11 @@ const PStochOM = Dict{String,ADT}(
 const PStochAC = Dict{String,ADT}(
 )
 
+function read_param()
+    cfg = inp_toml(query_args(), true)
+    fil_dict(cfg)
+end
+
 """
     inp_toml(f::String, key::String, necessary::Bool)
 

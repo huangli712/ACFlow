@@ -1,3 +1,11 @@
+#
+# Project : Gardenia
+# Source  : inout.jl
+# Author  : Li Huang (huangli@caep.cn)
+# Status  : Unstable
+#
+# Last modified: 2022/01/29
+#
 
 function make_data(rd::RawData)
     return make_data(rd.value, rd.error)
@@ -46,6 +54,26 @@ function write_spectrum(am::AbstractMesh, spectra::Vector{F64})
         for i = 1:am.nmesh
             @printf(fout, "%16.12f %16.12f\n", am[i], spectra[i])
         end
+    end
+end
+
+function read_data()
+    finput = get_c("finput")
+    ngrid = get_c("ngrid")
+    grid = get_c("grid")
+
+    @cswitch grid begin
+        @case "matsubara"
+            return read_freq_data(finput, ngrid)
+            break
+
+        @case "time"
+            return read_time_data(finput, ngrid)
+            break
+
+        @default
+            sorry()
+            break
     end
 end
 
