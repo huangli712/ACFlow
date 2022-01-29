@@ -12,6 +12,16 @@ function Base.getindex(fg::FermionicImaginaryTimeGrid, ind::I64)
     return fg.τ[ind]
 end
 
+function Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
+    @assert checkbounds(Bool, fg.τ, I)
+    lI = length(I)
+    X = similar(fg.τ, lI)
+    if lI > 0
+        unsafe_copyto!(X, 1, fg.τ, first(I), lI)
+    end
+    return X
+end
+
 function Base.getindex(fg::FermionicMatsubaraGrid, ind::I64)
     @assert 1 ≤ ind ≤ fg.nfreq
     return fg.ω[ind]
