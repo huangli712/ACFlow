@@ -72,6 +72,14 @@ end
 function BosonicImaginaryTimeGrid()
 end
 
+function Base.firstindex(bg::BosonicImaginaryTimeGrid)
+    firstindex(bg.τ)
+end
+
+function Base.lastindex(bg::BosonicImaginaryTimeGrid)
+    lastindex(bg.τ)
+end
+
 function Base.getindex(bg::BosonicImaginaryTimeGrid, ind::I64)
     @assert 1 ≤ ind ≤ bg.ntime
     return bg.τ[ind]
