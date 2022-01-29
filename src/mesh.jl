@@ -65,11 +65,36 @@ mutable struct NonUniformMesh <: AbstractMesh
     weight :: Vector{F64}
 end
 
+function NonUniformMesh(nmesh::I64, wmin::F64, wmax::F64)
+
+end
+
+function Base.eachindex(num::NonUniformMesh)
+    eachindex(num.mesh)
+end
+
+function Base.firstindex(num::NonUniformMesh)
+    firstindex(num.mesh)
+end
+
+function Base.lastindex(num::NonUniformMesh)
+    lastindex(num.mesh)
+end
+
 function Base.getindex(num::NonUniformMesh, ind::I64)
     @assert 1 ≤ ind ≤ num.nmesh
     return num.mesh[ind]
 end
 
+function Base.getindex(num::NonUniformMesh, I::UnitRange{I64})
+    @assert checkbounds(Bool, num.mesh, I)
+    lI = length(I)
+    X = similar(num.mesh, lI)
+    if lI > 0
+        unsafe_copyto!(X, 1, num.mesh, first(I), lI)
+    end
+    return X
+end
 
 function make_mesh()
     mesh = get_c("mesh")
