@@ -1,4 +1,22 @@
 
+abstract type AbstractMesh end
+
+struct UniformMesh <: AbstractMesh
+    nmesh :: I64
+    wmax :: F64
+    wmin :: F64
+    mesh :: Vector{F64}
+    weight :: Vector{F64}
+end
+
+struct NonUniformMesh <: AbstractMesh
+    nmesh :: I64
+    wmax :: F64
+    wmin :: F64
+    mesh :: Vector{F64}
+    weight :: Vector{F64}
+end
+
 function Base.getindex(um::UniformMesh, ind::I64)
     @assert 1 ≤ ind ≤ um.nmesh
     return um.mesh[ind]

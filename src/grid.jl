@@ -7,6 +7,20 @@
 # Last modified: 2022/01/29
 #
 
+abstract type AbstractData end
+
+struct RawData{T} <: AbstractData
+    mesh  :: Vector{F64}
+    value :: Vector{T}
+    error :: Vector{T}
+end
+
+mutable struct GreenData <: AbstractData
+    value :: Vector{F64}
+    error :: Vector{F64}
+    var   :: Vector{F64}
+end
+
 abstract type AbstractGrid end
 
 struct FermionicImaginaryTimeGrid <: AbstractGrid
