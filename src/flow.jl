@@ -1,3 +1,12 @@
+#
+# Project : Gardenia
+# Source  : flow.jl
+# Author  : Li Huang (huangli@caep.cn)
+# Status  : Unstable
+#
+# Last modified: 2022/01/29
+#
+
 function read_param()
     cfg = inp_toml(query_args(), true)
     fil_dict(cfg)

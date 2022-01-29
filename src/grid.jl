@@ -1,3 +1,11 @@
+#
+# Project : Gardenia
+# Source  : grid.jl
+# Author  : Li Huang (huangli@caep.cn)
+# Status  : Unstable
+#
+# Last modified: 2022/01/29
+#
 
 function Base.getindex(fg::FermionicImaginaryTimeGrid, ind::I64)
     @assert 1 ≤ ind ≤ fg.ntime
