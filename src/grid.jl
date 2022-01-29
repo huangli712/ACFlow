@@ -14,6 +14,10 @@ function FermionicImaginaryTimeGrid(ntime::I64, β::F64)
     return FermionicImaginaryTimeGrid(ntime, β, τ)
 end
 
+function Base.eachindex(fg::FermionicImaginaryTimeGrid)
+    eachindex(fg.τ)
+end
+
 function Base.firstindex(fg::FermionicImaginaryTimeGrid)
     firstindex(fg.τ)
 end
@@ -46,6 +50,10 @@ function FermionicMatsubaraGrid(nfreq::I64, β::F64)
     return FermionicMatsubaraGrid(nfreq, β, ω)
 end
 
+function Base.eachindex(fg::FermionicMatsubaraGrid)
+    eachindex(fg.ω)
+end
+
 function Base.firstindex(fg::FermionicMatsubaraGrid)
     firstindex(fg.ω)
 end
@@ -69,7 +77,15 @@ function Base.getindex(fg::FermionicMatsubaraGrid, I::UnitRange{I64})
     return X
 end
 
-function BosonicImaginaryTimeGrid()
+function BosonicImaginaryTimeGrid(ntime::I64, β::F64)
+    @assert ntime ≥ 1
+    @assert β ≥ 0.0
+    τ = collect(LinRange(0.0, β, ntime))
+    return BosonicImaginaryTimeGrid(ntime, β, τ)
+end
+
+function Base.eachindex(bg::BosonicImaginaryTimeGrid)
+    eachindex(bg.τ)
 end
 
 function Base.firstindex(bg::BosonicImaginaryTimeGrid)
