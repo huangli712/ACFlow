@@ -1,3 +1,11 @@
+#
+# Project : Gardenia
+# Source  : config.jl
+# Author  : Li Huang (huangli@caep.cn)
+# Status  : Unstable
+#
+# Last modified: 2022/01/29
+#
 
 #=
 ### *Customized Types*
@@ -39,8 +47,6 @@ const PStochAC = Dict{String,ADT}(
 
 Parse the configuration file (in toml format). It reads only parts of
 the configuration file, which depends on the value of `key`.
-
-See also: [`setup`](@ref).
 """
 function inp_toml(f::String, key::String, necessary::Bool)
     if isfile(f)
@@ -64,8 +70,6 @@ end
     inp_toml(f::String, necessary::Bool)
 
 Parse the configuration file (in toml format). It reads the whole file.
-
-See also: [`setup`](@ref).
 """
 function inp_toml(f::String, necessary::Bool)
     if isfile(f)
@@ -85,8 +89,6 @@ end
 
 Transfer configurations from dict `cfg` to internal dicts (including
 `PCOMM`, `PMaxEnt`, `PStochOM`, and `PStochAC`).
-
-See also: [`chk_dict`](@ref).
 """
 function fil_dict(cfg::Dict{String,Any})
     # For dft block
@@ -143,8 +145,6 @@ end
     get_c(key::String)
 
 Extract configurations from dict: PCOMM.
-
-See also: [`cat_c`](@ref), [`str_c`](@ref).
 """
 @inline function get_c(key::String)
     if haskey(PCOMM, key)
@@ -158,8 +158,6 @@ end
     get_m(key::String)
 
 Extract configurations from dict: PMaxEnt.
-
-See also: [`cat_m`](@ref), [`str_m`](@ref).
 """
 @inline function get_m(key::String)
     if haskey(PMaxEnt, key)

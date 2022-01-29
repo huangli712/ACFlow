@@ -1,10 +1,10 @@
 #
 # Project : Gardenia
 # Source  : ACFlow.jl
-# Author  : Li Huang (lihuang.dmft@gmail.com)
+# Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/28
+# Last modified: 2022/01/29
 #
 
 module ACFlow
