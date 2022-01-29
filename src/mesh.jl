@@ -1,7 +1,15 @@
+#
+# Project : Gardenia
+# Source  : mesh.jl
+# Author  : Li Huang (huangli@caep.cn)
+# Status  : Unstable
+#
+# Last modified: 2022/01/29
+#
 
 abstract type AbstractMesh end
 
-struct UniformMesh <: AbstractMesh
+mutable struct UniformMesh <: AbstractMesh
     nmesh :: I64
     wmax :: F64
     wmin :: F64
@@ -9,17 +17,25 @@ struct UniformMesh <: AbstractMesh
     weight :: Vector{F64}
 end
 
-struct NonUniformMesh <: AbstractMesh
-    nmesh :: I64
-    wmax :: F64
-    wmin :: F64
-    mesh :: Vector{F64}
-    weight :: Vector{F64}
+function Base.firstindex(um::UniformMesh)
+    firstindex(um.mesh)
+end
+
+function Base.lastindex(um::UniformMesh)
+    lastindex(um.mesh)
 end
 
 function Base.getindex(um::UniformMesh, ind::I64)
     @assert 1 ≤ ind ≤ um.nmesh
     return um.mesh[ind]
+end
+
+mutable struct NonUniformMesh <: AbstractMesh
+    nmesh :: I64
+    wmax :: F64
+    wmin :: F64
+    mesh :: Vector{F64}
+    weight :: Vector{F64}
 end
 
 function Base.getindex(num::NonUniformMesh, ind::I64)
