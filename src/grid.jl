@@ -7,6 +7,13 @@
 # Last modified: 2022/01/29
 #
 
+function FermionicImaginaryTimeGrid(ntime::I64, β::F64)
+    @assert ntime ≥ 1
+    @assert β ≥ 0.0
+    τ = collect(LinRange(0.0, β, ntime))
+    return FermionicImaginaryTimeGrid(ntime, β, τ)
+end
+
 function Base.getindex(fg::FermionicImaginaryTimeGrid, ind::I64)
     @assert 1 ≤ ind ≤ fg.ntime
     return fg.τ[ind]
