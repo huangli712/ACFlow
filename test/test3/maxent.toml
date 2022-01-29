@@ -1,0 +1,16 @@
+[COMM]
+finput = "sigma.data"
+solver = "MaxEnt"
+kernel = "fermionic"
+model  = "flat"
+grid   = "matsubara"
+mesh   = "uniform"
+ngrid  = 100
+nmesh  = 501
+wmax   = 20.0
+wmin   = -20.0
+beta   = 5.0
+
+[MaxEnt]
+method = "bryan"
+alpha  = 500.0
