@@ -37,14 +37,29 @@ function Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
     return X
 end
 
+function FermionicMatsubaraGrid(nfreq::I64, β::F64)
+    @assert nfreq ≥ 1
+    @assert β ≥ 0.0
+    wmin = π \ β
+    wmax = (2 * nfreq - 1) * π \ β
+    ω = collect(LinRange(wmin, wmax, nfreq))
+    return FermionicMatsubaraGrid(nfreq, β, ω)
+end
+
 function Base.getindex(fg::FermionicMatsubaraGrid, ind::I64)
     @assert 1 ≤ ind ≤ fg.nfreq
     return fg.ω[ind]
 end
 
+function BosonicImaginaryTimeGrid()
+end
+
 function Base.getindex(bg::BosonicImaginaryTimeGrid, ind::I64)
     @assert 1 ≤ ind ≤ bg.ntime
     return bg.τ[ind]
+end
+
+function BosonicMatsubaraGrid()
 end
 
 function Base.getindex(bg::BosonicMatsubaraGrid, ind::I64)
