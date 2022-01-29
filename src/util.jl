@@ -141,27 +141,7 @@ function secant(func, x0, args)
     end
 end
 
-function trapz(x::Vector, y::Vector, uniform::Bool = false)
-    if uniform
-        h = x[2] - x[1]
-        _sum = sum(y[2:end-1])
-        value = (h / 2.0) * (y[1] + y[end] + 2.0 * _sum)
-    else
-        len = length(x)
-        value = 0.0
-        for i = 1:len-1
-            value = value + (y[i] + y[i+1]) * (x[i+1] - x[i])
-        end
-        value = value / 2.0    
-    end
 
-    return value
-end
-
-function trapz(x::UniformMesh, y::Vector)
-    value = dot(x.weight, y)
-    return value
-end
 
 function newton(fun::Function, guess, kwargs...)
     max_iter = 20000
