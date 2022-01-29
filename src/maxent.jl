@@ -109,6 +109,7 @@ function maxent_historic(mec::MaxEntContext)
         return n_svd / res[:chi2] - 1.0
     end
     alpha_opt = secant(root_fun, alpha, ustart)
+    println("opt alpha:", alpha_opt)
 
     sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
