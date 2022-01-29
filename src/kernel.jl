@@ -1,3 +1,11 @@
+#
+# Project : Gardenia
+# Source  : kernel.jl
+# Author  : Li Huang (huangli@caep.cn)
+# Status  : Unstable
+#
+# Last modified: 2022/01/29
+#
 
 function make_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
     ntime = fg.ntime
@@ -13,12 +21,6 @@ function make_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
 
     return kernel
 end
-
-#=
-```math
-\int
-```
-=#
 
 function make_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     nfreq = fg.nfreq
