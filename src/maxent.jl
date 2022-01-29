@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/01/28
+# Last modified: 2022/01/29
 #
 
 module MaxEnt
@@ -15,9 +15,8 @@ using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
 import ..ACFlow: @cswitch
-import ..ACFlow: FermionicMatsubaraGrid, BosonicMatsubaraGrid
 import ..ACFlow: AbstractMesh
-import ..ACFlow: RawData, GreenData
+import ..ACFlow: RawData
 import ..ACFlow: make_grid, make_mesh, make_model, make_kernel, make_data
 import ..ACFlow: make_singular_space
 import ..ACFlow: write_spectrum
