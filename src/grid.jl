@@ -14,6 +14,14 @@ function FermionicImaginaryTimeGrid(ntime::I64, β::F64)
     return FermionicImaginaryTimeGrid(ntime, β, τ)
 end
 
+function Base.firstindex(fg::FermionicImaginaryTimeGrid)
+    firstindex(fg.τ)
+end
+
+function Base.lastindex(fg::FermionicImaginaryTimeGrid)
+    lastindex(fg.τ)
+end
+
 function Base.getindex(fg::FermionicImaginaryTimeGrid, ind::I64)
     @assert 1 ≤ ind ≤ fg.ntime
     return fg.τ[ind]
