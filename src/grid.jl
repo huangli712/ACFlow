@@ -46,9 +46,27 @@ function FermionicMatsubaraGrid(nfreq::I64, β::F64)
     return FermionicMatsubaraGrid(nfreq, β, ω)
 end
 
+function Base.firstindex(fg::FermionicMatsubaraGrid)
+    firstindex(fg.ω)
+end
+
+function Base.lastindex(fg::FermionicMatsubaraGrid)
+    lastindex(fg.ω)
+end
+
 function Base.getindex(fg::FermionicMatsubaraGrid, ind::I64)
     @assert 1 ≤ ind ≤ fg.nfreq
     return fg.ω[ind]
+end
+
+function Base.getindex(fg::FermionicMatsubaraGrid, I::UnitRange{I64})
+    @assert checkbounds(Bool, fg.ω, I)
+    lI = length(I)
+    X = similar(fg.ω, lI)
+    if lI > 0
+        unsafe_copyto!(X, 1, fg.ω, first(I), lI)
+    end
+    return X
 end
 
 function BosonicImaginaryTimeGrid()
