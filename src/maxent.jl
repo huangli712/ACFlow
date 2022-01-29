@@ -97,7 +97,7 @@ function maxent_historic(mec::MaxEntContext)
         sol = maxent_optimize(mec, alpha, ustart, use_bayes)
         push!(optarr, sol)
         alpha = alpha / 10.0
-        conv = n_svd / sol[:chi2]
+        conv = length(mec.E) / sol[:chi2]
     end
 
     ustart = optarr[end-1][:u_opt]
@@ -106,7 +106,7 @@ function maxent_historic(mec::MaxEntContext)
     function root_fun(_alpha, _u)
         res = maxent_optimize(mec, _alpha, _u, use_bayes)
         @. _u = res[:u_opt]
-        return n_svd / res[:chi2] - 1.0
+        return length(mec.E) / res[:chi2] - 1.0
     end
     alpha_opt = secant(root_fun, alpha, ustart)
     println("opt alpha:", alpha_opt)
