@@ -111,7 +111,13 @@ function Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
     return X
 end
 
-function BosonicMatsubaraGrid()
+function BosonicMatsubaraGrid(nfreq::I64, β::F64)
+    @assert nfreq ≥ 1
+    @assert β ≥ 0.0
+    wmin = 0.0
+    wmax = (2 * nfreq - 2) * π / β
+    ω = collect(LinRange(wmin, wmax, nfreq))
+    return BosonicMatsubaraGrid(nfreq, β, ω)
 end
 
 function Base.getindex(bg::BosonicMatsubaraGrid, ind::I64)
