@@ -9,5 +9,3 @@ println("hello world")
 read_param()
 raw = read_data()
 solve(raw)
-
-#MaxEnt.solve()
