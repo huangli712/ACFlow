@@ -1,28 +1,3 @@
-abstract type AbstractGrid end
-
-struct FermionicImaginaryTimeGrid <: AbstractGrid
-    ntime :: I64
-    β :: F64
-    τ :: Vector{F64}
-end
-
-struct FermionicMatsubaraGrid <: AbstractGrid
-    nfreq :: I64
-    β :: F64
-    ω :: Vector{F64}
-end
-
-struct BosonicImaginaryTimeGrid <: AbstractGrid
-    ntime :: I64
-    β :: F64
-    τ :: Vector{F64}
-end
-
-struct BosonicMatsubaraGrid <: AbstractGrid
-    nfreq :: I64
-    β :: F64
-    ω :: Vector{F64}
-end
 
 abstract type AbstractMesh end
 

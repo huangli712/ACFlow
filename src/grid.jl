@@ -7,6 +7,14 @@
 # Last modified: 2022/01/29
 #
 
+abstract type AbstractGrid end
+
+struct FermionicImaginaryTimeGrid <: AbstractGrid
+    ntime :: I64
+    β :: F64
+    τ :: Vector{F64}
+end
+
 function FermionicImaginaryTimeGrid(ntime::I64, β::F64)
     @assert ntime ≥ 1
     @assert β ≥ 0.0
@@ -39,6 +47,12 @@ function Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
         unsafe_copyto!(X, 1, fg.τ, first(I), lI)
     end
     return X
+end
+
+struct FermionicMatsubaraGrid <: AbstractGrid
+    nfreq :: I64
+    β :: F64
+    ω :: Vector{F64}
 end
 
 function FermionicMatsubaraGrid(nfreq::I64, β::F64)
@@ -77,6 +91,12 @@ function Base.getindex(fg::FermionicMatsubaraGrid, I::UnitRange{I64})
     return X
 end
 
+struct BosonicImaginaryTimeGrid <: AbstractGrid
+    ntime :: I64
+    β :: F64
+    τ :: Vector{F64}
+end
+
 function BosonicImaginaryTimeGrid(ntime::I64, β::F64)
     @assert ntime ≥ 1
     @assert β ≥ 0.0
@@ -109,6 +129,12 @@ function Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
         unsafe_copyto!(X, 1, bg.τ, first(I), lI)
     end
     return X
+end
+
+struct BosonicMatsubaraGrid <: AbstractGrid
+    nfreq :: I64
+    β :: F64
+    ω :: Vector{F64}
 end
 
 function BosonicMatsubaraGrid(nfreq::I64, β::F64)
