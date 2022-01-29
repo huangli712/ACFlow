@@ -66,7 +66,7 @@ mutable struct NonUniformMesh <: AbstractMesh
 end
 
 function NonUniformMesh(nmesh::I64, wmin::F64, wmax::F64)
-
+    # TODO
 end
 
 function Base.eachindex(num::NonUniformMesh)
@@ -97,8 +97,8 @@ function Base.getindex(num::NonUniformMesh, I::UnitRange{I64})
 end
 
 function make_mesh()
-    mesh = get_c("mesh")
     nmesh = get_c("nmesh")
+    mesh = get_c("mesh")
     wmax = get_c("wmax")
     wmin = get_c("wmin")
 
@@ -109,12 +109,7 @@ function make_mesh()
     end
 end
 
-
-
-
-
-
-function trapz(x::Vector, y::Vector, uniform::Bool = false)
+function trapz(x::Vector{F64}, y::Vector{T}, uniform::Bool = false) where {T}
     if uniform
         h = x[2] - x[1]
         _sum = sum(y[2:end-1])
@@ -131,7 +126,7 @@ function trapz(x::Vector, y::Vector, uniform::Bool = false)
     return value
 end
 
-function trapz(x::UniformMesh, y::Vector)
+function trapz(x::AbstractMesh, y::Vector{T}) where {T}
     value = dot(x.weight, y)
     return value
 end

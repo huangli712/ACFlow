@@ -141,8 +141,6 @@ function secant(func, x0, args)
     end
 end
 
-
-
 function newton(fun::Function, guess, kwargs...)
     max_iter = 20000
     mixing = 0.5

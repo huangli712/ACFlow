@@ -32,5 +32,6 @@ export solve
 
 export FermionicImaginaryTimeGrid, FermionicMatsubaraGrid, BosonicImaginaryTimeGrid, BosonicMatsubaraGrid
 export rebuild_grid
+export NonUniformMesh
 
 end
