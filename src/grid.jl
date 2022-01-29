@@ -101,6 +101,16 @@ function Base.getindex(bg::BosonicImaginaryTimeGrid, ind::I64)
     return bg.τ[ind]
 end
 
+function Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
+    @assert checkbounds(Bool, bg.τ, I)
+    lI = length(I)
+    X = similar(bg.τ, lI)
+    if lI > 0
+        unsafe_copyto!(X, 1, bg.τ, first(I), lI)
+    end
+    return X
+end
+
 function BosonicMatsubaraGrid()
 end
 
