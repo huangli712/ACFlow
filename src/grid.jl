@@ -137,6 +137,16 @@ function Base.getindex(bg::BosonicMatsubaraGrid, ind::I64)
     return bg.ω[ind]
 end
 
+function Base.getindex(bg::BosonicMatsubaraGrid, I::UnitRange{I64})
+    @assert checkbounds(Bool, bg.ω, I)
+    lI = length(I)
+    X = similar(bg.ω, lI)
+    if lI > 0
+        unsafe_copyto!(X, 1, bg.ω, first(I), lI)
+    end
+    return X
+end
+
 function make_grid(rd::RawData)
     return make_grid(rd.mesh)
 end
