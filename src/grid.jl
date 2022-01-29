@@ -120,6 +120,18 @@ function BosonicMatsubaraGrid(nfreq::I64, β::F64)
     return BosonicMatsubaraGrid(nfreq, β, ω)
 end
 
+function Base.eachindex(bg::BosonicMatsubaraGrid)
+    eachindex(bg.ω)
+end
+
+function Base.firstindex(bg::BosonicMatsubaraGrid)
+    firstindex(bg.ω)
+end
+
+function Base.lastindex(bg::BosonicMatsubaraGrid)
+    lastindex(bg.ω)
+end
+
 function Base.getindex(bg::BosonicMatsubaraGrid, ind::I64)
     @assert 1 ≤ ind ≤ bg.nfreq
     return bg.ω[ind]
