@@ -40,8 +40,8 @@ end
 function FermionicMatsubaraGrid(nfreq::I64, β::F64)
     @assert nfreq ≥ 1
     @assert β ≥ 0.0
-    wmin = π \ β
-    wmax = (2 * nfreq - 1) * π \ β
+    wmin = π / β
+    wmax = (2 * nfreq - 1) * π / β
     ω = collect(LinRange(wmin, wmax, nfreq))
     return FermionicMatsubaraGrid(nfreq, β, ω)
 end
