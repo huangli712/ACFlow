@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/29
+# Last modified: 2022/01/30
 #
 
 abstract type AbstractData end
@@ -199,7 +199,7 @@ function make_grid(v::Vector{F64})
 
     if grid == "matsubara"
         β = 2.0 * π / (v[2] - v[1])
-        @assert β == get_c("beta")
+        @assert abs(β - get_c("beta")) ≤ 1e-10
         if kernel == "fermionic"
             _grid = FermionicMatsubaraGrid(ngrid, β, v)
         else

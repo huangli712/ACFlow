@@ -30,4 +30,5 @@ function make_gaussian_model(um::UniformMesh)
 end
 
 function make_gaussian_model(num::NonUniformMesh)
+    println("here")
 end

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/29
+# Last modified: 2022/01/30
 #
 
 abstract type AbstractMesh end
@@ -66,7 +66,19 @@ mutable struct NonUniformMesh <: AbstractMesh
 end
 
 function NonUniformMesh(nmesh::I64, wmin::F64, wmax::F64)
-    # TODO
+    @assert nmesh ≥ 1
+    @assert wmax > 0.0 > wmin
+    @assert wmax == abs(wmin)
+
+    f1 = 2.1
+    mesh = collect(LinRange(-π / f1, π / f1, nmesh))
+    mesh = wmax * tan.(mesh) / tan(π / f1)
+    weight = (mesh[2:end] + mesh[1:end-1]) / 2.0
+    pushfirst!(weight, mesh[1])
+    push!(weight, mesh[end])
+    weight = diff(weight)
+
+    return NonUniformMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
 function Base.eachindex(num::NonUniformMesh)
