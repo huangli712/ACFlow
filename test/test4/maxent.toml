@@ -1,0 +1,16 @@
+[COMM]
+finput = "green.data"
+solver = "MaxEnt"
+kernel = "fermionic"
+model  = "flat"
+grid   = "matsubara"
+mesh   = "uniform"
+ngrid  = 100
+nmesh  = 501
+wmax   = 12.0
+wmin   = -12.0
+beta   = 5.0
+
+[MaxEnt]
+method = "chi2kink"
+alpha  = 1e11
