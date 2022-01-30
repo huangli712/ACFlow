@@ -12,5 +12,5 @@ wmin   = -20.0
 beta   = 5.0
 
 [MaxEnt]
-method = "bryan"
-alpha  = 500.0
+method = "chi2kink"
+alpha  = 1e12
