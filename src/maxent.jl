@@ -228,7 +228,8 @@ function maxent_chi2kink(mec::MaxEntContext)
 
     good_data = isfinite.(chi_arr)
     fit = curve_fit(fitfun, log10.(alpharr[good_data]), log10.(chi_arr[good_data]), [0.0, 5.0, 2.0, 0.0])
-    _, _, c, d = fit.param
+    a, b, c, d = fit.param
+    println("Fit parameters: $a, $b, $c, $d")
 
     fit_position = 2.5
     a_opt = c - fit_position / d
@@ -237,6 +238,15 @@ function maxent_chi2kink(mec::MaxEntContext)
     alpha_opt = 10.0 ^ a_opt
 
     sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
+
+    open("chi2kink.fit", "w") do fout
+        alpharr = log10.(alpharr)
+        chi_arr = log10.(chi_arr)
+        fit_arr = fitfun(alpharr, fit.param)
+        for i = 1:length(alpharr)
+            println(fout, alpharr[i], " ", chi_arr[i], " ", fit_arr[i])
+        end
+    end
 
     return optarr, sol
 end
