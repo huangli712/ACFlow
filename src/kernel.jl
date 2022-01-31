@@ -51,12 +51,12 @@ end
 function make_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     nfreq = fg.nfreq
     nmesh = am.nmesh
-    blur = true
+    blur = get_m("blue")
 
     _kernel = zeros(C64, nfreq, nmesh)
 
-    if blur
-        w_int, gaussian = gauss()
+    if blur > 0.0
+        w_int, gaussian = gauss(blur)
         nsize = length(w_int)
         Mg = reshape(gaussian, (1, 1, nsize))
         MG = reshape(fg.ω, (nfreq, 1, 1))
