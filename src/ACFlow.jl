@@ -10,6 +10,7 @@
 module ACFlow
 
 using LinearAlgebra
+using Interpolations
 using Printf
 using TOML
 

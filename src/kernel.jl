@@ -16,6 +16,23 @@ function gauss()
     return w_int, gaussian
 end
 
+function make_blur(am::AbstractMesh, A::Vector{F64})
+    nodes = (am.mesh,)
+    itp = interpolate(nodes, A, Gridded(Linear()))
+    w_int, gaussian = gauss()
+
+    nsize = length(w_int)
+    Mw = reshape(w_int, (1, nsize))
+    Mg = reshape(gaussian, (1, nsize))
+    Mm = reshape(am.mesh, (am.nmesh, 1))
+
+    A = Mm .+ Mw
+    @show size(A), maximum(A), minimum(A)
+    #integrand = Mg .* itp.(Mm .+ Mw)
+    #@show size(integrand)
+    error()
+end
+
 function make_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
     ntime = fg.ntime
     nmesh = am.nmesh

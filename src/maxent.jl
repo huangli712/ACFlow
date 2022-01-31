@@ -17,7 +17,7 @@ import ..ACFlow: I64, F64, C64
 import ..ACFlow: @cswitch
 import ..ACFlow: AbstractMesh
 import ..ACFlow: RawData
-import ..ACFlow: make_grid, make_mesh, make_model, make_kernel, make_data, blur_kernel
+import ..ACFlow: make_grid, make_mesh, make_model, make_kernel, make_data, make_blur
 import ..ACFlow: make_singular_space
 import ..ACFlow: write_spectrum
 import ..ACFlow: get_c, get_m
@@ -53,8 +53,6 @@ function maxent_init(rd::RawData)
 
     kernel = make_kernel(mesh, grid)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
-    @show S_svd
-    error()
 
     W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
 
@@ -266,7 +264,13 @@ function maxent_optimize(mec::MaxEntContext,
 
     result_dict = Dict{Symbol,Any}()
     result_dict[:u_opt] = u_opt
-    result_dict[:A_opt] = A_opt
+    blur = true
+    if blur
+        A_opt = make_blur(mec.mesh, A_opt)
+        result_dict[:A_opt] = A_opt
+    else
+        result_dict[:A_opt] = A_opt
+    end
 
     result_dict[:alpha] = alpha
     result_dict[:entropy] = entr
