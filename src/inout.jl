@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/29
+# Last modified: 2022/01/31
 #
 
 function make_data(rd::RawData)
@@ -114,11 +114,17 @@ function read_freq_data(finput::String, ngrid::I64)
             #value[i] = 0.0 + im * arr[3]
             #error[i] = arr[4] + im * arr[4]
 
-            # For test5
-            arr = parse.(F64, line_to_array(fin)[1:4])
+            # For test5 and test6
+            #arr = parse.(F64, line_to_array(fin)[1:4])
+            #mesh[i] = arr[1]
+            #value[i] = arr[2] + im * arr[3]
+            #error[i] = arr[4] + im * arr[4]
+
+            # For test7
+            arr = parse.(F64, line_to_array(fin)[1:3])
             mesh[i] = arr[1]
-            value[i] = arr[2] + im * arr[3]
-            error[i] = arr[4] + im * arr[4]
+            value[i] = arr[2]
+            error[i] = arr[3]
         end
     end
 

@@ -217,7 +217,7 @@ function maxent_chi2kink(mec::MaxEntContext)
         push!(alpharr, alpha)
         @. ustart = sol[:u_opt]
         alpha = alpha / 10.0
-        if alpha < 0.001
+        if alpha < 0.01
             break
         end
     end
