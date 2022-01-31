@@ -107,16 +107,39 @@ end
 function make_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     nfreq = bg.nfreq
     nmesh = am.nmesh
+    blur = get_m("blur")
 
     kernel = zeros(F64, nfreq, nmesh)
-    for i = 1:nmesh
-        for j = 1:nfreq
-            kernel[j,i] = am[i] ^ 2.0 / ( bg[j] ^ 2.0 + am[i] ^ 2.0 )
-        end
-    end
 
-    if am[1] == 0.0 && bg[1] == 0.0
-        kernel[1,1] = 1.0
+    if blur > 0.0
+        w_int, gaussian = gauss(blur)
+        nsize = length(w_int)
+        Mg = reshape(gaussian, (1, 1, nsize))
+        MG = reshape(bg.ω, (nfreq, 1, 1))
+        Mm = reshape(am.mesh, (1, nmesh, 1))
+        Mw = reshape(w_int, (1, 1, nsize))
+
+        integrand_1 = Mg .* ((Mw .+ Mm) .^ 2.0) ./ ((Mw .+ Mm) .^ 2.0 .+ MG .^ 2.0)
+        integrand_2 = Mg .* ((Mw .- Mm) .^ 2.0) ./ ((Mw .- Mm) .^ 2.0 .+ MG .^ 2.0)
+        for j = 1:nmesh
+            integrand_1[1,j,:] .= gaussian
+            integrand_2[1,j,:] .= gaussian
+        end
+        integrand = (integrand_1 + integrand_2) / 2.0
+        for i = 1:nmesh
+            for j = 1:nfreq
+                kernel[j,i] = simpson(w_int, integrand[j,i,:])
+            end
+        end
+    else
+        for i = 1:nmesh
+            for j = 1:nfreq
+                kernel[j,i] = am[i] ^ 2.0 / ( bg[j] ^ 2.0 + am[i] ^ 2.0 )
+            end
+        end
+        if am[1] == 0.0 && bg[1] == 0.0
+            kernel[1,1] = 1.0
+        end
     end
 
     return kernel
