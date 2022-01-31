@@ -32,6 +32,6 @@ end
 function make_gaussian_model(num::NonUniformMesh)
     model = exp.(-(num.mesh / 20.0) .^ 6.0)
     norm = dot(num.weight, model)
-    model = model ./ norm
+    model = model ./ norm .* 4.77
     return model
 end
