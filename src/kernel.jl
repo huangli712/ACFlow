@@ -7,25 +7,25 @@
 # Last modified: 2022/01/31
 #
 
-function gauss()
-    blur_width = 0.3
+function gauss(blur::F64)
+    @assert blur > 0.0
     nsize = 201
-    w_int = collect(LinRange(-5.0 * blur_width, 5.0 * blur_width, nsize))
-    norm = 1.0 / (blur_width * sqrt(2.0 * π))
-    gaussian = norm * exp.(-0.5 * (w_int / blur_width) .^ 2.0)
+    w_int = collect(LinRange(-5.0 * blur, 5.0 * blur, nsize))
+    norm = 1.0 / (blur * sqrt(2.0 * π))
+    gaussian = norm * exp.(-0.5 * (w_int / blur) .^ 2.0)
     return w_int, gaussian
 end
 
-function make_blur(am::AbstractMesh, A::Vector{F64})
+function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     spl = Spline1D(am.mesh, A)
-    w_int, gaussian = gauss()
+    w_int, gaussian = gauss(blur)
 
     nsize = length(w_int)
     nmesh = am.nmesh
+
     Mw = reshape(w_int, (1, nsize))
     Mg = reshape(gaussian, (1, nsize))
     Mm = reshape(am.mesh, (nmesh, 1))
-
     integrand = Mg .* spl.(Mm .+ Mw)
 
     for i = 1:nmesh

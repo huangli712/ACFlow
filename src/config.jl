@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/29
+# Last modified: 2022/01/31
 #
 
 #=
@@ -34,6 +34,7 @@ const PCOMM    = Dict{String,ADT}(
 const PMaxEnt  = Dict{String,ADT}(
     "method" => [missing, 1, :String, ""],
     "alpha"  => [missing, 1, :F64, ""],
+    "blur"   => [missing, 1, :F64, ""],
 )
 
 const PStochOM = Dict{String,ADT}(
