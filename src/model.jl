@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/30
+# Last modified: 2022/01/31
 #
 
 function make_model(m::AbstractMesh)
@@ -30,8 +30,14 @@ function make_gaussian_model(um::UniformMesh)
 end
 
 function make_gaussian_model(num::NonUniformMesh)
-    model = exp.(-(num.mesh / 20.0) .^ 6.0)
+    # For test5
+    #model = exp.(-(num.mesh / 20.0) .^ 6.0)
+    #norm = dot(num.weight, model)
+    #model = model ./ norm .* 4.77
+
+    # For test6
+    model = exp.(-(num.mesh / 8.0) .^ 6.0)
     norm = dot(num.weight, model)
-    model = model ./ norm .* 4.77
+    model = model ./ norm
     return model
 end
