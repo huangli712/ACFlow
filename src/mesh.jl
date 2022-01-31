@@ -142,3 +142,21 @@ function trapz(x::AbstractMesh, y::Vector{T}) where {T}
     value = dot(x.weight, y)
     return value
 end
+
+function simpson(x::Vector{F64}, y::Vector{T}) where {T}
+    h = x[2] - x[1]
+    even_sum = 0.0
+    odd_sum = 0.0
+
+    for i = 1:length(x)-1
+        if iseven(i)
+            even_sum = even_sum + y[i]
+        else
+            odd_sum = odd_sum + y[i]
+        end
+    end
+
+    val = h / 3.0 * (y[1] + y[end] + 2.0 * even_sum + 4.0 * odd_sum)
+
+    return val
+end
