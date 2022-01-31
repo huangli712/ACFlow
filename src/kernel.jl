@@ -51,7 +51,7 @@ end
 function make_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     nfreq = fg.nfreq
     nmesh = am.nmesh
-    blur = get_m("blue")
+    blur = get_m("blur")
 
     _kernel = zeros(C64, nfreq, nmesh)
 

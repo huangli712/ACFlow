@@ -255,6 +255,7 @@ function maxent_optimize(mec::MaxEntContext,
                          alpha::F64,
                          ustart::Vector{F64},
                          use_bayes::Bool)
+    blur = get_m("blur")
     solution, nfev = newton(f_and_J, ustart, mec, alpha)
     u_opt = copy(solution)
     A_opt = svd_to_real(mec, solution) 
@@ -264,9 +265,8 @@ function maxent_optimize(mec::MaxEntContext,
 
     result_dict = Dict{Symbol,Any}()
     result_dict[:u_opt] = u_opt
-    blur = true
-    if blur
-        make_blur(mec.mesh, A_opt)
+    if blur > 0.0
+        make_blur(mec.mesh, A_opt, blur)
         result_dict[:A_opt] = A_opt
     else
         result_dict[:A_opt] = A_opt
