@@ -17,20 +17,21 @@ function gauss()
 end
 
 function make_blur(am::AbstractMesh, A::Vector{F64})
-    nodes = (am.mesh,)
-    itp = interpolate(nodes, A, Gridded(Linear()))
+    spl = Spline1D(am.mesh, A)
     w_int, gaussian = gauss()
 
     nsize = length(w_int)
+    nmesh = am.nmesh
     Mw = reshape(w_int, (1, nsize))
     Mg = reshape(gaussian, (1, nsize))
-    Mm = reshape(am.mesh, (am.nmesh, 1))
+    Mm = reshape(am.mesh, (nmesh, 1))
 
-    A = Mm .+ Mw
-    @show size(A), maximum(A), minimum(A)
-    #integrand = Mg .* itp.(Mm .+ Mw)
-    #@show size(integrand)
-    error()
+    integrand = Mg .* spl.(Mm .+ Mw)
+
+    for i = 1:nmesh
+        A[i] = simpson(w_int, integrand[i,:])
+        @show i, A[i]
+    end
 end
 
 function make_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)

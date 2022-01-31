@@ -266,7 +266,7 @@ function maxent_optimize(mec::MaxEntContext,
     result_dict[:u_opt] = u_opt
     blur = true
     if blur
-        A_opt = make_blur(mec.mesh, A_opt)
+        make_blur(mec.mesh, A_opt)
         result_dict[:A_opt] = A_opt
     else
         result_dict[:A_opt] = A_opt
