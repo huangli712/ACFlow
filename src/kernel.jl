@@ -4,38 +4,16 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/29
+# Last modified: 2022/01/31
 #
 
-function blur_kernel(kernel::Matrix{F64}, grid::AbstractGrid, mesh::AbstractMesh)
+function gauss()
     blur_width = 0.3
     nsize = 201
     w_int = collect(LinRange(-5.0 * blur_width, 5.0 * blur_width, nsize))
-    #@show w_int
     norm = 1.0 / (blur_width * sqrt(2.0 * π))
-
-    #@show norm
     gaussian = norm * exp.(-0.5 * (w_int / blur_width) .^ 2.0)
-    #@show gaussian
-    #error()
-
-    Mg = reshape(gaussian, (1, 1, nsize))
-    MG = reshape(grid.ω, (grid.nfreq, 1, 1))
-    Mm = reshape(mesh.mesh, (1, mesh.nmesh, 1))
-    Mw = reshape(w_int, (1, 1, nsize))
-
-    integrand = Mg ./ (im * MG .- Mm .- Mw)
-
-    #@show size(integrand), size(kernel)
-    #@show grid.nfreq, mesh.nmesh
-    new_kernel = zeros(C64, grid.nfreq, mesh.nmesh)
-    for j = 1:mesh.nmesh
-        for i = 1:grid.nfreq
-            new_kernel[i,j] = simpson(w_int, integrand[i,j,:])
-            @show i, j, new_kernel[i,j]
-        end
-    end
-    error()
+    return w_int, gaussian
 end
 
 function make_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
@@ -56,11 +34,30 @@ end
 function make_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     nfreq = fg.nfreq
     nmesh = am.nmesh
+    blur = true
 
     _kernel = zeros(C64, nfreq, nmesh)
-    for i = 1:nmesh
-        for j = 1:nfreq
-            _kernel[j,i] = 1.0 / (im * fg[j] - am[i])
+
+    if blur
+        w_int, gaussian = gauss()
+        nsize = length(w_int)
+        Mg = reshape(gaussian, (1, 1, nsize))
+        MG = reshape(fg.ω, (nfreq, 1, 1))
+        Mm = reshape(am.mesh, (1, nmesh, 1))
+        Mw = reshape(w_int, (1, 1, nsize))
+
+        integrand = Mg ./ (im * MG .- Mm .- Mw)
+    
+        for i = 1:nmesh
+            for j = 1:nfreq
+                _kernel[j,i] = simpson(w_int, integrand[j,i,:])
+            end
+        end
+    else
+        for i = 1:nmesh
+            for j = 1:nfreq
+                _kernel[j,i] = 1.0 / (im * fg[j] - am[i])
+            end
         end
     end
 
