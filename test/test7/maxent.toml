@@ -1,0 +1,17 @@
+[COMM]
+finput = "chi.data"
+solver = "MaxEnt"
+kernel = "bosonic"
+model  = "flat"
+grid   = "matsubara"
+mesh   = "uniform"
+ngrid  = 20
+nmesh  = 801
+wmax   = 8.0
+wmin   = 0.0
+beta   = 20.0
+
+[MaxEnt]
+method = "chi2kink"
+alpha = 1e12
+blur = -1.0
