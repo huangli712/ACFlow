@@ -30,7 +30,6 @@ function make_blur(am::AbstractMesh, A::Vector{F64})
 
     for i = 1:nmesh
         A[i] = simpson(w_int, integrand[i,:])
-        #@show i, A[i]
     end
 end
 
