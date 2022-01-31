@@ -26,7 +26,15 @@ function blur_kernel(kernel::Matrix{F64}, grid::AbstractGrid, mesh::AbstractMesh
 
     integrand = Mg ./ (im * MG .- Mm .- Mw)
 
-    @show size(integrand)
+    #@show size(integrand), size(kernel)
+    #@show grid.nfreq, mesh.nmesh
+    new_kernel = zeros(C64, grid.nfreq, mesh.nmesh)
+    for j = 1:mesh.nmesh
+        for i = 1:grid.nfreq
+            new_kernel[i,j] = simpson(w_int, integrand[i,j,:])
+            @show i, j, new_kernel[i,j]
+        end
+    end
     error()
 end
 
