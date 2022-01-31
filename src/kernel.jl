@@ -121,9 +121,9 @@ function make_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 
         integrand_1 = Mg .* ((Mw .+ Mm) .^ 2.0) ./ ((Mw .+ Mm) .^ 2.0 .+ MG .^ 2.0)
         integrand_2 = Mg .* ((Mw .- Mm) .^ 2.0) ./ ((Mw .- Mm) .^ 2.0 .+ MG .^ 2.0)
-        for j = 1:nmesh
-            integrand_1[1,j,:] .= gaussian
-            integrand_2[1,j,:] .= gaussian
+        for j = 1:nsize
+            integrand_1[1,:,j] .= gaussian[j]
+            integrand_2[1,:,j] .= gaussian[j]
         end
         integrand = (integrand_1 + integrand_2) / 2.0
         for i = 1:nmesh
