@@ -7,6 +7,29 @@
 # Last modified: 2022/01/29
 #
 
+function blur_kernel(kernel::Matrix{F64}, grid::AbstractGrid, mesh::AbstractMesh)
+    blur_width = 0.3
+    nsize = 201
+    w_int = collect(LinRange(-5.0 * blur_width, 5.0 * blur_width, nsize))
+    #@show w_int
+    norm = 1.0 / (blur_width * sqrt(2.0 * π))
+
+    #@show norm
+    gaussian = norm * exp.(-0.5 * (w_int / blur_width) .^ 2.0)
+    #@show gaussian
+    #error()
+
+    Mg = reshape(gaussian, (1, 1, nsize))
+    MG = reshape(grid.ω, (grid.nfreq, 1, 1))
+    Mm = reshape(mesh.mesh, (1, mesh.nmesh, 1))
+    Mw = reshape(w_int, (1, 1, nsize))
+
+    integrand = Mg ./ (im * MG .- Mm .- Mw)
+
+    @show size(integrand)
+    error()
+end
+
 function make_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
     ntime = fg.ntime
     nmesh = am.nmesh

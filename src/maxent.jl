@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/01/29
+# Last modified: 2022/01/31
 #
 
 module MaxEnt
@@ -17,7 +17,7 @@ import ..ACFlow: I64, F64, C64
 import ..ACFlow: @cswitch
 import ..ACFlow: AbstractMesh
 import ..ACFlow: RawData
-import ..ACFlow: make_grid, make_mesh, make_model, make_kernel, make_data
+import ..ACFlow: make_grid, make_mesh, make_model, make_kernel, make_data, blur_kernel
 import ..ACFlow: make_singular_space
 import ..ACFlow: write_spectrum
 import ..ACFlow: get_c, get_m
@@ -52,6 +52,7 @@ function maxent_init(rd::RawData)
     model = make_model(mesh)
 
     kernel = make_kernel(mesh, grid)
+    blur_kernel(kernel, grid, mesh)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
 
     W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
