@@ -53,6 +53,7 @@ function maxent_init(rd::RawData)
 
     kernel = make_kernel(mesh, grid)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
+    @show S_svd
 
     W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
 
@@ -316,7 +317,7 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
     for i = 1:nmesh
         W₃[:,:,i] = W₂[:,i] * (V[i,:])'
     end
-    @show size(W₂), size(W₃)
+    @show n_svd, size(W₂), size(W₃)
 
     @einsum Bₘ[m] = S[m] * U[k,m] * E[k] * Gdata[k]
 
