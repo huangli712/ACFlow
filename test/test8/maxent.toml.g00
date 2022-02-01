@@ -10,6 +10,7 @@ nmesh  = 400
 wmax   = 4.0
 wmin   = -4.0
 beta   = 40.0
+offdiag = false
 
 [MaxEnt]
 method = "chi2kink"

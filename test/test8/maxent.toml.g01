@@ -2,17 +2,17 @@
 finput = "green01.data"
 solver = "MaxEnt"
 kernel = "fermionic"
-model  = "gauss"
+model  = "file"
 grid   = "matsubara"
 mesh   = "uniform"
 ngrid  = 20
 nmesh  = 400
-wmax   = 10.0
-wmin   = -10.0
+wmax   = 4.0
+wmin   = -4.0
 beta   = 40.0
 offdiag = true
 
 [MaxEnt]
 method = "chi2kink"
-alpha = 1e18
+alpha = 1e15
 blur = -1.0
