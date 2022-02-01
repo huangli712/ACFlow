@@ -53,11 +53,8 @@ function maxent_init(rd::RawData)
 
     kernel = make_kernel(mesh, grid)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
-    @show S_svd
 
     W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
-
-    error()
 
     return MaxEntContext(Gdata, E, mesh, model, kernel, V_svd, W₂, W₃, Bₘ, d2chi2)
 end
@@ -259,10 +256,23 @@ function maxent_optimize(mec::MaxEntContext,
                          ustart::Vector{F64},
                          use_bayes::Bool)
     blur = get_m("blur")
-    solution, nfev = newton(f_and_J, ustart, mec, alpha)
+    offdiag = get_c("offdiag")
+    if offdiag
+        solution, nfev = newton(f_and_J_offdiag, ustart, mec, alpha)
+    else
+        solution, nfev = newton(f_and_J, ustart, mec, alpha)
+    end
     u_opt = copy(solution)
-    A_opt = svd_to_real(mec, solution) 
-    entr = calc_entropy(mec, A_opt, u_opt)
+    if offdiag
+        A_opt = svd_to_real_offdiag(mec, solution)
+    else
+        A_opt = svd_to_real(mec, solution)
+    end
+    if offdiag
+        entr = calc_entropy_offdiag(mec, A_opt, u_opt)
+    else
+        entr = calc_entropy(mec, A_opt, u_opt)
+    end
     chisq = calc_chi2(mec, A_opt)
     norm = trapz(mec.mesh, A_opt)
 
@@ -317,7 +327,8 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
     for i = 1:nmesh
         W₃[:,:,i] = W₂[:,i] * (V[i,:])'
     end
-    @show n_svd, size(W₂), size(W₃)
+    #@show n_svd, size(W₂), size(W₃)
+    #@show W₂[:,21]
 
     @einsum Bₘ[m] = S[m] * U[k,m] * E[k] * Gdata[k]
 
@@ -350,12 +361,54 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
     return f, J
 end
 
+function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
+    v = mec.V_svd * u
+    w = exp.(v)
+
+    a_plus = mec.model .* w
+    a_minus = mec.model ./ w
+    a1 = a_plus - a_minus
+    a2 = a_plus + a_minus
+
+    n_svd = length(mec.Bₘ)
+    term_1 = zeros(F64, n_svd)
+    term_2 = zeros(F64, n_svd, n_svd)
+
+    for i = 1:n_svd
+        term_1[i] = dot(mec.W₂[i,:], a1)
+    end
+
+    for j = 1:n_svd
+        for i = 1:n_svd
+            term_2[i,j] = dot(mec.W₃[i,j,:], a2)
+        end
+    end
+
+    f = alpha * u + term_1 - mec.Bₘ
+    J = alpha * diagm(ones(n_svd)) + term_2
+    #@show J
+    #error()
+
+    return f, J
+end
+
 function svd_to_real(mec::MaxEntContext, u::Vector{F64})
     return mec.model .* exp.(mec.V_svd * u)
 end
 
+function svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
+    w = exp.(mec.V_svd * u)
+    return (mec.model .* w) - (mec.model ./ w)
+end
+
 function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     f = A - mec.model - A .* (mec.V_svd * u)
+    return trapz(mec.mesh, f)
+end
+
+function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
+    root = sqrt.(A .^ 2.0 + 4.0 .* mec.model .* mec.model)
+    f = root - mec.model - mec.model - A .* log.((root + A) ./ (2.0 * mec.model))
     return trapz(mec.mesh, f)
 end
 
