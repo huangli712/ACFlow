@@ -94,14 +94,15 @@ function make_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     #error()
     kernel = zeros(F64, ntime, nmesh)
     for i = 1:nmesh
-        r = 0.25 * am[i] / (1. - exp(-β * am[i]))
+        r = 0.5 / (1. - exp(-β * am[i]))
         #@show r
         for j = 1:ntime
             kernel[j,i] = r * (exp(-am[i] * bg[j]) + exp(-am[i] * (β - bg[j]))) 
         end
     end
-
+    #@show kernel[:,1]
     @. kernel[:,1] = 1.0
+    #error()
     return kernel
 end
 
