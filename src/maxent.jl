@@ -231,7 +231,7 @@ function maxent_chi2kink(mec::MaxEntContext)
     a, b, c, d = fit.param
     println("Fit parameters: $a, $b, $c, $d")
 
-    fit_position = 2.0
+    fit_position = 2.5
     a_opt = c - fit_position / d
     closest_idx = argmin( abs.( log10.(alpharr) .- a_opt ) )
     ustart = optarr[closest_idx][:u_opt]
