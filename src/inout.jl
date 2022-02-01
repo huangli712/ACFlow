@@ -87,8 +87,7 @@ function read_time_data(finput::String, ngrid::I64)
             arr = parse.(F64, line_to_array(fin)[1:3])
             mesh[i] = arr[1]
             value[i] = arr[2]
-            error[i] = arr[3] * 10.0 # For test3
-            error[i] = arr[3] * 0.01 # For test4
+            error[i] = arr[3]
         end
     end
 
