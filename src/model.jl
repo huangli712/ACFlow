@@ -27,6 +27,12 @@ function make_flat_model(num::NonUniformMesh)
 end
 
 function make_gaussian_model(um::UniformMesh)
+    # For test8
+    #println("here")
+    model = exp.(-0.5 * (um.mesh) .^ 2.0)
+    norm = dot(um.weight, model)
+    model = model ./ norm
+    return model
 end
 
 function make_gaussian_model(num::NonUniformMesh)
