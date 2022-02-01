@@ -270,6 +270,7 @@ function maxent_optimize(mec::MaxEntContext,
     end
     if offdiag
         entr = calc_entropy_offdiag(mec, A_opt, u_opt)
+        #@show entr
     else
         entr = calc_entropy(mec, A_opt, u_opt)
     end
@@ -292,7 +293,11 @@ function maxent_optimize(mec::MaxEntContext,
     result_dict[:Q] = alpha * entr - 0.5 * chisq
 
     if use_bayes
-        ng, tr, conv, prob = calc_bayes(mec, A_opt, entr, chisq, alpha)
+        if offdiag
+            ng, tr, conv, prob = calc_bayes_offdiag(mec, A_opt, entr, chisq, alpha)
+        else
+            ng, tr, conv, prob = calc_bayes(mec, A_opt, entr, chisq, alpha)
+        end
         result_dict[:n_good] = ng
         result_dict[:trace] = tr
         result_dict[:conv] = conv
@@ -428,6 +433,24 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, al
     mesh = mec.mesh
 
     T = sqrt.(A ./ mesh.weight)
+    Λ = (T * T') .* mec.d2chi2
+    
+    lam = eigvals(Hermitian(Λ))
+    ng = -2.0 * alpha * ent
+    tr = sum(lam ./ (alpha .+ lam))
+    conv = tr / ng
+
+    eig_sum = sum(log.(alpha ./ (alpha .+ lam)))
+    log_prob = alpha * ent - 0.5 * chisq + log(alpha) + 0.5 * eig_sum
+
+    return ng, tr, conv, exp(log_prob)
+end
+
+function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, alpha::F64)
+    mesh = mec.mesh
+
+    #T = sqrt.(A ./ mesh.weight)
+    T = (( A .^ 2.0 + 4.0 * mec.model .* mec.model ) / (mesh.weight .^ 2.0)) .^ 0.25
     Λ = (T * T') .* mec.d2chi2
     
     lam = eigvals(Hermitian(Λ))
