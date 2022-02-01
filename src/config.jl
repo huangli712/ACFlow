@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/31
+# Last modified: 2022/02/01
 #
 
 #=
@@ -18,17 +18,18 @@ const DType = Any
 const ADT = Array{DType,1}
 
 const PCOMM    = Dict{String,ADT}(
-    "finput" => [missing, 1, :String, ""],
-    "solver" => [missing, 1, :String, ""],
-    "kernel" => [missing, 1, :String, ""],
-    "model"  => [missing, 1, :String, ""],
-    "grid"   => [missing, 1, :String, ""],
-    "mesh"   => [missing, 1, :String, ""],
-    "ngrid"  => [missing, 1, :I64, ""],
-    "nmesh"  => [missing, 1, :I64, ""],
-    "wmax"   => [missing, 1, :F64, ""],
-    "wmin"   => [missing, 1, :F64, ""],
-    "beta"   => [missing, 1, :F64, ""],
+    "finput"  => [missing, 1, :String, ""],
+    "solver"  => [missing, 1, :String, ""],
+    "kernel"  => [missing, 1, :String, ""],
+    "model"   => [missing, 1, :String, ""],
+    "grid"    => [missing, 1, :String, ""],
+    "mesh"    => [missing, 1, :String, ""],
+    "ngrid"   => [missing, 1, :I64, ""],
+    "nmesh"   => [missing, 1, :I64, ""],
+    "wmax"    => [missing, 1, :F64, ""],
+    "wmin"    => [missing, 1, :F64, ""],
+    "beta"    => [missing, 1, :F64, ""],
+    "offdiag" => [missing, 1, :Bool, ""],
 )
 
 const PMaxEnt  = Dict{String,ADT}(
