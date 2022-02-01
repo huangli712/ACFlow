@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/01/31
+# Last modified: 2022/02/01
 #
 
 module MaxEnt
@@ -55,6 +55,8 @@ function maxent_init(rd::RawData)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
 
     W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
+
+    error()
 
     return MaxEntContext(Gdata, E, mesh, model, kernel, V_svd, W₂, W₃, Bₘ, d2chi2)
 end
@@ -217,7 +219,7 @@ function maxent_chi2kink(mec::MaxEntContext)
         push!(alpharr, alpha)
         @. ustart = sol[:u_opt]
         alpha = alpha / 10.0
-        if alpha < 1e-10
+        if alpha < 1e-15
             break
         end
     end
@@ -295,6 +297,7 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
                     mesh::AbstractMesh, model::Vector{F64},
                     kernel::Matrix{F64},
                     U::Matrix{F64}, V::Matrix{F64}, S::Vector{F64})
+    offdiag = get_c("offdiag")
     nmesh = mesh.nmesh
     weight = mesh.weight
     n_svd = length(S)
@@ -304,11 +307,16 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
     Bₘ = zeros(F64, n_svd)
     d2chi2 = zeros(F64, nmesh, nmesh)
 
-    @einsum W₂[m,l] = E[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l] * model[l]
+    if offdiag
+        @einsum W₂[m,l] = E[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l]
+    else
+        @einsum W₂[m,l] = E[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l] * model[l]
+    end
 
     for i = 1:nmesh
         W₃[:,:,i] = W₂[:,i] * (V[i,:])'
     end
+    @show size(W₂), size(W₃)
 
     @einsum Bₘ[m] = S[m] * U[k,m] * E[k] * Gdata[k]
 
