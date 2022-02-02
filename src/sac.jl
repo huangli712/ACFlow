@@ -12,7 +12,7 @@ export stoch_init
 export stoch_run
 
 const P_Stoch = Dict{String,Any}(
-    "ntime" => 1024,
+    "ntime" => 1000,
     "nwmax" => 801,
     "ngrid" => 10001,
     "ngamm" => 1024,
@@ -22,7 +22,7 @@ const P_Stoch = Dict{String,Any}(
     "ndump" => 40000,
     "ainit" => 1.00,
     "ratio" => 2.00,
-    "beta"  => 8.00,
+    "beta"  => 5.00,
     "eta1"  => 0.005,
     "eta2"  => 0.005^2,
     "sigma" => 0.0,
@@ -73,6 +73,7 @@ function read_data()
     G_dev = zeros(F64, ntime)
     tmesh = zeros(F64, ntime)
 
+#=    
     open("solver.green.dat", "r") do fin
         for i = 1:ntime
             arr = split(readline(fin))
@@ -82,6 +83,21 @@ function read_data()
             if abs(G_dev[i]) < 1e-6
                 G_dev[i] = 1e-6
             end
+            G_tau[i] = abs(G_qmc[i]) / G_dev[i]
+        end
+    end
+=#
+
+    open("green.data", "r") do fin
+        for i = 1:ntime
+            arr = split(readline(fin))
+            tmesh[i] = parse(F64, arr[1])
+            G_qmc[i] = parse(F64, arr[2])
+            G_dev[i] = parse(F64, arr[3])
+            if abs(G_dev[i]) < 1e-6
+                G_dev[i] = 1e-6
+            end
+            G_dev[i] = G_dev[i] ^ 2.0
             G_tau[i] = abs(G_qmc[i]) / G_dev[i]
         end
     end
