@@ -1,7 +1,9 @@
-include("stoch.jl")
+#!/usr/bin/env julia
+
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
 
 using Distributed
-using .StochFlow
+using StochFlow
 
 println("Stochastic Analytical Continuation")
 G, tmesh = read_data()
