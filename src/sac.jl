@@ -9,22 +9,6 @@ import ..ACFlow: RawData
 import ..ACFlow: make_data, make_grid, make_mesh, make_model, make_kernel
 import ..ACFlow: get_c, get_a
 
-#=
-const P_Stoch = Dict{String,Any}(
-    "ngrid" => 1000,
-    "nmesh" => 801,
-    "nfine" => 10001,
-    "ngamm" => 1024,
-    "nalph" => 6,
-    "nwarm" => 4000,
-    "nstep" => 4000000,
-    "ndump" => 40000,
-    "alpha" => 1.00,
-    "ratio" => 2.00,
-    "beta"  => 5.00,
-)
-=#
-
 mutable struct StochElement
     a_γ :: Array{I64,2}
     r_γ :: Array{F64,2}
