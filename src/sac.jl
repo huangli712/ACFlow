@@ -3,7 +3,7 @@ module StochAC
 using Random
 using LinearAlgebra
 
-import .ACFlow: I64, F64, C64
+import ..ACFlow: I64, F64, C64
 
 export read_data
 export stoch_init
