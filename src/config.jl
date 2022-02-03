@@ -181,3 +181,16 @@ Extract configurations from dict: PMaxEnt.
         error("Sorry, PMaxEnt does not contain key: $key")
     end
 end
+
+"""
+    get_a(key::String)
+
+Extract configurations from dict: PStochAC.
+"""
+@inline function get_a(key::String)
+    if haskey(PStochAC, key)
+        PStochAC[key][1]
+    else
+        error("Sorry, PStochAC does not contain key: $key")
+    end
+end
