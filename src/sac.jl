@@ -4,8 +4,9 @@ using Random
 using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
+import ..ACFlow: AbstractMesh
 import ..ACFlow: RawData
-import ..ACFlow: make_data, make_grid
+import ..ACFlow: make_data, make_grid, make_mesh
 import ..ACFlow: get_c
 
 const P_Stoch = Dict{String,Any}(
@@ -40,7 +41,7 @@ mutable struct StochContext
     hamil  :: Vector{F64}
     HC     :: Array{F64,2}
     tmesh :: Vector{F64}
-    wmesh :: Vector{F64}
+    wmesh :: AbstractMesh
     G_tau :: Vector{F64}
     G_dev :: Vector{F64}
 end
@@ -146,9 +147,10 @@ function stoch_init(tmesh::Vector{F64}, G_tau::Vector{F64}, G_dev::Vector{F64})
     end
     SE = StochElement(a_γ, r_γ)
 
-    wmin = get_c("wmin")
-    wmax = get_c("wmax")
-    wmesh = collect(LinRange(wmin, wmax, nmesh))
+    #wmin = get_c("wmin")
+    #wmax = get_c("wmax")
+    #wmesh = collect(LinRange(wmin, wmax, nmesh))
+    wmesh = make_mesh()
     fmesh, xmesh = stoch_grid()
 
     alist = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
