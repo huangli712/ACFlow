@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/29
+# Last modified: 2022/02/03
 #
 
 function solve(rd::RawData)
@@ -19,6 +19,7 @@ function solve(rd::RawData)
             break
 
         @case "StochAC"
+            StochAC.solve(rd)
             break
 
         @default

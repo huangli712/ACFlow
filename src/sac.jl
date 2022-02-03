@@ -4,10 +4,12 @@ using Random
 using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
+import ..ACFlow: RawData
+import ..ACFlow: make_data, make_grid
 
-export read_data
-export stoch_init
-export stoch_run
+#export read_data
+#export stoch_init
+#export stoch_run
 
 const P_Stoch = Dict{String,Any}(
     "ngrid" => 1000,
@@ -52,6 +54,17 @@ mutable struct StochMC
     move_try :: Vector{I64}
     swap_acc :: Vector{I64}
     swap_try :: Vector{I64}
+end
+
+function solve(rd::RawData)
+    _, _, tmesh = read_data()
+    G = make_data(rd)
+    Gtau = abs.(G.value) ./ G.var
+    Gdev = G.var
+    #grid = make_grid(rd)
+
+    MC, SE, SC = stoch_init(tmesh, Gtau, Gdev)
+    stoch_run(MC, SE, SC)
 end
 
 function read_data()
