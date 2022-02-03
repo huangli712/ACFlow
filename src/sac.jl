@@ -6,6 +6,7 @@ using LinearAlgebra
 import ..ACFlow: I64, F64, C64
 import ..ACFlow: RawData
 import ..ACFlow: make_data, make_grid
+import ..ACFlow: get_c
 
 const P_Stoch = Dict{String,Any}(
     "ngrid" => 1000,
@@ -70,12 +71,10 @@ end
 
 function stoch_grid()
     nfine = P_Stoch["nfine"]
-    nmesh = P_Stoch["nmesh"]
-    wstep = P_Stoch["wstep"]
 
-    ommin = -(nmesh - 1) / 2 * wstep
-    ommax = +(nmesh - 1) / 2 * wstep
-    fmesh = collect(LinRange(ommin, ommax, nfine))
+    wmin = get_c("wmin")
+    wmax = get_c("wmax")
+    fmesh = collect(LinRange(wmin, wmax, nfine))
 
     model = fill(1.0, nfine)
     stoch_norm!(1.0, model)
@@ -147,14 +146,14 @@ function stoch_init(tmesh::Vector{F64}, G_tau::Vector{F64}, G_dev::Vector{F64})
     end
     SE = StochElement(a_γ, r_γ)
 
-    ommin = -(nmesh - 1) / 2 * wstep
-    ommax = +(nmesh - 1) / 2 * wstep
-    wmesh = collect(LinRange(ommin, ommax, nmesh))
+    wmin = get_c("wmin")
+    wmax = get_c("wmax")
+    wmesh = collect(LinRange(wmin, wmax, nmesh))
     fmesh, xmesh = stoch_grid()
 
+    alist = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
     model = fill(1.0, nmesh)
     stoch_norm!(wstep, model)
-    alist = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
     phi = cumsum(model) * wstep
     delta = stoch_delta(xmesh, phi)
     kernel = stoch_kernel(tmesh, fmesh)
