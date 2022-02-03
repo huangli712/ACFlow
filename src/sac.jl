@@ -12,13 +12,13 @@ export stoch_run
 const P_Stoch = Dict{String,Any}(
     "ntime" => 1000,
     "nwmax" => 801,
-    "ngrid" => 10001,
+    "nfine" => 10001,
     "ngamm" => 1024,
     "nalph" => 6,
     "nwarm" => 4000,
     "nstep" => 4000000,
     "ndump" => 40000,
-    "ainit" => 1.00,
+    "alpha" => 1.00,
     "ratio" => 2.00,
     "beta"  => 5.00,
     "eta1"  => 0.005,
@@ -36,7 +36,7 @@ mutable struct StochGrid
     tmesh :: Vector{F64}
     wmesh :: Vector{F64}
     xgrid :: Vector{F64}
-    wgrid :: Vector{F64}
+    fgrid :: Vector{F64}
 end
 
 mutable struct StochElement
@@ -50,7 +50,7 @@ mutable struct StochContext
     image  :: Array{F64,2}
     phi    :: Vector{F64}
     model  :: Vector{F64}
-    alpha  :: Vector{F64}
+    alist  :: Vector{F64}
     hamil  :: Vector{F64}
     HC     :: Array{F64,2}
 end
@@ -69,21 +69,6 @@ function read_data()
     G_tau = zeros(F64, ntime)
     G_dev = zeros(F64, ntime)
     tmesh = zeros(F64, ntime)
-
-#=    
-    open("solver.green.dat", "r") do fin
-        for i = 1:ntime
-            arr = split(readline(fin))
-            tmesh[i] = parse(F64, arr[3])
-            G_qmc[i] = parse(F64, arr[4])
-            G_dev[i] = parse(F64, arr[5])
-            if abs(G_dev[i]) < 1e-6
-                G_dev[i] = 1e-6
-            end
-            G_tau[i] = abs(G_qmc[i]) / G_dev[i]
-        end
-    end
-=#
 
     open("green.data", "r") do fin
         for i = 1:ntime
@@ -108,30 +93,30 @@ function stoch_norm!(weight::F64, fun::AbstractVector{F64})
 end
 
 function stoch_grid()
-    ngrid = P_Stoch["ngrid"]
+    nfine = P_Stoch["nfine"]
     nwmax = P_Stoch["nwmax"]
     wstep = P_Stoch["wstep"]
 
     ommin = -(nwmax - 1) / 2 * wstep
     ommax = +(nwmax - 1) / 2 * wstep
-    wgrid = collect(LinRange(ommin, ommax, ngrid))
+    fgrid = collect(LinRange(ommin, ommax, nfine))
 
-    model = fill(1.0, ngrid)
+    model = fill(1.0, nfine)
     stoch_norm!(1.0, model)
     xgrid = cumsum(model)
 
-    return wgrid, xgrid
+    return fgrid, xgrid
 end
 
 function stoch_delta(xgrid::Vector{F64}, phi::Vector{F64})
     nwmax = P_Stoch["nwmax"]
-    ngrid = P_Stoch["ngrid"]
+    nfine = P_Stoch["nfine"]
     eta1 = P_Stoch["eta1"]
     eta2 = P_Stoch["eta2"]
 
-    delta = zeros(F64, nwmax, ngrid)
+    delta = zeros(F64, nwmax, nfine)
     
-    for i = 1:ngrid
+    for i = 1:nfine
         s = phi .- xgrid[i]
         delta[:,i] = eta1 ./ (s .* s .+ eta2)
     end
@@ -139,15 +124,15 @@ function stoch_delta(xgrid::Vector{F64}, phi::Vector{F64})
     return delta
 end
 
-function stoch_kernel(tmesh::Vector{F64}, wgrid::Vector{F64})
+function stoch_kernel(tmesh::Vector{F64}, fgrid::Vector{F64})
     ntime = P_Stoch["ntime"]
-    ngrid = P_Stoch["ngrid"]
+    nfine = P_Stoch["nfine"]
     β = P_Stoch["beta"]
 
-    kernel = zeros(F64, ntime, ngrid)
+    kernel = zeros(F64, ntime, nfine)
 
-    for j = 1:ngrid
-        ω = wgrid[j]
+    for j = 1:nfine
+        ω = fgrid[j]
         if ω ≥ 0.0
             denom = 1.0 + exp(-β*ω)
             kernel[:,j] = exp.(-tmesh * ω) / denom
@@ -164,9 +149,9 @@ function stoch_init(tmesh::Vector{F64}, G::GreenData)
     nalph = P_Stoch["nalph"]
     nwmax = P_Stoch["nwmax"]
     wstep = P_Stoch["wstep"]
-    ainit = P_Stoch["ainit"]
+    alpha = P_Stoch["alpha"]
     ratio = P_Stoch["ratio"]
-    ngrid = P_Stoch["ngrid"]
+    nfine = P_Stoch["nfine"]
     ngamm = P_Stoch["ngamm"]
     ntime = P_Stoch["ntime"]
 
@@ -180,7 +165,7 @@ function stoch_init(tmesh::Vector{F64}, G::GreenData)
     MC = StochMC(rng, move_acc, move_try, swap_acc, swap_try)
 
     r_γ = rand(rng, F64, (ngamm, nalph))
-    a_γ = rand(rng, 1:ngrid, (ngamm, nalph))
+    a_γ = rand(rng, 1:nfine, (ngamm, nalph))
     for j = 1:nalph
         stoch_norm!(1.0, view(r_γ, :, j))
     end
@@ -189,15 +174,15 @@ function stoch_init(tmesh::Vector{F64}, G::GreenData)
     ommin = -(nwmax - 1) / 2 * wstep
     ommax = +(nwmax - 1) / 2 * wstep
     wmesh = collect(LinRange(ommin, ommax, nwmax))
-    wgrid, xgrid = stoch_grid()
-    SG = StochGrid(tmesh, wmesh, xgrid, wgrid)
+    fgrid, xgrid = stoch_grid()
+    SG = StochGrid(tmesh, wmesh, xgrid, fgrid)
 
     model = fill(1.0, nwmax)
     stoch_norm!(wstep, model)
-    alpha = collect(ainit * (ratio ^ (x - 1)) for x in 1:nalph)
+    alist = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
     phi = cumsum(model) * wstep
     delta = stoch_delta(xgrid, phi)
-    kernel = stoch_kernel(tmesh, wgrid)
+    kernel = stoch_kernel(tmesh, fgrid)
     image = zeros(F64, nwmax, nalph)
     hamil = zeros(F64, nalph)
     HC = zeros(F64, ntime, nalph)
@@ -206,7 +191,7 @@ function stoch_init(tmesh::Vector{F64}, G::GreenData)
         HC[:,i] = stoch_hamil0(a_γ[:,i], r_γ[:,i], kernel, G.G_tau, G.G_dev)
         hamil[i] = dot(HC[:,i], HC[:,i]) * δt
     end
-    SC = StochContext(kernel, delta, image, phi, model, alpha, hamil, HC)
+    SC = StochContext(kernel, delta, image, phi, model, alist, hamil, HC)
 
     return MC, SE, SG, SC
 end
@@ -250,7 +235,7 @@ function stoch_dump(step::F64, MC::StochMC, SC::StochContext, SG::StochGrid)
 
     open("stoch.data", "w") do fout
         for i = 1:nalph
-            println(fout, "# $i :", SC.alpha[i])
+            println(fout, "# $i :", SC.alist[i])
             for j = 1:nwmax
                 println(fout, SG.wmesh[j], " ", image_t[j,i])
             end
@@ -336,7 +321,7 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext, SG::S
     dhh = dot(dhc, 2.0 * hc + dhc) * δt
 
     pass = false
-    if dhh ≤ 0.0 ||  exp(-SC.alpha[i] * dhh) > rand(MC.rng)
+    if dhh ≤ 0.0 ||  exp(-SC.alist[i] * dhh) > rand(MC.rng)
         pass = true
     end
 
@@ -355,7 +340,7 @@ end
 
 function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext, SG::StochGrid, G::GreenData)
     ngamm = P_Stoch["ngamm"]
-    ngrid = P_Stoch["ngrid"]
+    nfine = P_Stoch["nfine"]
 
     hc = view(SC.HC, :, i)
 
@@ -369,8 +354,8 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext, SG::S
     r1 = SE.r_γ[l1,i]
     r2 = SE.r_γ[l2,i]
 
-    i1 = rand(MC.rng, 1:ngrid)
-    i2 = rand(MC.rng, 1:ngrid)
+    i1 = rand(MC.rng, 1:nfine)
+    i2 = rand(MC.rng, 1:nfine)
     i3 = SE.a_γ[l1,i]
     i4 = SE.a_γ[l2,i]
 
@@ -384,7 +369,7 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext, SG::S
     dhh = dot(dhc, 2.0 * hc + dhc) * δt
 
     pass = false
-    if dhh ≤ 0.0 ||  exp(-SC.alpha[i] * dhh) > rand(MC.rng)
+    if dhh ≤ 0.0 ||  exp(-SC.alist[i] * dhh) > rand(MC.rng)
         pass = true
     end
 
@@ -422,7 +407,7 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         end
     end
 
-    da = SC.alpha[i] - SC.alpha[j]
+    da = SC.alist[i] - SC.alist[j]
     dh = SC.hamil[i] - SC.hamil[j]
 
     pass = ( exp(da * dh) > rand(MC.rng) )
