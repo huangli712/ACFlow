@@ -94,6 +94,7 @@ function stoch_delta(xmesh::Vector{F64}, phi::Vector{F64})
     return delta
 end
 
+#=
 function stoch_kernel(tmesh::Vector{F64}, fmesh::Vector{F64})
     ngrid = P_Stoch["ngrid"]
     nfine = P_Stoch["nfine"]
@@ -114,6 +115,7 @@ function stoch_kernel(tmesh::Vector{F64}, fmesh::Vector{F64})
    
     return kernel
 end
+=#
 
 function stoch_init(tmesh::Vector{F64}, G_tau::Vector{F64}, G_dev::Vector{F64})
     nalph = P_Stoch["nalph"]
