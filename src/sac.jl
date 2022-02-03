@@ -22,8 +22,7 @@ const P_Stoch = Dict{String,Any}(
     "ratio" => 2.00,
     "beta"  => 5.00,
     "eta1"  => 0.005,
-    "eta2"  => 0.005^2,
-    "wstep" => 0.02
+    "eta2"  => 0.005^2
 )
 
 mutable struct StochElement
@@ -124,7 +123,6 @@ end
 function stoch_init(tmesh::Vector{F64}, G_tau::Vector{F64}, G_dev::Vector{F64})
     nalph = P_Stoch["nalph"]
     nmesh = P_Stoch["nmesh"]
-    wstep = P_Stoch["wstep"]
     alpha = P_Stoch["alpha"]
     ratio = P_Stoch["ratio"]
     nfine = P_Stoch["nfine"]
