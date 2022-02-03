@@ -76,8 +76,8 @@ function stoch_grid()
     wmax = get_c("wmax")
     fmesh = collect(LinRange(wmin, wmax, nfine))
 
-    model = fill(1.0, nfine)
-    stoch_norm!(1.0, model)
+    _fmesh = UniformMesh(nfine, wmin, wmax)
+    model = make_flat_model(_fmesh)
     xmesh = cumsum(model)
 
     return fmesh, xmesh
