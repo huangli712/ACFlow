@@ -11,7 +11,7 @@ export stoch_run
 
 const P_Stoch = Dict{String,Any}(
     "ntime" => 1000,
-    "nwmax" => 801,
+    "nmesh" => 801,
     "nfine" => 10001,
     "ngamm" => 1024,
     "nalph" => 6,
@@ -94,11 +94,11 @@ end
 
 function stoch_grid()
     nfine = P_Stoch["nfine"]
-    nwmax = P_Stoch["nwmax"]
+    nmesh = P_Stoch["nmesh"]
     wstep = P_Stoch["wstep"]
 
-    ommin = -(nwmax - 1) / 2 * wstep
-    ommax = +(nwmax - 1) / 2 * wstep
+    ommin = -(nmesh - 1) / 2 * wstep
+    ommax = +(nmesh - 1) / 2 * wstep
     fgrid = collect(LinRange(ommin, ommax, nfine))
 
     model = fill(1.0, nfine)
@@ -109,12 +109,12 @@ function stoch_grid()
 end
 
 function stoch_delta(xgrid::Vector{F64}, phi::Vector{F64})
-    nwmax = P_Stoch["nwmax"]
+    nmesh = P_Stoch["nmesh"]
     nfine = P_Stoch["nfine"]
     eta1 = P_Stoch["eta1"]
     eta2 = P_Stoch["eta2"]
 
-    delta = zeros(F64, nwmax, nfine)
+    delta = zeros(F64, nmesh, nfine)
     
     for i = 1:nfine
         s = phi .- xgrid[i]
@@ -147,7 +147,7 @@ end
 
 function stoch_init(tmesh::Vector{F64}, G::GreenData)
     nalph = P_Stoch["nalph"]
-    nwmax = P_Stoch["nwmax"]
+    nmesh = P_Stoch["nmesh"]
     wstep = P_Stoch["wstep"]
     alpha = P_Stoch["alpha"]
     ratio = P_Stoch["ratio"]
@@ -171,19 +171,19 @@ function stoch_init(tmesh::Vector{F64}, G::GreenData)
     end
     SE = StochElement(a_γ, r_γ)
 
-    ommin = -(nwmax - 1) / 2 * wstep
-    ommax = +(nwmax - 1) / 2 * wstep
-    wmesh = collect(LinRange(ommin, ommax, nwmax))
+    ommin = -(nmesh - 1) / 2 * wstep
+    ommax = +(nmesh - 1) / 2 * wstep
+    wmesh = collect(LinRange(ommin, ommax, nmesh))
     fgrid, xgrid = stoch_grid()
     SG = StochGrid(tmesh, wmesh, xgrid, fgrid)
 
-    model = fill(1.0, nwmax)
+    model = fill(1.0, nmesh)
     stoch_norm!(wstep, model)
     alist = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
     phi = cumsum(model) * wstep
     delta = stoch_delta(xgrid, phi)
     kernel = stoch_kernel(tmesh, fgrid)
-    image = zeros(F64, nwmax, nalph)
+    image = zeros(F64, nmesh, nalph)
     hamil = zeros(F64, nalph)
     HC = zeros(F64, ntime, nalph)
     δt = tmesh[2] - tmesh[1]
@@ -215,7 +215,7 @@ end
 
 function stoch_dump(step::F64, MC::StochMC, SC::StochContext, SG::StochGrid)
     nalph = P_Stoch["nalph"]
-    nwmax = P_Stoch["nwmax"]
+    nmesh = P_Stoch["nmesh"]
 
     println("move statistics:")
     for i = 1:nalph
@@ -226,9 +226,9 @@ function stoch_dump(step::F64, MC::StochMC, SC::StochContext, SG::StochGrid)
         println("    alpha $i: ", MC.swap_acc[i] / MC.swap_try[i])
     end
 
-    image_t = zeros(F64, nwmax, nalph)
+    image_t = zeros(F64, nmesh, nalph)
     for i = 1:nalph
-        for j = 1:nwmax
+        for j = 1:nmesh
             image_t[j,i] = SC.image[j,i] * SC.model[j] / π / step
         end
     end
@@ -236,14 +236,14 @@ function stoch_dump(step::F64, MC::StochMC, SC::StochContext, SG::StochGrid)
     open("stoch.data", "w") do fout
         for i = 1:nalph
             println(fout, "# $i :", SC.alist[i])
-            for j = 1:nwmax
+            for j = 1:nmesh
                 println(fout, SG.wmesh[j], " ", image_t[j,i])
             end
         end
     end
 
     open("stoch.data.sum", "w") do fout
-        for j = 1:nwmax
+        for j = 1:nmesh
             println(fout, SG.wmesh[j], " ", sum(image_t[j,:]) / nalph)
         end
     end
@@ -273,7 +273,7 @@ end
 
 function stoch_recording(SE::StochElement, SC::StochContext)
     nalph = P_Stoch["nalph"]
-    nwmax = P_Stoch["nwmax"]
+    nmesh = P_Stoch["nmesh"]
     ngamm = P_Stoch["ngamm"]
 
     for ia = 1:nalph
