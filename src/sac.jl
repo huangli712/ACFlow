@@ -26,11 +26,6 @@ const P_Stoch = Dict{String,Any}(
     "wstep" => 0.02
 )
 
-mutable struct GreenData
-    G_tau :: Vector{F64}
-    G_dev :: Vector{F64}
-end
-
 mutable struct StochElement
     a_γ :: Array{I64,2}
     r_γ :: Array{F64,2}
@@ -47,6 +42,8 @@ mutable struct StochContext
     HC     :: Array{F64,2}
     tmesh :: Vector{F64}
     wmesh :: Vector{F64}
+    G_tau :: Vector{F64}
+    G_dev :: Vector{F64}
 end
 
 mutable struct StochMC
@@ -77,7 +74,7 @@ function read_data()
         end
     end
 
-    return GreenData(G_tau, G_dev), tmesh
+    return G_tau, G_dev, tmesh
 end
 
 function stoch_norm!(weight::F64, fun::AbstractVector{F64})
@@ -138,7 +135,7 @@ function stoch_kernel(tmesh::Vector{F64}, fmesh::Vector{F64})
     return kernel
 end
 
-function stoch_init(tmesh::Vector{F64}, G::GreenData)
+function stoch_init(tmesh::Vector{F64}, G_tau::Vector{F64}, G_dev::Vector{F64})
     nalph = P_Stoch["nalph"]
     nmesh = P_Stoch["nmesh"]
     wstep = P_Stoch["wstep"]
@@ -180,10 +177,10 @@ function stoch_init(tmesh::Vector{F64}, G::GreenData)
     HC = zeros(F64, ngrid, nalph)
     δt = tmesh[2] - tmesh[1]
     for i = 1:nalph
-        HC[:,i] = stoch_hamil0(a_γ[:,i], r_γ[:,i], kernel, G.G_tau, G.G_dev)
+        HC[:,i] = stoch_hamil0(a_γ[:,i], r_γ[:,i], kernel, G_tau, G_dev)
         hamil[i] = dot(HC[:,i], HC[:,i]) * δt
     end
-    SC = StochContext(kernel, delta, image, phi, model, alist, hamil, HC, tmesh, wmesh)
+    SC = StochContext(kernel, delta, image, phi, model, alist, hamil, HC, tmesh, wmesh, G_tau, G_dev)
 
     return MC, SE, SC
 end
@@ -241,15 +238,15 @@ function stoch_dump(step::F64, MC::StochMC, SC::StochContext)
     end
 end
 
-function stoch_run(MC::StochMC, SE::StochElement, SC::StochContext, G::GreenData)
+function stoch_run(MC::StochMC, SE::StochElement, SC::StochContext)
     nstep = P_Stoch["nstep"]
     ndump = P_Stoch["ndump"]
 
-    stoch_warmming(MC, SE, SC, G)
+    stoch_warmming(MC, SE, SC)
 
     step = 0.0 
     for iter = 1:nstep
-        stoch_sampling(MC, SE, SC, G)
+        stoch_sampling(MC, SE, SC)
             
         if iter % 100 == 0
             step = step + 1.0
@@ -276,7 +273,7 @@ function stoch_recording(SE::StochElement, SC::StochContext)
     end
 end
 
-function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext, G::GreenData)
+function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     ngamm = P_Stoch["ngamm"]
 
     hc = view(SC.HC, :, i)
@@ -307,7 +304,7 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext, G::Gr
 
     K1 = view(SC.kernel, :, i1)
     K2 = view(SC.kernel, :, i2)
-    dhc = dhh * (K1 - K2) ./ G.G_dev
+    dhc = dhh * (K1 - K2) ./ SC.G_dev
 
     δt = SC.tmesh[2] - SC.tmesh[1]
     dhh = dot(dhc, 2.0 * hc + dhc) * δt
@@ -330,7 +327,7 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext, G::Gr
     end
 end
 
-function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext, G::GreenData)
+function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     ngamm = P_Stoch["ngamm"]
     nfine = P_Stoch["nfine"]
 
@@ -355,7 +352,7 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext, G::Gr
     K2 = view(SC.kernel, :, i2)
     K3 = view(SC.kernel, :, i3)
     K4 = view(SC.kernel, :, i4)
-    dhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) ./ G.G_dev
+    dhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) ./ SC.G_dev
 
     δt = SC.tmesh[2] - SC.tmesh[1]
     dhh = dot(dhc, 2.0 * hc + dhc) * δt
@@ -418,17 +415,17 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     end
 end
 
-function stoch_sampling(MC::StochMC, SE::StochElement, SC::StochContext, G::GreenData)
+function stoch_sampling(MC::StochMC, SE::StochElement, SC::StochContext)
     nalph = P_Stoch["nalph"]
 
     if rand(MC.rng) < 0.9
         if rand(MC.rng) > 0.5
             for i = 1:nalph
-                try_mov1(i, MC, SE, SC, G)
+                try_mov1(i, MC, SE, SC)
             end
         else
             for i = 1:nalph
-                try_mov2(i, MC, SE, SC, G)
+                try_mov2(i, MC, SE, SC)
             end
         end
     else
@@ -442,12 +439,12 @@ function stoch_sampling(MC::StochMC, SE::StochElement, SC::StochContext, G::Gree
     end
 end
 
-function stoch_warmming(MC::StochMC, SE::StochElement, SC::StochContext, G::GreenData)
+function stoch_warmming(MC::StochMC, SE::StochElement, SC::StochContext)
     nwarm = P_Stoch["nwarm"]
 
     for i = 1:nwarm
         println("warm: $i")
-        stoch_sampling(MC, SE, SC, G)
+        stoch_sampling(MC, SE, SC)
     end
 
     fill!(MC.move_acc, 0.0)
