@@ -10,7 +10,7 @@ export stoch_init
 export stoch_run
 
 const P_Stoch = Dict{String,Any}(
-    "ntime" => 1000,
+    "ngrid" => 1000,
     "nmesh" => 801,
     "nfine" => 10001,
     "ngamm" => 1024,
@@ -35,8 +35,8 @@ end
 mutable struct StochGrid
     tmesh :: Vector{F64}
     wmesh :: Vector{F64}
-    xgrid :: Vector{F64}
-    fgrid :: Vector{F64}
+    xmesh :: Vector{F64}
+    fmesh :: Vector{F64}
 end
 
 mutable struct StochElement
@@ -64,14 +64,14 @@ mutable struct StochMC
 end
 
 function read_data()
-    ntime = P_Stoch["ntime"]
-    G_qmc = zeros(F64, ntime)
-    G_tau = zeros(F64, ntime)
-    G_dev = zeros(F64, ntime)
-    tmesh = zeros(F64, ntime)
+    ngrid = P_Stoch["ngrid"]
+    G_qmc = zeros(F64, ngrid)
+    G_tau = zeros(F64, ngrid)
+    G_dev = zeros(F64, ngrid)
+    tmesh = zeros(F64, ngrid)
 
     open("green.data", "r") do fin
-        for i = 1:ntime
+        for i = 1:ngrid
             arr = split(readline(fin))
             tmesh[i] = parse(F64, arr[1])
             G_qmc[i] = parse(F64, arr[2])
@@ -99,16 +99,16 @@ function stoch_grid()
 
     ommin = -(nmesh - 1) / 2 * wstep
     ommax = +(nmesh - 1) / 2 * wstep
-    fgrid = collect(LinRange(ommin, ommax, nfine))
+    fmesh = collect(LinRange(ommin, ommax, nfine))
 
     model = fill(1.0, nfine)
     stoch_norm!(1.0, model)
-    xgrid = cumsum(model)
+    xmesh = cumsum(model)
 
-    return fgrid, xgrid
+    return fmesh, xmesh
 end
 
-function stoch_delta(xgrid::Vector{F64}, phi::Vector{F64})
+function stoch_delta(xmesh::Vector{F64}, phi::Vector{F64})
     nmesh = P_Stoch["nmesh"]
     nfine = P_Stoch["nfine"]
     eta1 = P_Stoch["eta1"]
@@ -117,22 +117,22 @@ function stoch_delta(xgrid::Vector{F64}, phi::Vector{F64})
     delta = zeros(F64, nmesh, nfine)
     
     for i = 1:nfine
-        s = phi .- xgrid[i]
+        s = phi .- xmesh[i]
         delta[:,i] = eta1 ./ (s .* s .+ eta2)
     end
 
     return delta
 end
 
-function stoch_kernel(tmesh::Vector{F64}, fgrid::Vector{F64})
-    ntime = P_Stoch["ntime"]
+function stoch_kernel(tmesh::Vector{F64}, fmesh::Vector{F64})
+    ngrid = P_Stoch["ngrid"]
     nfine = P_Stoch["nfine"]
     β = P_Stoch["beta"]
 
-    kernel = zeros(F64, ntime, nfine)
+    kernel = zeros(F64, ngrid, nfine)
 
     for j = 1:nfine
-        ω = fgrid[j]
+        ω = fmesh[j]
         if ω ≥ 0.0
             denom = 1.0 + exp(-β*ω)
             kernel[:,j] = exp.(-tmesh * ω) / denom
@@ -153,7 +153,7 @@ function stoch_init(tmesh::Vector{F64}, G::GreenData)
     ratio = P_Stoch["ratio"]
     nfine = P_Stoch["nfine"]
     ngamm = P_Stoch["ngamm"]
-    ntime = P_Stoch["ntime"]
+    ngrid = P_Stoch["ngrid"]
 
     seed = rand(1:100000000)#; seed = 19087549
     @show seed
@@ -174,18 +174,18 @@ function stoch_init(tmesh::Vector{F64}, G::GreenData)
     ommin = -(nmesh - 1) / 2 * wstep
     ommax = +(nmesh - 1) / 2 * wstep
     wmesh = collect(LinRange(ommin, ommax, nmesh))
-    fgrid, xgrid = stoch_grid()
-    SG = StochGrid(tmesh, wmesh, xgrid, fgrid)
+    fmesh, xmesh = stoch_grid()
+    SG = StochGrid(tmesh, wmesh, xmesh, fmesh)
 
     model = fill(1.0, nmesh)
     stoch_norm!(wstep, model)
     alist = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
     phi = cumsum(model) * wstep
-    delta = stoch_delta(xgrid, phi)
-    kernel = stoch_kernel(tmesh, fgrid)
+    delta = stoch_delta(xmesh, phi)
+    kernel = stoch_kernel(tmesh, fmesh)
     image = zeros(F64, nmesh, nalph)
     hamil = zeros(F64, nalph)
-    HC = zeros(F64, ntime, nalph)
+    HC = zeros(F64, ngrid, nalph)
     δt = tmesh[2] - tmesh[1]
     for i = 1:nalph
         HC[:,i] = stoch_hamil0(a_γ[:,i], r_γ[:,i], kernel, G.G_tau, G.G_dev)
@@ -201,11 +201,11 @@ function stoch_hamil0(a_γ::Vector{I64},
                       kernel::Array{F64,2},
                       G_tau::Vector{F64},
                       G_dev::Vector{F64})
-    ntime = P_Stoch["ntime"]
+    ngrid = P_Stoch["ngrid"]
     ngamm = P_Stoch["ngamm"]
 
-    hc = zeros(F64, ntime)
-    for i = 1:ntime
+    hc = zeros(F64, ngrid)
+    for i = 1:ngrid
         hc[i] = dot(r_γ, kernel[i,a_γ])
     end
     @. hc = hc / G_dev - G_tau
