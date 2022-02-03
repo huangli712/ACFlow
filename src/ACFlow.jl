@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/29
+# Last modified: 2022/02/03
 #
 
 module ACFlow
@@ -25,9 +25,11 @@ include("model.jl")
 include("flow.jl")
 
 include("maxent.jl")
+include("sac.jl")
 
 export read_param
 export read_data
 export solve
+export StochAC
 
 end

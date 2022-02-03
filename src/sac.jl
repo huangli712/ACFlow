@@ -1,4 +1,4 @@
-module StochFlow
+module StochAC
 
 using Random
 using LinearAlgebra
