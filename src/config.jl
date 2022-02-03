@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/01
+# Last modified: 2022/02/03
 #
 
 #=
@@ -42,6 +42,14 @@ const PStochOM = Dict{String,ADT}(
 )
 
 const PStochAC = Dict{String,ADT}(
+    "nfine" => [missing, 1, :I64, ""],
+    "ngamm" => [missing, 1, :I64, ""],
+    "nalph" => [missing, 1, :I64, ""],
+    "nwarm" => [missing, 1, :I64, ""],
+    "nstep" => [missing, 1, :I64, ""],
+    "ndump" => [missing, 1, :I64, ""],
+    "alpha" => [missing, 1, :F64, ""],
+    "ratio" => [missing, 1, :F64, ""],
 )
 
 function read_param()

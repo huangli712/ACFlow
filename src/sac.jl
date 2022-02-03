@@ -4,7 +4,7 @@ using Random
 using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
-import ..ACFlow: AbstractMesh, UniformMesh, FermionicImaginaryTimeGrid, AbstractGrid
+import ..ACFlow: AbstractMesh, UniformMesh, AbstractGrid
 import ..ACFlow: RawData
 import ..ACFlow: make_data, make_grid, make_mesh, make_model, make_kernel
 import ..ACFlow: get_c
@@ -21,8 +21,6 @@ const P_Stoch = Dict{String,Any}(
     "alpha" => 1.00,
     "ratio" => 2.00,
     "beta"  => 5.00,
-    "eta1"  => 0.005,
-    "eta2"  => 0.005^2
 )
 
 mutable struct StochElement
@@ -79,8 +77,8 @@ end
 function stoch_delta(xmesh::Vector{F64}, phi::Vector{F64})
     nmesh = P_Stoch["nmesh"]
     nfine = P_Stoch["nfine"]
-    eta1 = P_Stoch["eta1"]
-    eta2 = P_Stoch["eta2"]
+    eta1 = 0.005
+    eta2 = 0.005 ^ 2.0
 
     delta = zeros(F64, nmesh, nfine)
     
