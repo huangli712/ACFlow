@@ -4,7 +4,7 @@ using Random
 using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
-import ..ACFlow: AbstractMesh
+import ..ACFlow: AbstractMesh, UniformMesh, make_flat_model
 import ..ACFlow: RawData
 import ..ACFlow: make_data, make_grid, make_mesh, make_model
 import ..ACFlow: get_c
@@ -76,8 +76,7 @@ function stoch_grid()
     wmax = get_c("wmax")
     fmesh = collect(LinRange(wmin, wmax, nfine))
 
-    _fmesh = UniformMesh(nfine, wmin, wmax)
-    model = make_flat_model(_fmesh)
+    model = fill(1.0/nfine, nfine)
     xmesh = cumsum(model)
 
     return fmesh, xmesh
@@ -143,7 +142,7 @@ function stoch_init(tmesh::Vector{F64}, G_tau::Vector{F64}, G_dev::Vector{F64})
     for j = 1:nalph
         #stoch_norm!(1.0, view(r_γ, :, j))
         s = sum(r_γ[:,j])
-        r_γ[:,i] = r_γ[:,j] ./ s 
+        r_γ[:,j] = r_γ[:,j] ./ s
     end
     SE = StochElement(a_γ, r_γ)
 
