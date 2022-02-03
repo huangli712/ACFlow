@@ -27,7 +27,6 @@ const P_Stoch = Dict{String,Any}(
 )
 
 mutable struct GreenData
-    G_qmc :: Vector{F64}
     G_tau :: Vector{F64}
     G_dev :: Vector{F64}
 end
@@ -60,7 +59,6 @@ end
 
 function read_data()
     ngrid = P_Stoch["ngrid"]
-    G_qmc = zeros(F64, ngrid)
     G_tau = zeros(F64, ngrid)
     G_dev = zeros(F64, ngrid)
     tmesh = zeros(F64, ngrid)
@@ -69,17 +67,17 @@ function read_data()
         for i = 1:ngrid
             arr = split(readline(fin))
             tmesh[i] = parse(F64, arr[1])
-            G_qmc[i] = parse(F64, arr[2])
+            G_tau[i] = parse(F64, arr[2])
             G_dev[i] = parse(F64, arr[3])
             if abs(G_dev[i]) < 1e-6
                 G_dev[i] = 1e-6
             end
             G_dev[i] = G_dev[i] ^ 2.0
-            G_tau[i] = abs(G_qmc[i]) / G_dev[i]
+            G_tau[i] = abs(G_tau[i]) / G_dev[i]
         end
     end
 
-    return GreenData(G_qmc, G_tau, G_dev), tmesh
+    return GreenData(G_tau, G_dev), tmesh
 end
 
 function stoch_norm!(weight::F64, fun::AbstractVector{F64})
