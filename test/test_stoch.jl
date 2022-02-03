@@ -2,11 +2,10 @@
 
 push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
 
-using Distributed
-using StochFlow
+using ACFlow
 
 println("Stochastic Analytical Continuation")
-G, tmesh = read_data()
-MC, SE, SG, SC = stoch_init(tmesh, G)
+G, tmesh = StochAC.read_data()
+MC, SE, SG, SC = StochAC.stoch_init(tmesh, G)
 
-stoch_run(MC, SE, SC, SG, G)
+StochAC.stoch_run(MC, SE, SC, SG, G)
