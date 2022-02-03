@@ -4,9 +4,9 @@ using Random
 using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
-import ..ACFlow: AbstractMesh, UniformMesh, make_flat_model
+import ..ACFlow: AbstractMesh, UniformMesh, FermionicImaginaryTimeGrid
 import ..ACFlow: RawData
-import ..ACFlow: make_data, make_grid, make_mesh, make_model
+import ..ACFlow: make_data, make_grid, make_mesh, make_model, make_kernel
 import ..ACFlow: get_c
 
 const P_Stoch = Dict{String,Any}(
@@ -66,10 +66,11 @@ end
 
 function stoch_grid()
     nfine = P_Stoch["nfine"]
-
     wmin = get_c("wmin")
     wmax = get_c("wmax")
-    fmesh = collect(LinRange(wmin, wmax, nfine))
+
+    #fmesh = collect(LinRange(wmin, wmax, nfine))
+    fmesh = UniformMesh(nfine, wmin, wmax)
 
     model = fill(1.0/nfine, nfine)
     xmesh = cumsum(model)
@@ -147,7 +148,14 @@ function stoch_init(tmesh::Vector{F64}, G_tau::Vector{F64}, G_dev::Vector{F64})
     model = make_model(wmesh)
     phi = cumsum(model .* wmesh.weight)
     delta = stoch_delta(xmesh, phi)
-    kernel = stoch_kernel(tmesh, fmesh)
+
+    ngrid = P_Stoch["ngrid"]
+    β = P_Stoch["beta"]
+    fg = FermionicImaginaryTimeGrid(ngrid, β, tmesh)
+    kernel = make_kernel(fmesh, fg)
+    #kernel = stoch_kernel(tmesh, fmesh)
+
+
     image = zeros(F64, nmesh, nalph)
     hamil = zeros(F64, nalph)
     HC = zeros(F64, ngrid, nalph)
