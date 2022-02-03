@@ -141,7 +141,9 @@ function stoch_init(tmesh::Vector{F64}, G_tau::Vector{F64}, G_dev::Vector{F64})
     r_γ = rand(rng, F64, (ngamm, nalph))
     a_γ = rand(rng, 1:nfine, (ngamm, nalph))
     for j = 1:nalph
-        stoch_norm!(1.0, view(r_γ, :, j))
+        #stoch_norm!(1.0, view(r_γ, :, j))
+        s = sum(r_γ[:,j])
+        r_γ[:,i] = r_γ[:,j] ./ s 
     end
     SE = StochElement(a_γ, r_γ)
 
