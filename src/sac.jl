@@ -145,7 +145,7 @@ function stoch_init(tmesh::Vector{F64}, G_tau::Vector{F64}, G_dev::Vector{F64})
     ngamm = P_Stoch["ngamm"]
     ngrid = P_Stoch["ngrid"]
 
-    seed = rand(1:100000000)#; seed = 19087549
+    seed = rand(1:100000000); seed = 4277216
     @show seed
     rng = MersenneTwister(seed)
     move_acc = zeros(F64, nalph)
