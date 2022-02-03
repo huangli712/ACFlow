@@ -4,7 +4,7 @@ using Random
 using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
-import ..ACFlow: AbstractMesh, UniformMesh, FermionicImaginaryTimeGrid
+import ..ACFlow: AbstractMesh, UniformMesh, FermionicImaginaryTimeGrid, AbstractGrid
 import ..ACFlow: RawData
 import ..ACFlow: make_data, make_grid, make_mesh, make_model, make_kernel
 import ..ACFlow: get_c
@@ -39,7 +39,7 @@ mutable struct StochContext
     alist  :: Vector{F64}
     hamil  :: Vector{F64}
     HC     :: Array{F64,2}
-    tmesh :: Vector{F64}
+    tmesh :: AbstractGrid
     wmesh :: AbstractMesh
     G_tau :: Vector{F64}
     G_dev :: Vector{F64}
@@ -57,8 +57,7 @@ function solve(rd::RawData)
     G = make_data(rd)
     Gtau = abs.(G.value) ./ G.var
     Gdev = G.var
-    grid = make_grid(rd)
-    tmesh = grid.τ
+    tmesh = make_grid(rd)
 
     MC, SE, SC = stoch_init(tmesh, Gtau, Gdev)
     stoch_run(MC, SE, SC)
@@ -69,7 +68,6 @@ function stoch_grid()
     wmin = get_c("wmin")
     wmax = get_c("wmax")
 
-    #fmesh = collect(LinRange(wmin, wmax, nfine))
     fmesh = UniformMesh(nfine, wmin, wmax)
 
     model = fill(1.0/nfine, nfine)
@@ -94,30 +92,7 @@ function stoch_delta(xmesh::Vector{F64}, phi::Vector{F64})
     return delta
 end
 
-#=
-function stoch_kernel(tmesh::Vector{F64}, fmesh::Vector{F64})
-    ngrid = P_Stoch["ngrid"]
-    nfine = P_Stoch["nfine"]
-    β = P_Stoch["beta"]
-
-    kernel = zeros(F64, ngrid, nfine)
-
-    for j = 1:nfine
-        ω = fmesh[j]
-        if ω ≥ 0.0
-            denom = 1.0 + exp(-β*ω)
-            kernel[:,j] = exp.(-tmesh * ω) / denom
-        else
-            denom = 1.0 + exp(+β*ω)
-            kernel[:,j] = exp.( ( β .- tmesh ) * ω) / denom
-        end
-    end
-   
-    return kernel
-end
-=#
-
-function stoch_init(tmesh::Vector{F64}, G_tau::Vector{F64}, G_dev::Vector{F64})
+function stoch_init(tmesh::AbstractGrid, G_tau::Vector{F64}, G_dev::Vector{F64})
     nalph = P_Stoch["nalph"]
     nmesh = P_Stoch["nmesh"]
     alpha = P_Stoch["alpha"]
@@ -151,12 +126,7 @@ function stoch_init(tmesh::Vector{F64}, G_tau::Vector{F64}, G_dev::Vector{F64})
     phi = cumsum(model .* wmesh.weight)
     delta = stoch_delta(xmesh, phi)
 
-    ngrid = P_Stoch["ngrid"]
-    β = P_Stoch["beta"]
-    fg = FermionicImaginaryTimeGrid(ngrid, β, tmesh)
-    kernel = make_kernel(fmesh, fg)
-    #kernel = stoch_kernel(tmesh, fmesh)
-
+    kernel = make_kernel(fmesh, tmesh)
 
     image = zeros(F64, nmesh, nalph)
     hamil = zeros(F64, nalph)
