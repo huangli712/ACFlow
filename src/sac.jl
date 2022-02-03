@@ -7,10 +7,6 @@ import ..ACFlow: I64, F64, C64
 import ..ACFlow: RawData
 import ..ACFlow: make_data, make_grid
 
-#export read_data
-#export stoch_init
-#export stoch_run
-
 const P_Stoch = Dict{String,Any}(
     "ngrid" => 1000,
     "nmesh" => 801,
@@ -57,37 +53,14 @@ mutable struct StochMC
 end
 
 function solve(rd::RawData)
-    _, _, tmesh = read_data()
     G = make_data(rd)
     Gtau = abs.(G.value) ./ G.var
     Gdev = G.var
-    #grid = make_grid(rd)
+    grid = make_grid(rd)
+    tmesh = grid.τ
 
     MC, SE, SC = stoch_init(tmesh, Gtau, Gdev)
     stoch_run(MC, SE, SC)
-end
-
-function read_data()
-    ngrid = P_Stoch["ngrid"]
-    G_tau = zeros(F64, ngrid)
-    G_dev = zeros(F64, ngrid)
-    tmesh = zeros(F64, ngrid)
-
-    open("green.data", "r") do fin
-        for i = 1:ngrid
-            arr = split(readline(fin))
-            tmesh[i] = parse(F64, arr[1])
-            G_tau[i] = parse(F64, arr[2])
-            G_dev[i] = parse(F64, arr[3])
-            if abs(G_dev[i]) < 1e-6
-                G_dev[i] = 1e-6
-            end
-            G_dev[i] = G_dev[i] ^ 2.0
-            G_tau[i] = abs(G_tau[i]) / G_dev[i]
-        end
-    end
-
-    return G_tau, G_dev, tmesh
 end
 
 function stoch_norm!(weight::F64, fun::AbstractVector{F64})
