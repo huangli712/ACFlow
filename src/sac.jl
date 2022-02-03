@@ -6,7 +6,7 @@ using LinearAlgebra
 import ..ACFlow: I64, F64, C64
 import ..ACFlow: AbstractMesh
 import ..ACFlow: RawData
-import ..ACFlow: make_data, make_grid, make_mesh
+import ..ACFlow: make_data, make_grid, make_mesh, make_model
 import ..ACFlow: get_c
 
 const P_Stoch = Dict{String,Any}(
@@ -154,9 +154,15 @@ function stoch_init(tmesh::Vector{F64}, G_tau::Vector{F64}, G_dev::Vector{F64})
     fmesh, xmesh = stoch_grid()
 
     alist = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
-    model = fill(1.0, nmesh)
-    stoch_norm!(wstep, model)
+    #model = fill(1.0, nmesh)
+    #stoch_norm!(wstep, model)
+    model = make_model(wmesh)
+    #@show model
+    #error()
     phi = cumsum(model) * wstep
+    phi = cumsum(model .* wmesh.weight)
+    #@show phi
+    #error()
     delta = stoch_delta(xmesh, phi)
     kernel = stoch_kernel(tmesh, fmesh)
     image = zeros(F64, nmesh, nalph)
