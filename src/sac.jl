@@ -7,8 +7,9 @@ import ..ACFlow: I64, F64, C64
 import ..ACFlow: AbstractMesh, UniformMesh, AbstractGrid
 import ..ACFlow: RawData
 import ..ACFlow: make_data, make_grid, make_mesh, make_model, make_kernel
-import ..ACFlow: get_c
+import ..ACFlow: get_c, get_a
 
+#=
 const P_Stoch = Dict{String,Any}(
     "ngrid" => 1000,
     "nmesh" => 801,
@@ -22,6 +23,7 @@ const P_Stoch = Dict{String,Any}(
     "ratio" => 2.00,
     "beta"  => 5.00,
 )
+=#
 
 mutable struct StochElement
     a_γ :: Array{I64,2}
@@ -62,7 +64,7 @@ function solve(rd::RawData)
 end
 
 function stoch_grid()
-    nfine = P_Stoch["nfine"]
+    nfine = get_a("nfine")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
 
@@ -75,8 +77,8 @@ function stoch_grid()
 end
 
 function stoch_delta(xmesh::Vector{F64}, phi::Vector{F64})
-    nmesh = P_Stoch["nmesh"]
-    nfine = P_Stoch["nfine"]
+    nmesh = get_c("nmesh")
+    nfine = get_a("nfine")
     eta1 = 0.005
     eta2 = 0.005 ^ 2.0
 
@@ -91,13 +93,13 @@ function stoch_delta(xmesh::Vector{F64}, phi::Vector{F64})
 end
 
 function stoch_init(tmesh::AbstractGrid, G_tau::Vector{F64}, G_dev::Vector{F64})
-    nalph = P_Stoch["nalph"]
-    nmesh = P_Stoch["nmesh"]
-    alpha = P_Stoch["alpha"]
-    ratio = P_Stoch["ratio"]
-    nfine = P_Stoch["nfine"]
-    ngamm = P_Stoch["ngamm"]
-    ngrid = P_Stoch["ngrid"]
+    nalph = get_a("nalph")
+    nmesh = get_c("nmesh")
+    alpha = get_a("alpha")
+    ratio = get_a("ratio")
+    nfine = get_a("nfine")
+    ngamm = get_a("ngamm")
+    ngrid = get_c("ngrid")
 
     seed = rand(1:100000000); seed = 4277216
     @show seed
@@ -144,8 +146,8 @@ function stoch_hamil0(a_γ::Vector{I64},
                       kernel::Array{F64,2},
                       G_tau::Vector{F64},
                       G_dev::Vector{F64})
-    ngrid = P_Stoch["ngrid"]
-    ngamm = P_Stoch["ngamm"]
+    ngrid = get_c("ngrid")
+    ngamm = get_a("ngamm")
 
     hc = zeros(F64, ngrid)
     for i = 1:ngrid
@@ -157,8 +159,8 @@ function stoch_hamil0(a_γ::Vector{I64},
 end
 
 function stoch_dump(step::F64, MC::StochMC, SC::StochContext)
-    nalph = P_Stoch["nalph"]
-    nmesh = P_Stoch["nmesh"]
+    nalph = get_a("nalph")
+    nmesh = get_c("nmesh")
 
     println("move statistics:")
     for i = 1:nalph
@@ -193,8 +195,8 @@ function stoch_dump(step::F64, MC::StochMC, SC::StochContext)
 end
 
 function stoch_run(MC::StochMC, SE::StochElement, SC::StochContext)
-    nstep = P_Stoch["nstep"]
-    ndump = P_Stoch["ndump"]
+    nstep = get_a("nstep")
+    ndump = get_a("ndump")
 
     stoch_warmming(MC, SE, SC)
 
@@ -215,9 +217,9 @@ function stoch_run(MC::StochMC, SE::StochElement, SC::StochContext)
 end
 
 function stoch_recording(SE::StochElement, SC::StochContext)
-    nalph = P_Stoch["nalph"]
-    nmesh = P_Stoch["nmesh"]
-    ngamm = P_Stoch["ngamm"]
+    nalph = get_a("nalph")
+    nmesh = get_c("nmesh")
+    ngamm = get_a("ngamm")
 
     for ia = 1:nalph
         dr = view(SE.r_γ, :, ia)
@@ -228,7 +230,7 @@ function stoch_recording(SE::StochElement, SC::StochContext)
 end
 
 function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
-    ngamm = P_Stoch["ngamm"]
+    ngamm = get_a("ngamm")
 
     hc = view(SC.HC, :, i)
 
@@ -282,8 +284,8 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 end
 
 function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
-    ngamm = P_Stoch["ngamm"]
-    nfine = P_Stoch["nfine"]
+    ngamm = get_a("ngamm")
+    nfine = get_a("nfine")
 
     hc = view(SC.HC, :, i)
 
@@ -330,7 +332,7 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 end
 
 function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
-    nalph = P_Stoch["nalph"]
+    nalph = get_a("nalph")
 
     if scheme == 1
         i = rand(MC.rng, 1:nalph)
@@ -370,7 +372,7 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 end
 
 function stoch_sampling(MC::StochMC, SE::StochElement, SC::StochContext)
-    nalph = P_Stoch["nalph"]
+    nalph = get_a("nalph")
 
     if rand(MC.rng) < 0.9
         if rand(MC.rng) > 0.5
@@ -394,7 +396,7 @@ function stoch_sampling(MC::StochMC, SE::StochElement, SC::StochContext)
 end
 
 function stoch_warmming(MC::StochMC, SE::StochElement, SC::StochContext)
-    nwarm = P_Stoch["nwarm"]
+    nwarm = get_a("nwarm")
 
     for i = 1:nwarm
         println("warm: $i")
