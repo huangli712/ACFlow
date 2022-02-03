@@ -3,9 +3,7 @@ module StochAC
 using Random
 using LinearAlgebra
 
-const I64 = Int64
-const F64 = Float64
-const C64 = ComplexF64
+import .ACFlow: I64, F64, C64
 
 export read_data
 export stoch_init
@@ -25,7 +23,6 @@ const P_Stoch = Dict{String,Any}(
     "beta"  => 5.00,
     "eta1"  => 0.005,
     "eta2"  => 0.005^2,
-    "sigma" => 0.0,
     "wstep" => 0.02
 )
 
