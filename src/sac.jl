@@ -154,15 +154,8 @@ function stoch_init(tmesh::Vector{F64}, G_tau::Vector{F64}, G_dev::Vector{F64})
     fmesh, xmesh = stoch_grid()
 
     alist = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
-    #model = fill(1.0, nmesh)
-    #stoch_norm!(wstep, model)
     model = make_model(wmesh)
-    #@show model
-    #error()
-    phi = cumsum(model) * wstep
     phi = cumsum(model .* wmesh.weight)
-    #@show phi
-    #error()
     delta = stoch_delta(xmesh, phi)
     kernel = stoch_kernel(tmesh, fmesh)
     image = zeros(F64, nmesh, nalph)
