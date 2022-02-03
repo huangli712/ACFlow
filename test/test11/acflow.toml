@@ -6,8 +6,18 @@ model  = "flat"
 grid   = "time"
 mesh   = "uniform"
 ngrid  = 1000
-nmesh  = 501
-wmax   = 5.0
-wmin   = -5.0
+nmesh  = 801
+wmax   = 8.0
+wmin   = -8.0
 beta   = 5.0
 offdiag = false
+
+[StochAC]
+nfine = 10001
+ngamm = 1024
+nalph = 6
+nwarm = 4000
+nstep = 4000000
+ndump = 40000
+alpha = 1.00
+ratio = 2.00
