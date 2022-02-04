@@ -84,6 +84,18 @@ function FermionicMatsubaraGrid(nfreq::I64, β::F64)
     return FermionicMatsubaraGrid(nfreq, β, ω)
 end
 
+function Base.length(fg::FermionicMatsubaraGrid)
+    fg.nfreq
+end
+
+function Base.iterate(fg::FermionicMatsubaraGrid)
+    iterate(fg.ω)
+end
+
+function Base.iterate(fg::FermionicMatsubaraGrid, i::I64)
+    iterate(fg.ω, i)
+end
+
 function Base.eachindex(fg::FermionicMatsubaraGrid)
     eachindex(fg.ω)
 end
