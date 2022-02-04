@@ -30,24 +30,24 @@ function LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
     return LinearMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
-function Base.eachindex(um::LinearMesh)
+function Base.eachindex(lm::LinearMesh)
     eachindex(um.mesh)
 end
 
-function Base.firstindex(um::LinearMesh)
+function Base.firstindex(lm::LinearMesh)
     firstindex(um.mesh)
 end
 
-function Base.lastindex(um::LinearMesh)
+function Base.lastindex(lm::LinearMesh)
     lastindex(um.mesh)
 end
 
-function Base.getindex(um::LinearMesh, ind::I64)
+function Base.getindex(lm::LinearMesh, ind::I64)
     @assert 1 ≤ ind ≤ um.nmesh
     return um.mesh[ind]
 end
 
-function Base.getindex(um::LinearMesh, I::UnitRange{I64})
+function Base.getindex(lm::LinearMesh, I::UnitRange{I64})
     @assert checkbounds(Bool, um.mesh, I)
     lI = length(I)
     X = similar(um.mesh, lI)
@@ -81,44 +81,31 @@ function TangentMesh(nmesh::I64, wmin::F64, wmax::F64)
     return TangentMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
-function Base.eachindex(num::TangentMesh)
-    eachindex(num.mesh)
+function Base.eachindex(tm::TangentMesh)
+    eachindex(tm.mesh)
 end
 
-function Base.firstindex(num::TangentMesh)
-    firstindex(num.mesh)
+function Base.firstindex(tm::TangentMesh)
+    firstindex(tm.mesh)
 end
 
-function Base.lastindex(num::TangentMesh)
-    lastindex(num.mesh)
+function Base.lastindex(tm::TangentMesh)
+    lastindex(tm.mesh)
 end
 
-function Base.getindex(num::TangentMesh, ind::I64)
-    @assert 1 ≤ ind ≤ num.nmesh
-    return num.mesh[ind]
+function Base.getindex(tm::TangentMesh, ind::I64)
+    @assert 1 ≤ ind ≤ tm.nmesh
+    return tm.mesh[ind]
 end
 
-function Base.getindex(num::TangentMesh, I::UnitRange{I64})
-    @assert checkbounds(Bool, num.mesh, I)
+function Base.getindex(tm::TangentMesh, I::UnitRange{I64})
+    @assert checkbounds(Bool, tm.mesh, I)
     lI = length(I)
-    X = similar(num.mesh, lI)
+    X = similar(tm.mesh, lI)
     if lI > 0
-        unsafe_copyto!(X, 1, num.mesh, first(I), lI)
+        unsafe_copyto!(X, 1, tm.mesh, first(I), lI)
     end
     return X
-end
-
-function make_mesh()
-    nmesh = get_c("nmesh")
-    mesh = get_c("mesh")
-    wmax = get_c("wmax")
-    wmin = get_c("wmin")
-
-    if mesh == "uniform"
-        return LinearMesh(nmesh, wmin, wmax)
-    else
-        return TangentMesh(nmesh, wmin, wmax)
-    end
 end
 
 function trapz(x::Vector{F64}, y::Vector{T}, uniform::Bool = false) where {T}

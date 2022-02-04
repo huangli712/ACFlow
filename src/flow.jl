@@ -72,3 +72,16 @@ function make_grid(v::Vector{F64})
         return _grid
     end
 end
+
+function make_mesh()
+    nmesh = get_c("nmesh")
+    mesh = get_c("mesh")
+    wmax = get_c("wmax")
+    wmin = get_c("wmin")
+
+    if mesh == "uniform"
+        return LinearMesh(nmesh, wmin, wmax)
+    else
+        return TangentMesh(nmesh, wmin, wmax)
+    end
+end
