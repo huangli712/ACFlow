@@ -209,3 +209,38 @@ function newton(fun::Function, guess, kwargs...)
 
     return result, counter
 end
+
+function trapz(x::Vector{F64}, y::Vector{T}, linear::Bool = false) where {T}
+    if linear
+        h = x[2] - x[1]
+        value = y[1] + y[end] + 2.0 * sum(y[2:end-1])
+        value = h * value / 2.0
+    else
+        len = length(x)
+        value = 0.0
+        for i = 1:len-1
+            value = value + (y[i] + y[i+1]) * (x[i+1] - x[i])
+        end
+        value = value / 2.0    
+    end
+
+    return value
+end
+
+function simpson(x::Vector{F64}, y::Vector{T}) where {T}
+    h = x[2] - x[1]
+    even_sum = 0.0
+    odd_sum = 0.0
+
+    for i = 1:length(x)-1
+        if iseven(i)
+            even_sum = even_sum + y[i]
+        else
+            odd_sum = odd_sum + y[i]
+        end
+    end
+
+    val = h / 3.0 * (y[1] + y[end] + 2.0 * even_sum + 4.0 * odd_sum)
+
+    return val
+end
