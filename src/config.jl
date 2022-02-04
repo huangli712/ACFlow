@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/04
+# Last modified: 2022/02/05
 #
 
 #=
@@ -20,22 +20,22 @@ const ADT = Array{DType,1}
 const PCOMM    = Dict{String,ADT}(
     "finput"  => [missing, 1, :String, "Filename for input correlation function"],
     "solver"  => [missing, 1, :String, "Solve for the analytical continuation problem"],
-    "ktype"   => [missing, 1, :String, "Type of kernel"],
+    "ktype"   => [missing, 1, :String, "Type of kernel function"],
     "mtype"   => [missing, 1, :String, "Type of default model"],
-    "grid"    => [missing, 1, :String, "Grid of input correlation function"],
-    "mesh"    => [missing, 1, :String, "Mesh of output spectrum"],
+    "grid"    => [missing, 1, :String, "Grid for input correlation function"],
+    "mesh"    => [missing, 1, :String, "Mesh for output spectrum"],
     "ngrid"   => [missing, 1, :I64   , "Number of grid points"],
     "nmesh"   => [missing, 1, :I64   , "Number of mesh points"],
     "wmax"    => [missing, 1, :F64   , "Maximum value of mesh"],
     "wmin"    => [missing, 1, :F64   , "Minimum value of mesh"],
     "beta"    => [missing, 1, :F64   , "Inverse temperature"],
     "fermi"   => [missing, 1, :Bool  , "Statistics of input correlation function"],
-    "offdiag" => [missing, 1, :Bool  , "Whether it is an offdiagonal element in matrix-valued function"],
+    "offdiag" => [missing, 1, :Bool  , "Is it an offdiagonal element in matrix-valued function"],
 )
 
 const PMaxEnt  = Dict{String,ADT}(
     "method"  => [missing, 1, :String, "How to determine the optimized α parameter"],
-    "nalph"   => [missing, 1, :I64   , "Number of α parameters"],
+    "nalph"   => [missing, 1, :I64   , "Number of the α parameters"],
     "alpha"   => [missing, 1, :F64   , "Starting value for the α parameter"],
     "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
     "blur"    => [missing, 1, :F64   , "Shall we blur the kernel and spectrum"],
@@ -47,9 +47,9 @@ const PStochOM = Dict{String,ADT}(
 const PStochAC = Dict{String,ADT}(
     "nfine"   => [missing, 1, :I64   , "Number of points for very fine mesh"],
     "ngamm"   => [missing, 1, :I64   , "Number of δ functions"],
-    "nalph"   => [missing, 1, :I64   , "Number of α parameters"],
-    "nwarm"   => [missing, 1, :I64   , "Number of warming-up steps"],
-    "nstep"   => [missing, 1, :I64   , "Number of sweeping steps"],
+    "nalph"   => [missing, 1, :I64   , "Number of the α parameters"],
+    "nwarm"   => [missing, 1, :I64   , "Number of Monte Carlo warming-up steps"],
+    "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo sweeping steps"],
     "ndump"   => [missing, 1, :I64   , "Intervals for monitoring Monte Carlo sweeps"],
     "alpha"   => [missing, 1, :F64   , "Starting value for the α parameter"],
     "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
