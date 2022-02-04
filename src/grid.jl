@@ -150,7 +150,11 @@ function Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
     return X
 end
 
-function rebuild_grid(bg::BosonicImaginaryTimeGrid)
+function rebuild_grid(bg::BosonicImaginaryTimeGrid, ntime::I64, β::F64)
+    @assert ntime ≥ 1
+    @assert β ≥ 0.0
+    bg.ntime = ntime
+    bg.β = β
     bg.τ = collect(LinRange(0.0, bg.β, bg.ntime))
 end
 
@@ -196,8 +200,13 @@ function Base.getindex(bg::BosonicMatsubaraGrid, I::UnitRange{I64})
     return X
 end
 
-function rebuild_grid(bg::BosonicMatsubaraGrid)
-    for n in eachindex(bg)
+function rebuild_grid(bg::BosonicMatsubaraGrid, nfreq::I64, β::F64)
+    @assert nfreq ≥ 1
+    @assert β ≥ 0.0
+    bg.nfreq = nfreq
+    bg.β = β
+    resize!(bg.ω, nfreq)
+    for n = 1:nfreq
         bg.ω[n] = (2 * n - 2) * π / bg.β
     end
 end
