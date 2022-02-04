@@ -34,9 +34,11 @@ const PCOMM    = Dict{String,ADT}(
 )
 
 const PMaxEnt  = Dict{String,ADT}(
-    "method" => [missing, 1, :String, ""],
-    "alpha"  => [missing, 1, :F64, ""],
-    "blur"   => [missing, 1, :F64, ""],
+    "method"  => [missing, 1, :String, "How to determine the optimized α parameter"],
+    "alpha0"  => [missing, 1, :F64   , "Starting value for the α parameter"],
+    "alpha1"  => [missing, 1, :F64   , "Ending value for the α parameter"],
+    "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
+    "blur"    => [missing, 1, :F64   , "Shall we blur the kernel and spectrum"],
 )
 
 const PStochOM = Dict{String,ADT}(
