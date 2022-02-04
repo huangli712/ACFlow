@@ -30,6 +30,18 @@ function LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
     return LinearMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
+function Base.length(lm::LinearMesh)
+    lm.nmesh
+end
+
+function Base.iterate(lm::LinearMesh)
+    iterate(lm.mesh)
+end
+
+function Base.iterate(lm::LinearMesh, i::I64)
+    iterate(lm.mesh, i::I64)
+end
+
 function Base.eachindex(lm::LinearMesh)
     eachindex(lm.mesh)
 end
@@ -79,6 +91,18 @@ function TangentMesh(nmesh::I64, wmin::F64, wmax::F64)
     weight = diff(weight)
 
     return TangentMesh(nmesh, wmax, wmin, mesh, weight)
+end
+
+function Base.length(tm::TangentMesh)
+    tm.nmesh
+end
+
+function Base.iterate(tm::TangentMesh)
+    iterate(tm.mesh)
+end
+
+function Base.iterate(tm::TangentMesh, i::I64)
+    iterate(tm.mesh, i)
 end
 
 function Base.eachindex(tm::TangentMesh)
