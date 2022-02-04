@@ -108,7 +108,7 @@ function Base.getindex(tm::TangentMesh, I::UnitRange{I64})
     return X
 end
 
-function fast_trapz(x::AbstractMesh, y::Vector{T}) where {T}
+function area(x::AbstractMesh, y::Vector{T}) where {T}
     value = dot(x.weight, y)
     return value
 end
