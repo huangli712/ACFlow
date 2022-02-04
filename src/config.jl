@@ -159,6 +159,34 @@ Validate the correctness and consistency of configurations.
 See also: [`fil_dict`](@ref), [`_v`](@ref).
 """
 function chk_dict()
+    @assert get_c("solver") in ("MaxEnt", "StochOM", "StochAC")
+    @assert get_c("ktype") in ("fermi", "boson", "bsymm")
+    @assert get_c("mtype") in ("flat", "gauss", "func")
+    @assert get_c("grid") in ("ftime", "btime", "ffreq", "bfreq")
+    @assert get_c("mesh") in ("linear", "tangent")
+    @assert get_c("ngrid") ≥ 1
+    @assert get_c("nmesh") ≥ 1
+    @assert get_c("wmax") > get_c("wmin")
+    @assert get_c("beta") ≥ 0.0
+
+    PA = [PCOMM]
+    @cswitch get_c("solver") begin
+        @case "MaxEnt"
+            push!(PA, PMaxEnt)
+            break
+
+        @case "StochOM"
+            push!(PA, PStochOM)
+            break
+
+        @case "StochAC"
+            push!(PA, PStochAC)
+            break
+    end
+
+    for P in PA
+        foreach(x -> _v(x.first, x.second), P)
+    end
 end
 
 """
