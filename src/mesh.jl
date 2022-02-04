@@ -30,6 +30,21 @@ function LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
     return LinearMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
+function LinearMesh(mesh::Vector{F64})
+    nmesh = length(mesh)
+
+    wmin = mesh[1]
+    wmax = mesh[end]
+    @assert wmax > wmin
+
+    weight = (mesh[2:end] + mesh[1:end-1]) / 2.0
+    pushfirst!(weight, mesh[1])
+    push!(weight, mesh[end])
+    weight = diff(weight)
+
+    return LinearMesh(nmesh, wmax, wmin, mesh, weight)
+end
+
 function Base.length(lm::LinearMesh)
     lm.nmesh
 end
