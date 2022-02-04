@@ -108,11 +108,11 @@ function Base.getindex(tm::TangentMesh, I::UnitRange{I64})
     return X
 end
 
-function trapz(x::Vector{F64}, y::Vector{T}, uniform::Bool = false) where {T}
-    if uniform
+function trapz(x::Vector{F64}, y::Vector{T}, linear::Bool = false) where {T}
+    if linear
         h = x[2] - x[1]
-        _sum = sum(y[2:end-1])
-        value = (h / 2.0) * (y[1] + y[end] + 2.0 * _sum)
+        value = y[1] + y[end] + 2.0 * sum(y[2:end-1])
+        value = h * value / 2.0
     else
         len = length(x)
         value = 0.0
