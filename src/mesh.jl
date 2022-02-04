@@ -4,12 +4,12 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/31
+# Last modified: 2022/02/04
 #
 
 abstract type AbstractMesh end
 
-mutable struct UniformMesh <: AbstractMesh
+mutable struct LinearMesh <: AbstractMesh
     nmesh :: I64
     wmax :: F64
     wmin :: F64
@@ -17,7 +17,7 @@ mutable struct UniformMesh <: AbstractMesh
     weight :: Vector{F64}
 end
 
-function UniformMesh(nmesh::I64, wmin::F64, wmax::F64)
+function LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
     @assert nmesh ≥ 1
     @assert wmax > wmin
 
@@ -27,27 +27,27 @@ function UniformMesh(nmesh::I64, wmin::F64, wmax::F64)
     push!(weight, mesh[end])
     weight = diff(weight)
 
-    return UniformMesh(nmesh, wmax, wmin, mesh, weight)
+    return LinearMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
-function Base.eachindex(um::UniformMesh)
+function Base.eachindex(um::LinearMesh)
     eachindex(um.mesh)
 end
 
-function Base.firstindex(um::UniformMesh)
+function Base.firstindex(um::LinearMesh)
     firstindex(um.mesh)
 end
 
-function Base.lastindex(um::UniformMesh)
+function Base.lastindex(um::LinearMesh)
     lastindex(um.mesh)
 end
 
-function Base.getindex(um::UniformMesh, ind::I64)
+function Base.getindex(um::LinearMesh, ind::I64)
     @assert 1 ≤ ind ≤ um.nmesh
     return um.mesh[ind]
 end
 
-function Base.getindex(um::UniformMesh, I::UnitRange{I64})
+function Base.getindex(um::LinearMesh, I::UnitRange{I64})
     @assert checkbounds(Bool, um.mesh, I)
     lI = length(I)
     X = similar(um.mesh, lI)
@@ -57,7 +57,7 @@ function Base.getindex(um::UniformMesh, I::UnitRange{I64})
     return X
 end
 
-mutable struct NonUniformMesh <: AbstractMesh
+mutable struct TangentMesh <: AbstractMesh
     nmesh :: I64
     wmax :: F64
     wmin :: F64
@@ -65,7 +65,7 @@ mutable struct NonUniformMesh <: AbstractMesh
     weight :: Vector{F64}
 end
 
-function NonUniformMesh(nmesh::I64, wmin::F64, wmax::F64)
+function TangentMesh(nmesh::I64, wmin::F64, wmax::F64)
     @assert nmesh ≥ 1
     @assert wmax > 0.0 > wmin
     @assert wmax == abs(wmin)
@@ -78,27 +78,27 @@ function NonUniformMesh(nmesh::I64, wmin::F64, wmax::F64)
     push!(weight, mesh[end])
     weight = diff(weight)
 
-    return NonUniformMesh(nmesh, wmax, wmin, mesh, weight)
+    return TangentMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
-function Base.eachindex(num::NonUniformMesh)
+function Base.eachindex(num::TangentMesh)
     eachindex(num.mesh)
 end
 
-function Base.firstindex(num::NonUniformMesh)
+function Base.firstindex(num::TangentMesh)
     firstindex(num.mesh)
 end
 
-function Base.lastindex(num::NonUniformMesh)
+function Base.lastindex(num::TangentMesh)
     lastindex(num.mesh)
 end
 
-function Base.getindex(num::NonUniformMesh, ind::I64)
+function Base.getindex(num::TangentMesh, ind::I64)
     @assert 1 ≤ ind ≤ num.nmesh
     return num.mesh[ind]
 end
 
-function Base.getindex(num::NonUniformMesh, I::UnitRange{I64})
+function Base.getindex(num::TangentMesh, I::UnitRange{I64})
     @assert checkbounds(Bool, num.mesh, I)
     lI = length(I)
     X = similar(num.mesh, lI)
@@ -115,9 +115,9 @@ function make_mesh()
     wmin = get_c("wmin")
 
     if mesh == "uniform"
-        return UniformMesh(nmesh, wmin, wmax)
+        return LinearMesh(nmesh, wmin, wmax)
     else
-        return NonUniformMesh(nmesh, wmin, wmax)
+        return TangentMesh(nmesh, wmin, wmax)
     end
 end
 
