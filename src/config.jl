@@ -151,7 +151,33 @@ function fil_dict(cfg::Dict{String,Any})
     end
 end
 
+"""
+    chk_dict()
+
+Validate the correctness and consistency of configurations.
+
+See also: [`fil_dict`](@ref), [`_v`](@ref).
+"""
 function chk_dict()
+end
+
+"""
+    _v(key::String, val::Array{Any,1})
+
+Verify the value array. Called by chk_dict() function only.
+
+See also: [`chk_dict`](@ref).
+"""
+@inline function _v(key::String, val::Array{Any,1})
+    # To check if the value is updated
+    if isa(val[1], Missing) && val[2] > 0
+        error("Sorry, key ($key) shoule be set")
+    end
+
+    # To check if the type of value is correct
+    if !isa(val[1], Missing) && !isa(val[1], eval(val[3]))
+        error("Sorry, type of key ($key) is wrong")
+    end
 end
 
 """
