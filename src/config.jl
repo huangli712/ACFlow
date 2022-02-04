@@ -101,10 +101,10 @@ end
     fil_dict(cfg::Dict{String,Any})
 
 Transfer configurations from dict `cfg` to internal dicts (including
-`PCOMM`, `PMaxEnt`, `PStochOM`, and `PStochAC`).
+`PCOMM`, `PMaxEnt`, `PStochOM`, and `PStochAC` etc).
 """
 function fil_dict(cfg::Dict{String,Any})
-    # For dft block
+    # For COMM block
     COMM = cfg["COMM"]
     for key in keys(COMM)
         if haskey(PCOMM, key)
@@ -177,6 +177,19 @@ Extract configurations from dict: PMaxEnt.
         PMaxEnt[key][1]
     else
         error("Sorry, PMaxEnt does not contain key: $key")
+    end
+end
+
+"""
+    get_s(key::String)
+
+Extract configurations from dict: PStochOM.
+"""
+@inline function get_s(key::String)
+    if haskey(PStochOM, key)
+        PStochOM[key][1]
+    else
+        error("Sorry, PStochOM does not contain key: $key")
     end
 end
 
