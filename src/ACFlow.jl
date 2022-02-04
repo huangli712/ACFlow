@@ -30,6 +30,5 @@ include("sac.jl")
 export read_param
 export read_data
 export solve
-export StochAC
 
 end

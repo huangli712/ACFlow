@@ -4,22 +4,8 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/30
+# Last modified: 2022/02/04
 #
-
-abstract type AbstractData end
-
-struct RawData{T} <: AbstractData
-    mesh  :: Vector{F64}
-    value :: Vector{T}
-    error :: Vector{T}
-end
-
-mutable struct GreenData <: AbstractData
-    value :: Vector{F64}
-    error :: Vector{F64}
-    var   :: Vector{F64}
-end
 
 abstract type AbstractGrid end
 
@@ -61,6 +47,10 @@ function Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
         unsafe_copyto!(X, 1, fg.τ, first(I), lI)
     end
     return X
+end
+
+function rebuild_grid(fg::FermionicImaginaryTimeGrid)
+    fg.τ = collect(LinRange(0.0, fg.β, fg.ntime))
 end
 
 mutable struct FermionicMatsubaraGrid <: AbstractGrid
@@ -105,6 +95,12 @@ function Base.getindex(fg::FermionicMatsubaraGrid, I::UnitRange{I64})
     return X
 end
 
+function rebuild_grid(fg::FermionicMatsubaraGrid)
+    for n in eachindex(fg)
+        fg.ω[n] = (2 * n - 1) * π / fg.β
+    end
+end
+
 mutable struct BosonicImaginaryTimeGrid <: AbstractGrid
     ntime :: I64
     β :: F64
@@ -143,6 +139,10 @@ function Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
         unsafe_copyto!(X, 1, bg.τ, first(I), lI)
     end
     return X
+end
+
+function rebuild_grid(bg::BosonicImaginaryTimeGrid)
+    bg.τ = collect(LinRange(0.0, bg.β, bg.ntime))
 end
 
 mutable struct BosonicMatsubaraGrid <: AbstractGrid
@@ -187,6 +187,12 @@ function Base.getindex(bg::BosonicMatsubaraGrid, I::UnitRange{I64})
     return X
 end
 
+function rebuild_grid(bg::BosonicMatsubaraGrid)
+    for n in eachindex(bg)
+        bg.ω[n] = (2 * n - 2) * π / bg.β
+    end
+end
+
 function make_grid(rd::RawData)
     return make_grid(rd.mesh)
 end
@@ -215,25 +221,5 @@ function make_grid(v::Vector{F64})
             _grid = BosonicImaginaryTimeGrid(ngrid, β, v)
         end
         return _grid
-    end
-end
-
-function rebuild_grid(fg::FermionicImaginaryTimeGrid)
-    fg.τ = collect(LinRange(0.0, fg.β, fg.ntime))
-end
-
-function rebuild_grid(fg::FermionicMatsubaraGrid)
-    for n in eachindex(fg)
-        fg.ω[n] = (2 * n - 1) * π / fg.β
-    end
-end
-
-function rebuild_grid(bg::BosonicImaginaryTimeGrid)
-    bg.τ = collect(LinRange(0.0, bg.β, bg.ntime))
-end
-
-function rebuild_grid(bg::BosonicMatsubaraGrid)
-    for n in eachindex(bg)
-        bg.ω[n] = (2 * n - 2) * π / bg.β
     end
 end
