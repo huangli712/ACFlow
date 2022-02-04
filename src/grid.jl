@@ -49,7 +49,11 @@ function Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
     return X
 end
 
-function rebuild_grid(fg::FermionicImaginaryTimeGrid)
+function rebuild_grid(fg::FermionicImaginaryTimeGrid, ntime::I64, β::F64)
+    @assert ntime ≥ 1
+    @assert β ≥ 0.0
+    fg.ntime = ntime
+    fg.β = β
     fg.τ = collect(LinRange(0.0, fg.β, fg.ntime))
 end
 
@@ -95,8 +99,13 @@ function Base.getindex(fg::FermionicMatsubaraGrid, I::UnitRange{I64})
     return X
 end
 
-function rebuild_grid(fg::FermionicMatsubaraGrid)
-    for n in eachindex(fg)
+function rebuild_grid(fg::FermionicMatsubaraGrid, nfreq::I64, β::F64)
+    @assert nfreq ≥ 1
+    @assert β ≥ 0.0
+    fg.nfreq = nfreq
+    fg.β = β
+    resize!(fg.ω, nfreq)
+    for n = 1:nfreq
         fg.ω[n] = (2 * n - 1) * π / fg.β
     end
 end
