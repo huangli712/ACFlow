@@ -41,11 +41,33 @@ function read_complex_data(finput::String, ngrid::I64)
     return RawData(_grid, value, error)
 end
 
-function write_spectrum(am::AbstractMesh, spectra::Vector{F64})
-    @assert am.nmesh == length(spectra)
-    open("spectra.data", "w") do fout
-        for i = 1:am.nmesh
-            @printf(fout, "%16.12f %16.12f\n", am[i], spectra[i])
+function read_complex_data(finput::String, ngrid::I64, only_real_part::Bool = true)
+    _grid = zeros(F64, ngrid)
+    value = zeros(C64, ngrid)
+    error = zeros(C64, ngrid)
+
+    open(finput, "r") do fin
+        for i = 1:ngrid
+            arr = parse.(F64, line_to_array(fin)[1:3])
+            _grid[i] = arr[1]
+            if only_real_part
+                value[i] = arr[2]
+                error[i] = arr[3]
+            else
+                value[i] = im * arr[2]
+                error[i] = im * arr[3]
+            end
+        end
+    end
+
+    return RawData(_grid, value, error)
+end
+
+function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
+    @assert length(am) == length(Aout)
+    open("Aout.data", "w") do fout
+        for i in eachindex(am)
+            @printf(fout, "%16.12f %16.12f\n", am[i], Aout[i])
         end
     end
 end
