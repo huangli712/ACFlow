@@ -4,19 +4,8 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/01
+# Last modified: 2022/02/04
 #
-
-function make_model(m::AbstractMesh)
-    model = get_c("model")
-    if model == "flat"
-        return make_flat_model(m)
-    elseif model == "gauss"
-        return make_gaussian_model(m)
-    elseif model == "file"
-        return make_file_model(m)
-    end
-end
 
 function make_flat_model(um::UniformMesh)
     model = ones(F64, um.nmesh)

@@ -85,3 +85,14 @@ function make_mesh()
         return TangentMesh(nmesh, wmin, wmax)
     end
 end
+
+function make_model(m::AbstractMesh)
+    model = get_c("model")
+    if model == "flat"
+        return make_flat_model(m)
+    elseif model == "gauss"
+        return make_gaussian_model(m)
+    elseif model == "file"
+        return make_file_model(m)
+    end
+end
