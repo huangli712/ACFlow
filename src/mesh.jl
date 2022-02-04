@@ -31,28 +31,28 @@ function LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
 end
 
 function Base.eachindex(lm::LinearMesh)
-    eachindex(um.mesh)
+    eachindex(lm.mesh)
 end
 
 function Base.firstindex(lm::LinearMesh)
-    firstindex(um.mesh)
+    firstindex(lm.mesh)
 end
 
 function Base.lastindex(lm::LinearMesh)
-    lastindex(um.mesh)
+    lastindex(lm.mesh)
 end
 
 function Base.getindex(lm::LinearMesh, ind::I64)
-    @assert 1 ≤ ind ≤ um.nmesh
-    return um.mesh[ind]
+    @assert 1 ≤ ind ≤ lm.nmesh
+    return lm.mesh[ind]
 end
 
 function Base.getindex(lm::LinearMesh, I::UnitRange{I64})
-    @assert checkbounds(Bool, um.mesh, I)
+    @assert checkbounds(Bool, lm.mesh, I)
     lI = length(I)
-    X = similar(um.mesh, lI)
+    X = similar(lm.mesh, lI)
     if lI > 0
-        unsafe_copyto!(X, 1, um.mesh, first(I), lI)
+        unsafe_copyto!(X, 1, lm.mesh, first(I), lI)
     end
     return X
 end
