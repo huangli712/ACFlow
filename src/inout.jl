@@ -4,80 +4,10 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/31
+# Last modified: 2022/02/04
 #
 
-function make_data(rd::RawData)
-    return make_data(rd.value, rd.error)
-end
-
-function make_data(val::Vector{T}, err::Vector{T}) where {T}
-    grid = get_c("grid")
-    kernel = get_c("kernel")
-
-    if grid == "matsubara" && kernel == "fermionic"
-        value = vcat(real(val), imag(val))
-        error = vcat(real(err), imag(err))
-        covar = error .^ 2.0
-        _data = GreenData(value, error, covar)
-        return _data
-    end
-
-    if grid == "matsubara" && kernel == "bosonic"
-        value = real(val)
-        error = real(err)
-        covar = error .^ 2.0
-        _data = GreenData(value, error, covar)
-        return _data
-    end
-
-    if grid == "time" && kernel == "fermionic"
-        value = real(val)
-        error = real(err)
-        covar = error .^ 2.0
-        _data = GreenData(value, error, covar)
-        return _data
-    end
-
-    if grid == "time" && kernel == "bosonic"
-        value = real(val)
-        error = real(err)
-        covar = error .^ 2.0
-        _data = GreenData(value, error, covar)
-        return _data
-    end
-end
-
-function write_spectrum(am::AbstractMesh, spectra::Vector{F64})
-    @assert am.nmesh == length(spectra)
-    open("spectra.data", "w") do fout
-        for i = 1:am.nmesh
-            @printf(fout, "%16.12f %16.12f\n", am[i], spectra[i])
-        end
-    end
-end
-
-function read_data()
-    finput = get_c("finput")
-    ngrid = get_c("ngrid")
-    grid = get_c("grid")
-
-    @cswitch grid begin
-        @case "matsubara"
-            return read_freq_data(finput, ngrid)
-            break
-
-        @case "time"
-            return read_time_data(finput, ngrid)
-            break
-
-        @default
-            sorry()
-            break
-    end
-end
-
-function read_time_data(finput::String, ngrid::I64)
+function read_real_data(finput::String, ngrid::I64)
     mesh = zeros(F64, ngrid)
     value = zeros(F64, ngrid)
     error = zeros(F64, ngrid)
@@ -94,7 +24,7 @@ function read_time_data(finput::String, ngrid::I64)
     return RawData(mesh, value, error)
 end
 
-function read_freq_data(finput::String, ngrid::I64)
+function read_complex_data(finput::String, ngrid::I64)
     mesh = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)
@@ -128,4 +58,13 @@ function read_freq_data(finput::String, ngrid::I64)
     end
 
     return RawData(mesh, value, error)
+end
+
+function write_spectrum(am::AbstractMesh, spectra::Vector{F64})
+    @assert am.nmesh == length(spectra)
+    open("spectra.data", "w") do fout
+        for i = 1:am.nmesh
+            @printf(fout, "%16.12f %16.12f\n", am[i], spectra[i])
+        end
+    end
 end

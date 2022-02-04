@@ -96,3 +96,64 @@ function make_model(m::AbstractMesh)
         return make_file_model(m)
     end
 end
+
+function make_data(rd::RawData)
+    return make_data(rd.value, rd.error)
+end
+
+function make_data(val::Vector{T}, err::Vector{T}) where {T}
+    grid = get_c("grid")
+    kernel = get_c("kernel")
+
+    if grid == "matsubara" && kernel == "fermionic"
+        value = vcat(real(val), imag(val))
+        error = vcat(real(err), imag(err))
+        covar = error .^ 2.0
+        _data = GreenData(value, error, covar)
+        return _data
+    end
+
+    if grid == "matsubara" && kernel == "bosonic"
+        value = real(val)
+        error = real(err)
+        covar = error .^ 2.0
+        _data = GreenData(value, error, covar)
+        return _data
+    end
+
+    if grid == "time" && kernel == "fermionic"
+        value = real(val)
+        error = real(err)
+        covar = error .^ 2.0
+        _data = GreenData(value, error, covar)
+        return _data
+    end
+
+    if grid == "time" && kernel == "bosonic"
+        value = real(val)
+        error = real(err)
+        covar = error .^ 2.0
+        _data = GreenData(value, error, covar)
+        return _data
+    end
+end
+
+function read_data()
+    finput = get_c("finput")
+    ngrid = get_c("ngrid")
+    grid = get_c("grid")
+
+    @cswitch grid begin
+        @case "matsubara"
+            return read_freq_data(finput, ngrid)
+            break
+
+        @case "time"
+            return read_time_data(finput, ngrid)
+            break
+
+        @default
+            sorry()
+            break
+    end
+end
