@@ -157,3 +157,8 @@ function read_data()
             break
     end
 end
+
+function read_param()
+    cfg = inp_toml(query_args(), true)
+    fil_dict(cfg)
+end

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/03
+# Last modified: 2022/02/04
 #
 
 #=
@@ -18,18 +18,19 @@ const DType = Any
 const ADT = Array{DType,1}
 
 const PCOMM    = Dict{String,ADT}(
-    "finput"  => [missing, 1, :String, ""],
-    "solver"  => [missing, 1, :String, ""],
-    "kernel"  => [missing, 1, :String, ""],
-    "model"   => [missing, 1, :String, ""],
-    "grid"    => [missing, 1, :String, ""],
-    "mesh"    => [missing, 1, :String, ""],
-    "ngrid"   => [missing, 1, :I64, ""],
-    "nmesh"   => [missing, 1, :I64, ""],
-    "wmax"    => [missing, 1, :F64, ""],
-    "wmin"    => [missing, 1, :F64, ""],
-    "beta"    => [missing, 1, :F64, ""],
-    "offdiag" => [missing, 1, :Bool, ""],
+    "finput"  => [missing, 1, :String, "Filename for input correlation function"],
+    "solver"  => [missing, 1, :String, "Solve for the analytical continuation problem"],
+    "ktype"   => [missing, 1, :String, "Type of kernel"],
+    "mtype"   => [missing, 1, :String, "Type of default model"],
+    "grid"    => [missing, 1, :String, "Grid of input correlation function"],
+    "mesh"    => [missing, 1, :String, "Mesh of output spectrum"],
+    "ngrid"   => [missing, 1, :I64   , "Number of grid points"],
+    "nmesh"   => [missing, 1, :I64   , "Number of mesh points"],
+    "wmax"    => [missing, 1, :F64   , "Maximum value of mesh"],
+    "wmin"    => [missing, 1, :F64   , "Minimum value of mesh"],
+    "beta"    => [missing, 1, :F64   , "Inverse temperature"],
+    "fermi"   => [missing, 1, :Bool  , "Statistics of input correlation function"],
+    "offdiag" => [missing, 1, :Bool  , "Whether it is an offdiagonal element in matrix-valued function"],
 )
 
 const PMaxEnt  = Dict{String,ADT}(
@@ -51,11 +52,6 @@ const PStochAC = Dict{String,ADT}(
     "alpha" => [missing, 1, :F64, ""],
     "ratio" => [missing, 1, :F64, ""],
 )
-
-function read_param()
-    cfg = inp_toml(query_args(), true)
-    fil_dict(cfg)
-end
 
 """
     inp_toml(f::String, key::String, necessary::Bool)
