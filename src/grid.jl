@@ -147,6 +147,18 @@ function BosonicImaginaryTimeGrid(ntime::I64, β::F64)
     return BosonicImaginaryTimeGrid(ntime, β, τ)
 end
 
+function Base.length(bg::BosonicImaginaryTimeGrid)
+    bg.ntime
+end
+
+function Base.iterate(bg::BosonicImaginaryTimeGrid)
+    iterate(bg.τ)
+end
+
+function Base.iterate(bg::BosonicImaginaryTimeGrid, i::I64)
+    iterate(bg.τ, i)
+end
+
 function Base.eachindex(bg::BosonicImaginaryTimeGrid)
     eachindex(bg.τ)
 end
