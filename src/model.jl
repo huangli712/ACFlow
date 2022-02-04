@@ -7,28 +7,31 @@
 # Last modified: 2022/02/04
 #
 
-function build_flat_model(um::UniformMesh)
-    model = ones(F64, um.nmesh)
-    norm = dot(um.weight, model)
+function build_flat_model(am::AbstractMesh)
+    model = ones(F64, length(am))
+    norm = dot(am.weight, model)
     model = model ./ norm
     return model
 end
 
-function build_gaussian_model(num::NonUniformMesh)
-    model = exp.(-(num.mesh / 8.0) .^ 6.0)
-    norm = dot(num.weight, model)
+#=
+```math
+\begin{equation}
+m(\omega) = \frac{1}{\Gamma \sqrt{\pi}} \exp\left[-(\omega/\Gamma)^2\right]
+\end{equation}
+```
+=#
+
+function build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
+    model = exp.(-(am.mesh / Γ) .^ 2.0) / (Γ * sqrt(π))
+    norm = dot(am.weight, model)
     model = model ./ norm
     return model
 end
 
-function build_file_model(am::AbstractMesh)
-    model = zeros(F64, am.nmesh)
-
-    open("model.data", "r") do fin
-        for i = 1:am.nmesh
-            model[i] = parse(F64, line_to_array(fin)[2])
-        end
-    end
-
+function build_func_model(f::Function, am::AbstractMesh, kwargs...)
+    model = f.(am, kwargs...)
+    norm = dot(am.weight, model)
+    model = model ./ norm
     return model
 end
