@@ -9,6 +9,11 @@
 
 abstract type AbstractMesh end
 
+function area(x::AbstractMesh, y::Vector{T}) where {T}
+    value = dot(x.weight, y)
+    return value
+end
+
 mutable struct LinearMesh <: AbstractMesh
     nmesh :: I64
     wmax :: F64
@@ -145,9 +150,4 @@ function Base.getindex(tm::TangentMesh, I::UnitRange{I64})
         unsafe_copyto!(X, 1, tm.mesh, first(I), lI)
     end
     return X
-end
-
-function area(x::AbstractMesh, y::Vector{T}) where {T}
-    value = dot(x.weight, y)
-    return value
 end
