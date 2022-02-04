@@ -22,6 +22,18 @@ function FermionicImaginaryTimeGrid(ntime::I64, β::F64)
     return FermionicImaginaryTimeGrid(ntime, β, τ)
 end
 
+function Base.length(fg::FermionicImaginaryTimeGrid)
+    fg.ntime
+end
+
+function Base.iterate(fg::FermionicImaginaryTimeGrid)
+    iterate(fg.τ)
+end
+
+function Base.iterate(fg::FermionicImaginaryTimeGrid, i::I64)
+    iterate(fg.τ, i)
+end
+
 function Base.eachindex(fg::FermionicImaginaryTimeGrid)
     eachindex(fg.τ)
 end
