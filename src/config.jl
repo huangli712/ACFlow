@@ -35,8 +35,8 @@ const PCOMM    = Dict{String,ADT}(
 
 const PMaxEnt  = Dict{String,ADT}(
     "method"  => [missing, 1, :String, "How to determine the optimized α parameter"],
-    "alpha0"  => [missing, 1, :F64   , "Starting value for the α parameter"],
-    "alpha1"  => [missing, 1, :F64   , "Ending value for the α parameter"],
+    "nalph"   => [missing, 1, :I64   , "Number of α parameters"],
+    "alpha"   => [missing, 1, :F64   , "Starting value for the α parameter"],
     "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
     "blur"    => [missing, 1, :F64   , "Shall we blur the kernel and spectrum"],
 )
@@ -173,6 +173,10 @@ function chk_dict()
     @cswitch get_c("solver") begin
         @case "MaxEnt"
             push!(PA, PMaxEnt)
+            @assert get_m("method") in ("historic", "classic", "bryan", "chi2kink")
+            @assert get_m("nalph") ≥ 1
+            @assert get_m("alpha") > 0.0
+            @assert get_m("ratio") > 0.0
             break
 
         @case "StochOM"
