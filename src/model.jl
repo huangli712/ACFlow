@@ -7,39 +7,21 @@
 # Last modified: 2022/02/04
 #
 
-function make_flat_model(um::UniformMesh)
+function build_flat_model(um::UniformMesh)
     model = ones(F64, um.nmesh)
     norm = dot(um.weight, model)
     model = model ./ norm
     return model
 end
 
-function make_flat_model(num::NonUniformMesh)
-end
-
-function make_gaussian_model(um::UniformMesh)
-    # For test8
-    #println("here")
-    model = exp.(-0.5 * (um.mesh) .^ 2.0)
-    norm = dot(um.weight, model)
-    model = model ./ norm
-    return model
-end
-
-function make_gaussian_model(num::NonUniformMesh)
-    # For test5
-    #model = exp.(-(num.mesh / 20.0) .^ 6.0)
-    #norm = dot(num.weight, model)
-    #model = model ./ norm .* 4.77
-
-    # For test6
+function build_gaussian_model(num::NonUniformMesh)
     model = exp.(-(num.mesh / 8.0) .^ 6.0)
     norm = dot(num.weight, model)
     model = model ./ norm
     return model
 end
 
-function make_file_model(am::AbstractMesh)
+function build_file_model(am::AbstractMesh)
     model = zeros(F64, am.nmesh)
 
     open("model.data", "r") do fin
