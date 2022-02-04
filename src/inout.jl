@@ -71,3 +71,6 @@ function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
         end
     end
 end
+
+function write_alldata(am::AbstractMesh)
+end
