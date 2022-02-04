@@ -41,3 +41,34 @@ function solve(rd::RawData)
             break
     end
 end
+
+function make_grid(rd::RawData)
+    return make_grid(rd.mesh)
+end
+
+function make_grid(v::Vector{F64})
+    grid = get_c("grid")
+    ngrid = get_c("ngrid")
+    kernel = get_c("kernel")
+    @assert ngrid == length(v)
+
+    if grid == "matsubara"
+        β = 2.0 * π / (v[2] - v[1])
+        @assert abs(β - get_c("beta")) ≤ 1e-10
+        if kernel == "fermionic"
+            _grid = FermionicMatsubaraGrid(ngrid, β, v)
+        else
+            _grid = BosonicMatsubaraGrid(ngrid, β, v)
+        end
+        return _grid
+    else
+        β = v[end]
+        @assert β == get_c("beta")
+        if kernel == "fermionic"
+            _grid = FermionicImaginaryTimeGrid(ngrid, β, v)
+        else
+            _grid = BosonicImaginaryTimeGrid(ngrid, β, v)
+        end
+        return _grid
+    end
+end
