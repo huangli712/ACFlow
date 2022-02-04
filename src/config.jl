@@ -45,14 +45,14 @@ const PStochOM = Dict{String,ADT}(
 )
 
 const PStochAC = Dict{String,ADT}(
-    "nfine" => [missing, 1, :I64, ""],
-    "ngamm" => [missing, 1, :I64, ""],
-    "nalph" => [missing, 1, :I64, ""],
-    "nwarm" => [missing, 1, :I64, ""],
-    "nstep" => [missing, 1, :I64, ""],
-    "ndump" => [missing, 1, :I64, ""],
-    "alpha" => [missing, 1, :F64, ""],
-    "ratio" => [missing, 1, :F64, ""],
+    "nfine"   => [missing, 1, :I64   , "Number of points for very fine mesh"],
+    "ngamm"   => [missing, 1, :I64   , "Number of δ functions"],
+    "nalph"   => [missing, 1, :I64   , "Number of α parameters"],
+    "nwarm"   => [missing, 1, :I64   , ""],
+    "nstep"   => [missing, 1, :I64   , ""],
+    "ndump"   => [missing, 1, :I64   , ""],
+    "alpha"   => [missing, 1, :F64   , "Starting value for the α parameter"],
+    "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
 )
 
 """
