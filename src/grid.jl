@@ -209,6 +209,18 @@ function BosonicMatsubaraGrid(nfreq::I64, β::F64)
     return BosonicMatsubaraGrid(nfreq, β, ω)
 end
 
+function Base.length(bg::BosonicMatsubaraGrid)
+    bg.nfreq
+end
+
+function Base.iterate(bg::BosonicMatsubaraGrid)
+    iterate(bg.ω)
+end
+
+function Base.iterate(bg::BosonicMatsubaraGrid, i::I64)
+    iterate(bg.ω, i)
+end
+
 function Base.eachindex(bg::BosonicMatsubaraGrid)
     eachindex(bg.ω)
 end
