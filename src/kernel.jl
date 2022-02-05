@@ -23,9 +23,9 @@ function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
 end
 
 function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
+    blur = get_m("blur")
     nfreq = fg.nfreq
     nmesh = am.nmesh
-    blur = get_m("blur")
 
     _kernel = zeros(C64, nfreq, nmesh)
 
@@ -68,20 +68,15 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     nmesh = am.nmesh
     β = bg.β
 
-    #@show am.mesh
-    #@show bg.τ
-    #error()
     kernel = zeros(F64, ntime, nmesh)
     for i = 1:nmesh
         r = 0.5 / (1. - exp(-β * am[i]))
-        #@show r
         for j = 1:ntime
             kernel[j,i] = r * (exp(-am[i] * bg[j]) + exp(-am[i] * (β - bg[j]))) 
         end
     end
-    #@show kernel[:,1]
     @. kernel[:,1] = 1.0
-    #error()
+
     return kernel
 end
 
