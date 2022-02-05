@@ -47,7 +47,7 @@ G(i\omega_n) = \int^{+\infty}_{-\infty} d\epsilon
 
 ```math
 \begin{equation}
-K(i\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
+K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
 \end{equation}
 ```
 =#
@@ -115,7 +115,7 @@ G(i\omega_n) = \int^{+\infty}_{-\infty} d\epsilon
 
 ```math
 \begin{equation}
-K(i\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
+K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
 \end{equation}
 ```
 =#
