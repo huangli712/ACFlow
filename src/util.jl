@@ -340,23 +340,16 @@ function secant(func, x0, args...; maxiter::I64 = 50, tol::F64 = 1.48e-8)
     end
 end
 
-function newton(fun::Function, guess, kwargs...)
-    max_iter = 20000
-    mixing = 0.5
-    counter = 0
-    result = nothing
-
-    function apply(prop::Vector{T}, f::Vector{T}, J::Matrix{T}) where {T}
+function newton(fun::Function, guess, kwargs...; maxiter::I64 = 20000, mixing::F64 = 0.5)
+    function _apply(prop::Vector{T}, f::Vector{T}, J::Matrix{T}) where {T}
         resid = nothing
         step = 1.0
         limit = 1e-4
-    
         try
             resid = - pinv(J) * f
         catch
             resid = zeros(F64, length(prop))
         end
-    
         if any(x -> x > limit, abs.(prop))
             ratio = abs.(resid ./ prop)
             max_ratio = maximum( ratio[ abs.(prop) .> limit ] )
@@ -364,38 +357,36 @@ function newton(fun::Function, guess, kwargs...)
                 step = 1.0 / max_ratio
             end
         end
-    
-        result = prop + step .* resid
-    
-        return result
+        return prop + step .* resid
     end
 
+    counter = 0
+    result = nothing
     props = []
     reals = []
 
     f, J = fun(guess, kwargs...)
-    init = apply(guess, f, J)
+    init = _apply(guess, f, J)
     push!(props, guess)
     push!(reals, init)
 
     while true
         counter = counter + 1
-
         prop = props[end] + mixing * (reals[end] - props[end])
-        f, J = fun(prop, kwargs...)
-        result = apply(prop, f, J)
 
+        f, J = fun(prop, kwargs...)
+        result = _apply(prop, f, J)
         push!(props, prop)
         push!(reals, result)
         
         any(isnan.(result)) && error("Got NaN!")
 
-        if counter > max_iter || maximum( abs.(result - prop) ) < 1.e-4
+        if counter > maxiter || maximum( abs.(result - prop) ) < 1.e-4
             break
         end
     end
 
-    counter > max_iter && error("The max_iter is too small!")
+    counter > maxiter && error("The maxiter is too small!")
 
     return result, counter
 end
