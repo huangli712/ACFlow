@@ -43,7 +43,7 @@ end
 
 function maxent_init(rd::RawData)
     G = make_data(rd)
-    E = 1.0 ./ G.var
+    E = 1.0 ./ G.covar
     Gdata = G.value
 
     grid = make_grid(rd)
