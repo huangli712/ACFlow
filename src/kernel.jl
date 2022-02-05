@@ -7,33 +7,6 @@
 # Last modified: 2022/02/05
 #
 
-function gauss(blur::F64)
-    @assert blur > 0.0
-    nsize = 201
-    w_int = collect(LinRange(-5.0 * blur, 5.0 * blur, nsize))
-    norm = 1.0 / (blur * sqrt(2.0 * π))
-    gaussian = norm * exp.(-0.5 * (w_int / blur) .^ 2.0)
-    return w_int, gaussian
-end
-
-function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
-    #spl = Spline1D(am.mesh, A) # For Fermionic
-    spl = Spline1D(vcat(-am.mesh[end:-1:2], am.mesh), vcat(A[end:-1:2], A)) # For bosonic
-    w_int, gaussian = gauss(blur)
-
-    nsize = length(w_int)
-    nmesh = am.nmesh
-
-    Mw = reshape(w_int, (1, nsize))
-    Mg = reshape(gaussian, (1, nsize))
-    Mm = reshape(am.mesh, (nmesh, 1))
-    integrand = Mg .* spl.(Mm .+ Mw)
-
-    for i = 1:nmesh
-        A[i] = simpson(w_int, integrand[i,:])
-    end
-end
-
 function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
     ntime = fg.ntime
     nmesh = am.nmesh
@@ -153,6 +126,24 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     return kernel
 end
 
+function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
+    #spl = Spline1D(am.mesh, A) # For Fermionic
+    spl = Spline1D(vcat(-am.mesh[end:-1:2], am.mesh), vcat(A[end:-1:2], A)) # For bosonic
+    w_int, gaussian = gauss(blur)
+
+    nsize = length(w_int)
+    nmesh = am.nmesh
+
+    Mw = reshape(w_int, (1, nsize))
+    Mg = reshape(gaussian, (1, nsize))
+    Mm = reshape(am.mesh, (nmesh, 1))
+    integrand = Mg .* spl.(Mm .+ Mw)
+
+    for i = 1:nmesh
+        A[i] = simpson(w_int, integrand[i,:])
+    end
+end
+
 function make_singular_space(kernel::Matrix{F64})
     U, S, V = svd(kernel)
     n_svd = count(x -> x ≥ 1e-10, S)
@@ -161,4 +152,13 @@ function make_singular_space(kernel::Matrix{F64})
     S_svd = S[1:n_svd]
 
     return U_svd, V_svd, S_svd
+end
+
+function gauss(blur::F64)
+    @assert blur > 0.0
+    nsize = 201
+    w_int = collect(LinRange(-5.0 * blur, 5.0 * blur, nsize))
+    norm = 1.0 / (blur * sqrt(2.0 * π))
+    gaussian = norm * exp.(-0.5 * (w_int / blur) .^ 2.0)
+    return w_int, gaussian
 end
