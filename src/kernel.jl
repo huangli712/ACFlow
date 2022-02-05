@@ -103,6 +103,18 @@ K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}
 =#
 
 function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
+    ntime = bg.ntime
+    nmesh = am.nmesh
+    β = fg.β
+
+    kernel = zeros(F64, ntime, nmesh)
+    for i = 1:nmesh
+        for j = 1:ntime
+            kernel[j,i] = exp(-bg[j] * am[i]) / (1.0 - exp(-β * am[i]))
+        end
+    end
+
+    return kernel
 end
 
 #=
