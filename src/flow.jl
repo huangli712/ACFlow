@@ -21,6 +21,27 @@ mutable struct GreenData <: AbstractData
     covar :: Vector{F64}
 end
 
+function solve(rd::RawData)
+    solver = get_c("solver")
+    
+    @cswitch solver begin
+        @case "MaxEnt"
+            MaxEnt.solve(rd)
+            break
+
+        @case "StochOM"
+            break
+
+        @case "StochAC"
+            StochAC.solve(rd)
+            break
+
+        @default
+            sorry()
+            break
+    end
+end
+
 function read_param()
     cfg = inp_toml(query_args(), true)
     fil_dict(cfg)
@@ -29,10 +50,9 @@ end
 
 function read_data()
     finput = get_c("finput")
-    grid = get_c("grid")
     ngrid = get_c("ngrid")
 
-    @cswitch grid begin
+    @cswitch get_c("grid") begin
         @case "ftime"
             return read_real_data(finput, ngrid)
             break
@@ -47,27 +67,6 @@ function read_data()
 
         @case "bfreq"
             return read_complex_data(finput, ngrid, true)
-            break
-
-        @default
-            sorry()
-            break
-    end
-end
-
-function solve(rd::RawData)
-    solver = get_c("solver")
-    
-    @cswitch solver begin
-        @case "MaxEnt"
-            MaxEnt.solve(rd)
-            break
-
-        @case "StochOM"
-            break
-
-        @case "StochAC"
-            StochAC.solve(rd)
             break
 
         @default
