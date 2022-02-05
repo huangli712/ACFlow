@@ -87,6 +87,20 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     return kernel
 end
 
+#=
+```math
+\begin{equation}
+G(\tau) = \int^{+\infty}_{-\infty} d\omega
+          \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}} A(\omega)
+\end{equation}
+```
+
+```math
+\begin{equation}
+K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}
+\end{equation}
+```
+=#
 
 function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 end
