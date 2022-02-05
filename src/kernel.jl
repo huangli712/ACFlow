@@ -10,7 +10,7 @@
 #=
 ```math
 \begin{equation}
-G(\tau) = \int^{+\infty}_{-\infty} 
+G(\tau) = \int^{+\infty}_{-\infty} d\omega
           \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}} A(\omega)
 \end{equation}
 ```
@@ -36,6 +36,21 @@ function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
 
     return kernel
 end
+
+#=
+```math
+\begin{equation}
+G(i\omega_n) = \int^{+\infty}_{-\infty} d\epsilon
+               \frac{1}{i\omega_n - \epsilon} A(\epsilon)
+\end{equation}
+```
+
+```math
+\begin{equation}
+K(i\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
+\end{equation}
+```
+=#
 
 function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     blur = get_m("blur")
@@ -71,6 +86,7 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
 
     return kernel
 end
+
 
 function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 end
