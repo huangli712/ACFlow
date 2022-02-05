@@ -105,8 +105,32 @@ K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}
 function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 end
 
+#=
+```math
+\begin{equation}
+G(i\omega_n) = \int^{+\infty}_{-\infty} d\epsilon
+               \frac{1}{i\omega_n - \epsilon} A(\epsilon)
+\end{equation}
+```
+
+```math
+\begin{equation}
+K(i\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
+\end{equation}
+```
+=#
+
 function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 end
+
+#=
+```math
+\begin{equation}
+K(\tau,\omega) = \frac{e^{-\tau\omega} + e^{-(\beta - \tau)\omega}}
+                      {2(1 - e^{-\beta\omega})}
+\end{equation}
+```
+=#
 
 function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     ntime = bg.ntime
@@ -124,6 +148,14 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 
     return kernel
 end
+
+#=
+```math
+\begin{equation}
+K(\omega_n, \epsilon) = \frac{\epsilon^2}{\omega_n^2 + \epsilon^2}
+\end{equation}
+```
+=#
 
 function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     blur = get_m("blur")
