@@ -183,16 +183,6 @@ function overview()
     flush(stdout)
 end
 
-
-
-
-
-
-
-@inline function line_to_array(io::IOStream)
-    split(readline(io), " ", keepempty = false)
-end
-
 """
     sorry()
 
@@ -201,6 +191,36 @@ Print an error message to the screen.
 function sorry()
     error("Sorry, this feature has not been implemented")
 end
+
+#=
+### *I/O Operations*
+=#
+
+"""
+    line_to_array(io::IOStream)
+
+Convert a line (reading from an IOStream) to a string array.
+"""
+@inline function line_to_array(io::IOStream)
+    split(readline(io), " ", keepempty = false)
+end
+
+"""
+    line_to_array(str::AbstractString)
+
+Convert a string (AbstractString) to a string array.
+"""
+@inline function line_to_array(str::AbstractString)
+    split(str, " ", keepempty = false)
+end
+
+
+
+
+
+
+
+
 
 #function myfun(a, b)
 #    #return a ^ 2.0 + b * a + 1.0
