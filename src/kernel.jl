@@ -7,6 +7,21 @@
 # Last modified: 2022/02/05
 #
 
+#=
+```math
+\begin{equation}
+G(\tau) = \int^{+\infty}_{-\infty} 
+          \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}} A(\omega)
+\end{equation}
+```
+
+```math
+\begin{equation}
+K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}}
+\end{equation}
+```
+=#
+
 function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
     ntime = fg.ntime
     nmesh = am.nmesh
