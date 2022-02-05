@@ -134,7 +134,7 @@ K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
 
 function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     blur = get_m("blur")
-    nfreq = fg.nfreq
+    nfreq = bg.nfreq
     nmesh = am.nmesh
 
     _kernel = zeros(C64, nfreq, nmesh)
@@ -143,11 +143,14 @@ function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
         bmesh, gaussian = gauss(blur)
         nsize = length(bmesh)
         Mx = reshape(gaussian, (1, 1, nsize))
-        Mg = reshape(fg.ω, (nfreq, 1, 1))
+        Mg = reshape(bg.ω, (nfreq, 1, 1))
         Mm = reshape(am.mesh, (1, nmesh, 1))
         Mb = reshape(bmesh, (1, 1, nsize))
 
         integrand = Mx ./ (im * Mg .- Mm .- Mb)
+        for j = 1:nmesh
+            integrand[1,j,:] .= gaussian
+        end
 
         for i = 1:nmesh
             for j = 1:nfreq
@@ -157,8 +160,12 @@ function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     else
         for i = 1:nmesh
             for j = 1:nfreq
-                _kernel[j,i] = 1.0 / (im * fg[j] - am[i])
+                _kernel[j,i] = 1.0 / (im * bg[j] - am[i])
             end
+        end
+
+        if am[1] == 0.0 && bg[1] == 0.0
+            kernel[1,1] = 1.0
         end
     end
 
