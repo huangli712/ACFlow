@@ -62,12 +62,12 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     if blur > 0.0
         bmesh, gaussian = gauss(blur)
         nsize = length(bmesh)
-        Mg = reshape(gaussian, (1, 1, nsize))
-        MG = reshape(fg.ω, (nfreq, 1, 1))
+        Mx = reshape(gaussian, (1, 1, nsize))
+        Mg = reshape(fg.ω, (nfreq, 1, 1))
         Mm = reshape(am.mesh, (1, nmesh, 1))
-        Mw = reshape(bmesh, (1, 1, nsize))
+        Mb = reshape(bmesh, (1, 1, nsize))
 
-        integrand = Mg ./ (im * MG .- Mm .- Mw)
+        integrand = Mx ./ (im * Mg .- Mm .- Mb)
 
         for i = 1:nmesh
             for j = 1:nfreq
@@ -167,13 +167,13 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     if blur > 0.0
         bmesh, gaussian = gauss(blur)
         nsize = length(bmesh)
-        Mg = reshape(gaussian, (1, 1, nsize))
-        MG = reshape(bg.ω, (nfreq, 1, 1))
+        Mx = reshape(gaussian, (1, 1, nsize))
+        Mg = reshape(bg.ω, (nfreq, 1, 1))
         Mm = reshape(am.mesh, (1, nmesh, 1))
-        Mw = reshape(bmesh, (1, 1, nsize))
+        Mb = reshape(bmesh, (1, 1, nsize))
 
-        integrand_1 = Mg .* ((Mw .+ Mm) .^ 2.0) ./ ((Mw .+ Mm) .^ 2.0 .+ MG .^ 2.0)
-        integrand_2 = Mg .* ((Mw .- Mm) .^ 2.0) ./ ((Mw .- Mm) .^ 2.0 .+ MG .^ 2.0)
+        integrand_1 = Mx .* ((Mb .+ Mm) .^ 2.0) ./ ((Mb .+ Mm) .^ 2.0 .+ Mg .^ 2.0)
+        integrand_2 = Mx .* ((Mb .- Mm) .^ 2.0) ./ ((Mb .- Mm) .^ 2.0 .+ Mg .^ 2.0)
         for j = 1:nmesh
             integrand_1[1,j,:] .= gaussian
             integrand_2[1,j,:] .= gaussian
@@ -206,10 +206,10 @@ function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     nsize = length(bmesh)
     nmesh = am.nmesh
 
-    Mw = reshape(bmesh, (1, nsize))
-    Mg = reshape(gaussian, (1, nsize))
+    Mb = reshape(bmesh, (1, nsize))
+    Mx = reshape(gaussian, (1, nsize))
     Mm = reshape(am.mesh, (nmesh, 1))
-    integrand = Mg .* spl.(Mm .+ Mw)
+    integrand = Mx .* spl.(Mm .+ Mb)
 
     for i = 1:nmesh
         A[i] = simpson(bmesh, integrand[i,:])
