@@ -107,17 +107,39 @@ function require()
     end
 end
 
-@inline function line_to_array(io::IOStream)
-    split(readline(io), " ", keepempty = false)
-end
-
 """
-    sorry()
+    setup_args(x::Vararg{String})
 
-Print an error message to the screen.
+Setup `ARGS` manually. This function is used only in `REPL` environment.
+We can use this function to update `ARGS`, so that the `query_args()`
+and the other related functions can work correctly.
+
+### Examples
+```julia-repl
+julia> setup_args("SrVO3.toml")
+1-element Array{String,1}:
+ "SrVO3.toml"
+```
+
+See also: [`query_args`](@ref).
 """
-function sorry()
-    error("Sorry, this feature has not been implemented")
+function setup_args(x::Vararg{String})
+    # Make sure it is the REPL
+    @assert isinteractive()
+
+    # Clean `ARGS`
+    empty!(ARGS)
+
+    # Convert the arguments to an array of strings
+    X = collect(x)
+
+    # Push them into `ARGS` one by one
+    for i in eachindex(X)
+        push!(ARGS, X[i])
+    end
+
+    # Return `ARGS`, only for debug.
+    ARGS
 end
 
 """
@@ -134,6 +156,19 @@ function query_args()
     else
         ARGS[1]
     end
+end
+
+@inline function line_to_array(io::IOStream)
+    split(readline(io), " ", keepempty = false)
+end
+
+"""
+    sorry()
+
+Print an error message to the screen.
+"""
+function sorry()
+    error("Sorry, this feature has not been implemented")
 end
 
 #function myfun(a, b)
