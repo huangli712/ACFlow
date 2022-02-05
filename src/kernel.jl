@@ -139,7 +139,7 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 
     kernel = zeros(F64, ntime, nmesh)
     for i = 1:nmesh
-        r = 0.5 / (1. - exp(-β * am[i]))
+        r = 0.5 / (1.0 - exp(-β * am[i]))
         for j = 1:ntime
             kernel[j,i] = r * (exp(-am[i] * bg[j]) + exp(-am[i] * (β - bg[j])))
         end
@@ -199,8 +199,17 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 end
 
 function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
-    #spl = Spline1D(am.mesh, A) # For Fermionic
-    spl = Spline1D(vcat(-am.mesh[end:-1:2], am.mesh), vcat(A[end:-1:2], A)) # For bosonic
+    ktype = get_c("ktype")
+
+    spl = nothing
+    if ktype == "fermi" || ktype == "boson"
+        spl = Spline1D(am.mesh, A)
+    else
+        vM = vcat(-am.mesh[end:-1:2], am.mesh)
+        vA = vcat(A[end:-1:2], A)
+        spl = Spline1D(vM, vA)
+    end
+
     bmesh, gaussian = gauss(blur)
 
     nsize = length(bmesh)
