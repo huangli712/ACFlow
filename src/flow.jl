@@ -151,13 +151,24 @@ function make_mesh()
     end
 end
 
-function make_model(m::AbstractMesh)
-    model = get_c("model")
-    if model == "flat"
-        return make_flat_model(m)
-    elseif model == "gauss"
-        return make_gaussian_model(m)
-    elseif model == "file"
-        return make_file_model(m)
+function make_model(am::AbstractMesh)
+    mtype = get_c("mtype")
+
+    @cswitch mtype begin
+        @case "flat"
+            return build_flat_model(am)
+            break
+
+        @case "gauss"
+            return build_gaussian_model(am)
+            break
+
+        @case "func"
+            sorry()
+            break
+
+        @default
+            sorry()
+            break
     end
 end
