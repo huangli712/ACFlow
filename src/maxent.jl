@@ -412,8 +412,6 @@ function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
 
     f = alpha * u + term_1 - mec.Bₘ
     J = alpha * diagm(ones(n_svd)) + term_2
-    #@show J
-    #error()
 
     return f, J
 end
