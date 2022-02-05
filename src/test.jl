@@ -40,5 +40,16 @@ Gmodel2 = build_func_model(f, lm, 3.0, 10.0)
 #@show Gmodel1
 #@show Gmodel2
 
-welcome()
-overview()
+#welcome()
+#overview()
+
+function myfun(x, b, c)
+    return x ^ 2.0 + b * x + c
+end
+
+function myfun2(x, b)
+    return x ^ 3.0 - b
+end
+
+s = secant(myfun2, 1.0, 8.0, maxiter = 40, tol = 1e-8)
+println(s)

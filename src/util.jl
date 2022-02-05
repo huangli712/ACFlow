@@ -288,19 +288,14 @@ Convert a string (AbstractString) to a string array.
     split(str, " ", keepempty = false)
 end
 
-#function myfun(a, b)
-#    #return a ^ 2.0 + b * a + 1.0
-#    return a ^ 3.0 - b
-#end
+#=
+### *Mathematical Functions*
+=#
 
-#s = secant(myfun, 1.0, 8.0)
-#println(s)
-
-function secant(func, x0, args)
+function secant(func, x0, args...; maxiter::I64 = 50, tol::F64 = 1.48e-8)
     eps = 1.0e-4
-    maxiter = 50
-    tol = 1.48e-8
     funcalls = 0
+
     p0 = 1.0 * x0
     p1 = x0 * (1.0 + eps)
     if p1 ≥ 0.0
@@ -309,9 +304,9 @@ function secant(func, x0, args)
         p1 = p1 - eps
     end
 
-    q0 = func(p0, args)
+    q0 = func(p0, args...)
     funcalls = funcalls + 1
-    q1 = func(p1, args)
+    q1 = func(p1, args...)
     funcalls = funcalls + 1
 
     if abs(q1) < abs(q0)
@@ -319,10 +314,10 @@ function secant(func, x0, args)
         q0, q1 = q1, q0
     end
 
-    for itr = 1:maxiter
+    for _ = 1:maxiter
         if q1 == q0
             if p1 != p0
-                error("tolerance is reached!")
+                error("tolerance is reached in secant()!")
             end
             p = (p1 + p0) / 2.0
             return p
@@ -340,7 +335,7 @@ function secant(func, x0, args)
 
         p0, q0 = p1, q1
         p1 = p
-        q1 = func(p1, args)
+        q1 = func(p1, args...)
         funcalls = funcalls + 1
     end
 end
