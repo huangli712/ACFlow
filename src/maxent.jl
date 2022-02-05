@@ -21,7 +21,7 @@ import ..ACFlow: make_grid, make_mesh, make_model, make_kernel, make_data, make_
 import ..ACFlow: make_singular_space
 import ..ACFlow: write_spectrum
 import ..ACFlow: get_c, get_m
-import ..ACFlow: secant, newton, trapz
+import ..ACFlow: secant, newton, trapz, area
 
 mutable struct MaxEntContext
     Gdata :: Vector{F64}
@@ -53,8 +53,6 @@ function maxent_init(rd::RawData)
 
     kernel = make_kernel(mesh, grid)
     U_svd, V_svd, S_svd = make_singular_space(kernel)
-    @show size(E), size(U_svd), size(kernel)
-    error()
 
     W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
 
@@ -272,12 +270,11 @@ function maxent_optimize(mec::MaxEntContext,
     end
     if offdiag
         entr = calc_entropy_offdiag(mec, A_opt, u_opt)
-        #@show entr
     else
         entr = calc_entropy(mec, A_opt, u_opt)
     end
     chisq = calc_chi2(mec, A_opt)
-    norm = trapz(mec.mesh, A_opt)
+    norm = area(mec.mesh, A_opt)
 
     result_dict = Dict{Symbol,Any}()
     result_dict[:u_opt] = u_opt
@@ -410,13 +407,13 @@ end
 
 function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     f = A - mec.model - A .* (mec.V_svd * u)
-    return trapz(mec.mesh, f)
+    return area(mec.mesh, f)
 end
 
 function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     root = sqrt.(A .^ 2.0 + 4.0 .* mec.model .* mec.model)
     f = root - mec.model - mec.model - A .* log.((root + A) ./ (2.0 * mec.model))
-    return trapz(mec.mesh, f)
+    return area(mec.mesh, f)
 end
 
 function calc_chi2(mec::MaxEntContext, A::Vector{F64})
@@ -424,7 +421,7 @@ function calc_chi2(mec::MaxEntContext, A::Vector{F64})
 
     T = zeros(F64, ndim)
     for i = 1:ndim
-        T[i] = mec.Gdata[i] - trapz(mec.mesh, mec.kernel[i,:] .* A)
+        T[i] = mec.Gdata[i] - area(mec.mesh, mec.kernel[i,:] .* A)
     end
     value = sum(mec.E .* T .^ 2.0)
 
