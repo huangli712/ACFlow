@@ -144,7 +144,7 @@ function make_mesh()
     wmax = get_c("wmax")
     wmin = get_c("wmin")
 
-    if mesh == "uniform"
+    if mesh == "linear"
         return LinearMesh(nmesh, wmin, wmax)
     else
         return TangentMesh(nmesh, wmin, wmax)
