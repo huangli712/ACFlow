@@ -408,10 +408,10 @@ function trapz(x::Vector{F64}, y::Vector{T}, linear::Bool = false) where {T}
 end
 
 function simpson(x::Vector{F64}, y::Vector{T}) where {T}
-    h = x[2] - x[1]
+    h = (x[2] - x[1]) / 3.0
+
     even_sum = 0.0
     odd_sum = 0.0
-
     for i = 2:length(x)-1
         if iseven(i)
             even_sum = even_sum + y[i]
@@ -420,9 +420,7 @@ function simpson(x::Vector{F64}, y::Vector{T}) where {T}
         end
     end
 
-    val = h / 3.0 * (y[1] + y[end] + 4.0 * even_sum + 2.0 * odd_sum)
-
-    return val
+    return h * (y[1] + y[end] + 4.0 * even_sum + 2.0 * odd_sum)
 end
 
 #=
