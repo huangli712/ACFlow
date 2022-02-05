@@ -37,6 +37,7 @@ mutable struct MaxEntContext
 end
 
 function solve(rd::RawData)
+    println("[ MaxEnt ]")
     mec = maxent_init(rd)
     maxent_run(mec)
 end
@@ -45,16 +46,25 @@ function maxent_init(rd::RawData)
     G = make_data(rd)
     E = 1.0 ./ G.covar
     Gdata = G.value
+    println("Postprocess input data: ", length(E), " points")
 
     grid = make_grid(rd)
+    println("Build grid for input data: ", length(grid), " points")
+
     mesh = make_mesh()
+    println("Build mesh for spectrum: ", length(mesh), " points")
 
     model = make_model(mesh)
+    println("Build default model: ", get_c("mtype"))
 
     kernel = make_kernel(mesh, grid)
+    println("Build kernel: ", get_c("ktype"))
+
     U_svd, V_svd, S_svd = make_singular_space(kernel)
+    println("Create singular value decomposition space: ", length(U_svd))
 
     W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
+    println("Precompute key coefficients")
 
     return MaxEntContext(Gdata, E, mesh, model, kernel, V_svd, W₂, W₃, Bₘ, d2chi2)
 end
