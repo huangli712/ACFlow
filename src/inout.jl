@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/04
+# Last modified: 2022/02/06
 #
 
 function read_real_data(finput::String, ngrid::I64)
@@ -72,5 +72,5 @@ function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
     end
 end
 
-function write_alldata(am::AbstractMesh)
+function write_chidata(am::AbstractMesh)
 end
