@@ -81,9 +81,9 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 end
 
 function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
+    blur = get_m("blur")
     nfreq = bg.nfreq
     nmesh = am.nmesh
-    blur = get_m("blur")
 
     kernel = zeros(F64, nfreq, nmesh)
 
