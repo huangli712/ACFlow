@@ -379,7 +379,6 @@ function newton(fun::Function, guess, kwargs...; maxiter::I64 = 20000, mixing::F
         push!(backs, back)
         
         any(isnan.(back)) && error("Got NaN!")
-
         if counter > maxiter || maximum( abs.(back - feed) ) < 1.e-4
             break
         end
