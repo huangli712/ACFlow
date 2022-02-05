@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/31
+# Last modified: 2022/02/05
 #
 
 function gauss(blur::F64)
@@ -34,7 +34,7 @@ function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     end
 end
 
-function make_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
+function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
     ntime = fg.ntime
     nmesh = am.nmesh
     β = fg.β
@@ -49,7 +49,7 @@ function make_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
     return kernel
 end
 
-function make_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
+function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     nfreq = fg.nfreq
     nmesh = am.nmesh
     blur = get_m("blur")
@@ -84,7 +84,7 @@ function make_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     return kernel
 end
 
-function make_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
+function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     ntime = bg.ntime
     nmesh = am.nmesh
     β = bg.β
@@ -106,7 +106,7 @@ function make_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     return kernel
 end
 
-function make_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
+function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     nfreq = bg.nfreq
     nmesh = am.nmesh
     blur = get_m("blur")

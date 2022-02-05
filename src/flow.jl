@@ -174,5 +174,13 @@ function make_model(am::AbstractMesh)
 end
 
 function make_kernel(am::AbstractMesh, ag::AbstractGrid)
-    
+    ktype = get_c("ktype")
+    grid = get_c("grid")
+
+    if ktype == "fermi" || ktype == "boson"
+        return build_kernel(am, ag)
+    else
+        @assert grid in ("btime", "bfreq")
+        return build_kernel_symm(am, ag)
+    end
 end

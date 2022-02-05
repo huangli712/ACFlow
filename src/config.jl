@@ -29,7 +29,6 @@ const PCOMM    = Dict{String,ADT}(
     "wmax"    => [missing, 1, :F64   , "Maximum value of mesh"],
     "wmin"    => [missing, 1, :F64   , "Minimum value of mesh"],
     "beta"    => [missing, 1, :F64   , "Inverse temperature"],
-    "fermi"   => [missing, 1, :Bool  , "Statistics of input correlation function"],
     "offdiag" => [missing, 1, :Bool  , "Is it an offdiagonal element in matrix-valued function"],
 )
 
