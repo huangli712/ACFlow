@@ -377,7 +377,7 @@ function newton(fun::Function, guess, kwargs...; maxiter::I64 = 20000, mixing::F
         back = _apply(feed, f, J)
         push!(feeds, feed)
         push!(backs, back)
-        
+
         any(isnan.(back)) && error("Got NaN!")
         if counter > maxiter || maximum( abs.(back - feed) ) < 1.e-4
             break
@@ -400,7 +400,7 @@ function trapz(x::Vector{F64}, y::Vector{T}, linear::Bool = false) where {T}
         for i = 1:len-1
             value = value + (y[i] + y[i+1]) * (x[i+1] - x[i])
         end
-        value = value / 2.0    
+        value = value / 2.0
     end
 
     return value

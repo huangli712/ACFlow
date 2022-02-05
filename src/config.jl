@@ -191,7 +191,7 @@ function chk_dict()
             @assert get_a("nstep") ≥ 1000
             @assert get_a("ndump") ≥ 100
             @assert get_a("alpha") > 0.0
-            @assert get_a("ratio") > 0.0 
+            @assert get_a("ratio") > 0.0
             break
     end
 

@@ -23,7 +23,7 @@ end
 
 function solve(rd::RawData)
     solver = get_c("solver")
-    
+
     @cswitch solver begin
         @case "MaxEnt"
             MaxEnt.solve(rd)

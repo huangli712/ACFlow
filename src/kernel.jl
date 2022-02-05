@@ -38,7 +38,7 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
         Mw = reshape(w_int, (1, 1, nsize))
 
         integrand = Mg ./ (im * MG .- Mm .- Mw)
-    
+
         for i = 1:nmesh
             for j = 1:nfreq
                 _kernel[j,i] = simpson(w_int, integrand[j,i,:])
@@ -72,7 +72,7 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     for i = 1:nmesh
         r = 0.5 / (1. - exp(-β * am[i]))
         for j = 1:ntime
-            kernel[j,i] = r * (exp(-am[i] * bg[j]) + exp(-am[i] * (β - bg[j]))) 
+            kernel[j,i] = r * (exp(-am[i] * bg[j]) + exp(-am[i] * (β - bg[j])))
         end
     end
     @. kernel[:,1] = 1.0

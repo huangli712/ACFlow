@@ -70,11 +70,11 @@ function maxent_run(mec::MaxEntContext)
         @case "classic"
             D, sol = maxent_classic(mec)
             break
-        
+
         @case "bryan"
             D, sol = maxent_bryan(mec)
             break
-        
+
         @case "chi2kink"
             D, sol = maxent_chi2kink(mec)
             break
@@ -151,7 +151,7 @@ function maxent_classic(mec::MaxEntContext)
 
     sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
 
-    return optarr, sol 
+    return optarr, sol
 end
 
 function maxent_bryan(mec::MaxEntContext)
@@ -201,7 +201,7 @@ end
 
 function maxent_chi2kink(mec::MaxEntContext)
     println("Using chi2kink algorithm to solve the maximum entropy problem")
-    
+
     use_bayes = false
     alpha = get_m("alpha")
     n_svd = length(mec.Bₘ)
@@ -309,7 +309,7 @@ function maxent_optimize(mec::MaxEntContext,
     return result_dict
 end
 
-function precompute(Gdata::Vector{F64}, E::Vector{F64}, 
+function precompute(Gdata::Vector{F64}, E::Vector{F64},
                     mesh::AbstractMesh, model::Vector{F64},
                     kernel::Matrix{F64},
                     U::Matrix{F64}, V::Matrix{F64}, S::Vector{F64})
@@ -434,7 +434,7 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, al
 
     T = sqrt.(A ./ mesh.weight)
     Λ = (T * T') .* mec.d2chi2
-    
+
     lam = eigvals(Hermitian(Λ))
     ng = -2.0 * alpha * ent
     tr = sum(lam ./ (alpha .+ lam))
@@ -452,7 +452,7 @@ function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq:
     #T = sqrt.(A ./ mesh.weight)
     T = (( A .^ 2.0 + 4.0 * mec.model .* mec.model ) / (mesh.weight .^ 2.0)) .^ 0.25
     Λ = (T * T') .* mec.d2chi2
-    
+
     lam = eigvals(Hermitian(Λ))
     ng = -2.0 * alpha * ent
     tr = sum(lam ./ (alpha .+ lam))

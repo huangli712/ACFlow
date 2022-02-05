@@ -67,7 +67,7 @@ function stoch_delta(xmesh::Vector{F64}, phi::Vector{F64})
     eta2 = 0.005 ^ 2.0
 
     delta = zeros(F64, nmesh, nfine)
-    
+
     for i = 1:nfine
         s = phi .- xmesh[i]
         delta[:,i] = eta1 ./ (s .* s .+ eta2)
@@ -184,10 +184,10 @@ function stoch_run(MC::StochMC, SE::StochElement, SC::StochContext)
 
     stoch_warmming(MC, SE, SC)
 
-    step = 0.0 
+    step = 0.0
     for iter = 1:nstep
         stoch_sampling(MC, SE, SC)
-            
+
         if iter % 100 == 0
             step = step + 1.0
             stoch_recording(SE, SC)
@@ -341,10 +341,10 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 
     pass = ( exp(da * dh) > rand(MC.rng) )
 
-    if pass        
+    if pass
         SE.a_γ[:,i], SE.a_γ[:,j] = SE.a_γ[:,j], SE.a_γ[:,i]
         SE.r_γ[:,i], SE.r_γ[:,j] = SE.r_γ[:,j], SE.r_γ[:,i]
-        
+
         SC.HC[:,i], SC.HC[:,j] = SC.HC[:,j], SC.HC[:,i]
         SC.hamil[i], SC.hamil[j] = SC.hamil[j], SC.hamil[i]
     end
