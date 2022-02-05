@@ -184,6 +184,19 @@ function overview()
 end
 
 """
+    goodbye()
+
+Print the goodbye messages to the screen.
+"""
+function goodbye()
+    println(  red("╔═╗┌─┐┌┐┌"), magenta("╔═╗┌─┐┬─┐┌─┐"))
+    println(green("╔═╝├┤ │││"), magenta("║  │ │├┬┘├┤ "))
+    println( blue("╚═╝└─┘┘└┘"), magenta("╚═╝└─┘┴└─└─┘"))
+    #
+    flush(stdout)
+end
+
+"""
     sorry()
 
 Print an error message to the screen.
@@ -213,14 +226,6 @@ Convert a string (AbstractString) to a string array.
 @inline function line_to_array(str::AbstractString)
     split(str, " ", keepempty = false)
 end
-
-
-
-
-
-
-
-
 
 #function myfun(a, b)
 #    #return a ^ 2.0 + b * a + 1.0
