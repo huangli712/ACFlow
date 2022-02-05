@@ -109,25 +109,25 @@ function make_grid(rd::RawData)
         @case "ftime"
             β = v[end]
             @assert abs(β - get_c("beta")) ≤ 1e-10
-            _grid = FermionicMatsubaraGrid(ngrid, β, v)
+            _grid = FermionicImaginaryTimeGrid(ngrid, β, v)
             break
 
         @case "btime"
             β = v[end]
             @assert abs(β - get_c("beta")) ≤ 1e-10
-            _grid = BosonicMatsubaraGrid(ngrid, β, v)
+            _grid = BosonicImaginaryTimeGrid(ngrid, β, v)
             break
 
         @case "ffreq"
             β = 2.0 * π / (v[2] - v[1])
             @assert abs(β - get_c("beta")) ≤ 1e-10
-            _grid = FermionicImaginaryTimeGrid(ngrid, β, v)
+            _grid = FermionicMatsubaraGrid(ngrid, β, v)
             break
 
         @case "bfreq"
             β = 2.0 * π / (v[2] - v[1])
             @assert abs(β - get_c("beta")) ≤ 1e-10
-            _grid = BosonicImaginaryTimeGrid(ngrid, β, v)
+            _grid = BosonicMatsubaraGrid(ngrid, β, v)
             break
 
         @default
