@@ -74,19 +74,19 @@ function maxent_run(mec::MaxEntContext)
 
     @cswitch method begin
         @case "historic"
-            D, sol = maxent_historic(mec)
+            dict, sol = maxent_historic(mec)
             break
 
         @case "classic"
-            D, sol = maxent_classic(mec)
+            dict, sol = maxent_classic(mec)
             break
 
         @case "bryan"
-            D, sol = maxent_bryan(mec)
+            dict, sol = maxent_bryan(mec)
             break
 
         @case "chi2kink"
-            D, sol = maxent_chi2kink(mec)
+            dict, sol = maxent_chi2kink(mec)
             break
     end
 
@@ -213,7 +213,7 @@ function maxent_bryan(mec::MaxEntContext)
 end
 
 function maxent_chi2kink(mec::MaxEntContext)
-    println("Using chi2kink algorithm to solve the maximum entropy problem")
+    println("Apply chi2kink algorithm to determine optimized α")
 
     use_bayes = false
     alpha = get_m("alpha")
@@ -245,7 +245,6 @@ function maxent_chi2kink(mec::MaxEntContext)
     good_data = isfinite.(chi_arr)
     fit = curve_fit(fitfun, log10.(alpharr[good_data]), log10.(chi_arr[good_data]), [0.0, 5.0, 2.0, 0.0])
     a, b, c, d = fit.param
-    println("Fit parameters: $a, $b, $c, $d")
 
     fit_position = 2.5
     a_opt = c - fit_position / d
