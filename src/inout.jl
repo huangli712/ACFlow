@@ -41,7 +41,7 @@ function read_complex_data(finput::String, ngrid::I64)
     return RawData(_grid, value, error)
 end
 
-function read_complex_data(finput::String, ngrid::I64, only_real_part::Bool = true)
+function read_complex_data(finput::String, ngrid::I64, only_real_part::Bool)
     _grid = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)

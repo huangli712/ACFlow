@@ -1,10 +1,19 @@
+#
+# Project : Gardenia
+# Source  : sac.jl
+# Author  : Li Huang (huangli@caep.cn)
+# Status  : Unstable
+#
+# Last modified: 2022/02/05
+#
+
 module StochAC
 
 using Random
 using LinearAlgebra
 
 import ..ACFlow: I64, F64, C64
-import ..ACFlow: AbstractMesh, UniformMesh, AbstractGrid
+import ..ACFlow: AbstractMesh, LinearMesh, AbstractGrid
 import ..ACFlow: RawData
 import ..ACFlow: make_data, make_grid, make_mesh, make_model, make_kernel
 import ..ACFlow: get_c, get_a
@@ -52,7 +61,7 @@ function stoch_grid()
     wmin = get_c("wmin")
     wmax = get_c("wmax")
 
-    fmesh = UniformMesh(nfine, wmin, wmax)
+    fmesh = LinearMesh(nfine, wmin, wmax)
 
     model = fill(1.0/nfine, nfine)
     xmesh = cumsum(model)
