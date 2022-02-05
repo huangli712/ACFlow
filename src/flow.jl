@@ -29,16 +29,24 @@ end
 
 function read_data()
     finput = get_c("finput")
-    ngrid = get_c("ngrid")
     grid = get_c("grid")
+    ngrid = get_c("ngrid")
 
     @cswitch grid begin
-        @case "matsubara"
-            return read_freq_data(finput, ngrid)
+        @case "ftime"
+            return read_real_data(finput, ngrid)
             break
 
-        @case "time"
-            return read_time_data(finput, ngrid)
+        @case "btime"
+            return read_real_data(finput, ngrid)
+            break
+
+        @case "ffreq"
+            return read_complex_data(finput, ngrid)
+            break
+
+        @case "bfreq"
+            return read_complex_data(finput, ngrid, true)
             break
 
         @default
