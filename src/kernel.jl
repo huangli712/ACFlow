@@ -85,6 +85,12 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
 end
 
 function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
+end
+
+function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
+end
+
+function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     ntime = bg.ntime
     nmesh = am.nmesh
     β = bg.β
@@ -106,7 +112,7 @@ function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     return kernel
 end
 
-function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
+function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     nfreq = bg.nfreq
     nmesh = am.nmesh
     blur = get_m("blur")
