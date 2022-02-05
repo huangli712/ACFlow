@@ -252,9 +252,7 @@ end
 Print the goodbye messages to the screen.
 """
 function goodbye()
-    println(  red("╔═╗┌─┐┌┐┌"), magenta("╔═╗┌─┐┬─┐┌─┐"))
-    println(green("╔═╝├┤ │││"), magenta("║  │ │├┬┘├┤ "))
-    println( blue("╚═╝└─┘┘└┘"), magenta("╚═╝└─┘┴└─└─┘"))
+    println("This analytical continuation problem is solved successfully.")
     #
     flush(stdout)
 end
