@@ -165,7 +165,7 @@ function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
         end
 
         if am[1] == 0.0 && bg[1] == 0.0
-            kernel[1,1] = 1.0
+            _kernel[1,1] = 1.0
         end
     end
 
