@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/04
+# Last modified: 2022/02/05
 #
 
 abstract type AbstractData end
@@ -19,6 +19,32 @@ mutable struct GreenData <: AbstractData
     value :: Vector{F64}
     error :: Vector{F64}
     covar :: Vector{F64}
+end
+
+function read_param()
+    cfg = inp_toml(query_args(), true)
+    fil_dict(cfg)
+    chk_dict()
+end
+
+function read_data()
+    finput = get_c("finput")
+    ngrid = get_c("ngrid")
+    grid = get_c("grid")
+
+    @cswitch grid begin
+        @case "matsubara"
+            return read_freq_data(finput, ngrid)
+            break
+
+        @case "time"
+            return read_time_data(finput, ngrid)
+            break
+
+        @default
+            sorry()
+            break
+    end
 end
 
 function solve(rd::RawData)
@@ -39,6 +65,47 @@ function solve(rd::RawData)
         @default
             sorry()
             break
+    end
+end
+
+function make_data(rd::RawData)
+    return make_data(rd.value, rd.error)
+end
+
+function make_data(val::Vector{T}, err::Vector{T}) where {T}
+    grid = get_c("grid")
+    kernel = get_c("kernel")
+
+    if grid == "matsubara" && kernel == "fermionic"
+        value = vcat(real(val), imag(val))
+        error = vcat(real(err), imag(err))
+        covar = error .^ 2.0
+        _data = GreenData(value, error, covar)
+        return _data
+    end
+
+    if grid == "matsubara" && kernel == "bosonic"
+        value = real(val)
+        error = real(err)
+        covar = error .^ 2.0
+        _data = GreenData(value, error, covar)
+        return _data
+    end
+
+    if grid == "time" && kernel == "fermionic"
+        value = real(val)
+        error = real(err)
+        covar = error .^ 2.0
+        _data = GreenData(value, error, covar)
+        return _data
+    end
+
+    if grid == "time" && kernel == "bosonic"
+        value = real(val)
+        error = real(err)
+        covar = error .^ 2.0
+        _data = GreenData(value, error, covar)
+        return _data
     end
 end
 
@@ -95,70 +162,4 @@ function make_model(m::AbstractMesh)
     elseif model == "file"
         return make_file_model(m)
     end
-end
-
-function make_data(rd::RawData)
-    return make_data(rd.value, rd.error)
-end
-
-function make_data(val::Vector{T}, err::Vector{T}) where {T}
-    grid = get_c("grid")
-    kernel = get_c("kernel")
-
-    if grid == "matsubara" && kernel == "fermionic"
-        value = vcat(real(val), imag(val))
-        error = vcat(real(err), imag(err))
-        covar = error .^ 2.0
-        _data = GreenData(value, error, covar)
-        return _data
-    end
-
-    if grid == "matsubara" && kernel == "bosonic"
-        value = real(val)
-        error = real(err)
-        covar = error .^ 2.0
-        _data = GreenData(value, error, covar)
-        return _data
-    end
-
-    if grid == "time" && kernel == "fermionic"
-        value = real(val)
-        error = real(err)
-        covar = error .^ 2.0
-        _data = GreenData(value, error, covar)
-        return _data
-    end
-
-    if grid == "time" && kernel == "bosonic"
-        value = real(val)
-        error = real(err)
-        covar = error .^ 2.0
-        _data = GreenData(value, error, covar)
-        return _data
-    end
-end
-
-function read_data()
-    finput = get_c("finput")
-    ngrid = get_c("ngrid")
-    grid = get_c("grid")
-
-    @cswitch grid begin
-        @case "matsubara"
-            return read_freq_data(finput, ngrid)
-            break
-
-        @case "time"
-            return read_time_data(finput, ngrid)
-            break
-
-        @default
-            sorry()
-            break
-    end
-end
-
-function read_param()
-    cfg = inp_toml(query_args(), true)
-    fil_dict(cfg)
 end
