@@ -87,6 +87,49 @@ macro time_call(ex)
     end
 end
 
+"""
+    @pcs(x...)
+
+Try to print colorful strings. Here `x` is a combination of strings and
+colors. Its format likes `string1 color1 string2 color2 (repeat)`. For
+the supported colors, please check the global dict `COLORS`.
+
+### Examples
+```julia-repl
+julia> @pcs "Hello world!" blue
+julia> @pcs "Hello " red "world!" green
+```
+
+See also: [`COLORS`](@ref), [`welcome`](@ref).
+"""
+macro pcs(x...)
+    ex = quote
+        # The `args` is actually a Tuple
+        args = $x
+
+        # We have to make sure the strings and colors are paired.
+        @assert iseven(length(args))
+
+        for i = 1:2:length(args)
+            # Construct and check string
+            # Sometimes args[i] contains interpolated variables, its
+            # type is `Expr`. At this time, we have to evaluate this
+            # `Expr` at first to convert it to a format `String`.
+            str   = eval(args[i])
+            @assert str isa AbstractString
+            #
+            # Construct and check color
+            color = args[i+1]
+            @assert color isa Symbol
+
+            # Generate expression
+            print(eval(color)(str))
+        end
+    end
+
+    return :( $(esc(ex)) )
+end
+
 #=
 ### *Query Runtime Environment*
 =#
@@ -168,15 +211,15 @@ end
 Print out the welcome messages to the screen.
 """
 function welcome()
-    @pcs "                                       |\n" green
-    @pcs "ZZZZZZZZZZZZ EEEEEEEEEEEE NNNNNNNNNNNN | "  green "A Modern DFT + DMFT Computation Framework\n" magenta
-    @pcs "          Z               N          N |\n" green
-    @pcs "         Z                N          N |\n" green
-    @pcs "   ZZZZZZ    EEEEEEEEEEEE N          N | "  green "Package: $__LIBNAME__\n" magenta
-    @pcs "  Z                       N          N | "  green "Version: $__VERSION__\n" magenta
-    @pcs " Z                        N          N | "  green "Release: $__RELEASE__\n" magenta
-    @pcs "ZZZZZZZZZZZZ EEEEEEEEEEEE N          N | "  green "Powered by the julia programming language\n" magenta
-    @pcs "                                       |\n" green
+    println(  red("╔═╗╔═╗╔═╗"), magenta("┬  ┌─┐┬ ┬"))
+    println(green("╠═╣║  ╠╣ "), magenta("│  │ ││││"))
+    println( blue("╩ ╩╚═╝╚  "), magenta("┴─┘└─┘└┴┘"))
+    #
+    @pcs "A Modern DFT + DMFT Computation Framework\n" black
+    @pcs "Package: " black "$__LIBNAME__\n" magenta
+    @pcs "Version: " black "$__VERSION__\n" magenta
+    @pcs "Release: " black "$__RELEASE__\n" magenta
+    #
     println()
     #
     flush(stdout)
@@ -193,7 +236,7 @@ function overview()
     str2 = "(myid = $(myid()))"
 
     # Write the information
-    prompt("Overview")
+    println("[ Overview ]")
     println("Time : ", Dates.format(now(), "yyyy-mm-dd / HH:MM:SS"))
     println("Para : Using ", nprocs(), str1, str2)
     println("Dirs : ", pwd())
