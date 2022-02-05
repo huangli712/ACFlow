@@ -4,8 +4,12 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/29
+# Last modified: 2022/02/05
 #
+
+#=
+### *Basic Macros*
+=#
 
 """
     @cswitch(constexpr, body)
@@ -62,6 +66,45 @@ macro cswitch(constexpr, body)
     push!(jumptable.args[end].args, Expr(:symbolicgoto, default_label))
 
     return esc(Expr(:block, jumptable, flow))
+end
+
+"""
+    @time_call(ex)
+
+Evaluate a function call (`ex`), and then print the elapsed time (number
+of seconds) it took to execute.
+
+This macro is a variation of the standard `@elapsed` macro.
+"""
+macro time_call(ex)
+    quote
+        while false; end
+        local t₀ = time_ns()
+        $(esc(ex))
+        δt = (time_ns() - t₀) / 1e9
+        println("Report: Total elapsed time $(δt) s\n")
+        flush(stdout)
+    end
+end
+
+#=
+### *Query Runtime Environment*
+=#
+
+"""
+    require()
+
+Check the version of julia runtime environment. It should be higher
+than v1.6.x. One of the most important philosophies of the `ACFlow`
+package is minimizing the dependence on the third-party libraries as
+far as possible. Note that the `ACFlow` package relys on the `TOML`
+package to parse the *.toml file. Only in v1.6.0 and higher versions,
+julia includes the `TOML` package in its standard library.
+"""
+function require()
+    if VERSION < v"1.6-"
+        error("Please upgrade your julia to v1.6.0 or higher")
+    end
 end
 
 @inline function line_to_array(io::IOStream)
