@@ -58,10 +58,10 @@ function maxent_init(rd::RawData)
     println("Build default model: ", get_c("mtype"))
 
     kernel = make_kernel(mesh, grid)
-    println("Build kernel: ", get_c("ktype"))
+    println("Build default kernel: ", get_c("ktype"))
 
     U_svd, V_svd, S_svd = make_singular_space(kernel)
-    println("Create singular value decomposition space: ", length(U_svd))
+    println("Create singular value decomposition space: ", size(V_svd))
 
     W₂, W₃, Bₘ, d2chi2 = precompute(Gdata, E, mesh, model, kernel, U_svd, V_svd, S_svd)
     println("Precompute key coefficients")
