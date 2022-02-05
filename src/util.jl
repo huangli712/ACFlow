@@ -341,54 +341,53 @@ function secant(func, x0, args...; maxiter::I64 = 50, tol::F64 = 1.48e-8)
 end
 
 function newton(fun::Function, guess, kwargs...; maxiter::I64 = 20000, mixing::F64 = 0.5)
-    function _apply(prop::Vector{T}, f::Vector{T}, J::Matrix{T}) where {T}
+    function _apply(feed::Vector{T}, f::Vector{T}, J::Matrix{T}) where {T}
         resid = nothing
         step = 1.0
         limit = 1e-4
         try
             resid = - pinv(J) * f
         catch
-            resid = zeros(F64, length(prop))
+            resid = zeros(F64, length(feed))
         end
-        if any(x -> x > limit, abs.(prop))
-            ratio = abs.(resid ./ prop)
-            max_ratio = maximum( ratio[ abs.(prop) .> limit ] )
+        if any(x -> x > limit, abs.(feed))
+            ratio = abs.(resid ./ feed)
+            max_ratio = maximum( ratio[ abs.(feed) .> limit ] )
             if max_ratio > 1.0
                 step = 1.0 / max_ratio
             end
         end
-        return prop + step .* resid
+        return feed + step .* resid
     end
 
     counter = 0
-    result = nothing
-    props = []
-    reals = []
+    feeds = []
+    backs = []
 
     f, J = fun(guess, kwargs...)
-    init = _apply(guess, f, J)
-    push!(props, guess)
-    push!(reals, init)
+    back = _apply(guess, f, J)
+    push!(feeds, guess)
+    push!(backs, back)
 
     while true
         counter = counter + 1
-        prop = props[end] + mixing * (reals[end] - props[end])
+        feed = feeds[end] + mixing * (backs[end] - feeds[end])
 
-        f, J = fun(prop, kwargs...)
-        result = _apply(prop, f, J)
-        push!(props, prop)
-        push!(reals, result)
+        f, J = fun(feed, kwargs...)
+        back = _apply(feed, f, J)
+        push!(feeds, feed)
+        push!(backs, back)
         
-        any(isnan.(result)) && error("Got NaN!")
+        any(isnan.(back)) && error("Got NaN!")
 
-        if counter > maxiter || maximum( abs.(result - prop) ) < 1.e-4
+        if counter > maxiter || maximum( abs.(back - feed) ) < 1.e-4
             break
         end
     end
 
-    counter > maxiter && error("The maxiter is too small!")
+    counter > maxiter && error("maxiter is reached in newton()!")
 
-    return result, counter
+    return back, counter
 end
 
 function trapz(x::Vector{F64}, y::Vector{T}, linear::Bool = false) where {T}
