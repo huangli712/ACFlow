@@ -104,6 +104,7 @@ function make_grid(rd::RawData)
     v = rd._grid
     @assert ngrid == length(v)
 
+    _grid = nothing
     @cswitch grid begin
         @case "ftime"
             β = 2.0 * π / (v[2] - v[1])
