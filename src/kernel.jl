@@ -60,18 +60,18 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     _kernel = zeros(C64, nfreq, nmesh)
 
     if blur > 0.0
-        w_int, gaussian = gauss(blur)
-        nsize = length(w_int)
+        bmesh, gaussian = gauss(blur)
+        nsize = length(bmesh)
         Mg = reshape(gaussian, (1, 1, nsize))
         MG = reshape(fg.ω, (nfreq, 1, 1))
         Mm = reshape(am.mesh, (1, nmesh, 1))
-        Mw = reshape(w_int, (1, 1, nsize))
+        Mw = reshape(bmesh, (1, 1, nsize))
 
         integrand = Mg ./ (im * MG .- Mm .- Mw)
 
         for i = 1:nmesh
             for j = 1:nfreq
-                _kernel[j,i] = simpson(w_int, integrand[j,i,:])
+                _kernel[j,i] = simpson(bmesh, integrand[j,i,:])
             end
         end
     else
@@ -165,12 +165,12 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     kernel = zeros(F64, nfreq, nmesh)
 
     if blur > 0.0
-        w_int, gaussian = gauss(blur)
-        nsize = length(w_int)
+        bmesh, gaussian = gauss(blur)
+        nsize = length(bmesh)
         Mg = reshape(gaussian, (1, 1, nsize))
         MG = reshape(bg.ω, (nfreq, 1, 1))
         Mm = reshape(am.mesh, (1, nmesh, 1))
-        Mw = reshape(w_int, (1, 1, nsize))
+        Mw = reshape(bmesh, (1, 1, nsize))
 
         integrand_1 = Mg .* ((Mw .+ Mm) .^ 2.0) ./ ((Mw .+ Mm) .^ 2.0 .+ MG .^ 2.0)
         integrand_2 = Mg .* ((Mw .- Mm) .^ 2.0) ./ ((Mw .- Mm) .^ 2.0 .+ MG .^ 2.0)
@@ -181,7 +181,7 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
         integrand = (integrand_1 + integrand_2) / 2.0
         for i = 1:nmesh
             for j = 1:nfreq
-                kernel[j,i] = simpson(w_int, integrand[j,i,:])
+                kernel[j,i] = simpson(bmesh, integrand[j,i,:])
             end
         end
     else
@@ -201,18 +201,18 @@ end
 function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     #spl = Spline1D(am.mesh, A) # For Fermionic
     spl = Spline1D(vcat(-am.mesh[end:-1:2], am.mesh), vcat(A[end:-1:2], A)) # For bosonic
-    w_int, gaussian = gauss(blur)
+    bmesh, gaussian = gauss(blur)
 
-    nsize = length(w_int)
+    nsize = length(bmesh)
     nmesh = am.nmesh
 
-    Mw = reshape(w_int, (1, nsize))
+    Mw = reshape(bmesh, (1, nsize))
     Mg = reshape(gaussian, (1, nsize))
     Mm = reshape(am.mesh, (nmesh, 1))
     integrand = Mg .* spl.(Mm .+ Mw)
 
     for i = 1:nmesh
-        A[i] = simpson(w_int, integrand[i,:])
+        A[i] = simpson(bmesh, integrand[i,:])
     end
 end
 
@@ -229,8 +229,8 @@ end
 function gauss(blur::F64)
     @assert blur > 0.0
     nsize = 201
-    w_int = collect(LinRange(-5.0 * blur, 5.0 * blur, nsize))
+    bmesh = collect(LinRange(-5.0 * blur, 5.0 * blur, nsize))
     norm = 1.0 / (blur * sqrt(2.0 * π))
-    gaussian = norm * exp.(-0.5 * (w_int / blur) .^ 2.0)
-    return w_int, gaussian
+    gaussian = norm * exp.(-0.5 * (bmesh / blur) .^ 2.0)
+    return bmesh, gaussian
 end
