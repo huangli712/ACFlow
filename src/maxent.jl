@@ -161,6 +161,7 @@ function maxent_bryan(mec::MaxEntContext)
 
     use_bayes = true
     alpha = get_m("alpha")
+    ratio = get_m("ratio")
     n_svd = length(mec.Bₘ)
     ustart = zeros(F64, n_svd)
     optarr = []
@@ -169,7 +170,7 @@ function maxent_bryan(mec::MaxEntContext)
     while true
         sol = maxent_optimize(mec, alpha, ustart, use_bayes)
         push!(optarr, sol)
-        alpha = alpha / 1.1
+        alpha = alpha / ratio
         @. ustart = sol[:u_opt]
         prob = sol[:prob]
         if prob > maxprob
