@@ -9,6 +9,7 @@
 
 module MaxEnt
 
+using Printf
 using LsqFit
 using Einsum
 using LinearAlgebra
@@ -74,23 +75,23 @@ function maxent_run(mec::MaxEntContext)
 
     @cswitch method begin
         @case "historic"
-            dict, sol = maxent_historic(mec)
+            darr, sol = maxent_historic(mec)
             break
 
         @case "classic"
-            dict, sol = maxent_classic(mec)
+            darr, sol = maxent_classic(mec)
             break
 
         @case "bryan"
-            dict, sol = maxent_bryan(mec)
+            darr, sol = maxent_bryan(mec)
             break
 
         @case "chi2kink"
-            dict, sol = maxent_chi2kink(mec)
+            darr, sol = maxent_chi2kink(mec)
             break
     end
 
-    write_spectrum(mec.mesh, sol[:A_opt])
+    postprocess(mec.mesh, darr, sol)
 end
 
 function maxent_historic(mec::MaxEntContext)
@@ -318,9 +319,17 @@ function maxent_optimize(mec::MaxEntContext,
         result_dict[:prob] = prob
     end
 
-    println("log10(alpha) = $(log10(alpha)) chi2 = $chisq S = $entr nfev = $nfev norm = $norm")
+    @printf("log10(α) = %8.4f ", log10(alpha))
+    @printf("χ² = %8.4e ", chisq)
+    @printf("S = %8.4e ", entr)
+    @printf("nfev = %4i ", nfev)
+    @printf("norm = %8.4f\n", norm)
 
     return result_dict
+end
+
+function postprocess(am::AbstractMesh, darr, sol)
+    write_spectrum(am, sol[:A_opt])
 end
 
 function precompute(Gdata::Vector{F64}, E::Vector{F64},
@@ -429,18 +438,6 @@ function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64}
     return area(mec.mesh, f)
 end
 
-function calc_chi2(mec::MaxEntContext, A::Vector{F64})
-    ndim, _ = size(mec.kernel)
-
-    T = zeros(F64, ndim)
-    for i = 1:ndim
-        T[i] = mec.Gdata[i] - area(mec.mesh, mec.kernel[i,:] .* A)
-    end
-    value = sum(mec.E .* T .^ 2.0)
-
-    return value
-end
-
 function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, alpha::F64)
     mesh = mec.mesh
 
@@ -474,6 +471,18 @@ function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq:
     log_prob = alpha * ent - 0.5 * chisq + log(alpha) + 0.5 * eig_sum
 
     return ng, tr, conv, exp(log_prob)
+end
+
+function calc_chi2(mec::MaxEntContext, A::Vector{F64})
+    ndim, _ = size(mec.kernel)
+
+    T = zeros(F64, ndim)
+    for i = 1:ndim
+        T[i] = mec.Gdata[i] - area(mec.mesh, mec.kernel[i,:] .* A)
+    end
+    value = sum(mec.E .* T .^ 2.0)
+
+    return value
 end
 
 end
