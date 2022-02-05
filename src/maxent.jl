@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/02/01
+# Last modified: 2022/02/05
 #
 
 module MaxEnt
@@ -88,6 +88,7 @@ function maxent_historic(mec::MaxEntContext)
 
     use_bayes = false
     alpha = get_m("alpha")
+    ratio = get_m("ratio")
     n_svd = length(mec.Bₘ)
     ustart = zeros(F64, n_svd)
     optarr = []
@@ -96,7 +97,7 @@ function maxent_historic(mec::MaxEntContext)
     while conv < 1.0
         sol = maxent_optimize(mec, alpha, ustart, use_bayes)
         push!(optarr, sol)
-        alpha = alpha / 10.0
+        alpha = alpha / ratio
         conv = length(mec.E) / sol[:chi2]
     end
 
@@ -121,6 +122,7 @@ function maxent_classic(mec::MaxEntContext)
 
     use_bayes = true
     alpha = get_m("alpha")
+    ratio = get_m("ratio")
     n_svd = length(mec.Bₘ)
     ustart = zeros(F64, n_svd)
     optarr = []
@@ -129,7 +131,7 @@ function maxent_classic(mec::MaxEntContext)
     while conv < 1.0
         sol = maxent_optimize(mec, alpha, ustart, use_bayes)
         push!(optarr, sol)
-        alpha = alpha / 10.0
+        alpha = alpha / ratio
         @. ustart = sol[:u_opt]
         conv = sol[:conv]
     end
@@ -331,8 +333,6 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
     for i = 1:nmesh
         W₃[:,:,i] = W₂[:,i] * (V[i,:])'
     end
-    #@show n_svd, size(W₂), size(W₃)
-    #@show W₂[:,21]
 
     @einsum Bₘ[m] = S[m] * U[k,m] * E[k] * Gdata[k]
 
