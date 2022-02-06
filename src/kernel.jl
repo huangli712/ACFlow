@@ -8,6 +8,8 @@
 #
 
 #=
+*Remarks* :
+
 ```math
 \begin{equation}
 G(\tau) = \int^{+\infty}_{-\infty} d\omega
@@ -38,6 +40,8 @@ function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
 end
 
 #=
+*Remarks* :
+
 ```math
 \begin{equation}
 G(i\omega_n) = \int^{+\infty}_{-\infty} d\epsilon
@@ -88,6 +92,8 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
 end
 
 #=
+*Remarks* :
+
 ```math
 \begin{equation}
 G(\tau) = \int^{+\infty}_{-\infty} d\omega
@@ -118,6 +124,8 @@ function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 end
 
 #=
+*Remarks* :
+
 ```math
 \begin{equation}
 G(i\omega_n) = \int^{+\infty}_{-\infty} d\epsilon
@@ -139,34 +147,14 @@ function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 
     _kernel = zeros(C64, nfreq, nmesh)
 
-    if blur > 0.0
-        bmesh, gaussian = gauss(blur)
-        nsize = length(bmesh)
-        Mx = reshape(gaussian, (1, 1, nsize))
-        Mg = reshape(bg.ω, (nfreq, 1, 1))
-        Mm = reshape(am.mesh, (1, nmesh, 1))
-        Mb = reshape(bmesh, (1, 1, nsize))
+    for i = 1:nmesh
+        for j = 1:nfreq
+            _kernel[j,i] = 1.0 / (im * bg[j] - am[i])
+        end
+    end
 
-        integrand = Mx ./ (im * Mg .- Mm .- Mb)
-        for j = 1:nmesh
-            integrand[1,j,:] .= gaussian
-        end
-
-        for i = 1:nmesh
-            for j = 1:nfreq
-                _kernel[j,i] = simpson(bmesh, integrand[j,i,:])
-            end
-        end
-    else
-        for i = 1:nmesh
-            for j = 1:nfreq
-                _kernel[j,i] = 1.0 / (im * bg[j] - am[i])
-            end
-        end
-
-        if am[1] == 0.0 && bg[1] == 0.0
-            _kernel[1,1] = 1.0
-        end
+    if am[1] == 0.0 && bg[1] == 0.0
+        _kernel[1,1] = 1.0
     end
 
     kernel = vcat(real(_kernel), imag(_kernel))
