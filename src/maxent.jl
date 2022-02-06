@@ -16,7 +16,7 @@ mutable struct MaxEntContext
     mesh :: AbstractMesh
     model :: Vector{F64}
     kernel :: Array{F64,2}
-    V_svd :: Array{F64,2}
+    Vₛ :: Array{F64,2}
     W₂ :: Array{F64,2}
     W₃ :: Array{F64,3}
     Bₘ :: Vector{F64}
@@ -47,13 +47,13 @@ function maxent_init(rd::RawData)
     kernel = make_kernel(mesh, grid)
     println("Build default kernel: ", get_c("ktype"))
 
-    U_svd, V_svd, S_svd = make_singular_space(kernel)
-    println("Create singular value decomposition space: ", size(V_svd))
+    Uₛ, Vₛ, Sₛ = make_singular_space(kernel)
+    println("Create singular value decomposition space: ", size(Vₛ))
 
-    W₂, W₃, Bₘ, hess = precompute(Gdata, σ², mesh, model, kernel, U_svd, V_svd, S_svd)
+    W₂, W₃, Bₘ, hess = precompute(Gdata, σ², mesh, model, kernel, Uₛ, Vₛ, Sₛ)
     println("Precompute key coefficients")
 
-    return MaxEntContext(Gdata, σ², mesh, model, kernel, V_svd, W₂, W₃, Bₘ, hess)
+    return MaxEntContext(Gdata, σ², mesh, model, kernel, Vₛ, W₂, W₃, Bₘ, hess)
 end
 
 function maxent_run(mec::MaxEntContext)
@@ -350,7 +350,7 @@ function precompute(Gdata::Vector{F64}, σ²::Vector{F64},
 end
 
 function f_and_J(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
-    v = mec.V_svd * u
+    v = mec.Vₛ * u
     w = exp.(v)
 
     n_svd = length(mec.Bₘ)
@@ -374,7 +374,7 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
 end
 
 function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
-    v = mec.V_svd * u
+    v = mec.Vₛ * u
     w = exp.(v)
 
     a_plus = mec.model .* w
@@ -403,16 +403,16 @@ function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
 end
 
 function svd_to_real(mec::MaxEntContext, u::Vector{F64})
-    return mec.model .* exp.(mec.V_svd * u)
+    return mec.model .* exp.(mec.Vₛ * u)
 end
 
 function svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
-    w = exp.(mec.V_svd * u)
+    w = exp.(mec.Vₛ * u)
     return (mec.model .* w) - (mec.model ./ w)
 end
 
 function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
-    f = A - mec.model - A .* (mec.V_svd * u)
+    f = A - mec.model - A .* (mec.Vₛ * u)
     return trapz(mec.mesh, f)
 end
 
