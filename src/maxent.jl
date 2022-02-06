@@ -62,31 +62,34 @@ function maxent_init(rd::RawData)
     return MaxEntContext(Gᵥ, σ², mesh, model, kernel, hess, Vₛ, W₂, W₃, Bₘ)
 end
 
+"""
+    maxent_run
+"""
 function maxent_run(mec::MaxEntContext)
     method = get_m("method")
 
     @cswitch method begin
         @case "historic"
-            darr, sol = maxent_historic(mec)
+            darr, sol = historic(mec)
             break
 
         @case "classic"
-            darr, sol = maxent_classic(mec)
+            darr, sol = classic(mec)
             break
 
         @case "bryan"
-            darr, sol = maxent_bryan(mec)
+            darr, sol = bryan(mec)
             break
 
         @case "chi2kink"
-            darr, sol = maxent_chi2kink(mec)
+            darr, sol = chi2kink(mec)
             break
     end
 
     postprocess(mec.mesh, darr, sol)
 end
 
-function maxent_historic(mec::MaxEntContext)
+function historic(mec::MaxEntContext)
     println("Using historic algorithm to solve the maximum entropy problem")
 
     use_bayes = false
@@ -98,7 +101,7 @@ function maxent_historic(mec::MaxEntContext)
 
     conv = 0.0
     while conv < 1.0
-        sol = maxent_optimize(mec, alpha, ustart, use_bayes)
+        sol = optimizer(mec, alpha, ustart, use_bayes)
         push!(optarr, sol)
         alpha = alpha / ratio
         conv = length(mec.σ²) / sol[:chi2]
@@ -108,19 +111,19 @@ function maxent_historic(mec::MaxEntContext)
     alpha = optarr[end][:alpha]
 
     function root_fun(_alpha, _u)
-        res = maxent_optimize(mec, _alpha, _u, use_bayes)
+        res = optimizer(mec, _alpha, _u, use_bayes)
         @. _u = res[:u_opt]
         return length(mec.σ²) / res[:chi2] - 1.0
     end
     alpha_opt = secant(root_fun, alpha, ustart)
     println("opt alpha:", alpha_opt)
 
-    sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
+    sol = optimizer(mec, alpha_opt, ustart, use_bayes)
 
     return optarr, sol
 end
 
-function maxent_classic(mec::MaxEntContext)
+function classic(mec::MaxEntContext)
     println("Using classic algorithm to solve the maximum entropy problem")
 
     use_bayes = true
@@ -132,7 +135,7 @@ function maxent_classic(mec::MaxEntContext)
 
     conv = 0.0
     while conv < 1.0
-        sol = maxent_optimize(mec, alpha, ustart, use_bayes)
+        sol = optimizer(mec, alpha, ustart, use_bayes)
         push!(optarr, sol)
         alpha = alpha / ratio
         @. ustart = sol[:u_opt]
@@ -148,18 +151,18 @@ function maxent_classic(mec::MaxEntContext)
     ustart = optarr[end-1][:u_opt]
 
     function root_fun(_alpha, _u)
-        res = maxent_optimize(mec, _alpha, _u, use_bayes)
+        res = optimizer(mec, _alpha, _u, use_bayes)
         @. _u = res[:u_opt]
         return res[:conv] - 1.0
     end
     alpha_opt = secant(root_fun, alpha, ustart)
 
-    sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
+    sol = optimizer(mec, alpha_opt, ustart, use_bayes)
 
     return optarr, sol
 end
 
-function maxent_bryan(mec::MaxEntContext)
+function bryan(mec::MaxEntContext)
     println("Using bryan algorithm to solve the maximum entropy problem")
 
     use_bayes = true
@@ -171,7 +174,7 @@ function maxent_bryan(mec::MaxEntContext)
 
     maxprob = 0.0
     while true
-        sol = maxent_optimize(mec, alpha, ustart, use_bayes)
+        sol = optimizer(mec, alpha, ustart, use_bayes)
         push!(optarr, sol)
         alpha = alpha / ratio
         @. ustart = sol[:u_opt]
@@ -205,7 +208,7 @@ function maxent_bryan(mec::MaxEntContext)
     return optarr, sol
 end
 
-function maxent_chi2kink(mec::MaxEntContext)
+function chi2kink(mec::MaxEntContext)
     println("Apply chi2kink algorithm to determine optimized α")
 
     use_bayes = false
@@ -220,7 +223,7 @@ function maxent_chi2kink(mec::MaxEntContext)
     chi_arr = []
     alpharr = []
     while true
-        sol = maxent_optimize(mec, alpha, ustart, use_bayes)
+        sol = optimizer(mec, alpha, ustart, use_bayes)
         push!(optarr, sol)
         push!(chi_arr, sol[:chi2])
         push!(alpharr, alpha)
@@ -245,7 +248,7 @@ function maxent_chi2kink(mec::MaxEntContext)
     ustart = optarr[closest_idx][:u_opt]
     alpha_opt = 10.0 ^ a_opt
 
-    sol = maxent_optimize(mec, alpha_opt, ustart, use_bayes)
+    sol = optimizer(mec, alpha_opt, ustart, use_bayes)
 
     open("chi2kink.fit", "w") do fout
         alpharr = log10.(alpharr)
@@ -259,10 +262,7 @@ function maxent_chi2kink(mec::MaxEntContext)
     return optarr, sol
 end
 
-function maxent_optimize(mec::MaxEntContext,
-                         alpha::F64,
-                         ustart::Vector{F64},
-                         use_bayes::Bool)
+function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_bayes::Bool)
     blur = get_m("blur")
     offdiag = get_c("offdiag")
     if offdiag
