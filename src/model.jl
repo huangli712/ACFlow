@@ -4,17 +4,22 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/04
+# Last modified: 2022/02/06
 #
 
-function build_flat_model(am::AbstractMesh)
-    model = ones(F64, length(am))
-    norm = dot(am.weight, model)
-    model = model ./ norm
-    return model
-end
-
 #=
+*Remarks* :
+
+Flat model:
+
+```math
+\begin{equation}
+m(\omega) = const.
+\end{equation}
+```
+
+Gaussian model:
+
 ```math
 \begin{equation}
 m(\omega) = \frac{1}{\Gamma \sqrt{\pi}} \exp\left[-(\omega/\Gamma)^2\right]
@@ -22,6 +27,19 @@ m(\omega) = \frac{1}{\Gamma \sqrt{\pi}} \exp\left[-(\omega/\Gamma)^2\right]
 ```
 =#
 
+"""
+    build_flat_model
+"""
+function build_flat_model(am::AbstractMesh)
+    model = ones(F64, length(am))
+    norm = dot(am.weight, model)
+    model = model ./ norm
+    return model
+end
+
+"""
+    build_gaussian_model
+"""
 function build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
     model = exp.(-(am.mesh / Γ) .^ 2.0) / (Γ * sqrt(π))
     norm = dot(am.weight, model)
@@ -29,6 +47,9 @@ function build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
     return model
 end
 
+"""
+    build_func_model
+"""
 function build_func_model(f::Function, am::AbstractMesh, kwargs...)
     model = f.(am, kwargs...)
     norm = dot(am.weight, model)
