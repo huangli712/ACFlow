@@ -184,21 +184,22 @@ end
     bryan
 """
 function bryan(mec::MaxEntContext)
-    println("Using bryan algorithm to solve the maximum entropy problem")
+    println("Apply bryan algorithm to determine optimized α")
 
     use_bayes = true
     alpha = get_m("alpha")
     ratio = get_m("ratio")
     n_svd = length(mec.Bₘ)
+
     ustart = zeros(F64, n_svd)
-    optarr = []
+    s_vec = []
 
     maxprob = 0.0
     while true
         sol = optimizer(mec, alpha, ustart, use_bayes)
-        push!(optarr, sol)
+        push!(s_vec, sol)
         alpha = alpha / ratio
-        @. ustart = sol[:u_opt]
+        @. ustart = sol[:u]
         prob = sol[:prob]
         if prob > maxprob
             maxprob = prob
@@ -207,26 +208,26 @@ function bryan(mec::MaxEntContext)
         end
     end
 
-    alpharr = map(x->x[:alpha], optarr)
-    probarr = map(x->x[:prob], optarr)
-    specarr = map(x->x[:A_opt], optarr)
-    probarr = probarr ./ (-trapz(alpharr, probarr))
+    α_vec = map(x->x[:α], s_vec)
+    p_vec = map(x->x[:prob], s_vec)
+    p_vec = -p_vec ./ trapz(α_vec, p_vec)
+    A_vec = map(x->x[:A], s_vec)
 
-    nprob = length(probarr)
-    nmesh = length(specarr[1])
+    nprob = length(p_vec)
+    nmesh = length(A_vec[1])
     A_opt = zeros(F64, nmesh)
-    Spectra = zeros(F64, nprob, nmesh)
+    spectra = zeros(F64, nprob, nmesh)
     for i = 1:nprob
-        Spectra[i,:] = specarr[i] * probarr[i]
+        spectra[i,:] = A_vec[i] * p_vec[i]
     end
     for i = 1:nmesh
-        A_opt[i] = -trapz(alpharr, Spectra[:,i])
+        A_opt[i] = -trapz(α_vec, spectra[:,i])
     end
 
     sol = Dict{Symbol,Any}()
-    sol[:A_opt] = A_opt
+    sol[:A] = A_opt
 
-    return optarr, sol
+    return s_vec, sol
 end
 
 """
