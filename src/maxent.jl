@@ -26,16 +26,16 @@ end
 """
     solve
 """
-function solve(::MaxEntSolver, rd::RawData)
+function solve(S::MaxEntSolver, rd::RawData)
     println("[ MaxEnt ]")
-    mec = maxent_init(rd)
-    maxent_run(mec)
+    mec = init(S, rd)
+    run(S, mec)
 end
 
 """
-    maxent_init
+    init
 """
-function maxent_init(rd::RawData)
+function init(S::MaxEntSolver, rd::RawData)
     G = make_data(rd)
     Gᵥ = G.value
     σ² = 1.0 ./ G.covar
@@ -63,9 +63,9 @@ function maxent_init(rd::RawData)
 end
 
 """
-    maxent_run
+    run
 """
-function maxent_run(mec::MaxEntContext)
+function run(S::MaxEntSolver, mec::MaxEntContext)
     method = get_m("method")
 
     @cswitch method begin
@@ -86,9 +86,19 @@ function maxent_run(mec::MaxEntContext)
             break
     end
 
-    postprocess(mec.mesh, darr, sol)
+    postprocess(S, mec.mesh, darr, sol)
 end
 
+"""
+    postprocess
+"""
+function postprocess(S::MaxEntSolver, am::AbstractMesh, darr, sol)
+    write_spectrum(am, sol[:A_opt])
+end
+
+"""
+    historic
+"""
 function historic(mec::MaxEntContext)
     println("Using historic algorithm to solve the maximum entropy problem")
 
@@ -123,6 +133,9 @@ function historic(mec::MaxEntContext)
     return optarr, sol
 end
 
+"""
+    classic
+"""
 function classic(mec::MaxEntContext)
     println("Using classic algorithm to solve the maximum entropy problem")
 
@@ -162,6 +175,9 @@ function classic(mec::MaxEntContext)
     return optarr, sol
 end
 
+"""
+    bryan
+"""
 function bryan(mec::MaxEntContext)
     println("Using bryan algorithm to solve the maximum entropy problem")
 
@@ -208,6 +224,9 @@ function bryan(mec::MaxEntContext)
     return optarr, sol
 end
 
+"""
+    chi2kink
+"""
 function chi2kink(mec::MaxEntContext)
     println("Apply chi2kink algorithm to determine optimized α")
 
@@ -262,6 +281,9 @@ function chi2kink(mec::MaxEntContext)
     return optarr, sol
 end
 
+"""
+    optimizer
+"""
 function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_bayes::Bool)
     blur = get_m("blur")
     offdiag = get_c("offdiag")
@@ -320,10 +342,6 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
     return result_dict
 end
 
-function postprocess(am::AbstractMesh, darr, sol)
-    write_spectrum(am, sol[:A_opt])
-end
-
 function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
                     mesh::AbstractMesh, model::Vector{F64},
                     kernel::Matrix{F64},
@@ -355,6 +373,9 @@ function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
     return W₂, W₃, Bₘ, hess
 end
 
+"""
+    f_and_J
+"""
 function f_and_J(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
     v = mec.Vₛ * u
     w = exp.(v)
@@ -408,15 +429,24 @@ function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
     return f, J
 end
 
+"""
+    svd_to_real
+"""
 function svd_to_real(mec::MaxEntContext, u::Vector{F64})
     return mec.model .* exp.(mec.Vₛ * u)
 end
 
+"""
+    svd_to_real_offdiag
+"""
 function svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
     w = exp.(mec.Vₛ * u)
     return (mec.model .* w) - (mec.model ./ w)
 end
 
+"""
+    calc_entropy
+"""
 function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     f = A - mec.model - A .* (mec.Vₛ * u)
     return trapz(mec.mesh, f)
