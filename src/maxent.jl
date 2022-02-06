@@ -91,6 +91,15 @@ end
 """
 function postprocess(S::MaxEntSolver, am::AbstractMesh, darr, sol)
     write_spectrum(am, sol[:A_opt])
+
+    open("chi2kink.fit", "w") do fout
+        α_vec = log10.(α_vec)
+        χ_vec = log10.(χ_vec)
+        fit_arr = fitfun(α_vec, fit.param)
+        for i = 1:length(α_vec)
+            println(fout, α_vec[i], " ", χ_vec[i], " ", fit_arr[i])
+        end
+    end
 end
 
 """
@@ -268,15 +277,7 @@ function chi2kink(mec::MaxEntContext)
     α_opt = 10.0 ^ α_opt
 
     sol = optimizer(mec, α_opt, ustart, use_bayes)
-
-    open("chi2kink.fit", "w") do fout
-        α_vec = log10.(α_vec)
-        χ_vec = log10.(χ_vec)
-        fit_arr = fitfun(α_vec, fit.param)
-        for i = 1:length(α_vec)
-            println(fout, α_vec[i], " ", χ_vec[i], " ", fit_arr[i])
-        end
-    end
+    println("Optimized α : ", α_opt)
 
     return s_vec, sol
 end
