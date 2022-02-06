@@ -12,7 +12,7 @@ function solve(rd::RawData)
 
     @cswitch solver begin
         @case "MaxEnt"
-            MaxEnt.solve(rd)
+            solve(rd)
             break
 
         @case "StochOM"

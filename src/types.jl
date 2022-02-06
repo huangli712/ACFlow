@@ -85,6 +85,30 @@ const PStochOM = Dict{String,ADT}(
 )
 
 #=
+### *Customized Structs* : *AC Solver*
+=#
+
+"""
+    AbstractSolver
+"""
+abstract type AbstractSolver end
+
+"""
+    MaxEntSolver
+"""
+struct MaxEntSolver <: AbstractSolver end
+
+"""
+    StochACSolver
+"""
+struct StochACSolver <: AbstractSolver end
+
+"""
+    StochOMSolver
+"""
+struct StochOMSolver <: AbstractSolver end
+
+#=
 ### *Customized Structs* : *Input Data*
 =#
 
