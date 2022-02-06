@@ -7,6 +7,9 @@
 # Last modified: 2022/02/06
 #
 
+"""
+    LinearMesh
+"""
 function LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
     @assert nmesh ≥ 1
     @assert wmax > wmin
@@ -20,6 +23,9 @@ function LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
     return LinearMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
+"""
+    LinearMesh
+"""
 function LinearMesh(mesh::Vector{F64})
     nmesh = length(mesh)
 
@@ -59,11 +65,17 @@ function Base.lastindex(lm::LinearMesh)
     lastindex(lm.mesh)
 end
 
+"""
+    Base.getindex
+"""
 function Base.getindex(lm::LinearMesh, ind::I64)
     @assert 1 ≤ ind ≤ lm.nmesh
     return lm.mesh[ind]
 end
 
+"""
+    Base.getindex
+"""
 function Base.getindex(lm::LinearMesh, I::UnitRange{I64})
     @assert checkbounds(Bool, lm.mesh, I)
     lI = length(I)
@@ -74,6 +86,9 @@ function Base.getindex(lm::LinearMesh, I::UnitRange{I64})
     return X
 end
 
+"""
+    TangentMesh
+"""
 function TangentMesh(nmesh::I64, wmin::F64, wmax::F64)
     @assert nmesh ≥ 1
     @assert wmax > 0.0 > wmin
@@ -114,11 +129,17 @@ function Base.lastindex(tm::TangentMesh)
     lastindex(tm.mesh)
 end
 
+"""
+    Base.getindex
+"""
 function Base.getindex(tm::TangentMesh, ind::I64)
     @assert 1 ≤ ind ≤ tm.nmesh
     return tm.mesh[ind]
 end
 
+"""
+    Base.getindex
+"""
 function Base.getindex(tm::TangentMesh, I::UnitRange{I64})
     @assert checkbounds(Bool, tm.mesh, I)
     lI = length(I)
