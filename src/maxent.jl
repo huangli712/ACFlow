@@ -300,14 +300,14 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
         entropy = calc_entropy(mec, A_opt, u_opt)
     end
 
-    chisq = calc_chi2(mec, A_opt)
+    χ² = calc_chi2(mec, A_opt)
     norm = trapz(mec.mesh, A_opt)
 
     result_dict = Dict{Symbol,Any}()
     result_dict[:u_opt] = u_opt
     result_dict[:alpha] = alpha
     result_dict[:entropy] = entropy
-    result_dict[:chi2] = chisq
+    result_dict[:chi2] = χ²
     result_dict[:norm] = norm
     result_dict[:Q] = alpha * entropy - 0.5 * chisq
     if blur > 0.0
@@ -319,9 +319,9 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
 
     if use_bayes
         if offdiag
-            ng, tr, conv, prob = calc_bayes_offdiag(mec, A_opt, entr, chisq, alpha)
+            ng, tr, conv, prob = calc_bayes_offdiag(mec, A_opt, entr, χ², alpha)
         else
-            ng, tr, conv, prob = calc_bayes(mec, A_opt, entr, chisq, alpha)
+            ng, tr, conv, prob = calc_bayes(mec, A_opt, entr, χ², alpha)
         end
         result_dict[:n_good] = ng
         result_dict[:trace] = tr
@@ -330,7 +330,7 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
     end
 
     @printf("log10(α) = %8.4f ", log10(alpha))
-    @printf("χ² = %8.4e ", chisq)
+    @printf("χ² = %8.4e ", χ²)
     @printf("S = %8.4e ", entropy)
     @printf("nfev = %4i ", nfev)
     @printf("norm = %8.4f\n", norm)
