@@ -139,40 +139,43 @@ end
     classic
 """
 function classic(mec::MaxEntContext)
-    println("Using classic algorithm to solve the maximum entropy problem")
+    function root_fun(_alpha, _u)
+        res = optimizer(mec, _alpha, _u, use_bayes)
+        @. _u = res[:u]
+        return res[:conv] - 1.0
+    end
+
+    println("Apply classic algorithm to determine optimized α")
 
     use_bayes = true
     alpha = get_m("alpha")
     ratio = get_m("ratio")
     n_svd = length(mec.Bₘ)
+
     ustart = zeros(F64, n_svd)
-    optarr = []
+    s_vec = []
 
     conv = 0.0
     while conv < 1.0
         sol = optimizer(mec, alpha, ustart, use_bayes)
-        push!(optarr, sol)
+        push!(s_vec, sol)
         alpha = alpha / ratio
-        @. ustart = sol[:u_opt]
+        @. ustart = sol[:u]
         conv = sol[:conv]
     end
 
-    convarr = [x[:conv] for x in optarr]
-    alpharr = [x[:alpha] for x in optarr]
-    exp_opt = log10(alpharr[end] / alpharr[end-1])
-    exp_opt = exp_opt / log10(convarr[end] / convarr[end-1])
-    exp_opt = log10(alpharr[end-1]) - log10(convarr[end-1]) * exp_opt
+    c_vec = [x[:conv] for x in s_vec]
+    α_vec = [x[:α] for x in s_vec]
+    exp_opt = log10(α_vec[end] / α_vec[end-1])
+    exp_opt = exp_opt / log10(c_vec[end] / c_vec[end-1])
+    exp_opt = log10(α_vec[end-1]) - log10(c_vec[end-1]) * exp_opt
+    
+    ustart = s_vec[end-1][:u]
     alpha = 10.0 ^ exp_opt
-    ustart = optarr[end-1][:u_opt]
+    α_opt = secant(root_fun, alpha, ustart)
 
-    function root_fun(_alpha, _u)
-        res = optimizer(mec, _alpha, _u, use_bayes)
-        @. _u = res[:u_opt]
-        return res[:conv] - 1.0
-    end
-    alpha_opt = secant(root_fun, alpha, ustart)
-
-    sol = optimizer(mec, alpha_opt, ustart, use_bayes)
+    sol = optimizer(mec, α_opt, ustart, use_bayes)
+    println("Optimized α : ", α_opt)
 
     return optarr, sol
 end
