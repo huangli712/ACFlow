@@ -7,6 +7,9 @@
 # Last modified: 2022/02/06
 #
 
+"""
+    solve
+"""
 function solve(rd::RawData)
     solver = get_c("solver")
 
@@ -28,15 +31,24 @@ function solve(rd::RawData)
     end
 end
 
+"""
+    setup_param
+"""
 function setup_param()
 end
 
+"""
+    read_param
+"""
 function read_param()
     cfg = inp_toml(query_args(), true)
     fil_dict(cfg)
     chk_dict()
 end
 
+"""
+    read_data
+"""
 function read_data()
     finput = get_c("finput")
     ngrid = get_c("ngrid")
@@ -64,6 +76,9 @@ function read_data()
     end
 end
 
+"""
+    make_data
+"""
 function make_data(rd::RawData)
     grid = get_c("grid")
     val = rd.value
@@ -84,6 +99,9 @@ function make_data(rd::RawData)
     end
 end
 
+"""
+    make_grid
+"""
 function make_grid(rd::RawData)
     grid = get_c("grid")
     ngrid = get_c("ngrid")
@@ -124,6 +142,9 @@ function make_grid(rd::RawData)
     return _grid
 end
 
+"""
+    make_mesh
+"""
 function make_mesh()
     nmesh = get_c("nmesh")
     mesh = get_c("mesh")
@@ -137,6 +158,9 @@ function make_mesh()
     end
 end
 
+"""
+    make_model
+"""
 function make_model(am::AbstractMesh)
     mtype = get_c("mtype")
 
@@ -159,6 +183,9 @@ function make_model(am::AbstractMesh)
     end
 end
 
+"""
+    make_kernel
+"""
 function make_kernel(am::AbstractMesh, ag::AbstractGrid)
     ktype = get_c("ktype")
     grid = get_c("grid")
