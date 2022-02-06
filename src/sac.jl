@@ -4,19 +4,8 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/05
+# Last modified: 2022/02/06
 #
-
-module StochAC
-
-using Random
-using LinearAlgebra
-
-import ..ACFlow: I64, F64, C64
-import ..ACFlow: AbstractMesh, LinearMesh, AbstractGrid
-import ..ACFlow: RawData
-import ..ACFlow: make_data, make_grid, make_mesh, make_model, make_kernel
-import ..ACFlow: get_c, get_a
 
 mutable struct StochElement
     a_γ :: Array{I64,2}
@@ -401,5 +390,4 @@ function stoch_warmming(MC::StochMC, SE::StochElement, SC::StochContext)
 
     fill!(MC.swap_acc, 0.0)
     fill!(MC.swap_try, 0.0)
-end
 end

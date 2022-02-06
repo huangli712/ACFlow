@@ -18,11 +18,11 @@ function solve(rd::RawData)
             solve(MaxEntSolver(), rd)
             break
 
-        @case "StochOM"
+        @case "StochAC"
+            solve(StochACSolver(), rd)
             break
 
-        @case "StochAC"
-            StochAC.solve(rd)
+        @case "StochOM"
             break
 
         @default

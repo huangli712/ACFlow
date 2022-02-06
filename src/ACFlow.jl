@@ -13,6 +13,7 @@ using Distributed
 using LinearAlgebra
 using Printf
 using Dates
+using Random
 using TOML
 
 using LsqFit
@@ -28,10 +29,9 @@ include("config.jl")
 include("inout.jl")
 include("kernel.jl")
 include("model.jl")
-include("base.jl")
-
 include("maxent.jl")
 include("sac.jl")
+include("base.jl")
 
 export welcome
 export overview
