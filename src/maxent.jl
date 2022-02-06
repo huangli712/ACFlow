@@ -342,6 +342,9 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
     return result_dict
 end
 
+"""
+    precompute
+"""
 function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
                     mesh::AbstractMesh, model::Vector{F64},
                     kernel::Matrix{F64},
@@ -400,6 +403,9 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
     return f, J
 end
 
+"""
+    f_and_J_offdiag
+"""
 function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
     v = mec.Vₛ * u
     w = exp.(v)
@@ -452,12 +458,18 @@ function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     return trapz(mec.mesh, f)
 end
 
+"""
+    calc_entropy_offdiag
+"""
 function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     root = sqrt.(A .^ 2.0 + 4.0 .* mec.model .* mec.model)
     f = root - mec.model - mec.model - A .* log.((root + A) ./ (2.0 * mec.model))
     return trapz(mec.mesh, f)
 end
 
+"""
+    calc_bayes
+"""
 function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, alpha::F64)
     mesh = mec.mesh
 
@@ -475,6 +487,9 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, al
     return ng, tr, conv, exp(log_prob)
 end
 
+"""
+    calc_bayes_offdiag
+"""
 function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, alpha::F64)
     mesh = mec.mesh
 
@@ -492,6 +507,9 @@ function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq:
     return ng, tr, conv, exp(log_prob)
 end
 
+"""
+    calc_chi2
+"""
 function calc_chi2(mec::MaxEntContext, A::Vector{F64})
     ndim, _ = size(mec.kernel)
 
