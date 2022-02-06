@@ -27,23 +27,38 @@ function read_real_data(finput::String, ngrid::I64)
     return RawData(_grid, value, error)
 end
 
-function read_complex_data(finput::String, ngrid::I64)
+"""
+    read_complex_data
+"""
+function read_complex_data(finput::String, ngrid::I64; ncols::I64 = 4)
     _grid = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)
 
+    @assert ncols in (4, 5)
+
     open(finput, "r") do fin
         for i = 1:ngrid
-            arr = parse.(F64, line_to_array(fin)[1:4])
-            _grid[i] = arr[1]
-            value[i] = arr[2] + im * arr[3]
-            error[i] = arr[4] + im * arr[4]
+            if ncols == 4
+                arr = parse.(F64, line_to_array(fin)[1:4])
+                _grid[i] = arr[1]
+                value[i] = arr[2] + im * arr[3]
+                error[i] = arr[4] + im * arr[4]
+            else
+                arr = parse.(F64, line_to_array(fin)[1:5])
+                _grid[i] = arr[1]
+                value[i] = arr[2] + im * arr[3]
+                error[i] = arr[4] + im * arr[5]
+            end
         end
     end
 
     return RawData(_grid, value, error)
 end
 
+"""
+    read_complex_data
+"""
 function read_complex_data(finput::String, ngrid::I64, only_real_part::Bool)
     _grid = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
@@ -66,6 +81,9 @@ function read_complex_data(finput::String, ngrid::I64, only_real_part::Bool)
     return RawData(_grid, value, error)
 end
 
+"""
+    write_spectrum
+"""
 function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
     @assert length(am) == length(Aout)
     open("Aout.data", "w") do fout
@@ -75,5 +93,8 @@ function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
     end
 end
 
+"""
+    write_chidata
+"""
 function write_chidata(am::AbstractMesh)
 end
