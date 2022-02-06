@@ -53,7 +53,7 @@ end
     fil_dict(cfg::Dict{String,Any})
 
 Transfer configurations from dict `cfg` to internal dicts (including
-`PCOMM`, `PMaxEnt`, `PStochOM`, and `PStochAC` etc).
+`PCOMM`, `PMaxEnt`, `PStochAC`, and `PStochOM` etc).
 """
 function fil_dict(cfg::Dict{String,Any})
     # For COMM block
@@ -78,24 +78,24 @@ function fil_dict(cfg::Dict{String,Any})
         end
     end
 
-    # For StochOM block
-    if haskey(cfg, "StochOM")
-        StochOM = cfg["StochOM"]
-        for key in keys(StochOM)
-            if haskey(PStochOM, key)
-                PStochOM[key][1] = StochOM[key]
-            else
-                error("Sorry, $key is not supported currently")
-            end
-        end
-    end
-
     # For StochAC block
     if haskey(cfg, "StochAC")
         StochAC = cfg["StochAC"]
         for key in keys(StochAC)
             if haskey(PStochAC, key)
                 PStochAC[key][1] = StochAC[key]
+            else
+                error("Sorry, $key is not supported currently")
+            end
+        end
+    end
+
+    # For StochOM block
+    if haskey(cfg, "StochOM")
+        StochOM = cfg["StochOM"]
+        for key in keys(StochOM)
+            if haskey(PStochOM, key)
+                PStochOM[key][1] = StochOM[key]
             else
                 error("Sorry, $key is not supported currently")
             end
@@ -131,10 +131,6 @@ function chk_dict()
             @assert get_m("ratio") > 0.0
             break
 
-        @case "StochOM"
-            push!(PA, PStochOM)
-            break
-
         @case "StochAC"
             push!(PA, PStochAC)
             @assert get_a("nfine") ≥ 1000
@@ -145,6 +141,10 @@ function chk_dict()
             @assert get_a("ndump") ≥ 100
             @assert get_a("alpha") > 0.0
             @assert get_a("ratio") > 0.0
+            break
+
+        @case "StochOM"
+            push!(PA, PStochOM)
             break
     end
 
@@ -199,19 +199,6 @@ Extract configurations from dict: PMaxEnt.
 end
 
 """
-    get_s(key::String)
-
-Extract configurations from dict: PStochOM.
-"""
-@inline function get_s(key::String)
-    if haskey(PStochOM, key)
-        PStochOM[key][1]
-    else
-        error("Sorry, PStochOM does not contain key: $key")
-    end
-end
-
-"""
     get_a(key::String)
 
 Extract configurations from dict: PStochAC.
@@ -221,5 +208,18 @@ Extract configurations from dict: PStochAC.
         PStochAC[key][1]
     else
         error("Sorry, PStochAC does not contain key: $key")
+    end
+end
+
+"""
+    get_s(key::String)
+
+Extract configurations from dict: PStochOM.
+"""
+@inline function get_s(key::String)
+    if haskey(PStochOM, key)
+        PStochOM[key][1]
+    else
+        error("Sorry, PStochOM does not contain key: $key")
     end
 end
