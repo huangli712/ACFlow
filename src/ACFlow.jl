@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/05
+# Last modified: 2022/02/06
 #
 
 module ACFlow
@@ -14,6 +14,9 @@ using LinearAlgebra
 using Printf
 using Dates
 using TOML
+
+using LsqFit
+using Einsum
 
 include("global.jl")
 include("types.jl")

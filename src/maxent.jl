@@ -4,25 +4,8 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/02/05
+# Last modified: 2022/02/06
 #
-
-module MaxEnt
-
-using Printf
-using LsqFit
-using Einsum
-using LinearAlgebra
-
-import ..ACFlow: I64, F64, C64
-import ..ACFlow: @cswitch
-import ..ACFlow: AbstractMesh
-import ..ACFlow: RawData
-import ..ACFlow: make_grid, make_mesh, make_model, make_kernel, make_data, make_blur
-import ..ACFlow: make_singular_space
-import ..ACFlow: write_spectrum
-import ..ACFlow: get_c, get_m
-import ..ACFlow: secant, newton, trapz, area
 
 mutable struct MaxEntContext
     Gdata :: Vector{F64}
@@ -481,6 +464,4 @@ function calc_chi2(mec::MaxEntContext, A::Vector{F64})
     value = sum(mec.E .* T .^ 2.0)
 
     return value
-end
-
 end
