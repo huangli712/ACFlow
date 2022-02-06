@@ -17,6 +17,27 @@ const DType = Any
 "Customized types. It is used to define the following dicts."
 const ADT = Array{DType,1}
 
+#=
+### *Customized Dictionaries*
+=#
+
+#=
+*Remarks* :
+
+The values in the following dictionaries are actually arrays, which
+usually contain four elements:
+* Element[1] -> Actually value.
+* Element[2] -> If it is 1, this key-value pair is mandatory.
+                If it is 0, this key-value pair is optional.
+* Element[3] -> Numerical type (A julia Symbol).
+* Element[4] -> Brief explanations.
+
+The following dictionaries are used as global variables.
+=#
+
+"""
+    PCOMM
+"""
 const PCOMM    = Dict{String,ADT}(
     "finput"  => [missing, 1, :String, "Filename for input correlation function"],
     "solver"  => [missing, 1, :String, "Solve for the analytical continuation problem"],
@@ -32,6 +53,9 @@ const PCOMM    = Dict{String,ADT}(
     "offdiag" => [missing, 1, :Bool  , "Is it an offdiagonal element in matrix-valued function"],
 )
 
+"""
+    PMaxEnt
+"""
 const PMaxEnt  = Dict{String,ADT}(
     "method"  => [missing, 1, :String, "How to determine the optimized α parameter"],
     "nalph"   => [missing, 1, :I64   , "Number of the α parameters"],
@@ -40,9 +64,9 @@ const PMaxEnt  = Dict{String,ADT}(
     "blur"    => [missing, 1, :F64   , "Shall we blur the kernel and spectrum"],
 )
 
-const PStochOM = Dict{String,ADT}(
-)
-
+"""
+    PStochAC
+"""
 const PStochAC = Dict{String,ADT}(
     "nfine"   => [missing, 1, :I64   , "Number of points for very fine mesh"],
     "ngamm"   => [missing, 1, :I64   , "Number of δ functions"],
@@ -53,6 +77,16 @@ const PStochAC = Dict{String,ADT}(
     "alpha"   => [missing, 1, :F64   , "Starting value for the α parameter"],
     "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
 )
+
+"""
+    PStochOM
+"""
+const PStochOM = Dict{String,ADT}(
+)
+
+#=
+### *Customized Structs* : *Input Data*
+=#
 
 abstract type AbstractData end
 
@@ -67,6 +101,10 @@ mutable struct GreenData <: AbstractData
     error :: Vector{F64}
     covar :: Vector{F64}
 end
+
+#=
+### *Customized Structs* : *Input Grid*
+=#
 
 abstract type AbstractGrid end
 
@@ -93,6 +131,10 @@ mutable struct BosonicMatsubaraGrid <: AbstractGrid
     β :: F64
     ω :: Vector{F64}
 end
+
+#=
+### *Customized Structs* : *Output Mesh*
+=#
 
 abstract type AbstractMesh end
 
