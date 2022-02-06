@@ -89,8 +89,12 @@ end
 """
     postprocess
 """
-function postprocess(S::MaxEntSolver, am::AbstractMesh, darr, sol)
+function postprocess(S::MaxEntSolver, am::AbstractMesh, svec::Vector, sol::Dict)
+    α_vec = map(x -> x[:alpha], svec)
+    χ_vec = map(x -> x[:chi2], svec)
+
     write_spectrum(am, sol[:A_opt])
+
 
     open("chi2kink.fit", "w") do fout
         α_vec = log10.(α_vec)

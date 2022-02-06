@@ -94,7 +94,7 @@ function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
 end
 
 """
-    write_chidata
+    write_chi2
 """
-function write_chidata(am::AbstractMesh)
+function write_chi2(am::AbstractMesh)
 end
