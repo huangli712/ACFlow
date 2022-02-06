@@ -16,19 +16,25 @@ mutable struct MaxEntContext
     mesh   :: AbstractMesh
     model  :: Vector{F64}
     kernel :: Array{F64,2}
+    hess   :: Array{F64,2}
     Vₛ     :: Array{F64,2}
     W₂     :: Array{F64,2}
     W₃     :: Array{F64,3}
     Bₘ     :: Vector{F64}
-    hess   :: Array{F64,2}
 end
 
+"""
+    solve
+"""
 function solve(::MaxEntSolver, rd::RawData)
     println("[ MaxEnt ]")
     mec = maxent_init(rd)
     maxent_run(mec)
 end
 
+"""
+    maxent_init
+"""
 function maxent_init(rd::RawData)
     G = make_data(rd)
     σ² = 1.0 ./ G.covar
@@ -53,7 +59,7 @@ function maxent_init(rd::RawData)
     W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel, Uₛ, Vₛ, Sₛ)
     println("Precompute key coefficients")
 
-    return MaxEntContext(Gᵥ, σ², mesh, model, kernel, Vₛ, W₂, W₃, Bₘ, hess)
+    return MaxEntContext(Gᵥ, σ², mesh, model, kernel, hess, Vₛ, W₂, W₃, Bₘ)
 end
 
 function maxent_run(mec::MaxEntContext)
