@@ -177,7 +177,7 @@ function classic(mec::MaxEntContext)
     sol = optimizer(mec, α_opt, ustart, use_bayes)
     println("Optimized α : ", α_opt)
 
-    return optarr, sol
+    return s_vec, sol
 end
 
 """
