@@ -18,8 +18,8 @@ using TOML
 include("global.jl")
 include("types.jl")
 include("util.jl")
-include("mesh.jl")
 include("grid.jl")
+include("mesh.jl")
 
 include("config.jl")
 include("inout.jl")
