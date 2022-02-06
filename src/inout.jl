@@ -7,6 +7,9 @@
 # Last modified: 2022/02/06
 #
 
+"""
+    read_real_data
+"""
 function read_real_data(finput::String, ngrid::I64)
     _grid = zeros(F64, ngrid)
     value = zeros(F64, ngrid)

@@ -159,7 +159,7 @@ and the other related functions can work correctly.
 
 ### Examples
 ```julia-repl
-julia> setup_args("SrVO3.toml")
+julia> setup_args("ac.toml")
 1-element Array{String,1}:
  "SrVO3.toml"
 ```
@@ -215,7 +215,7 @@ function welcome()
     println(green("╠═╣║  ╠╣ "), magenta("│  │ ││││"))
     println( blue("╩ ╩╚═╝╚  "), magenta("┴─┘└─┘└┴┘"))
     #
-    @pcs "A Modern DFT + DMFT Computation Framework\n" black
+    @pcs "A Modern Toolkit for Analytical Continuation Problems\n" black
     @pcs "Package: " black "$__LIBNAME__\n" magenta
     @pcs "Version: " black "$__VERSION__\n" magenta
     @pcs "Release: " black "$__RELEASE__\n" magenta
@@ -252,7 +252,7 @@ end
 Print the goodbye messages to the screen.
 """
 function goodbye()
-    println("This analytical continuation problem is solved successfully.")
+    println("The analytical continuation problem is solved successfully.")
     #
     flush(stdout)
 end
