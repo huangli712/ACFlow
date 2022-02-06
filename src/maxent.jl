@@ -20,7 +20,7 @@ mutable struct MaxEntContext
     d2chi2 :: Array{F64,2}
 end
 
-function solve(rd::RawData)
+function solve(::MaxEntSolver, rd::RawData)
     println("[ MaxEnt ]")
     mec = maxent_init(rd)
     maxent_run(mec)
@@ -273,7 +273,7 @@ function maxent_optimize(mec::MaxEntContext,
         entr = calc_entropy(mec, A_opt, u_opt)
     end
     chisq = calc_chi2(mec, A_opt)
-    norm = area(mec.mesh, A_opt)
+    norm = trapz(mec.mesh, A_opt)
 
     result_dict = Dict{Symbol,Any}()
     result_dict[:u_opt] = u_opt
@@ -410,13 +410,13 @@ end
 
 function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     f = A - mec.model - A .* (mec.V_svd * u)
-    return area(mec.mesh, f)
+    return trapz(mec.mesh, f)
 end
 
 function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     root = sqrt.(A .^ 2.0 + 4.0 .* mec.model .* mec.model)
     f = root - mec.model - mec.model - A .* log.((root + A) ./ (2.0 * mec.model))
-    return area(mec.mesh, f)
+    return trapz(mec.mesh, f)
 end
 
 function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, alpha::F64)
@@ -459,7 +459,7 @@ function calc_chi2(mec::MaxEntContext, A::Vector{F64})
 
     T = zeros(F64, ndim)
     for i = 1:ndim
-        T[i] = mec.Gdata[i] - area(mec.mesh, mec.kernel[i,:] .* A)
+        T[i] = mec.Gdata[i] - trapz(mec.mesh, mec.kernel[i,:] .* A)
     end
     value = sum(mec.E .* T .^ 2.0)
 

@@ -28,7 +28,7 @@ include("config.jl")
 include("inout.jl")
 include("kernel.jl")
 include("model.jl")
-include("flow.jl")
+include("base.jl")
 
 include("maxent.jl")
 include("sac.jl")
