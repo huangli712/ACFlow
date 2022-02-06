@@ -53,10 +53,7 @@ function init(S::MaxEntSolver, rd::RawData)
     kernel = make_kernel(mesh, grid)
     println("Build default kernel: ", get_c("ktype"))
 
-    Uₛ, Vₛ, Sₛ = make_singular_space(kernel)
-    println("Create singular value decomposition space: ", size(Vₛ))
-
-    W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel, Uₛ, Vₛ, Sₛ)
+    Vₛ, W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel)
     println("Precompute key coefficients")
 
     return MaxEntContext(Gᵥ, σ², mesh, model, kernel, hess, Vₛ, W₂, W₃, Bₘ)
@@ -341,10 +338,11 @@ end
 """
     precompute
 """
-function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
-                    mesh::AbstractMesh, model::Vector{F64}, kernel::Matrix{F64},
-                    U::Matrix{F64}, V::Matrix{F64}, S::Vector{F64})
+function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, mesh::AbstractMesh, model::Vector{F64}, kernel::Matrix{F64})
     offdiag = get_c("offdiag")
+
+    U, V, S = make_singular_space(kernel)
+
     nmesh = mesh.nmesh
     weight = mesh.weight
     n_svd = length(S)
@@ -368,7 +366,7 @@ function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
 
     @einsum hess[i,j] = weight[i] * weight[j] * kernel[k,i] * kernel[k,j] * σ²[k]
 
-    return W₂, W₃, Bₘ, hess
+    return V, W₂, W₃, Bₘ, hess
 end
 
 """
