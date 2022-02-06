@@ -96,5 +96,13 @@ end
 """
     write_chi2
 """
-function write_chi2(am::AbstractMesh)
+function write_chi2(α_vec::Vector{F64}, χ_vec::Vector{F64})
+    @assert length(α_vec) == length(χ_vec)
+    open("chi2.data", "w") do fout
+        α_vec = log10.(α_vec)
+        χ_vec = log10.(χ_vec)
+        for i = 1:length(α_vec)
+            @printf(fout, "%16.12f %16.12f\n", α_vec[i], χ_vec[i])
+        end
+    end
 end

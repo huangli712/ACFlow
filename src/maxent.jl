@@ -94,16 +94,7 @@ function postprocess(S::MaxEntSolver, am::AbstractMesh, svec::Vector, sol::Dict)
     χ_vec = map(x -> x[:chi2], svec)
 
     write_spectrum(am, sol[:A_opt])
-
-
-    open("chi2kink.fit", "w") do fout
-        α_vec = log10.(α_vec)
-        χ_vec = log10.(χ_vec)
-        fit_arr = fitfun(α_vec, fit.param)
-        for i = 1:length(α_vec)
-            println(fout, α_vec[i], " ", χ_vec[i], " ", fit_arr[i])
-        end
-    end
+    write_chi2(α_vec, χ_vec)
 end
 
 """
