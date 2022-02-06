@@ -88,14 +88,23 @@ const PStochOM = Dict{String,ADT}(
 ### *Customized Structs* : *Input Data*
 =#
 
+"""
+    AbstractData
+"""
 abstract type AbstractData end
 
+"""
+    RawData
+"""
 mutable struct RawData{T} <: AbstractData
     _grid :: Vector{F64}
     value :: Vector{T}
     error :: Vector{T}
 end
 
+"""
+    GreenData
+"""
 mutable struct GreenData <: AbstractData
     value :: Vector{F64}
     error :: Vector{F64}
@@ -106,26 +115,41 @@ end
 ### *Customized Structs* : *Input Grid*
 =#
 
+"""
+    AbstractGrid
+"""
 abstract type AbstractGrid end
 
+"""
+    FermionicImaginaryTimeGrid
+"""
 mutable struct FermionicImaginaryTimeGrid <: AbstractGrid
     ntime :: I64
     β :: F64
     τ :: Vector{F64}
 end
 
+"""
+    FermionicMatsubaraGrid
+"""
 mutable struct FermionicMatsubaraGrid <: AbstractGrid
     nfreq :: I64
     β :: F64
     ω :: Vector{F64}
 end
 
+"""
+    BosonicImaginaryTimeGrid
+"""
 mutable struct BosonicImaginaryTimeGrid <: AbstractGrid
     ntime :: I64
     β :: F64
     τ :: Vector{F64}
 end
 
+"""
+    BosonicMatsubaraGrid
+"""
 mutable struct BosonicMatsubaraGrid <: AbstractGrid
     nfreq :: I64
     β :: F64
@@ -136,8 +160,14 @@ end
 ### *Customized Structs* : *Output Mesh*
 =#
 
+"""
+    AbstractMesh
+"""
 abstract type AbstractMesh end
 
+"""
+    LinearMesh
+"""
 mutable struct LinearMesh <: AbstractMesh
     nmesh :: I64
     wmax :: F64
@@ -146,6 +176,9 @@ mutable struct LinearMesh <: AbstractMesh
     weight :: Vector{F64}
 end
 
+"""
+    TangentMesh
+"""
 mutable struct TangentMesh <: AbstractMesh
     nmesh :: I64
     wmax :: F64
