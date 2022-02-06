@@ -107,7 +107,7 @@ end
 """
     TangentMesh
 """
-function TangentMesh(nmesh::I64, wmin::F64, wmax::F64, f1::F64 = 2.1)
+function TangentMesh(nmesh::I64, wmin::F64, wmax::F64, f1::F64 = 2.0)
     @assert nmesh ≥ 1
     @assert wmax > 0.0 > wmin
     @assert wmax == abs(wmin)
