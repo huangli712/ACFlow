@@ -107,12 +107,12 @@ end
 """
     TangentMesh
 """
-function TangentMesh(nmesh::I64, wmin::F64, wmax::F64)
+function TangentMesh(nmesh::I64, wmin::F64, wmax::F64, f1::F64 = 2.1)
     @assert nmesh ≥ 1
     @assert wmax > 0.0 > wmin
     @assert wmax == abs(wmin)
+    @assert f1 > 0.0
 
-    f1 = 2.1
     mesh = collect(LinRange(-π / f1, π / f1, nmesh))
     mesh = wmax * tan.(mesh) / tan(π / f1)
     weight = (mesh[2:end] + mesh[1:end-1]) / 2.0
