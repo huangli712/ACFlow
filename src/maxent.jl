@@ -318,9 +318,9 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
 
     if use_bayes
         if offdiag
-            ng, tr, conv, prob = calc_bayes_offdiag(mec, A_opt, entr, χ², alpha)
+            ng, tr, conv, prob = calc_bayes_offdiag(mec, A_opt, entropy, χ², alpha)
         else
-            ng, tr, conv, prob = calc_bayes(mec, A_opt, entr, χ², alpha)
+            ng, tr, conv, prob = calc_bayes(mec, A_opt, entropy, χ², alpha)
         end
         result_dict[:ngood] = ng
         result_dict[:trace] = tr
