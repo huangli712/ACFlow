@@ -127,11 +127,10 @@ function historic(mec::MaxEntContext)
 
     ustart = s_vec[end-1][:u]
     alpha = s_vec[end][:α]
-
     α_opt = secant(root_fun, alpha, ustart)
-    println("Optimized α : ", α_opt)
 
     sol = optimizer(mec, α_opt, ustart, use_bayes)
+    println("Optimized α : ", α_opt)
 
     return s_vec, sol
 end
