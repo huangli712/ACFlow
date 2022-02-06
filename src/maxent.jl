@@ -97,12 +97,13 @@ end
     historic
 """
 function historic(mec::MaxEntContext)
-    println("Using historic algorithm to solve the maximum entropy problem")
+    println("Apply historic algorithm to determine optimized α")
 
     use_bayes = false
     alpha = get_m("alpha")
     ratio = get_m("ratio")
     n_svd = length(mec.Bₘ)
+
     ustart = zeros(F64, n_svd)
     optarr = []
 
