@@ -7,11 +7,6 @@
 # Last modified: 2022/02/06
 #
 
-function area(x::AbstractMesh, y::Vector{T}) where {T}
-    value = dot(x.weight, y)
-    return value
-end
-
 function LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
     @assert nmesh ≥ 1
     @assert wmax > wmin

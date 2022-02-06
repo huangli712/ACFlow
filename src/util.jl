@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/05
+# Last modified: 2022/02/06
 #
 
 #=
@@ -387,6 +387,11 @@ function newton(fun::Function, guess, kwargs...; maxiter::I64 = 20000, mixing::F
     counter > maxiter && error("maxiter is reached in newton()!")
 
     return back, counter
+end
+
+function area(x::AbstractMesh, y::Vector{T}) where {T}
+    value = dot(x.weight, y)
+    return value
 end
 
 function trapz(x::Vector{F64}, y::Vector{T}, linear::Bool = false) where {T}
