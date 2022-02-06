@@ -4,16 +4,8 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/04
+# Last modified: 2022/02/06
 #
-
-abstract type AbstractGrid end
-
-mutable struct FermionicImaginaryTimeGrid <: AbstractGrid
-    ntime :: I64
-    β :: F64
-    τ :: Vector{F64}
-end
 
 function FermionicImaginaryTimeGrid(ntime::I64, β::F64)
     @assert ntime ≥ 1
@@ -67,12 +59,6 @@ function rebuild_grid(fg::FermionicImaginaryTimeGrid, ntime::I64, β::F64)
     fg.ntime = ntime
     fg.β = β
     fg.τ = collect(LinRange(0.0, fg.β, fg.ntime))
-end
-
-mutable struct FermionicMatsubaraGrid <: AbstractGrid
-    nfreq :: I64
-    β :: F64
-    ω :: Vector{F64}
 end
 
 function FermionicMatsubaraGrid(nfreq::I64, β::F64)
@@ -134,12 +120,6 @@ function rebuild_grid(fg::FermionicMatsubaraGrid, nfreq::I64, β::F64)
     end
 end
 
-mutable struct BosonicImaginaryTimeGrid <: AbstractGrid
-    ntime :: I64
-    β :: F64
-    τ :: Vector{F64}
-end
-
 function BosonicImaginaryTimeGrid(ntime::I64, β::F64)
     @assert ntime ≥ 1
     @assert β ≥ 0.0
@@ -192,12 +172,6 @@ function rebuild_grid(bg::BosonicImaginaryTimeGrid, ntime::I64, β::F64)
     bg.ntime = ntime
     bg.β = β
     bg.τ = collect(LinRange(0.0, bg.β, bg.ntime))
-end
-
-mutable struct BosonicMatsubaraGrid <: AbstractGrid
-    nfreq :: I64
-    β :: F64
-    ω :: Vector{F64}
 end
 
 function BosonicMatsubaraGrid(nfreq::I64, β::F64)

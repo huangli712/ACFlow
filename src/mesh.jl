@@ -4,22 +4,12 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/04
+# Last modified: 2022/02/06
 #
-
-abstract type AbstractMesh end
 
 function area(x::AbstractMesh, y::Vector{T}) where {T}
     value = dot(x.weight, y)
     return value
-end
-
-mutable struct LinearMesh <: AbstractMesh
-    nmesh :: I64
-    wmax :: F64
-    wmin :: F64
-    mesh :: Vector{F64}
-    weight :: Vector{F64}
 end
 
 function LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
@@ -87,14 +77,6 @@ function Base.getindex(lm::LinearMesh, I::UnitRange{I64})
         unsafe_copyto!(X, 1, lm.mesh, first(I), lI)
     end
     return X
-end
-
-mutable struct TangentMesh <: AbstractMesh
-    nmesh :: I64
-    wmax :: F64
-    wmin :: F64
-    mesh :: Vector{F64}
-    weight :: Vector{F64}
 end
 
 function TangentMesh(nmesh::I64, wmin::F64, wmax::F64)

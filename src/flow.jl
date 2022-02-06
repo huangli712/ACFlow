@@ -4,22 +4,8 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/05
+# Last modified: 2022/02/06
 #
-
-abstract type AbstractData end
-
-mutable struct RawData{T} <: AbstractData
-    _grid :: Vector{F64}
-    value :: Vector{T}
-    error :: Vector{T}
-end
-
-mutable struct GreenData <: AbstractData
-    value :: Vector{F64}
-    error :: Vector{F64}
-    covar :: Vector{F64}
-end
 
 function solve(rd::RawData)
     solver = get_c("solver")
