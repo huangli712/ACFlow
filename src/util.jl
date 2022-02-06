@@ -289,9 +289,12 @@ Convert a string (AbstractString) to a string array.
 end
 
 #=
-### *Mathematical Functions*
+### *Math* : *Root Finding*
 =#
 
+"""
+    secant
+"""
 function secant(func, x0, args...; maxiter::I64 = 50, tol::F64 = 1.48e-8)
     eps = 1.0e-4
     funcalls = 0
@@ -317,7 +320,7 @@ function secant(func, x0, args...; maxiter::I64 = 50, tol::F64 = 1.48e-8)
     for _ = 1:maxiter
         if q1 == q0
             if p1 != p0
-                error("tolerance is reached in secant()!")
+                error("Tolerance is reached in secant()!")
             end
             p = (p1 + p0) / 2.0
             return p
@@ -340,6 +343,9 @@ function secant(func, x0, args...; maxiter::I64 = 50, tol::F64 = 1.48e-8)
     end
 end
 
+"""
+    newton
+"""
 function newton(fun::Function, guess, kwargs...; maxiter::I64 = 20000, mixing::F64 = 0.5)
     function _apply(feed::Vector{T}, f::Vector{T}, J::Matrix{T}) where {T}
         resid = nothing
@@ -384,16 +390,26 @@ function newton(fun::Function, guess, kwargs...; maxiter::I64 = 20000, mixing::F
         end
     end
 
-    counter > maxiter && error("maxiter is reached in newton()!")
+    counter > maxiter && error("Tolerance is reached in newton()!")
 
     return back, counter
 end
 
-function area(x::AbstractMesh, y::Vector{T}) where {T}
+#=
+### *Math* : *Numerical Integrations*
+=#
+
+"""
+    trapz
+"""
+function trapz(x::AbstractMesh, y::Vector{T}) where {T}
     value = dot(x.weight, y)
     return value
 end
 
+"""
+    trapz
+"""
 function trapz(x::Vector{F64}, y::Vector{T}, linear::Bool = false) where {T}
     if linear
         h = x[2] - x[1]
@@ -411,6 +427,9 @@ function trapz(x::Vector{F64}, y::Vector{T}, linear::Bool = false) where {T}
     return value
 end
 
+"""
+    simpson
+"""
 function simpson(x::Vector{F64}, y::Vector{T}) where {T}
     h = (x[2] - x[1]) / 3.0
 
