@@ -41,26 +41,44 @@ function LinearMesh(mesh::Vector{F64})
     return LinearMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
+"""
+    Base.length
+"""
 function Base.length(lm::LinearMesh)
     lm.nmesh
 end
 
+"""
+    Base.iterate
+"""
 function Base.iterate(lm::LinearMesh)
     iterate(lm.mesh)
 end
 
+"""
+    Base.iterate
+"""
 function Base.iterate(lm::LinearMesh, i::I64)
     iterate(lm.mesh, i::I64)
 end
 
+"""
+    Base.eachindex
+"""
 function Base.eachindex(lm::LinearMesh)
     eachindex(lm.mesh)
 end
 
+"""
+    Base.firstindex
+"""
 function Base.firstindex(lm::LinearMesh)
     firstindex(lm.mesh)
 end
 
+"""
+    Base.lastindex
+"""
 function Base.lastindex(lm::LinearMesh)
     lastindex(lm.mesh)
 end
@@ -105,26 +123,44 @@ function TangentMesh(nmesh::I64, wmin::F64, wmax::F64)
     return TangentMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
+"""
+    Base.length
+"""
 function Base.length(tm::TangentMesh)
     tm.nmesh
 end
 
+"""
+    Base.iterate
+"""
 function Base.iterate(tm::TangentMesh)
     iterate(tm.mesh)
 end
 
+"""
+    Base.iterate
+"""
 function Base.iterate(tm::TangentMesh, i::I64)
     iterate(tm.mesh, i)
 end
 
+"""
+    Base.eachindex
+"""
 function Base.eachindex(tm::TangentMesh)
     eachindex(tm.mesh)
 end
 
+"""
+    Base.firstindex
+"""
 function Base.firstindex(tm::TangentMesh)
     firstindex(tm.mesh)
 end
 
+"""
+    Base.lastindex
+"""
 function Base.lastindex(tm::TangentMesh)
     lastindex(tm.mesh)
 end
