@@ -287,39 +287,35 @@ end
 function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_bayes::Bool)
     blur = get_m("blur")
     offdiag = get_c("offdiag")
+
     if offdiag
         solution, nfev = newton(f_and_J_offdiag, ustart, mec, alpha)
+        u_opt = copy(solution)
+        A_opt = svd_to_real_offdiag(mec, solution)
+        entropy = calc_entropy_offdiag(mec, A_opt, u_opt)
     else
         solution, nfev = newton(f_and_J, ustart, mec, alpha)
-    end
-    u_opt = copy(solution)
-    if offdiag
-        A_opt = svd_to_real_offdiag(mec, solution)
-    else
+        u_opt = copy(solution)
         A_opt = svd_to_real(mec, solution)
+        entropy = calc_entropy(mec, A_opt, u_opt)
     end
-    if offdiag
-        entr = calc_entropy_offdiag(mec, A_opt, u_opt)
-    else
-        entr = calc_entropy(mec, A_opt, u_opt)
-    end
+
     chisq = calc_chi2(mec, A_opt)
     norm = trapz(mec.mesh, A_opt)
 
     result_dict = Dict{Symbol,Any}()
     result_dict[:u_opt] = u_opt
+    result_dict[:alpha] = alpha
+    result_dict[:entropy] = entropy
+    result_dict[:chi2] = chisq
+    result_dict[:norm] = norm
+    result_dict[:Q] = alpha * entropy - 0.5 * chisq
     if blur > 0.0
         make_blur(mec.mesh, A_opt, blur)
         result_dict[:A_opt] = A_opt
     else
         result_dict[:A_opt] = A_opt
     end
-
-    result_dict[:alpha] = alpha
-    result_dict[:entropy] = entr
-    result_dict[:chi2] = chisq
-    result_dict[:norm] = norm
-    result_dict[:Q] = alpha * entr - 0.5 * chisq
 
     if use_bayes
         if offdiag
@@ -335,7 +331,7 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
 
     @printf("log10(α) = %8.4f ", log10(alpha))
     @printf("χ² = %8.4e ", chisq)
-    @printf("S = %8.4e ", entr)
+    @printf("S = %8.4e ", entropy)
     @printf("nfev = %4i ", nfev)
     @printf("norm = %8.4f\n", norm)
 
