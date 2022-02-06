@@ -11,16 +11,16 @@
     MaxEntContext
 """
 mutable struct MaxEntContext
-    Gdata :: Vector{F64}
-    σ² :: Vector{F64}
-    mesh :: AbstractMesh
-    model :: Vector{F64}
+    Gᵥ     :: Vector{F64}
+    σ²     :: Vector{F64}
+    mesh   :: AbstractMesh
+    model  :: Vector{F64}
     kernel :: Array{F64,2}
-    Vₛ :: Array{F64,2}
-    W₂ :: Array{F64,2}
-    W₃ :: Array{F64,3}
-    Bₘ :: Vector{F64}
-    hess :: Array{F64,2}
+    Vₛ     :: Array{F64,2}
+    W₂     :: Array{F64,2}
+    W₃     :: Array{F64,3}
+    Bₘ     :: Vector{F64}
+    hess   :: Array{F64,2}
 end
 
 function solve(::MaxEntSolver, rd::RawData)
@@ -32,7 +32,7 @@ end
 function maxent_init(rd::RawData)
     G = make_data(rd)
     σ² = 1.0 ./ G.covar
-    Gdata = G.value
+    Gᵥ = G.value
     println("Postprocess input data: ", length(σ²), " points")
 
     grid = make_grid(rd)
@@ -50,10 +50,10 @@ function maxent_init(rd::RawData)
     Uₛ, Vₛ, Sₛ = make_singular_space(kernel)
     println("Create singular value decomposition space: ", size(Vₛ))
 
-    W₂, W₃, Bₘ, hess = precompute(Gdata, σ², mesh, model, kernel, Uₛ, Vₛ, Sₛ)
+    W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel, Uₛ, Vₛ, Sₛ)
     println("Precompute key coefficients")
 
-    return MaxEntContext(Gdata, σ², mesh, model, kernel, Vₛ, W₂, W₃, Bₘ, hess)
+    return MaxEntContext(Gᵥ, σ², mesh, model, kernel, Vₛ, W₂, W₃, Bₘ, hess)
 end
 
 function maxent_run(mec::MaxEntContext)
@@ -318,7 +318,7 @@ function postprocess(am::AbstractMesh, darr, sol)
     write_spectrum(am, sol[:A_opt])
 end
 
-function precompute(Gdata::Vector{F64}, σ²::Vector{F64},
+function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
                     mesh::AbstractMesh, model::Vector{F64},
                     kernel::Matrix{F64},
                     U::Matrix{F64}, V::Matrix{F64}, S::Vector{F64})
@@ -342,7 +342,7 @@ function precompute(Gdata::Vector{F64}, σ²::Vector{F64},
         W₃[:,:,i] = W₂[:,i] * adjoint(V[i,:])
     end
 
-    @einsum Bₘ[m] = S[m] * U[k,m] * σ²[k] * Gdata[k]
+    @einsum Bₘ[m] = S[m] * U[k,m] * σ²[k] * Gᵥ[k]
 
     @einsum hess[i,j] = weight[i] * weight[j] * kernel[k,i] * kernel[k,j] * σ²[k]
 
@@ -461,7 +461,7 @@ function calc_chi2(mec::MaxEntContext, A::Vector{F64})
 
     T = zeros(F64, ndim)
     for i = 1:ndim
-        T[i] = mec.Gdata[i] - trapz(mec.mesh, mec.kernel[i,:] .* A)
+        T[i] = mec.Gᵥ[i] - trapz(mec.mesh, mec.kernel[i,:] .* A)
     end
     value = sum(mec.σ² .* T .^ 2.0)
 
