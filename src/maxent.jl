@@ -226,6 +226,10 @@ end
     chi2kink
 """
 function chi2kink(mec::MaxEntContext)
+    function fitfun(x, p)
+        return @. p[1] + p[2] / (1.0 + exp(-p[4] * (x - p[3])))
+    end
+
     println("Apply chi2kink algorithm to determine optimized α")
 
     use_bayes = false
@@ -249,10 +253,6 @@ function chi2kink(mec::MaxEntContext)
         if alpha < alpha_end
             break
         end
-    end
-
-    function fitfun(x, p)
-        return @. p[1] + p[2] / (1.0 + exp(-p[4] * (x - p[3])))
     end
 
     good_data = isfinite.(chi_arr)
