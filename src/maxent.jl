@@ -37,8 +37,8 @@ end
 """
 function maxent_init(rd::RawData)
     G = make_data(rd)
-    σ² = 1.0 ./ G.covar
     Gᵥ = G.value
+    σ² = 1.0 ./ G.covar
     println("Postprocess input data: ", length(σ²), " points")
 
     grid = make_grid(rd)
