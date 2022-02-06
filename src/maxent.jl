@@ -342,8 +342,7 @@ end
     precompute
 """
 function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
-                    mesh::AbstractMesh, model::Vector{F64},
-                    kernel::Matrix{F64},
+                    mesh::AbstractMesh, model::Vector{F64}, kernel::Matrix{F64},
                     U::Matrix{F64}, V::Matrix{F64}, S::Vector{F64})
     offdiag = get_c("offdiag")
     nmesh = mesh.nmesh
