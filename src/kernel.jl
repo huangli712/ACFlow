@@ -141,7 +141,6 @@ K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
 =#
 
 function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
-    blur = get_m("blur")
     nfreq = bg.nfreq
     nmesh = am.nmesh
 
