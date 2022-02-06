@@ -101,6 +101,12 @@ end
     historic
 """
 function historic(mec::MaxEntContext)
+    function root_fun(_alpha, _u)
+        res = optimizer(mec, _alpha, _u, use_bayes)
+        @. _u = res[:u]
+        return length(mec.σ²) / res[:χ²] - 1.0
+    end
+
     println("Apply historic algorithm to determine optimized α")
 
     use_bayes = false
@@ -109,24 +115,19 @@ function historic(mec::MaxEntContext)
     n_svd = length(mec.Bₘ)
 
     ustart = zeros(F64, n_svd)
-    optarr = []
+    s_vec = []
 
     conv = 0.0
     while conv < 1.0
         sol = optimizer(mec, alpha, ustart, use_bayes)
-        push!(optarr, sol)
+        push!(s_vec, sol)
         alpha = alpha / ratio
-        conv = length(mec.σ²) / sol[:chi2]
+        conv = length(mec.σ²) / sol[:χ²]
     end
 
-    ustart = optarr[end-1][:u_opt]
-    alpha = optarr[end][:alpha]
+    ustart = s_vec[end-1][:u]
+    alpha = s_vec[end][:α]
 
-    function root_fun(_alpha, _u)
-        res = optimizer(mec, _alpha, _u, use_bayes)
-        @. _u = res[:u_opt]
-        return length(mec.σ²) / res[:chi2] - 1.0
-    end
     alpha_opt = secant(root_fun, alpha, ustart)
     println("opt alpha:", alpha_opt)
 
