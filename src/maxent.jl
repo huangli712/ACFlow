@@ -90,10 +90,10 @@ end
     postprocess
 """
 function postprocess(S::MaxEntSolver, am::AbstractMesh, svec::Vector, sol::Dict)
-    α_vec = map(x -> x[:alpha], svec)
-    χ_vec = map(x -> x[:chi2], svec)
+    α_vec = map(x -> x[:α], svec)
+    χ_vec = map(x -> x[:χ²], svec)
 
-    write_spectrum(am, sol[:A_opt])
+    write_spectrum(am, sol[:A])
     write_chi2(α_vec, χ_vec)
 end
 
