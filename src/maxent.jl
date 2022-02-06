@@ -289,12 +289,12 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
     offdiag = get_c("offdiag")
 
     if offdiag
-        solution, nfev = newton(f_and_J_offdiag, ustart, mec, alpha)
+        solution, call = newton(f_and_J_offdiag, ustart, mec, alpha)
         u_opt = copy(solution)
         A_opt = svd_to_real_offdiag(mec, solution)
         entropy = calc_entropy_offdiag(mec, A_opt, u_opt)
     else
-        solution, nfev = newton(f_and_J, ustart, mec, alpha)
+        solution, call = newton(f_and_J, ustart, mec, alpha)
         u_opt = copy(solution)
         A_opt = svd_to_real(mec, solution)
         entropy = calc_entropy(mec, A_opt, u_opt)
@@ -309,7 +309,7 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
     result_dict[:entropy] = entropy
     result_dict[:chi2] = χ²
     result_dict[:norm] = norm
-    result_dict[:Q] = alpha * entropy - 0.5 * chisq
+    result_dict[:Q] = alpha * entropy - 0.5 * χ²
     if blur > 0.0
         make_blur(mec.mesh, A_opt, blur)
         result_dict[:A_opt] = A_opt
@@ -332,7 +332,7 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
     @printf("log10(α) = %8.4f ", log10(alpha))
     @printf("χ² = %8.4e ", χ²)
     @printf("S = %8.4e ", entropy)
-    @printf("nfev = %4i ", nfev)
+    @printf("call = %4i ", call)
     @printf("norm = %8.4f\n", norm)
 
     return result_dict
