@@ -251,9 +251,9 @@ function chi2kink(mec::MaxEntContext)
     while true
         sol = optimizer(mec, alpha, ustart, use_bayes)
         push!(s_vec, sol)
-        push!(χ_vec, sol[:chi2])
+        push!(χ_vec, sol[:χ²])
         push!(α_vec, alpha)
-        @. ustart = sol[:u_opt]
+        @. ustart = sol[:u]
         alpha = alpha / ratio
         if alpha < α_end
             break
@@ -268,7 +268,7 @@ function chi2kink(mec::MaxEntContext)
     fit_pos = 2.5
     α_opt = c - fit_pos / d
     close = argmin( abs.( log10.(α_vec) .- α_opt ) )
-    ustart = s_vec[close][:u_opt]
+    ustart = s_vec[close][:u]
     α_opt = 10.0 ^ α_opt
 
     sol = optimizer(mec, α_opt, ustart, use_bayes)
