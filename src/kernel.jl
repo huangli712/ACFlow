@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/05
+# Last modified: 2022/02/06
 #
 
 #=
@@ -24,6 +24,9 @@ K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}}
 ```
 =#
 
+"""
+    build_kernel
+"""
 function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
     ntime = fg.ntime
     nmesh = am.nmesh
@@ -56,6 +59,9 @@ K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
 ```
 =#
 
+"""
+    build_kernel
+"""
 function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     blur = get_m("blur")
     nfreq = fg.nfreq
@@ -64,7 +70,7 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     _kernel = zeros(C64, nfreq, nmesh)
 
     if blur > 0.0
-        bmesh, gaussian = gauss(blur)
+        bmesh, gaussian = make_gauss_peaks(blur)
         nsize = length(bmesh)
         Mx = reshape(gaussian, (1, 1, nsize))
         Mg = reshape(fg.ω, (nfreq, 1, 1))
@@ -108,6 +114,9 @@ K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}
 ```
 =#
 
+"""
+    build_kernel
+"""
 function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     ntime = bg.ntime
     nmesh = am.nmesh
@@ -119,6 +128,7 @@ function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
             kernel[j,i] = exp(-bg[j] * am[i]) / (1.0 - exp(-β * am[i]))
         end
     end
+    @. kernel[:,1] = 1.0
 
     return kernel
 end
@@ -140,6 +150,9 @@ K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
 ```
 =#
 
+"""
+    build_kernel
+"""
 function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     nfreq = bg.nfreq
     nmesh = am.nmesh
@@ -162,6 +175,8 @@ function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 end
 
 #=
+*Remarks* :
+
 ```math
 \begin{equation}
 K(\tau,\omega) = \frac{e^{-\tau\omega} + e^{-(\beta - \tau)\omega}}
@@ -170,6 +185,9 @@ K(\tau,\omega) = \frac{e^{-\tau\omega} + e^{-(\beta - \tau)\omega}}
 ```
 =#
 
+"""
+    build_kernel_symm
+"""
 function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     ntime = bg.ntime
     nmesh = am.nmesh
@@ -188,6 +206,8 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 end
 
 #=
+*Remarks* :
+
 ```math
 \begin{equation}
 K(\omega_n, \epsilon) = \frac{\epsilon^2}{\omega_n^2 + \epsilon^2}
@@ -195,6 +215,9 @@ K(\omega_n, \epsilon) = \frac{\epsilon^2}{\omega_n^2 + \epsilon^2}
 ```
 =#
 
+"""
+    build_kernel_symm
+"""
 function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     blur = get_m("blur")
     nfreq = bg.nfreq
@@ -203,7 +226,7 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     kernel = zeros(F64, nfreq, nmesh)
 
     if blur > 0.0
-        bmesh, gaussian = gauss(blur)
+        bmesh, gaussian = make_gauss_peaks(blur)
         nsize = length(bmesh)
         Mx = reshape(gaussian, (1, 1, nsize))
         Mg = reshape(bg.ω, (nfreq, 1, 1))
@@ -236,6 +259,9 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     return kernel
 end
 
+"""
+    make_blur
+"""
 function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     ktype = get_c("ktype")
 
@@ -248,7 +274,7 @@ function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
         spl = Spline1D(vM, vA)
     end
 
-    bmesh, gaussian = gauss(blur)
+    bmesh, gaussian = make_gauss_peaks(blur)
 
     nsize = length(bmesh)
     nmesh = am.nmesh
@@ -263,6 +289,9 @@ function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     end
 end
 
+"""
+    make_singular_space
+"""
 function make_singular_space(kernel::Matrix{F64})
     U, S, V = svd(kernel)
     n_svd = count(x -> x ≥ 1e-10, S)
@@ -273,7 +302,10 @@ function make_singular_space(kernel::Matrix{F64})
     return U_svd, V_svd, S_svd
 end
 
-function gauss(blur::F64)
+"""
+    make_gauss_peaks
+"""
+function make_gauss_peaks(blur::F64)
     @assert blur > 0.0
     nsize = 201
     bmesh = collect(LinRange(-5.0 * blur, 5.0 * blur, nsize))
