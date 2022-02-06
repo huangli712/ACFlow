@@ -336,7 +336,7 @@ function precompute(Gdata::Vector{F64}, E::Vector{F64},
     end
 
     for i = 1:nmesh
-        W₃[:,:,i] = W₂[:,i] * (V[i,:])'
+        W₃[:,:,i] = W₂[:,i] * adjoint(V[i,:])
     end
 
     @einsum Bₘ[m] = S[m] * U[k,m] * E[k] * Gdata[k]
