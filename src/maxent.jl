@@ -236,47 +236,49 @@ function chi2kink(mec::MaxEntContext)
     alpha = get_m("alpha")
     ratio = get_m("ratio")
     nalph = get_m("nalph")
-    alpha_end = alpha / (ratio^nalph)
+    α_end = alpha / (ratio^nalph)
     n_svd = length(mec.Bₘ)
-    ustart = zeros(F64, n_svd)
-    optarr = []
 
-    chi_arr = []
-    alpharr = []
+    ustart = zeros(F64, n_svd)
+    s_vec = []
+    χ_vec = []
+    α_vec = []
+
     while true
         sol = optimizer(mec, alpha, ustart, use_bayes)
-        push!(optarr, sol)
-        push!(chi_arr, sol[:chi2])
-        push!(alpharr, alpha)
+        push!(s_vec, sol)
+        push!(χ_vec, sol[:chi2])
+        push!(α_vec, alpha)
         @. ustart = sol[:u_opt]
         alpha = alpha / ratio
-        if alpha < alpha_end
+        if alpha < α_end
             break
         end
     end
 
-    good_data = isfinite.(chi_arr)
-    fit = curve_fit(fitfun, log10.(alpharr[good_data]), log10.(chi_arr[good_data]), [0.0, 5.0, 2.0, 0.0])
+    good = isfinite.(χ_vec)
+    guess = [0.0, 5.0, 2.0, 0.0]
+    fit = curve_fit(fitfun, log10.(α_vec[good]), log10.(χ_vec[good]), guess)
     a, b, c, d = fit.param
 
     fit_position = 2.5
     a_opt = c - fit_position / d
-    closest_idx = argmin( abs.( log10.(alpharr) .- a_opt ) )
-    ustart = optarr[closest_idx][:u_opt]
+    closest_idx = argmin( abs.( log10.(α_vec) .- a_opt ) )
+    ustart = s_vec[closest_idx][:u_opt]
     alpha_opt = 10.0 ^ a_opt
 
     sol = optimizer(mec, alpha_opt, ustart, use_bayes)
 
     open("chi2kink.fit", "w") do fout
-        alpharr = log10.(alpharr)
-        chi_arr = log10.(chi_arr)
-        fit_arr = fitfun(alpharr, fit.param)
-        for i = 1:length(alpharr)
-            println(fout, alpharr[i], " ", chi_arr[i], " ", fit_arr[i])
+        α_vec = log10.(α_vec)
+        χ_vec = log10.(χ_vec)
+        fit_arr = fitfun(α_vec, fit.param)
+        for i = 1:length(α_vec)
+            println(fout, α_vec[i], " ", χ_vec[i], " ", fit_arr[i])
         end
     end
 
-    return optarr, sol
+    return s_vec, sol
 end
 
 """
