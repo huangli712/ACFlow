@@ -35,7 +35,7 @@ mutable struct StochMC
     swap_try :: Vector{I64}
 end
 
-function solve(rd::RawData)
+function solve(::StochACSolver, rd::RawData)
     G = make_data(rd)
     Gtau = abs.(G.value) ./ G.var
     Gdev = G.var
