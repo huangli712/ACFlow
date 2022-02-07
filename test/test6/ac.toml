@@ -1,17 +1,20 @@
 [COMM]
 finput = "green.data"
 solver = "MaxEnt"
-kernel = "fermionic"
-model  = "gauss"
-grid   = "matsubara"
-mesh   = "nonuniform"
+ktype  = "fermi"
+mtype  = "gauss"
+grid   = "ffreq"
+mesh   = "tangent"
 ngrid  = 50
 nmesh  = 301
 wmax   = 10.0
 wmin   = -10.0
 beta   = 20.0
+offdiag = false
 
 [MaxEnt]
 method = "chi2kink"
-alpha = 1e9
-blur = -1.0
+nalph  = 12
+alpha  = 1e9
+ratio  = 10.0
+blur   = 0.45
