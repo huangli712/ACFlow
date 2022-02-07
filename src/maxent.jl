@@ -139,7 +139,7 @@ function historic(mec::MaxEntContext)
     α_opt = secant(root_fun, alpha, u_vec)
 
     sol = optimizer(mec, α_opt, u_vec, use_bayes)
-    println("Optimized α : ", α_opt)
+    println("Optimized α : $α_opt log10(α) : $(log10(α_opt))")
 
     return s_vec, sol
 end
@@ -184,7 +184,7 @@ function classic(mec::MaxEntContext)
     α_opt = secant(root_fun, alpha, u_vec)
 
     sol = optimizer(mec, α_opt, u_vec, use_bayes)
-    println("Optimized α : ", α_opt)
+    println("Optimized α : $α_opt log10(α) : $(log10(α_opt))")
 
     return s_vec, sol
 end
@@ -285,7 +285,7 @@ function chi2kink(mec::MaxEntContext)
     α_opt = 10.0 ^ α_opt
 
     sol = optimizer(mec, α_opt, u_vec, use_bayes)
-    println("Optimized α : ", α_opt)
+    println("Optimized α : $α_opt log10(α) : $(log10(α_opt))")
 
     return s_vec, sol
 end
