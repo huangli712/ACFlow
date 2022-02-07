@@ -39,6 +39,24 @@ function solve(rd::RawData)
 end
 
 """
+    reprod
+"""
+function reprod(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
+    ndim, nmesh = size(kernel)
+    @assert nmesh == length(am) == length(A)
+
+    Ac = reshape(A, (1, nmesh))
+    KA = kernel .* Ac
+
+    G = zeros(F64, ndim)
+    for i = 1:ndim
+        G[i] = trapz(am, KA[i,:])
+    end
+
+    return G
+end
+
+"""
     setup_param
 """
 function setup_param()
