@@ -107,8 +107,8 @@ end
     historic
 """
 function historic(mec::MaxEntContext)
-    function root_fun(_alpha, _u)
-        res = optimizer(mec, _alpha, _u, use_bayes)
+    function root_fun(_α, _u)
+        res = optimizer(mec, _α, _u, use_bayes)
         @. _u = res[:u]
         return length(mec.σ²) / res[:χ²] - 1.0
     end
@@ -145,8 +145,8 @@ end
     classic
 """
 function classic(mec::MaxEntContext)
-    function root_fun(_alpha, _u)
-        res = optimizer(mec, _alpha, _u, use_bayes)
+    function root_fun(_α, _u)
+        res = optimizer(mec, _α, _u, use_bayes)
         @. _u = res[:u]
         return res[:conv] - 1.0
     end
@@ -290,17 +290,17 @@ end
 """
     optimizer
 """
-function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_bayes::Bool)
+function optimizer(mec::MaxEntContext, α::F64, ustart::Vector{F64}, use_bayes::Bool)
     blur = get_m("blur")
     offdiag = get_c("offdiag")
 
     if offdiag
-        solution, call = newton(f_and_J_offdiag, ustart, mec, alpha)
+        solution, call = newton(f_and_J_offdiag, ustart, mec, α)
         u = copy(solution)
         A = svd_to_real_offdiag(mec, solution)
         S = calc_entropy_offdiag(mec, A, u)
     else
-        solution, call = newton(f_and_J, ustart, mec, alpha)
+        solution, call = newton(f_and_J, ustart, mec, α)
         u = copy(solution)
         A = svd_to_real(mec, solution)
         S = calc_entropy(mec, A, u)
@@ -311,11 +311,11 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
 
     dict = Dict{Symbol,Any}()
     dict[:u] = u
-    dict[:α] = alpha
+    dict[:α] = α
     dict[:S] = S
     dict[:χ²] = χ²
     dict[:norm] = norm
-    dict[:Q] = alpha * S - 0.5 * χ²
+    dict[:Q] = α * S - 0.5 * χ²
 
     if blur > 0.0
         make_blur(mec.mesh, A, blur)
@@ -326,9 +326,9 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
 
     if use_bayes
         if offdiag
-            ng, tr, conv, prob = calc_bayes_offdiag(mec, A, S, χ², alpha)
+            ng, tr, conv, prob = calc_bayes_offdiag(mec, A, S, χ², α)
         else
-            ng, tr, conv, prob = calc_bayes(mec, A, S, χ², alpha)
+            ng, tr, conv, prob = calc_bayes(mec, A, S, χ², α)
         end
         dict[:ngood] = ng
         dict[:trace] = tr
@@ -336,7 +336,7 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
         dict[:prob] = prob
     end
 
-    @printf("log10(α) = %8.4f ", log10(alpha))
+    @printf("log10(α) = %8.4f ", log10(α))
     @printf("χ² = %8.4e ", χ²)
     @printf("S = %8.4e ", S)
     @printf("call = %4i ", call)
@@ -382,7 +382,7 @@ end
 """
     f_and_J
 """
-function f_and_J(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
+function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
     v = mec.Vₛ * u
     w = exp.(v)
 
@@ -400,8 +400,8 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
         end
     end
 
-    f = alpha * u + term_1 - mec.Bₘ
-    J = alpha * diagm(ones(n_svd)) + term_2
+    f = α * u + term_1 - mec.Bₘ
+    J = α * diagm(ones(n_svd)) + term_2
 
     return f, J
 end
@@ -409,7 +409,7 @@ end
 """
     f_and_J_offdiag
 """
-function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
+function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
     v = mec.Vₛ * u
     w = exp.(v)
 
@@ -432,8 +432,8 @@ function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, alpha::F64)
         end
     end
 
-    f = alpha * u + term_1 - mec.Bₘ
-    J = alpha * diagm(ones(n_svd)) + term_2
+    f = α * u + term_1 - mec.Bₘ
+    J = α * diagm(ones(n_svd)) + term_2
 
     return f, J
 end
@@ -473,19 +473,19 @@ end
 """
     calc_bayes
 """
-function calc_bayes(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, alpha::F64)
+function calc_bayes(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
     mesh = mec.mesh
 
     T = sqrt.(A ./ mesh.weight)
     Λ = (T * T') .* mec.hess
 
     lam = eigvals(Hermitian(Λ))
-    ng = -2.0 * alpha * S
-    tr = sum(lam ./ (alpha .+ lam))
+    ng = -2.0 * α * S
+    tr = sum(lam ./ (α .+ lam))
     conv = tr / ng
 
-    eig_sum = sum(log.(alpha ./ (alpha .+ lam)))
-    log_prob = alpha * S - 0.5 * χ² + log(alpha) + 0.5 * eig_sum
+    eig_sum = sum(log.(α ./ (α .+ lam)))
+    log_prob = α * S - 0.5 * χ² + log(α) + 0.5 * eig_sum
 
     return ng, tr, conv, exp(log_prob)
 end
@@ -493,19 +493,19 @@ end
 """
     calc_bayes_offdiag
 """
-function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, alpha::F64)
+function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
     mesh = mec.mesh
 
     T = (( A .^ 2.0 + 4.0 * mec.model .* mec.model ) / (mesh.weight .^ 2.0)) .^ 0.25
     Λ = (T * T') .* mec.hess
 
     lam = eigvals(Hermitian(Λ))
-    ng = -2.0 * alpha * S
-    tr = sum(lam ./ (alpha .+ lam))
+    ng = -2.0 * α * S
+    tr = sum(lam ./ (α .+ lam))
     conv = tr / ng
 
-    eig_sum = sum(log.(alpha ./ (alpha .+ lam)))
-    log_prob = alpha * S - 0.5 * χ² + log(alpha) + 0.5 * eig_sum
+    eig_sum = sum(log.(α ./ (α .+ lam)))
+    log_prob = α * S - 0.5 * χ² + log(α) + 0.5 * eig_sum
 
     return ng, tr, conv, exp(log_prob)
 end
