@@ -13,8 +13,8 @@ beta   = 10.0
 offdiag = false
 
 [MaxEnt]
-method = "bryan"
+method = "chi2kink"
 nalph  = 12
-alpha  = 500.0
-ratio  = 1.1
+alpha  = 1e9
+ratio  = 10.0
 blur   = -1.0
