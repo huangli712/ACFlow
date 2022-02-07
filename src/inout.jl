@@ -128,7 +128,7 @@ function write_reprod(ag::AbstractGrid, G::Vector{F64})
     ngrid = length(ag)
     ng = length(G)
     @assert ngrid == ng || ngrid * 2 == ng
-    
+
     if ngrid == ng
         open("Grep.data", "w") do fout
             for i = 1:ngrid
