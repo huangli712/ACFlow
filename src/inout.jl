@@ -107,13 +107,39 @@ function write_chi2(α_vec::Vector{F64}, χ_vec::Vector{F64})
     end
 end
 
+"""
+    write_probability
+"""
 function write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
     @assert length(α_vec) == length(p_vec)
-    open("probability.data", "w") do fout
+    open("prob.data", "w") do fout
         p_vec = -p_vec ./ trapz(α_vec, p_vec)
         α_vec = log10.(α_vec)
         for i = 1:length(α_vec)
             @printf(fout, "%16.12f %16.12f\n", α_vec[i], p_vec[i])
+        end
+    end
+end
+
+"""
+    write_reprod
+"""
+function write_reprod(ag::AbstractGrid, G::Vector{F64})
+    ngrid = length(ag)
+    ng = length(G)
+    @assert ngrid == ng || ngrid * 2 == ng
+    
+    if ngrid == ng
+        open("Grep.data", "w") do fout
+            for i = 1:ngrid
+                @printf(fout, "%16.12f %16.12f\n", ag[i], G[i])
+            end
+        end
+    else
+        open("Grep.data", "w") do fout
+            for i = 1:ngrid
+                @printf(fout, "%16.12f %16.12f %16.12f\n", ag[i], G[i], G[i+ngrid])
+            end
         end
     end
 end
