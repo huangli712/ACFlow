@@ -110,6 +110,7 @@ end
 function write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
     @assert length(α_vec) == length(p_vec)
     open("probability.data", "w") do fout
+        p_vec = -p_vec ./ trapz(α_vec, p_vec)
         α_vec = log10.(α_vec)
         for i = 1:length(α_vec)
             @printf(fout, "%16.12f %16.12f\n", α_vec[i], p_vec[i])
