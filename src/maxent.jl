@@ -190,6 +190,7 @@ function bryan(mec::MaxEntContext)
     alpha = get_m("alpha")
     ratio = get_m("ratio")
     n_svd = length(mec.Bₘ)
+    nmesh = length(mec.mesh)
 
     u_vec = zeros(F64, n_svd)
     s_vec = []
@@ -214,7 +215,6 @@ function bryan(mec::MaxEntContext)
     A_vec = map(x->x[:A], s_vec)
 
     nprob = length(p_vec)
-    nmesh = length(A_vec[1])
     A_opt = zeros(F64, nmesh)
     spectra = zeros(F64, nprob, nmesh)
     for i = 1:nprob
