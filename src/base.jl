@@ -53,6 +53,12 @@ function reprod(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
         G[i] = trapz(am, KA[i,:])
     end
 
+    open("A.data", "w") do fout
+        for i = 1:length(am)
+            println(fout, i, " ", A[i])
+        end
+    end
+
     return G
 end
 
