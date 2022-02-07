@@ -83,20 +83,26 @@ function run(S::MaxEntSolver, mec::MaxEntContext)
             break
     end
 
-    postprocess(S, mec.mesh, darr, sol)
+    postprocess(mec, darr, sol)
+end
+
+function backward(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
+    println(here)
 end
 
 """
     postprocess
 """
-function postprocess(S::MaxEntSolver, am::AbstractMesh, svec::Vector, sol::Dict)
+function postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
     α_vec = map(x -> x[:α], svec)
     χ_vec = map(x -> x[:χ²], svec)
     if haskey(svec[end], :prob)
         p_vec = map(x -> x[:prob], svec)
     end
 
-    write_spectrum(am, sol[:A])
+    backward(mec.kernel, mec.mesh, sol[:A])
+
+    write_spectrum(mec.mesh, sol[:A])
     write_chi2(α_vec, χ_vec)
     if haskey(svec[end], :prob)
         write_probability(α_vec, p_vec)
