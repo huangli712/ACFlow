@@ -191,15 +191,15 @@ function bryan(mec::MaxEntContext)
     ratio = get_m("ratio")
     n_svd = length(mec.Bₘ)
 
-    ustart = zeros(F64, n_svd)
+    u_vec = zeros(F64, n_svd)
     s_vec = []
 
     maxprob = 0.0
     while true
-        sol = optimizer(mec, alpha, ustart, use_bayes)
+        sol = optimizer(mec, alpha, u_vec, use_bayes)
         push!(s_vec, sol)
         alpha = alpha / ratio
-        @. ustart = sol[:u]
+        @. u_vec = sol[:u]
         prob = sol[:prob]
         if prob > maxprob
             maxprob = prob
