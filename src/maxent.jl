@@ -87,7 +87,7 @@ function run(S::MaxEntSolver, mec::MaxEntContext)
     postprocess(mec, darr, sol)
 end
 
-function backward(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
+function reprod(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
     ndim, nmesh = size(kernel)
     @assert nmesh == length(am) == length(A)
 
@@ -117,7 +117,8 @@ function postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
         write_probability(α_vec, p_vec)
     end
 
-    G = backward(mec.kernel, mec.mesh, sol[:A])
+    G = reprod(mec.kernel, mec.mesh, sol[:A])
+    write_reprod(mec.grid, G)
 end
 
 """
