@@ -13,6 +13,7 @@
 mutable struct MaxEntContext
     Gᵥ     :: Vector{F64}
     σ²     :: Vector{F64}
+    grid   :: AbstractGrid
     mesh   :: AbstractMesh
     model  :: Vector{F64}
     kernel :: Array{F64,2}
@@ -56,7 +57,7 @@ function init(S::MaxEntSolver, rd::RawData)
     Vₛ, W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel)
     println("Precompute key coefficients")
 
-    return MaxEntContext(Gᵥ, σ², mesh, model, kernel, hess, Vₛ, W₂, W₃, Bₘ)
+    return MaxEntContext(Gᵥ, σ², grid, mesh, model, kernel, hess, Vₛ, W₂, W₃, Bₘ)
 end
 
 """
@@ -97,25 +98,26 @@ function backward(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
     for i = 1:ndim
         G[i] = trapz(am, KA[i,:])
     end
+
+    return G
 end
 
 """
     postprocess
 """
 function postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
+    write_spectrum(mec.mesh, sol[:A])
+
     α_vec = map(x -> x[:α], svec)
     χ_vec = map(x -> x[:χ²], svec)
+    write_chi2(α_vec, χ_vec)
+
     if haskey(svec[end], :prob)
         p_vec = map(x -> x[:prob], svec)
-    end
-
-    backward(mec.kernel, mec.mesh, sol[:A])
-
-    write_spectrum(mec.mesh, sol[:A])
-    write_chi2(α_vec, χ_vec)
-    if haskey(svec[end], :prob)
         write_probability(α_vec, p_vec)
     end
+
+    G = backward(mec.kernel, mec.mesh, sol[:A])
 end
 
 """
