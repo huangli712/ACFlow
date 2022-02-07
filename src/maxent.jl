@@ -309,18 +309,18 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
     χ² = calc_chi2(mec, A_opt)
     norm = trapz(mec.mesh, A_opt)
 
-    result_dict = Dict{Symbol,Any}()
-    result_dict[:u] = u_opt
-    result_dict[:α] = alpha
-    result_dict[:S] = entropy
-    result_dict[:χ²] = χ²
-    result_dict[:norm] = norm
-    result_dict[:Q] = alpha * entropy - 0.5 * χ²
+    dict = Dict{Symbol,Any}()
+    dict[:u] = u_opt
+    dict[:α] = alpha
+    dict[:S] = entropy
+    dict[:χ²] = χ²
+    dict[:norm] = norm
+    dict[:Q] = alpha * entropy - 0.5 * χ²
     if blur > 0.0
         make_blur(mec.mesh, A_opt, blur)
-        result_dict[:A] = A_opt
+        dict[:A] = A_opt
     else
-        result_dict[:A] = A_opt
+        dict[:A] = A_opt
     end
 
     if use_bayes
@@ -329,10 +329,10 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
         else
             ng, tr, conv, prob = calc_bayes(mec, A_opt, entropy, χ², alpha)
         end
-        result_dict[:ngood] = ng
-        result_dict[:trace] = tr
-        result_dict[:conv] = conv
-        result_dict[:prob] = prob
+        dict[:ngood] = ng
+        dict[:trace] = tr
+        dict[:conv] = conv
+        dict[:prob] = prob
     end
 
     @printf("log10(α) = %8.4f ", log10(alpha))
@@ -341,7 +341,7 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
     @printf("call = %4i ", call)
     @printf("norm = %8.4f\n", norm)
 
-    return result_dict
+    return dict
 end
 
 """
