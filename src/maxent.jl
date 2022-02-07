@@ -310,18 +310,18 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
     norm = trapz(mec.mesh, A)
 
     dict = Dict{Symbol,Any}()
-    dict[:u] = u_opt
+    dict[:u] = u
     dict[:α] = alpha
-    dict[:S] = entropy
+    dict[:S] = S
     dict[:χ²] = χ²
     dict[:norm] = norm
-    dict[:Q] = alpha * entropy - 0.5 * χ²
+    dict[:Q] = alpha * S - 0.5 * χ²
 
     if blur > 0.0
-        make_blur(mec.mesh, A_opt, blur)
-        dict[:A] = A_opt
+        make_blur(mec.mesh, A, blur)
+        dict[:A] = A
     else
-        dict[:A] = A_opt
+        dict[:A] = A
     end
 
     if use_bayes
