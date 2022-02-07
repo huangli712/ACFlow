@@ -1,17 +1,20 @@
 [COMM]
 finput = "sigma.data"
 solver = "MaxEnt"
-kernel = "fermionic"
-model  = "gauss"
-grid   = "matsubara"
-mesh   = "nonuniform"
+ktype  = "fermi"
+mtype  = "gauss"
+grid   = "ffreq"
+mesh   = "tangent"
 ngrid  = 300
 nmesh  = 501
 wmax   = 30.0
 wmin   = -30.0
 beta   = 38.0
+offdiag = false
 
 [MaxEnt]
 method = "chi2kink"
-blur = 0.3
+nalph  = 13
 alpha  = 1e12
+ratio  = 10.0
+blur   = 0.3
