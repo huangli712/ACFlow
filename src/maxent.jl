@@ -290,17 +290,17 @@ end
 """
     optimizer
 """
-function optimizer(mec::MaxEntContext, α::F64, ustart::Vector{F64}, use_bayes::Bool)
+function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool)
     blur = get_m("blur")
     offdiag = get_c("offdiag")
 
     if offdiag
-        solution, call = newton(f_and_J_offdiag, ustart, mec, α)
+        solution, call = newton(f_and_J_offdiag, us, mec, α)
         u = copy(solution)
         A = svd_to_real_offdiag(mec, solution)
         S = calc_entropy_offdiag(mec, A, u)
     else
-        solution, call = newton(f_and_J, ustart, mec, α)
+        solution, call = newton(f_and_J, us, mec, α)
         u = copy(solution)
         A = svd_to_real(mec, solution)
         S = calc_entropy(mec, A, u)
