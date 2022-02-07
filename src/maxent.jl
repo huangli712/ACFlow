@@ -253,17 +253,17 @@ function chi2kink(mec::MaxEntContext)
     α_end = alpha / (ratio^nalph)
     n_svd = length(mec.Bₘ)
 
-    ustart = zeros(F64, n_svd)
+    u_vec = zeros(F64, n_svd)
     s_vec = []
     χ_vec = []
     α_vec = []
 
     while true
-        sol = optimizer(mec, alpha, ustart, use_bayes)
+        sol = optimizer(mec, alpha, u_vec, use_bayes)
         push!(s_vec, sol)
         push!(χ_vec, sol[:χ²])
         push!(α_vec, alpha)
-        @. ustart = sol[:u]
+        @. u_vec = sol[:u]
         alpha = alpha / ratio
         if alpha < α_end
             break
@@ -278,10 +278,10 @@ function chi2kink(mec::MaxEntContext)
     fit_pos = 2.5
     α_opt = c - fit_pos / d
     close = argmin( abs.( log10.(α_vec) .- α_opt ) )
-    ustart = s_vec[close][:u]
+    u_vec = s_vec[close][:u]
     α_opt = 10.0 ^ α_opt
 
-    sol = optimizer(mec, α_opt, ustart, use_bayes)
+    sol = optimizer(mec, α_opt, u_vec, use_bayes)
     println("Optimized α : ", α_opt)
 
     return s_vec, sol
