@@ -87,7 +87,16 @@ function run(S::MaxEntSolver, mec::MaxEntContext)
 end
 
 function backward(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
-    println(here)
+    ndim, nmesh = size(kernel)
+    @assert nmesh == length(am) == length(A)
+
+    Ac = reshape(A, (1, nmesh))
+    KA = kernel .* Ac
+
+    G = zeros(F64, ndim)
+    for i = 1:ndim
+        G[i] = trapz(am, KA[i,:])
+    end
 end
 
 """
