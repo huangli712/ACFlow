@@ -4,8 +4,15 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/06
+# Last modified: 2022/02/07
 #
+
+"""
+    solve
+"""
+function solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T}) where {T}
+    solve(RawData(grid, Gval, Gerr))
+end
 
 """
     solve
