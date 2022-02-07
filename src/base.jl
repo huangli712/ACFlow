@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/07
+# Last modified: 2022/02/08
 #
 
 """
@@ -51,12 +51,6 @@ function reprod(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
     G = zeros(F64, ndim)
     for i = 1:ndim
         G[i] = trapz(am, KA[i,:])
-    end
-
-    open("A.data", "w") do fout
-        for i = 1:length(am)
-            println(fout, i, " ", A[i])
-        end
     end
 
     return G
