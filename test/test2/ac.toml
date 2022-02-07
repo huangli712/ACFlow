@@ -1,7 +1,7 @@
 [COMM]
 finput = "green.data"
 solver = "MaxEnt"
-ktype  = "boson"
+ktype  = "bsymm"
 mtype  = "flat"
 grid   = "bfreq"
 mesh   = "linear"
