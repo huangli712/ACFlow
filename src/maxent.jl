@@ -479,12 +479,12 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F
     T = sqrt.(A ./ mesh.weight)
     Λ = (T * T') .* mec.hess
 
-    lam = eigvals(Hermitian(Λ))
+    λ = eigvals(Hermitian(Λ))
     ng = -2.0 * α * S
-    tr = sum(lam ./ (α .+ lam))
+    tr = sum(λ ./ (α .+ λ))
     conv = tr / ng
 
-    eig_sum = sum(log.(α ./ (α .+ lam)))
+    eig_sum = sum(log.(α ./ (α .+ λ)))
     log_prob = α * S - 0.5 * χ² + log(α) + 0.5 * eig_sum
 
     return ng, tr, conv, exp(log_prob)
@@ -499,12 +499,12 @@ function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F6
     T = (( A .^ 2.0 + 4.0 * mec.model .* mec.model ) / (mesh.weight .^ 2.0)) .^ 0.25
     Λ = (T * T') .* mec.hess
 
-    lam = eigvals(Hermitian(Λ))
+    λ = eigvals(Hermitian(Λ))
     ng = -2.0 * α * S
-    tr = sum(lam ./ (α .+ lam))
+    tr = sum(λ ./ (α .+ λ))
     conv = tr / ng
 
-    eig_sum = sum(log.(α ./ (α .+ lam)))
+    eig_sum = sum(log.(α ./ (α .+ λ)))
     log_prob = α * S - 0.5 * χ² + log(α) + 0.5 * eig_sum
 
     return ng, tr, conv, exp(log_prob)
