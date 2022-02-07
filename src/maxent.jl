@@ -521,7 +521,7 @@ function calc_chi2(mec::MaxEntContext, A::Vector{F64})
     for i = 1:ndim
         T[i] = mec.Gᵥ[i] - trapz(mec.mesh, mec.kernel[i,:] .* A)
     end
-    value = sum(mec.σ² .* T .^ 2.0)
+    χ² = sum(mec.σ² .* T .^ 2.0)
 
-    return value
+    return χ²
 end
