@@ -296,18 +296,18 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
 
     if offdiag
         solution, call = newton(f_and_J_offdiag, ustart, mec, alpha)
-        u_opt = copy(solution)
-        A_opt = svd_to_real_offdiag(mec, solution)
-        entropy = calc_entropy_offdiag(mec, A_opt, u_opt)
+        u = copy(solution)
+        A = svd_to_real_offdiag(mec, solution)
+        S = calc_entropy_offdiag(mec, A, u)
     else
         solution, call = newton(f_and_J, ustart, mec, alpha)
-        u_opt = copy(solution)
-        A_opt = svd_to_real(mec, solution)
-        entropy = calc_entropy(mec, A_opt, u_opt)
+        u = copy(solution)
+        A = svd_to_real(mec, solution)
+        S = calc_entropy(mec, A, u)
     end
 
-    χ² = calc_chi2(mec, A_opt)
-    norm = trapz(mec.mesh, A_opt)
+    χ² = calc_chi2(mec, A)
+    norm = trapz(mec.mesh, A)
 
     dict = Dict{Symbol,Any}()
     dict[:u] = u_opt
@@ -316,6 +316,7 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
     dict[:χ²] = χ²
     dict[:norm] = norm
     dict[:Q] = alpha * entropy - 0.5 * χ²
+
     if blur > 0.0
         make_blur(mec.mesh, A_opt, blur)
         dict[:A] = A_opt
