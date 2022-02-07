@@ -152,15 +152,15 @@ function classic(mec::MaxEntContext)
     ratio = get_m("ratio")
     n_svd = length(mec.Bₘ)
 
-    ustart = zeros(F64, n_svd)
+    u_vec = zeros(F64, n_svd)
     s_vec = []
 
     conv = 0.0
     while conv < 1.0
-        sol = optimizer(mec, alpha, ustart, use_bayes)
+        sol = optimizer(mec, alpha, u_vec, use_bayes)
         push!(s_vec, sol)
         alpha = alpha / ratio
-        @. ustart = sol[:u]
+        @. u_vec = sol[:u]
         conv = sol[:conv]
     end
 
@@ -170,11 +170,11 @@ function classic(mec::MaxEntContext)
     exp_opt = exp_opt / log10(c_vec[end] / c_vec[end-1])
     exp_opt = log10(α_vec[end-1]) - log10(c_vec[end-1]) * exp_opt
     
-    ustart = s_vec[end-1][:u]
+    u_vec = s_vec[end-1][:u]
     alpha = 10.0 ^ exp_opt
-    α_opt = secant(root_fun, alpha, ustart)
+    α_opt = secant(root_fun, alpha, u_vec)
 
-    sol = optimizer(mec, α_opt, ustart, use_bayes)
+    sol = optimizer(mec, α_opt, u_vec, use_bayes)
     println("Optimized α : ", α_opt)
 
     return s_vec, sol
