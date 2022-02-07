@@ -16,6 +16,7 @@ using Dates
 using Random
 using TOML
 
+using Dierckx
 using LsqFit
 using Einsum
 
