@@ -14,7 +14,7 @@ offdiag = false
 
 [MaxEnt]
 method = "chi2kink"
-nalph  = 12
+nalph  = 15
 alpha  = 1e12
 ratio  = 10.0
 blur   = -1.0
