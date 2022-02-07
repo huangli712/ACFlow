@@ -92,15 +92,11 @@ end
 function postprocess(S::MaxEntSolver, am::AbstractMesh, svec::Vector, sol::Dict)
     α_vec = map(x -> x[:α], svec)
     χ_vec = map(x -> x[:χ²], svec)
-    if haskey(sol, :prob)
-        p_vec = map(x -> x[:prob], svec)
-    end
 
     write_spectrum(am, sol[:A])
     write_chi2(α_vec, χ_vec)
     if haskey(sol, :prob)
-        @show p_vec
-        #write_probability(α_vec, p_vec)
+        write_probability(α_vec, sol[:prob])
     end
 end
 
@@ -233,6 +229,7 @@ function bryan(mec::MaxEntContext)
 
     sol = Dict{Symbol,Any}()
     sol[:A] = A_opt
+    sol[:prob] = p_vec
 
     return s_vec, sol
 end
