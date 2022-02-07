@@ -60,13 +60,13 @@ function som_run(ω::FermionicMatsubaraGrid, 𝐺::GreenData)
         println("try: $l")
 
         SE = som_random(MC, ω, 𝐺)
-    
+
         for _ = 1:Nf
             som_update(SE, MC, ω, 𝐺)
         end
-    
+
         SC.Δv[l] = SE.Δ
-        SC.Cv[l] = deepcopy(SE.C)    
+        SC.Cv[l] = deepcopy(SE.C)
     end
 
     return som_spectra(SC)
@@ -141,7 +141,7 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::GreenDa
     end
     Δ = _calc_err(Λ, _Know, 𝐺)
     G = _calc_gf(Λ, _Know)
-    
+
     return SOMElement(C, Λ, G, Δ)
 end
 
@@ -410,7 +410,7 @@ function _try_position(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsuba
         return
     end
     dc = Pdx(dx_min, dx_max, MC.rng)
-    
+
     Rn = Rectangle(R.h, R.w, R.c + dc)
     G1 = 𝑆.Λ[:,t]
     G2 = _calc_lambda(Rn, ω)

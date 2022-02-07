@@ -193,7 +193,7 @@ function classic(mec::MaxEntContext)
     exp_opt = log10(α_vec[end] / α_vec[end-1])
     exp_opt = exp_opt / log10(c_vec[end] / c_vec[end-1])
     exp_opt = log10(α_vec[end-1]) - log10(c_vec[end-1]) * exp_opt
-    
+
     u_vec = s_vec[end-1][:u]
     alpha = 10.0 ^ exp_opt
     α_opt = secant(root_fun, alpha, u_vec)
