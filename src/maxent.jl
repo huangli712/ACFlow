@@ -473,19 +473,19 @@ end
 """
     calc_bayes
 """
-function calc_bayes(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, alpha::F64)
+function calc_bayes(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, alpha::F64)
     mesh = mec.mesh
 
     T = sqrt.(A ./ mesh.weight)
     Λ = (T * T') .* mec.hess
 
     lam = eigvals(Hermitian(Λ))
-    ng = -2.0 * alpha * ent
+    ng = -2.0 * alpha * S
     tr = sum(lam ./ (alpha .+ lam))
     conv = tr / ng
 
     eig_sum = sum(log.(alpha ./ (alpha .+ lam)))
-    log_prob = alpha * ent - 0.5 * chisq + log(alpha) + 0.5 * eig_sum
+    log_prob = alpha * S - 0.5 * χ² + log(alpha) + 0.5 * eig_sum
 
     return ng, tr, conv, exp(log_prob)
 end
@@ -493,19 +493,19 @@ end
 """
     calc_bayes_offdiag
 """
-function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, ent::F64, chisq::F64, alpha::F64)
+function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, alpha::F64)
     mesh = mec.mesh
 
     T = (( A .^ 2.0 + 4.0 * mec.model .* mec.model ) / (mesh.weight .^ 2.0)) .^ 0.25
     Λ = (T * T') .* mec.hess
 
     lam = eigvals(Hermitian(Λ))
-    ng = -2.0 * alpha * ent
+    ng = -2.0 * alpha * S
     tr = sum(lam ./ (alpha .+ lam))
     conv = tr / ng
 
     eig_sum = sum(log.(alpha ./ (alpha .+ lam)))
-    log_prob = alpha * ent - 0.5 * chisq + log(alpha) + 0.5 * eig_sum
+    log_prob = alpha * S - 0.5 * χ² + log(alpha) + 0.5 * eig_sum
 
     return ng, tr, conv, exp(log_prob)
 end
