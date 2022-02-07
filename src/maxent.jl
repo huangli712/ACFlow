@@ -494,8 +494,6 @@ end
     calc_bayes_offdiag
 """
 function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
-    mesh = mec.mesh
-
     T = (( A .^ 2.0 + 4.0 * mec.model .* mec.model ) / (mesh.weight .^ 2.0)) .^ 0.25
     Λ = (T * T') .* mec.hess
 
