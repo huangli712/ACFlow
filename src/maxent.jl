@@ -326,9 +326,9 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
 
     if use_bayes
         if offdiag
-            ng, tr, conv, prob = calc_bayes_offdiag(mec, A_opt, entropy, χ², alpha)
+            ng, tr, conv, prob = calc_bayes_offdiag(mec, A, S, χ², alpha)
         else
-            ng, tr, conv, prob = calc_bayes(mec, A_opt, entropy, χ², alpha)
+            ng, tr, conv, prob = calc_bayes(mec, A, S, χ², alpha)
         end
         dict[:ngood] = ng
         dict[:trace] = tr
@@ -338,7 +338,7 @@ function optimizer(mec::MaxEntContext, alpha::F64, ustart::Vector{F64}, use_baye
 
     @printf("log10(α) = %8.4f ", log10(alpha))
     @printf("χ² = %8.4e ", χ²)
-    @printf("S = %8.4e ", entropy)
+    @printf("S = %8.4e ", S)
     @printf("call = %4i ", call)
     @printf("norm = %8.4f\n", norm)
 
