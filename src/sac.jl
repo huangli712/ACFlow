@@ -28,10 +28,10 @@ mutable struct StochContext
     model  :: Vector{F64}
     kernel :: Array{F64,2}
     image  :: Array{F64,2}
-    Δ  :: Array{F64,2}
+    Δ      :: Array{F64,2}
     HC     :: Array{F64,2}
-    ϕ    :: Vector{F64}
-    alist  :: Vector{F64}
+    ϕ      :: Vector{F64}
+    αₗ  :: Vector{F64}
     hamil  :: Vector{F64}
 end
 
@@ -103,7 +103,7 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     mesh = make_mesh()
     fmesh, xmesh = stoch_grid()
 
-    alist = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
+    αₗ = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
     model = make_model(mesh)
     ϕ = cumsum(model .* mesh.weight)
     Δ = stoch_delta(xmesh, ϕ)
@@ -118,7 +118,7 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
         HC[:,i] = stoch_hamil0(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ²)
         hamil[i] = dot(HC[:,i], HC[:,i]) * δt
     end
-    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, HC, ϕ, alist, hamil)
+    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, HC, ϕ, αₗ, hamil)
 
     return MC, SE, SC
 end
@@ -162,7 +162,7 @@ function stoch_dump(step::F64, MC::StochMC, SC::StochContext)
 
     open("stoch.data", "w") do fout
         for i = 1:nalph
-            println(fout, "# $i :", SC.alist[i])
+            println(fout, "# $i :", SC.αₗ[i])
             for j = 1:nmesh
                 println(fout, SC.mesh[j], " ", image_t[j,i])
             end
@@ -248,7 +248,7 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     dhh = dot(dhc, 2.0 * hc + dhc) * δt
 
     pass = false
-    if dhh ≤ 0.0 ||  exp(-SC.alist[i] * dhh) > rand(MC.rng)
+    if dhh ≤ 0.0 ||  exp(-SC.αₗ[i] * dhh) > rand(MC.rng)
         pass = true
     end
 
@@ -296,7 +296,7 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     dhh = dot(dhc, 2.0 * hc + dhc) * δt
 
     pass = false
-    if dhh ≤ 0.0 ||  exp(-SC.alist[i] * dhh) > rand(MC.rng)
+    if dhh ≤ 0.0 ||  exp(-SC.αₗ[i] * dhh) > rand(MC.rng)
         pass = true
     end
 
@@ -334,7 +334,7 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         end
     end
 
-    da = SC.alist[i] - SC.alist[j]
+    da = SC.αₗ[i] - SC.αₗ[j]
     dh = SC.hamil[i] - SC.hamil[j]
 
     pass = ( exp(da * dh) > rand(MC.rng) )
