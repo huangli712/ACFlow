@@ -58,8 +58,8 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
 
     αₗ = calc_alpha()
     model = make_model(mesh)
-    ϕ = cumsum(model .* mesh.weight)
-    Δ = stoch_delta(xmesh, ϕ)
+    ϕ = calc_phi(mesh, model)
+    Δ = calc_delta(xmesh, ϕ)
 
     kernel = make_kernel(fmesh, grid)
 
@@ -133,6 +133,11 @@ function calc_hamil(SE::StochElement, grid::AbstractGrid, kernel, Gᵥ, σ²)
         Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
     return hτ, Hα
+end
+
+function calc_phi(mesh, model)
+    ϕ = cumsum(model .* mesh.weight)
+    return ϕ
 end
 
 function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
