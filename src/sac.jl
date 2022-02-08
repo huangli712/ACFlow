@@ -29,7 +29,7 @@ mutable struct StochContext
     kernel :: Array{F64,2}
     image  :: Array{F64,2}
     Δ      :: Array{F64,2}
-    HC     :: Array{F64,2}
+    hτ     :: Array{F64,2}
     ϕ      :: Vector{F64}
     αₗ  :: Vector{F64}
     hamil  :: Vector{F64}
@@ -112,13 +112,13 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
 
     image = zeros(F64, nmesh, nalph)
     hamil = zeros(F64, nalph)
-    HC = zeros(F64, ngrid, nalph)
+    hτ = zeros(F64, ngrid, nalph)
     δt = grid[2] - grid[1]
     for i = 1:nalph
-        HC[:,i] = stoch_hamil0(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ²)
-        hamil[i] = dot(HC[:,i], HC[:,i]) * δt
+        hτ[:,i] = stoch_hamil0(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ²)
+        hamil[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
-    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, HC, ϕ, αₗ, hamil)
+    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, ϕ, αₗ, hamil)
 
     return MC, SE, SC
 end
@@ -214,7 +214,7 @@ end
 function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     ngamm = get_a("ngamm")
 
-    hc = view(SC.HC, :, i)
+    hc = view(SC.hτ, :, i)
 
     l1 = 1
     l2 = 1
@@ -269,7 +269,7 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     ngamm = get_a("ngamm")
     nfine = get_a("nfine")
 
-    hc = view(SC.HC, :, i)
+    hc = view(SC.hτ, :, i)
 
     l1 = 1
     l2 = 1
@@ -343,7 +343,7 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         SE.Γₐ[:,i], SE.Γₐ[:,j] = SE.Γₐ[:,j], SE.Γₐ[:,i]
         SE.Γᵣ[:,i], SE.Γᵣ[:,j] = SE.Γᵣ[:,j], SE.Γᵣ[:,i]
 
-        SC.HC[:,i], SC.HC[:,j] = SC.HC[:,j], SC.HC[:,i]
+        SC.hτ[:,i], SC.hτ[:,j] = SC.hτ[:,j], SC.hτ[:,i]
         SC.hamil[i], SC.hamil[j] = SC.hamil[j], SC.hamil[i]
     end
 
