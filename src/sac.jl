@@ -48,12 +48,12 @@ end
     init
 """
 function init(S::StochACSolver, rd::RawData)
-
-    grid = make_grid(rd)
+    Gᵥ, σ², image = init_iodata(rd)
 
     MC = init_mc()
     SE = init_element(MC.rng)
 
+    grid = make_grid(rd)
     mesh = make_mesh()
     fmesh = calc_fmesh()
     xmesh = calc_xmesh()
@@ -65,7 +65,6 @@ function init(S::StochACSolver, rd::RawData)
 
     kernel = make_kernel(fmesh, grid)
 
-    
     hτ, Hα = calc_hamil(SE, grid, kernel, Gᵥ, σ²)
     SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, Hα, ϕ, αₗ)
 
