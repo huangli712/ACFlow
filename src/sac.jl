@@ -174,6 +174,13 @@ function init_element(rng::AbstractRNG)
     return SE
 end
 
+"""
+    calc_fmesh()
+
+Try to calculate very fine (dense) linear mesh, which is used internally.
+
+See also: [`LinearMesh`](@ref).
+"""
 function calc_fmesh()
     nfine = get_a("nfine")
     wmin = get_c("wmin")
@@ -425,4 +432,3 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
         end
     end
 end
-
