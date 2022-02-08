@@ -12,6 +12,14 @@ mutable struct StochElement
     r_γ :: Array{F64,2}
 end
 
+mutable struct StochMC
+    rng :: AbstractRNG
+    move_acc :: Vector{I64}
+    move_try :: Vector{I64}
+    swap_acc :: Vector{I64}
+    swap_try :: Vector{I64}
+end
+
 mutable struct StochContext
     kernel :: Array{F64,2}
     delta  :: Array{F64,2}
@@ -21,18 +29,10 @@ mutable struct StochContext
     alist  :: Vector{F64}
     hamil  :: Vector{F64}
     HC     :: Array{F64,2}
-    tmesh :: AbstractGrid
-    wmesh :: AbstractMesh
-    G_tau :: Vector{F64}
-    G_dev :: Vector{F64}
-end
-
-mutable struct StochMC
-    rng :: AbstractRNG
-    move_acc :: Vector{I64}
-    move_try :: Vector{I64}
-    swap_acc :: Vector{I64}
-    swap_try :: Vector{I64}
+    tmesh  :: AbstractGrid
+    wmesh  :: AbstractMesh
+    G_tau  :: Vector{F64}
+    G_dev  :: Vector{F64}
 end
 
 function solve(::StochACSolver, rd::RawData)
