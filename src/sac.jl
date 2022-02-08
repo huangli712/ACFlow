@@ -87,10 +87,63 @@ function run(MC::StochMC, SE::StochElement, SC::StochContext)
 
         if iter % ndump == 0
             println("iter: ", iter / ndump)
-            stoch_dump(step, MC, SC)
+            dump(step, MC, SC)
         end
     end
 end
+
+function warmup(MC::StochMC, SE::StochElement, SC::StochContext)
+    nwarm = get_a("nwarm")
+
+    for i = 1:nwarm
+        println("warm: $i")
+        sample(MC, SE, SC)
+    end
+
+    fill!(MC.move_acc, 0.0)
+    fill!(MC.move_try, 0.0)
+
+    fill!(MC.swap_acc, 0.0)
+    fill!(MC.swap_try, 0.0)
+end
+
+function sample(MC::StochMC, SE::StochElement, SC::StochContext)
+    nalph = get_a("nalph")
+
+    if rand(MC.rng) < 0.9
+        if rand(MC.rng) > 0.5
+            for i = 1:nalph
+                try_mov1(i, MC, SE, SC)
+            end
+        else
+            for i = 1:nalph
+                try_mov2(i, MC, SE, SC)
+            end
+        end
+    else
+        if nalph > 1
+            if rand(MC.rng) > 0.1
+                try_swap(1, MC, SE, SC)
+            else
+                try_swap(2, MC, SE, SC)
+            end
+        end
+    end
+end
+
+function measure(SE::StochElement, SC::StochContext)
+    nalph = get_a("nalph")
+    nmesh = get_c("nmesh")
+    ngamm = get_a("ngamm")
+
+    for ia = 1:nalph
+        dr = view(SE.Γᵣ, :, ia)
+        da = view(SE.Γₐ, :, ia)
+        Aw = SC.Δ[:,da] * dr
+        SC.image[:,ia] = SC.image[:,ia] .+ Aw
+    end
+end
+
 
 function init_mc()
     nalph = get_a("nalph")
@@ -193,19 +246,6 @@ function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
     end
 
     return Δ
-end
-
-function measure(SE::StochElement, SC::StochContext)
-    nalph = get_a("nalph")
-    nmesh = get_c("nmesh")
-    ngamm = get_a("ngamm")
-
-    for ia = 1:nalph
-        dr = view(SE.Γᵣ, :, ia)
-        da = view(SE.Γₐ, :, ia)
-        Aw = SC.Δ[:,da] * dr
-        SC.image[:,ia] = SC.image[:,ia] .+ Aw
-    end
 end
 
 function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
@@ -350,46 +390,7 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     end
 end
 
-function sample(MC::StochMC, SE::StochElement, SC::StochContext)
-    nalph = get_a("nalph")
-
-    if rand(MC.rng) < 0.9
-        if rand(MC.rng) > 0.5
-            for i = 1:nalph
-                try_mov1(i, MC, SE, SC)
-            end
-        else
-            for i = 1:nalph
-                try_mov2(i, MC, SE, SC)
-            end
-        end
-    else
-        if nalph > 1
-            if rand(MC.rng) > 0.1
-                try_swap(1, MC, SE, SC)
-            else
-                try_swap(2, MC, SE, SC)
-            end
-        end
-    end
-end
-
-function warmup(MC::StochMC, SE::StochElement, SC::StochContext)
-    nwarm = get_a("nwarm")
-
-    for i = 1:nwarm
-        println("warm: $i")
-        sample(MC, SE, SC)
-    end
-
-    fill!(MC.move_acc, 0.0)
-    fill!(MC.move_try, 0.0)
-
-    fill!(MC.swap_acc, 0.0)
-    fill!(MC.swap_try, 0.0)
-end
-
-function stoch_dump(step::F64, MC::StochMC, SC::StochContext)
+function dump(step::F64, MC::StochMC, SC::StochContext)
     nalph = get_a("nalph")
     nmesh = get_c("nmesh")
 
