@@ -64,6 +64,7 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     kernel = make_kernel(fmesh, grid)
 
     image = zeros(F64, nmesh, nalph)
+    hτ, Hα = calc_hamil(SE, grid, kernel, Gᵥ, σ²)
     SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, Hα, ϕ, αₗ)
 
     return MC, SE, SC
@@ -121,16 +122,17 @@ function calc_alpha()
     return αₗ
 end
 
-function calc_hamil(grid::AbstractGrid, kernel, Gᵥ, σ²)
+function calc_hamil(SE::StochElement, grid::AbstractGrid, kernel, Gᵥ, σ²)
     nalph = get_a("nalph")
     ngrid = get_c("ngrid")
     Hα = zeros(F64, nalph)
     hτ = zeros(F64, ngrid, nalph)
     δt = grid[2] - grid[1]
     for i = 1:nalph
-        hτ[:,i] = stoch_hamil0(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ²)
+        hτ[:,i] = stoch_hamil0(SE.Γₐ[:,i], SE.Γᵣ[:,i], kernel, Gᵥ, σ²)
         Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
+    return hτ, Hα
 end
 
 function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
