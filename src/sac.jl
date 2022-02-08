@@ -145,22 +145,6 @@ function measure(SE::StochElement, SC::StochContext)
 end
 
 """
-    init_iodata(rd::RawData)
-"""
-function init_iodata(rd::RawData)
-    nalph = get_a("nalph")
-    nmesh = get_c("nmesh")
-
-    G = make_data(rd)
-    Gᵥ = abs.(G.value)
-    σ² = 1.0 ./ G.covar
-
-    image = zeros(F64, nmesh, nalph)
-
-    return Gᵥ, σ², image
-end
-
-"""
     init_mc()
 """
 function init_mc()
@@ -192,6 +176,21 @@ function init_element(rng::AbstractRNG)
     return SE
 end
 
+"""
+    init_iodata(rd::RawData)
+"""
+function init_iodata(rd::RawData)
+    nalph = get_a("nalph")
+    nmesh = get_c("nmesh")
+
+    G = make_data(rd)
+    Gᵥ = abs.(G.value)
+    σ² = 1.0 ./ G.covar
+
+    image = zeros(F64, nmesh, nalph)
+
+    return Gᵥ, σ², image
+end
 
 """
     calc_fmesh()
@@ -220,18 +219,31 @@ function calc_xmesh()
 end
 
 """
-    calc_alpha()
+    calc_phi(mesh::AbstractMesh, model::Vector{F64})
 
-Generate a list for the α parameters
+Try to calculate ϕ(ω) function.
+
+See also: [`AbstractMesh`](@ref).
 """
-function calc_alpha()
-    nalph = get_a("nalph")
-    alpha = get_a("alpha")
-    ratio = get_a("ratio")
+function calc_phi(mesh::AbstractMesh, model::Vector{F64})
+    ϕ = cumsum(model .* mesh.weight)
+    return ϕ
+end
 
-    αₗ = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
+function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
+    nmesh = get_c("nmesh")
+    nfine = get_a("nfine")
+    η₁ = 0.005
+    η₂ = 0.005 ^ 2.0
 
-    return αₗ
+    Δ = zeros(F64, nmesh, nfine)
+
+    for i = 1:nfine
+        s = ϕ .- xmesh[i]
+        Δ[:,i] = η₁ ./ (s .* s .+ η₂)
+    end
+
+    return Δ
 end
 
 """
@@ -275,31 +287,18 @@ function calc_htau(Γₐ::Vector{I64}, Γᵣ::Vector{F64},
 end
 
 """
-    calc_phi(mesh::AbstractMesh, model::Vector{F64})
+    calc_alpha()
 
-Try to calculate ϕ(ω) function.
-
-See also: [`AbstractMesh`](@ref).
+Generate a list for the α parameters
 """
-function calc_phi(mesh::AbstractMesh, model::Vector{F64})
-    ϕ = cumsum(model .* mesh.weight)
-    return ϕ
-end
+function calc_alpha()
+    nalph = get_a("nalph")
+    alpha = get_a("alpha")
+    ratio = get_a("ratio")
 
-function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
-    nmesh = get_c("nmesh")
-    nfine = get_a("nfine")
-    η₁ = 0.005
-    η₂ = 0.005 ^ 2.0
+    αₗ = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
 
-    Δ = zeros(F64, nmesh, nfine)
-
-    for i = 1:nfine
-        s = ϕ .- xmesh[i]
-        Δ[:,i] = η₁ ./ (s .* s .+ η₂)
-    end
-
-    return Δ
+    return αₗ
 end
 
 function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
