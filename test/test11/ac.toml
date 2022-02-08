@@ -1,10 +1,10 @@
 [COMM]
 finput = "green.data"
 solver = "StochAC"
-kernel = "fermionic"
-model  = "flat"
-grid   = "time"
-mesh   = "uniform"
+ktype  = "fermi"
+mtype  = "flat"
+grid   = "ftime"
+mesh   = "linear"
 ngrid  = 1000
 nmesh  = 801
 wmax   = 8.0
