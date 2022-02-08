@@ -1,10 +1,10 @@
 [COMM]
 finput = "green01.data"
 solver = "MaxEnt"
-kernel = "fermionic"
-model  = "file"
-grid   = "matsubara"
-mesh   = "uniform"
+ktype  = "fermi"
+mtype  = "file"
+grid   = "ffreq"
+mesh   = "linear"
 ngrid  = 20
 nmesh  = 400
 wmax   = 4.0
@@ -14,5 +14,7 @@ offdiag = true
 
 [MaxEnt]
 method = "chi2kink"
-alpha = 1e15
-blur = -1.0
+nalph  = 30
+alpha  = 1e15
+ratio  = 10.0
+blur   = -1.0
