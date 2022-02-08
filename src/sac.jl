@@ -108,7 +108,7 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     phi = cumsum(model .* wmesh.weight)
     delta = stoch_delta(xmesh, phi)
 
-    kernel = make_kernel(fmesh, ag)
+    kernel = make_kernel(fmesh, grid)
 
     image = zeros(F64, nmesh, nalph)
     hamil = zeros(F64, nalph)
