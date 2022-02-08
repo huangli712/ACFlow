@@ -8,8 +8,8 @@
 #
 
 mutable struct StochElement
-    a_γ :: Array{I64,2}
-    r_γ :: Array{F64,2}
+    Γₐ :: Array{I64,2}
+    Γᵣ :: Array{F64,2}
 end
 
 mutable struct StochMC
@@ -92,13 +92,13 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     swap_try = zeros(F64, nalph)
     MC = StochMC(rng, move_acc, move_try, swap_acc, swap_try)
 
-    r_γ = rand(rng, F64, (ngamm, nalph))
-    a_γ = rand(rng, 1:nfine, (ngamm, nalph))
+    Γᵣ = rand(rng, F64, (ngamm, nalph))
+    Γₐ = rand(rng, 1:nfine, (ngamm, nalph))
     for j = 1:nalph
-        s = sum(r_γ[:,j])
-        r_γ[:,j] = r_γ[:,j] ./ s
+        s = sum(Γᵣ[:,j])
+        Γᵣ[:,j] = Γᵣ[:,j] ./ s
     end
-    SE = StochElement(a_γ, r_γ)
+    SE = StochElement(Γₐ, Γᵣ)
 
     mesh = make_mesh()
     fmesh, xmesh = stoch_grid()
@@ -115,7 +115,7 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     HC = zeros(F64, ngrid, nalph)
     δt = grid[2] - grid[1]
     for i = 1:nalph
-        HC[:,i] = stoch_hamil0(a_γ[:,i], r_γ[:,i], kernel, Gᵥ, σ²)
+        HC[:,i] = stoch_hamil0(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ²)
         hamil[i] = dot(HC[:,i], HC[:,i]) * δt
     end
     SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, delta, HC, phi, alist, hamil)
@@ -123,8 +123,8 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     return MC, SE, SC
 end
 
-function stoch_hamil0(a_γ::Vector{I64},
-                      r_γ::Vector{F64},
+function stoch_hamil0(Γₐ::Vector{I64},
+                      Γᵣ::Vector{F64},
                       kernel::Array{F64,2},
                       Gᵥ::Vector{F64},
                       σ²::Vector{F64})
@@ -133,7 +133,7 @@ function stoch_hamil0(a_γ::Vector{I64},
 
     hc = zeros(F64, ngrid)
     for i = 1:ngrid
-        hc[i] = dot(r_γ, kernel[i,a_γ])
+        hc[i] = dot(Γᵣ, kernel[i,Γₐ])
     end
     @. hc = (hc - Gᵥ) * σ²
 
@@ -204,8 +204,8 @@ function stoch_recording(SE::StochElement, SC::StochContext)
     ngamm = get_a("ngamm")
 
     for ia = 1:nalph
-        dr = view(SE.r_γ, :, ia)
-        da = view(SE.a_γ, :, ia)
+        dr = view(SE.Γᵣ, :, ia)
+        da = view(SE.Γₐ, :, ia)
         Aw = SC.delta[:,da] * dr
         SC.image[:,ia] = SC.image[:,ia] .+ Aw
     end
@@ -226,8 +226,8 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     r1 = 0.0
     r2 = 0.0
     dhh = 0.0
-    r3 = SE.r_γ[l1,i]
-    r4 = SE.r_γ[l2,i]
+    r3 = SE.Γᵣ[l1,i]
+    r4 = SE.Γᵣ[l2,i]
     while true
         dhh = rand(MC.rng) * (r3 + r4) - r3
         r1 = r3 + dhh
@@ -237,8 +237,8 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         end
     end
 
-    i1 = SE.a_γ[l1,i]
-    i2 = SE.a_γ[l2,i]
+    i1 = SE.Γₐ[l1,i]
+    i2 = SE.Γₐ[l2,i]
 
     K1 = view(SC.kernel, :, i1)
     K2 = view(SC.kernel, :, i2)
@@ -253,8 +253,8 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     end
 
     if pass
-        SE.r_γ[l1,i] = r1
-        SE.r_γ[l2,i] = r2
+        SE.Γᵣ[l1,i] = r1
+        SE.Γᵣ[l2,i] = r2
         @. hc = hc + dhc
         SC.hamil[i] = dot(hc, hc) * δt
     end
@@ -278,13 +278,13 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         l2 = rand(MC.rng, 1:ngamm)
     end
 
-    r1 = SE.r_γ[l1,i]
-    r2 = SE.r_γ[l2,i]
+    r1 = SE.Γᵣ[l1,i]
+    r2 = SE.Γᵣ[l2,i]
 
     i1 = rand(MC.rng, 1:nfine)
     i2 = rand(MC.rng, 1:nfine)
-    i3 = SE.a_γ[l1,i]
-    i4 = SE.a_γ[l2,i]
+    i3 = SE.Γₐ[l1,i]
+    i4 = SE.Γₐ[l2,i]
 
     K1 = view(SC.kernel, :, i1)
     K2 = view(SC.kernel, :, i2)
@@ -301,8 +301,8 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     end
 
     if pass
-        SE.a_γ[l1,i] = i1
-        SE.a_γ[l2,i] = i2
+        SE.Γₐ[l1,i] = i1
+        SE.Γₐ[l2,i] = i2
         @. hc = hc + dhc
         SC.hamil[i] = dot(hc, hc) * δt
     end
@@ -340,8 +340,8 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     pass = ( exp(da * dh) > rand(MC.rng) )
 
     if pass
-        SE.a_γ[:,i], SE.a_γ[:,j] = SE.a_γ[:,j], SE.a_γ[:,i]
-        SE.r_γ[:,i], SE.r_γ[:,j] = SE.r_γ[:,j], SE.r_γ[:,i]
+        SE.Γₐ[:,i], SE.Γₐ[:,j] = SE.Γₐ[:,j], SE.Γₐ[:,i]
+        SE.Γᵣ[:,i], SE.Γᵣ[:,j] = SE.Γᵣ[:,j], SE.Γᵣ[:,i]
 
         SC.HC[:,i], SC.HC[:,j] = SC.HC[:,j], SC.HC[:,i]
         SC.hamil[i], SC.hamil[j] = SC.hamil[j], SC.hamil[i]
