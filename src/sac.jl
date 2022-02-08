@@ -37,8 +37,8 @@ end
 
 function solve(::StochACSolver, rd::RawData)
     G = make_data(rd)
-    Gtau = abs.(G.value) ./ G.var
-    Gdev = G.var
+    Gtau = abs.(G.value) ./ G.covar
+    Gdev = G.covar
     tmesh = make_grid(rd)
 
     MC, SE, SC = stoch_init(tmesh, Gtau, Gdev)
