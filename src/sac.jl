@@ -72,8 +72,13 @@ function init(S::StochACSolver, rd::RawData)
     xmesh = calc_xmesh()
     ϕ = calc_phi(mesh, model)
     Δ = calc_delta(xmesh, ϕ)
+    println("Precompute δ functions")
+
     hτ, Hα = calc_hamil(SE, grid, kernel, Gᵥ, σ²)
+    println("Precompute hamiltonian")
+
     αₗ = calc_alpha()
+    println("Precompute α parameters")
 
     SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, Hα, αₗ)
 
