@@ -28,9 +28,9 @@ mutable struct StochContext
     model  :: Vector{F64}
     kernel :: Array{F64,2}
     image  :: Array{F64,2}
-    delta  :: Array{F64,2}
+    Δ  :: Array{F64,2}
     HC     :: Array{F64,2}
-    phi    :: Vector{F64}
+    ϕ    :: Vector{F64}
     alist  :: Vector{F64}
     hamil  :: Vector{F64}
 end
@@ -58,20 +58,20 @@ function stoch_grid()
     return fmesh, xmesh
 end
 
-function stoch_delta(xmesh::Vector{F64}, phi::Vector{F64})
+function stoch_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
     nmesh = get_c("nmesh")
     nfine = get_a("nfine")
     eta1 = 0.005
     eta2 = 0.005 ^ 2.0
 
-    delta = zeros(F64, nmesh, nfine)
+    Δ = zeros(F64, nmesh, nfine)
 
     for i = 1:nfine
-        s = phi .- xmesh[i]
-        delta[:,i] = eta1 ./ (s .* s .+ eta2)
+        s = ϕ .- xmesh[i]
+        Δ[:,i] = eta1 ./ (s .* s .+ eta2)
     end
 
-    return delta
+    return Δ
 end
 
 function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
@@ -105,8 +105,8 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
 
     alist = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
     model = make_model(mesh)
-    phi = cumsum(model .* mesh.weight)
-    delta = stoch_delta(xmesh, phi)
+    ϕ = cumsum(model .* mesh.weight)
+    Δ = stoch_delta(xmesh, ϕ)
 
     kernel = make_kernel(fmesh, grid)
 
@@ -118,7 +118,7 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
         HC[:,i] = stoch_hamil0(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ²)
         hamil[i] = dot(HC[:,i], HC[:,i]) * δt
     end
-    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, delta, HC, phi, alist, hamil)
+    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, HC, ϕ, alist, hamil)
 
     return MC, SE, SC
 end
@@ -206,7 +206,7 @@ function stoch_recording(SE::StochElement, SC::StochContext)
     for ia = 1:nalph
         dr = view(SE.Γᵣ, :, ia)
         da = view(SE.Γₐ, :, ia)
-        Aw = SC.delta[:,da] * dr
+        Aw = SC.Δ[:,da] * dr
         SC.image[:,ia] = SC.image[:,ia] .+ Aw
     end
 end
