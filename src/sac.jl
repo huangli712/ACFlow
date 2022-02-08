@@ -74,15 +74,15 @@ function run(MC::StochMC, SE::StochElement, SC::StochContext)
     nstep = get_a("nstep")
     ndump = get_a("ndump")
 
-    stoch_warmming(MC, SE, SC)
+    warmup(MC, SE, SC)
 
     step = 0.0
     for iter = 1:nstep
-        stoch_sampling(MC, SE, SC)
+        sample(MC, SE, SC)
 
         if iter % 100 == 0
             step = step + 1.0
-            stoch_recording(SE, SC)
+            measure(SE, SC)
         end
 
         if iter % ndump == 0
@@ -195,43 +195,7 @@ function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
     return Δ
 end
 
-function stoch_dump(step::F64, MC::StochMC, SC::StochContext)
-    nalph = get_a("nalph")
-    nmesh = get_c("nmesh")
-
-    println("move statistics:")
-    for i = 1:nalph
-        println("    alpha $i: ", MC.move_acc[i] / MC.move_try[i])
-    end
-    println("swap statistics:")
-    for i = 1:nalph
-        println("    alpha $i: ", MC.swap_acc[i] / MC.swap_try[i])
-    end
-
-    image_t = zeros(F64, nmesh, nalph)
-    for i = 1:nalph
-        for j = 1:nmesh
-            image_t[j,i] = SC.image[j,i] * SC.model[j] / π / step
-        end
-    end
-
-    open("stoch.data", "w") do fout
-        for i = 1:nalph
-            println(fout, "# $i :", SC.αₗ[i])
-            for j = 1:nmesh
-                println(fout, SC.mesh[j], " ", image_t[j,i])
-            end
-        end
-    end
-
-    open("stoch.data.sum", "w") do fout
-        for j = 1:nmesh
-            println(fout, SC.mesh[j], " ", sum(image_t[j,:]) / nalph)
-        end
-    end
-end
-
-function stoch_recording(SE::StochElement, SC::StochContext)
+function measure(SE::StochElement, SC::StochContext)
     nalph = get_a("nalph")
     nmesh = get_c("nmesh")
     ngamm = get_a("ngamm")
@@ -386,7 +350,7 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     end
 end
 
-function stoch_sampling(MC::StochMC, SE::StochElement, SC::StochContext)
+function sample(MC::StochMC, SE::StochElement, SC::StochContext)
     nalph = get_a("nalph")
 
     if rand(MC.rng) < 0.9
@@ -410,12 +374,12 @@ function stoch_sampling(MC::StochMC, SE::StochElement, SC::StochContext)
     end
 end
 
-function stoch_warmming(MC::StochMC, SE::StochElement, SC::StochContext)
+function warmup(MC::StochMC, SE::StochElement, SC::StochContext)
     nwarm = get_a("nwarm")
 
     for i = 1:nwarm
         println("warm: $i")
-        stoch_sampling(MC, SE, SC)
+        sample(MC, SE, SC)
     end
 
     fill!(MC.move_acc, 0.0)
@@ -424,3 +388,40 @@ function stoch_warmming(MC::StochMC, SE::StochElement, SC::StochContext)
     fill!(MC.swap_acc, 0.0)
     fill!(MC.swap_try, 0.0)
 end
+
+function stoch_dump(step::F64, MC::StochMC, SC::StochContext)
+    nalph = get_a("nalph")
+    nmesh = get_c("nmesh")
+
+    println("move statistics:")
+    for i = 1:nalph
+        println("    alpha $i: ", MC.move_acc[i] / MC.move_try[i])
+    end
+    println("swap statistics:")
+    for i = 1:nalph
+        println("    alpha $i: ", MC.swap_acc[i] / MC.swap_try[i])
+    end
+
+    image_t = zeros(F64, nmesh, nalph)
+    for i = 1:nalph
+        for j = 1:nmesh
+            image_t[j,i] = SC.image[j,i] * SC.model[j] / π / step
+        end
+    end
+
+    open("stoch.data", "w") do fout
+        for i = 1:nalph
+            println(fout, "# $i :", SC.αₗ[i])
+            for j = 1:nmesh
+                println(fout, SC.mesh[j], " ", image_t[j,i])
+            end
+        end
+    end
+
+    open("stoch.data.sum", "w") do fout
+        for j = 1:nmesh
+            println(fout, SC.mesh[j], " ", sum(image_t[j,:]) / nalph)
+        end
+    end
+end
+
