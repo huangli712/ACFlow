@@ -264,8 +264,6 @@ See also: [`AbstractMesh`](@ref).
 """
 function calc_phi(mesh::AbstractMesh, model::Vector{F64})
     ϕ = cumsum(model .* mesh.weight)
-    @show ϕ
-    error()
     return ϕ
 end
 
