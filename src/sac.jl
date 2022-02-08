@@ -185,14 +185,18 @@ function calc_fmesh()
     nfine = get_a("nfine")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
+
     fmesh = LinearMesh(nfine, wmin, wmax)
+
     return fmesh
 end
 
 function calc_xmesh()
     nfine = get_a("nfine")
-    model = fill(1.0/nfine, nfine)
-    xmesh = cumsum(model)
+
+    _mesh = fill(1.0/nfine, nfine)
+    xmesh = cumsum(_mesh)
+
     return xmesh
 end
 
@@ -260,6 +264,8 @@ See also: [`AbstractMesh`](@ref).
 """
 function calc_phi(mesh::AbstractMesh, model::Vector{F64})
     ϕ = cumsum(model .* mesh.weight)
+    @show ϕ
+    error()
     return ϕ
 end
 
