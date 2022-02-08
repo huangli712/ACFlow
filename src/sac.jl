@@ -535,6 +535,12 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
         end
     end
 
+    open("hamil.data", "w") do fout
+        for i = 1:nalph
+            println(fout, i, " ", SC.αₗ[i], " ", SC.Hα[i])
+        end
+    end
+
     open("stoch.data", "w") do fout
         for i = 1:nalph
             println(fout, "# $i :", SC.αₗ[i])
