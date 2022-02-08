@@ -48,12 +48,7 @@ end
     init
 """
 function init(S::StochACSolver, rd::RawData)
-    nalph = get_a("nalph")
-    nmesh = get_c("nmesh")
 
-    G = make_data(rd)
-    Gᵥ = abs.(G.value)
-    σ² = 1.0 ./ G.covar
     grid = make_grid(rd)
 
     MC = init_mc()
@@ -70,7 +65,7 @@ function init(S::StochACSolver, rd::RawData)
 
     kernel = make_kernel(fmesh, grid)
 
-    image = zeros(F64, nmesh, nalph)
+    
     hτ, Hα = calc_hamil(SE, grid, kernel, Gᵥ, σ²)
     SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, Hα, ϕ, αₗ)
 
@@ -151,7 +146,25 @@ function measure(SE::StochElement, SC::StochContext)
     end
 end
 
+"""
+    init_iodata(rd::RawData)
+"""
+function init_iodata(rd::RawData)
+    nalph = get_a("nalph")
+    nmesh = get_c("nmesh")
 
+    G = make_data(rd)
+    Gᵥ = abs.(G.value)
+    σ² = 1.0 ./ G.covar
+
+    image = zeros(F64, nmesh, nalph)
+
+    return Gᵥ, σ², image
+end
+
+"""
+    init_mc()
+"""
 function init_mc()
     nalph = get_a("nalph")
 
@@ -180,6 +193,7 @@ function init_element(rng::AbstractRNG)
     SE = StochElement(Γₐ, Γᵣ)
     return SE
 end
+
 
 """
     calc_fmesh()
