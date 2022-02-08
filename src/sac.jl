@@ -217,21 +217,23 @@ function calc_hamil(SE::StochElement, grid::AbstractGrid, kernel, Gᵥ, σ²)
     return hτ, Hα
 end
 
-function calc_htau(Γₐ::Vector{I64},
-    Γᵣ::Vector{F64},
-    kernel::Array{F64,2},
-    Gᵥ::Vector{F64},
-    σ²::Vector{F64})
-ngrid = get_c("ngrid")
-ngamm = get_a("ngamm")
+"""
+    calc_htau(...)
 
-hc = zeros(F64, ngrid)
-for i = 1:ngrid
-hc[i] = dot(Γᵣ, kernel[i,Γₐ])
-end
-@. hc = (hc - Gᵥ) * σ²
+Try to calculate h(τ) via Eq.(36).
+"""
+function calc_htau(Γₐ::Vector{I64}, Γᵣ::Vector{F64},
+                   kernel::Matrix{F64},
+                   Gᵥ::Vector{F64}, σ²::Vector{F64})
+    ngrid = get_c("ngrid")
 
-return hc
+    hτ = zeros(F64, ngrid)
+    for i = 1:ngrid
+        hτ[i] = dot(Γᵣ, kernel[i,Γₐ])
+    end
+    @. hτ = (hτ - Gᵥ) * σ²
+
+    return hτ
 end
 
 """
