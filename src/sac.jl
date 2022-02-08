@@ -119,6 +119,9 @@ function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
     end
 end
 
+function postprocess()
+end
+
 """
     warmup
 """
@@ -418,6 +421,9 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     end
 end
 
+"""
+    try_mov2()
+"""
 function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     ngamm = get_a("ngamm")
     nfine = get_a("nfine")
@@ -466,6 +472,9 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     end
 end
 
+"""
+    try_swap()
+"""
 function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     nalph = get_a("nalph")
 
