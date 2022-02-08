@@ -146,18 +146,24 @@ end
 
 """
     init_mc()
+
+Try to create a StochMC struct.
+
+See also: [`StochAC`](@ref).
 """
 function init_mc()
     nalph = get_a("nalph")
 
-    seed = rand(1:100000000); seed = 4277216
-    @show seed
+    seed = rand(1:100000000)
+
     rng = MersenneTwister(seed)
     move_acc = zeros(F64, nalph)
     move_try = zeros(F64, nalph)
     swap_acc = zeros(F64, nalph)
     swap_try = zeros(F64, nalph)
+
     MC = StochMC(rng, move_acc, move_try, swap_acc, swap_try)
+
     return MC
 end
 
@@ -195,7 +201,8 @@ end
 """
     calc_fmesh()
 
-Try to calculate very fine (dense) linear mesh, which is used internally.
+Try to calculate very fine (dense) linear mesh, which is used internally
+to build the kernel function.
 
 See also: [`LinearMesh`](@ref).
 """
