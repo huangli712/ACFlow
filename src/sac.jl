@@ -54,15 +54,22 @@ function init(S::StochACSolver, rd::RawData)
     println("Randomize Monte Carlo configurations")
 
     Gᵥ, σ², image = init_iodata(rd)
+    println("Postprocess input data: ", length(σ²), " points")
 
     grid = make_grid(rd)
+    println("Build grid for input data: ", length(grid), " points")
+
     mesh = make_mesh()
-    fmesh = calc_fmesh()
-    xmesh = calc_xmesh()
+    println("Build mesh for spectrum: ", length(mesh), " points")
 
     model = make_model(mesh)
-    kernel = make_kernel(fmesh, grid)
+    println("Build default model: ", get_c("mtype"))
 
+    fmesh = calc_fmesh()
+    kernel = make_kernel(fmesh, grid)
+    println("Build default kernel: ", get_c("ktype"))
+
+    xmesh = calc_xmesh()
     ϕ = calc_phi(mesh, model)
     Δ = calc_delta(xmesh, ϕ)
     hτ, Hα = calc_hamil(SE, grid, kernel, Gᵥ, σ²)
