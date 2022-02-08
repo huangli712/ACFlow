@@ -31,7 +31,6 @@ mutable struct StochContext
     Δ      :: Array{F64,2}
     hτ     :: Array{F64,2}
     Hα     :: Vector{F64}
-    ϕ      :: Vector{F64}
     αₗ     :: Vector{F64}
 end
 
@@ -48,25 +47,25 @@ end
     init
 """
 function init(S::StochACSolver, rd::RawData)
-    Gᵥ, σ², image = init_iodata(rd)
-
     MC = init_mc()
     SE = init_element(MC.rng)
+
+    Gᵥ, σ², image = init_iodata(rd)
 
     grid = make_grid(rd)
     mesh = make_mesh()
     fmesh = calc_fmesh()
     xmesh = calc_xmesh()
 
-    αₗ = calc_alpha()
     model = make_model(mesh)
-    ϕ = calc_phi(mesh, model)
-    Δ = calc_delta(xmesh, ϕ)
-
     kernel = make_kernel(fmesh, grid)
 
+    ϕ = calc_phi(mesh, model)
+    Δ = calc_delta(xmesh, ϕ)
     hτ, Hα = calc_hamil(SE, grid, kernel, Gᵥ, σ²)
-    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, Hα, ϕ, αₗ)
+    αₗ = calc_alpha()
+
+    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, Hα, αₗ)
 
     return MC, SE, SC
 end
