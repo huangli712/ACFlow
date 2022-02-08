@@ -45,6 +45,30 @@ function solve(::StochACSolver, rd::RawData)
     stoch_run(MC, SE, SC)
 end
 
+function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
+    nalph = get_a("nalph")
+    nmesh = get_c("nmesh")
+
+    MC = init_mc()
+    SE = init_element(MC.rng)
+
+    mesh = make_mesh()
+    fmesh = calc_fmesh()
+    xmesh = calc_xmesh()
+
+    αₗ = calc_alpha()
+    model = make_model(mesh)
+    ϕ = cumsum(model .* mesh.weight)
+    Δ = stoch_delta(xmesh, ϕ)
+
+    kernel = make_kernel(fmesh, grid)
+
+    image = zeros(F64, nmesh, nalph)
+    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, Hα, ϕ, αₗ)
+
+    return MC, SE, SC
+end
+
 function init_mc()
     nalph = get_a("nalph")
 
@@ -109,7 +133,7 @@ function calc_hamil(grid::AbstractGrid, kernel, Gᵥ, σ²)
     end
 end
 
-function stoch_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
+function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
     nmesh = get_c("nmesh")
     nfine = get_a("nfine")
     η₁ = 0.005
@@ -123,30 +147,6 @@ function stoch_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
     end
 
     return Δ
-end
-
-function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
-    nalph = get_a("nalph")
-    nmesh = get_c("nmesh")
-
-    MC = init_mc()
-    SE = init_element(MC.rng)
-
-    mesh = make_mesh()
-    fmesh = calc_fmesh()
-    xmesh = calc_xmesh()
-
-    αₗ = calc_alpha()
-    model = make_model(mesh)
-    ϕ = cumsum(model .* mesh.weight)
-    Δ = stoch_delta(xmesh, ϕ)
-
-    kernel = make_kernel(fmesh, grid)
-
-    image = zeros(F64, nmesh, nalph)
-    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, Hα, ϕ, αₗ)
-
-    return MC, SE, SC
 end
 
 function stoch_hamil0(Γₐ::Vector{I64},
