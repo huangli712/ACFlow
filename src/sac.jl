@@ -7,11 +7,9 @@
 # Last modified: 2022/02/08
 #
 
-mutable struct StochElement
-    Γₐ :: Array{I64,2}
-    Γᵣ :: Array{F64,2}
-end
-
+"""
+    StochMC
+"""
 mutable struct StochMC
     rng :: AbstractRNG
     move_acc :: Vector{I64}
@@ -20,6 +18,17 @@ mutable struct StochMC
     swap_try :: Vector{I64}
 end
 
+"""
+    StochElement
+"""
+mutable struct StochElement
+    Γₐ :: Array{I64,2}
+    Γᵣ :: Array{F64,2}
+end
+
+"""
+    StochContext
+"""
 mutable struct StochContext
     Gᵥ     :: Vector{F64}
     σ²     :: Vector{F64}
