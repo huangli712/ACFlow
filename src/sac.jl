@@ -45,6 +45,35 @@ function solve(::StochACSolver, rd::RawData)
     stoch_run(MC, SE, SC)
 end
 
+function init_mc()
+    nalph = get_a("nalph")
+
+    seed = rand(1:100000000); seed = 4277216
+    @show seed
+    rng = MersenneTwister(seed)
+    move_acc = zeros(F64, nalph)
+    move_try = zeros(F64, nalph)
+    swap_acc = zeros(F64, nalph)
+    swap_try = zeros(F64, nalph)
+    MC = StochMC(rng, move_acc, move_try, swap_acc, swap_try)
+    return MC
+end
+
+function init_element()
+    nalph = get_a("nalph")
+    nfine = get_a("nfine")
+    ngamm = get_a("ngamm")
+
+    Γᵣ = rand(rng, F64, (ngamm, nalph))
+    Γₐ = rand(rng, 1:nfine, (ngamm, nalph))
+    for j = 1:nalph
+        s = sum(Γᵣ[:,j])
+        Γᵣ[:,j] = Γᵣ[:,j] ./ s
+    end
+    SE = StochElement(Γₐ, Γᵣ)
+    return SE
+end
+
 function calc_fmesh()
     nfine = get_a("nfine")
     wmin = get_c("wmin")
@@ -81,26 +110,10 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     nmesh = get_c("nmesh")
     alpha = get_a("alpha")
     ratio = get_a("ratio")
-    nfine = get_a("nfine")
-    ngamm = get_a("ngamm")
     ngrid = get_c("ngrid")
 
-    seed = rand(1:100000000); seed = 4277216
-    @show seed
-    rng = MersenneTwister(seed)
-    move_acc = zeros(F64, nalph)
-    move_try = zeros(F64, nalph)
-    swap_acc = zeros(F64, nalph)
-    swap_try = zeros(F64, nalph)
-    MC = StochMC(rng, move_acc, move_try, swap_acc, swap_try)
-
-    Γᵣ = rand(rng, F64, (ngamm, nalph))
-    Γₐ = rand(rng, 1:nfine, (ngamm, nalph))
-    for j = 1:nalph
-        s = sum(Γᵣ[:,j])
-        Γᵣ[:,j] = Γᵣ[:,j] ./ s
-    end
-    SE = StochElement(Γₐ, Γᵣ)
+    MC = init_mc()
+    SE = init_element()
 
     mesh = make_mesh()
     fmesh = calc_fmesh()
