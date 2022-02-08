@@ -32,7 +32,7 @@ mutable struct StochContext
     alist  :: Vector{F64}
     hamil  :: Vector{F64}
     HC     :: Array{F64,2}
-    wmesh  :: AbstractMesh
+    mesh  :: AbstractMesh
 end
 
 function solve(::StochACSolver, rd::RawData)
@@ -100,12 +100,12 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     end
     SE = StochElement(a_γ, r_γ)
 
-    wmesh = make_mesh()
+    mesh = make_mesh()
     fmesh, xmesh = stoch_grid()
 
     alist = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
-    model = make_model(wmesh)
-    phi = cumsum(model .* wmesh.weight)
+    model = make_model(mesh)
+    phi = cumsum(model .* mesh.weight)
     delta = stoch_delta(xmesh, phi)
 
     kernel = make_kernel(fmesh, grid)
@@ -118,7 +118,7 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
         HC[:,i] = stoch_hamil0(a_γ[:,i], r_γ[:,i], kernel, Gᵥ, σ²)
         hamil[i] = dot(HC[:,i], HC[:,i]) * δt
     end
-    SC = StochContext(Gᵥ, σ², grid, kernel, delta, image, phi, model, alist, hamil, HC,  wmesh)
+    SC = StochContext(Gᵥ, σ², grid, kernel, delta, image, phi, model, alist, hamil, HC, mesh)
 
     return MC, SE, SC
 end
@@ -164,14 +164,14 @@ function stoch_dump(step::F64, MC::StochMC, SC::StochContext)
         for i = 1:nalph
             println(fout, "# $i :", SC.alist[i])
             for j = 1:nmesh
-                println(fout, SC.wmesh[j], " ", image_t[j,i])
+                println(fout, SC.mesh[j], " ", image_t[j,i])
             end
         end
     end
 
     open("stoch.data.sum", "w") do fout
         for j = 1:nmesh
-            println(fout, SC.wmesh[j], " ", sum(image_t[j,:]) / nalph)
+            println(fout, SC.mesh[j], " ", sum(image_t[j,:]) / nalph)
         end
     end
 end
