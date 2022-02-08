@@ -196,11 +196,18 @@ function calc_xmesh()
     return xmesh
 end
 
+"""
+    calc_alpha()
+
+Generate a list for the α parameters
+"""
 function calc_alpha()
     nalph = get_a("nalph")
     alpha = get_a("alpha")
     ratio = get_a("ratio")
+
     αₗ = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
+
     return αₗ
 end
 
