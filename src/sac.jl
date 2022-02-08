@@ -32,7 +32,7 @@ mutable struct StochContext
     hτ     :: Array{F64,2}
     ϕ      :: Vector{F64}
     αₗ  :: Vector{F64}
-    hamil  :: Vector{F64}
+    Hα     :: Vector{F64}
 end
 
 function solve(::StochACSolver, rd::RawData)
@@ -111,14 +111,14 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     kernel = make_kernel(fmesh, grid)
 
     image = zeros(F64, nmesh, nalph)
-    hamil = zeros(F64, nalph)
+    Hα = zeros(F64, nalph)
     hτ = zeros(F64, ngrid, nalph)
     δt = grid[2] - grid[1]
     for i = 1:nalph
         hτ[:,i] = stoch_hamil0(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ²)
-        hamil[i] = dot(hτ[:,i], hτ[:,i]) * δt
+        Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
-    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, ϕ, αₗ, hamil)
+    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, ϕ, αₗ, Hα)
 
     return MC, SE, SC
 end
@@ -256,7 +256,7 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         SE.Γᵣ[l1,i] = r1
         SE.Γᵣ[l2,i] = r2
         @. hc = hc + dhc
-        SC.hamil[i] = dot(hc, hc) * δt
+        SC.Hα[i] = dot(hc, hc) * δt
     end
 
     MC.move_try[i] = MC.move_try[i] + 1.0
@@ -304,7 +304,7 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         SE.Γₐ[l1,i] = i1
         SE.Γₐ[l2,i] = i2
         @. hc = hc + dhc
-        SC.hamil[i] = dot(hc, hc) * δt
+        SC.Hα[i] = dot(hc, hc) * δt
     end
 
     MC.move_try[i] = MC.move_try[i] + 1.0
@@ -335,7 +335,7 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     end
 
     da = SC.αₗ[i] - SC.αₗ[j]
-    dh = SC.hamil[i] - SC.hamil[j]
+    dh = SC.Hα[i] - SC.Hα[j]
 
     pass = ( exp(da * dh) > rand(MC.rng) )
 
@@ -344,7 +344,7 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         SE.Γᵣ[:,i], SE.Γᵣ[:,j] = SE.Γᵣ[:,j], SE.Γᵣ[:,i]
 
         SC.hτ[:,i], SC.hτ[:,j] = SC.hτ[:,j], SC.hτ[:,i]
-        SC.hamil[i], SC.hamil[j] = SC.hamil[j], SC.hamil[i]
+        SC.Hα[i], SC.Hα[j] = SC.Hα[j], SC.Hα[i]
     end
 
     MC.swap_try[i] = MC.swap_try[i] + 1.0
