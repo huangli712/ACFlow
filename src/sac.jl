@@ -41,11 +41,11 @@ function solve(::StochACSolver, rd::RawData)
     σ² = 1.0 ./ G.covar
     grid = make_grid(rd)
 
-    MC, SE, SC = stoch_init(grid, Gᵥ, σ²)
-    stoch_run(MC, SE, SC)
+    MC, SE, SC = init(grid, Gᵥ, σ²)
+    run(MC, SE, SC)
 end
 
-function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
+function init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     nalph = get_a("nalph")
     nmesh = get_c("nmesh")
 
@@ -70,7 +70,7 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     return MC, SE, SC
 end
 
-function stoch_run(MC::StochMC, SE::StochElement, SC::StochContext)
+function run(MC::StochMC, SE::StochElement, SC::StochContext)
     nstep = get_a("nstep")
     ndump = get_a("ndump")
 
