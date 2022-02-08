@@ -30,9 +30,9 @@ mutable struct StochContext
     image  :: Array{F64,2}
     Δ      :: Array{F64,2}
     hτ     :: Array{F64,2}
-    ϕ      :: Vector{F64}
-    αₗ  :: Vector{F64}
     Hα     :: Vector{F64}
+    ϕ      :: Vector{F64}
+    αₗ     :: Vector{F64}
 end
 
 function solve(::StochACSolver, rd::RawData)
@@ -118,7 +118,7 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
         hτ[:,i] = stoch_hamil0(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ²)
         Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
-    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, ϕ, αₗ, Hα)
+    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, Hα, ϕ, αₗ)
 
     return MC, SE, SC
 end
