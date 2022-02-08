@@ -94,6 +94,9 @@ function init(S::StochACSolver, rd::RawData)
     return MC, SE, SC
 end
 
+"""
+    run
+"""
 function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
     nstep = get_a("nstep")
     ndump = get_a("ndump")
@@ -116,6 +119,9 @@ function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
     end
 end
 
+"""
+    warmup
+"""
 function warmup(MC::StochMC, SE::StochElement, SC::StochContext)
     nwarm = get_a("nwarm")
 
@@ -131,6 +137,9 @@ function warmup(MC::StochMC, SE::StochElement, SC::StochContext)
     fill!(MC.swap_try, 0.0)
 end
 
+"""
+    sample
+"""
 function sample(MC::StochMC, SE::StochElement, SC::StochContext)
     nalph = get_a("nalph")
 
@@ -155,6 +164,9 @@ function sample(MC::StochMC, SE::StochElement, SC::StochContext)
     end
 end
 
+"""
+    measure
+"""
 function measure(SE::StochElement, SC::StochContext)
     nalph = get_a("nalph")
     nmesh = get_c("nmesh")
@@ -231,8 +243,8 @@ end
 """
     calc_fmesh()
 
-Try to calculate very fine (dense) linear mesh, which is used internally
-to build the kernel function.
+Try to calculate very fine (dense) linear mesh in [wmin, wmax], which
+is used internally to build the kernel function.
 
 See also: [`LinearMesh`](@ref).
 """
@@ -246,6 +258,14 @@ function calc_fmesh()
     return fmesh
 end
 
+"""
+    calc_xmesh()
+
+Try to calculate very fine (dense) linear mesh in [0, 1], which is used
+internally to build the δ functions.
+
+See also: [`calc_delta`](@ref).
+"""
 function calc_xmesh()
     nfine = get_a("nfine")
 
@@ -267,6 +287,9 @@ function calc_phi(mesh::AbstractMesh, model::Vector{F64})
     return ϕ
 end
 
+"""
+    calc_delta()
+"""
 function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
     nmesh = get_c("nmesh")
     nfine = get_a("nfine")
@@ -338,6 +361,9 @@ function calc_alpha()
     return αₗ
 end
 
+"""
+    try_mov1()
+"""
 function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     ngamm = get_a("ngamm")
 
