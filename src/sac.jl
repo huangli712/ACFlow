@@ -211,16 +211,24 @@ function calc_alpha()
     return αₗ
 end
 
+"""
+    calc_hamil(...)
+
+Initialize h(τ) and H using Eq.(35) and Eq.(36).
+"""
 function calc_hamil(SE::StochElement, grid::AbstractGrid, kernel, Gᵥ, σ²)
     nalph = get_a("nalph")
     ngrid = get_c("ngrid")
-    Hα = zeros(F64, nalph)
+
     hτ = zeros(F64, ngrid, nalph)
+    Hα = zeros(F64, nalph)
+
     δt = grid[2] - grid[1]
     for i = 1:nalph
         hτ[:,i] = calc_htau(SE.Γₐ[:,i], SE.Γᵣ[:,i], kernel, Gᵥ, σ²)
         Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
+
     return hτ, Hα
 end
 
