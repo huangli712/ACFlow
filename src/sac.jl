@@ -31,17 +31,17 @@ mutable struct StochContext
     HC     :: Array{F64,2}
     tmesh  :: AbstractGrid
     wmesh  :: AbstractMesh
-    G_tau  :: Vector{F64}
-    G_dev  :: Vector{F64}
+    Gᵥ    :: Vector{F64}
+    σ²    :: Vector{F64}
 end
 
 function solve(::StochACSolver, rd::RawData)
     G = make_data(rd)
-    Gtau = abs.(G.value) ./ G.covar
-    Gdev = G.covar
+    Gᵥ = abs.(G.value)
+    σ² = 1.0 ./ G.covar
     tmesh = make_grid(rd)
 
-    MC, SE, SC = stoch_init(tmesh, Gtau, Gdev)
+    MC, SE, SC = stoch_init(tmesh, Gᵥ, σ²)
     stoch_run(MC, SE, SC)
 end
 
@@ -74,7 +74,7 @@ function stoch_delta(xmesh::Vector{F64}, phi::Vector{F64})
     return delta
 end
 
-function stoch_init(tmesh::AbstractGrid, G_tau::Vector{F64}, G_dev::Vector{F64})
+function stoch_init(tmesh::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     nalph = get_a("nalph")
     nmesh = get_c("nmesh")
     alpha = get_a("alpha")
@@ -115,10 +115,10 @@ function stoch_init(tmesh::AbstractGrid, G_tau::Vector{F64}, G_dev::Vector{F64})
     HC = zeros(F64, ngrid, nalph)
     δt = tmesh[2] - tmesh[1]
     for i = 1:nalph
-        HC[:,i] = stoch_hamil0(a_γ[:,i], r_γ[:,i], kernel, G_tau, G_dev)
+        HC[:,i] = stoch_hamil0(a_γ[:,i], r_γ[:,i], kernel, Gᵥ, σ²)
         hamil[i] = dot(HC[:,i], HC[:,i]) * δt
     end
-    SC = StochContext(kernel, delta, image, phi, model, alist, hamil, HC, tmesh, wmesh, G_tau, G_dev)
+    SC = StochContext(kernel, delta, image, phi, model, alist, hamil, HC, tmesh, wmesh, Gᵥ, σ²)
 
     return MC, SE, SC
 end
@@ -126,8 +126,8 @@ end
 function stoch_hamil0(a_γ::Vector{I64},
                       r_γ::Vector{F64},
                       kernel::Array{F64,2},
-                      G_tau::Vector{F64},
-                      G_dev::Vector{F64})
+                      Gᵥ::Vector{F64},
+                      σ²::Vector{F64})
     ngrid = get_c("ngrid")
     ngamm = get_a("ngamm")
 
@@ -135,7 +135,7 @@ function stoch_hamil0(a_γ::Vector{I64},
     for i = 1:ngrid
         hc[i] = dot(r_γ, kernel[i,a_γ])
     end
-    @. hc = hc / G_dev - G_tau
+    @. hc = (hc - Gᵥ) * σ²
 
     return hc
 end
@@ -242,7 +242,7 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 
     K1 = view(SC.kernel, :, i1)
     K2 = view(SC.kernel, :, i2)
-    dhc = dhh * (K1 - K2) ./ SC.G_dev
+    dhc = dhh * (K1 - K2) .* SC.σ²
 
     δt = SC.tmesh[2] - SC.tmesh[1]
     dhh = dot(dhc, 2.0 * hc + dhc) * δt
@@ -290,7 +290,7 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     K2 = view(SC.kernel, :, i2)
     K3 = view(SC.kernel, :, i3)
     K4 = view(SC.kernel, :, i4)
-    dhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) ./ SC.G_dev
+    dhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) .* SC.σ²
 
     δt = SC.tmesh[2] - SC.tmesh[1]
     dhh = dot(dhc, 2.0 * hc + dhc) * δt
