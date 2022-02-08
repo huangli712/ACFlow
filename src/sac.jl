@@ -151,13 +151,13 @@ function calc_hamil(SE::StochElement, grid::AbstractGrid, kernel, Gᵥ, σ²)
     hτ = zeros(F64, ngrid, nalph)
     δt = grid[2] - grid[1]
     for i = 1:nalph
-        hτ[:,i] = calc_hτ(SE.Γₐ[:,i], SE.Γᵣ[:,i], kernel, Gᵥ, σ²)
+        hτ[:,i] = calc_htau(SE.Γₐ[:,i], SE.Γᵣ[:,i], kernel, Gᵥ, σ²)
         Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
     return hτ, Hα
 end
 
-function calc_hτ(Γₐ::Vector{I64},
+function calc_htau(Γₐ::Vector{I64},
     Γᵣ::Vector{F64},
     kernel::Array{F64,2},
     Gᵥ::Vector{F64},
