@@ -59,7 +59,7 @@ function init_mc()
     return MC
 end
 
-function init_element()
+function init_element(rng::AbstractRNG)
     nalph = get_a("nalph")
     nfine = get_a("nfine")
     ngamm = get_a("ngamm")
@@ -89,6 +89,24 @@ function calc_xmesh()
     return xmesh
 end
 
+function calc_alpha()
+    nalph = get_a("nalph")
+    alpha = get_a("alpha")
+    ratio = get_a("ratio")
+    αₗ = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
+    return αₗ
+end
+
+function calc_hamil()
+    Hα = zeros(F64, nalph)
+    hτ = zeros(F64, ngrid, nalph)
+    δt = grid[2] - grid[1]
+    for i = 1:nalph
+        hτ[:,i] = stoch_hamil0(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ²)
+        Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
+    end
+end
+
 function stoch_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
     nmesh = get_c("nmesh")
     nfine = get_a("nfine")
@@ -108,18 +126,18 @@ end
 function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     nalph = get_a("nalph")
     nmesh = get_c("nmesh")
-    alpha = get_a("alpha")
-    ratio = get_a("ratio")
+    
+    
     ngrid = get_c("ngrid")
 
     MC = init_mc()
-    SE = init_element()
+    SE = init_element(MC.rng)
 
     mesh = make_mesh()
     fmesh = calc_fmesh()
     xmesh = calc_xmesh()
 
-    αₗ = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
+    αₗ = calc_alpha()
     model = make_model(mesh)
     ϕ = cumsum(model .* mesh.weight)
     Δ = stoch_delta(xmesh, ϕ)
@@ -127,13 +145,6 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     kernel = make_kernel(fmesh, grid)
 
     image = zeros(F64, nmesh, nalph)
-    Hα = zeros(F64, nalph)
-    hτ = zeros(F64, ngrid, nalph)
-    δt = grid[2] - grid[1]
-    for i = 1:nalph
-        hτ[:,i] = stoch_hamil0(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ²)
-        Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
-    end
     SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, Hα, ϕ, αₗ)
 
     return MC, SE, SC
