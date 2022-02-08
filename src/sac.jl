@@ -234,7 +234,14 @@ end
 return hc
 end
 
-function calc_phi(mesh, model)
+"""
+    calc_phi(mesh::AbstractMesh, model::Vector{F64})
+
+Try to calculate ϕ(ω) function.
+
+See also: [`AbstractMesh`](@ref).
+"""
+function calc_phi(mesh::AbstractMesh, model::Vector{F64})
     ϕ = cumsum(model .* mesh.weight)
     return ϕ
 end
