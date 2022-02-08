@@ -70,6 +70,28 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     return MC, SE, SC
 end
 
+function stoch_run(MC::StochMC, SE::StochElement, SC::StochContext)
+    nstep = get_a("nstep")
+    ndump = get_a("ndump")
+
+    stoch_warmming(MC, SE, SC)
+
+    step = 0.0
+    for iter = 1:nstep
+        stoch_sampling(MC, SE, SC)
+
+        if iter % 100 == 0
+            step = step + 1.0
+            stoch_recording(SE, SC)
+        end
+
+        if iter % ndump == 0
+            println("iter: ", iter / ndump)
+            stoch_dump(step, MC, SC)
+        end
+    end
+end
+
 function init_mc()
     nalph = get_a("nalph")
 
@@ -129,10 +151,27 @@ function calc_hamil(SE::StochElement, grid::AbstractGrid, kernel, Gᵥ, σ²)
     hτ = zeros(F64, ngrid, nalph)
     δt = grid[2] - grid[1]
     for i = 1:nalph
-        hτ[:,i] = stoch_hamil0(SE.Γₐ[:,i], SE.Γᵣ[:,i], kernel, Gᵥ, σ²)
+        hτ[:,i] = calc_hτ(SE.Γₐ[:,i], SE.Γᵣ[:,i], kernel, Gᵥ, σ²)
         Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
     return hτ, Hα
+end
+
+function calc_hτ(Γₐ::Vector{I64},
+    Γᵣ::Vector{F64},
+    kernel::Array{F64,2},
+    Gᵥ::Vector{F64},
+    σ²::Vector{F64})
+ngrid = get_c("ngrid")
+ngamm = get_a("ngamm")
+
+hc = zeros(F64, ngrid)
+for i = 1:ngrid
+hc[i] = dot(Γᵣ, kernel[i,Γₐ])
+end
+@. hc = (hc - Gᵥ) * σ²
+
+return hc
 end
 
 function calc_phi(mesh, model)
@@ -154,23 +193,6 @@ function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
     end
 
     return Δ
-end
-
-function stoch_hamil0(Γₐ::Vector{I64},
-                      Γᵣ::Vector{F64},
-                      kernel::Array{F64,2},
-                      Gᵥ::Vector{F64},
-                      σ²::Vector{F64})
-    ngrid = get_c("ngrid")
-    ngamm = get_a("ngamm")
-
-    hc = zeros(F64, ngrid)
-    for i = 1:ngrid
-        hc[i] = dot(Γᵣ, kernel[i,Γₐ])
-    end
-    @. hc = (hc - Gᵥ) * σ²
-
-    return hc
 end
 
 function stoch_dump(step::F64, MC::StochMC, SC::StochContext)
@@ -205,28 +227,6 @@ function stoch_dump(step::F64, MC::StochMC, SC::StochContext)
     open("stoch.data.sum", "w") do fout
         for j = 1:nmesh
             println(fout, SC.mesh[j], " ", sum(image_t[j,:]) / nalph)
-        end
-    end
-end
-
-function stoch_run(MC::StochMC, SE::StochElement, SC::StochContext)
-    nstep = get_a("nstep")
-    ndump = get_a("ndump")
-
-    stoch_warmming(MC, SE, SC)
-
-    step = 0.0
-    for iter = 1:nstep
-        stoch_sampling(MC, SE, SC)
-
-        if iter % 100 == 0
-            step = step + 1.0
-            stoch_recording(SE, SC)
-        end
-
-        if iter % ndump == 0
-            println("iter: ", iter / ndump)
-            stoch_dump(step, MC, SC)
         end
     end
 end
