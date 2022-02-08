@@ -61,14 +61,14 @@ end
 function stoch_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
     nmesh = get_c("nmesh")
     nfine = get_a("nfine")
-    eta1 = 0.005
-    eta2 = 0.005 ^ 2.0
+    η₁ = 0.005
+    η₂ = 0.005 ^ 2.0
 
     Δ = zeros(F64, nmesh, nfine)
 
     for i = 1:nfine
         s = ϕ .- xmesh[i]
-        Δ[:,i] = eta1 ./ (s .* s .+ eta2)
+        Δ[:,i] = η₁ ./ (s .* s .+ η₂)
     end
 
     return Δ
