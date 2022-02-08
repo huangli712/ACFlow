@@ -48,7 +48,10 @@ end
 """
 function init(S::StochACSolver, rd::RawData)
     MC = init_mc()
+    println("Create infrastructure for Monte Carlo sampling")
+
     SE = init_element(MC.rng)
+    println("Randomize Monte Carlo configurations")
 
     Gᵥ, σ², image = init_iodata(rd)
 
@@ -167,6 +170,9 @@ function init_mc()
     return MC
 end
 
+"""
+    init_element()
+"""
 function init_element(rng::AbstractRNG)
     nalph = get_a("nalph")
     nfine = get_a("nfine")
@@ -174,11 +180,14 @@ function init_element(rng::AbstractRNG)
 
     Γᵣ = rand(rng, F64, (ngamm, nalph))
     Γₐ = rand(rng, 1:nfine, (ngamm, nalph))
+
     for j = 1:nalph
         s = sum(Γᵣ[:,j])
         Γᵣ[:,j] = Γᵣ[:,j] ./ s
     end
+
     SE = StochElement(Γₐ, Γᵣ)
+
     return SE
 end
 
