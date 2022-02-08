@@ -48,13 +48,13 @@ end
     init
 """
 function init(S::StochACSolver, rd::RawData)
+    nalph = get_a("nalph")
+    nmesh = get_c("nmesh")
+
     G = make_data(rd)
     Gᵥ = abs.(G.value)
     σ² = 1.0 ./ G.covar
     grid = make_grid(rd)
-
-    nalph = get_a("nalph")
-    nmesh = get_c("nmesh")
 
     MC = init_mc()
     SE = init_element(MC.rng)
@@ -103,7 +103,7 @@ function warmup(MC::StochMC, SE::StochElement, SC::StochContext)
     nwarm = get_a("nwarm")
 
     for i = 1:nwarm
-        println("warm: $i")
+        #println("warm: $i")
         sample(MC, SE, SC)
     end
 
