@@ -97,7 +97,9 @@ function calc_alpha()
     return αₗ
 end
 
-function calc_hamil()
+function calc_hamil(grid::AbstractGrid, kernel, Gᵥ, σ²)
+    nalph = get_a("nalph")
+    ngrid = get_c("ngrid")
     Hα = zeros(F64, nalph)
     hτ = zeros(F64, ngrid, nalph)
     δt = grid[2] - grid[1]
@@ -126,9 +128,6 @@ end
 function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     nalph = get_a("nalph")
     nmesh = get_c("nmesh")
-    
-    
-    ngrid = get_c("ngrid")
 
     MC = init_mc()
     SE = init_element(MC.rng)
