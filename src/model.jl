@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/06
+# Last modified: 2022/02/08
 #
 
 #=
@@ -44,6 +44,22 @@ function build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
     model = exp.(-(am.mesh / Γ) .^ 2.0) / (Γ * sqrt(π))
     norm = dot(am.weight, model)
     model = model ./ norm
+    return model
+end
+
+"""
+    build_file_model
+"""
+function build_file_model(am::AbstractMesh)
+    model = zeros(F64, length(am))
+    open("model.data", "r") do fin
+        for i in eachindex(model)
+            arr = parse.(F64, line_to_array(fin)[1:2])
+            _mesh = arr[1]
+            @assert abs(am[i] - _mesh) < 1e-6
+            model[i] = arr[2]
+        end
+    end
     return model
 end
 

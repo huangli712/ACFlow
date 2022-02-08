@@ -198,6 +198,10 @@ function make_model(am::AbstractMesh)
             return build_gaussian_model(am)
             break
 
+        @case "file"
+            return build_file_model(am)
+            break
+
         @case "func"
             sorry()
             break
