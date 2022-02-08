@@ -23,6 +23,7 @@ end
 mutable struct StochContext
     Gᵥ    :: Vector{F64}
     σ²    :: Vector{F64}
+    grid   :: AbstractGrid
     kernel :: Array{F64,2}
     delta  :: Array{F64,2}
     image  :: Array{F64,2}
@@ -31,7 +32,6 @@ mutable struct StochContext
     alist  :: Vector{F64}
     hamil  :: Vector{F64}
     HC     :: Array{F64,2}
-    tmesh  :: AbstractGrid
     wmesh  :: AbstractMesh
 end
 
@@ -39,9 +39,9 @@ function solve(::StochACSolver, rd::RawData)
     G = make_data(rd)
     Gᵥ = abs.(G.value)
     σ² = 1.0 ./ G.covar
-    tmesh = make_grid(rd)
+    grid = make_grid(rd)
 
-    MC, SE, SC = stoch_init(tmesh, Gᵥ, σ²)
+    MC, SE, SC = stoch_init(grid, Gᵥ, σ²)
     stoch_run(MC, SE, SC)
 end
 
@@ -74,7 +74,7 @@ function stoch_delta(xmesh::Vector{F64}, phi::Vector{F64})
     return delta
 end
 
-function stoch_init(tmesh::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
+function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     nalph = get_a("nalph")
     nmesh = get_c("nmesh")
     alpha = get_a("alpha")
@@ -108,17 +108,17 @@ function stoch_init(tmesh::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     phi = cumsum(model .* wmesh.weight)
     delta = stoch_delta(xmesh, phi)
 
-    kernel = make_kernel(fmesh, tmesh)
+    kernel = make_kernel(fmesh, ag)
 
     image = zeros(F64, nmesh, nalph)
     hamil = zeros(F64, nalph)
     HC = zeros(F64, ngrid, nalph)
-    δt = tmesh[2] - tmesh[1]
+    δt = grid[2] - grid[1]
     for i = 1:nalph
         HC[:,i] = stoch_hamil0(a_γ[:,i], r_γ[:,i], kernel, Gᵥ, σ²)
         hamil[i] = dot(HC[:,i], HC[:,i]) * δt
     end
-    SC = StochContext(Gᵥ, σ², kernel, delta, image, phi, model, alist, hamil, HC, tmesh, wmesh)
+    SC = StochContext(Gᵥ, σ², grid, kernel, delta, image, phi, model, alist, hamil, HC,  wmesh)
 
     return MC, SE, SC
 end
@@ -244,7 +244,7 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     K2 = view(SC.kernel, :, i2)
     dhc = dhh * (K1 - K2) .* SC.σ²
 
-    δt = SC.tmesh[2] - SC.tmesh[1]
+    δt = SC.grid[2] - SC.grid[1]
     dhh = dot(dhc, 2.0 * hc + dhc) * δt
 
     pass = false
@@ -292,7 +292,7 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     K4 = view(SC.kernel, :, i4)
     dhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) .* SC.σ²
 
-    δt = SC.tmesh[2] - SC.tmesh[1]
+    δt = SC.grid[2] - SC.grid[1]
     dhh = dot(dhc, 2.0 * hc + dhc) * δt
 
     pass = false
