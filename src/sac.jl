@@ -45,17 +45,19 @@ function solve(::StochACSolver, rd::RawData)
     stoch_run(MC, SE, SC)
 end
 
-function stoch_grid()
+function calc_fmesh()
     nfine = get_a("nfine")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
-
     fmesh = LinearMesh(nfine, wmin, wmax)
+    return fmesh
+end
 
+function calc_xmesh()
+    nfine = get_a("nfine")
     model = fill(1.0/nfine, nfine)
     xmesh = cumsum(model)
-
-    return fmesh, xmesh
+    return xmesh
 end
 
 function stoch_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
@@ -101,7 +103,8 @@ function stoch_init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     SE = StochElement(Γₐ, Γᵣ)
 
     mesh = make_mesh()
-    fmesh, xmesh = stoch_grid()
+    fmesh = calc_fmesh()
+    xmesh = calc_xmesh()
 
     αₗ = collect(alpha * (ratio ^ (x - 1)) for x in 1:nalph)
     model = make_model(mesh)
