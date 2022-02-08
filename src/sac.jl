@@ -35,17 +35,24 @@ mutable struct StochContext
     αₗ     :: Vector{F64}
 end
 
-function solve(::StochACSolver, rd::RawData)
+"""
+    solve
+"""
+function solve(S::StochACSolver, rd::RawData)
+    println("[ StochAC ]")
+    MC, SE, SC = init(S, rd)
+    run(S, MC, SE, SC)
+end
+
+"""
+    init
+"""
+function init(S::StochACSolver, rd::RawData)
     G = make_data(rd)
     Gᵥ = abs.(G.value)
     σ² = 1.0 ./ G.covar
     grid = make_grid(rd)
 
-    MC, SE, SC = init(grid, Gᵥ, σ²)
-    run(MC, SE, SC)
-end
-
-function init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     nalph = get_a("nalph")
     nmesh = get_c("nmesh")
 
@@ -70,7 +77,7 @@ function init(grid::AbstractGrid, Gᵥ::Vector{F64}, σ²::Vector{F64})
     return MC, SE, SC
 end
 
-function run(MC::StochMC, SE::StochElement, SC::StochContext)
+function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
     nstep = get_a("nstep")
     ndump = get_a("ndump")
 
@@ -320,7 +327,7 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     dhh = dot(dhc, 2.0 * hc + dhc) * δt
 
     pass = false
-    if dhh ≤ 0.0 ||  exp(-SC.αₗ[i] * dhh) > rand(MC.rng)
+    if dhh ≤ 0.0 || exp(-SC.αₗ[i] * dhh) > rand(MC.rng)
         pass = true
     end
 
