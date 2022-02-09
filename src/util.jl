@@ -312,6 +312,8 @@ It implements the well-known secant algorithm to locate root of a given
 polynomial function. Here, `func` means the function, `x0` is the initial
 guess, and `args...` denotes the optional parameters for `func`. Please
 be careful, `func` must be a single variable function.
+
+See also: [`newton`](@ref).
 """
 function secant(func, x0, args...; maxiter::I64 = 50, tol::F64 = 1.48e-8)
     eps = 1.0e-4
@@ -369,6 +371,8 @@ polynomial function. Here, `fun` means the function, `guess` is the initial
 solution, and `kwargs...` denotes the optional parameters for `fun`. Please
 be careful, `func` is a multiple variable function. It not only returns
 the value, but also the jacobian matrix of the function.
+
+See also: [`secant`](@ref).
 """
 function newton(fun::Function, guess, kwargs...; maxiter::I64 = 20000, mixing::F64 = 0.5)
     function _apply(feed::Vector{T}, f::Vector{T}, J::Matrix{T}) where {T}
@@ -424,7 +428,11 @@ end
 =#
 
 """
-    trapz
+    trapz(x::AbstractMesh, y::Vector{T})
+
+Perform numerical integration by using the composite trapezoidal rule.
+
+See also: [`simpson`](@ref).
 """
 function trapz(x::AbstractMesh, y::Vector{T}) where {T}
     value = dot(x.weight, y)
@@ -432,7 +440,11 @@ function trapz(x::AbstractMesh, y::Vector{T}) where {T}
 end
 
 """
-    trapz
+    trapz(x::Vector{F64}, y::Vector{T}, linear::Bool = false)
+
+Perform numerical integration by using the composite trapezoidal rule.
+
+See also: [`simpson`](@ref).
 """
 function trapz(x::Vector{F64}, y::Vector{T}, linear::Bool = false) where {T}
     if linear
