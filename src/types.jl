@@ -301,6 +301,18 @@ end
 
 """
     TangentMesh
+
+Mutable struct. A non-linear and non-uniform mesh.
+
+### Members
+
+* nmesh  -> Number of mesh points
+* wmax   -> Right boundary (maximum value).
+* wmin   -> Left boundary (minimum value).
+* mesh   -> Mesh itself.
+* weight -> Precomputed integration weights (composite trapezoidal rule).
+
+See also: [`TangentMesh`](@ref).
 """
 mutable struct TangentMesh <: AbstractMesh
     nmesh :: I64
