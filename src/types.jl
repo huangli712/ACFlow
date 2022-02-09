@@ -159,6 +159,16 @@ end
 
 """
     GreenData
+
+Mutable struct. It represents the preprocessed input data.
+
+### Members
+
+* value -> Preprocessed input data.
+* error -> Preprocessed error bar.
+* covar -> Diagonal elements of the covariance matrix, σ.
+
+See also: [`RawData`](@ref).
 """
 mutable struct GreenData <: AbstractData
     value :: Vector{F64}
@@ -172,11 +182,24 @@ end
 
 """
     AbstractGrid
+
+An abstract type representing the imaginary axis. It is used to build the
+internal type system.
 """
 abstract type AbstractGrid end
 
 """
     FermionicImaginaryTimeGrid
+
+Mutable struct. It represents the fermionic imaginary time grid.
+
+### Members
+
+* ntime -> Number of time slices.
+* β     -> Inverse temperature.
+* τ     -> Grid itself.
+
+See also: [`FermionicMatsubaraGrid`](@ref).
 """
 mutable struct FermionicImaginaryTimeGrid <: AbstractGrid
     ntime :: I64
@@ -186,6 +209,16 @@ end
 
 """
     FermionicMatsubaraGrid
+
+Mutable struct. It represents the fermionic Matsubara frequency grid.
+
+### Members
+
+* ntime -> Number of time slices.
+* β     -> Inverse temperature.
+* ω     -> Grid itself.
+
+See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
 mutable struct FermionicMatsubaraGrid <: AbstractGrid
     nfreq :: I64
