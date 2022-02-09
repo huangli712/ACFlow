@@ -132,11 +132,24 @@ struct StochOMSolver <: AbstractSolver end
 
 """
     AbstractData
+
+An abstract type representing the input data in imaginary axis. It is used
+to build the internal type system.
 """
 abstract type AbstractData end
 
 """
     RawData
+
+Mutable struct. It represent the raw input data.
+
+### Members
+
+* _grid -> Grid for the input data, such as τ or iωₙ.
+* value -> Raw input data, such as G(τ), G(iωₙ), or Σ(iωₙ).
+* error -> Error bar of raw input data.
+
+See also: [`GreenData`](@ref).
 """
 mutable struct RawData{T} <: AbstractData
     _grid :: Vector{F64}
