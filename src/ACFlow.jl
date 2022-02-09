@@ -70,8 +70,6 @@ export welcome
 export overview
 export newton
 export secant
-export trapz
-export simpson
 export read_param
 export read_data
 export solve

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/06
+# Last modified: 2022/02/09
 #
 
 #=
@@ -37,24 +37,28 @@ The following dictionaries are used as global variables.
 
 """
     PCOMM
+
+Dictionary for configuration parameters: common setup.
 """
 const PCOMM    = Dict{String,ADT}(
-    "finput"  => [missing, 1, :String, "Filename for input correlation function"],
+    "finput"  => [missing, 1, :String, "Filename for input data"],
     "solver"  => [missing, 1, :String, "Solve for the analytical continuation problem"],
     "ktype"   => [missing, 1, :String, "Type of kernel function"],
     "mtype"   => [missing, 1, :String, "Type of default model"],
-    "grid"    => [missing, 1, :String, "Grid for input correlation function"],
-    "mesh"    => [missing, 1, :String, "Mesh for output spectrum"],
+    "grid"    => [missing, 1, :String, "Grid for input data (imaginary axis)"],
+    "mesh"    => [missing, 1, :String, "Mesh for output data (real axis)"],
     "ngrid"   => [missing, 1, :I64   , "Number of grid points"],
     "nmesh"   => [missing, 1, :I64   , "Number of mesh points"],
-    "wmax"    => [missing, 1, :F64   , "Maximum value of mesh"],
-    "wmin"    => [missing, 1, :F64   , "Minimum value of mesh"],
+    "wmax"    => [missing, 1, :F64   , "Right boundary (maximum value) of mesh"],
+    "wmin"    => [missing, 1, :F64   , "Left boundary (minimum value) of mesh"],
     "beta"    => [missing, 1, :F64   , "Inverse temperature"],
-    "offdiag" => [missing, 1, :Bool  , "Is it an offdiagonal element in matrix-valued function"],
+    "offdiag" => [missing, 1, :Bool  , "Is it the offdiagonal part in matrix-valued function"],
 )
 
 """
     PMaxEnt
+
+Dictionary for configuration parameters: maximum entropy method.
 """
 const PMaxEnt  = Dict{String,ADT}(
     "method"  => [missing, 1, :String, "How to determine the optimized α parameter"],
@@ -66,12 +70,14 @@ const PMaxEnt  = Dict{String,ADT}(
 
 """
     PStochAC
+
+Dictionary for configuration parameters: stochastic analytical continuation method.
 """
 const PStochAC = Dict{String,ADT}(
-    "nfine"   => [missing, 1, :I64   , "Number of points for very fine mesh"],
+    "nfine"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
     "ngamm"   => [missing, 1, :I64   , "Number of δ functions"],
     "nalph"   => [missing, 1, :I64   , "Number of the α parameters"],
-    "nwarm"   => [missing, 1, :I64   , "Number of Monte Carlo warming-up steps"],
+    "nwarm"   => [missing, 1, :I64   , "Number of Monte Carlo warmup steps"],
     "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo sweeping steps"],
     "ndump"   => [missing, 1, :I64   , "Intervals for monitoring Monte Carlo sweeps"],
     "alpha"   => [missing, 1, :F64   , "Starting value for the α parameter"],
@@ -80,6 +86,8 @@ const PStochAC = Dict{String,ADT}(
 
 """
     PStochOM
+
+Dictionary for configuration parameters: stochastic optimization method.
 """
 const PStochOM = Dict{String,ADT}(
 )
@@ -90,21 +98,31 @@ const PStochOM = Dict{String,ADT}(
 
 """
     AbstractSolver
+
+An abstract type representing the solver for analytical continuation
+problem. It is used to build the internal type system.
 """
 abstract type AbstractSolver end
 
 """
     MaxEntSolver
+
+It represents the solver that implements the maximum entropy method.
 """
 struct MaxEntSolver <: AbstractSolver end
 
 """
     StochACSolver
+
+It represents the solver that implements the stochastic analytical
+continuation method.
 """
 struct StochACSolver <: AbstractSolver end
 
 """
     StochOMSolver
+
+It represents the solver that implements the stochastic optimization method.
 """
 struct StochOMSolver <: AbstractSolver end
 
