@@ -23,6 +23,8 @@ end
 
 """
     Base.length(fg::FermionicImaginaryTimeGrid)
+
+Return number of grid points in FermionicImaginaryTimeGrid.
 """
 function Base.length(fg::FermionicImaginaryTimeGrid)
     fg.ntime
@@ -30,6 +32,9 @@ end
 
 """
     Base.iterate(fg::FermionicImaginaryTimeGrid)
+
+Advance the iterator of the FermionicImaginaryTimeGrid struct to obtain
+the next grid point.
 """
 function Base.iterate(fg::FermionicImaginaryTimeGrid)
     iterate(fg.τ)
@@ -37,6 +42,9 @@ end
 
 """
     Base.iterate(fg::FermionicImaginaryTimeGrid, i::I64)
+
+This is the key method that allows a FermionicImaginaryTimeGrid struct
+to be iterated, yielding a sequences of grid points.
 """
 function Base.iterate(fg::FermionicImaginaryTimeGrid, i::I64)
     iterate(fg.τ, i)
@@ -44,6 +52,9 @@ end
 
 """
     Base.eachindex(fg::FermionicImaginaryTimeGrid)
+
+Create an iterable object for visiting each index of a
+FermionicImaginaryTimeGrid struct.
 """
 function Base.eachindex(fg::FermionicImaginaryTimeGrid)
     eachindex(fg.τ)
@@ -51,6 +62,8 @@ end
 
 """
     Base.firstindex(fg::FermionicImaginaryTimeGrid)
+
+Return the first index of a FermionicImaginaryTimeGrid struct.
 """
 function Base.firstindex(fg::FermionicImaginaryTimeGrid)
     firstindex(fg.τ)
@@ -58,6 +71,8 @@ end
 
 """
     Base.lastindex(fg::FermionicImaginaryTimeGrid)
+
+Return the last index of a FermionicImaginaryTimeGrid struct.
 """
 function Base.lastindex(fg::FermionicImaginaryTimeGrid)
     lastindex(fg.τ)
@@ -65,6 +80,9 @@ end
 
 """
     Base.getindex(fg::FermionicImaginaryTimeGrid, ind::I64)
+
+Retrieve the value(s) stored at the given key or index within a
+FermionicImaginaryTimeGrid struct.
 """
 function Base.getindex(fg::FermionicImaginaryTimeGrid, ind::I64)
     @assert 1 ≤ ind ≤ fg.ntime
@@ -73,6 +91,8 @@ end
 
 """
     Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
+
+Return a subset of FermionicImaginaryTimeGrid struct as specified by `I`.
 """
 function Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
     @assert checkbounds(Bool, fg.τ, I)
