@@ -270,11 +270,26 @@ end
 
 """
     AbstractMesh
+
+An abstract type representing the real axis. It is used to build the
+internal type system.
 """
 abstract type AbstractMesh end
 
 """
     LinearMesh
+
+Mutable struct. A linear and uniform mesh.
+
+### Members
+
+* nmesh  -> Number of mesh points
+* wmax   -> Right boundary (maximum value).
+* wmin   -> Left boundary (minimum value).
+* mesh   -> Mesh itself.
+* weight -> Precomputed integration weights (composite trapezoidal rule).
+
+See also: [`TangentMesh`](@ref).
 """
 mutable struct LinearMesh <: AbstractMesh
     nmesh :: I64
