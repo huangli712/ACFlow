@@ -128,6 +128,10 @@ end
 
 """
     FermionicMatsubaraGrid(nfreq::I64, β::F64)
+
+A constructor for the FermionicMatsubaraGrid struct.
+
+See also: [`FermionicMatsubaraGrid`](@ref).
 """
 function FermionicMatsubaraGrid(nfreq::I64, β::F64)
     @assert nfreq ≥ 1
@@ -221,6 +225,10 @@ end
 
 """
     BosonicImaginaryTimeGrid(ntime::I64, β::F64)
+
+A constructor for the BosonicImaginaryTimeGrid struct.
+
+See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
 function BosonicImaginaryTimeGrid(ntime::I64, β::F64)
     @assert ntime ≥ 1
@@ -309,6 +317,10 @@ end
 
 """
     BosonicMatsubaraGrid(nfreq::I64, β::F64)
+
+A constructor for the BosonicMatsubaraGrid struct.
+
+See also: [`BosonicMatsubaraGrid`](@ref).
 """
 function BosonicMatsubaraGrid(nfreq::I64, β::F64)
     @assert nfreq ≥ 1
