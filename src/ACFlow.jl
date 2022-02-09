@@ -15,6 +15,14 @@ continuation problem. It is usually used to convert the single-particle
 or two-particle correlation functions from imaginary axis to real axis.
 Now this package is under heavy development. **PLEASE USE IT AT YOUR OWN
 RISK**.
+
+ACFlow supports the following algorithms:
+
+* Maximum Entropy Method (MEM)
+* Stochastic Analytical Continuation (SAC)
+* Stochastic Optimization Method (SOM)
+
+
 """
 module ACFlow
 

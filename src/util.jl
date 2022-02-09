@@ -266,6 +266,19 @@ function sorry()
     error("Sorry, this feature has not been implemented")
 end
 
+"""
+    prompt(msg::String)
+
+Print a stylized ACFlow message to the screen.
+"""
+function prompt(msg::String)
+    print(green("ACFlow > "))
+    print(magenta(msg))
+    println()
+    #
+    flush(stdout)
+end
+
 #=
 ### *I/O Operations*
 =#
