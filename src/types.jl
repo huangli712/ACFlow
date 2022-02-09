@@ -228,6 +228,16 @@ end
 
 """
     BosonicImaginaryTimeGrid
+
+Mutable struct. It represents the bosonic imaginary time grid.
+
+### Members
+
+* ntime -> Number of time slices.
+* β     -> Inverse temperature.
+* τ     -> Grid itself.
+
+See also: [`BosonicMatsubaraGrid`](@ref).
 """
 mutable struct BosonicImaginaryTimeGrid <: AbstractGrid
     ntime :: I64
@@ -237,6 +247,16 @@ end
 
 """
     BosonicMatsubaraGrid
+
+Mutable struct. It represents the bosonic Matsubara frequency grid.
+
+### Members
+
+* ntime -> Number of time slices.
+* β     -> Inverse temperature.
+* ω     -> Grid itself.
+
+See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
 mutable struct BosonicMatsubaraGrid <: AbstractGrid
     nfreq :: I64
