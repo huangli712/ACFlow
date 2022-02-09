@@ -163,6 +163,9 @@ end
 
 """
     Base.iterate(fg::FermionicMatsubaraGrid, i::I64)
+
+Create an iterable object for visiting each index of a
+FermionicMatsubaraGrid struct.
 """
 function Base.iterate(fg::FermionicMatsubaraGrid, i::I64)
     iterate(fg.ω, i)
@@ -263,6 +266,9 @@ end
 
 """
     Base.iterate(bg::BosonicImaginaryTimeGrid, i::I64)
+
+Create an iterable object for visiting each index of a
+BosonicImaginaryTimeGrid struct.
 """
 function Base.iterate(bg::BosonicImaginaryTimeGrid, i::I64)
     iterate(bg.τ, i)
@@ -362,6 +368,9 @@ end
 
 """
     Base.iterate(bg::BosonicMatsubaraGrid, i::I64)
+
+Create an iterable object for visiting each index of a
+BosonicMatsubaraGrid struct.
 """
 function Base.iterate(bg::BosonicMatsubaraGrid, i::I64)
     iterate(bg.ω, i)
