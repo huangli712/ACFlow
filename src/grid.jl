@@ -22,49 +22,49 @@ function FermionicImaginaryTimeGrid(ntime::I64, β::F64)
 end
 
 """
-    Base.length
+    Base.length(fg::FermionicImaginaryTimeGrid)
 """
 function Base.length(fg::FermionicImaginaryTimeGrid)
     fg.ntime
 end
 
 """
-    Base.iterate
+    Base.iterate(fg::FermionicImaginaryTimeGrid)
 """
 function Base.iterate(fg::FermionicImaginaryTimeGrid)
     iterate(fg.τ)
 end
 
 """
-    Base.iterate
+    Base.iterate(fg::FermionicImaginaryTimeGrid, i::I64)
 """
 function Base.iterate(fg::FermionicImaginaryTimeGrid, i::I64)
     iterate(fg.τ, i)
 end
 
 """
-    Base.eachindex
+    Base.eachindex(fg::FermionicImaginaryTimeGrid)
 """
 function Base.eachindex(fg::FermionicImaginaryTimeGrid)
     eachindex(fg.τ)
 end
 
 """
-    Base.firstindex
+    Base.firstindex(fg::FermionicImaginaryTimeGrid)
 """
 function Base.firstindex(fg::FermionicImaginaryTimeGrid)
     firstindex(fg.τ)
 end
 
 """
-    Base.lastindex
+    Base.lastindex(fg::FermionicImaginaryTimeGrid)
 """
 function Base.lastindex(fg::FermionicImaginaryTimeGrid)
     lastindex(fg.τ)
 end
 
 """
-    Base.getindex
+    Base.getindex(fg::FermionicImaginaryTimeGrid, ind::I64)
 """
 function Base.getindex(fg::FermionicImaginaryTimeGrid, ind::I64)
     @assert 1 ≤ ind ≤ fg.ntime
@@ -72,7 +72,7 @@ function Base.getindex(fg::FermionicImaginaryTimeGrid, ind::I64)
 end
 
 """
-    Base.getindex
+    Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
 """
 function Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
     @assert checkbounds(Bool, fg.τ, I)
@@ -85,7 +85,10 @@ function Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild
+    rebuild(fg::FermionicImaginaryTimeGrid, ntime::I64, β::F64)
+
+Rebuild the FermionicImaginaryTimeGrid struct via new `ntime`
+and `β` parameters.
 """
 function rebuild(fg::FermionicImaginaryTimeGrid, ntime::I64, β::F64)
     @assert ntime ≥ 1
