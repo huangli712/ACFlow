@@ -38,7 +38,7 @@ using Random
 using TOML
 
 #=
-### *Using The-thirdty Libraries*
+### *Using Third-party Libraries*
 =#
 
 using Dierckx
