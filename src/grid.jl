@@ -4,11 +4,15 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/06
+# Last modified: 2022/02/09
 #
 
 """
-    FermionicImaginaryTimeGrid
+    FermionicImaginaryTimeGrid(ntime::I64, β::F64)
+
+A constructor for the FermionicImaginaryTimeGrid struct.
+
+See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
 function FermionicImaginaryTimeGrid(ntime::I64, β::F64)
     @assert ntime ≥ 1
