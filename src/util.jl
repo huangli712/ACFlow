@@ -464,7 +464,13 @@ function trapz(x::Vector{F64}, y::Vector{T}, linear::Bool = false) where {T}
 end
 
 """
-    simpson
+    simpson(x::Vector{F64}, y::Vector{T})
+
+Perform numerical integration by using the simpson rule. Note that the
+length of `x` and `y` must be odd numbers. And `x` must be a linear and
+uniform mesh.
+
+See also: [`simpson`](@ref).
 """
 function simpson(x::Vector{F64}, y::Vector{T}) where {T}
     h = (x[2] - x[1]) / 3.0
