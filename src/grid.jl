@@ -144,6 +144,8 @@ end
 
 """
     Base.length(fg::FermionicMatsubaraGrid)
+
+Return number of grid points in FermionicMatsubaraGrid.
 """
 function Base.length(fg::FermionicMatsubaraGrid)
     fg.nfreq
@@ -239,6 +241,8 @@ end
 
 """
     Base.length(bg::BosonicImaginaryTimeGrid)
+
+Return number of grid points in BosonicImaginaryTimeGrid.
 """
 function Base.length(bg::BosonicImaginaryTimeGrid)
     bg.ntime
@@ -333,6 +337,8 @@ end
 
 """
     Base.length(bg::BosonicMatsubaraGrid)
+
+Return number of grid points in BosonicMatsubaraGrid.
 """
 function Base.length(bg::BosonicMatsubaraGrid)
     bg.nfreq
