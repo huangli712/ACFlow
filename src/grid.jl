@@ -173,6 +173,9 @@ end
 
 """
     Base.eachindex(fg::FermionicMatsubaraGrid)
+
+Create an iterable object for visiting each index of a
+FermionicMatsubaraGrid struct.
 """
 function Base.eachindex(fg::FermionicMatsubaraGrid)
     eachindex(fg.ω)
@@ -276,6 +279,9 @@ end
 
 """
     Base.eachindex(bg::BosonicImaginaryTimeGrid)
+
+Create an iterable object for visiting each index of a
+BosonicImaginaryTimeGrid struct.
 """
 function Base.eachindex(bg::BosonicImaginaryTimeGrid)
     eachindex(bg.τ)
@@ -378,6 +384,9 @@ end
 
 """
     Base.eachindex(bg::BosonicMatsubaraGrid)
+
+Create an iterable object for visiting each index of a
+BosonicMatsubaraGrid struct.
 """
 function Base.eachindex(bg::BosonicMatsubaraGrid)
     eachindex(bg.ω)
