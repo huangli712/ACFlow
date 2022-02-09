@@ -153,6 +153,9 @@ end
 
 """
     Base.iterate(fg::FermionicMatsubaraGrid)
+
+Advance the iterator of the FermionicMatsubaraGrid struct to obtain
+the next grid point.
 """
 function Base.iterate(fg::FermionicMatsubaraGrid)
     iterate(fg.ω)
@@ -250,6 +253,9 @@ end
 
 """
     Base.iterate(bg::BosonicImaginaryTimeGrid)
+
+Advance the iterator of the BosonicImaginaryTimeGrid struct to obtain
+the next grid point.
 """
 function Base.iterate(bg::BosonicImaginaryTimeGrid)
     iterate(bg.τ)
@@ -346,6 +352,9 @@ end
 
 """
     Base.iterate(bg::BosonicMatsubaraGrid)
+
+Advance the iterator of the BosonicMatsubaraGrid struct to obtain
+the next grid point.
 """
 function Base.iterate(bg::BosonicMatsubaraGrid)
     iterate(bg.ω)
