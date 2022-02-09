@@ -7,6 +7,10 @@
 # Last modified: 2022/02/09
 #
 
+#=
+### *Struct : FermionicImaginaryTimeGrid*
+=#
+
 """
     FermionicImaginaryTimeGrid(ntime::I64, β::F64)
 
@@ -118,6 +122,10 @@ function rebuild(fg::FermionicImaginaryTimeGrid, ntime::I64, β::F64)
     fg.τ = collect(LinRange(0.0, fg.β, fg.ntime))
 end
 
+#=
+### *Struct : FermionicMatsubaraGrid*
+=#
+
 """
     FermionicMatsubaraGrid(nfreq::I64, β::F64)
 """
@@ -207,6 +215,10 @@ function rebuild(fg::FermionicMatsubaraGrid, nfreq::I64, β::F64)
     end
 end
 
+#=
+### *Struct : BosonicImaginaryTimeGrid*
+=#
+
 """
     BosonicImaginaryTimeGrid(ntime::I64, β::F64)
 """
@@ -290,6 +302,10 @@ function rebuild(bg::BosonicImaginaryTimeGrid, ntime::I64, β::F64)
     bg.β = β
     bg.τ = collect(LinRange(0.0, bg.β, bg.ntime))
 end
+
+#=
+### *Struct : BosonicMatsubaraGrid*
+=#
 
 """
     BosonicMatsubaraGrid(nfreq::I64, β::F64)
