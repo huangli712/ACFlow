@@ -119,7 +119,7 @@ function rebuild(fg::FermionicImaginaryTimeGrid, ntime::I64, β::F64)
 end
 
 """
-    FermionicMatsubaraGrid
+    FermionicMatsubaraGrid(nfreq::I64, β::F64)
 """
 function FermionicMatsubaraGrid(nfreq::I64, β::F64)
     @assert nfreq ≥ 1
@@ -131,49 +131,49 @@ function FermionicMatsubaraGrid(nfreq::I64, β::F64)
 end
 
 """
-    Base.length
+    Base.length(fg::FermionicMatsubaraGrid)
 """
 function Base.length(fg::FermionicMatsubaraGrid)
     fg.nfreq
 end
 
 """
-    Base.iterate
+    Base.iterate(fg::FermionicMatsubaraGrid)
 """
 function Base.iterate(fg::FermionicMatsubaraGrid)
     iterate(fg.ω)
 end
 
 """
-    Base.iterate
+    Base.iterate(fg::FermionicMatsubaraGrid, i::I64)
 """
 function Base.iterate(fg::FermionicMatsubaraGrid, i::I64)
     iterate(fg.ω, i)
 end
 
 """
-    Base.eachindex
+    Base.eachindex(fg::FermionicMatsubaraGrid)
 """
 function Base.eachindex(fg::FermionicMatsubaraGrid)
     eachindex(fg.ω)
 end
 
 """
-    Base.firstindex
+    Base.firstindex(fg::FermionicMatsubaraGrid)
 """
 function Base.firstindex(fg::FermionicMatsubaraGrid)
     firstindex(fg.ω)
 end
 
 """
-    Base.lastindex
+    Base.lastindex(fg::FermionicMatsubaraGrid)
 """
 function Base.lastindex(fg::FermionicMatsubaraGrid)
     lastindex(fg.ω)
 end
 
 """
-    Base.getindex
+    Base.getindex(fg::FermionicMatsubaraGrid, ind::I64)
 """
 function Base.getindex(fg::FermionicMatsubaraGrid, ind::I64)
     @assert 1 ≤ ind ≤ fg.nfreq
@@ -181,7 +181,7 @@ function Base.getindex(fg::FermionicMatsubaraGrid, ind::I64)
 end
 
 """
-    Base.getindex
+    Base.getindex(fg::FermionicMatsubaraGrid, I::UnitRange{I64})
 """
 function Base.getindex(fg::FermionicMatsubaraGrid, I::UnitRange{I64})
     @assert checkbounds(Bool, fg.ω, I)
@@ -194,7 +194,7 @@ function Base.getindex(fg::FermionicMatsubaraGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild
+    rebuild(fg::FermionicMatsubaraGrid, nfreq::I64, β::F64)
 """
 function rebuild(fg::FermionicMatsubaraGrid, nfreq::I64, β::F64)
     @assert nfreq ≥ 1
@@ -208,7 +208,7 @@ function rebuild(fg::FermionicMatsubaraGrid, nfreq::I64, β::F64)
 end
 
 """
-    BosonicImaginaryTimeGrid
+    BosonicImaginaryTimeGrid(ntime::I64, β::F64)
 """
 function BosonicImaginaryTimeGrid(ntime::I64, β::F64)
     @assert ntime ≥ 1
@@ -218,49 +218,49 @@ function BosonicImaginaryTimeGrid(ntime::I64, β::F64)
 end
 
 """
-    Base.length
+    Base.length(bg::BosonicImaginaryTimeGrid)
 """
 function Base.length(bg::BosonicImaginaryTimeGrid)
     bg.ntime
 end
 
 """
-    Base.iterate
+    Base.iterate(bg::BosonicImaginaryTimeGrid)
 """
 function Base.iterate(bg::BosonicImaginaryTimeGrid)
     iterate(bg.τ)
 end
 
 """
-    Base.iterate
+    Base.iterate(bg::BosonicImaginaryTimeGrid, i::I64)
 """
 function Base.iterate(bg::BosonicImaginaryTimeGrid, i::I64)
     iterate(bg.τ, i)
 end
 
 """
-    Base.eachindex
+    Base.eachindex(bg::BosonicImaginaryTimeGrid)
 """
 function Base.eachindex(bg::BosonicImaginaryTimeGrid)
     eachindex(bg.τ)
 end
 
 """
-    Base.firstindex
+    Base.firstindex(bg::BosonicImaginaryTimeGrid)
 """
 function Base.firstindex(bg::BosonicImaginaryTimeGrid)
     firstindex(bg.τ)
 end
 
 """
-    Base.lastindex
+    Base.lastindex(bg::BosonicImaginaryTimeGrid)
 """
 function Base.lastindex(bg::BosonicImaginaryTimeGrid)
     lastindex(bg.τ)
 end
 
 """
-    Base.getindex
+    Base.getindex(bg::BosonicImaginaryTimeGrid, ind::I64)
 """
 function Base.getindex(bg::BosonicImaginaryTimeGrid, ind::I64)
     @assert 1 ≤ ind ≤ bg.ntime
@@ -268,7 +268,7 @@ function Base.getindex(bg::BosonicImaginaryTimeGrid, ind::I64)
 end
 
 """
-    Base.getindex
+    Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
 """
 function Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
     @assert checkbounds(Bool, bg.τ, I)
@@ -281,7 +281,7 @@ function Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild
+    rebuild(bg::BosonicImaginaryTimeGrid, ntime::I64, β::F64)
 """
 function rebuild(bg::BosonicImaginaryTimeGrid, ntime::I64, β::F64)
     @assert ntime ≥ 1
@@ -292,7 +292,7 @@ function rebuild(bg::BosonicImaginaryTimeGrid, ntime::I64, β::F64)
 end
 
 """
-    BosonicMatsubaraGrid
+    BosonicMatsubaraGrid(nfreq::I64, β::F64)
 """
 function BosonicMatsubaraGrid(nfreq::I64, β::F64)
     @assert nfreq ≥ 1
@@ -304,49 +304,49 @@ function BosonicMatsubaraGrid(nfreq::I64, β::F64)
 end
 
 """
-    Base.length
+    Base.length(bg::BosonicMatsubaraGrid)
 """
 function Base.length(bg::BosonicMatsubaraGrid)
     bg.nfreq
 end
 
 """
-    Base.iterate
+    Base.iterate(bg::BosonicMatsubaraGrid)
 """
 function Base.iterate(bg::BosonicMatsubaraGrid)
     iterate(bg.ω)
 end
 
 """
-    Base.iterate
+    Base.iterate(bg::BosonicMatsubaraGrid, i::I64)
 """
 function Base.iterate(bg::BosonicMatsubaraGrid, i::I64)
     iterate(bg.ω, i)
 end
 
 """
-    Base.eachindex
+    Base.eachindex(bg::BosonicMatsubaraGrid)
 """
 function Base.eachindex(bg::BosonicMatsubaraGrid)
     eachindex(bg.ω)
 end
 
 """
-    Base.firstindex
+    Base.firstindex(bg::BosonicMatsubaraGrid)
 """
 function Base.firstindex(bg::BosonicMatsubaraGrid)
     firstindex(bg.ω)
 end
 
 """
-    Base.lastindex
+    Base.lastindex(bg::BosonicMatsubaraGrid)
 """
 function Base.lastindex(bg::BosonicMatsubaraGrid)
     lastindex(bg.ω)
 end
 
 """
-    Base.getindex
+    Base.getindex(bg::BosonicMatsubaraGrid, ind::I64)
 """
 function Base.getindex(bg::BosonicMatsubaraGrid, ind::I64)
     @assert 1 ≤ ind ≤ bg.nfreq
@@ -354,7 +354,7 @@ function Base.getindex(bg::BosonicMatsubaraGrid, ind::I64)
 end
 
 """
-    Base.getindex
+    Base.getindex(bg::BosonicMatsubaraGrid, I::UnitRange{I64})
 """
 function Base.getindex(bg::BosonicMatsubaraGrid, I::UnitRange{I64})
     @assert checkbounds(Bool, bg.ω, I)
@@ -367,7 +367,7 @@ function Base.getindex(bg::BosonicMatsubaraGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild
+    rebuild(bg::BosonicMatsubaraGrid, nfreq::I64, β::F64)
 """
 function rebuild(bg::BosonicMatsubaraGrid, nfreq::I64, β::F64)
     @assert nfreq ≥ 1
