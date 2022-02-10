@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/09
+# Last modified: 2022/02/10
 #
 
 #=
@@ -28,7 +28,7 @@ end
 """
     Base.length(fg::FermionicImaginaryTimeGrid)
 
-Return number of grid points in FermionicImaginaryTimeGrid.
+Return number of grid points in a FermionicImaginaryTimeGrid struct.
 """
 function Base.length(fg::FermionicImaginaryTimeGrid)
     fg.ntime
@@ -37,7 +37,7 @@ end
 """
     Base.iterate(fg::FermionicImaginaryTimeGrid)
 
-Advance the iterator of the FermionicImaginaryTimeGrid struct to obtain
+Advance the iterator of a FermionicImaginaryTimeGrid struct to obtain
 the next grid point.
 """
 function Base.iterate(fg::FermionicImaginaryTimeGrid)
@@ -145,7 +145,7 @@ end
 """
     Base.length(fg::FermionicMatsubaraGrid)
 
-Return number of grid points in FermionicMatsubaraGrid.
+Return number of grid points in a FermionicMatsubaraGrid struct.
 """
 function Base.length(fg::FermionicMatsubaraGrid)
     fg.nfreq
@@ -154,7 +154,7 @@ end
 """
     Base.iterate(fg::FermionicMatsubaraGrid)
 
-Advance the iterator of the FermionicMatsubaraGrid struct to obtain
+Advance the iterator of a FermionicMatsubaraGrid struct to obtain
 the next grid point.
 """
 function Base.iterate(fg::FermionicMatsubaraGrid)
@@ -251,7 +251,7 @@ end
 """
     Base.length(bg::BosonicImaginaryTimeGrid)
 
-Return number of grid points in BosonicImaginaryTimeGrid.
+Return number of grid points in a BosonicImaginaryTimeGrid struct.
 """
 function Base.length(bg::BosonicImaginaryTimeGrid)
     bg.ntime
@@ -260,7 +260,7 @@ end
 """
     Base.iterate(bg::BosonicImaginaryTimeGrid)
 
-Advance the iterator of the BosonicImaginaryTimeGrid struct to obtain
+Advance the iterator of a BosonicImaginaryTimeGrid struct to obtain
 the next grid point.
 """
 function Base.iterate(bg::BosonicImaginaryTimeGrid)
@@ -356,7 +356,7 @@ end
 """
     Base.length(bg::BosonicMatsubaraGrid)
 
-Return number of grid points in BosonicMatsubaraGrid.
+Return number of grid points in a BosonicMatsubaraGrid struct.
 """
 function Base.length(bg::BosonicMatsubaraGrid)
     bg.nfreq
@@ -365,7 +365,7 @@ end
 """
     Base.iterate(bg::BosonicMatsubaraGrid)
 
-Advance the iterator of the BosonicMatsubaraGrid struct to obtain
+Advance the iterator of a BosonicMatsubaraGrid struct to obtain
 the next grid point.
 """
 function Base.iterate(bg::BosonicMatsubaraGrid)

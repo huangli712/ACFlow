@@ -129,7 +129,6 @@ function warmup(MC::StochMC, SE::StochElement, SC::StochContext)
     nwarm = get_a("nwarm")
 
     for i = 1:nwarm
-        #println("warm: $i")
         sample(MC, SE, SC)
     end
 
@@ -172,8 +171,6 @@ end
 """
 function measure(SE::StochElement, SC::StochContext)
     nalph = get_a("nalph")
-    nmesh = get_c("nmesh")
-    ngamm = get_a("ngamm")
 
     for ia = 1:nalph
         dr = view(SE.Γᵣ, :, ia)
@@ -236,7 +233,7 @@ function init_iodata(rd::RawData)
 
     G = make_data(rd)
     Gᵥ = abs.(G.value)
-    σ² = 1.0 ./ G.covar
+    σ² = 1.0 ./ sqrt.(G.covar)
 
     image = zeros(F64, nmesh, nalph)
 
