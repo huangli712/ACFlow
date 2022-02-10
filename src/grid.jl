@@ -96,7 +96,7 @@ end
 """
     Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
 
-Return a subset of FermionicImaginaryTimeGrid struct as specified by `I`.
+Return a subset of a FermionicImaginaryTimeGrid struct as specified by `I`.
 """
 function Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
     @assert checkbounds(Bool, fg.τ, I)
@@ -111,8 +111,7 @@ end
 """
     rebuild(fg::FermionicImaginaryTimeGrid, ntime::I64, β::F64)
 
-Rebuild the FermionicImaginaryTimeGrid struct via new `ntime`
-and `β` parameters.
+Rebuild the FermionicImaginaryTimeGrid struct via new `ntime` and `β` parameters.
 """
 function rebuild(fg::FermionicImaginaryTimeGrid, ntime::I64, β::F64)
     @assert ntime ≥ 1
@@ -212,6 +211,8 @@ end
 
 """
     Base.getindex(fg::FermionicMatsubaraGrid, I::UnitRange{I64})
+
+Return a subset of a FermionicMatsubaraGrid struct as specified by `I`.
 """
 function Base.getindex(fg::FermionicMatsubaraGrid, I::UnitRange{I64})
     @assert checkbounds(Bool, fg.ω, I)
@@ -225,6 +226,8 @@ end
 
 """
     rebuild(fg::FermionicMatsubaraGrid, nfreq::I64, β::F64)
+
+Rebuild the FermionicMatsubaraGrid struct via new `ntime` and `β` parameters.
 """
 function rebuild(fg::FermionicMatsubaraGrid, nfreq::I64, β::F64)
     @assert nfreq ≥ 1
@@ -325,6 +328,8 @@ end
 
 """
     Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
+
+Return a subset of a BosonicImaginaryTimeGrid struct as specified by `I`.
 """
 function Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
     @assert checkbounds(Bool, bg.τ, I)
@@ -338,6 +343,8 @@ end
 
 """
     rebuild(bg::BosonicImaginaryTimeGrid, ntime::I64, β::F64)
+
+Rebuild the BosonicImaginaryTimeGrid struct via new `ntime` and `β` parameters.
 """
 function rebuild(bg::BosonicImaginaryTimeGrid, ntime::I64, β::F64)
     @assert ntime ≥ 1
@@ -437,6 +444,8 @@ end
 
 """
     Base.getindex(bg::BosonicMatsubaraGrid, I::UnitRange{I64})
+
+Return a subset of a BosonicMatsubaraGrid struct as specified by `I`.
 """
 function Base.getindex(bg::BosonicMatsubaraGrid, I::UnitRange{I64})
     @assert checkbounds(Bool, bg.ω, I)
@@ -450,6 +459,8 @@ end
 
 """
     rebuild(bg::BosonicMatsubaraGrid, nfreq::I64, β::F64)
+
+Rebuild the BosonicMatsubaraGrid struct via new `ntime` and `β` parameters.
 """
 function rebuild(bg::BosonicMatsubaraGrid, nfreq::I64, β::F64)
     @assert nfreq ≥ 1
