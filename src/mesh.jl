@@ -67,6 +67,9 @@ end
 
 """
     Base.iterate(lm::LinearMesh)
+
+Advance the iterator of a LinearMesh struct to obtain the next mesh point.
+
 See also: [`LinearMesh`](@ref).
 """
 function Base.iterate(lm::LinearMesh)
@@ -75,6 +78,10 @@ end
 
 """
     Base.iterate(lm::LinearMesh, i::I64)
+
+This is the key method that allows a LinearMesh struct to be iterated,
+yielding a sequences of mesh points.
+
 See also: [`LinearMesh`](@ref).
 """
 function Base.iterate(lm::LinearMesh, i::I64)
@@ -83,6 +90,9 @@ end
 
 """
     Base.eachindex(lm::LinearMesh)
+
+Create an iterable object for visiting each index of a LinearMesh struct.
+
 See also: [`LinearMesh`](@ref).
 """
 function Base.eachindex(lm::LinearMesh)
@@ -91,6 +101,9 @@ end
 
 """
     Base.firstindex(lm::LinearMesh)
+
+Return the first index of a LinearMesh struct.
+
 See also: [`LinearMesh`](@ref).
 """
 function Base.firstindex(lm::LinearMesh)
@@ -99,6 +112,9 @@ end
 
 """
     Base.lastindex(lm::LinearMesh)
+
+Return the last index of a LinearMesh struct.
+
 See also: [`LinearMesh`](@ref).
 """
 function Base.lastindex(lm::LinearMesh)
@@ -107,6 +123,10 @@ end
 
 """
     Base.getindex(lm::LinearMesh, ind::I64)
+
+Retrieve the value(s) stored at the given key or index within a
+LinearMesh struct.
+
 See also: [`LinearMesh`](@ref).
 """
 function Base.getindex(lm::LinearMesh, ind::I64)
@@ -116,6 +136,9 @@ end
 
 """
     Base.getindex(lm::LinearMesh, I::UnitRange{I64})
+
+Return a subset of a LinearMesh struct as specified by `I`.
+
 See also: [`LinearMesh`](@ref).
 """
 function Base.getindex(lm::LinearMesh, I::UnitRange{I64})
@@ -165,6 +188,9 @@ end
 
 """
     Base.iterate(tm::TangentMesh)
+
+Advance the iterator of a TangentMesh struct to obtain the next mesh point.
+
 See also: [`TangentMesh`](@ref).
 """
 function Base.iterate(tm::TangentMesh)
@@ -173,6 +199,10 @@ end
 
 """
     Base.iterate(tm::TangentMesh, i::I64)
+
+This is the key method that allows a TangentMesh struct to be iterated,
+yielding a sequences of mesh points.
+
 See also: [`TangentMesh`](@ref).
 """
 function Base.iterate(tm::TangentMesh, i::I64)
@@ -181,6 +211,9 @@ end
 
 """
     Base.eachindex(tm::TangentMesh)
+
+Create an iterable object for visiting each index of a TangentMesh struct.
+
 See also: [`TangentMesh`](@ref).
 """
 function Base.eachindex(tm::TangentMesh)
@@ -189,6 +222,9 @@ end
 
 """
     Base.firstindex(tm::TangentMesh)
+
+Return the first index of a TangentMesh struct.
+
 See also: [`TangentMesh`](@ref).
 """
 function Base.firstindex(tm::TangentMesh)
@@ -197,6 +233,9 @@ end
 
 """
     Base.lastindex(tm::TangentMesh)
+
+Return the last index of a TangentMesh struct.
+
 See also: [`TangentMesh`](@ref).
 """
 function Base.lastindex(tm::TangentMesh)
@@ -205,6 +244,10 @@ end
 
 """
     Base.getindex(tm::TangentMesh, ind::I64)
+
+Retrieve the value(s) stored at the given key or index within a
+TangentMesh struct.
+
 See also: [`TangentMesh`](@ref).
 """
 function Base.getindex(tm::TangentMesh, ind::I64)
@@ -214,6 +257,9 @@ end
 
 """
     Base.getindex(tm::TangentMesh, I::UnitRange{I64})
+
+Return a subset of a TangentMesh struct as specified by `I`.
+
 See also: [`TangentMesh`](@ref).
 """
 function Base.getindex(tm::TangentMesh, I::UnitRange{I64})
