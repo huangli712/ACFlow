@@ -7,10 +7,16 @@
 # Last modified: 2022/02/10
 #
 
+#=
+### *Struct : LinearMesh*
+=#
+
 """
-    LinearMesh
+    LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
 
 A constructor for the LinearMesh struct.
+
+See also: [`LinearMesh`](@ref).
 """
 function LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
     @assert nmesh ≥ 1
@@ -26,7 +32,12 @@ function LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
 end
 
 """
-    LinearMesh
+    LinearMesh(mesh::Vector{F64})
+
+Create a LinearMesh struct from a standard Vector. Be careful, `mesh`
+must be equidistant.
+
+See also: [`LinearMesh`](@ref).
 """
 function LinearMesh(mesh::Vector{F64})
     nmesh = length(mesh)
@@ -44,49 +55,49 @@ function LinearMesh(mesh::Vector{F64})
 end
 
 """
-    Base.length
+    Base.length(lm::LinearMesh)
 """
 function Base.length(lm::LinearMesh)
     lm.nmesh
 end
 
 """
-    Base.iterate
+    Base.iterate(lm::LinearMesh)
 """
 function Base.iterate(lm::LinearMesh)
     iterate(lm.mesh)
 end
 
 """
-    Base.iterate
+    Base.iterate(lm::LinearMesh, i::I64)
 """
 function Base.iterate(lm::LinearMesh, i::I64)
     iterate(lm.mesh, i::I64)
 end
 
 """
-    Base.eachindex
+    Base.eachindex(lm::LinearMesh)
 """
 function Base.eachindex(lm::LinearMesh)
     eachindex(lm.mesh)
 end
 
 """
-    Base.firstindex
+    Base.firstindex(lm::LinearMesh)
 """
 function Base.firstindex(lm::LinearMesh)
     firstindex(lm.mesh)
 end
 
 """
-    Base.lastindex
+    Base.lastindex(lm::LinearMesh)
 """
 function Base.lastindex(lm::LinearMesh)
     lastindex(lm.mesh)
 end
 
 """
-    Base.getindex
+    Base.getindex(lm::LinearMesh, ind::I64)
 """
 function Base.getindex(lm::LinearMesh, ind::I64)
     @assert 1 ≤ ind ≤ lm.nmesh
@@ -94,7 +105,7 @@ function Base.getindex(lm::LinearMesh, ind::I64)
 end
 
 """
-    Base.getindex
+    Base.getindex(lm::LinearMesh, I::UnitRange{I64})
 """
 function Base.getindex(lm::LinearMesh, I::UnitRange{I64})
     @assert checkbounds(Bool, lm.mesh, I)
@@ -105,6 +116,10 @@ function Base.getindex(lm::LinearMesh, I::UnitRange{I64})
     end
     return X
 end
+
+#=
+### *Struct : TangentMesh*
+=#
 
 """
     TangentMesh
