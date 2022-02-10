@@ -122,7 +122,7 @@ end
 =#
 
 """
-    TangentMesh
+    TangentMesh(nmesh::I64, wmin::F64, wmax::F64, f1::F64 = 2.1)
 """
 function TangentMesh(nmesh::I64, wmin::F64, wmax::F64, f1::F64 = 2.1)
     @assert nmesh ≥ 1
@@ -141,49 +141,49 @@ function TangentMesh(nmesh::I64, wmin::F64, wmax::F64, f1::F64 = 2.1)
 end
 
 """
-    Base.length
+    Base.length(tm::TangentMesh)
 """
 function Base.length(tm::TangentMesh)
     tm.nmesh
 end
 
 """
-    Base.iterate
+    Base.iterate(tm::TangentMesh)
 """
 function Base.iterate(tm::TangentMesh)
     iterate(tm.mesh)
 end
 
 """
-    Base.iterate
+    Base.iterate(tm::TangentMesh, i::I64)
 """
 function Base.iterate(tm::TangentMesh, i::I64)
     iterate(tm.mesh, i)
 end
 
 """
-    Base.eachindex
+    Base.eachindex(tm::TangentMesh)
 """
 function Base.eachindex(tm::TangentMesh)
     eachindex(tm.mesh)
 end
 
 """
-    Base.firstindex
+    Base.firstindex(tm::TangentMesh)
 """
 function Base.firstindex(tm::TangentMesh)
     firstindex(tm.mesh)
 end
 
 """
-    Base.lastindex
+    Base.lastindex(tm::TangentMesh)
 """
 function Base.lastindex(tm::TangentMesh)
     lastindex(tm.mesh)
 end
 
 """
-    Base.getindex
+    Base.getindex(tm::TangentMesh, ind::I64)
 """
 function Base.getindex(tm::TangentMesh, ind::I64)
     @assert 1 ≤ ind ≤ tm.nmesh
@@ -191,7 +191,7 @@ function Base.getindex(tm::TangentMesh, ind::I64)
 end
 
 """
-    Base.getindex
+    Base.getindex(tm::TangentMesh, I::UnitRange{I64})
 """
 function Base.getindex(tm::TangentMesh, I::UnitRange{I64})
     @assert checkbounds(Bool, tm.mesh, I)
