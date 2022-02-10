@@ -192,6 +192,8 @@ end
 
 """
     Base.lastindex(fg::FermionicMatsubaraGrid)
+
+Return the last index of a FermionicMatsubaraGrid struct.
 """
 function Base.lastindex(fg::FermionicMatsubaraGrid)
     lastindex(fg.ω)
@@ -199,6 +201,9 @@ end
 
 """
     Base.getindex(fg::FermionicMatsubaraGrid, ind::I64)
+
+Retrieve the value(s) stored at the given key or index within a
+FermionicMatsubaraGrid struct.
 """
 function Base.getindex(fg::FermionicMatsubaraGrid, ind::I64)
     @assert 1 ≤ ind ≤ fg.nfreq
@@ -300,6 +305,8 @@ end
 
 """
     Base.lastindex(bg::BosonicImaginaryTimeGrid)
+
+Return the last index of a BosonicImaginaryTimeGrid struct.
 """
 function Base.lastindex(bg::BosonicImaginaryTimeGrid)
     lastindex(bg.τ)
@@ -307,6 +314,9 @@ end
 
 """
     Base.getindex(bg::BosonicImaginaryTimeGrid, ind::I64)
+
+Retrieve the value(s) stored at the given key or index within a
+BosonicImaginaryTimeGrid struct.
 """
 function Base.getindex(bg::BosonicImaginaryTimeGrid, ind::I64)
     @assert 1 ≤ ind ≤ bg.ntime
@@ -407,6 +417,8 @@ end
 
 """
     Base.lastindex(bg::BosonicMatsubaraGrid)
+
+Return the last index of a BosonicMatsubaraGrid struct.
 """
 function Base.lastindex(bg::BosonicMatsubaraGrid)
     lastindex(bg.ω)
@@ -414,6 +426,9 @@ end
 
 """
     Base.getindex(bg::BosonicMatsubaraGrid, ind::I64)
+
+Retrieve the value(s) stored at the given key or index within a
+BosonicMatsubaraGrid struct.
 """
 function Base.getindex(bg::BosonicMatsubaraGrid, ind::I64)
     @assert 1 ≤ ind ≤ bg.nfreq
