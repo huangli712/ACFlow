@@ -4,11 +4,13 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/06
+# Last modified: 2022/02/10
 #
 
 """
     LinearMesh
+
+A constructor for the LinearMesh struct.
 """
 function LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
     @assert nmesh ≥ 1
