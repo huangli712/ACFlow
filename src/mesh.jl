@@ -56,6 +56,9 @@ end
 
 """
     Base.length(lm::LinearMesh)
+
+Return number of mesh points in a LinearMesh struct.
+
 See also: [`LinearMesh`](@ref).
 """
 function Base.length(lm::LinearMesh)
@@ -151,6 +154,9 @@ end
 
 """
     Base.length(tm::TangentMesh)
+
+Return number of mesh points in a TangentMesh struct.
+
 See also: [`TangentMesh`](@ref).
 """
 function Base.length(tm::TangentMesh)
