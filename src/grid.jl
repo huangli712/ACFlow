@@ -183,6 +183,8 @@ end
 
 """
     Base.firstindex(fg::FermionicMatsubaraGrid)
+
+Return the first index of a FermionicMatsubaraGrid struct.
 """
 function Base.firstindex(fg::FermionicMatsubaraGrid)
     firstindex(fg.ω)
@@ -289,6 +291,8 @@ end
 
 """
     Base.firstindex(bg::BosonicImaginaryTimeGrid)
+
+Return the first index of a BosonicImaginaryTimeGrid struct.
 """
 function Base.firstindex(bg::BosonicImaginaryTimeGrid)
     firstindex(bg.τ)
@@ -394,6 +398,8 @@ end
 
 """
     Base.firstindex(bg::BosonicMatsubaraGrid)
+
+Return the first index of a BosonicMatsubaraGrid struct.
 """
 function Base.firstindex(bg::BosonicMatsubaraGrid)
     firstindex(bg.ω)
