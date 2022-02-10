@@ -157,6 +157,9 @@ end
 
 """
     TangentMesh(nmesh::I64, wmin::F64, wmax::F64, f1::F64 = 2.1)
+
+A constructor for the TangentMesh struct.
+
 See also: [`TangentMesh`](@ref).
 """
 function TangentMesh(nmesh::I64, wmin::F64, wmax::F64, f1::F64 = 2.1)
