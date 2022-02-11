@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/09
+# Last modified: 2022/02/11
 #
 
 #=
@@ -147,7 +147,7 @@ Mutable struct. It represent the raw input data.
 
 * _grid -> Grid for the input data, such as τ or iωₙ.
 * value -> Raw input data, such as G(τ), G(iωₙ), or Σ(iωₙ).
-* error -> Error bar of raw input data.
+* error -> Error bar (standard deviation) of raw input data, σ.
 
 See also: [`GreenData`](@ref).
 """
@@ -166,7 +166,7 @@ Mutable struct. It represents the preprocessed input data.
 
 * value -> Preprocessed input data.
 * error -> Preprocessed error bar.
-* covar -> Diagonal elements of the covariance matrix, σ.
+* covar -> Diagonal elements of the covariance matrix, σ².
 
 See also: [`RawData`](@ref).
 """

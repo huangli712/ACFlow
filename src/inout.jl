@@ -4,13 +4,20 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/07
+# Last modified: 2022/02/11
 #
 
 """
-    read_real_data
+    read_real_data(finput::AbstractString, ngrid::I64)
+
+Read input data. This function is used for imaginary-time data. The input
+file should contain three columns. The first column is the imaginary-time
+grid, the second column is the value, the third column is the standard
+deviation σ. Here, `ngrid` specifies the number of grid points.
+
+See also: [`read_complex_data`](@ref).
 """
-function read_real_data(finput::String, ngrid::I64)
+function read_real_data(finput::AbstractString, ngrid::I64)
     _grid = zeros(F64, ngrid)
     value = zeros(F64, ngrid)
     error = zeros(F64, ngrid)
@@ -30,7 +37,7 @@ end
 """
     read_complex_data
 """
-function read_complex_data(finput::String, ngrid::I64; ncols::I64 = 4)
+function read_complex_data(finput::AbstractString, ngrid::I64; ncols::I64 = 4)
     _grid = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)
@@ -59,7 +66,7 @@ end
 """
     read_complex_data
 """
-function read_complex_data(finput::String, ngrid::I64, only_real_part::Bool)
+function read_complex_data(finput::AbstractString, ngrid::I64, only_real_part::Bool)
     _grid = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)
@@ -82,7 +89,7 @@ function read_complex_data(finput::String, ngrid::I64, only_real_part::Bool)
 end
 
 """
-    write_spectrum
+    write_spectrum(am::AbstractMesh, Aout::Vector{F64})
 """
 function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
     @assert length(am) == length(Aout)
@@ -94,21 +101,21 @@ function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
 end
 
 """
-    write_chi2
+    write_chi2(α_vec::Vector{F64}, χ²_vec::Vector{F64})
 """
-function write_chi2(α_vec::Vector{F64}, χ_vec::Vector{F64})
-    @assert length(α_vec) == length(χ_vec)
+function write_chi2(α_vec::Vector{F64}, χ²_vec::Vector{F64})
+    @assert length(α_vec) == length(χ²_vec)
     open("chi2.data", "w") do fout
         α_vec = log10.(α_vec)
-        χ_vec = log10.(χ_vec)
+        χ²_vec = log10.(χ²_vec)
         for i = 1:length(α_vec)
-            @printf(fout, "%16.12f %16.12f\n", α_vec[i], χ_vec[i])
+            @printf(fout, "%16.12f %16.12f\n", α_vec[i], χ²_vec[i])
         end
     end
 end
 
 """
-    write_probability
+    write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
 """
 function write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
     @assert length(α_vec) == length(p_vec)
@@ -122,7 +129,7 @@ function write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
 end
 
 """
-    write_reprod
+    write_reprod(ag::AbstractGrid, G::Vector{F64})
 """
 function write_reprod(ag::AbstractGrid, G::Vector{F64})
     ngrid = length(ag)
