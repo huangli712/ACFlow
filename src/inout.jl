@@ -81,6 +81,8 @@ input file only contains three columns. The first column is the Matsubara
 frequency grid, the second column is the real part or imaginary part of
 the data (which is specified by the argument `only_real_part`), and the
 third column is the standard deviation.
+
+See also: [`read_time_data`](@ref).
 """
 function read_complex_data(finput::AbstractString, ngrid::I64, only_real_part::Bool)
     _grid = zeros(F64, ngrid)
