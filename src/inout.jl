@@ -108,6 +108,9 @@ end
 
 """
     write_spectrum(am::AbstractMesh, Aout::Vector{F64})
+
+Write spectrum A(ω) to `Aout.data`. The grid is contained in `am`, and
+the spectrum is contained in `Aout`.
 """
 function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
     @assert length(am) == length(Aout)
@@ -120,6 +123,8 @@ end
 
 """
     write_chi2(α_vec::Vector{F64}, χ²_vec::Vector{F64})
+
+Write `log(α)-log(χ²)` data to `chi2.data`.
 """
 function write_chi2(α_vec::Vector{F64}, χ²_vec::Vector{F64})
     @assert length(α_vec) == length(χ²_vec)
@@ -134,6 +139,9 @@ end
 
 """
     write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
+
+Write `p(α)` data to `prob.data`. This function is only useful for MaxEnt
+bryan algorithm.
 """
 function write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
     @assert length(α_vec) == length(p_vec)
@@ -148,6 +156,10 @@ end
 
 """
     write_reprod(ag::AbstractGrid, G::Vector{F64})
+
+We can use the calculated spectrum in real axis to reproduce the input
+data in imaginary axis. This function will write the reproduced data to
+`repr.data`, which can be compared with the original data.
 """
 function write_reprod(ag::AbstractGrid, G::Vector{F64})
     ngrid = length(ag)
@@ -155,7 +167,7 @@ function write_reprod(ag::AbstractGrid, G::Vector{F64})
     @assert ngrid == ng || ngrid * 2 == ng
 
     if ngrid == ng
-        open("Grep.data", "w") do fout
+        open("repr.data", "w") do fout
             for i = 1:ngrid
                 @printf(fout, "%16.12f %16.12f\n", ag[i], G[i])
             end
