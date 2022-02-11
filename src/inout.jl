@@ -35,7 +35,17 @@ function read_real_data(finput::AbstractString, ngrid::I64)
 end
 
 """
-    read_complex_data
+    read_complex_data(finput::AbstractString, ngrid::I64; ncols::I64 = 4)
+
+Read input data. This function is used for Matsubara frequency data. The
+input should contain four columns or five columns. The first column is
+the Matsubara freqency grid, the second and third columns are the values
+(real part and imaginary part), the four and fifth columns are the standard
+deviations for the real and imaginary parts, respectively. If there are
+only four columns, it means that the real and imaginary parts share the
+same standard deviations.
+
+See also: [`read_time_data`](@ref).
 """
 function read_complex_data(finput::AbstractString, ngrid::I64; ncols::I64 = 4)
     _grid = zeros(F64, ngrid)
