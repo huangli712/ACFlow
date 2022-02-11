@@ -80,6 +80,11 @@ end
 
 """
     build_func_model(f::Function, am::AbstractMesh, kwargs...)
+
+Try to build a model function by customized function `f`. `kwargs` denotes
+the parameters used in `f`.
+
+See also: [`AbstractMesh`](@ref).
 """
 function build_func_model(f::Function, am::AbstractMesh, kwargs...)
     model = f.(am, kwargs...)
