@@ -28,7 +28,11 @@ m(\omega) = \frac{1}{\Gamma \sqrt{\pi}} \exp\left[-(\omega/\Gamma)^2\right]
 =#
 
 """
-    build_flat_model
+    build_flat_model(am::AbstractMesh)
+
+Try to build a flat model, which is then normalized.
+
+See also: [`AbstractMesh`](@ref).
 """
 function build_flat_model(am::AbstractMesh)
     model = ones(F64, length(am))
@@ -38,7 +42,12 @@ function build_flat_model(am::AbstractMesh)
 end
 
 """
-    build_gaussian_model
+    build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
+
+Try to build a gaussian model, which is then normalized. The parameter
+`Γ` is used to control the width of the gaussian peak.
+
+See also: [`AbstractMesh`](@ref).
 """
 function build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
     model = exp.(-(am.mesh / Γ) .^ 2.0) / (Γ * sqrt(π))
@@ -48,11 +57,17 @@ function build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
 end
 
 """
-    build_file_model
+    build_file_model(am::AbstractMesh, fn::AbstractString)
+
+Try to read a model function from external file (specified by `fn`). Note
+that the mesh used to generate the model function must be compatible with
+`am`. In addition, the model function will not be normalized.
+
+See also: [`AbstractMesh`](@ref).
 """
-function build_file_model(am::AbstractMesh)
+function build_file_model(am::AbstractMesh, fn::AbstractString)
     model = zeros(F64, length(am))
-    open("model.data", "r") do fin
+    open(fn, "r") do fin
         for i in eachindex(model)
             arr = parse.(F64, line_to_array(fin)[1:2])
             _mesh = arr[1]
@@ -64,7 +79,7 @@ function build_file_model(am::AbstractMesh)
 end
 
 """
-    build_func_model
+    build_func_model(f::Function, am::AbstractMesh, kwargs...)
 """
 function build_func_model(f::Function, am::AbstractMesh, kwargs...)
     model = f.(am, kwargs...)
