@@ -135,9 +135,12 @@ function write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2}
 
     open("Aout.data.alpha") do fout
         for i in eachindex(αₗ)
+            println(fout, "# $i : α = ", αₗ[i])
             for j in eachindex(am)
                 @printf(fout, "%16.12f %16.12f\n", am[j], Aout[j,i])
             end
+            println()
+            println()
         end
     end
 end
