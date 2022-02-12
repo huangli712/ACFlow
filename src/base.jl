@@ -96,17 +96,26 @@ function reprod(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
 end
 
 """
-    setup_param
+    setup_param(C::Dict{String,Any}, S::Dict{String,Any})
+
+Setup the configuration dictionaries via function call. Here `C` contains
+parameters for general setup, while `S` contains parameters for analytical
+continuation solver.
+
+See also: [`read_param`](@ref).
 """
-function setup_param(pcomm::Dict{String,Any}, solver::Dict{String,Any})
+function setup_param(C::Dict{String,Any}, S::Dict{String,Any})
+    set_dict(C)
     
 end
 
 """
     read_param()
 
-Setup the configuration dictionaries. The format of configuration file
-is `toml`.
+Setup the configuration dictionaries via a external file. The format of
+configuration file is `toml`.
+
+See also: [`read_param`](@ref).
 """
 function read_param()
     cfg = inp_toml(query_args(), true)
