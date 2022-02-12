@@ -18,6 +18,9 @@ function solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T}) where {T}
 end
 
 function solve(grid::Vector{F64}, Gval::Vector{T}) where {T}
+    Gerr = similar(Gval)
+    fill!(Gerr, 1.0e-4)
+    solve(RawData(grid, Gval, Gerr))
 end
 
 """
