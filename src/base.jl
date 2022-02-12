@@ -176,7 +176,13 @@ function read_data(ncols::I64 = 4, only_real_part::Bool = true)
 end
 
 """
-    make_data
+    make_data(rd::RawData)
+
+Convert `RawData` struct to `GreenData` struct. Note that `RawData` is
+provided by the users directly, while `GreenData` is more suitable for
+various analytical continuation solvers and algorithms.
+
+See also: [`RawData`](@ref), [`GreenData`](@ref). 
 """
 function make_data(rd::RawData)
     grid = get_c("grid")
