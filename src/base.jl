@@ -106,7 +106,25 @@ See also: [`read_param`](@ref).
 """
 function setup_param(C::Dict{String,Any}, S::Dict{String,Any})
     set_dict(C)
-    
+
+    solver = get_c("solver")
+    @cswitch solver begin
+        @case "MaxEnt"
+            set_dict(MaxEntSolver(), S)
+            break
+
+        @case "StochAC"
+            set_dict(StochACSolver(), S)
+            break
+
+        @case "StochOM"
+            set_dict(StochOMSolver(), S)
+            break
+
+        @default
+            sorry()
+            break
+    end
 end
 
 """
