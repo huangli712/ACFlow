@@ -306,7 +306,11 @@ function make_model(am::AbstractMesh, Γ::F64 = 2.0, fn::String = "model.data")
 end
 
 """
-    make_kernel
+    make_kernel(am::AbstractMesh, ag::AbstractGrid)
+
+Try to generate various kernel functions.
+
+See also: [`AbstractMesh`](@ref), [`AbstractGrid`](@ref).
 """
 function make_kernel(am::AbstractMesh, ag::AbstractGrid)
     ktype = get_c("ktype")
@@ -315,6 +319,7 @@ function make_kernel(am::AbstractMesh, ag::AbstractGrid)
     if ktype == "fermi" || ktype == "boson"
         return build_kernel(am, ag)
     else
+        @assert ktype == "bsymm"
         @assert grid in ("btime", "bfreq")
         return build_kernel_symm(am, ag)
     end
