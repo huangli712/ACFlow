@@ -162,10 +162,25 @@ function write_chi2(α_vec::Vector{F64}, χ²_vec::Vector{F64})
 end
 
 """
+    write_hamil(α_vec::Vector{F64}, Hα::Vector{F64})
+
+Write `α-H(α)` data to `hamil.data`. This function is only useful for the
+StochAC solver.
+"""
+function write_hamil(α_vec::Vector{F64}, Hα::Vector{F64})
+    @assert length(α_vec) == length(Hα)
+    open("hamil.data", "w") do fout
+        for i in eachindex(α_vec)
+            @printf(fout, "%16.12f %16.12f\n", α_vec[i], Hα[i])
+        end
+    end
+end
+
+"""
     write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
 
-Write `p(α)` data to `prob.data`. This function is only useful for MaxEnt
-bryan algorithm.
+Write `p(α)` data to `prob.data`. This function is only useful for the
+MaxEnt bryan algorithm.
 """
 function write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
     @assert length(α_vec) == length(p_vec)
