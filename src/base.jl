@@ -17,6 +17,24 @@ function solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T}) where {T}
     solve(RawData(grid, Gval, Gerr))
 end
 
+"""
+    solve(grid::Vector{F64}, Gval::Vector{T}, err::T)
+
+Solve the analytical continuation problem. The arguments `grid`, `Gval`,
+and `err` are the grid, value, and error bar, respectively.
+"""
+function solve(grid::Vector, Gval::Vector{T}, err::T) where {T}
+    Gerr = similar(Gval)
+    fill!(Gerr, err)
+    solve(RawData(grid, Gval, Gerr))
+end
+
+"""
+    solve(grid::Vector{F64}, Gval::Vector{T})
+
+Solve the analytical continuation problem. The arguments `grid` and `Gval`
+are the grid and value, respectively. The error bar is set to 1.0e-4.
+"""
 function solve(grid::Vector{F64}, Gval::Vector{T}) where {T}
     Gerr = similar(Gval)
     fill!(Gerr, 1.0e-4)
