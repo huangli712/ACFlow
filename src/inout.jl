@@ -133,7 +133,13 @@ function write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2}
     @assert nmesh == length(am)
     @assert nalph == length(αₗ)
 
-    
+    open("Aout.data.alpha") do fout
+        for i in eachindex(αₗ)
+            for j in eachindex(am)
+                @printf(fout, "%16.12f %16.12f\n", am[j], Aout[j,i])
+            end
+        end
+    end
 end
 
 """
