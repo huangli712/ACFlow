@@ -129,6 +129,11 @@ in `am`, the α-resolved spectrum is contained in `Aout`, `αₗ` is the list
 for the α parameters.
 """
 function write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2})
+    nmesh, nalph = size(Aout)
+    @assert nmesh == length(am)
+    @assert nalph == length(αₗ)
+
+    
 end
 
 """
