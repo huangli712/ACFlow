@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/08
+# Last modified: 2022/02/12
 #
 
 """
@@ -99,6 +99,50 @@ function fil_dict(cfg::Dict{String,Any})
             else
                 error("Sorry, $key is not supported currently")
             end
+        end
+    end
+end
+
+function set_dict(COMM::Dict{String,Any})
+    for key in keys(COMM)
+        if haskey(PCOMM, key)
+            PCOMM[key][1] = COMM[key]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+    foreach(x -> _v(x.first, x.second), PCOMM)
+end
+
+function set_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
+    # For MaxEnt block
+    for key in keys(MaxEnt)
+        if haskey(PMaxEnt, key)
+            PMaxEnt[key][1] = MaxEnt[key]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+end
+
+function set_dict(S::StochACSolver, StochAC::Dict{String,Any})
+    # For StochAC block
+    for key in keys(StochAC)
+        if haskey(PStochAC, key)
+            PStochAC[key][1] = StochAC[key]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+end
+
+function set_dict(S::StochOMSolver, StochOM::Dict{String,Any})
+    # For StochOM block
+    for key in keys(StochOM)
+        if haskey(PStochOM, key)
+            PStochOM[key][1] = StochOM[key]
+        else
+            error("Sorry, $key is not supported currently")
         end
     end
 end

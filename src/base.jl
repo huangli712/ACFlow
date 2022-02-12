@@ -98,7 +98,8 @@ end
 """
     setup_param
 """
-function setup_param()
+function setup_param(pcomm::Dict{String,Any}, solver::Dict{String,Any})
+    
 end
 
 """
