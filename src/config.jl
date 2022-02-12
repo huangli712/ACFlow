@@ -103,6 +103,13 @@ function fil_dict(cfg::Dict{String,Any})
     end
 end
 
+"""
+    set_dict(COMM::Dict{String,Any})
+
+Setup the configuration dictionary: `PCOMM`.
+
+See also: [`PCOMM`](@ref).
+"""
 function set_dict(COMM::Dict{String,Any})
     for key in keys(COMM)
         if haskey(PCOMM, key)
@@ -114,8 +121,14 @@ function set_dict(COMM::Dict{String,Any})
     foreach(x -> _v(x.first, x.second), PCOMM)
 end
 
+"""
+    set_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
+
+Setup the configuration dictionary: `PMaxEnt`.
+
+See also: [`PMaxEnt`](@ref).
+"""
 function set_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
-    # For MaxEnt block
     for key in keys(MaxEnt)
         if haskey(PMaxEnt, key)
             PMaxEnt[key][1] = MaxEnt[key]
@@ -126,8 +139,14 @@ function set_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
     foreach(x -> _v(x.first, x.second), PMaxEnt)
 end
 
+"""
+    set_dict(S::MaxEntSolver, StochAC::Dict{String,Any})
+
+Setup the configuration dictionary: `PStochAC`.
+
+See also: [`PStochAC`](@ref).
+"""
 function set_dict(S::StochACSolver, StochAC::Dict{String,Any})
-    # For StochAC block
     for key in keys(StochAC)
         if haskey(PStochAC, key)
             PStochAC[key][1] = StochAC[key]
@@ -138,8 +157,14 @@ function set_dict(S::StochACSolver, StochAC::Dict{String,Any})
     foreach(x -> _v(x.first, x.second), PStochAC)
 end
 
+"""
+    set_dict(S::MaxEntSolver, StochOM::Dict{String,Any})
+
+Setup the configuration dictionary: `PStochOM`.
+
+See also: [`PStochOM`](@ref).
+"""
 function set_dict(S::StochOMSolver, StochOM::Dict{String,Any})
-    # For StochOM block
     for key in keys(StochOM)
         if haskey(PStochOM, key)
             PStochOM[key][1] = StochOM[key]
