@@ -253,9 +253,13 @@ function make_grid(rd::RawData)
 end
 
 """
-    make_mesh
+    make_mesh(f1::F64 = 2.1)
+
+Try to generate uniform or non-uniform mesh for the calculated spectrum.
+
+See also: [`LinearMesh`](@ref), [`TangentMesh`](@ref).
 """
-function make_mesh()
+function make_mesh(f1::F64 = 2.1)
     nmesh = get_c("nmesh")
     mesh = get_c("mesh")
     wmax = get_c("wmax")
@@ -264,7 +268,7 @@ function make_mesh()
     if mesh == "linear"
         return LinearMesh(nmesh, wmin, wmax)
     else
-        return TangentMesh(nmesh, wmin, wmax)
+        return TangentMesh(nmesh, wmin, wmax, f1)
     end
 end
 
