@@ -102,7 +102,10 @@ function setup_param()
 end
 
 """
-    read_param
+    read_param()
+
+Setup the configuration dictionaries. The format of configuration file
+is `toml`.
 """
 function read_param()
     cfg = inp_toml(query_args(), true)
