@@ -123,6 +123,7 @@ function set_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
             error("Sorry, $key is not supported currently")
         end
     end
+    foreach(x -> _v(x.first, x.second), PMaxEnt)
 end
 
 function set_dict(S::StochACSolver, StochAC::Dict{String,Any})
@@ -134,6 +135,7 @@ function set_dict(S::StochACSolver, StochAC::Dict{String,Any})
             error("Sorry, $key is not supported currently")
         end
     end
+    foreach(x -> _v(x.first, x.second), PStochAC)
 end
 
 function set_dict(S::StochOMSolver, StochOM::Dict{String,Any})
@@ -145,6 +147,7 @@ function set_dict(S::StochOMSolver, StochOM::Dict{String,Any})
             error("Sorry, $key is not supported currently")
         end
     end
+    foreach(x -> _v(x.first, x.second), PStochOM)
 end
 
 """
