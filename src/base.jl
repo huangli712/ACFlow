@@ -72,7 +72,13 @@ function solve(rd::RawData)
 end
 
 """
-    reprod
+    reprod(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
+
+Try to reproduce the input data using the calculated spectrum function
+`A`. `kernel` is the kernel function, and `am` is the mesh in which the
+spectrum is defined.
+
+See also: [`AbstractMesh`](@ref).
 """
 function reprod(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
     ndim, nmesh = size(kernel)
