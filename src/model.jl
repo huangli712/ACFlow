@@ -57,7 +57,7 @@ function build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
 end
 
 """
-    build_file_model(am::AbstractMesh, fn::AbstractString)
+    build_file_model(am::AbstractMesh, fn::String = "model.data")
 
 Try to read a model function from external file (specified by `fn`). Note
 that the mesh used to generate the model function must be compatible with
@@ -65,7 +65,7 @@ that the mesh used to generate the model function must be compatible with
 
 See also: [`AbstractMesh`](@ref).
 """
-function build_file_model(am::AbstractMesh, fn::AbstractString)
+function build_file_model(am::AbstractMesh, fn::String = "model.data")
     model = zeros(F64, length(am))
     open(fn, "r") do fin
         for i in eachindex(model)

@@ -273,9 +273,13 @@ function make_mesh(f1::F64 = 2.1)
 end
 
 """
-    make_model
+    make_model(am::AbstractMesh, Γ::F64 = 2.0, fn::String = "model.data")
+
+Try to generate default model function through various schemes.
+
+See also: [`AbstractMesh`]
 """
-function make_model(am::AbstractMesh)
+function make_model(am::AbstractMesh, Γ::F64 = 2.0, fn::String = "model.data")
     mtype = get_c("mtype")
 
     @cswitch mtype begin
@@ -284,11 +288,11 @@ function make_model(am::AbstractMesh)
             break
 
         @case "gauss"
-            return build_gaussian_model(am)
+            return build_gaussian_model(am, Γ)
             break
 
         @case "file"
-            return build_file_model(am)
+            return build_file_model(am, fn)
             break
 
         @case "func"
