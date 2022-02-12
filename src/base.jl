@@ -205,7 +205,12 @@ function make_data(rd::RawData)
 end
 
 """
-    make_grid
+    make_grid(rd::RawData)
+
+Extract grid for input data from a `RawData` struct. It will return a
+child of the AbstractGrid struct.
+
+See also: [`RawData`](@ref), [`AbstractGrid`](@ref).
 """
 function make_grid(rd::RawData)
     grid = get_c("grid")
