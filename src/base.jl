@@ -4,18 +4,26 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/08
+# Last modified: 2022/02/12
 #
 
 """
-    solve
+    solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T})
+
+Solve the analytical continuation problem. The arguments `grid`, `Gval`,
+and `Gerr` are the grid, value, and error bar, respectively.
 """
 function solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T}) where {T}
     solve(RawData(grid, Gval, Gerr))
 end
 
+function solve(grid::Vector{F64}, Gval::Vector{T}) where {T}
+end
+
 """
-    solve
+    solve(rd::RawData)
+
+See also: [`RawData`](@ref).
 """
 function solve(rd::RawData)
     solver = get_c("solver")
@@ -30,6 +38,7 @@ function solve(rd::RawData)
             break
 
         @case "StochOM"
+            solve(StochOMSolver(), rd)
             break
 
         @default
