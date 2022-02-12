@@ -142,9 +142,13 @@ function read_param()
 end
 
 """
-    read_data
+    read_data(ncols::I64 = 4, only_real_part::Bool = true)
+
+Read data in imaginary axis and return a `RawData` struct.
+
+See also: [`RawData`](@ref).
 """
-function read_data()
+function read_data(ncols::I64 = 4, only_real_part::Bool = true)
     finput = get_c("finput")
     ngrid = get_c("ngrid")
 
@@ -158,11 +162,11 @@ function read_data()
             break
 
         @case "ffreq"
-            return read_complex_data(finput, ngrid)
+            return read_complex_data(finput, ngrid, ncols)
             break
 
         @case "bfreq"
-            return read_complex_data(finput, ngrid, true)
+            return read_complex_data(finput, ngrid, only_real_part)
             break
 
         @default
