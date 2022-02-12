@@ -122,9 +122,19 @@ function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
 end
 
 """
+    write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2})
+
+Write α-resolved spectrum A(ω) to `Aout.data.alpha`. The grid is contained
+in `am`, the α-resolved spectrum is contained in `Aout`, `αₗ` is the list
+for the α parameters.
+"""
+function write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2})
+end
+
+"""
     write_chi2(α_vec::Vector{F64}, χ²_vec::Vector{F64})
 
-Write `log(α)-log(χ²)` data to `chi2.data`.
+Write `log10(α)-log10(χ²)` data to `chi2.data`.
 """
 function write_chi2(α_vec::Vector{F64}, χ²_vec::Vector{F64})
     @assert length(α_vec) == length(χ²_vec)
@@ -173,7 +183,7 @@ function write_reprod(ag::AbstractGrid, G::Vector{F64})
             end
         end
     else
-        open("Grep.data", "w") do fout
+        open("repr.data", "w") do fout
             for i = 1:ngrid
                 @printf(fout, "%16.12f %16.12f %16.12f\n", ag[i], G[i], G[i+ngrid])
             end
