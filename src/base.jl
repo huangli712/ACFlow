@@ -44,6 +44,9 @@ end
 """
     solve(rd::RawData)
 
+Solve the analytical continuation problem. The input data are encapsulated
+in a `Rawdata` struct.
+
 See also: [`RawData`](@ref).
 """
 function solve(rd::RawData)
