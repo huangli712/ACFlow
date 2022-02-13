@@ -119,7 +119,11 @@ function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
 end
 
 """
-    build_kernel
+    build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
+
+Try to build kernel function in fermionic Matsubara frequency axis.
+
+See also: [`AbstractMesh`](@ref), [`FermionicMatsubaraGrid`](@ref).
 """
 function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     blur = get_m("blur")
@@ -157,7 +161,11 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
 end
 
 """
-    build_kernel
+    build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
+
+Try to build kernel function in bosonic imaginary time axis.
+
+See also: [`AbstractMesh`](@ref), [`BosonicImaginaryTimeGrid`](@ref).
 """
 function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     ntime = bg.ntime
@@ -176,7 +184,11 @@ function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 end
 
 """
-    build_kernel
+    build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
+
+Try to build kernel function in bosonic Matsubara frequency axis.
+
+See also: [`AbstractMesh`](@ref), [`BosonicMatsubaraGrid`](@ref).
 """
 function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     nfreq = bg.nfreq
@@ -200,7 +212,11 @@ function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 end
 
 """
-    build_kernel_symm
+    build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
+
+Try to build kernel function in bosonic imaginary time axis.
+
+See also: [`AbstractMesh`](@ref), [`BosonicImaginaryTimeGrid`](@ref).
 """
 function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     ntime = bg.ntime
@@ -220,7 +236,11 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 end
 
 """
-    build_kernel_symm
+    build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
+
+Try to build kernel function in bosonic Matsubara frequency axis.
+
+See also: [`AbstractMesh`](@ref), [`BosonicMatsubaraGrid`](@ref).
 """
 function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     blur = get_m("blur")
@@ -264,7 +284,7 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 end
 
 """
-    make_blur
+    make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
 """
 function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     ktype = get_c("ktype")
@@ -294,7 +314,9 @@ function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
 end
 
 """
-    make_singular_space
+    make_singular_space(kernel::Matrix{F64})
+
+Perform singular value decomposition for the input matrix.
 """
 function make_singular_space(kernel::Matrix{F64})
     U, S, V = svd(kernel)
