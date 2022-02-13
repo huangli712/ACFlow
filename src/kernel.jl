@@ -285,6 +285,9 @@ end
 
 """
     make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
+
+Try to blur the given spectrum `A`, which is defined in `am`. And `blur`
+is the blur parameter.
 """
 function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     ktype = get_c("ktype")
