@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/06
+# Last modified: 2022/02/13
 #
 
 #=
@@ -24,23 +24,39 @@ K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}}
 ```
 =#
 
-"""
-    build_kernel
-"""
-function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
-    ntime = fg.ntime
-    nmesh = am.nmesh
-    β = fg.β
+#=
+*Remarks* :
 
-    kernel = zeros(F64, ntime, nmesh)
-    for i = 1:nmesh
-        for j = 1:ntime
-            kernel[j,i] = exp(-fg[j] * am[i]) / (1.0 + exp(-β * am[i]))
-        end
-    end
+```math
+\begin{equation}
+G(i\omega_n) = \int^{+\infty}_{-\infty} d\epsilon
+               \frac{1}{i\omega_n - \epsilon} A(\epsilon)
+\end{equation}
+```
 
-    return kernel
-end
+```math
+\begin{equation}
+K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
+\end{equation}
+```
+=#
+
+#=
+*Remarks* :
+
+```math
+\begin{equation}
+G(\tau) = \int^{+\infty}_{-\infty} d\omega
+          \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}} A(\omega)
+\end{equation}
+```
+
+```math
+\begin{equation}
+K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}
+\end{equation}
+```
+=#
 
 #=
 *Remarks* :
@@ -58,6 +74,49 @@ K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
 \end{equation}
 ```
 =#
+
+#=
+*Remarks* :
+
+```math
+\begin{equation}
+K(\tau,\omega) = \frac{e^{-\tau\omega} + e^{-(\beta - \tau)\omega}}
+                      {2(1 - e^{-\beta\omega})}
+\end{equation}
+```
+=#
+
+#=
+*Remarks* :
+
+```math
+\begin{equation}
+K(\omega_n, \epsilon) = \frac{\epsilon^2}{\omega_n^2 + \epsilon^2}
+\end{equation}
+```
+=#
+
+"""
+    build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
+
+Try to build kernel function in fermionic imaginary time axis.
+
+See also: [`AbstractMesh`](@ref), [`FermionicImaginaryTimeGrid`](@ref).
+"""
+function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
+    ntime = fg.ntime
+    nmesh = am.nmesh
+    β = fg.β
+
+    kernel = zeros(F64, ntime, nmesh)
+    for i = 1:nmesh
+        for j = 1:ntime
+            kernel[j,i] = exp(-fg[j] * am[i]) / (1.0 + exp(-β * am[i]))
+        end
+    end
+
+    return kernel
+end
 
 """
     build_kernel
@@ -97,23 +156,6 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     return kernel
 end
 
-#=
-*Remarks* :
-
-```math
-\begin{equation}
-G(\tau) = \int^{+\infty}_{-\infty} d\omega
-          \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}} A(\omega)
-\end{equation}
-```
-
-```math
-\begin{equation}
-K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}
-\end{equation}
-```
-=#
-
 """
     build_kernel
 """
@@ -132,23 +174,6 @@ function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 
     return kernel
 end
-
-#=
-*Remarks* :
-
-```math
-\begin{equation}
-G(i\omega_n) = \int^{+\infty}_{-\infty} d\epsilon
-               \frac{1}{i\omega_n - \epsilon} A(\epsilon)
-\end{equation}
-```
-
-```math
-\begin{equation}
-K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
-\end{equation}
-```
-=#
 
 """
     build_kernel
@@ -174,17 +199,6 @@ function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     return kernel
 end
 
-#=
-*Remarks* :
-
-```math
-\begin{equation}
-K(\tau,\omega) = \frac{e^{-\tau\omega} + e^{-(\beta - \tau)\omega}}
-                      {2(1 - e^{-\beta\omega})}
-\end{equation}
-```
-=#
-
 """
     build_kernel_symm
 """
@@ -204,16 +218,6 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 
     return kernel
 end
-
-#=
-*Remarks* :
-
-```math
-\begin{equation}
-K(\omega_n, \epsilon) = \frac{\epsilon^2}{\omega_n^2 + \epsilon^2}
-\end{equation}
-```
-=#
 
 """
     build_kernel_symm
