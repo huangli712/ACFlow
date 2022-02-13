@@ -307,7 +307,10 @@ function make_singular_space(kernel::Matrix{F64})
 end
 
 """
-    make_gauss_peaks
+    make_gauss_peaks(blur::F64)
+
+Try to generate a series of gaussian peaks along a linear mesh, whose
+energy range is `[-5 * blur, +5 * blur]`.
 """
 function make_gauss_peaks(blur::F64)
     @assert blur > 0.0
