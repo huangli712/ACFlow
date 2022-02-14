@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/13
+# Last modified: 2022/02/14
 #
 
 #=
@@ -292,9 +292,11 @@ is the blur parameter.
 function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     ktype = get_c("ktype")
 
-    spl = nothing
+    #spl = nothing
+    _spl = nothing
     if ktype == "fermi" || ktype == "boson"
-        spl = Spline1D(am.mesh, A)
+        #spl = Spline1D(am.mesh, A)
+        _spl = AkimaInterpolation(am.mesh, A)
     else
         vM = vcat(-am.mesh[end:-1:2], am.mesh)
         vA = vcat(A[end:-1:2], A)
@@ -309,7 +311,8 @@ function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     Mb = reshape(bmesh, (1, nsize))
     Mx = reshape(gaussian, (1, nsize))
     Mm = reshape(am.mesh, (nmesh, 1))
-    integrand = Mx .* spl.(Mm .+ Mb)
+    integrand = Mx .* _spl.(Mm .+ Mb)
+    #error()
 
     for i = 1:nmesh
         A[i] = simpson(bmesh, integrand[i,:])
