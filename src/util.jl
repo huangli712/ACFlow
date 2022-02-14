@@ -506,6 +506,29 @@ function munge_data(u::AbstractVector, t::AbstractVector)
     return newu, newt
 end
 
+# Quadratic Interpolation
+struct QuadraticInterpolation{uType,tType,FT,T} <: AbstractInterpolation{FT,T}
+    u::uType
+    t::tType
+    function QuadraticInterpolation{FT}(u,t) where {FT}
+        new{typeof(u),typeof(t),FT,eltype(u)}(u,t)
+    end
+end
+  
+function QuadraticInterpolation(u,t)
+    u, t = munge_data(u, t)
+    QuadraticInterpolation{true}(u,t)
+end
+
+function _interpolate(A::QuadraticInterpolation{<:AbstractVector}, t::Number)
+    idx = max(1, min(searchsortedlast(A.t, t), length(A.t) - 2))
+    i₀, i₁, i₂ = idx, idx + 1, idx + 2
+    l₀ = ((t - A.t[i₁])*(t - A.t[i₂]))/((A.t[i₀] - A.t[i₁])*(A.t[i₀] - A.t[i₂]))
+    l₁ = ((t - A.t[i₀])*(t - A.t[i₂]))/((A.t[i₁] - A.t[i₀])*(A.t[i₁] - A.t[i₂]))
+    l₂ = ((t - A.t[i₀])*(t - A.t[i₁]))/((A.t[i₂] - A.t[i₀])*(A.t[i₂] - A.t[i₁]))
+    return A.u[i₀]*l₀ + A.u[i₁]*l₁ + A.u[i₂]*l₂
+end
+
 # Cubic Spline Interpolation
 struct CubicSpline{uType,tType,hType,zType,FT,T} <: AbstractInterpolation{FT,T}
     u::uType
@@ -530,57 +553,12 @@ function CubicSpline(u,t)
     CubicSpline{true}(u,t,h[1:n+1],z)
 end
 
-  # CubicSpline Interpolation
 function _interpolate(A::CubicSpline{<:AbstractVector{<:Number}}, t::Number)
     i = max(1, min(searchsortedlast(A.t, t), length(A.t) - 1))
     I = A.z[i] * (A.t[i+1] - t)^3 / (6A.h[i+1]) + A.z[i+1] * (t - A.t[i])^3 / (6A.h[i+1])
     C = (A.u[i+1]/A.h[i+1] - A.z[i+1]*A.h[i+1]/6)*(t - A.t[i])
     D = (A.u[i]/A.h[i+1] - A.z[i]*A.h[i+1]/6)*(A.t[i+1] - t)
     I + C + D
-end
-
-# Akima Interpolation
-struct AkimaInterpolation{uType,tType,bType,cType,dType,FT,T} <: AbstractInterpolation{FT,T}
-    u::uType
-    t::tType
-    b::bType
-    c::cType
-    d::dType
-    function AkimaInterpolation{FT}(u,t,b,c,d) where {FT}
-        new{typeof(u),typeof(t),typeof(b),typeof(c),typeof(d),FT,eltype(u)}(u,t,b,c,d)
-    end
-end
-  
-function AkimaInterpolation(u, t)
-    u, t = munge_data(u, t)
-    n = length(t)
-    dt = diff(t)
-    m = Array{eltype(u)}(undef, n + 3)
-    m[3:end-2] = diff(u) ./ dt
-    m[2] = 2m[3] - m[4]
-    m[1] = 2m[2] - m[3]
-    m[end-1] = 2m[end-2] - m[end-3]
-    m[end] = 2m[end-1] - m[end-2]
-  
-    b = 0.5 .* (m[4:end] .+ m[1:end-3])
-    dm = abs.(diff(m))
-    f1 = dm[3:n+2]
-    f2 = dm[1:n]
-    f12 = f1 + f2
-    ind = findall(f12 .> 1e-9 * maximum(f12))
-    b[ind] = (f1[ind] .* m[ind .+ 1] .+ f2[ind] .* m[ind .+ 2]) ./ f12[ind]
-    c = (3.0 .* m[3:end-2] .- 2.0 .* b[1:end-1] .- b[2:end]) ./ dt
-    d = (b[1:end-1] .+ b[2:end] .- 2.0 .* m[3:end-2]) ./ dt.^2
-  
-    AkimaInterpolation{true}(u,t,b,c,d)
-end
-
-function _interpolate(A::AkimaInterpolation{<:AbstractVector}, t::Number)
-    i = searchsortedlast(A.t, t)
-    i == 0 && return A.u[1]
-    i == length(A.t) && return A.u[end]
-    wj = t - A.t[i]
-    @evalpoly wj A.u[i] A.b[i] A.c[i] A.d[i]
 end
 
 #=

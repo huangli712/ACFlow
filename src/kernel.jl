@@ -292,15 +292,13 @@ is the blur parameter.
 function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     ktype = get_c("ktype")
 
-    #spl = nothing
-    _spl = nothing
+    spl = nothing
     if ktype == "fermi" || ktype == "boson"
-        #spl = Spline1D(am.mesh, A)
-        _spl = AkimaInterpolation(am.mesh, A)
+        spl = CubicSpline(A, am.mesh)
     else
         vM = vcat(-am.mesh[end:-1:2], am.mesh)
         vA = vcat(A[end:-1:2], A)
-        spl = Spline1D(vM, vA)
+        spl = CubicSpline(vA, vM)
     end
 
     bmesh, gaussian = make_gauss_peaks(blur)
@@ -311,8 +309,7 @@ function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     Mb = reshape(bmesh, (1, nsize))
     Mx = reshape(gaussian, (1, nsize))
     Mm = reshape(am.mesh, (nmesh, 1))
-    integrand = Mx .* _spl.(Mm .+ Mb)
-    #error()
+    integrand = Mx .* spl.(Mm .+ Mb)
 
     for i = 1:nmesh
         A[i] = simpson(bmesh, integrand[i,:])
