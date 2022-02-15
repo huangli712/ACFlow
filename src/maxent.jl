@@ -240,7 +240,7 @@ function bryan(mec::MaxEntContext)
 end
 
 """
-    chi2kink
+    chi2kink(mec::MaxEntContext)
 """
 function chi2kink(mec::MaxEntContext)
     function fitfun(x, p)
