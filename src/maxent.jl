@@ -372,9 +372,7 @@ function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, mesh::AbstractMesh, mo
         @einsum W₂[m,l] = σ²[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l] * model[l]
     end
 
-    for i = 1:nmesh
-        W₃[:,:,i] = W₂[:,i] * adjoint(V[i,:])
-    end
+    @einsum W₃[j,k,i] = W₂[j,i] * V[i,k]
 
     @einsum Bₘ[m] = S[m] * U[k,m] * σ²[k] * Gᵥ[k]
 
