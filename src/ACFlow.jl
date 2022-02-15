@@ -71,6 +71,13 @@ export newton
 export secant
 export read_param
 export read_data
+export setup_args
+export precompute
+export make_singular_space
+export make_kernel
+export make_model
+export make_grid
+export make_mesh
 export solve
 
 #=

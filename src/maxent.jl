@@ -54,7 +54,7 @@ function init(S::MaxEntSolver, rd::RawData)
     kernel = make_kernel(mesh, grid)
     println("Build default kernel: ", get_c("ktype"))
 
-    Vₛ, W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel)
+    @timev Vₛ, W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel)
     println("Precompute key coefficients")
 
     return MaxEntContext(Gᵥ, σ², grid, mesh, model, kernel, hess, Vₛ, W₂, W₃, Bₘ)
