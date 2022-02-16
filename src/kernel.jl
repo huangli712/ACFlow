@@ -173,7 +173,7 @@ and the charge susceptibility,
 """
     build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
 
-Try to build kernel function in fermionic imaginary time axis.
+Try to build fermionic kernel function in imaginary time axis.
 
 See also: [`AbstractMesh`](@ref), [`FermionicImaginaryTimeGrid`](@ref).
 """
@@ -195,7 +195,8 @@ end
 """
     build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
 
-Try to build kernel function in fermionic Matsubara frequency axis.
+Try to build fermionic kernel function in Matsubara frequency axis. This
+function support preblur algorithm.
 
 See also: [`AbstractMesh`](@ref), [`FermionicMatsubaraGrid`](@ref).
 """
@@ -205,6 +206,7 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     nmesh = am.nmesh
 
     _kernel = zeros(C64, nfreq, nmesh)
+    @show nmesh
 
     if blur > 0.0
         bmesh, gaussian = make_gauss_peaks(blur)

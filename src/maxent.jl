@@ -51,7 +51,7 @@ function init(S::MaxEntSolver, rd::RawData)
     model = make_model(mesh)
     println("Build default model: ", get_c("mtype"))
 
-    kernel = make_kernel(mesh, grid)
+    @timev kernel = make_kernel(mesh, grid)
     println("Build default kernel: ", get_c("ktype"))
 
     @timev Vₛ, W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel)
