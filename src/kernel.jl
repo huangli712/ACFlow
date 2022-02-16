@@ -213,8 +213,9 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
         integrand = zeros(C64, nsize)
         for i = 1:nmesh
             for j = 1:nfreq
+                z = im * fg[j] - am[i]
                 for k = 1:nsize
-                    integrand[k] = gaussian[k] / (im * fg[j] - am[i] - bmesh[k])
+                    integrand[k] = gaussian[k] / (z - bmesh[k])
                 end
                 _kernel[j,i] = simpson(bmesh, integrand)
             end
