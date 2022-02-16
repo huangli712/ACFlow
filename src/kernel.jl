@@ -4,11 +4,13 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/14
+# Last modified: 2022/02/16
 #
 
 #=
-*Remarks* :
+*Remarks* : 
+
+Fermionic Imaginary-Time Kernel 
 
 ```math
 \begin{equation}
@@ -22,10 +24,8 @@ G(\tau) = \int^{+\infty}_{-\infty} d\omega
 K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}}
 \end{equation}
 ```
-=#
 
-#=
-*Remarks* :
+Fermionic Matsubara Frequency Kernel
 
 ```math
 \begin{equation}
@@ -39,10 +39,8 @@ G(i\omega_n) = \int^{+\infty}_{-\infty} d\epsilon
 K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
 \end{equation}
 ```
-=#
 
-#=
-*Remarks* :
+Bosonic Imaginary-Time Kernel
 
 ```math
 \begin{equation}
@@ -56,10 +54,8 @@ G(\tau) = \int^{+\infty}_{-\infty} d\omega
 K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}
 \end{equation}
 ```
-=#
 
-#=
-*Remarks* :
+Bosonic Matsubara Frequency Kernel
 
 ```math
 \begin{equation}
@@ -73,10 +69,8 @@ G(i\omega_n) = \int^{+\infty}_{-\infty} d\epsilon
 K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
 \end{equation}
 ```
-=#
 
-#=
-*Remarks* :
+Bosonic Imaginary-Time Kernel (Symmetric Mode)
 
 ```math
 \begin{equation}
@@ -84,10 +78,8 @@ K(\tau,\omega) = \frac{e^{-\tau\omega} + e^{-(\beta - \tau)\omega}}
                       {2(1 - e^{-\beta\omega})}
 \end{equation}
 ```
-=#
 
-#=
-*Remarks* :
+Bosonic Matsubara Frequency Kernel (Symmetric Mode)
 
 ```math
 \begin{equation}

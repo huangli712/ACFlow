@@ -41,6 +41,7 @@ using TOML
 ### *Using Third-party Libraries*
 =#
 
+using Einsum
 using LsqFit
 
 #=
