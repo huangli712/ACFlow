@@ -236,7 +236,7 @@ end
 """
     build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 
-Try to build kernel function in bosonic imaginary time axis.
+Try to build bosonic kernel function in imaginary time axis.
 
 See also: [`AbstractMesh`](@ref), [`BosonicImaginaryTimeGrid`](@ref).
 """
@@ -259,7 +259,7 @@ end
 """
     build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 
-Try to build kernel function in bosonic Matsubara frequency axis.
+Try to build bosonic kernel function in Matsubara frequency axis.
 
 See also: [`AbstractMesh`](@ref), [`BosonicMatsubaraGrid`](@ref).
 """
@@ -287,7 +287,8 @@ end
 """
     build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 
-Try to build kernel function in bosonic imaginary time axis.
+Try to build bosonic kernel function in imaginary time axis (just for
+correlator of Hermitian operator only).
 
 See also: [`AbstractMesh`](@ref), [`BosonicImaginaryTimeGrid`](@ref).
 """
@@ -311,7 +312,9 @@ end
 """
     build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 
-Try to build kernel function in bosonic Matsubara frequency axis.
+Try to build bosonic kernel function in Matsubara frequency axis (just
+for correlator of Hermitian operator only). This function support preblur
+algorithm.
 
 See also: [`AbstractMesh`](@ref), [`BosonicMatsubaraGrid`](@ref).
 """
