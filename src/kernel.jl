@@ -10,9 +10,9 @@
 #=
 *Remarks* : 
 
-In ACFlow, the following kernrl functions are supported.
+In `ACFlow`, the following kernel functions are supported.
 
-* Fermionic Imaginary-Time Kernel 
+* `Fermionic Imaginary-Time Kernel`
 
 ```math
 \begin{equation}
@@ -27,22 +27,41 @@ K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}}
 \end{equation}
 ```
 
-* Fermionic Matsubara Frequency Kernel
+This kernel function is for the finite temperature Green's function of
+fermions, 
+
+```math
+G(\tau) = -\langle \mathcal{T} c(\tau) c^{\dagger}(0)\rangle.
+```
+
+``G(\tau)`` must fulfil the anti-periodicity condition
+
+```math
+G(\tau + \beta) = -G(\tau).
+```
+
+* `Fermionic Matsubara Frequency Kernel`
 
 ```math
 \begin{equation}
-G(i\omega_n) = \int^{+\infty}_{-\infty} d\epsilon
-               \frac{1}{i\omega_n - \epsilon} A(\epsilon)
+G(i\omega_n) = \int^{+\infty}_{-\infty} d\omega
+               \frac{1}{i\omega_n - \omega} A(\omega)
 \end{equation}
 ```
 
 ```math
 \begin{equation}
-K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
+K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega}
 \end{equation}
 ```
 
-* Bosonic Imaginary-Time Kernel
+It is possible to analytically continue similar anti-periodic
+functions, such as fermionic self-energy function ``\Sigma``.
+For the self-energies, it is addtionally required that the constant
+contribution ``\Sigma(i\infty)`` is subtracted from ``\Sigma(i\omega_n)``.
+
+
+* `Bosonic Imaginary-Time Kernel`
 
 ```math
 \begin{equation}
@@ -57,7 +76,7 @@ K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}
 \end{equation}
 ```
 
-* Bosonic Matsubara Frequency Kernel
+* `Bosonic Matsubara Frequency Kernel`
 
 ```math
 \begin{equation}
@@ -72,7 +91,7 @@ K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
 \end{equation}
 ```
 
-* Bosonic Imaginary-Time Kernel (Symmetric Mode)
+* `Bosonic Imaginary-Time Kernel (Symmetric Mode)`
 
 ```math
 \begin{equation}
@@ -81,7 +100,7 @@ K(\tau,\omega) = \frac{e^{-\tau\omega} + e^{-(\beta - \tau)\omega}}
 \end{equation}
 ```
 
-* Bosonic Matsubara Frequency Kernel (Symmetric Mode)
+* `Bosonic Matsubara Frequency Kernel (Symmetric Mode)`
 
 ```math
 \begin{equation}
