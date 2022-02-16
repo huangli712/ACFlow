@@ -206,21 +206,17 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
     nmesh = am.nmesh
 
     _kernel = zeros(C64, nfreq, nmesh)
-    @show nmesh
 
     if blur > 0.0
         bmesh, gaussian = make_gauss_peaks(blur)
         nsize = length(bmesh)
-        Mx = reshape(gaussian, (1, 1, nsize))
-        Mg = reshape(fg.ω, (nfreq, 1, 1))
-        Mm = reshape(am.mesh, (1, nmesh, 1))
-        Mb = reshape(bmesh, (1, 1, nsize))
-
-        integrand = Mx ./ (im * Mg .- Mm .- Mb)
-
+        integrand = zeros(C64, nsize)
         for i = 1:nmesh
             for j = 1:nfreq
-                _kernel[j,i] = simpson(bmesh, integrand[j,i,:])
+                for k = 1:nsize
+                    integrand[k] = gaussian[k] / (im * fg.ω[j] - am.mesh[i] - bmesh[k])
+                end
+                _kernel[j,i] = simpson(bmesh, integrand)
             end
         end
     else
