@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/14
+# Last modified: 2022/02/16
 #
 
 """
@@ -42,7 +42,6 @@ using TOML
 =#
 
 using LsqFit
-using Einsum
 
 #=
 ### *Includes*
