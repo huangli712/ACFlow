@@ -328,21 +328,25 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     if blur > 0.0
         bmesh, gaussian = make_gauss_peaks(blur)
         nsize = length(bmesh)
-        Mx = reshape(gaussian, (1, 1, nsize))
-        Mg = reshape(bg.ω, (nfreq, 1, 1))
-        Mm = reshape(am.mesh, (1, nmesh, 1))
-        Mb = reshape(bmesh, (1, 1, nsize))
 
-        integrand_1 = Mx .* ((Mb .+ Mm) .^ 2.0) ./ ((Mb .+ Mm) .^ 2.0 .+ Mg .^ 2.0)
-        integrand_2 = Mx .* ((Mb .- Mm) .^ 2.0) ./ ((Mb .- Mm) .^ 2.0 .+ Mg .^ 2.0)
-        for j = 1:nmesh
-            integrand_1[1,j,:] .= gaussian
-            integrand_2[1,j,:] .= gaussian
-        end
-        integrand = (integrand_1 + integrand_2) / 2.0
+        integrand_1 = zeros(F64, nsize)
+        integrand_2 = zeros(F64, nsize)
+        integrand_3 = zeros(F64, nsize)
         for i = 1:nmesh
             for j = 1:nfreq
-                kernel[j,i] = simpson(bmesh, integrand[j,i,:])
+                b2 = bg[j] ^ 2.0
+                for k = 1:nsize
+                    integrand_1[k] = gaussian[k] * ((bmesh[k] + am[i]) ^ 2.0) / ((bmesh[k] + am[i]) ^ 2.0 + b2)
+                    integrand_2[k] = gaussian[k] * ((bmesh[k] - am[i]) ^ 2.0) / ((bmesh[k] - am[i]) ^ 2.0 + b2)
+                end
+
+                if j == 1
+                    integrand_1 .= gaussian
+                    integrand_2 .= gaussian        
+                end
+
+                @. integrand_3 = (integrand_1 + integrand_2) / 2.0
+                kernel[j,i] = simpson(bmesh, integrand_3)
             end
         end
     else
