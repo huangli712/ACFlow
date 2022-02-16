@@ -10,7 +10,9 @@
 #=
 *Remarks* : 
 
-Fermionic Imaginary-Time Kernel 
+In ACFlow, the following kernrl functions are supported.
+
+* Fermionic Imaginary-Time Kernel 
 
 ```math
 \begin{equation}
@@ -25,7 +27,7 @@ K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}}
 \end{equation}
 ```
 
-Fermionic Matsubara Frequency Kernel
+* Fermionic Matsubara Frequency Kernel
 
 ```math
 \begin{equation}
@@ -40,7 +42,7 @@ K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
 \end{equation}
 ```
 
-Bosonic Imaginary-Time Kernel
+* Bosonic Imaginary-Time Kernel
 
 ```math
 \begin{equation}
@@ -55,7 +57,7 @@ K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}
 \end{equation}
 ```
 
-Bosonic Matsubara Frequency Kernel
+* Bosonic Matsubara Frequency Kernel
 
 ```math
 \begin{equation}
@@ -70,7 +72,7 @@ K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
 \end{equation}
 ```
 
-Bosonic Imaginary-Time Kernel (Symmetric Mode)
+* Bosonic Imaginary-Time Kernel (Symmetric Mode)
 
 ```math
 \begin{equation}
@@ -79,7 +81,7 @@ K(\tau,\omega) = \frac{e^{-\tau\omega} + e^{-(\beta - \tau)\omega}}
 \end{equation}
 ```
 
-Bosonic Matsubara Frequency Kernel (Symmetric Mode)
+* Bosonic Matsubara Frequency Kernel (Symmetric Mode)
 
 ```math
 \begin{equation}
