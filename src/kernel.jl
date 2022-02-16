@@ -12,70 +12,104 @@
 
 In `ACFlow`, the following kernel functions are supported.
 
-* `Fermionic Imaginary-Time Kernel`
+* `For Fermionic Green's Functions`
+
+In imaginary-time axis, we have
 
 ```math
 \begin{equation}
 G(\tau) = \int^{+\infty}_{-\infty} d\omega
-          \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}} A(\omega)
+          \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}} A(\omega),
 \end{equation}
 ```
 
 ```math
 \begin{equation}
-K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}}
+K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}}.
 \end{equation}
 ```
 
-This kernel function is for the finite temperature Green's function of
-fermions, 
+In Matsubara frequency axis, we have
+
+```math
+\begin{equation}
+G(i\omega_n) = \int^{+\infty}_{-\infty} d\omega
+               \frac{1}{i\omega_n - \omega} A(\omega),
+\end{equation}
+```
+
+```math
+\begin{equation}
+K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega},
+\end{equation}
+```
+
+where ``\omega_n`` is a Matsubara frequencies equal to ``(2n + 1)\pi/\beta``.
+
+These kernel functions are for the finite temperature Green's function of
+fermions,
 
 ```math
 G(\tau) = -\langle \mathcal{T} c(\tau) c^{\dagger}(0)\rangle.
 ```
 
-``G(\tau)`` must fulfil the anti-periodicity condition
+``G(\tau)`` must fulfil the anti-periodicity condition,
 
 ```math
 G(\tau + \beta) = -G(\tau).
 ```
 
-* `Fermionic Matsubara Frequency Kernel`
+And its Fourier transform and inverse Fourier transform are given by
 
 ```math
-\begin{equation}
-G(i\omega_n) = \int^{+\infty}_{-\infty} d\omega
-               \frac{1}{i\omega_n - \omega} A(\omega)
-\end{equation}
+G(i\omega_n) = \int^{\beta}_0 d\tau\ e^{-i\omega_n \tau} G(\tau),
 ```
 
 ```math
-\begin{equation}
-K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega}
-\end{equation}
+G(\tau) = \frac{1}{\beta} \sum_n e^{i\omega_n \tau} G(i\omega_n).
 ```
 
 It is possible to analytically continue similar anti-periodic
-functions, such as fermionic self-energy function ``\Sigma``.
-For the self-energies, it is addtionally required that the constant
-contribution ``\Sigma(i\infty)`` is subtracted from ``\Sigma(i\omega_n)``.
+functions, such as fermionic self-energy function ``\Sigma``,
+with these kernel functions. For the self-energies, it is addtionally
+required that the constant contribution ``\Sigma(i\infty)`` is
+subtracted from ``\Sigma(i\omega_n)``.
 
-* `Bosonic Imaginary-Time Kernel`
+* `For Bosonic Green's Functions`
+
+In imaginary-time axis, we have
 
 ```math
 \begin{equation}
 G(\tau) = \int^{+\infty}_{-\infty} d\omega
-          \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}} A(\omega)
+          \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}} A(\omega),
 \end{equation}
 ```
 
 ```math
 \begin{equation}
-K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}
+K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}.
 \end{equation}
 ```
 
-This kernel function is for finite temperature correlation function of
+In Matsubara frequency axis, we have
+
+```math
+\begin{equation}
+G(i\omega_n) = \int^{+\infty}_{-\infty} d\omega
+               \frac{1}{i\omega_n - \omega} A(\omega),
+\end{equation}
+```
+
+```math
+\begin{equation}
+K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega}.
+\end{equation}
+```
+
+where ``\omega_n`` is a Matsubara frequencies equal to ``2n\pi/\beta``.
+
+These kernel functions are for finite temperature correlation function of
 boson-like operators ``B`` and ``B^{\dagger}``,
 
 ```math
@@ -100,36 +134,37 @@ and the transverse spin susceptibility
 \chi_{+-}(\tau) = \langle \mathcal{T} S_{+}(\tau) S_{-}(0) \rangle.
 ```
 
-* `Bosonic Matsubara Frequency Kernel`
+* `For Correlator of Hermitian Operator`
 
-```math
-\begin{equation}
-G(i\omega_n) = \int^{+\infty}_{-\infty} d\epsilon
-               \frac{1}{i\omega_n - \epsilon} A(\epsilon)
-\end{equation}
-```
-
-```math
-\begin{equation}
-K(\omega_n,\epsilon) = \frac{1}{i\omega_n - \epsilon}
-\end{equation}
-```
-
-* `Bosonic Imaginary-Time Kernel (Symmetric Mode)`
+In imaginary-time axis, we have
 
 ```math
 \begin{equation}
 K(\tau,\omega) = \frac{e^{-\tau\omega} + e^{-(\beta - \tau)\omega}}
-                      {2(1 - e^{-\beta\omega})}
+                      {2(1 - e^{-\beta\omega})}.
 \end{equation}
 ```
-
-* `Bosonic Matsubara Frequency Kernel (Symmetric Mode)`
+In Matsubara frequency axis, we have
 
 ```math
 \begin{equation}
-K(\omega_n, \epsilon) = \frac{\epsilon^2}{\omega_n^2 + \epsilon^2}
+K(\omega_n, \epsilon) = \frac{\epsilon^2}{\omega_n^2 + \epsilon^2}.
 \end{equation}
+```
+
+This is a special case of the previous observable kind with ``B = B^{\dagger}``
+, and its use is in general prefered due to the reduced ``A(\omega)``
+definition domain. The most widely used observables of this kind are
+the longitudinal spin susceptibility,
+
+```math
+\chi_{zz}(\tau) = \langle S_z(\tau) S_z(0) \rangle,
+```
+
+and the charge susceptibility,
+
+```math
+\chi(tau) = \langle N(\tau) N(0) \rangle.
 ```
 =#
 
