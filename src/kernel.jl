@@ -60,7 +60,6 @@ functions, such as fermionic self-energy function ``\Sigma``.
 For the self-energies, it is addtionally required that the constant
 contribution ``\Sigma(i\infty)`` is subtracted from ``\Sigma(i\omega_n)``.
 
-
 * `Bosonic Imaginary-Time Kernel`
 
 ```math
@@ -74,6 +73,31 @@ G(\tau) = \int^{+\infty}_{-\infty} d\omega
 \begin{equation}
 K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}
 \end{equation}
+```
+
+This kernel function is for finite temperature correlation function of
+boson-like operators ``B`` and ``B^{\dagger}``,
+
+```math
+\chi_{B}(\tau) = \langle \mathcal{T} B(\tau) B^{\dagger}(0)\rangle.
+```
+
+``\chi_{B}(\tau)`` must be ``\beta``-periodic, i.e.,
+
+```math
+\chi_{B}(\tau + \beta) = \chi_{B}(\tau).
+```
+
+Typical examples of such functions are Green's function of bosons
+
+```math
+G_{b}(\tau) = \langle \mathcal{T} b(\tau) b^{\dagger}(0)\rangle,
+```
+
+and the transverse spin susceptibility
+
+```math
+\chi_{+-}(\tau) = \langle \mathcal{T} S_{+}(\tau) S_{-}(0) \rangle.
 ```
 
 * `Bosonic Matsubara Frequency Kernel`
