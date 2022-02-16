@@ -81,7 +81,7 @@ In imaginary-time axis, we have
 
 ```math
 \begin{equation}
-G(\tau) = \int^{+\infty}_{-\infty} d\omega
+G_{B}(\tau) = \int^{+\infty}_{-\infty} d\omega
           \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}} A(\omega),
 \end{equation}
 ```
@@ -96,7 +96,7 @@ In Matsubara frequency axis, we have
 
 ```math
 \begin{equation}
-G(i\omega_n) = \int^{+\infty}_{-\infty} d\omega
+G_{B}(i\omega_n) = \int^{+\infty}_{-\infty} d\omega
                \frac{1}{i\omega_n - \omega} A(\omega),
 \end{equation}
 ```
@@ -107,7 +107,9 @@ K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega}.
 \end{equation}
 ```
 
-where ``\omega_n`` is a Matsubara frequencies equal to ``2n\pi/\beta``.
+where ``\omega_n`` is a Matsubara frequencies equal to ``2n\pi/\beta``. 
+``G_{B}(\tau)`` is related to ``G_{B}(i\omega_n)`` via the Fourier
+transform as mentioned above.
 
 These kernel functions are for finite temperature correlation function of
 boson-like operators ``B`` and ``B^{\dagger}``,
@@ -164,7 +166,7 @@ the longitudinal spin susceptibility,
 and the charge susceptibility,
 
 ```math
-\chi(tau) = \langle N(\tau) N(0) \rangle.
+\chi(\tau) = \langle N(\tau) N(0) \rangle.
 ```
 =#
 
