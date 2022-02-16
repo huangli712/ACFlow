@@ -332,6 +332,7 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
         integrand_1 = zeros(F64, nsize)
         integrand_2 = zeros(F64, nsize)
         integrand_3 = zeros(F64, nsize)
+        
         for i = 1:nmesh
             for j = 1:nfreq
                 b2 = bg[j] ^ 2.0
@@ -339,12 +340,10 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
                     integrand_1[k] = gaussian[k] * ((bmesh[k] + am[i]) ^ 2.0) / ((bmesh[k] + am[i]) ^ 2.0 + b2)
                     integrand_2[k] = gaussian[k] * ((bmesh[k] - am[i]) ^ 2.0) / ((bmesh[k] - am[i]) ^ 2.0 + b2)
                 end
-
                 if j == 1
                     integrand_1 .= gaussian
                     integrand_2 .= gaussian        
                 end
-
                 @. integrand_3 = (integrand_1 + integrand_2) / 2.0
                 kernel[j,i] = simpson(bmesh, integrand_3)
             end
