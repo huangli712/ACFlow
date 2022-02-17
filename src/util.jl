@@ -161,7 +161,7 @@ and the other related functions can work correctly.
 ```julia-repl
 julia> setup_args("ac.toml")
 1-element Array{String,1}:
- "SrVO3.toml"
+ "ac.toml"
 ```
 
 See also: [`query_args`](@ref).
@@ -310,8 +310,10 @@ end
 
 It implements the well-known secant algorithm to locate root of a given
 polynomial function. Here, `func` means the function, `x0` is the initial
-guess, and `args...` denotes the optional parameters for `func`. Please
-be careful, `func` must be a single variable function.
+guess, and `args...` denotes the required arguments for function call to
+`func`. In addition, the maximum iterations and tolerance are controled
+by `maxiter` and `tol`, respectively. Be careful, `func` must be a single
+variable function.
 
 See also: [`newton`](@ref).
 """
