@@ -508,10 +508,15 @@ directly from https://github.com/PumasAI/DataInterpolations.jl.
 """
 abstract type AbstractInterpolation{FT,T} <: AbstractVector{T} end
 
+"""
+    LinearInterpolation
+"""
 struct LinearInterpolation{uType,tType,FT,T} <: AbstractInterpolation{FT,T}
     u::uType
     t::tType
-    LinearInterpolation{FT}(u,t) where FT = new{typeof(u),typeof(t),FT,eltype(u)}(u,t)
+    function LinearInterpolation{FT}(u,t) where FT
+        new{typeof(u),typeof(t),FT,eltype(u)}(u,t)
+    end
 end
 
 function LinearInterpolation(u,t)
