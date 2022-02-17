@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/08
+# Last modified: 2022/02/17
 #
 
 #=
@@ -30,7 +30,7 @@ m(\omega) = \frac{1}{\Gamma \sqrt{\pi}} \exp\left[-(\omega/\Gamma)^2\right]
 """
     build_flat_model(am::AbstractMesh)
 
-Try to build a flat model, which is then normalized.
+Try to build a flat model in `am`. Then this model function is normalized.
 
 See also: [`AbstractMesh`](@ref).
 """
@@ -44,7 +44,7 @@ end
 """
     build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
 
-Try to build a gaussian model, which is then normalized. The parameter
+Try to build a gaussian model, which is then normalized. The argument
 `Γ` is used to control the width of the gaussian peak.
 
 See also: [`AbstractMesh`](@ref).
@@ -79,15 +79,15 @@ function build_file_model(am::AbstractMesh, fn::String = "model.data")
 end
 
 """
-    build_func_model(f::Function, am::AbstractMesh, kwargs...)
+    build_func_model(fun::Function, am::AbstractMesh, kwargs...)
 
-Try to build a model function by customized function `f`. `kwargs` denotes
-the parameters used in `f`.
+Try to build a model function by customized function `fun`. `kwargs`
+denotes the arguments required by `fun`.
 
 See also: [`AbstractMesh`](@ref).
 """
-function build_func_model(f::Function, am::AbstractMesh, kwargs...)
-    model = f.(am, kwargs...)
+function build_func_model(fun::Function, am::AbstractMesh, kwargs...)
+    model = fun.(am, kwargs...)
     norm = dot(am.weight, model)
     model = model ./ norm
     return model

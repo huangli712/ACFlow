@@ -310,11 +310,17 @@ export write_hamil
 export write_probability
 export write_reprod
 
+include("model.jl")
+export build_flat_model
+export build_gaussian_model
+export build_file_model
+export build_func_model
+
 include("kernel.jl")
 export build_kernel
 export make_blur
 
-include("model.jl")
+
 include("maxent.jl")
 include("sac.jl")
 include("base.jl")
