@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/02/17
+# Last modified: 2022/02/18
 #
 
 """
@@ -40,7 +40,9 @@ mutable struct MaxEntContext
 end
 
 """
-    solve
+    solve(S::MaxEntSolver, rd::RawData)
+
+Solve the analytical continuation problem with the maximum entropy method.
 """
 function solve(S::MaxEntSolver, rd::RawData)
     println("[ MaxEnt ]")
@@ -49,7 +51,9 @@ function solve(S::MaxEntSolver, rd::RawData)
 end
 
 """
-    init
+    init(S::MaxEntSolver, rd::RawData)
+
+Initialize the MaxEnt solver and return a MaxEntContext struct.
 """
 function init(S::MaxEntSolver, rd::RawData)
     G = make_data(rd)
@@ -76,7 +80,10 @@ function init(S::MaxEntSolver, rd::RawData)
 end
 
 """
-    run
+    run(S::MaxEntSolver, mec::MaxEntContext)
+
+Perform maximum entropy simulation with different algorithms. Now it
+supports `historic`, `classic`, `bryan`, and `chi2kink` algorithms.
 """
 function run(S::MaxEntSolver, mec::MaxEntContext)
     method = get_m("method")
