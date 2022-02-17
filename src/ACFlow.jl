@@ -223,7 +223,7 @@ export line_to_array
 export secant
 export newton
 export trapz
-#export simpson
+export simpson
 
 
 
