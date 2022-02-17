@@ -524,7 +524,13 @@ struct LinearInterpolation{uType,tType,FT,T} <: AbstractInterpolation{FT,T}
     end
 end
 
-function LinearInterpolation(u,t)
+"""
+    LinearInterpolation(u::AbstractVector, t::AbstractVector)
+
+Create a LinearInterpolation struct. Note that `u` and `t` denote `f(x)`
+and `x`, respectively.
+"""
+function LinearInterpolation(u::AbstractVector, t::AbstractVector)
     u, t = munge_data(u, t)
     LinearInterpolation{true}(u,t)
 end
@@ -542,7 +548,13 @@ struct QuadraticInterpolation{uType,tType,FT,T} <: AbstractInterpolation{FT,T}
     end
 end
 
-function QuadraticInterpolation(u,t)
+"""
+    QuadraticInterpolation(u::AbstractVector, t::AbstractVector)
+
+Create a QuadraticInterpolation struct. Note that `u` and `t` denote
+`f(x)` and `x`, respectively.
+"""
+function QuadraticInterpolation(u::AbstractVector, t::AbstractVector)
     u, t = munge_data(u, t)
     QuadraticInterpolation{true}(u,t)
 end
@@ -562,7 +574,13 @@ struct CubicSplineInterpolation{uType,tType,hType,zType,FT,T} <: AbstractInterpo
     end
 end
 
-function CubicSplineInterpolation(u,t)
+"""
+    CubicSplineInterpolation(u::AbstractVector, t::AbstractVector)
+
+Create a CubicSplineInterpolation struct. Note that `u` and `t` denote
+`f(x)` and `x`, respectively.
+"""
+function CubicSplineInterpolation(u::AbstractVector, t::AbstractVector)
     u, t = munge_data(u, t)
     n = length(t) - 1
     h = vcat(0, map(k -> t[k+1] - t[k], 1:length(t)-1), 0)
@@ -575,8 +593,6 @@ function CubicSplineInterpolation(u,t)
     CubicSplineInterpolation{true}(u,t,h[1:n+1],z)
 end
 
-(interp::AbstractInterpolation)(t::Number) = _interpolate(interp, t)
-
 function munge_data(u::AbstractVector, t::AbstractVector)
     Tu = Base.nonmissingtype(eltype(u))
     Tt = Base.nonmissingtype(eltype(t))
@@ -586,6 +602,8 @@ function munge_data(u::AbstractVector, t::AbstractVector)
     newt = Tt.([t[i] for i in non_missing_indices])
     return newu, newt
 end
+
+(interp::AbstractInterpolation)(t::Number) = _interpolate(interp, t)
 
 function _interpolate(A::LinearInterpolation{<:AbstractVector}, t::Number)
     idx = max(1, min(searchsortedlast(A.t, t), length(A.t) - 1))
@@ -602,7 +620,7 @@ function _interpolate(A::QuadraticInterpolation{<:AbstractVector}, t::Number)
     return A.u[i₀]*l₀ + A.u[i₁]*l₁ + A.u[i₂]*l₂
 end
 
-function _interpolate(A::CubicSpline{<:AbstractVector{<:Number}}, t::Number)
+function _interpolate(A::CubicSplineInterpolation{<:AbstractVector{<:Number}}, t::Number)
     i = max(1, min(searchsortedlast(A.t, t), length(A.t) - 1))
     I = A.z[i] * (A.t[i+1] - t)^3 / (6A.h[i+1]) + A.z[i+1] * (t - A.t[i])^3 / (6A.h[i+1])
     C = (A.u[i+1]/A.h[i+1] - A.z[i+1]*A.h[i+1]/6)*(t - A.t[i])
