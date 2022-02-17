@@ -89,8 +89,7 @@ function reprod(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
 
     G = zeros(F64, ndim)
     for i = 1:ndim
-        KA = view(K, i, :)
-        G[i] = trapz(am, KA)
+        G[i] = trapz(am, view(K, i, :))
     end
 
     return G
@@ -100,26 +99,26 @@ end
     setup_param(C::Dict{String,Any}, S::Dict{String,Any})
 
 Setup the configuration dictionaries via function call. Here `C` contains
-parameters for general setup, while `S` contains parameters for analytical
-continuation solver.
+parameters for general setup, while `S` contains parameters for selected
+analytical continuation solver.
 
-See also: [`read_param`](@ref).
+See also: [`read_param`](@ref), [`rev_dict`](@ref).
 """
 function setup_param(C::Dict{String,Any}, S::Dict{String,Any})
-    set_dict(C)
+    rev_dict(C)
 
     solver = get_c("solver")
     @cswitch solver begin
         @case "MaxEnt"
-            set_dict(MaxEntSolver(), S)
+            rev_dict(MaxEntSolver(), S)
             break
 
         @case "StochAC"
-            set_dict(StochACSolver(), S)
+            rev_dict(StochACSolver(), S)
             break
 
         @case "StochOM"
-            set_dict(StochOMSolver(), S)
+            rev_dict(StochOMSolver(), S)
             break
 
         @default
