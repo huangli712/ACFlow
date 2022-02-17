@@ -373,11 +373,11 @@ function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
 
     spl = nothing
     if ktype == "fermi" || ktype == "boson"
-        spl = CubicSpline(A, am.mesh)
+        spl = CubicSplineInterpolation(A, am.mesh)
     else
         vM = vcat(-am.mesh[end:-1:2], am.mesh)
         vA = vcat(A[end:-1:2], A)
-        spl = CubicSpline(vA, vM)
+        spl = CubicSplineInterpolation(vA, vM)
     end
 
     bmesh, gaussian = make_gauss_peaks(blur)

@@ -593,6 +593,10 @@ function CubicSplineInterpolation(u::AbstractVector, t::AbstractVector)
     CubicSplineInterpolation{true}(u,t,h[1:n+1],z)
 end
 
+function munge_data(u::AbstractVector{<:Real}, t::AbstractVector{<:Real})
+    return u, t
+end
+
 function munge_data(u::AbstractVector, t::AbstractVector)
     Tu = Base.nonmissingtype(eltype(u))
     Tt = Base.nonmissingtype(eltype(t))
