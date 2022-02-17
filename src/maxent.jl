@@ -110,7 +110,12 @@ function run(S::MaxEntSolver, mec::MaxEntContext)
 end
 
 """
-    postprocess
+    postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
+
+Postprocess the results generated during the maximum entropy simulations.
+Here `sol` is the final solution for the analytical continuation problem,
+while `svec` contains all the intermediate results (it is a vector of
+dictionary actually).
 """
 function postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
     write_spectrum(mec.mesh, sol[:A])
