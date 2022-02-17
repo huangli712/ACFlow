@@ -269,10 +269,18 @@ function make_mesh(f1::F64 = 2.1)
     wmax = get_c("wmax")
     wmin = get_c("wmin")
 
-    if mesh == "linear"
-        return LinearMesh(nmesh, wmin, wmax)
-    else
-        return TangentMesh(nmesh, wmin, wmax, f1)
+    @cswitch mesh begin
+        @case "linear"
+            return LinearMesh(nmesh, wmin, wmax)
+            break
+
+        @case "tangent"
+            return TangentMesh(nmesh, wmin, wmax, f1)
+            break
+
+        @default
+            sorry()
+            break
     end
 end
 
