@@ -225,9 +225,10 @@ export newton
 export trapz
 export simpson
 export AbstractInterpolation
-export munge_data
+export LinearInterpolation
 export QuadraticInterpolation
-export CubicSpline
+export CubicSplineInterpolation
+export munge_data
 
 
 include("grid.jl")

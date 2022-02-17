@@ -505,16 +505,21 @@ directly from https://github.com/PumasAI/DataInterpolations.jl.
 
 """
     AbstractInterpolation
+
+It represents an abstract interpolation engine, which is used to build
+the internal type system.
 """
 abstract type AbstractInterpolation{FT,T} <: AbstractVector{T} end
 
 """
     LinearInterpolation
+
+It represents the linear interpolation algorithm.
 """
 struct LinearInterpolation{uType,tType,FT,T} <: AbstractInterpolation{FT,T}
     u::uType
     t::tType
-    function LinearInterpolation{FT}(u,t) where FT
+    function LinearInterpolation{FT}(u,t) where {FT}
         new{typeof(u),typeof(t),FT,eltype(u)}(u,t)
     end
 end
@@ -526,6 +531,8 @@ end
   
 """
     QuadraticInterpolation
+
+It represents the quadratic interpolation algorithm.
 """
 struct QuadraticInterpolation{uType,tType,FT,T} <: AbstractInterpolation{FT,T}
     u::uType
@@ -542,6 +549,8 @@ end
 
 """
     CubicSplineInterpolation
+
+It represents the cubic spline interpolation algorithm.
 """
 struct CubicSplineInterpolation{uType,tType,hType,zType,FT,T} <: AbstractInterpolation{FT,T}
     u::uType
