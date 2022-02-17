@@ -110,7 +110,7 @@ Setup the configuration dictionary: `PCOMM`.
 
 See also: [`PCOMM`](@ref).
 """
-function set_dict(COMM::Dict{String,Any})
+function rev_dict(COMM::Dict{String,Any})
     for key in keys(COMM)
         if haskey(PCOMM, key)
             PCOMM[key][1] = COMM[key]
@@ -128,7 +128,7 @@ Setup the configuration dictionary: `PMaxEnt`.
 
 See also: [`PMaxEnt`](@ref).
 """
-function set_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
+function rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
     for key in keys(MaxEnt)
         if haskey(PMaxEnt, key)
             PMaxEnt[key][1] = MaxEnt[key]
@@ -146,7 +146,7 @@ Setup the configuration dictionary: `PStochAC`.
 
 See also: [`PStochAC`](@ref).
 """
-function set_dict(S::StochACSolver, StochAC::Dict{String,Any})
+function rev_dict(S::StochACSolver, StochAC::Dict{String,Any})
     for key in keys(StochAC)
         if haskey(PStochAC, key)
             PStochAC[key][1] = StochAC[key]
@@ -164,7 +164,7 @@ Setup the configuration dictionary: `PStochOM`.
 
 See also: [`PStochOM`](@ref).
 """
-function set_dict(S::StochOMSolver, StochOM::Dict{String,Any})
+function rev_dict(S::StochOMSolver, StochOM::Dict{String,Any})
     for key in keys(StochOM)
         if haskey(PStochOM, key)
             PStochOM[key][1] = StochOM[key]
