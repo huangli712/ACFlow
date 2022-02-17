@@ -345,6 +345,30 @@ export calc_bayes_offdiag
 export calc_chi2
 
 include("sac.jl")
+export StochMC
+export StochElement
+export StochContext
+export solve
+export init
+export run
+export postprocess
+export warmup
+export sample
+export measure
+export init_mc
+export init_element
+export init_iodata
+export calc_fmesh
+export calc_xmesh
+export calc_phi
+export calc_delta
+export calc_hamil
+export calc_htau
+export calc_alpha
+export try_mov1
+export try_mov2
+export try_swap
+export dump
 
 include("base.jl")
 export solve
