@@ -322,11 +322,22 @@ function make_kernel(am::AbstractMesh, ag::AbstractGrid)
     ktype = get_c("ktype")
     grid = get_c("grid")
 
-    if ktype == "fermi" || ktype == "boson"
-        return build_kernel(am, ag)
-    else
-        @assert ktype == "bsymm"
-        @assert grid in ("btime", "bfreq")
-        return build_kernel_symm(am, ag)
+    @cswitch ktype begin
+        @case "fermi"
+            return build_kernel(am, ag)
+            break
+
+        @case "boson"
+            return build_kernel(am, ag)
+            break
+
+        @case "bsymm"
+            @assert grid in ("btime", "bfreq")
+            return build_kernel_symm(am, ag)
+            break
+
+        @default
+            sorry()
+            break
     end
 end
