@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/16
+# Last modified: 2022/02/17
 #
 
 #=
@@ -332,20 +332,22 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
         integrand_1 = zeros(F64, nsize)
         integrand_2 = zeros(F64, nsize)
         integrand_3 = zeros(F64, nsize)
-        
+        I₁ = view(integrand_1, :)
+        I₂ = view(integrand_2, :)
+        I₃ = view(integrand_3, :)
         for i = 1:nmesh
             for j = 1:nfreq
                 b2 = bg[j] ^ 2.0
                 for k = 1:nsize
-                    integrand_1[k] = gaussian[k] * ((bmesh[k] + am[i]) ^ 2.0) / ((bmesh[k] + am[i]) ^ 2.0 + b2)
-                    integrand_2[k] = gaussian[k] * ((bmesh[k] - am[i]) ^ 2.0) / ((bmesh[k] - am[i]) ^ 2.0 + b2)
+                    I₁[k] = gaussian[k] * ((bmesh[k] + am[i]) ^ 2.0) / ((bmesh[k] + am[i]) ^ 2.0 + b2)
+                    I₂[k] = gaussian[k] * ((bmesh[k] - am[i]) ^ 2.0) / ((bmesh[k] - am[i]) ^ 2.0 + b2)
                 end
                 if j == 1
-                    integrand_1 .= gaussian
-                    integrand_2 .= gaussian        
+                    I₁ .= gaussian
+                    I₂ .= gaussian
                 end
-                @. integrand_3 = (integrand_1 + integrand_2) / 2.0
-                kernel[j,i] = simpson(bmesh, integrand_3)
+                @. I₃ = (I₁ + I₂) / 2.0
+                kernel[j,i] = simpson(bmesh, I₃)
             end
         end
     else
