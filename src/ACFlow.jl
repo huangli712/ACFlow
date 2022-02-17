@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/16
+# Last modified: 2022/02/17
 #
 
 """
@@ -45,10 +45,51 @@ using Einsum
 using LsqFit
 
 #=
-### *Includes*
+### *Includes And Exports* : *global.jl*
 =#
 
+#=
+*Summary* :
+
+Define some type aliases and string constants for the ACFlow package.
+
+*Members* :
+
+```text
+I32, I64    -> Numerical types (Integer).
+F32, F64    -> Numerical types (Float).
+C32, C64    -> Numerical types (Complex).
+R32, R64    -> Numerical types (Union of Integer and Float).
+N32, N64    -> Numerical types (Union of Integer, Float, and Complex).
+#
+__LIBNAME__ -> Name of this julia package.
+__VERSION__ -> Version of this julia package.
+__RELEASE__ -> Released date of this julia package.
+__AUTHORS__ -> Authors of this julia package.
+#
+authors     -> Print the authors of ACFlow to screen.
+```
+=#
+
+#
 include("global.jl")
+#
+export I32, I64
+export F32, F64
+export C32, C64
+export R32, R64
+export N32, N64
+#
+export __LIBNAME__
+export __VERSION__
+export __RELEASE__
+export __AUTHORS__
+#
+export authors
+
+
+
+
 include("types.jl")
 include("util.jl")
 include("grid.jl")
@@ -61,9 +102,6 @@ include("maxent.jl")
 include("sac.jl")
 include("base.jl")
 
-#=
-### *Exports*
-=#
 
 export welcome
 export overview
