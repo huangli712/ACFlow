@@ -318,16 +318,16 @@ export build_func_model
 
 include("kernel.jl")
 export build_kernel
+export build_kernel_symm
 export make_blur
-
+export make_singular_space
+export make_gauss_peaks
 
 include("maxent.jl")
 include("sac.jl")
+
+
 include("base.jl")
-
-
-
-
 export read_param
 export read_data
 
