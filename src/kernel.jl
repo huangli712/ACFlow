@@ -335,10 +335,10 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 
         for i = 1:nmesh
             for j = 1:nfreq
-                b² = bg[j] ^ 2.0
+                g² = bg[j] ^ 2.0
                 for k = 1:nsize
-                    I₁[k] = ((bmesh[k] + am[i]) ^ 2.0) / ((bmesh[k] + am[i]) ^ 2.0 + b²)
-                    I₂[k] = ((bmesh[k] - am[i]) ^ 2.0) / ((bmesh[k] - am[i]) ^ 2.0 + b²)
+                    A² = (bmesh[k] + am[i]) ^ 2.0; I₁[k] = A² / (A² + g²)
+                    B² = (bmesh[k] - am[i]) ^ 2.0; I₂[k] = B² / (B² + g²)
                 end
                 if j == 1
                     I₁ .= 1.0
