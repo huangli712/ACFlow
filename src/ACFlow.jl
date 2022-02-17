@@ -157,10 +157,75 @@ export AbstractMesh
 export LinearMesh
 export TangentMesh
 
+#=
+### *Includes And Exports* : *util.jl*
+=#
 
+#=
+*Summary* :
 
+To provide some useful utility macros and functions. They can be used
+to colorize the output strings, query the environments, and parse the
+input strings, etc.
 
+*Members* :
+
+```text
+@cswitch      -> C-style switch.
+@time_call    -> Evaluate a function call and print the elapsed time.
+@pcs          -> Print colorful strings.
+require       -> Check julia envirnoment.
+setup_args    -> Setup ARGS manually.
+query_args    -> Query program's arguments.
+query_case    -> Query case (job's name).
+query_inps    -> Query input files.
+query_stop    -> Query case.stop file.
+query_test    -> Query case.test file.
+query_home    -> Query home directory of Zen framework.
+query_core    -> Query home directory of ZenCore (where is ZenCore.jl).
+query_dft     -> Query home directory of DFT engine.
+query_dmft    -> Query home directory of DMFT engine.
+query_solver  -> Query home directory of quantum impurity solvers.
+is_vasp       -> Test whether the DFT backend is the vasp code.
+is_qe         -> Test whether the DFT backend is the quantum espresso code.
+is_plo        -> Test whether the projector is the projected local orbitals.
+is_wannier    -> Test whether the projector is the wannier functions.
+welcome       -> Print welcome message.
+overview      -> Print runtime information of ZenCore.
+goodbye       -> Say goodbye.
+sorry         -> Say sorry.
+prompt        -> Print some messages or logs to the output devices.
+line_to_array -> Convert a line to a string array.
+line_to_cmplx -> Convert a line to a cmplx number.
+erf           -> Gauss error function.
+subscript     -> Convert a number to subscript.
+str_to_struct -> Convert a string to an instance of specified struct.
+```
+=#
+
+#
 include("util.jl")
+#
+export @cswitch
+export @time_call
+export @pcs
+export require
+export setup_args
+export query_args
+export welcome
+export overview
+export welcome
+export overview
+export goodbye
+export sorry
+export prompt
+export line_to_array
+export secant
+export newton
+export simpson
+
+
+
 include("grid.jl")
 include("mesh.jl")
 include("config.jl")
@@ -172,13 +237,11 @@ include("sac.jl")
 include("base.jl")
 
 
-export welcome
-export overview
-export newton
-export secant
+
+
 export read_param
 export read_data
-export setup_args
+
 export precompute
 export make_singular_space
 export make_kernel
