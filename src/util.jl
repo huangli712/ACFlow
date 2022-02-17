@@ -472,7 +472,7 @@ uniform mesh.
 
 See also: [`simpson`](@ref).
 """
-function simpson(x::Vector{F64}, y::Vector{T}) where {T}
+function simpson(x::Vector{F64}, y::Vector{T} where T)
     h = (x[2] - x[1]) / 3.0
 
     even_sum = 0.0

@@ -210,7 +210,7 @@ export @cswitch
 export @time_call
 export @pcs
 export require
-#export setup_args
+export setup_args
 export query_args
 export welcome
 export overview
@@ -224,7 +224,10 @@ export secant
 export newton
 export trapz
 export simpson
-
+export AbstractInterpolation
+export munge_data
+export QuadraticInterpolation
+export CubicSpline
 
 
 include("grid.jl")
