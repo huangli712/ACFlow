@@ -4,11 +4,26 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/02/08
+# Last modified: 2022/02/17
 #
 
 """
     MaxEntContext
+
+Mutable struct. It is used within the MaxEnt solver only.
+
+### Members
+
+* Gᵥ     -> Input data for correlator.
+* σ²     -> Actually 1.0 / σ².
+* grid   -> Grid for input data.
+* mesh   -> Mesh for output spectrum.
+* model  -> Default model function.
+* kernel -> Default kernel function.
+* Vₛ     -> Matrix from singular value decomposition.
+* W₂     -> Precomputed array.
+* W₃     -> Precomputed array.
+* Bₘ     -> Precomputed array.
 """
 mutable struct MaxEntContext
     Gᵥ     :: Vector{F64}
