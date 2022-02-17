@@ -304,6 +304,11 @@ include("inout.jl")
 #
 export read_real_data
 export read_complex_data
+export write_spectrum
+export write_chi2
+export write_hamil
+export write_probability
+export write_reprod
 
 include("kernel.jl")
 export build_kernel

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/14
+# Last modified: 2022/02/17
 #
 
 """
@@ -41,7 +41,7 @@ Read input data. This function is used for Matsubara frequency data. The
 input should contain four columns or five columns. The first column is
 the Matsubara freqency grid, the second and third columns are the values
 (real part and imaginary part), the four and fifth columns are the standard
-deviations for the real and imaginary parts, respectively. If there are
+deviations σ for the real and imaginary parts, respectively. If there are
 only four columns, it means that the real and imaginary parts share the
 same standard deviations.
 
@@ -80,7 +80,7 @@ Read input data. This function is used for Matsubara frequency data. The
 input file only contains three columns. The first column is the Matsubara
 frequency grid, the second column is the real part or imaginary part of
 the data (which is specified by the argument `only_real_part`), and the
-third column is the standard deviation.
+third column is the standard deviation σ.
 
 See also: [`read_time_data`](@ref).
 """
@@ -109,7 +109,7 @@ end
 """
     write_spectrum(am::AbstractMesh, Aout::Vector{F64})
 
-Write spectrum A(ω) to `Aout.data`. The grid is contained in `am`, and
+Write spectrum A(ω) to `Aout.data`. The grid is defined in `am`, and
 the spectrum is contained in `Aout`.
 """
 function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
@@ -124,7 +124,7 @@ end
 """
     write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2})
 
-Write α-resolved spectrum A(ω) to `Aout.data.alpha`. The grid is contained
+Write α-resolved spectrum A(ω) to `Aout.data.alpha`. The grid is defined
 in `am`, the α-resolved spectrum is contained in `Aout`, `αₗ` is the list
 for the α parameters.
 """
@@ -153,10 +153,10 @@ Write `log10(α)-log10(χ²)` data to `chi2.data`.
 function write_chi2(α_vec::Vector{F64}, χ²_vec::Vector{F64})
     @assert length(α_vec) == length(χ²_vec)
     open("chi2.data", "w") do fout
-        α_vec = log10.(α_vec)
-        χ²_vec = log10.(χ²_vec)
-        for i = 1:length(α_vec)
-            @printf(fout, "%16.12f %16.12f\n", α_vec[i], χ²_vec[i])
+        _α = log10.(α_vec)
+        _χ² = log10.(χ²_vec)
+        for i in eachindex(α_vec)
+            @printf(fout, "%16.12f %16.12f\n", _α[i], _χ²[i])
         end
     end
 end
@@ -165,7 +165,7 @@ end
     write_hamil(α_vec::Vector{F64}, Hα::Vector{F64})
 
 Write `α-H(α)` data to `hamil.data`. This function is only useful for the
-StochAC solver.
+`StochAC` solver.
 """
 function write_hamil(α_vec::Vector{F64}, Hα::Vector{F64})
     @assert length(α_vec) == length(Hα)
@@ -180,15 +180,15 @@ end
     write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
 
 Write `p(α)` data to `prob.data`. This function is only useful for the
-MaxEnt bryan algorithm.
+`MaxEnt` solver (`bryan` algorithm).
 """
 function write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
     @assert length(α_vec) == length(p_vec)
     open("prob.data", "w") do fout
-        p_vec = -p_vec ./ trapz(α_vec, p_vec)
-        α_vec = log10.(α_vec)
-        for i = 1:length(α_vec)
-            @printf(fout, "%16.12f %16.12f\n", α_vec[i], p_vec[i])
+        _p = -p_vec ./ trapz(α_vec, p_vec)
+        _α = log10.(α_vec)
+        for i in eachindex(α_vec)
+            @printf(fout, "%16.12f %16.12f\n", _α[i], _p[i])
         end
     end
 end
@@ -207,13 +207,13 @@ function write_reprod(ag::AbstractGrid, G::Vector{F64})
 
     if ngrid == ng
         open("repr.data", "w") do fout
-            for i = 1:ngrid
+            for i in eachindex(ag)
                 @printf(fout, "%16.12f %16.12f\n", ag[i], G[i])
             end
         end
     else
         open("repr.data", "w") do fout
-            for i = 1:ngrid
+            for i in eachindex(ag)
                 @printf(fout, "%16.12f %16.12f %16.12f\n", ag[i], G[i], G[i+ngrid])
             end
         end
