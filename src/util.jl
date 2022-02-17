@@ -434,7 +434,7 @@ Perform numerical integration by using the composite trapezoidal rule.
 
 See also: [`simpson`](@ref).
 """
-function trapz(x::AbstractMesh, y::Vector{T}) where {T}
+function trapz(x::AbstractMesh, y::Vector{T} where T) 
     value = dot(x.weight, y)
     return value
 end
@@ -446,7 +446,7 @@ Perform numerical integration by using the composite trapezoidal rule.
 
 See also: [`simpson`](@ref).
 """
-function trapz(x::Vector{F64}, y::Vector{T}, linear::Bool = false) where {T}
+function trapz(x::Vector{F64}, y::Vector{T} where T, linear::Bool = false)
     if linear
         h = x[2] - x[1]
         value = y[1] + y[end] + 2.0 * sum(y[2:end-1])

@@ -210,7 +210,7 @@ export @cswitch
 export @time_call
 export @pcs
 export require
-export setup_args
+#export setup_args
 export query_args
 export welcome
 export overview
@@ -222,7 +222,8 @@ export prompt
 export line_to_array
 export secant
 export newton
-export simpson
+export trapz
+#export simpson
 
 
 
@@ -293,7 +294,7 @@ function _precompile()
             end
 
             # Precompile them one by one
-            # println(i, " -> ", str, " -> ", length(types), " -> ", T)
+            println(i, " -> ", str, " -> ", length(types), " -> ", T)
             precompile(fun, T)
             @printf("Function %15s (#%3i) is compiled.\r", str, cf)
         end
@@ -312,7 +313,8 @@ This function would be executed immediately after the module is loaded
 at runtime for the first time. It works at the REPL mode only.
 """
 __init__() = begin
-    isinteractive() && _precompile()
+    #isinteractive() && _precompile()
+    _precompile()
 end
 
 end # END OF MODULE
