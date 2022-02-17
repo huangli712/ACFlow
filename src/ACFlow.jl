@@ -87,10 +87,79 @@ export __AUTHORS__
 #
 export authors
 
+#=
+### *Includes And Exports* : *types.jl*
+=#
 
+#=
+*Summary* :
 
+Define some dicts and structs, which are used to store the config
+parameters or represent some essential data structures.
 
+*Members* :
+
+```text
+DType           -> Customized type.
+ADT             -> Customized type.
+PCOMM           ->
+PMaxEnt         ->
+PStochAC        ->
+PStochOM        ->
+#
+AbstractSolver  ->
+MaxEntSolver    ->
+StochACSolver   -> 
+StochOMSolver   -> 
+#
+AbstractData
+RawData
+GreenData
+#
+AbstractGrid
+FermionicImaginaryTimeGrid
+FermionicMatsubaraGrid
+BosonicImaginaryTimeGrid
+BosonicMatsubaraGrid
+#
+AbstractMesh
+LinearMesh
+TangentMesh
+```
+=#
+
+#
 include("types.jl")
+#
+export DType
+export ADT
+export PCOMM
+export PMaxEnt
+export PStochAC
+export PStochOM
+#
+export AbstractSolver
+export MaxEntSolver
+export StochACSolver
+export StochOMSolver
+#
+export AbstractData
+export RawData
+export GreenData
+#
+export AbstractGrid
+export FermionicImaginaryTimeGrid
+export FermionicMatsubaraGrid
+export BosonicImaginaryTimeGrid
+export BosonicMatsubaraGrid
+#
+export AbstractMesh
+export LinearMesh
+export TangentMesh
+
+
+
+
 include("util.jl")
 include("grid.jl")
 include("mesh.jl")

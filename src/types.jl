@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/11
+# Last modified: 2022/02/17
 #
 
 #=
@@ -38,7 +38,7 @@ The following dictionaries are used as global variables.
 """
     PCOMM
 
-Dictionary for configuration parameters: common setup.
+Dictionary for configuration parameters: general setup.
 """
 const PCOMM    = Dict{String,ADT}(
     "finput"  => [missing, 1, :String, "Filename for input data"],
