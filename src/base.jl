@@ -130,8 +130,8 @@ end
 """
     read_param()
 
-Setup the configuration dictionaries via a external file. The format of
-configuration file is `toml`.
+Setup the configuration dictionaries via a external file. The valid format
+of a configuration file is `toml`.
 
 See also: [`read_param`](@ref).
 """
@@ -180,7 +180,9 @@ end
 
 Convert `RawData` struct to `GreenData` struct. Note that `RawData` is
 provided by the users directly, while `GreenData` is more suitable for
-various analytical continuation solvers and algorithms.
+various analytical continuation solvers and algorithms. Note that the
+`GreenData` struct is accessed and manipulated by this code internally,
+while the `RawData` struct is exposed to the users. 
 
 See also: [`RawData`](@ref), [`GreenData`](@ref). 
 """
