@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/12
+# Last modified: 2022/02/17
 #
 
 """
@@ -104,7 +104,7 @@ function fil_dict(cfg::Dict{String,Any})
 end
 
 """
-    set_dict(COMM::Dict{String,Any})
+    rev_dict(COMM::Dict{String,Any})
 
 Setup the configuration dictionary: `PCOMM`.
 
@@ -122,7 +122,7 @@ function rev_dict(COMM::Dict{String,Any})
 end
 
 """
-    set_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
+    rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
 
 Setup the configuration dictionary: `PMaxEnt`.
 
@@ -140,7 +140,7 @@ function rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
 end
 
 """
-    set_dict(S::MaxEntSolver, StochAC::Dict{String,Any})
+    rev_dict(S::MaxEntSolver, StochAC::Dict{String,Any})
 
 Setup the configuration dictionary: `PStochAC`.
 
@@ -158,7 +158,7 @@ function rev_dict(S::StochACSolver, StochAC::Dict{String,Any})
 end
 
 """
-    set_dict(S::MaxEntSolver, StochOM::Dict{String,Any})
+    rev_dict(S::MaxEntSolver, StochOM::Dict{String,Any})
 
 Setup the configuration dictionary: `PStochOM`.
 

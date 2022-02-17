@@ -299,8 +299,16 @@ export get_m
 export get_a
 export get_s
 
+#
 include("inout.jl")
+#
+export read_real_data
+export read_complex_data
+
 include("kernel.jl")
+export build_kernel
+export make_blur
+
 include("model.jl")
 include("maxent.jl")
 include("sac.jl")
