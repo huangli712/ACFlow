@@ -85,12 +85,12 @@ function reprod(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
     ndim, nmesh = size(kernel)
     @assert nmesh == length(am) == length(A)
 
-    Ac = reshape(A, (1, nmesh))
-    KA = kernel .* Ac
+    @einsum K[i,j] := kernel[i,j] * A[j]
 
     G = zeros(F64, ndim)
     for i = 1:ndim
-        G[i] = trapz(am, KA[i,:])
+        KA = view(K, i, :)
+        G[i] = trapz(am, KA)
     end
 
     return G

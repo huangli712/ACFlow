@@ -430,13 +430,13 @@ end
 =#
 
 """
-    trapz(x::AbstractMesh, y::Vector{T})
+    trapz(x::AbstractMesh, y::AbstractVector{T})
 
 Perform numerical integration by using the composite trapezoidal rule.
 
 See also: [`simpson`](@ref).
 """
-function trapz(x::AbstractMesh, y::Vector{T} where T) 
+function trapz(x::AbstractMesh, y::AbstractVector{T} where T) 
     value = dot(x.weight, y)
     return value
 end

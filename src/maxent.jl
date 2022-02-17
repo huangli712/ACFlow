@@ -102,7 +102,7 @@ function postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
         write_probability(α_vec, p_vec)
     end
 
-    G = reprod(mec.kernel, mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
+    @timev G = reprod(mec.kernel, mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
     write_reprod(mec.grid, G)
 end
 
