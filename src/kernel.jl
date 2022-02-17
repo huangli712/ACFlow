@@ -329,12 +329,10 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
         bmesh, gaussian = make_gauss_peaks(blur)
         nsize = length(bmesh)
 
-        integrand_1 = zeros(F64, nsize)
-        integrand_2 = zeros(F64, nsize)
-        integrand_3 = zeros(F64, nsize)
-        I₁ = view(integrand_1, :)
-        I₂ = view(integrand_2, :)
-        I₃ = view(integrand_3, :)
+        I₁ = zeros(F64, nsize)
+        I₂ = zeros(F64, nsize)
+        I₃ = zeros(F64, nsize)
+
         for i = 1:nmesh
             for j = 1:nfreq
                 b² = bg[j] ^ 2.0
