@@ -62,10 +62,10 @@ Dictionary for configuration parameters: maximum entropy method.
 """
 const PMaxEnt  = Dict{String,ADT}(
     "method"  => [missing, 1, :String, "How to determine the optimized α parameter"],
-    "nalph"   => [missing, 1, :I64   , "Number of the α parameters"],
+    "nalph"   => [missing, 1, :I64   , "Total number of the chosen α parameters"],
     "alpha"   => [missing, 1, :F64   , "Starting value for the α parameter"],
     "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
-    "blur"    => [missing, 1, :F64   , "Shall we blur the kernel and spectrum"],
+    "blur"    => [missing, 1, :F64   , "Shall we preblur the kernel and spectrum"],
 )
 
 """
@@ -76,7 +76,7 @@ Dictionary for configuration parameters: stochastic analytical continuation meth
 const PStochAC = Dict{String,ADT}(
     "nfine"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
     "ngamm"   => [missing, 1, :I64   , "Number of δ functions"],
-    "nalph"   => [missing, 1, :I64   , "Number of the α parameters"],
+    "nalph"   => [missing, 1, :I64   , "Total number of the chosen α parameters"],
     "nwarm"   => [missing, 1, :I64   , "Number of Monte Carlo warmup steps"],
     "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo sweeping steps"],
     "ndump"   => [missing, 1, :I64   , "Intervals for monitoring Monte Carlo sweeps"],
@@ -107,22 +107,24 @@ abstract type AbstractSolver end
 """
     MaxEntSolver
 
-It represents the solver that implements the maximum entropy method.
+It represents the analytical continuation solver that implements the
+maximum entropy method.
 """
 struct MaxEntSolver <: AbstractSolver end
 
 """
     StochACSolver
 
-It represents the solver that implements the stochastic analytical
-continuation method.
+It represents the analytical continuation solver that implements the
+stochastic analytical continuation method.
 """
 struct StochACSolver <: AbstractSolver end
 
 """
     StochOMSolver
 
-It represents the solver that implements the stochastic optimization method.
+It represents the analytical continuation solver that implements the
+stochastic optimization method.
 """
 struct StochOMSolver <: AbstractSolver end
 
@@ -133,8 +135,8 @@ struct StochOMSolver <: AbstractSolver end
 """
     AbstractData
 
-An abstract type representing the input data in imaginary axis. It is used
-to build the internal type system.
+An abstract type representing the input data in imaginary axis. It is
+used to build the internal type system.
 """
 abstract type AbstractData end
 
@@ -145,7 +147,7 @@ Mutable struct. It represent the raw input data.
 
 ### Members
 
-* _grid -> Grid for the input data, such as τ or iωₙ.
+* _grid -> Raw grid for the input data, such as τ or iωₙ.
 * value -> Raw input data, such as G(τ), G(iωₙ), or Σ(iωₙ).
 * error -> Error bar (standard deviation) of raw input data, σ.
 
@@ -166,7 +168,7 @@ Mutable struct. It represents the preprocessed input data.
 
 * value -> Preprocessed input data.
 * error -> Preprocessed error bar.
-* covar -> Diagonal elements of the covariance matrix, σ².
+* covar -> Diagonal parts of the covariance matrix, σ².
 
 See also: [`RawData`](@ref).
 """
@@ -183,8 +185,8 @@ end
 """
     AbstractGrid
 
-An abstract type representing the imaginary axis. It is used to build the
-internal type system.
+An abstract type representing the imaginary axis. It is used to build
+the internal type system.
 """
 abstract type AbstractGrid end
 
@@ -197,7 +199,7 @@ Mutable struct. It represents the fermionic imaginary time grid.
 
 * ntime -> Number of time slices.
 * β     -> Inverse temperature.
-* τ     -> Grid itself.
+* τ     -> Vector of grid points.
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
@@ -214,9 +216,9 @@ Mutable struct. It represents the fermionic Matsubara frequency grid.
 
 ### Members
 
-* ntime -> Number of time slices.
+* nfreq -> Number of Matsubara frequency points.
 * β     -> Inverse temperature.
-* ω     -> Grid itself.
+* ω     -> Vector of grid points.
 
 See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
@@ -235,7 +237,7 @@ Mutable struct. It represents the bosonic imaginary time grid.
 
 * ntime -> Number of time slices.
 * β     -> Inverse temperature.
-* τ     -> Grid itself.
+* τ     -> Vector of grid points.
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
@@ -252,9 +254,9 @@ Mutable struct. It represents the bosonic Matsubara frequency grid.
 
 ### Members
 
-* ntime -> Number of time slices.
+* nfreq -> Number of Matsubara frequency points.
 * β     -> Inverse temperature.
-* ω     -> Grid itself.
+* ω     -> Vector of grid points.
 
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
