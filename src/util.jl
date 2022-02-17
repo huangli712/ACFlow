@@ -370,7 +370,7 @@ end
 
 It implements the well-known newton algorithm to locate root of a given
 polynomial function. Here, `fun` means the function, `guess` is the initial
-solution, and `kwargs...` denotes the optional parameters for `fun`. Please
+solution, and `kwargs...` denotes the required arguments for `fun`. Please
 be careful, `func` is a multiple variable function. It not only returns
 the value, but also the jacobian matrix of the function.
 
@@ -494,7 +494,72 @@ end
 ### *Math* : *Interpolations*
 =#
 
+#=
+*Remarks* :
+
+The following codes are used to perform interpolations. Three algorithms
+are implemented. They are linear interpolation, quadratic interpolation,
+and cubic spline interpolation. Note that these implementations are taken
+directly from https://github.com/PumasAI/DataInterpolations.jl.
+=#
+
+"""
+    AbstractInterpolation
+"""
 abstract type AbstractInterpolation{FT,T} <: AbstractVector{T} end
+
+struct LinearInterpolation{uType,tType,FT,T} <: AbstractInterpolation{FT,T}
+    u::uType
+    t::tType
+    LinearInterpolation{FT}(u,t) where FT = new{typeof(u),typeof(t),FT,eltype(u)}(u,t)
+end
+
+function LinearInterpolation(u,t)
+    u, t = munge_data(u, t)
+    LinearInterpolation{true}(u,t)
+end
+  
+"""
+    QuadraticInterpolation
+"""
+struct QuadraticInterpolation{uType,tType,FT,T} <: AbstractInterpolation{FT,T}
+    u::uType
+    t::tType
+    function QuadraticInterpolation{FT}(u,t) where {FT}
+        new{typeof(u),typeof(t),FT,eltype(u)}(u,t)
+    end
+end
+
+function QuadraticInterpolation(u,t)
+    u, t = munge_data(u, t)
+    QuadraticInterpolation{true}(u,t)
+end
+
+"""
+    CubicSplineInterpolation
+"""
+struct CubicSplineInterpolation{uType,tType,hType,zType,FT,T} <: AbstractInterpolation{FT,T}
+    u::uType
+    t::tType
+    h::hType
+    z::zType
+    function CubicSplineInterpolation{FT}(u,t,h,z) where {FT}
+        new{typeof(u),typeof(t),typeof(h),typeof(z),FT,eltype(u)}(u,t,h,z)
+    end
+end
+
+function CubicSplineInterpolation(u,t)
+    u, t = munge_data(u, t)
+    n = length(t) - 1
+    h = vcat(0, map(k -> t[k+1] - t[k], 1:length(t)-1), 0)
+    dl = h[2:n+1]
+    d_tmp = 2 .* (h[1:n+1] .+ h[2:n+2])
+    du = h[2:n+1]
+    tA = Tridiagonal(dl,d_tmp,du)
+    d = map(i -> i == 1 || i == n + 1 ? 0 : 6(u[i+1] - u[i]) / h[i+1] - 6(u[i] - u[i-1]) / h[i], 1:n+1)
+    z = tA\d
+    CubicSplineInterpolation{true}(u,t,h[1:n+1],z)
+end
 
 (interp::AbstractInterpolation)(t::Number) = _interpolate(interp, t)
 
@@ -508,18 +573,10 @@ function munge_data(u::AbstractVector, t::AbstractVector)
     return newu, newt
 end
 
-# Quadratic Interpolation
-struct QuadraticInterpolation{uType,tType,FT,T} <: AbstractInterpolation{FT,T}
-    u::uType
-    t::tType
-    function QuadraticInterpolation{FT}(u,t) where {FT}
-        new{typeof(u),typeof(t),FT,eltype(u)}(u,t)
-    end
-end
-  
-function QuadraticInterpolation(u,t)
-    u, t = munge_data(u, t)
-    QuadraticInterpolation{true}(u,t)
+function _interpolate(A::LinearInterpolation{<:AbstractVector}, t::Number)
+    idx = max(1, min(searchsortedlast(A.t, t), length(A.t) - 1))
+    θ = (t - A.t[idx])/(A.t[idx + 1] - A.t[idx])
+    return (1 - θ)*A.u[idx] + θ*A.u[idx+1]
 end
 
 function _interpolate(A::QuadraticInterpolation{<:AbstractVector}, t::Number)
@@ -529,30 +586,6 @@ function _interpolate(A::QuadraticInterpolation{<:AbstractVector}, t::Number)
     l₁ = ((t - A.t[i₀])*(t - A.t[i₂]))/((A.t[i₁] - A.t[i₀])*(A.t[i₁] - A.t[i₂]))
     l₂ = ((t - A.t[i₀])*(t - A.t[i₁]))/((A.t[i₂] - A.t[i₀])*(A.t[i₂] - A.t[i₁]))
     return A.u[i₀]*l₀ + A.u[i₁]*l₁ + A.u[i₂]*l₂
-end
-
-# Cubic Spline Interpolation
-struct CubicSpline{uType,tType,hType,zType,FT,T} <: AbstractInterpolation{FT,T}
-    u::uType
-    t::tType
-    h::hType
-    z::zType
-    function CubicSpline{FT}(u,t,h,z) where {FT}
-        new{typeof(u),typeof(t),typeof(h),typeof(z),FT,eltype(u)}(u,t,h,z)
-    end
-end
-
-function CubicSpline(u,t)
-    u, t = munge_data(u, t)
-    n = length(t) - 1
-    h = vcat(0, map(k -> t[k+1] - t[k], 1:length(t)-1), 0)
-    dl = h[2:n+1]
-    d_tmp = 2 .* (h[1:n+1] .+ h[2:n+2])
-    du = h[2:n+1]
-    tA = Tridiagonal(dl,d_tmp,du)
-    d = map(i -> i == 1 || i == n + 1 ? 0 : 6(u[i+1] - u[i]) / h[i+1] - 6(u[i] - u[i-1]) / h[i], 1:n+1)
-    z = tA\d
-    CubicSpline{true}(u,t,h[1:n+1],z)
 end
 
 function _interpolate(A::CubicSpline{<:AbstractVector{<:Number}}, t::Number)
