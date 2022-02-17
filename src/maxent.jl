@@ -361,15 +361,8 @@ function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool
         :χ² => χ²,
         :norm => norm,
         :Q => α * S - 0.5 * χ²,
+        :Araw => deepcopy(A),
     )
-
-    if blur > 0.0
-        dict[:Araw] = deepcopy(A)
-        make_blur(mec.mesh, A, blur)
-        dict[:A] = A
-    else
-        dict[:A] = A
-    end
 
     if use_bayes
         if offdiag
@@ -382,6 +375,11 @@ function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool
         dict[:conv] = conv
         dict[:prob] = prob
     end
+
+    if blur > 0.0
+        make_blur(mec.mesh, A, blur)
+    end
+    dict[:A] = A
 
     @printf("log10(α) = %8.4f ", log10(α))
     @printf("χ² = %8.4e ", χ²)
