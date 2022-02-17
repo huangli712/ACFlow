@@ -324,20 +324,21 @@ export make_singular_space
 export make_gauss_peaks
 
 include("maxent.jl")
+export precompute
+
 include("sac.jl")
 
-
 include("base.jl")
+export solve
+export reprod
+export setup_param
 export read_param
 export read_data
-
-export precompute
-export make_singular_space
-export make_kernel
-export make_model
+export make_data
 export make_grid
 export make_mesh
-export solve
+export make_model
+export make_kernel
 
 #=
 ### *PreCompile*
