@@ -279,6 +279,10 @@ end
 
 """
     chi2kink(mec::MaxEntContext)
+
+Applyt the chi2kink algorithm to solve the analytical continuation problem.
+
+See also: [`MaxEntContext`](@ref).
 """
 function chi2kink(mec::MaxEntContext)
     function fitfun(x, p)
@@ -350,13 +354,14 @@ function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool
     χ² = calc_chi2(mec, A)
     norm = trapz(mec.mesh, A)
 
-    dict = Dict{Symbol,Any}()
-    dict[:u] = u
-    dict[:α] = α
-    dict[:S] = S
-    dict[:χ²] = χ²
-    dict[:norm] = norm
-    dict[:Q] = α * S - 0.5 * χ²
+    dict = Dict{Symbol,Any}(
+        :u => u,
+        :α => α,
+        :S => S,
+        :χ² => χ²,
+        :norm => norm,
+        :Q => α * S - 0.5 * χ²,
+    )
 
     if blur > 0.0
         dict[:Araw] = deepcopy(A)
