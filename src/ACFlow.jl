@@ -22,7 +22,6 @@ ACFlow supports the following algorithms:
 * Stochastic Analytical Continuation (SAC)
 * Stochastic Optimization Method (SOM)
 
-
 """
 module ACFlow
 
@@ -324,7 +323,26 @@ export make_singular_space
 export make_gauss_peaks
 
 include("maxent.jl")
+export MaxEntContext
+export solve
+export init
+export run
+export postprocess
+export historic
+export classic
+export bryan
+export chi2kink
+export optimizer
 export precompute
+export f_and_J
+export f_and_J_offdiag
+export svd_to_real
+export svd_to_real_offdiag
+export calc_entropy
+export calc_entropy_offdiag
+export calc_bayes
+export calc_bayes_offdiag
+export calc_chi2
 
 include("sac.jl")
 
