@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/12
+# Last modified: 2022/02/17
 #
 
 """
@@ -210,7 +210,7 @@ end
     make_grid(rd::RawData)
 
 Extract grid for input data from a `RawData` struct. It will return a
-child of the AbstractGrid struct.
+sub-type of the AbstractGrid struct.
 
 See also: [`RawData`](@ref), [`AbstractGrid`](@ref).
 """
@@ -257,7 +257,9 @@ end
 """
     make_mesh(f1::F64 = 2.1)
 
-Try to generate uniform or non-uniform mesh for the calculated spectrum.
+Try to generate an uniform (linear) or non-uniform (non-linear) mesh for
+the calculated spectrum. Note that the argument `f1` is only for the
+generation of the non-uniform mesh.
 
 See also: [`LinearMesh`](@ref), [`TangentMesh`](@ref).
 """
@@ -277,7 +279,9 @@ end
 """
     make_model(am::AbstractMesh, Γ::F64 = 2.0, fn::String = "model.data")
 
-Try to generate default model function through various schemes.
+Try to generate default model function through various schemes. Note that
+the argument `Γ` is for the gauss-like model function, while the argument
+`fn` is for the user-supplied model function.
 
 See also: [`AbstractMesh`]
 """
