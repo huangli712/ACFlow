@@ -322,7 +322,7 @@ function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool
 
     if blur > 0.0
         dict[:Araw] = deepcopy(A)
-        @timev make_blur(mec.mesh, A, blur)
+        make_blur(mec.mesh, A, blur)
         dict[:A] = A
     else
         dict[:A] = A
