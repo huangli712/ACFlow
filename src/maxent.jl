@@ -51,7 +51,7 @@ function init(S::MaxEntSolver, rd::RawData)
     model = make_model(mesh)
     println("Build default model: ", get_c("mtype"))
 
-    @timev kernel = make_kernel(mesh, grid)
+    kernel = make_kernel(mesh, grid)
     println("Build default kernel: ", get_c("ktype"))
 
     @timev Vₛ, W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel)
@@ -102,7 +102,7 @@ function postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
         write_probability(α_vec, p_vec)
     end
 
-    @timev G = reprod(mec.kernel, mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
+    G = reprod(mec.kernel, mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
     write_reprod(mec.grid, G)
 end
 
@@ -322,7 +322,7 @@ function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool
 
     if blur > 0.0
         dict[:Araw] = deepcopy(A)
-        make_blur(mec.mesh, A, blur)
+        @timev make_blur(mec.mesh, A, blur)
         dict[:A] = A
     else
         dict[:A] = A

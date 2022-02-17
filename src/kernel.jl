@@ -383,15 +383,15 @@ function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     bmesh, gaussian = make_gauss_peaks(blur)
 
     nsize = length(bmesh)
-    nmesh = am.nmesh
+    nmesh = length(am)
 
-    Mb = reshape(bmesh, (1, nsize))
-    Mx = reshape(gaussian, (1, nsize))
-    Mm = reshape(am.mesh, (nmesh, 1))
-    integrand = Mx .* spl.(Mm .+ Mb)
+    Mb = reshape(bmesh, (nsize, 1))
+    Mx = reshape(gaussian, (nsize, 1))
+    Mm = reshape(am.mesh, (1, nmesh))
+    I = Mx .* spl.(Mm .+ Mb)
 
-    for i = 1:nmesh
-        A[i] = simpson(bmesh, integrand[i,:])
+    for j = 1:nmesh
+        A[j] = simpson(bmesh, view(I, :, j))
     end
 end
 
@@ -402,6 +402,7 @@ Perform singular value decomposition for the input matrix.
 """
 function make_singular_space(kernel::Matrix{F64})
     U, S, V = svd(kernel)
+
     n_svd = count(x -> x ≥ 1e-10, S)
     U_svd = U[:,1:n_svd]
     V_svd = V[:,1:n_svd]
