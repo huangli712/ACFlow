@@ -230,9 +230,24 @@ export QuadraticInterpolation
 export CubicSplineInterpolation
 export munge_data
 
+#=
+### *Includes And Exports* : *grid.jl*
+=#
 
+#
 include("grid.jl")
+#
+export rebuild
+
+#=
+### *Includes And Exports* : *mesh.jl*
+=#
+
+#
 include("mesh.jl")
+#
+
+
 include("config.jl")
 include("inout.jl")
 include("kernel.jl")

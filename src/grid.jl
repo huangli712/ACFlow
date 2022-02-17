@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/10
+# Last modified: 2022/02/17
 #
 
 #=
@@ -146,7 +146,7 @@ end
 """
     FermionicMatsubaraGrid(nfreq::I64, β::F64)
 
-A constructor for the FermionicMatsubaraGrid struct.
+A constructor for the FermionicMatsubaraGrid struct. ωₙ = (2n - 1) * π / β.
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
@@ -261,7 +261,7 @@ end
 """
     rebuild(fg::FermionicMatsubaraGrid, nfreq::I64, β::F64)
 
-Rebuild the FermionicMatsubaraGrid struct via new `ntime` and `β` parameters.
+Rebuild the FermionicMatsubaraGrid struct via new `nfreq` and `β` parameters.
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
@@ -415,7 +415,7 @@ end
 """
     BosonicMatsubaraGrid(nfreq::I64, β::F64)
 
-A constructor for the BosonicMatsubaraGrid struct.
+A constructor for the BosonicMatsubaraGrid struct. ωₙ = (2n - 2) * π / β.
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
@@ -530,7 +530,7 @@ end
 """
     rebuild(bg::BosonicMatsubaraGrid, nfreq::I64, β::F64)
 
-Rebuild the BosonicMatsubaraGrid struct via new `ntime` and `β` parameters.
+Rebuild the BosonicMatsubaraGrid struct via new `nfreq` and `β` parameters.
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
