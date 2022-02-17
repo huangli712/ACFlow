@@ -134,7 +134,11 @@ function postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
 end
 
 """
-    historic
+    historic(mec::MaxEntContext)
+
+Applyt the historic algorithm to solve the analytical continuation problem.
+
+See also: [`MaxEntContext`](@ref).
 """
 function historic(mec::MaxEntContext)
     function root_fun(_α, _u)
@@ -172,7 +176,11 @@ function historic(mec::MaxEntContext)
 end
 
 """
-    classic
+    classic(mec::MaxEntContext)
+
+Applyt the classic algorithm to solve the analytical continuation problem.
+
+See also: [`MaxEntContext`](@ref).
 """
 function classic(mec::MaxEntContext)
     function root_fun(_α, _u)
@@ -217,7 +225,11 @@ function classic(mec::MaxEntContext)
 end
 
 """
-    bryan
+    bryan(mec::MaxEntContext)
+
+Applyt the bryan algorithm to solve the analytical continuation problem.
+
+See also: [`MaxEntContext`](@ref).
 """
 function bryan(mec::MaxEntContext)
     println("Apply bryan algorithm to determine optimized α")
@@ -252,16 +264,15 @@ function bryan(mec::MaxEntContext)
 
     nprob = length(p_vec)
     A_opt = zeros(F64, nmesh)
-    spectra = zeros(F64, nprob, nmesh)
+    spectra = zeros(F64, nmesh, nprob)
     for i = 1:nprob
-        spectra[i,:] = A_vec[i] * p_vec[i]
+        spectra[:,i] = A_vec[i] * p_vec[i]
     end
-    for i = 1:nmesh
-        A_opt[i] = -trapz(α_vec, spectra[:,i])
+    for j = 1:nmesh
+        A_opt[j] = -trapz(α_vec, spectra[j,:])
     end
 
-    sol = Dict{Symbol,Any}()
-    sol[:A] = A_opt
+    sol = Dict(:A => A_opt)
 
     return s_vec, sol
 end
