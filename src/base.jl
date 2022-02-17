@@ -33,7 +33,8 @@ end
     solve(grid::Vector{F64}, Gval::Vector{T})
 
 Solve the analytical continuation problem. The arguments `grid` and `Gval`
-are the grid and value, respectively. The error bar is set to 1.0e-4.
+are the grid and value, respectively. Furthermore, the error bar is set to
+a fixed value `1.0e-4`.
 """
 function solve(grid::Vector{F64}, Gval::Vector{T}) where {T}
     Gerr = similar(Gval)
