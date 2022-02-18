@@ -587,6 +587,10 @@ end
 
 """
     calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
+
+It computes entropy for positive definite spectral function. Here the
+arguments `A` means spectral function and `u` means a singular space
+vector that parametrizes the spectral function.
 """
 function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     f = A - mec.model - A .* (mec.Vₛ * u)
