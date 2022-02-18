@@ -644,6 +644,17 @@ end
 
 """
     calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
+
+It calculates Bayesian convergence criterion (`ng`, `tr`, and `conv`) for
+classic maxent (maximum of probablility distribution) and then Bayesian
+a-posteriori probability (`log_prob`) for `α` after optimization of `A`.
+
+Here, `A` is the spectral function, `S` the entropy, `χ²` the deviation,
+and `α` weight factor of the entropy.
+
+It is just a offdiagonal version of `calc_bayes()`.
+
+See also: [`calc_bayes`](@ref).
 """
 function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
     T = (( A .^ 2.0 + 4.0 * mec.model .* mec.model ) / (mesh.weight .^ 2.0)) .^ 0.25
