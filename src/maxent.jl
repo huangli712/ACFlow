@@ -345,7 +345,7 @@ function chi2kink(mec::MaxEntContext)
     α_vec = []
 
     while true
-        @timev sol = optimizer(mec, alpha, u_vec, use_bayes)
+        sol = optimizer(mec, alpha, u_vec, use_bayes)
         push!(s_vec, sol)
         push!(α_vec, alpha)
         push!(χ_vec, sol[:χ²])
@@ -410,7 +410,7 @@ function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool
         S = calc_entropy(mec, A, u)
     end
 
-    χ² = calc_chi2(mec, A)
+    @timev χ² = calc_chi2(mec, A)
     norm = trapz(mec.mesh, A)
 
     dict = Dict{Symbol,Any}(
@@ -673,6 +673,9 @@ end
 
 """
     calc_chi2(mec::MaxEntContext, A::Vector{F64})
+
+It computes the log-likelihood function or chi-squared-deviation of the
+spectral function `A`.
 """
 function calc_chi2(mec::MaxEntContext, A::Vector{F64})
     ndim, _ = size(mec.kernel)
