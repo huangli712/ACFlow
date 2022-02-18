@@ -410,7 +410,7 @@ function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool
         S = calc_entropy(mec, A, u)
     end
 
-    @timev χ² = calc_chi2(mec, A)
+    χ² = calc_chi2(mec, A)
     norm = trapz(mec.mesh, A)
 
     dict = Dict{Symbol,Any}(
@@ -502,8 +502,7 @@ It returns `f`, value of the function whose zero we want to find, and
 See also: [`f_and_J_offdiag`](@ref).
 """
 function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
-    v = mec.Vₛ * u
-    w = exp.(v)
+    w = exp.(mec.Vₛ * u)
 
     n_svd = length(mec.Bₘ)
 
@@ -534,8 +533,7 @@ This function is similar to `f_and_J`, but for offdiagonal elements.
 See also: [`f_and_J`](@ref).
 """
 function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
-    v = mec.Vₛ * u
-    w = exp.(v)
+    w = exp.(mec.Vₛ * u)
 
     a_plus = mec.model .* w
     a_minus = mec.model ./ w
