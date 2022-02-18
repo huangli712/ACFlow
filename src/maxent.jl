@@ -657,6 +657,8 @@ It is just a offdiagonal version of `calc_bayes()`.
 See also: [`calc_bayes`](@ref).
 """
 function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
+    mesh = mec.mesh
+
     T = (( A .^ 2.0 + 4.0 * mec.model .* mec.model ) / (mesh.weight .^ 2.0)) .^ 0.25
     Λ = (T * T') .* mec.hess
 
@@ -674,17 +676,10 @@ end
 """
     calc_chi2(mec::MaxEntContext, A::Vector{F64})
 
-It computes the log-likelihood function or chi-squared-deviation of the
-spectral function `A`.
+It computes the chi-squared-deviation of the spectral function `A`.
 """
 function calc_chi2(mec::MaxEntContext, A::Vector{F64})
-    ndim, _ = size(mec.kernel)
-
-    T = zeros(F64, ndim)
-    for i = 1:ndim
-        T[i] = mec.Gᵥ[i] - trapz(mec.mesh, mec.kernel[i,:] .* A)
-    end
-    χ² = sum(mec.σ² .* T .^ 2.0)
-
+    Gₙ = reprod(mec.kernel, mec.mesh, A)
+    χ² = sum(mec.σ² .* ((mec.Gᵥ - Gₙ) .^ 2.0))
     return χ²
 end
