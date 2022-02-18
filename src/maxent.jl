@@ -402,7 +402,7 @@ function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool
         solution, call = newton(f_and_J_offdiag, us, mec, α)
         u = copy(solution)
         A = svd_to_real_offdiag(mec, solution)
-        S = calc_entropy_offdiag(mec, A, u)
+        S = calc_entropy_offdiag(mec, A)
     else
         solution, call = newton(f_and_J, us, mec, α)
         u = copy(solution)
@@ -586,7 +586,7 @@ function svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
 end
 
 """
-    calc_entropy
+    calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
 """
 function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     f = A - mec.model - A .* (mec.Vₛ * u)
@@ -594,9 +594,9 @@ function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
 end
 
 """
-    calc_entropy_offdiag
+    calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64})
 """
-function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
+function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64})
     root = sqrt.(A .^ 2.0 + 4.0 .* mec.model .* mec.model)
     f = root - mec.model - mec.model - A .* log.((root + A) ./ (2.0 * mec.model))
     return trapz(mec.mesh, f)
