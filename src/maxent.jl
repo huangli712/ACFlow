@@ -81,7 +81,7 @@ function init(S::MaxEntSolver, rd::RawData)
     kernel = make_kernel(mesh, grid)
     println("Build default kernel: ", get_c("ktype"))
 
-    @timev Vₛ, W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel)
+    Vₛ, W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel)
     println("Precompute key coefficients")
 
     return MaxEntContext(Gᵥ, σ², grid, mesh, model, kernel, hess, Vₛ, W₂, W₃, Bₘ)
@@ -91,7 +91,7 @@ end
     run(S::MaxEntSolver, mec::MaxEntContext)
 
 Perform maximum entropy simulation with different algorithms. Now it
-supports `historic`, `classic`, `bryan`, and `chi2kink` algorithms.
+supports the `historic`, `classic`, `bryan`, and `chi2kink` algorithms.
 """
 function run(S::MaxEntSolver, mec::MaxEntContext)
     method = get_m("method")
@@ -192,6 +192,13 @@ end
     classic(mec::MaxEntContext)
 
 Apply the classic algorithm to solve the analytical continuation problem.
+Classic algorithm uses Bayes statistics to approximately determine the
+most probable value of α. We always start at a large value of α, where
+the optimization yields basically the default model, therefore `u_vec`
+is only a few steps away from 0 (= default model). And then we gradually
+decrease α, step by step moving away from the default model towards data
+fitting. Using `u_vec` as start for the next (smaller) α brings a great
+speedup into this procedure.
 
 See also: [`MaxEntContext`](@ref).
 """
@@ -227,6 +234,9 @@ function classic(mec::MaxEntContext)
     exp_opt = exp_opt / log10(c_vec[end] / c_vec[end-1])
     exp_opt = log10(α_vec[end-1]) - log10(c_vec[end-1]) * exp_opt
 
+    # Starting from the predicted value of α, and starting optimization
+    # at the solution for the next-lowest α, we find the optimal α by
+    # secant root finding method.
     u_vec = s_vec[end-1][:u]
     alpha = 10.0 ^ exp_opt
     α_opt = secant(root_fun, alpha, u_vec)
