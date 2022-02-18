@@ -149,6 +149,7 @@ end
     historic(mec::MaxEntContext)
 
 Apply the historic algorithm to solve the analytical continuation problem.
+It choose α in a way that χ² ≈ N.
 
 See also: [`MaxEntContext`](@ref).
 """
