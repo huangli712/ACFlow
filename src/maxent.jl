@@ -557,7 +557,15 @@ function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
 end
 
 """
-    svd_to_real
+    svd_to_real(mec::MaxEntContext, u::Vector{F64})
+
+Go from singular value space to real space. It will transform the singular
+space vector `u` into real-frequency space (to get the spectral function)
+by `A(ω) = D(ω) eⱽᵘ`, where `D(ω)` is the default model `V` is the matrix
+from the singular value decomposition. The argument `u` means a singular
+space vector that parametrizes the spectral function.
+
+See also: [`svd_to_real_offdiag`](@ref).
 """
 function svd_to_real(mec::MaxEntContext, u::Vector{F64})
     return mec.model .* exp.(mec.Vₛ * u)
