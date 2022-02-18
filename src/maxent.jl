@@ -192,6 +192,7 @@ end
     classic(mec::MaxEntContext)
 
 Apply the classic algorithm to solve the analytical continuation problem.
+
 Classic algorithm uses Bayes statistics to approximately determine the
 most probable value of α. We always start at a large value of α, where
 the optimization yields basically the default model, therefore `u_vec`
@@ -251,6 +252,7 @@ end
     bryan(mec::MaxEntContext)
 
 Apply the bryan algorithm to solve the analytical continuation problem.
+
 Bryan's maxent calculates an average of spectral functions, weighted by
 their Bayesian probability.
 
@@ -306,6 +308,20 @@ end
     chi2kink(mec::MaxEntContext)
 
 Apply the chi2kink algorithm to solve the analytical continuation problem.
+
+We start with an optimization at a large value of α, where we should get
+only the default model. And then, α is decreased step-by-step, until the
+minimal value of α is reached. Then, we fit a function
+
+`ϕ(x; a, b, c, d) = a + b / [1 + exp(-d*(x-c))]`,
+
+from which the optimal α is determined by
+
+`x_opt = c - fit_position / d`,
+
+and
+
+`alpha_opt = 10^x_opt`.
 
 See also: [`MaxEntContext`](@ref).
 """
