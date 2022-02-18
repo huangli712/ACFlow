@@ -490,7 +490,14 @@ function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, am::AbstractMesh, D::V
 end
 
 """
-    f_and_J
+    f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
+
+This function evaluates the function whose root we want to find. Here
+`u` is a singular-space vector that parametrizes the spectral function,
+and `α` is a (positive) weight factor of the entropy.
+
+It returns `f`, value of the function whose zero we want to find, and
+`J`, jacobian at the current position.
 """
 function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
     v = mec.Vₛ * u
