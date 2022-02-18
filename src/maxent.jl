@@ -7,6 +7,10 @@
 # Last modified: 2022/02/18
 #
 
+#=
+### *Customized Structs* : *MaxEnt Solver*
+=#
+
 """
     MaxEntContext
 
@@ -39,10 +43,14 @@ mutable struct MaxEntContext
     Bₘ     :: Vector{F64}
 end
 
+#=
+### *Global Drivers*
+=#
+
 """
     solve(S::MaxEntSolver, rd::RawData)
 
-Solve the analytical continuation problem with the maximum entropy method.
+Solve the analytical continuation problem by the maximum entropy method.
 """
 function solve(S::MaxEntSolver, rd::RawData)
     println("[ MaxEnt ]")
@@ -133,10 +141,14 @@ function postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
     write_reprod(mec.grid, G)
 end
 
+#=
+### *Core Algorithms*
+=#
+
 """
     historic(mec::MaxEntContext)
 
-Applyt the historic algorithm to solve the analytical continuation problem.
+Apply the historic algorithm to solve the analytical continuation problem.
 
 See also: [`MaxEntContext`](@ref).
 """
@@ -178,7 +190,7 @@ end
 """
     classic(mec::MaxEntContext)
 
-Applyt the classic algorithm to solve the analytical continuation problem.
+Apply the classic algorithm to solve the analytical continuation problem.
 
 See also: [`MaxEntContext`](@ref).
 """
@@ -227,7 +239,7 @@ end
 """
     bryan(mec::MaxEntContext)
 
-Applyt the bryan algorithm to solve the analytical continuation problem.
+Apply the bryan algorithm to solve the analytical continuation problem.
 
 See also: [`MaxEntContext`](@ref).
 """
@@ -280,7 +292,7 @@ end
 """
     chi2kink(mec::MaxEntContext)
 
-Applyt the chi2kink algorithm to solve the analytical continuation problem.
+Apply the chi2kink algorithm to solve the analytical continuation problem.
 
 See also: [`MaxEntContext`](@ref).
 """
@@ -306,8 +318,8 @@ function chi2kink(mec::MaxEntContext)
     while true
         sol = optimizer(mec, alpha, u_vec, use_bayes)
         push!(s_vec, sol)
-        push!(χ_vec, sol[:χ²])
         push!(α_vec, alpha)
+        push!(χ_vec, sol[:χ²])
         @. u_vec = sol[:u]
         alpha = alpha / ratio
         if alpha < α_end
@@ -318,7 +330,7 @@ function chi2kink(mec::MaxEntContext)
     good = isfinite.(χ_vec)
     guess = [0.0, 5.0, 2.0, 0.0]
     fit = curve_fit(fitfun, log10.(α_vec[good]), log10.(χ_vec[good]), guess)
-    a, b, c, d = fit.param
+    _, _, c, d = fit.param
 
     fit_pos = 2.5
     α_opt = c - fit_pos / d
@@ -389,6 +401,10 @@ function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool
 
     return dict
 end
+
+#=
+### *Service Functions*
+=#
 
 """
     precompute
