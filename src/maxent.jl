@@ -361,6 +361,10 @@ function chi2kink(mec::MaxEntContext)
     fit = curve_fit(fitfun, log10.(α_vec[good]), log10.(χ_vec[good]), guess)
     _, _, c, d = fit.param
 
+    # `fit_pos` is a control parameter for under/overfitting.
+    # Good values are usually between 2 and 2.5. Smaller values usually
+    # lead to underfitting, which is sometimes desirable. Larger values
+    # lead to overfitting, which should be avoided.
     fit_pos = 2.5
     α_opt = c - fit_pos / d
     close = argmin( abs.( log10.(α_vec) .- α_opt ) )
