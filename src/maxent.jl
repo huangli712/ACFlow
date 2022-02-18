@@ -572,7 +572,13 @@ function svd_to_real(mec::MaxEntContext, u::Vector{F64})
 end
 
 """
-    svd_to_real_offdiag
+    svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
+
+Go from singular value space to real space. It will transform the singular
+space vector `u` into real-frequency space in the case of an offdiagonal
+element. It will return the spectral function.
+
+See also: [`svd_to_real`](@ref).
 """
 function svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
     w = exp.(mec.Vₛ * u)
