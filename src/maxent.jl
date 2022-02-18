@@ -454,15 +454,15 @@ end
 =#
 
 """
-    precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, mesh::AbstractMesh, model::Vector{F64}, kernel::Matrix{F64})
+    precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, am::AbstractMesh, D::Vector{F64}, K::Matrix{F64})
 """
-function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, mesh::AbstractMesh, model::Vector{F64}, kernel::Matrix{F64})
+function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, am::AbstractMesh, D::Vector{F64}, K::Matrix{F64})
     offdiag = get_c("offdiag")
 
-    U, V, S = make_singular_space(kernel)
+    U, V, S = make_singular_space(K)
 
-    nmesh = mesh.nmesh
-    weight = mesh.weight
+    nmesh = length(am)
+    weight = am.weight
     n_svd = length(S)
 
     W₂ = zeros(F64, n_svd, nmesh)
@@ -473,14 +473,14 @@ function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, mesh::AbstractMesh, mo
     if offdiag
         @einsum W₂[m,l] = σ²[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l]
     else
-        @einsum W₂[m,l] = σ²[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l] * model[l]
+        @einsum W₂[m,l] = σ²[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l] * D[l]
     end
 
     @einsum W₃[j,k,i] = W₂[j,i] * V[i,k]
 
     @einsum Bₘ[m] = S[m] * U[k,m] * σ²[k] * Gᵥ[k]
 
-    @einsum hess[i,j] = weight[i] * weight[j] * kernel[k,i] * kernel[k,j] * σ²[k]
+    @einsum hess[i,j] = weight[i] * weight[j] * K[k,i] * K[k,j] * σ²[k]
 
     return V, W₂, W₃, Bₘ, hess
 end
