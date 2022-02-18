@@ -251,6 +251,8 @@ end
     bryan(mec::MaxEntContext)
 
 Apply the bryan algorithm to solve the analytical continuation problem.
+Bryan's maxent calculates an average of spectral functions, weighted by
+their Bayesian probability.
 
 See also: [`MaxEntContext`](@ref).
 """
