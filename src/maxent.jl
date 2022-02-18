@@ -614,7 +614,16 @@ function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64})
 end
 
 """
-    calc_bayes
+    calc_bayes(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
+
+It calculates Bayesian convergence criterion (`ng`, `tr`, and `conv`) for
+classic maxent (maximum of probablility distribution) and then Bayesian
+a-posteriori probability (`log_prob`) for `α` after optimization of `A`.
+
+Here, `A` is the spectral function, `S` the entropy, `χ²` the deviation,
+and `α` weight factor of the entropy.
+
+See also: [`calc_bayes_offdiag`](@ref).
 """
 function calc_bayes(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
     mesh = mec.mesh
@@ -634,7 +643,7 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F
 end
 
 """
-    calc_bayes_offdiag
+    calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
 """
 function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
     T = (( A .^ 2.0 + 4.0 * mec.model .* mec.model ) / (mesh.weight .^ 2.0)) .^ 0.25
@@ -652,7 +661,7 @@ function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F6
 end
 
 """
-    calc_chi2
+    calc_chi2(mec::MaxEntContext, A::Vector{F64})
 """
 function calc_chi2(mec::MaxEntContext, A::Vector{F64})
     ndim, _ = size(mec.kernel)
