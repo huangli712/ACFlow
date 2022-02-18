@@ -504,16 +504,15 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
     w = exp.(v)
 
     n_svd = length(mec.Bₘ)
-    J = zeros(F64, n_svd, n_svd)
 
+    J = diagm([α for i = 1:n_svd])
     for j = 1:n_svd
         for i = 1:n_svd
-            J[i,j] = dot(mec.W₃[i,j,:], w)
+            J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], w)
         end
     end
 
     f = α * u + mec.W₂ * w - mec.Bₘ
-    J = diagm([α for i = 1:n_svd]) + J
 
     return f, J
 end
