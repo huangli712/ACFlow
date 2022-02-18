@@ -543,21 +543,15 @@ function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
     a2 = a_plus + a_minus
 
     n_svd = length(mec.Bₘ)
-    term_1 = zeros(F64, n_svd)
-    term_2 = zeros(F64, n_svd, n_svd)
 
-    for i = 1:n_svd
-        term_1[i] = dot(mec.W₂[i,:], a1)
-    end
-
+    J = diagm([α for i = 1:n_svd])
     for j = 1:n_svd
         for i = 1:n_svd
-            term_2[i,j] = dot(mec.W₃[i,j,:], a2)
+            J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], a2)
         end
     end
 
-    f = α * u + term_1 - mec.Bₘ
-    J = α * diagm(ones(n_svd)) + term_2
+    f = α * u + mec.W₂ * a1 - mec.Bₘ
 
     return f, J
 end
