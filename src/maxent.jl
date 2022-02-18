@@ -498,6 +498,8 @@ and `α` is a (positive) weight factor of the entropy.
 
 It returns `f`, value of the function whose zero we want to find, and
 `J`, jacobian at the current position.
+
+See also: [`f_and_J_offdiag`](@ref).
 """
 function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
     v = mec.Vₛ * u
@@ -518,7 +520,18 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
 end
 
 """
-    f_and_J_offdiag
+    f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
+
+This function evaluates the function whose root we want to find. Here
+`u` is a singular-space vector that parametrizes the spectral function,
+and `α` is a (positive) weight factor of the entropy.
+
+It returns `f`, value of the function whose zero we want to find, and
+`J`, jacobian at the current position.
+
+This function is similar to `f_and_J`, but for offdiagonal elements.
+
+See also: [`f_and_J`](@ref).
 """
 function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
     v = mec.Vₛ * u
