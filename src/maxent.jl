@@ -591,6 +591,8 @@ end
 It computes entropy for positive definite spectral function. Here the
 arguments `A` means spectral function and `u` means a singular space
 vector that parametrizes the spectral function.
+
+See also: [`calc_entropy_offdiag`](@ref).
 """
 function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     f = A - mec.model - A .* (mec.Vₛ * u)
@@ -599,6 +601,11 @@ end
 
 """
     calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64})
+
+It compute *positive-negative entropy* for spectral function with norm 0.
+Here the argument `A` means spectral function.
+
+See also: [`calc_entropy`](@ref).
 """
 function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64})
     root = sqrt.(A .^ 2.0 + 4.0 .* mec.model .* mec.model)
