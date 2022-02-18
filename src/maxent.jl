@@ -455,6 +455,10 @@ end
 
 """
     precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, am::AbstractMesh, D::Vector{F64}, K::Matrix{F64})
+
+Precompute some key coefficients. Here `Gᵥ` and `σ²` are input data, `am`
+is the mesh for spectrum, `D` is the default model, and `K` is the kernel
+function.
 """
 function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, am::AbstractMesh, D::Vector{F64}, K::Matrix{F64})
     offdiag = get_c("offdiag")
