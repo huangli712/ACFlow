@@ -345,7 +345,21 @@ function chi2kink(mec::MaxEntContext)
 end
 
 """
-    optimizer
+    optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool)
+
+Optimization of maxent functional for a given value of `α`. Since a priori
+the best value of `α` is unknown, this function has to be called several
+times in order to find a good value.
+
+`α` means a weight factor of the entropy. `us` is a vector in singular
+space. It is used as a starting value for the optimization. For the very
+first optimization, done at large α, we use zeros, which corresponds to
+the default model. Then we use the result of the previous optimization
+as a starting value. `use_bayes` determines whether to use the Bayesian
+inference parameters for `α`.
+
+This function will return a dictionary object that holds the results of
+the optimization, e.g. spectral function, χ² deviation.
 """
 function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool)
     blur = get_m("blur")
@@ -407,7 +421,7 @@ end
 =#
 
 """
-    precompute
+    precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, mesh::AbstractMesh, model::Vector{F64}, kernel::Matrix{F64})
 """
 function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, mesh::AbstractMesh, model::Vector{F64}, kernel::Matrix{F64})
     offdiag = get_c("offdiag")
