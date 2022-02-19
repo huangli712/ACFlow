@@ -526,7 +526,7 @@ To provide the basic workflow for end user of the ACFlow package.
 *Members* :
 
 ```text
-solve       -> .
+solve       -> Select solver to solve the analytical continuation problem.
 reprod      -> Try to generate the input data via calculated spectrum.
 setup_param -> Setup parameters.
 read_param  -> Read parameters from case.toml.
