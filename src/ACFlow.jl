@@ -440,7 +440,9 @@ calc_chi2     -> Calculate χ².
 ```
 =#
 
+#
 include("maxent.jl")
+#
 export MaxEntContext
 export solve
 export init
@@ -469,12 +471,12 @@ export calc_chi2
 #=
 *Summary* :
 
-To extract, parse, verify, and print the configuration parameters.
+To implement the StochAC solver for analytically continuation problem.
 
 *Members* :
 
 ```text
-inp_toml -> Parse case.toml, return raw configuration information.
+StochMC -> .
 ```
 =#
 
