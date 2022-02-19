@@ -383,16 +383,22 @@ export build_func_model
 #=
 *Summary* :
 
-To extract, parse, verify, and print the configuration parameters.
+To define various kernel functions.
 
 *Members* :
 
 ```text
-inp_toml -> Parse case.toml, return raw configuration information.
+build_kernel        -> Build kernel function.
+build_kernel_symm   -> Build kernel function for symmetric case.
+make_blur           -> Add preblur effect to the spectral functions.
+make_singular_space -> Perform singular value decomposition for kernel.
+make_gauss_peaks    -> Generate a series gaussian peaks in a linear mesh.
 ```
 =#
 
+#
 include("kernel.jl")
+#
 export build_kernel
 export build_kernel_symm
 export make_blur
