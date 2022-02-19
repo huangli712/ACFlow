@@ -41,9 +41,9 @@ module ACFlow
 
 using Distributed
 using LinearAlgebra
+using Random
 using Printf
 using Dates
-using Random
 using TOML
 
 #=
@@ -111,29 +111,29 @@ parameters or represent some essential data structures.
 ```text
 DType           -> Customized type.
 ADT             -> Customized type.
-PCOMM           ->
-PMaxEnt         ->
-PStochAC        ->
-PStochOM        ->
+PCOMM           -> Dict for general setup.
+PMaxEnt         -> Dict for MaxEnt solver.
+PStochAC        -> Dict for StochAC solver.
+PStochOM        -> Dict for StochOM solver.
 #
-AbstractSolver  ->
-MaxEntSolver    ->
-StochACSolver   -> 
-StochOMSolver   -> 
+AbstractSolver  -> Abstract AC solver.
+MaxEntSolver    -> It represents the MaxEnt solver.
+StochACSolver   -> It represents the StochAC solver.
+StochOMSolver   -> It represents the StochOM solver.
 #
-AbstractData
-RawData
-GreenData
+AbstractData    -> Abstract input data in imaginary axis.
+RawData         -> Raw input data.
+GreenData       -> Preprocessed input data.
 #
-AbstractGrid
-FermionicImaginaryTimeGrid
-FermionicMatsubaraGrid
-BosonicImaginaryTimeGrid
-BosonicMatsubaraGrid
+AbstractGrid    -> Abstract mesh for input data.
+FermionicImaginaryTimeGrid -> Grid in fermionic imaginary time axis.
+FermionicMatsubaraGrid -> Grid in fermionic Matsubara frequency axis.
+BosonicImaginaryTimeGrid -> Grid in bosonic imaginary time axis.
+BosonicMatsubaraGrid -> Grid in bosonic Matsubara frequency axis.
 #
-AbstractMesh
-LinearMesh
-TangentMesh
+AbstractMesh    -> Abstract grid for calculated spectral function.
+LinearMesh      -> Linear mesh.
+TangentMesh     -> Tangent mesh.
 ```
 =#
 
@@ -186,29 +186,24 @@ input strings, etc.
 require       -> Check julia envirnoment.
 setup_args    -> Setup ARGS manually.
 query_args    -> Query program's arguments.
-query_case    -> Query case (job's name).
-query_inps    -> Query input files.
-query_stop    -> Query case.stop file.
-query_test    -> Query case.test file.
-query_home    -> Query home directory of Zen framework.
-query_core    -> Query home directory of ZenCore (where is ZenCore.jl).
-query_dft     -> Query home directory of DFT engine.
-query_dmft    -> Query home directory of DMFT engine.
-query_solver  -> Query home directory of quantum impurity solvers.
-is_vasp       -> Test whether the DFT backend is the vasp code.
-is_qe         -> Test whether the DFT backend is the quantum espresso code.
-is_plo        -> Test whether the projector is the projected local orbitals.
-is_wannier    -> Test whether the projector is the wannier functions.
 welcome       -> Print welcome message.
-overview      -> Print runtime information of ZenCore.
+overview      -> Print runtime information of ACFlow.
 goodbye       -> Say goodbye.
 sorry         -> Say sorry.
 prompt        -> Print some messages or logs to the output devices.
 line_to_array -> Convert a line to a string array.
-line_to_cmplx -> Convert a line to a cmplx number.
-erf           -> Gauss error function.
-subscript     -> Convert a number to subscript.
-str_to_struct -> Convert a string to an instance of specified struct.
+#
+secant        -> Root finding secant algorithm.
+newton        -> Root finding newton algorithm.
+trapz         -> Numerical integration (composite trapezoidal rule).
+simpson       -> Numerical integration (simpson rule).
+#
+AbstractInterpolation -> Abstract struct for interpolation.
+LinearInterpolation -> Linear interpolation.
+QuadraticInterpolation -> Quadratic interpolation. 
+CubicSplineInterpolation -> Cubic spline interpolation.
+munge_data    -> Clean the x and y data for interpolation.
+_interp       -> Return interpolated value.
 ```
 =#
 
@@ -229,15 +224,18 @@ export goodbye
 export sorry
 export prompt
 export line_to_array
+#
 export secant
 export newton
 export trapz
 export simpson
+#
 export AbstractInterpolation
 export LinearInterpolation
 export QuadraticInterpolation
 export CubicSplineInterpolation
 export munge_data
+export _interp
 
 #=
 ### *Includes And Exports* : *grid.jl*
