@@ -323,12 +323,18 @@ export get_s
 #=
 *Summary* :
 
-To extract, parse, verify, and print the configuration parameters.
+To read the input data or write the calculated results.
 
 *Members* :
 
 ```text
-inp_toml -> Parse case.toml, return raw configuration information.
+read_real_data    -> Read data in imaginary time axis.
+read_complex_data -> Read data in Matsubara frequency axis.
+write_spectrum    -> Write spectral functions.
+write_chi2        -> Write χ².
+write_hamil       -> Write effective hamiltonian for StochAC solver.
+write_probability -> Write Bayesian a-posteriori probability.
+write_reprod      -> Write reproduced input data.
 ```
 =#
 
