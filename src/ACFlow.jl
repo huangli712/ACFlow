@@ -356,16 +356,21 @@ export write_reprod
 #=
 *Summary* :
 
-To extract, parse, verify, and print the configuration parameters.
+To define default model functions.
 
 *Members* :
 
 ```text
-inp_toml -> Parse case.toml, return raw configuration information.
+build_flat_model     -> Construct a flat model.
+build_gaussian_model -> Construct a gaussian model.
+build_file_model     -> Construct a model from file.
+build_func_model     -> Construct a model by user-defined function. 
 ```
 =#
 
+#
 include("model.jl")
+#
 export build_flat_model
 export build_gaussian_model
 export build_file_model
