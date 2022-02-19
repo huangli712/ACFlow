@@ -412,12 +412,31 @@ export make_gauss_peaks
 #=
 *Summary* :
 
-To extract, parse, verify, and print the configuration parameters.
+To implement the MaxEnt solver for analytically continuation problem.
 
 *Members* :
 
 ```text
-inp_toml -> Parse case.toml, return raw configuration information.
+MaxEntContext -> .
+solve         ->
+init          ->
+run           ->
+postprocess   ->
+historic      ->
+classic       ->
+bryan         ->
+chi2kink      ->
+optimizer     ->
+precompute    ->
+f_and_J       ->
+f_and_J_offdiag ->
+svd_to_real   ->
+svd_to_real_offdiag ->
+calc_entropy  ->
+calc_entropy_offdiag
+calc_bayes    ->
+calc_bayes_offdiag
+calc_chi2     ->
 ```
 =#
 
