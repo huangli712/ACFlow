@@ -296,10 +296,10 @@ fil_dict -> Fill dicts for configuration parameters.
 rev_dict -> Update dicts for configuration parameters.
 chk_dict -> Check dicts for configuration parameters.
 _v       -> Verify dict's values.
-get_c    -> Extract value from dict (PCASE dict), return raw value.
-get_m    -> Extract value from dict (PDFT dict), return raw value.
-get_a    -> Extract value from dict (PDMFT dict), return raw value.
-get_s    -> Extract value from dict (PSOLVER dict), return raw value.
+get_c    -> Extract value from dict (PCOMM dict), return raw value.
+get_m    -> Extract value from dict (PMaxEnt dict), return raw value.
+get_a    -> Extract value from dict (PStochAC dict), return raw value.
+get_s    -> Extract value from dict (PStochOM dict), return raw value.
 ```
 =#
 
