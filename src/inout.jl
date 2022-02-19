@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/17
+# Last modified: 2022/02/19
 #
 
 """
@@ -133,14 +133,12 @@ function write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2}
     @assert nmesh == length(am)
     @assert nalph == length(αₗ)
 
-    open("Aout.data.alpha") do fout
-        for i in eachindex(αₗ)
+    for i in eachindex(αₗ)
+        open("Aout.data.α_$i") do fout
             println(fout, "# $i : α = ", αₗ[i])
             for j in eachindex(am)
                 @printf(fout, "%16.12f %16.12f\n", am[j], Aout[j,i])
             end
-            println()
-            println()
         end
     end
 end
