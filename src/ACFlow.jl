@@ -320,6 +320,18 @@ export get_s
 ### *Includes And Exports* : *inout.jl*
 =#
 
+#=
+*Summary* :
+
+To extract, parse, verify, and print the configuration parameters.
+
+*Members* :
+
+```text
+inp_toml -> Parse case.toml, return raw configuration information.
+```
+=#
+
 #
 include("inout.jl")
 #
@@ -335,6 +347,18 @@ export write_reprod
 ### *Includes And Exports* : *model.jl*
 =#
 
+#=
+*Summary* :
+
+To extract, parse, verify, and print the configuration parameters.
+
+*Members* :
+
+```text
+inp_toml -> Parse case.toml, return raw configuration information.
+```
+=#
+
 include("model.jl")
 export build_flat_model
 export build_gaussian_model
@@ -343,6 +367,18 @@ export build_func_model
 
 #=
 ### *Includes And Exports* : *kernel.jl*
+=#
+
+#=
+*Summary* :
+
+To extract, parse, verify, and print the configuration parameters.
+
+*Members* :
+
+```text
+inp_toml -> Parse case.toml, return raw configuration information.
+```
 =#
 
 include("kernel.jl")
@@ -354,6 +390,18 @@ export make_gauss_peaks
 
 #=
 ### *Includes And Exports* : *maxent.jl*
+=#
+
+#=
+*Summary* :
+
+To extract, parse, verify, and print the configuration parameters.
+
+*Members* :
+
+```text
+inp_toml -> Parse case.toml, return raw configuration information.
+```
 =#
 
 include("maxent.jl")
@@ -380,6 +428,18 @@ export calc_chi2
 
 #=
 ### *Includes And Exports* : *sac.jl*
+=#
+
+#=
+*Summary* :
+
+To extract, parse, verify, and print the configuration parameters.
+
+*Members* :
+
+```text
+inp_toml -> Parse case.toml, return raw configuration information.
+```
 =#
 
 include("sac.jl")
@@ -410,6 +470,18 @@ export dump
 
 #=
 ### *Includes And Exports* : *base.jl*
+=#
+
+#=
+*Summary* :
+
+To extract, parse, verify, and print the configuration parameters.
+
+*Members* :
+
+```text
+inp_toml -> Parse case.toml, return raw configuration information.
+```
 =#
 
 include("base.jl")
