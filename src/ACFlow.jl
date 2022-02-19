@@ -429,7 +429,7 @@ chi2kink      -> Chi2kink algorithm.
 optimizer     -> Optimize the non-linear equation.
 precompute    -> Precompute some key coefficients.
 f_and_J       -> Define the function that need to be optimized.
-f_and_J_offdiag -> Define the function that need to be optimized.
+f_and_J_offdiag -> Define the function that need to be optimized (offdiag version).
 svd_to_real   -> From singular to real space.
 svd_to_real_offdiag -> From singular to real space (offdiag version).
 calc_entropy  -> Calculate entropy.
