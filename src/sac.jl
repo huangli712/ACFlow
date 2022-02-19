@@ -531,11 +531,9 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
             image_t[j,i] = SC.image[j,i] * SC.model[j] / π / step
         end
     end
+    _image = [sum(image_t[i,:]) / nalph for i = 1:nmesh]
 
     write_hamil(SC.αₗ, SC.Hα)
-
     write_spectrum(SC.mesh, SC.αₗ, image_t)
-
-    _image = [sum(image_t[i,:]) / nalph for i = 1:nmesh]
     write_spectrum(SC.mesh, _image)
 end
