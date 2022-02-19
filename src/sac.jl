@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/18
+# Last modified: 2022/02/19
 #
 
 """
@@ -544,6 +544,7 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
             for j = 1:nmesh
                 println(fout, SC.mesh[j], " ", image_t[j,i])
             end
+            println(fout)
         end
     end
 
