@@ -311,7 +311,7 @@ end
 
 Initialize h(τ) and H using Eq.(35) and Eq.(36).
 """
-function calc_hamil(SE::StochElement, grid::AbstractGrid, kernel, Gᵥ, σ²)
+function calc_hamil(SE::StochElement, grid::AbstractGrid, kernel, Gᵥ, σ¹)
     nalph = get_a("nalph")
     ngrid = get_c("ngrid")
 
@@ -334,7 +334,7 @@ Try to calculate h(τ) via Eq.(36).
 """
 function calc_htau(Γₐ::Vector{I64}, Γᵣ::Vector{F64},
                    kernel::Matrix{F64},
-                   Gᵥ::Vector{F64}, σ²::Vector{F64})
+                   Gᵥ::Vector{F64}, σ¹::Vector{F64})
     ngrid = get_c("ngrid")
 
     hτ = zeros(F64, ngrid)
@@ -532,25 +532,10 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
         end
     end
 
-    open("hamil.data", "w") do fout
-        for i = 1:nalph
-            println(fout, i, " ", SC.αₗ[i], " ", SC.Hα[i])
-        end
-    end
+    write_hamil(SC.αₗ, SC.Hα)
 
-    open("stoch.data", "w") do fout
-        for i = 1:nalph
-            println(fout, "# $i :", SC.αₗ[i])
-            for j = 1:nmesh
-                println(fout, SC.mesh[j], " ", image_t[j,i])
-            end
-            println(fout)
-        end
-    end
+    write_spectrum(SC.mesh, SC.αₗ, image_t)
 
-    open("stoch.data.sum", "w") do fout
-        for j = 1:nmesh
-            println(fout, SC.mesh[j], " ", sum(image_t[j,:]) / nalph)
-        end
-    end
+    _image = [sum(image_t[i,:]) / nalph for i = 1:nmesh]
+    write_spectrum(SC.mesh, _image)
 end
