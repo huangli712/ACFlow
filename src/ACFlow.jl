@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/17
+# Last modified: 2022/02/19
 #
 
 """
@@ -12,16 +12,21 @@
 
 ACFlow is a modern software package for solving the many-body analytical
 continuation problem. It is usually used to convert the single-particle
-or two-particle correlation functions from imaginary axis to real axis.
-Now this package is under heavy development. **PLEASE USE IT AT YOUR OWN
-RISK**.
+or two-particle correlators from imaginary axis to real axis. Now this
+package is under heavy development. **PLEASE USE IT AT YOUR OWN RISK**.
 
-ACFlow supports the following algorithms:
+Nowadays the ACFlow package supports the following algorithms:
 
-* Maximum Entropy Method (MEM)
-* Stochastic Analytical Continuation (SAC)
-* Stochastic Optimization Method (SOM)
+* Maximum Entropy Method (`MaxEnt`)
+* Stochastic Analytical Continuation (`StochAC`)
+* Stochastic Optimization Method (`StochOM`)
 
+For more details about how to obtain, install and use the ACFlow package,
+please visit the following website:
+
+* `https://huangli712.github.io/projects/acflow/index.html`
+
+Any suggestions, comments, and feedbacks are welcome. Enjoy it!
 """
 module ACFlow
 
