@@ -418,25 +418,25 @@ To implement the MaxEnt solver for analytically continuation problem.
 
 ```text
 MaxEntContext -> .
-solve         ->
-init          ->
-run           ->
-postprocess   ->
-historic      ->
-classic       ->
-bryan         ->
-chi2kink      ->
-optimizer     ->
-precompute    ->
-f_and_J       ->
-f_and_J_offdiag ->
-svd_to_real   ->
-svd_to_real_offdiag ->
-calc_entropy  ->
-calc_entropy_offdiag
-calc_bayes    ->
-calc_bayes_offdiag
-calc_chi2     ->
+solve         -> Wrapper function for the MaxEnt solver.
+init          -> Initialize maximum entropy simulation.
+run           -> Perform maximum entropy simulation.
+postprocess   -> Postprocess the calculated results.
+historic      -> historic algorithm.
+classic       -> Classic algorithm.
+bryan         -> Bryan algorithm.
+chi2kink      -> Chi2kink algorithm.
+optimizer     -> Optimize the non-linear equation.
+precompute    -> Precompute some key coefficients.
+f_and_J       -> Define the function that need to be optimized.
+f_and_J_offdiag -> Define the function that need to be optimized.
+svd_to_real   -> From singular to real space.
+svd_to_real_offdiag -> From singular to real space (offdiag version).
+calc_entropy  -> Calculate entropy.
+calc_entropy_offdiag -> Calculate entropy (offdiag version).
+calc_bayes    -> Calculate Bayesian probability.
+calc_bayes_offdiag -> Calculate Bayesian probability (offdiag version).
+calc_chi2     -> Calculate χ².
 ```
 =#
 
