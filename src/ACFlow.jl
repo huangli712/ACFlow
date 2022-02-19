@@ -417,7 +417,7 @@ To implement the MaxEnt solver for analytically continuation problem.
 *Members* :
 
 ```text
-MaxEntContext -> .
+MaxEntContext -> Essential struct for the MaxEnt solver.
 solve         -> Wrapper function for the MaxEnt solver.
 init          -> Initialize maximum entropy simulation.
 run           -> Perform maximum entropy simulation.
@@ -477,6 +477,12 @@ To implement the StochAC solver for analytically continuation problem.
 
 ```text
 StochMC -> .
+StochElement ->
+StochContext ->
+solve ->
+init ->
+run ->
+postprocess ->
 ```
 =#
 
