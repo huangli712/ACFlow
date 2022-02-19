@@ -521,16 +521,27 @@ export dump
 #=
 *Summary* :
 
-To extract, parse, verify, and print the configuration parameters.
+To provide the basic workflow for end user of the ACFlow package.
 
 *Members* :
 
 ```text
-inp_toml -> Parse case.toml, return raw configuration information.
+solve       -> .
+reprod      -> Try to generate the input data via calculated spectrum.
+setup_param -> Setup parameters.
+read_param  -> Read parameters from case.toml.
+read_data   -> Read the input data.
+make_data   -> Preprocess the input data.
+make_grid   -> Generate grid for the input data.
+make_mesh   -> Generate mesh for the calculated spectrum.
+make_model  -> Generate default model function.
+make_kernel -> Generate kernel function.
 ```
 =#
 
+#
 include("base.jl")
+#
 export solve
 export reprod
 export setup_param
