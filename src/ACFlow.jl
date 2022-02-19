@@ -316,6 +316,10 @@ export get_m
 export get_a
 export get_s
 
+#=
+### *Includes And Exports* : *inout.jl*
+=#
+
 #
 include("inout.jl")
 #
@@ -327,11 +331,19 @@ export write_hamil
 export write_probability
 export write_reprod
 
+#=
+### *Includes And Exports* : *model.jl*
+=#
+
 include("model.jl")
 export build_flat_model
 export build_gaussian_model
 export build_file_model
 export build_func_model
+
+#=
+### *Includes And Exports* : *kernel.jl*
+=#
 
 include("kernel.jl")
 export build_kernel
@@ -339,6 +351,10 @@ export build_kernel_symm
 export make_blur
 export make_singular_space
 export make_gauss_peaks
+
+#=
+### *Includes And Exports* : *maxent.jl*
+=#
 
 include("maxent.jl")
 export MaxEntContext
@@ -361,6 +377,10 @@ export calc_entropy_offdiag
 export calc_bayes
 export calc_bayes_offdiag
 export calc_chi2
+
+#=
+### *Includes And Exports* : *sac.jl*
+=#
 
 include("sac.jl")
 export StochMC
@@ -387,6 +407,10 @@ export try_mov1
 export try_mov2
 export try_swap
 export dump
+
+#=
+### *Includes And Exports* : *base.jl*
+=#
 
 include("base.jl")
 export solve
