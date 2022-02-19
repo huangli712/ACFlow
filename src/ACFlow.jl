@@ -241,6 +241,18 @@ export _interp
 ### *Includes And Exports* : *grid.jl*
 =#
 
+#=
+*Summary* :
+
+To implement various grid for the input data.
+
+*Members* :
+
+```text
+rebuild -> Rebuild the grid.
+```
+=#
+
 #
 include("grid.jl")
 #
