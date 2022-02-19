@@ -31,7 +31,7 @@ end
 """
 mutable struct StochContext
     Gᵥ     :: Vector{F64}
-    σ²     :: Vector{F64}
+    σ¹     :: Vector{F64}
     grid   :: AbstractGrid
     mesh   :: AbstractMesh
     model  :: Vector{F64}
@@ -62,8 +62,8 @@ function init(S::StochACSolver, rd::RawData)
     SE = init_element(MC.rng)
     println("Randomize Monte Carlo configurations")
 
-    Gᵥ, σ², image = init_iodata(rd)
-    println("Postprocess input data: ", length(σ²), " points")
+    Gᵥ, σ¹, image = init_iodata(rd)
+    println("Postprocess input data: ", length(σ¹), " points")
 
     grid = make_grid(rd)
     println("Build grid for input data: ", length(grid), " points")
@@ -83,13 +83,13 @@ function init(S::StochACSolver, rd::RawData)
     Δ = calc_delta(xmesh, ϕ)
     println("Precompute δ functions")
 
-    hτ, Hα = calc_hamil(SE, grid, kernel, Gᵥ, σ²)
+    hτ, Hα = calc_hamil(SE, grid, kernel, Gᵥ, σ¹)
     println("Precompute hamiltonian")
 
     αₗ = calc_alpha()
     println("Precompute α parameters")
 
-    SC = StochContext(Gᵥ, σ², grid, mesh, model, kernel, image, Δ, hτ, Hα, αₗ)
+    SC = StochContext(Gᵥ, σ¹, grid, mesh, model, kernel, image, Δ, hτ, Hα, αₗ)
 
     return MC, SE, SC
 end
@@ -233,11 +233,11 @@ function init_iodata(rd::RawData)
 
     G = make_data(rd)
     Gᵥ = abs.(G.value)
-    σ² = 1.0 ./ sqrt.(G.covar)
+    σ¹ = 1.0 ./ sqrt.(G.covar)
 
     image = zeros(F64, nmesh, nalph)
 
-    return Gᵥ, σ², image
+    return Gᵥ, σ¹, image
 end
 
 """
@@ -293,8 +293,8 @@ end
 function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
     nmesh = get_c("nmesh")
     nfine = get_a("nfine")
-    η₁ = 0.005
-    η₂ = 0.005 ^ 2.0
+    η₁ = 0.001
+    η₂ = 0.001 ^ 2.0
 
     Δ = zeros(F64, nmesh, nfine)
 
@@ -320,7 +320,7 @@ function calc_hamil(SE::StochElement, grid::AbstractGrid, kernel, Gᵥ, σ²)
 
     δt = grid[2] - grid[1]
     for i = 1:nalph
-        hτ[:,i] = calc_htau(SE.Γₐ[:,i], SE.Γᵣ[:,i], kernel, Gᵥ, σ²)
+        hτ[:,i] = calc_htau(SE.Γₐ[:,i], SE.Γᵣ[:,i], kernel, Gᵥ, σ¹)
         Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
 
@@ -341,7 +341,7 @@ function calc_htau(Γₐ::Vector{I64}, Γᵣ::Vector{F64},
     for i = 1:ngrid
         hτ[i] = dot(Γᵣ, kernel[i,Γₐ])
     end
-    @. hτ = (hτ - Gᵥ) * σ²
+    @. hτ = (hτ - Gᵥ) * σ¹
 
     return hτ
 end
@@ -395,7 +395,7 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 
     K1 = view(SC.kernel, :, i1)
     K2 = view(SC.kernel, :, i2)
-    dhc = dhh * (K1 - K2) .* SC.σ²
+    dhc = dhh * (K1 - K2) .* SC.σ¹
 
     δt = SC.grid[2] - SC.grid[1]
     dhh = dot(dhc, 2.0 * hc + dhc) * δt
@@ -446,7 +446,7 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     K2 = view(SC.kernel, :, i2)
     K3 = view(SC.kernel, :, i3)
     K4 = view(SC.kernel, :, i4)
-    dhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) .* SC.σ²
+    dhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) .* SC.σ¹
 
     δt = SC.grid[2] - SC.grid[1]
     dhh = dot(dhc, 2.0 * hc + dhc) * δt
