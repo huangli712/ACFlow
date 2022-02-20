@@ -80,7 +80,7 @@ function init(S::StochACSolver, rd::RawData)
 
     xmesh = calc_xmesh()
     ϕ = calc_phi(mesh, model)
-    Δ = calc_delta(xmesh, ϕ)
+    @timev Δ = calc_delta(xmesh, ϕ)
     println("Precompute δ functions")
 
     @timev hτ, Hα = calc_hamil(SE.Γₐ, SE.Γᵣ, grid, kernel, Gᵥ, σ¹)
@@ -290,19 +290,25 @@ function calc_phi(mesh::AbstractMesh, model::Vector{F64})
 end
 
 """
-    calc_delta()
+    calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
+
+Precompute the δ functions. `xmesh` is a very dense linear mesh in [0,1]
+and `ϕ` is the ϕ function.
+
+See also: [`calc_xmesh`](@ref), [`calc_phi`](@ref).
 """
 function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
     nmesh = length(ϕ)
     nfine = length(xmesh)
+
     η₁ = 0.001
     η₂ = 0.001 ^ 2.0
 
     Δ = zeros(F64, nmesh, nfine)
-
+    s = similar(ϕ)
     for i = 1:nfine
-        s = ϕ .- xmesh[i]
-        Δ[:,i] = η₁ ./ (s .* s .+ η₂)
+        @. s = (ϕ - xmesh[i]) ^ 2.0 + η₂
+        @. Δ[:,i] = η₁ / s
     end
 
     return Δ
