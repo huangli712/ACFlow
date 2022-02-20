@@ -176,11 +176,7 @@ function sample(MC::StochMC, SE::StochElement, SC::StochContext)
         end
     else
         if nalph > 1
-            if rand(MC.rng) > 0.1
-                try_swap(1, MC, SE, SC)
-            else
-                try_swap(2, MC, SE, SC)
-            end
+            try_swap(MC, SE, SC)
         end
     end
 end
