@@ -7,6 +7,10 @@
 # Last modified: 2022/02/20
 #
 
+#=
+### *Customized Structs* : *StochAC Solver*
+=#
+
 """
     StochMC
 """
@@ -42,6 +46,10 @@ mutable struct StochContext
     Hα     :: Vector{F64}
     αₗ     :: Vector{F64}
 end
+
+#=
+### *Global Drivers*
+=#
 
 """
     solve(S::StochACSolver, rd::RawData)
@@ -122,6 +130,10 @@ end
 function postprocess()
 end
 
+#=
+### *Core Algorithms*
+=#
+
 """
     warmup(MC::StochMC, SE::StochElement, SC::StochContext)
 """
@@ -179,6 +191,10 @@ function measure(SE::StochElement, SC::StochContext)
         SC.Aout[:,ia] = SC.Aout[:,ia] .+ Aw
     end
 end
+
+#=
+### *Service Functions*
+=#
 
 """
     init_mc()
