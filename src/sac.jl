@@ -632,4 +632,17 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
     write_hamil(SC.αₗ, SC.Uα / step)
     write_spectrum(SC.mesh, SC.αₗ, Aw)
     write_spectrum(SC.mesh, Asum)
+
+    function fitfun(x, p)
+        return @. p[1] * x - p[2]
+    end
+
+    guess = [1.0, 1.0]
+    fit_l = curve_fit(fitfun, SC.αₗ[1:5], log10.(SC.Uα[1:5] / step), guess)
+    fit_r = curve_fit(fitfun, SC.αₗ[end-4:end], log10.(SC.Uα[end-4:end] / step), guess)
+    a, b = fit_l.param
+    c, d = fit_r.param
+    aopt = (d - b) / (a - c)
+    close = argmin( abs.( SC.αₗ .- aopt ) )
+    @show aopt, close, SC.αₗ[close]
 end
