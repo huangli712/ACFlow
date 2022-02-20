@@ -13,6 +13,17 @@
 
 """
     StochMC
+
+Mutable struct. It is during monte carlo sampling. It includes random
+number generator and various counters.
+
+### Members
+
+rng  -> Random number generator.
+Macc -> Counter for move operation (accepted).
+Mtry -> Counter for move operation (tried).
+Sacc -> Counter for swap operation (accepted).
+Stry -> Counter for swap operation (tried).
 """
 mutable struct StochMC
     rng :: AbstractRNG
