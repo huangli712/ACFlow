@@ -15,15 +15,15 @@
     StochMC
 
 Mutable struct. It is during monte carlo sampling. It includes random
-number generator and various counters.
+number generator and some counters.
 
 ### Members
 
-rng  -> Random number generator.
-Macc -> Counter for move operation (accepted).
-Mtry -> Counter for move operation (tried).
-Sacc -> Counter for swap operation (accepted).
-Stry -> Counter for swap operation (tried).
+* rng  -> Random number generator.
+* Macc -> Counter for move operation (accepted).
+* Mtry -> Counter for move operation (tried).
+* Sacc -> Counter for swap operation (accepted).
+* Stry -> Counter for swap operation (tried).
 """
 mutable struct StochMC
     rng :: AbstractRNG
@@ -41,8 +41,8 @@ be sampled within monte carlo procedure.
 
 ### Members
 
-Γₐ -> It means the positions of the δ functions.
-Γᵣ -> It means the weights of the δ functions.
+* Γₐ -> It means the positions of the δ functions.
+* Γᵣ -> It means the weights of the δ functions.
 """
 mutable struct StochElement
     Γₐ :: Array{I64,2}
@@ -667,20 +667,7 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
     χ²_vec = zeros(F64, nalph)
     for i = 1:nalph
         Gₙ = reprod(kernel, SC.mesh, Aw[:,i])
-        χ²_vec[i] = sum(SC.σ¹ * SC.σ¹ .* ((SC.Gᵥ - Gₙ) .^ 2.0))
+        χ²_vec[i] = sum(SC.σ¹ .^ 2.0 .* ((SC.Gᵥ - Gₙ) .^ 2.0))
     end
     write_chi2(SC.αₗ, χ²_vec)
 end
-
-#=
-"""
-    calc_chi2(mec::MaxEntContext, A::Vector{F64})
-
-It computes the chi-squared-deviation of the spectral function `A`.
-"""
-function calc_chi2(mec::MaxEntContext, A::Vector{F64})
-    Gₙ = reprod(mec.kernel, mec.mesh, A)
-    χ² = sum(mec.σ² .* ((mec.Gᵥ - Gₙ) .^ 2.0))
-    return χ²
-end
-=#
