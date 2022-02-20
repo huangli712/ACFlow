@@ -323,3 +323,25 @@ mutable struct TangentMesh <: AbstractMesh
     mesh :: Vector{F64}
     weight :: Vector{F64}
 end
+
+"""
+    StochMC
+
+Mutable struct. It is used during monte carlo sampling. It includes random
+number generator and some counters.
+
+### Members
+
+* rng  -> Random number generator.
+* Macc -> Counter for move operation (accepted).
+* Mtry -> Counter for move operation (tried).
+* Sacc -> Counter for swap operation (accepted).
+* Stry -> Counter for swap operation (tried).
+"""
+mutable struct StochMC
+    rng :: AbstractRNG
+    Macc :: Vector{I64}
+    Mtry :: Vector{I64}
+    Sacc :: Vector{I64}
+    Stry :: Vector{I64}
+end

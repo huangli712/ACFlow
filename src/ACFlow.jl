@@ -134,6 +134,8 @@ BosonicMatsubaraGrid -> Grid in bosonic Matsubara frequency axis.
 AbstractMesh    -> Abstract grid for calculated spectral function.
 LinearMesh      -> Linear mesh.
 TangentMesh     -> Tangent mesh.
+#
+StochMC         -> .
 ```
 =#
 
@@ -165,6 +167,8 @@ export BosonicMatsubaraGrid
 export AbstractMesh
 export LinearMesh
 export TangentMesh
+#
+export StochMC
 
 #=
 ### *Includes And Exports* : *util.jl*
@@ -478,20 +482,34 @@ To implement the StochAC solver for analytically continuation problem.
 *Members* :
 
 ```text
-StochMC -> .
 StochElement ->
 StochContext ->
 solve ->
 init ->
 run ->
 postprocess ->
+warmup
+sample
+measure
+init_mc
+init_element
+init_iodata
+calc_fmesh
+calc_xmesh
+calc_phi
+calc_delta
+calc_hamil
+calc_htau
+calc_alpha
+try_mov1
+try_mov2
+try_swap
 ```
 =#
 
 #
 include("sac.jl")
 #
-export StochMC
 export StochElement
 export StochContext
 export solve

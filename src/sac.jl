@@ -12,28 +12,6 @@
 =#
 
 """
-    StochMC
-
-Mutable struct. It is during monte carlo sampling. It includes random
-number generator and some counters.
-
-### Members
-
-* rng  -> Random number generator.
-* Macc -> Counter for move operation (accepted).
-* Mtry -> Counter for move operation (tried).
-* Sacc -> Counter for swap operation (accepted).
-* Stry -> Counter for swap operation (tried).
-"""
-mutable struct StochMC
-    rng :: AbstractRNG
-    Macc :: Vector{I64}
-    Mtry :: Vector{I64}
-    Sacc :: Vector{I64}
-    Stry :: Vector{I64}
-end
-
-"""
     StochElement
 
 Mutable struct. It is used to record the field configurations, which will
@@ -166,9 +144,9 @@ function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
             measure(SE, SC)
         end
 
-        if iter % output_per_steps == 0
-            prog = iter / nstep * 100
-            println("Start stochastic sampling (prog: $(prog)%)\r")
+        if iter % output_per_steps == 1
+            prog = iter / nstep
+            @printf("Start stochastic sampling (prog: %4.2f)\r", prog)
             write_statistics(MC)
         end
     end
