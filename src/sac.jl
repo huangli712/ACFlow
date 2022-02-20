@@ -338,9 +338,9 @@ end
 """
     calc_htau(Γₐ, Γᵣ, kernel, Gᵥ, σ¹)
 
-Try to calculate h(τ) via Eq.(36). `Γₐ` and `Γᵣ` represent n(x), `kernel`
-means the kernel function, `Gᵥ` is the correlator, and `σ¹` is equal to
-1.0 / σ.
+Try to calculate α-dependent h(τ) via Eq.(36). `Γₐ` and `Γᵣ` represent
+n(x), `kernel` means the kernel function, `Gᵥ` is the correlator, and
+`σ¹` is equal to 1.0 / σ.
 
 See also: [`calc_hamil`](@ref).
 """
