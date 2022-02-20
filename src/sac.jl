@@ -452,7 +452,7 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 end
 
 """
-    try_mov2()
+    try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 """
 function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     ngamm = get_a("ngamm")
@@ -482,22 +482,16 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     dhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) .* SC.σ¹
 
     δt = SC.grid[2] - SC.grid[1]
-    dhh = dot(dhc, 2.0 * hc + dhc) * δt
-
-    pass = false
-    if dhh ≤ 0.0 ||  exp(-SC.αₗ[i] * dhh) > rand(MC.rng)
-        pass = true
-    end
-
-    if pass
-        SE.Γₐ[l1,i] = i1
-        SE.Γₐ[l2,i] = i2
-        @. hc = hc + dhc
-        SC.Hα[i] = dot(hc, hc) * δt
-    end
+    δH = dot(dhc, 2.0 * hc + dhc) * δt
 
     MC.Mtry[i] = MC.Mtry[i] + 1.0
-    if pass
+    if δH ≤ 0.0 ||  exp(-SC.αₗ[i] * δH) > rand(MC.rng)
+        SE.Γₐ[l1,i] = i1
+        SE.Γₐ[l2,i] = i2
+
+        @. hc = hc + dhc
+        SC.Hα[i] = SC.Hα[i] + δH #dot(hc, hc) * δt
+
         MC.Macc[i] = MC.Macc[i] + 1.0
     end
 end
