@@ -148,7 +148,7 @@ function sample(MC::StochMC, SE::StochElement, SC::StochContext)
     if rand(MC.rng) < 0.9
         if rand(MC.rng) > 0.5
             for i = 1:nalph
-                @timev try_mov1(i, MC, SE, SC)
+                try_mov1(i, MC, SE, SC)
             end
         else
             for i = 1:nalph
