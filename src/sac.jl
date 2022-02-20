@@ -144,7 +144,7 @@ function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
             measure(SE, SC)
         end
 
-        if iter % output_per_steps == 1
+        if iter % output_per_steps == 0
             prog = iter / nstep
             @printf("Start stochastic sampling (prog: %4.2f)\r", prog)
             write_statistics(MC)
@@ -164,6 +164,10 @@ function postprocess(step::F64, SC::StochContext)
     function fitfun(x, p)
         return @. p[1] * x + p[2]
     end
+
+    # Get key parameters
+    nmesh = length(SC.mesh)
+    nalph = length(SC.αₗ)
 
     # Renormalize the spectral functions
     Aout = zeros(F64, nmesh, nalph)
