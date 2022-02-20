@@ -664,18 +664,4 @@ function try_swap(MC::StochMC, SE::StochElement, SC::StochContext)
     end
 end
 
-function write_statistics(MC::StochMC)
-    nalph = get_a("nalph")
 
-    open("stat.data", "w") do fout
-        println(fout, "Move statistics:")
-        for i = 1:nalph
-            @printf(fout, "# α %3i: %16.12f", i, MC.Macc[i] / MC.Mtry[i])
-        end
-
-        println(fout, "Swap statistics:")
-        for i = 1:nalph
-            @printf(fout, "# α %3i: %16.12f", i, MC.Sacc[i] / MC.Stry[i])
-        end
-    end
-end

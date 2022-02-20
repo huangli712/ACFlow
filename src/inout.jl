@@ -226,3 +226,19 @@ function write_reprod(ag::AbstractGrid, G::Vector{F64})
         end
     end
 end
+
+function write_statistics(MC::StochMC)
+    nalph = get_a("nalph")
+
+    open("stat.data", "w") do fout
+        println(fout, "# Move statistics:")
+        for i = 1:nalph
+            @printf(fout, "α %3i: %16.12f\n", i, MC.Macc[i] / MC.Mtry[i])
+        end
+
+        println(fout, "# Swap statistics:")
+        for i = 1:nalph
+            @printf(fout, "α %3i: %16.12f\n", i, MC.Sacc[i] / MC.Stry[i])
+        end
+    end
+end
