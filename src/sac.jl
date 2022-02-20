@@ -395,9 +395,11 @@ end
 
 Select two δ functions and then change their weights. Here `i` means the
 index for α parameters.
+
+See also: [`try_mov2`](@ref).
 """
 function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
-    # Get total number of δ functions
+    # Get current number of δ functions
     ngamm = get_a("ngamm")
 
     # Choose two δ functions, they are labelled as γ1 and γ2, respectively.
@@ -408,8 +410,8 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         γ2 = rand(MC.rng, 1:ngamm)
     end
 
-    # Extract the weights for the two δ functions (r3 and r4), then try
-    # to calculate new weights for them (r1 and r2).
+    # Extract weights for the two δ functions (r3 and r4), then try to
+    # calculate new weights for them (r1 and r2).
     r1 = 0.0
     r2 = 0.0
     r3 = SE.Γᵣ[γ1,i]
@@ -453,13 +455,20 @@ end
 
 """
     try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
+
+Select two δ functions and then change their positions. Here `i` means the
+index for α parameters.
+
+See also: [`try_mov1`](@ref).
 """
 function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
+    # Get current number of δ functions
     ngamm = get_a("ngamm")
+
+    # Get total number of δ functions
     nfine = get_a("nfine")
 
-    hc = view(SC.hτ, :, i)
-
+    # Choose two δ functions, they are labelled as γ1 and γ2, respectively.
     γ1 = 1
     γ2 = 1
     while γ1 == γ2
@@ -467,31 +476,40 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         γ2 = rand(MC.rng, 1:ngamm)
     end
 
+    # Extract weights for the two δ functions (r1 and r2)
     r1 = SE.Γᵣ[γ1,i]
     r2 = SE.Γᵣ[γ2,i]
 
+    # Choose new positions for the two δ functions (i1 and i2).
+    # Note that their old positions are SE.Γₐ[γ1,i] and SE.Γₐ[γ2,i].
     i1 = rand(MC.rng, 1:nfine)
     i2 = rand(MC.rng, 1:nfine)
-    i3 = SE.Γₐ[γ1,i]
-    i4 = SE.Γₐ[γ2,i]
 
+    # Try to calculate the change of Hc using Eq.~(42).
+    hc = view(SC.hτ, :, i)
     K1 = view(SC.kernel, :, i1)
     K2 = view(SC.kernel, :, i2)
-    K3 = view(SC.kernel, :, i3)
-    K4 = view(SC.kernel, :, i4)
-    dhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) .* SC.σ¹
-
+    K3 = view(SC.kernel, :, SE.Γₐ[γ1,i])
+    K4 = view(SC.kernel, :, SE.Γₐ[γ2,i])
+    #
     δt = SC.grid[2] - SC.grid[1]
-    δH = dot(dhc, 2.0 * hc + dhc) * δt
+    δhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) .* SC.σ¹
+    δH = dot(δhc, 2.0 * hc + δhc) * δt
 
+    # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1.0
     if δH ≤ 0.0 ||  exp(-SC.αₗ[i] * δH) > rand(MC.rng)
+        # Update monte carlo configurations
         SE.Γₐ[γ1,i] = i1
         SE.Γₐ[γ2,i] = i2
 
-        @. hc = hc + dhc
+        # Update h(τ)
+        @. hc = hc + δhc
+
+        # Update Hc
         SC.Hα[i] = SC.Hα[i] + δH
 
+        # Update monte carlo counter
         MC.Macc[i] = MC.Macc[i] + 1.0
     end
 end
