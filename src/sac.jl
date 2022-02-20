@@ -648,10 +648,10 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
     @show aopt, close, SC.αₗ[close]
     @show SC.αₗ[1:5], log10.(SC.Uα[1:5] / step)
 
-    fill!(Asum, 0.0)
+    Asum1 = zeros(F64, nmesh)
     for i = close : nalph - 1
-        Asum = Asum + (SC.Uα[i] - SC.Uα[i+1]) * Aw[:,i]
+        Asum1 = Asum1 + (SC.Uα[i] - SC.Uα[i+1]) * Aw[:,i]
     end
-    Asum = Asum / (SC.Uα[close] - SC.Uα[end])
-    write_spectrum(SC.mesh, Asum)
+    Asum1 = Asum1 / (SC.Uα[close] - SC.Uα[end])
+    write_spectrum(SC.mesh, Asum, Asum1)
 end
