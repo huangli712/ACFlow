@@ -329,11 +329,15 @@ function calc_hamil(Γₐ, Γᵣ, grid::AbstractGrid, kernel, Gᵥ, σ¹)
 end
 
 """
-    calc_htau(...)
+    calc_htau(Γₐ, Γᵣ, kernel, Gᵥ, σ¹)
 
-Try to calculate h(τ) via Eq.(36).
+Try to calculate h(τ) via Eq.(36). `Γₐ` and `Γᵣ` represent n(x), `kernel`
+means the kernel function, `Gᵥ` is the correlator, and `σ¹` is equal to
+1.0 / σ.
+
+See also: [`calc_hamil`](@ref).
 """
-function calc_htau(Γₐ::Vector{I64}, Γᵣ::Vector{F64},
+function calc_htau(Γₐ::Vector{I64}, Γᵣ::Vector{F64}, 
                    kernel::Matrix{F64},
                    Gᵥ::Vector{F64}, σ¹::Vector{F64})
     ngrid = get_c("ngrid")
