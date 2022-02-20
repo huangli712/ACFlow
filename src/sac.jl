@@ -12,10 +12,10 @@
 """
 mutable struct StochMC
     rng :: AbstractRNG
-    move_acc :: Vector{I64}
-    move_try :: Vector{I64}
-    swap_acc :: Vector{I64}
-    swap_try :: Vector{I64}
+    Macc :: Vector{I64}
+    Mtry :: Vector{I64}
+    Sacc :: Vector{I64}
+    Stry :: Vector{I64}
 end
 
 """
@@ -132,11 +132,11 @@ function warmup(MC::StochMC, SE::StochElement, SC::StochContext)
         sample(MC, SE, SC)
     end
 
-    fill!(MC.move_acc, 0.0)
-    fill!(MC.move_try, 0.0)
+    fill!(MC.Macc, 0.0)
+    fill!(MC.Mtry, 0.0)
 
-    fill!(MC.swap_acc, 0.0)
-    fill!(MC.swap_try, 0.0)
+    fill!(MC.Sacc, 0.0)
+    fill!(MC.Stry, 0.0)
 end
 
 """
@@ -194,18 +194,23 @@ function init_mc()
     @show seed
 
     rng = MersenneTwister(seed)
-    move_acc = zeros(F64, nalph)
-    move_try = zeros(F64, nalph)
-    swap_acc = zeros(F64, nalph)
-    swap_try = zeros(F64, nalph)
+    Macc = zeros(F64, nalph)
+    Mtry = zeros(F64, nalph)
+    Sacc = zeros(F64, nalph)
+    Stry = zeros(F64, nalph)
 
-    MC = StochMC(rng, move_acc, move_try, swap_acc, swap_try)
+    MC = StochMC(rng, Macc, Mtry, Sacc, Stry)
 
     return MC
 end
 
 """
     init_element(rng::AbstractRNG)
+
+Randomize the configurations for future monte carlo sampling. It will
+return a StochElement object.
+
+See also: [`StochElement`](@ref).
 """
 function init_element(rng::AbstractRNG)
     nalph = get_a("nalph")
@@ -229,8 +234,10 @@ end
 """
     init_iodata(rd::RawData)
 
-Preprocess the input data, and then allocate memory for the α-resolved
+Preprocess the input data (`rd`), then allocate memory for the α-resolved
 spectral functions.
+
+See also: [`RawData`](@ref).
 """
 function init_iodata(rd::RawData)
     nalph = get_a("nalph")
@@ -434,9 +441,9 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         SC.Hα[i] = dot(hc, hc) * δt
     end
 
-    MC.move_try[i] = MC.move_try[i] + 1.0
+    MC.Mtry[i] = MC.Mtry[i] + 1.0
     if pass
-        MC.move_acc[i] = MC.move_acc[i] + 1.0
+        MC.Macc[i] = MC.Macc[i] + 1.0
     end
 end
 
@@ -485,9 +492,9 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         SC.Hα[i] = dot(hc, hc) * δt
     end
 
-    MC.move_try[i] = MC.move_try[i] + 1.0
+    MC.Mtry[i] = MC.Mtry[i] + 1.0
     if pass
-        MC.move_acc[i] = MC.move_acc[i] + 1.0
+        MC.Macc[i] = MC.Macc[i] + 1.0
     end
 end
 
@@ -528,9 +535,9 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         SC.Hα[i], SC.Hα[j] = SC.Hα[j], SC.Hα[i]
     end
 
-    MC.swap_try[i] = MC.swap_try[i] + 1.0
+    MC.Stry[i] = MC.Stry[i] + 1.0
     if pass
-        MC.swap_acc[i] = MC.swap_acc[i] + 1.0
+        MC.Sacc[i] = MC.Sacc[i] + 1.0
     end
 end
 
@@ -540,11 +547,11 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
 
     println("move statistics:")
     for i = 1:nalph
-        println("    alpha $i: ", MC.move_acc[i] / MC.move_try[i])
+        println("    alpha $i: ", MC.Macc[i] / MC.Mtry[i])
     end
     println("swap statistics:")
     for i = 1:nalph
-        println("    alpha $i: ", MC.swap_acc[i] / MC.swap_try[i])
+        println("    alpha $i: ", MC.Sacc[i] / MC.Stry[i])
     end
 
     Aw = zeros(F64, nmesh, nalph)
