@@ -541,18 +541,14 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     da = SC.αₗ[i] - SC.αₗ[j]
     dh = SC.Hα[i] - SC.Hα[j]
 
-    pass = ( exp(da * dh) > rand(MC.rng) )
-
-    if pass
+    MC.Stry[i] = MC.Stry[i] + 1.0
+    if exp(da * dh) > rand(MC.rng)
         SE.Γₐ[:,i], SE.Γₐ[:,j] = SE.Γₐ[:,j], SE.Γₐ[:,i]
         SE.Γᵣ[:,i], SE.Γᵣ[:,j] = SE.Γᵣ[:,j], SE.Γᵣ[:,i]
 
         SC.hτ[:,i], SC.hτ[:,j] = SC.hτ[:,j], SC.hτ[:,i]
         SC.Hα[i], SC.Hα[j] = SC.Hα[j], SC.Hα[i]
-    end
 
-    MC.Stry[i] = MC.Stry[i] + 1.0
-    if pass
         MC.Sacc[i] = MC.Sacc[i] + 1.0
     end
 end
