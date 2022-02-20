@@ -160,16 +160,16 @@ function write_chi2(α_vec::Vector{F64}, χ²_vec::Vector{F64})
 end
 
 """
-    write_hamil(α_vec::Vector{F64}, Hα::Vector{F64})
+    write_hamil(α_vec::Vector{F64}, Uα::Vector{F64})
 
-Write `α-H(α)` data to `hamil.data`. This function is only useful for the
+Write `α-U(α)` data to `hamil.data`. This function is only useful for the
 `StochAC` solver.
 """
-function write_hamil(α_vec::Vector{F64}, Hα::Vector{F64})
-    @assert length(α_vec) == length(Hα)
+function write_hamil(α_vec::Vector{F64}, Uα::Vector{F64})
+    @assert length(α_vec) == length(Uα)
     open("hamil.data", "w") do fout
         for i in eachindex(α_vec)
-            @printf(fout, "%16.12f %16.12f\n", α_vec[i], Hα[i])
+            @printf(fout, "%4i %16.8f %16.12f\n", i, α_vec[i], Uα[i])
         end
     end
 end
