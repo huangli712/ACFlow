@@ -460,20 +460,20 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 
     hc = view(SC.hτ, :, i)
 
-    l1 = 1
-    l2 = 1
-    while l1 == l2
-        l1 = rand(MC.rng, 1:ngamm)
-        l2 = rand(MC.rng, 1:ngamm)
+    γ1 = 1
+    γ2 = 1
+    while γ1 == γ2
+        γ1 = rand(MC.rng, 1:ngamm)
+        γ2 = rand(MC.rng, 1:ngamm)
     end
 
-    r1 = SE.Γᵣ[l1,i]
-    r2 = SE.Γᵣ[l2,i]
+    r1 = SE.Γᵣ[γ1,i]
+    r2 = SE.Γᵣ[γ2,i]
 
     i1 = rand(MC.rng, 1:nfine)
     i2 = rand(MC.rng, 1:nfine)
-    i3 = SE.Γₐ[l1,i]
-    i4 = SE.Γₐ[l2,i]
+    i3 = SE.Γₐ[γ1,i]
+    i4 = SE.Γₐ[γ2,i]
 
     K1 = view(SC.kernel, :, i1)
     K2 = view(SC.kernel, :, i2)
@@ -486,11 +486,11 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 
     MC.Mtry[i] = MC.Mtry[i] + 1.0
     if δH ≤ 0.0 ||  exp(-SC.αₗ[i] * δH) > rand(MC.rng)
-        SE.Γₐ[l1,i] = i1
-        SE.Γₐ[l2,i] = i2
+        SE.Γₐ[γ1,i] = i1
+        SE.Γₐ[γ2,i] = i2
 
         @. hc = hc + dhc
-        SC.Hα[i] = SC.Hα[i] + δH #dot(hc, hc) * δt
+        SC.Hα[i] = SC.Hα[i] + δH
 
         MC.Macc[i] = MC.Macc[i] + 1.0
     end
