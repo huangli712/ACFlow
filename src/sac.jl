@@ -41,7 +41,8 @@ be sampled by monte carlo procedure.
 
 ### Members
 
-
+Γₐ -> It means the positions of the δ functions.
+Γᵣ -> It means the weights of the δ functions.
 """
 mutable struct StochElement
     Γₐ :: Array{I64,2}
