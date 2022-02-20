@@ -427,7 +427,6 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 
     MC.Mtry[i] = MC.Mtry[i] + 1.0
     if δh ≤ 0.0 || exp(-SC.αₗ[i] * δh) > rand(MC.rng)
-
         SE.Γᵣ[l1,i] = r1
         SE.Γᵣ[l2,i] = r2
 
