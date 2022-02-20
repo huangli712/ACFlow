@@ -321,9 +321,10 @@ function calc_hamil(Γₐ, Γᵣ, grid::AbstractGrid, kernel, Gᵥ, σ¹)
 
     δt = grid[2] - grid[1]
     for i = 1:nalph
-        hτ[:,i] = calc_htau(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ¹)
+        @timev hτ[:,i] = calc_htau(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ¹)
         Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
+    error()
 
     return hτ, Hα
 end
@@ -340,12 +341,12 @@ See also: [`calc_hamil`](@ref).
 function calc_htau(Γₐ::Vector{I64}, Γᵣ::Vector{F64}, 
                    kernel::Matrix{F64},
                    Gᵥ::Vector{F64}, σ¹::Vector{F64})
-    ngrid = get_c("ngrid")
+    hτ = similar(Gᵥ)
 
-    hτ = zeros(F64, ngrid)
-    for i = 1:ngrid
-        hτ[i] = dot(Γᵣ, kernel[i,Γₐ])
+    for i in eachindex(Gᵥ)
+        hτ[i] = dot(Γᵣ, view(kernel, i, Γₐ))
     end
+
     @. hτ = (hτ - Gᵥ) * σ¹
 
     return hτ
