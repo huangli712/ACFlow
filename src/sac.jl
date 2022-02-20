@@ -35,6 +35,13 @@ end
 
 """
     StochElement
+
+Mutable struct. It is used to record the field configurations, which will
+be sampled by monte carlo procedure.
+
+### Members
+
+
 """
 mutable struct StochElement
     Γₐ :: Array{I64,2}
