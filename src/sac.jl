@@ -228,6 +228,9 @@ end
 
 """
     init_iodata(rd::RawData)
+
+Preprocess the input data, and then allocate memory for the α-resolved
+spectral functions.
 """
 function init_iodata(rd::RawData)
     nalph = get_a("nalph")
