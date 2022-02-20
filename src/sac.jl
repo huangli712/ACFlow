@@ -53,6 +53,9 @@ end
 
 """
     solve(S::StochACSolver, rd::RawData)
+
+Solve the analytical continuation problem by the stochastic analytical
+continuation algorithm.
 """
 function solve(S::StochACSolver, rd::RawData)
     println("[ StochAC ]")
@@ -62,6 +65,8 @@ end
 
 """
     init(S::StochACSolver, rd::RawData)
+
+Initialize the StochAC solver and return a StochContext struct.
 """
 function init(S::StochACSolver, rd::RawData)
     MC = init_mc()
@@ -104,6 +109,8 @@ end
 
 """
     run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
+
+Perform stochastic analytical continuation simulation.
 """
 function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
     nstep = get_a("nstep")
