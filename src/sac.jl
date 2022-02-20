@@ -650,6 +650,7 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
 
     Asum1 = zeros(F64, nmesh)
     for i = close : nalph - 1
+        @show i
         Asum1 = Asum1 + (SC.Uα[i] - SC.Uα[i+1]) * Aw[:,i]
     end
     Asum1 = Asum1 / (SC.Uα[close] - SC.Uα[end])
