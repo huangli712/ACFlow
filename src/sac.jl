@@ -515,41 +515,37 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 end
 
 """
-    try_swap()
+    try_swap(MC::StochMC, SE::StochElement, SC::StochContext)
+
+Try to exchange field configurations between two adjacent layers.
 """
-function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
+function try_swap(MC::StochMC, SE::StochElement, SC::StochContext)
+    # Get number of α parameters
     nalph = get_a("nalph")
 
-    if scheme == 1
-        i = rand(MC.rng, 1:nalph)
-        if rand(MC.rng) > 0.5
-            j = i + 1
-        else
-            j = i - 1
-        end
-
-        i == 1 && (j = i + 1)
-        i == nalph && (j = i - 1)
-    else
-        while true
-            i = rand(MC.rng, 1:nalph)
-            j = rand(MC.rng, 1:nalph)
-            i != j && break
-        end
-    end
-
+    # Select two adjacent layers (two adjacent α parameters)
+    i = rand(MC.rng, 1:nalph)
+    j = rand(MC.rng) > 0.5 ? i + 1 : i - 1
+    i == 1 && (j = i + 1)
+    i == nalph && (j = i - 1)
+ 
+    # Calculate change of Hc
     δα = SC.αₗ[i] - SC.αₗ[j]
     δH = SC.Hα[i] - SC.Hα[j]
 
+    # Apply Metropolis algorithm
     MC.Stry[i] = MC.Stry[i] + 1.0
     MC.Stry[j] = MC.Stry[j] + 1.0
     if exp(δα * δH) > rand(MC.rng)
+        # Update monte carlo configurations
         SE.Γₐ[:,i], SE.Γₐ[:,j] = SE.Γₐ[:,j], SE.Γₐ[:,i]
         SE.Γᵣ[:,i], SE.Γᵣ[:,j] = SE.Γᵣ[:,j], SE.Γᵣ[:,i]
 
+        # Update h(τ) and Hc
         SC.hτ[:,i], SC.hτ[:,j] = SC.hτ[:,j], SC.hτ[:,i]
         SC.Hα[i], SC.Hα[j] = SC.Hα[j], SC.Hα[i]
 
+        # Update monte carlo counter
         MC.Sacc[i] = MC.Sacc[i] + 1.0
         MC.Sacc[j] = MC.Sacc[j] + 1.0
     end
