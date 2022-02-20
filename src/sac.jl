@@ -51,6 +51,23 @@ end
 
 """
     StochContext
+
+Mutable struct. It is used within the StochAC solver only.
+
+### Members
+
+* Gᵥ     -> Input data for correlator.
+* σ¹     -> Actually 1.0 / σ¹.
+* grid   -> Grid for input data.
+* mesh   -> Mesh for output spectrum.
+* model  -> Default model function.
+* kernel -> Default kernel function.
+* Aout   -> Calculate spectrum, it is actually ⟨n(x)⟩.
+* Δ      -> Precomputed δ functions.
+* hτ     -> α-resolved h(τ).
+* Hα     -> α-resolved Hc.
+* Uα     -> α-resolved internal energy, it is actually ⟨Hα⟩.
+* αₗ     -> Vector of the α parameters.
 """
 mutable struct StochContext
     Gᵥ     :: Vector{F64}
