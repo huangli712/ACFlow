@@ -44,7 +44,7 @@ mutable struct StochContext
 end
 
 """
-    solve
+    solve(S::StochACSolver, rd::RawData)
 """
 function solve(S::StochACSolver, rd::RawData)
     println("[ StochAC ]")
@@ -53,13 +53,13 @@ function solve(S::StochACSolver, rd::RawData)
 end
 
 """
-    init
+    init(S::StochACSolver, rd::RawData)
 """
 function init(S::StochACSolver, rd::RawData)
     MC = init_mc()
     println("Create infrastructure for Monte Carlo sampling")
 
-    @timev SE = init_element(MC.rng)
+    SE = init_element(MC.rng)
     println("Randomize Monte Carlo configurations")
 
     Gᵥ, σ¹, Aout = init_iodata(rd)
@@ -95,7 +95,7 @@ function init(S::StochACSolver, rd::RawData)
 end
 
 """
-    run
+    run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
 """
 function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
     nstep = get_a("nstep")
@@ -123,7 +123,7 @@ function postprocess()
 end
 
 """
-    warmup
+    warmup(MC::StochMC, SE::StochElement, SC::StochContext)
 """
 function warmup(MC::StochMC, SE::StochElement, SC::StochContext)
     nwarm = get_a("nwarm")
@@ -140,7 +140,7 @@ function warmup(MC::StochMC, SE::StochElement, SC::StochContext)
 end
 
 """
-    sample
+    sample(MC::StochMC, SE::StochElement, SC::StochContext)
 """
 function sample(MC::StochMC, SE::StochElement, SC::StochContext)
     nalph = get_a("nalph")
@@ -167,7 +167,7 @@ function sample(MC::StochMC, SE::StochElement, SC::StochContext)
 end
 
 """
-    measure
+    measure(SE::StochElement, SC::StochContext)
 """
 function measure(SE::StochElement, SC::StochContext)
     nalph = get_a("nalph")
