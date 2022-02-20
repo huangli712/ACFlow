@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/19
+# Last modified: 2022/02/20
 #
 
 """
@@ -83,7 +83,7 @@ function init(S::StochACSolver, rd::RawData)
     Δ = calc_delta(xmesh, ϕ)
     println("Precompute δ functions")
 
-    hτ, Hα = calc_hamil(SE, grid, kernel, Gᵥ, σ¹)
+    hτ, Hα = calc_hamil(SE.Γₐ, SE.Γᵣ, grid, kernel, Gᵥ, σ¹)
     println("Precompute hamiltonian")
 
     αₗ = calc_alpha()
@@ -311,7 +311,8 @@ end
 
 Initialize h(τ) and H using Eq.(35) and Eq.(36).
 """
-function calc_hamil(SE::StochElement, grid::AbstractGrid, kernel, Gᵥ, σ¹)
+#function calc_hamil(SE::StochElement, grid::AbstractGrid, kernel, Gᵥ, σ¹)
+function calc_hamil(Γₐ, Γᵣ, grid::AbstractGrid, kernel, Gᵥ, σ¹)
     nalph = get_a("nalph")
     ngrid = get_c("ngrid")
 
@@ -320,7 +321,7 @@ function calc_hamil(SE::StochElement, grid::AbstractGrid, kernel, Gᵥ, σ¹)
 
     δt = grid[2] - grid[1]
     for i = 1:nalph
-        hτ[:,i] = calc_htau(SE.Γₐ[:,i], SE.Γᵣ[:,i], kernel, Gᵥ, σ¹)
+        hτ[:,i] = calc_htau(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ¹)
         Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
 
