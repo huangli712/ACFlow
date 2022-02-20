@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/19
+# Last modified: 2022/02/20
 #
 
 """
@@ -335,6 +335,7 @@ write_chi2        -> Write χ².
 write_hamil       -> Write effective hamiltonian for StochAC solver.
 write_probability -> Write Bayesian a-posteriori probability.
 write_reprod      -> Write reproduced input data.
+write_statistics  -> Write statistical information for StochAC solver.
 ```
 =#
 
@@ -348,6 +349,7 @@ export write_chi2
 export write_hamil
 export write_probability
 export write_reprod
+export write_statistics
 
 #=
 ### *Includes And Exports* : *model.jl*
