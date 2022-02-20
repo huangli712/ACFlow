@@ -168,7 +168,8 @@ function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
 
         if iter % output_per_steps == 0
             prog = iter / nstep * 100
-            println("Start stochastic sampling (prog: $(prog)%)\r",)
+            println("Start stochastic sampling (prog: $(prog)%)\r")
+            write_statistics(MC)
         end
     end
 
@@ -669,12 +670,12 @@ function write_statistics(MC::StochMC)
     open("stat.data", "w") do fout
         println("Move statistics:")
         for i = 1:nalph
-            @printf(fout, "α %3i: %16.12f", i, MC.Macc[i] / MC.Mtry[i])
+            @printf(fout, "# α %3i: %16.12f", i, MC.Macc[i] / MC.Mtry[i])
         end
 
         println("Swap statistics:")
         for i = 1:nalph
-            @printf(fout, "α %3i: %16.12f", i, MC.Sacc[i] / MC.Stry[i])
+            @printf(fout, "# α %3i: %16.12f", i, MC.Sacc[i] / MC.Stry[i])
         end
     end
 end
