@@ -668,12 +668,12 @@ function write_statistics(MC::StochMC)
     nalph = get_a("nalph")
 
     open("stat.data", "w") do fout
-        println("Move statistics:")
+        println(fout, "Move statistics:")
         for i = 1:nalph
             @printf(fout, "# α %3i: %16.12f", i, MC.Macc[i] / MC.Mtry[i])
         end
 
-        println("Swap statistics:")
+        println(fout, "Swap statistics:")
         for i = 1:nalph
             @printf(fout, "# α %3i: %16.12f", i, MC.Sacc[i] / MC.Stry[i])
         end
