@@ -407,13 +407,13 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 
     r1 = 0.0
     r2 = 0.0
-    dhh = 0.0
     r3 = SE.Γᵣ[l1,i]
     r4 = SE.Γᵣ[l2,i]
+    δr = 0.0
     while true
-        dhh = rand(MC.rng) * (r3 + r4) - r3
-        r1 = r3 + dhh
-        r2 = r4 - dhh
+        δr = rand(MC.rng) * (r3 + r4) - r3
+        r1 = r3 + δr
+        r2 = r4 - δr
         if r1 > 0 && r2 > 0
             break
         end
@@ -424,13 +424,13 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 
     K1 = view(SC.kernel, :, i1)
     K2 = view(SC.kernel, :, i2)
-    dhc = dhh * (K1 - K2) .* SC.σ¹
+    dhc = δr * (K1 - K2) .* SC.σ¹
 
     δt = SC.grid[2] - SC.grid[1]
-    dhh = dot(dhc, 2.0 * hc + dhc) * δt
+    δh = dot(dhc, 2.0 * hc + dhc) * δt
 
     pass = false
-    if dhh ≤ 0.0 || exp(-SC.αₗ[i] * dhh) > rand(MC.rng)
+    if δh ≤ 0.0 || exp(-SC.αₗ[i] * δh) > rand(MC.rng)
         pass = true
     end
 
