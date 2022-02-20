@@ -419,11 +419,8 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         end
     end
 
-    i1 = SE.Γₐ[l1,i]
-    i2 = SE.Γₐ[l2,i]
-
-    K1 = view(SC.kernel, :, i1)
-    K2 = view(SC.kernel, :, i2)
+    K1 = view(SC.kernel, :, SE.Γₐ[l1,i])
+    K2 = view(SC.kernel, :, SE.Γₐ[l2,i])
     dhc = δr * (K1 - K2) .* SC.σ¹
 
     δt = SC.grid[2] - SC.grid[1]
