@@ -498,7 +498,7 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 
     # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1.0
-    if δH ≤ 0.0 ||  exp(-SC.αₗ[i] * δH) > rand(MC.rng)
+    if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
         # Update monte carlo configurations
         SE.Γₐ[γ1,i] = i1
         SE.Γₐ[γ2,i] = i2
@@ -538,11 +538,12 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         end
     end
 
-    da = SC.αₗ[i] - SC.αₗ[j]
-    dh = SC.Hα[i] - SC.Hα[j]
+    δα = SC.αₗ[i] - SC.αₗ[j]
+    δH = SC.Hα[i] - SC.Hα[j]
 
     MC.Stry[i] = MC.Stry[i] + 1.0
-    if exp(da * dh) > rand(MC.rng)
+    MC.Stry[j] = MC.Stry[j] + 1.0
+    if exp(δα * δH) > rand(MC.rng)
         SE.Γₐ[:,i], SE.Γₐ[:,j] = SE.Γₐ[:,j], SE.Γₐ[:,i]
         SE.Γᵣ[:,i], SE.Γᵣ[:,j] = SE.Γᵣ[:,j], SE.Γᵣ[:,i]
 
@@ -550,6 +551,7 @@ function try_swap(scheme::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         SC.Hα[i], SC.Hα[j] = SC.Hα[j], SC.Hα[i]
 
         MC.Sacc[i] = MC.Sacc[i] + 1.0
+        MC.Sacc[j] = MC.Sacc[j] + 1.0
     end
 end
 
