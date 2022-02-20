@@ -208,11 +208,13 @@ end
 
 """
     warmup(MC::StochMC, SE::StochElement, SC::StochContext)
+
+Warmup the monte carlo engine to acheieve thermalized equilibrium.
 """
 function warmup(MC::StochMC, SE::StochElement, SC::StochContext)
     nwarm = get_a("nwarm")
 
-    for i = 1:nwarm
+    for _ = 1:nwarm
         sample(MC, SE, SC)
     end
 
@@ -225,6 +227,8 @@ end
 
 """
     sample(MC::StochMC, SE::StochElement, SC::StochContext)
+
+Perform monte carlo sweeps and sample the field configurations.
 """
 function sample(MC::StochMC, SE::StochElement, SC::StochContext)
     nalph = get_a("nalph")
@@ -248,6 +252,8 @@ end
 
 """
     measure(SE::StochElement, SC::StochContext)
+
+Measure the spectral functions and internal energies.
 """
 function measure(SE::StochElement, SC::StochContext)
     nalph = get_a("nalph")
@@ -274,9 +280,7 @@ See also: [`StochAC`](@ref).
 function init_mc()
     nalph = get_a("nalph")
 
-    seed = rand(1:100000000); seed = 39061530
-    @show seed
-
+    seed = rand(1:100000000)
     rng = MersenneTwister(seed)
     Macc = zeros(F64, nalph)
     Mtry = zeros(F64, nalph)
