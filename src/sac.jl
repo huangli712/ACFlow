@@ -83,8 +83,9 @@ function init(S::StochACSolver, rd::RawData)
     Δ = calc_delta(xmesh, ϕ)
     println("Precompute δ functions")
 
-    hτ, Hα = calc_hamil(SE.Γₐ, SE.Γᵣ, grid, kernel, Gᵥ, σ¹)
+    @timev hτ, Hα = calc_hamil(SE.Γₐ, SE.Γᵣ, grid, kernel, Gᵥ, σ¹)
     println("Precompute hamiltonian")
+    #error()
 
     αₗ = calc_alpha()
     println("Precompute α parameters")
@@ -190,7 +191,8 @@ See also: [`StochAC`](@ref).
 function init_mc()
     nalph = get_a("nalph")
 
-    seed = rand(1:100000000)
+    seed = rand(1:100000000); seed = 39061530
+    @show seed
 
     rng = MersenneTwister(seed)
     move_acc = zeros(F64, nalph)
@@ -307,24 +309,28 @@ function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
 end
 
 """
-    calc_hamil(...)
+    calc_hamil(Γₐ, Γᵣ, grid, kernel, Gᵥ, σ¹)
 
-Initialize h(τ) and H using Eq.(35) and Eq.(36).
+Initialize h(τ) and H(α) using Eq.(35) and Eq.(36), respectively. `Γₐ`
+and `Γᵣ` represent n(x), `grid` is the grid for the input data, `kernel`
+means the kernel function, `Gᵥ` is the correlator, and `σ¹` is equal to
+1.0 / σ.
 """
-#function calc_hamil(SE::StochElement, grid::AbstractGrid, kernel, Gᵥ, σ¹)
-function calc_hamil(Γₐ, Γᵣ, grid::AbstractGrid, kernel, Gᵥ, σ¹)
+function calc_hamil(Γₐ::Array{I64,2}, Γᵣ::Array{F64,2},
+                    grid::AbstractGrid,
+                    kernel::Matrix{F64},
+                    Gᵥ::Vector{F64}, σ¹::Vector{F64})
     nalph = get_a("nalph")
-    ngrid = get_c("ngrid")
+    ngrid = length(Gᵥ)
 
     hτ = zeros(F64, ngrid, nalph)
     Hα = zeros(F64, nalph)
 
     δt = grid[2] - grid[1]
     for i = 1:nalph
-        @timev hτ[:,i] = calc_htau(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ¹)
+        hτ[:,i] = calc_htau(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ¹)
         Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
-    error()
 
     return hτ, Hα
 end
