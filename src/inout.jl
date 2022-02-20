@@ -121,6 +121,15 @@ function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
     end
 end
 
+function write_spectrum(am::AbstractMesh, Aout::Vector{F64}, Aout1::Vector{F64})
+    @assert length(am) == length(Aout)
+    open("Aout.data", "w") do fout
+        for i in eachindex(am)
+            @printf(fout, "%16.12f %16.12f %16.12f\n", am[i], Aout[i], Aout1[i])
+        end
+    end
+end
+
 """
     write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2})
 
