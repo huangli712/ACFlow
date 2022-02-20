@@ -190,8 +190,7 @@ function measure(SE::StochElement, SC::StochContext)
     for ia = 1:nalph
         dr = view(SE.Γᵣ, :, ia)
         da = view(SE.Γₐ, :, ia)
-        Aw = SC.Δ[:,da] * dr
-        SC.Aout[:,ia] = SC.Aout[:,ia] .+ Aw
+        SC.Aout[:,ia] = SC.Aout[:,ia] .+ SC.Δ[:,da] * dr
     end
 end
 
