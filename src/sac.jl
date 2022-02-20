@@ -433,14 +433,20 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     δhc = δr * (K1 - K2) .* SC.σ¹
     δH = dot(δhc, 2.0 * hc + δhc) * δt
 
+    # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1.0
     if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
+        # Update monte carlo configurations
         SE.Γᵣ[γ1,i] = r1
         SE.Γᵣ[γ2,i] = r2
 
+        # Update h(τ)
         @. hc = hc + δhc
+
+        # Update Hc
         SC.Hα[i] = SC.Hα[i] + δH
 
+        # Update monte carlo counter
         MC.Macc[i] = MC.Macc[i] + 1.0
     end
 end
