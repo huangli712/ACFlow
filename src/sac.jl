@@ -421,10 +421,10 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 
     K1 = view(SC.kernel, :, SE.Γₐ[l1,i])
     K2 = view(SC.kernel, :, SE.Γₐ[l2,i])
-    dhc = δr * (K1 - K2) .* SC.σ¹
+    δhc = δr * (K1 - K2) .* SC.σ¹
 
     δt = SC.grid[2] - SC.grid[1]
-    δh = dot(dhc, 2.0 * hc + dhc) * δt
+    δh = dot(δhc, 2.0 * hc + δhc) * δt
 
     pass = false
     if δh ≤ 0.0 || exp(-SC.αₗ[i] * δh) > rand(MC.rng)
