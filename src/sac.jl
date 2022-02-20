@@ -151,27 +151,82 @@ Perform stochastic analytical continuation simulation.
 """
 function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
     nstep = get_a("nstep")
-    ndump = get_a("ndump")
+    measure_per_steps = 100
+    output_per_steps = get_a("ndump")
 
+    println("Start thermalization...")
     warmup(MC, SE, SC)
 
     step = 0.0
     for iter = 1:nstep
         sample(MC, SE, SC)
 
-        if iter % 100 == 0
+        if iter % measure_per_steps == 0
             step = step + 1.0
             measure(SE, SC)
         end
 
-        if iter % ndump == 0
-            println("iter: ", iter / ndump)
-            dump(step, MC, SC)
+        if iter % output_per_steps == 0
+            prog = iter / nstep * 100
+            println("Start stochastic sampling (prog: $(prog)%)\r",)
         end
     end
+
+    postprocess(step, MC, SC)
 end
 
-function postprocess()
+function postprocess(step, MC, SC)
+    #=
+    Aw = zeros(F64, nmesh, nalph)
+    for i = 1:nalph
+        for j = 1:nmesh
+            Aw[j,i] = SC.Aout[j,i] * SC.model[j] / π / step
+        end
+    end
+    Asum = [sum(Aw[i,:]) / nalph for i = 1:nmesh]
+
+    write_hamil(SC.αₗ, SC.Uα / step)
+    write_spectrum(SC.mesh, SC.αₗ, Aw)
+    write_spectrum(SC.mesh, Asum)
+
+    function fitfun(x, p)
+        return @. p[1] * x + p[2]
+    end
+
+    guess = [1.0, 1.0]
+    fit_l = curve_fit(fitfun, SC.αₗ[1:5], log10.(SC.Uα[1:5] / step), guess)
+    fit_r = curve_fit(fitfun, SC.αₗ[end-4:end], log10.(SC.Uα[end-4:end] / step), guess)
+    a, b = fit_l.param
+    c, d = fit_r.param
+    aopt = (d - b) / (a - c)
+    close = argmin( abs.( SC.αₗ .- aopt ) )
+    @show a, b, c, d
+    @show aopt, close, SC.αₗ[close]
+    @show SC.αₗ[1:5], log10.(SC.Uα[1:5] / step)
+
+    Asum1 = zeros(F64, nmesh)
+    Asum2 = zeros(F64, nmesh)
+    c = 0
+    for i = close : nalph - 1
+        @show i
+        c = c + 1
+        Asum1 = Asum1 + (SC.Uα[i] - SC.Uα[i+1]) * Aw[:,i]
+        Asum2 = Asum2 + Aw[:,i]
+    end
+    Asum1 = Asum1 / (SC.Uα[close] - SC.Uα[end])
+    write_spectrum(SC.mesh, Asum1, Asum2 / c)
+
+    kernel = make_kernel(SC.mesh, SC.grid)
+    G = reprod(kernel, SC.mesh, Asum1)
+    write_reprod(SC.grid, G)
+
+    χ²_vec = zeros(F64, nalph)
+    for i = 1:nalph
+        Gₙ = reprod(kernel, SC.mesh, Aw[:,i])
+        χ²_vec[i] = sum(SC.σ¹ .^ 2.0 .* ((SC.Gᵥ - Gₙ) .^ 2.0))
+    end
+    write_chi2(SC.αₗ, χ²_vec)
+    =#
 end
 
 #=
@@ -608,66 +663,18 @@ function try_swap(MC::StochMC, SE::StochElement, SC::StochContext)
     end
 end
 
-function dump(step::F64, MC::StochMC, SC::StochContext)
+function write_statistics(MC::StochMC)
     nalph = get_a("nalph")
-    nmesh = get_c("nmesh")
 
-    println("move statistics:")
-    for i = 1:nalph
-        println("    alpha $i: ", MC.Macc[i] / MC.Mtry[i])
-    end
-    println("swap statistics:")
-    for i = 1:nalph
-        println("    alpha $i: ", MC.Sacc[i] / MC.Stry[i])
-    end
+    open("stat.data", "w") do fout
+        println("Move statistics:")
+        for i = 1:nalph
+            @printf(fout, "α %3i: %16.12f", i, MC.Macc[i] / MC.Mtry[i])
+        end
 
-    Aw = zeros(F64, nmesh, nalph)
-    for i = 1:nalph
-        for j = 1:nmesh
-            Aw[j,i] = SC.Aout[j,i] * SC.model[j] / π / step
+        println("Swap statistics:")
+        for i = 1:nalph
+            @printf(fout, "α %3i: %16.12f", i, MC.Sacc[i] / MC.Stry[i])
         end
     end
-    Asum = [sum(Aw[i,:]) / nalph for i = 1:nmesh]
-
-    write_hamil(SC.αₗ, SC.Uα / step)
-    write_spectrum(SC.mesh, SC.αₗ, Aw)
-    write_spectrum(SC.mesh, Asum)
-
-    function fitfun(x, p)
-        return @. p[1] * x + p[2]
-    end
-
-    guess = [1.0, 1.0]
-    fit_l = curve_fit(fitfun, SC.αₗ[1:5], log10.(SC.Uα[1:5] / step), guess)
-    fit_r = curve_fit(fitfun, SC.αₗ[end-4:end], log10.(SC.Uα[end-4:end] / step), guess)
-    a, b = fit_l.param
-    c, d = fit_r.param
-    aopt = (d - b) / (a - c)
-    close = argmin( abs.( SC.αₗ .- aopt ) )
-    @show a, b, c, d
-    @show aopt, close, SC.αₗ[close]
-    @show SC.αₗ[1:5], log10.(SC.Uα[1:5] / step)
-
-    Asum1 = zeros(F64, nmesh)
-    Asum2 = zeros(F64, nmesh)
-    c = 0
-    for i = close : nalph - 1
-        @show i
-        c = c + 1
-        Asum1 = Asum1 + (SC.Uα[i] - SC.Uα[i+1]) * Aw[:,i]
-        Asum2 = Asum2 + Aw[:,i]
-    end
-    Asum1 = Asum1 / (SC.Uα[close] - SC.Uα[end])
-    write_spectrum(SC.mesh, Asum1, Asum2 / c)
-
-    kernel = make_kernel(SC.mesh, SC.grid)
-    G = reprod(kernel, SC.mesh, Asum1)
-    write_reprod(SC.grid, G)
-
-    χ²_vec = zeros(F64, nalph)
-    for i = 1:nalph
-        Gₙ = reprod(kernel, SC.mesh, Aw[:,i])
-        χ²_vec[i] = sum(SC.σ¹ .^ 2.0 .* ((SC.Gᵥ - Gₙ) .^ 2.0))
-    end
-    write_chi2(SC.αₗ, χ²_vec)
 end
