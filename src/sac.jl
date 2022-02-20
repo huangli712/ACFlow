@@ -293,8 +293,8 @@ end
     calc_delta()
 """
 function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
-    nmesh = get_c("nmesh")
-    nfine = get_a("nfine")
+    nmesh = length(ϕ)
+    nfine = length(xmesh)
     η₁ = 0.001
     η₂ = 0.001 ^ 2.0
 
