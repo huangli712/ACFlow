@@ -37,7 +37,7 @@ end
     StochElement
 
 Mutable struct. It is used to record the field configurations, which will
-be sampled by monte carlo procedure.
+be sampled within monte carlo procedure.
 
 ### Members
 
@@ -649,10 +649,14 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
     @show SC.αₗ[1:5], log10.(SC.Uα[1:5] / step)
 
     Asum1 = zeros(F64, nmesh)
+    Asum2 = zeros(F64, nmesh)
+    c = 0
     for i = close : nalph - 1
         @show i
+        c = c + 1
         Asum1 = Asum1 + (SC.Uα[i] - SC.Uα[i+1]) * Aw[:,i]
+        Asum2 = Asum2 + Aw[:,i]
     end
     Asum1 = Asum1 / (SC.Uα[close] - SC.Uα[end])
-    write_spectrum(SC.mesh, Asum, Asum1)
+    write_spectrum(SC.mesh, Asum1, Asum2 / c)
 end
