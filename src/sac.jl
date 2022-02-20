@@ -659,4 +659,28 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
     end
     Asum1 = Asum1 / (SC.Uα[close] - SC.Uα[end])
     write_spectrum(SC.mesh, Asum1, Asum2 / c)
+
+    kernel = make_kernel(SC.mesh, SC.grid)
+    G = reprod(kernel, SC.mesh, Asum1)
+    write_reprod(SC.grid, G)
+
+    χ²_vec = zeros(F64, nalph)
+    for i = 1:nalph
+        Gₙ = reprod(kernel, SC.mesh, Aw[:,i])
+        χ²_vec[i] = sum(SC.σ¹ * SC.σ¹ .* ((SC.Gᵥ - Gₙ) .^ 2.0))
+    end
+    write_chi2(SC.αₗ, χ²_vec)
 end
+
+#=
+"""
+    calc_chi2(mec::MaxEntContext, A::Vector{F64})
+
+It computes the chi-squared-deviation of the spectral function `A`.
+"""
+function calc_chi2(mec::MaxEntContext, A::Vector{F64})
+    Gₙ = reprod(mec.kernel, mec.mesh, A)
+    χ² = sum(mec.σ² .* ((mec.Gᵥ - Gₙ) .^ 2.0))
+    return χ²
+end
+=#
