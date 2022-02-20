@@ -44,6 +44,7 @@ mutable struct StochContext
     Δ      :: Array{F64,2}
     hτ     :: Array{F64,2}
     Hα     :: Vector{F64}
+    Uα     :: Vector{F64}
     αₗ     :: Vector{F64}
 end
 
@@ -96,13 +97,13 @@ function init(S::StochACSolver, rd::RawData)
     Δ = calc_delta(xmesh, ϕ)
     println("Precompute δ functions")
 
-    hτ, Hα = calc_hamil(SE.Γₐ, SE.Γᵣ, grid, kernel, Gᵥ, σ¹)
+    hτ, Hα, Uα = calc_hamil(SE.Γₐ, SE.Γᵣ, grid, kernel, Gᵥ, σ¹)
     println("Precompute hamiltonian")
 
     αₗ = calc_alpha()
     println("Precompute α parameters")
 
-    SC = StochContext(Gᵥ, σ¹, grid, mesh, model, kernel, Aout, Δ, hτ, Hα, αₗ)
+    SC = StochContext(Gᵥ, σ¹, grid, mesh, model, kernel, Aout, Δ, hτ, Hα, Uα, αₗ)
 
     return MC, SE, SC
 end
@@ -191,6 +192,7 @@ function measure(SE::StochElement, SC::StochContext)
         dr = view(SE.Γᵣ, :, ia)
         da = view(SE.Γₐ, :, ia)
         SC.Aout[:,ia] = SC.Aout[:,ia] .+ SC.Δ[:,da] * dr
+        SC.Uα[ia] = SC.Uα[ia] + SC.Hα[ia]
     end
 end
 
@@ -360,6 +362,7 @@ function calc_hamil(Γₐ::Array{I64,2}, Γᵣ::Array{F64,2},
 
     hτ = zeros(F64, ngrid, nalph)
     Hα = zeros(F64, nalph)
+    Uα = zeros(F64, nalph)
 
     δt = grid[2] - grid[1]
     for i = 1:nalph
@@ -367,7 +370,7 @@ function calc_hamil(Γₐ::Array{I64,2}, Γᵣ::Array{F64,2},
         Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
 
-    return hτ, Hα
+    return hτ, Hα, Uα
 end
 
 """
