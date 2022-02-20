@@ -396,16 +396,16 @@ end
 function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     ngamm = get_a("ngamm")
 
-    l1 = 1
+    γ1 = 1
     l2 = 1
-    while l1 == l2
-        l1 = rand(MC.rng, 1:ngamm)
+    while γ1 == l2
+        γ1 = rand(MC.rng, 1:ngamm)
         l2 = rand(MC.rng, 1:ngamm)
     end
 
     r1 = 0.0
     r2 = 0.0
-    r3 = SE.Γᵣ[l1,i]
+    r3 = SE.Γᵣ[γ1,i]
     r4 = SE.Γᵣ[l2,i]
     δr = 0.0
     while true
@@ -418,7 +418,7 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
     end
 
     hc = view(SC.hτ, :, i)
-    K1 = view(SC.kernel, :, SE.Γₐ[l1,i])
+    K1 = view(SC.kernel, :, SE.Γₐ[γ1,i])
     K2 = view(SC.kernel, :, SE.Γₐ[l2,i])
 
     δt = SC.grid[2] - SC.grid[1]
@@ -427,7 +427,7 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 
     MC.Mtry[i] = MC.Mtry[i] + 1.0
     if δh ≤ 0.0 || exp(-SC.αₗ[i] * δh) > rand(MC.rng)
-        SE.Γᵣ[l1,i] = r1
+        SE.Γᵣ[γ1,i] = r1
         SE.Γᵣ[l2,i] = r2
 
         @. hc = hc + δhc
