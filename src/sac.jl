@@ -148,7 +148,7 @@ function sample(MC::StochMC, SE::StochElement, SC::StochContext)
     if rand(MC.rng) < 0.9
         if rand(MC.rng) > 0.5
             for i = 1:nalph
-                try_mov1(i, MC, SE, SC)
+                @timev try_mov1(i, MC, SE, SC)
             end
         else
             for i = 1:nalph
@@ -391,11 +391,16 @@ function calc_alpha()
 end
 
 """
-    try_mov1()
+    try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
+
+Select two δ functions and then change their weights. Here `i` means the
+index for α parameters.
 """
 function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
+    # Get total number of δ functions
     ngamm = get_a("ngamm")
 
+    # Choose two δ functions, they are labelled as γ1 and γ2, respectively.
     γ1 = 1
     γ2 = 1
     while γ1 == γ2
@@ -403,6 +408,8 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         γ2 = rand(MC.rng, 1:ngamm)
     end
 
+    # Extract the weights for the two δ functions (r3 and r4), then try
+    # to calculate new weights for them (r1 and r2).
     r1 = 0.0
     r2 = 0.0
     r3 = SE.Γᵣ[γ1,i]
@@ -417,21 +424,22 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
         end
     end
 
+    # Try to calculate the change of Hc using Eq.~(42).
     hc = view(SC.hτ, :, i)
     K1 = view(SC.kernel, :, SE.Γₐ[γ1,i])
     K2 = view(SC.kernel, :, SE.Γₐ[γ2,i])
-
+    #
     δt = SC.grid[2] - SC.grid[1]
     δhc = δr * (K1 - K2) .* SC.σ¹
-    δh = dot(δhc, 2.0 * hc + δhc) * δt
+    δH = dot(δhc, 2.0 * hc + δhc) * δt
 
     MC.Mtry[i] = MC.Mtry[i] + 1.0
-    if δh ≤ 0.0 || exp(-SC.αₗ[i] * δh) > rand(MC.rng)
+    if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
         SE.Γᵣ[γ1,i] = r1
         SE.Γᵣ[γ2,i] = r2
 
         @. hc = hc + δhc
-        SC.Hα[i] = dot(hc, hc) * δt
+        SC.Hα[i] = SC.Hα[i] + δH
 
         MC.Macc[i] = MC.Macc[i] + 1.0
     end
