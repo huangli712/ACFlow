@@ -593,7 +593,7 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
     end
     Asum = [sum(Aw[i,:]) / nalph for i = 1:nmesh]
 
-    write_hamil(SC.αₗ, SC.Hα)
+    write_hamil(SC.αₗ, SC.Uα / step)
     write_spectrum(SC.mesh, SC.αₗ, Aw)
     write_spectrum(SC.mesh, Asum)
 end
