@@ -80,12 +80,11 @@ function init(S::StochACSolver, rd::RawData)
 
     xmesh = calc_xmesh()
     ϕ = calc_phi(mesh, model)
-    @timev Δ = calc_delta(xmesh, ϕ)
+    Δ = calc_delta(xmesh, ϕ)
     println("Precompute δ functions")
 
-    @timev hτ, Hα = calc_hamil(SE.Γₐ, SE.Γᵣ, grid, kernel, Gᵥ, σ¹)
+    hτ, Hα = calc_hamil(SE.Γₐ, SE.Γᵣ, grid, kernel, Gᵥ, σ¹)
     println("Precompute hamiltonian")
-    #error()
 
     αₗ = calc_alpha()
     println("Precompute α parameters")
@@ -278,14 +277,15 @@ function calc_xmesh()
 end
 
 """
-    calc_phi(mesh::AbstractMesh, model::Vector{F64})
+    calc_phi(am::AbstractMesh, model::Vector{F64})
 
-Try to calculate ϕ(ω) function.
+Try to calculate ϕ(ω) function. `am` is the mesh for calculated spectrum,
+and `model` means the default model function.
 
-See also: [`AbstractMesh`](@ref).
+See also: [`AbstractMesh`](@ref), [`calc_delta`](@ref).
 """
-function calc_phi(mesh::AbstractMesh, model::Vector{F64})
-    ϕ = cumsum(model .* mesh.weight)
+function calc_phi(am::AbstractMesh, model::Vector{F64})
+    ϕ = cumsum(model .* am.weight)
     return ϕ
 end
 
@@ -295,7 +295,7 @@ end
 Precompute the δ functions. `xmesh` is a very dense linear mesh in [0,1]
 and `ϕ` is the ϕ function.
 
-See also: [`calc_xmesh`](@ref), [`calc_phi`](@ref).
+See also: [`calc_xmesh`](@ref), [`calc_phi`](@ref).å
 """
 function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
     nmesh = length(ϕ)
