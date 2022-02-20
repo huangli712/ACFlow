@@ -36,7 +36,7 @@ mutable struct StochContext
     mesh   :: AbstractMesh
     model  :: Vector{F64}
     kernel :: Array{F64,2}
-    image  :: Array{F64,2}
+    Aout   :: Array{F64,2}
     Δ      :: Array{F64,2}
     hτ     :: Array{F64,2}
     Hα     :: Vector{F64}
@@ -62,7 +62,7 @@ function init(S::StochACSolver, rd::RawData)
     SE = init_element(MC.rng)
     println("Randomize Monte Carlo configurations")
 
-    Gᵥ, σ¹, image = init_iodata(rd)
+    Gᵥ, σ¹, Aout = init_iodata(rd)
     println("Postprocess input data: ", length(σ¹), " points")
 
     grid = make_grid(rd)
@@ -89,7 +89,7 @@ function init(S::StochACSolver, rd::RawData)
     αₗ = calc_alpha()
     println("Precompute α parameters")
 
-    SC = StochContext(Gᵥ, σ¹, grid, mesh, model, kernel, image, Δ, hτ, Hα, αₗ)
+    SC = StochContext(Gᵥ, σ¹, grid, mesh, model, kernel, Aout, Δ, hτ, Hα, αₗ)
 
     return MC, SE, SC
 end
@@ -176,7 +176,7 @@ function measure(SE::StochElement, SC::StochContext)
         dr = view(SE.Γᵣ, :, ia)
         da = view(SE.Γₐ, :, ia)
         Aw = SC.Δ[:,da] * dr
-        SC.image[:,ia] = SC.image[:,ia] .+ Aw
+        SC.Aout[:,ia] = SC.Aout[:,ia] .+ Aw
     end
 end
 
@@ -232,13 +232,13 @@ function init_iodata(rd::RawData)
     nalph = get_a("nalph")
     nmesh = get_c("nmesh")
 
+    Aout = zeros(F64, nmesh, nalph)
+
     G = make_data(rd)
     Gᵥ = abs.(G.value)
     σ¹ = 1.0 ./ sqrt.(G.covar)
 
-    image = zeros(F64, nmesh, nalph)
-
-    return Gᵥ, σ¹, image
+    return Gᵥ, σ¹, Aout
 end
 
 """
@@ -543,15 +543,15 @@ function dump(step::F64, MC::StochMC, SC::StochContext)
         println("    alpha $i: ", MC.swap_acc[i] / MC.swap_try[i])
     end
 
-    image_t = zeros(F64, nmesh, nalph)
+    Aw = zeros(F64, nmesh, nalph)
     for i = 1:nalph
         for j = 1:nmesh
-            image_t[j,i] = SC.image[j,i] * SC.model[j] / π / step
+            Aw[j,i] = SC.Aout[j,i] * SC.model[j] / π / step
         end
     end
-    _image = [sum(image_t[i,:]) / nalph for i = 1:nmesh]
+    Asum = [sum(Aw[i,:]) / nalph for i = 1:nmesh]
 
     write_hamil(SC.αₗ, SC.Hα)
-    write_spectrum(SC.mesh, SC.αₗ, image_t)
-    write_spectrum(SC.mesh, _image)
+    write_spectrum(SC.mesh, SC.αₗ, Aw)
+    write_spectrum(SC.mesh, Asum)
 end
