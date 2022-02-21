@@ -80,6 +80,7 @@ function solve(S::StochACSolver, rd::RawData)
     MC, SE, SC = init(S, rd)
 
     if nworkers() > 1
+        println("Using $(nworkers()) workers")
         sol = pmap((x) -> prun(S, MC, SE, SC), 1:nworkers())
         @assert length(sol) == nworkers()
         #
