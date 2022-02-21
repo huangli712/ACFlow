@@ -78,6 +78,7 @@ function solve(S::StochACSolver, rd::RawData)
     println("[ StochAC ]")
     MC, SE, SC = init(S, rd)
     Aout, Uα = run(S, MC, SE, SC)
+    postprocess(SC, Aout, Uα)
 end
 
 """
@@ -153,17 +154,17 @@ function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
         end
     end
 
-    return postprocess(step, SC)
+    return average(step, SC)
 end
 
 """
-    postprocess(step::F64, SC::StochContext)
+    average(step::F64, SC::StochContext)
 
 Postprocess the results generated during the stochastic analytical
 continuation simulations. It will calculate real spectral functions, and
 internal energies.
 """
-function postprocess(step::F64, SC::StochContext)
+function average(step::F64, SC::StochContext)
     # Get key parameters
     nmesh = length(SC.mesh)
     nalph = length(SC.αₗ)
