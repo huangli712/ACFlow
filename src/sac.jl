@@ -74,15 +74,23 @@ continuation algorithm.
 """
 function solve(S::StochACSolver, rd::RawData)
     nproc = get_a("nproc")
+    nmesh = get_c("nmesh")
+    nalph = get_a("nalph")
 
     println("[ StochAC ]")
     MC, SE, SC = init(S, rd)
 
     if nproc > 1
-        addprocs(nproc)
-        A = pmap((x) -> run(S, MC, SE, SC), 1:nworkers())
-        rmprocs(nproc)
-        @show A
+        sol = pmap((x) -> run(S, MC, SE, SC), 1:nworkers())
+        @assert length(sol) == nworkers()
+        Aout = zeros(F64, nmesh, nalph)
+        Uα = zeros(F64, nalph)
+        for i in eachindex(sol)
+            a, b = sol[i]
+            @. Aout = Aout + a / nworkers()
+            @. Uα = Uα + b / nworkers()
+        end
+        postprocess(SC, Aout, Uα)
     else
         Aout, Uα = run(S, MC, SE, SC)
         postprocess(SC, Aout, Uα)
@@ -139,6 +147,9 @@ end
 Perform stochastic analytical continuation simulation.
 """
 function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
+    cfg = inp_toml("ac.toml", true)
+    fil_dict(cfg)
+
     nstep = get_a("nstep")
     measure_per_steps = 100
     output_per_steps = get_a("ndump")
