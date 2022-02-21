@@ -426,15 +426,18 @@ To implement the MaxEnt solver for analytically continuation problem.
 
 ```text
 MaxEntContext -> Essential struct for the MaxEnt solver.
+#
 solve         -> Wrapper function for the MaxEnt solver.
 init          -> Initialize maximum entropy simulation.
 run           -> Perform maximum entropy simulation.
 postprocess   -> Postprocess the calculated results.
+#
 historic      -> historic algorithm.
 classic       -> Classic algorithm.
 bryan         -> Bryan algorithm.
 chi2kink      -> Chi2kink algorithm.
 optimizer     -> Optimize the non-linear equation.
+#
 precompute    -> Precompute some key coefficients.
 f_and_J       -> Define the function that need to be optimized.
 f_and_J_offdiag -> Define the function that need to be optimized (offdiag version).
@@ -452,15 +455,18 @@ calc_chi2     -> Calculate χ².
 include("maxent.jl")
 #
 export MaxEntContext
+#
 export solve
 export init
 export run
 export postprocess
+#
 export historic
 export classic
 export bryan
 export chi2kink
 export optimizer
+#
 export precompute
 export f_and_J
 export f_and_J_offdiag
@@ -486,26 +492,29 @@ To implement the StochAC solver for analytically continuation problem.
 ```text
 StochElement ->
 StochContext ->
-solve ->
-init ->
-run ->
-postprocess ->
-warmup
-sample
-measure
-init_mc
-init_element
-init_iodata
-calc_fmesh
-calc_xmesh
-calc_phi
-calc_delta
-calc_hamil
-calc_htau
-calc_alpha
-try_mov1
-try_mov2
-try_swap
+#
+solve        ->
+init         ->
+run          ->
+postprocess  ->
+#
+warmup       ->
+sample       ->
+measure      ->
+#
+init_mc      ->
+init_element ->
+init_iodata  ->
+calc_fmesh   ->
+calc_xmesh   ->
+calc_phi     ->
+calc_delta   ->
+calc_hamil   ->
+calc_htau    ->
+calc_alpha   ->
+try_mov1     ->
+try_mov2     ->
+try_swap     ->
 ```
 =#
 
@@ -514,13 +523,16 @@ include("sac.jl")
 #
 export StochElement
 export StochContext
+#
 export solve
 export init
 export run
 export postprocess
+#
 export warmup
 export sample
 export measure
+#
 export init_mc
 export init_element
 export init_iodata
@@ -534,7 +546,6 @@ export calc_alpha
 export try_mov1
 export try_mov2
 export try_swap
-export dump
 
 #=
 ### *Includes And Exports* : *base.jl*
