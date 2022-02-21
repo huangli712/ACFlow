@@ -81,7 +81,11 @@ function solve(S::StochACSolver, rd::RawData)
 
     if nworkers() > 1
         println("Using $(nworkers()) workers")
-        sol = pmap((x) -> prun(S, MC, SE, SC), 1:nworkers())
+        #
+        p1 = deepcopy(PCOMM)
+        p2 = deepcopy(PStochAC)
+        #
+        sol = pmap((x) -> prun(S, p1, p2, MC, SE, SC), 1:nworkers())
         @assert length(sol) == nworkers()
         #
         Aout = zeros(F64, nmesh, nalph)
@@ -176,13 +180,19 @@ function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
 end
 
 """
-    prun(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
+    prun(S::StochACSolver,
+         p1::Dict{String,Vector{Any}},
+         p2::Dict{String,Vector{Any}},
+         MC::StochMC, SE::StochElement, SC::StochContext)
 
 Perform stochastic analytical continuation simulation, parallel version.
+The arguments `p1` and `p2` are copies of PCOMM and PStochAC, respectively.
 """
-function prun(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
-    cfg = inp_toml("ac.toml", true)
-    fil_dict(cfg)
+function prun(S::StochACSolver,
+              p1::Dict{String,Vector{Any}}, p2::Dict{String,Vector{Any}},
+              MC::StochMC, SE::StochElement, SC::StochContext)
+    rev_dict(p1)
+    rev_dict(S, p2)
 
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
 

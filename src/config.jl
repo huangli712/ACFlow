@@ -105,6 +105,7 @@ end
 
 """
     rev_dict(COMM::Dict{String,Any})
+    rev_dict(COMM::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PCOMM`.
 
@@ -121,8 +122,20 @@ function rev_dict(COMM::Dict{String,Any})
     foreach(x -> _v(x.first, x.second), PCOMM)
 end
 
+function rev_dict(COMM::Dict{String,Vector{Any}})
+    for key in keys(COMM)
+        if haskey(PCOMM, key)
+            PCOMM[key][1] = COMM[key][1]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+    foreach(x -> _v(x.first, x.second), PCOMM)
+end
+
 """
     rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
+    rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PMaxEnt`.
 
@@ -139,8 +152,20 @@ function rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
     foreach(x -> _v(x.first, x.second), PMaxEnt)
 end
 
+function rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Vector{Any}})
+    for key in keys(MaxEnt)
+        if haskey(PMaxEnt, key)
+            PMaxEnt[key][1] = MaxEnt[key][1]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+    foreach(x -> _v(x.first, x.second), PMaxEnt)
+end
+
 """
-    rev_dict(S::MaxEntSolver, StochAC::Dict{String,Any})
+    rev_dict(S::StochACSolver, StochAC::Dict{String,Any})
+    rev_dict(S::StochACSolver, StochAC::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PStochAC`.
 
@@ -157,14 +182,37 @@ function rev_dict(S::StochACSolver, StochAC::Dict{String,Any})
     foreach(x -> _v(x.first, x.second), PStochAC)
 end
 
+function rev_dict(S::StochACSolver, StochAC::Dict{String,Vector{Any}})
+    for key in keys(StochAC)
+        if haskey(PStochAC, key)
+            PStochAC[key][1] = StochAC[key][1]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+    foreach(x -> _v(x.first, x.second), PStochAC)
+end
+
 """
-    rev_dict(S::MaxEntSolver, StochOM::Dict{String,Any})
+    rev_dict(S::StochOMSolver, StochOM::Dict{String,Any})
+    rev_dict(S::StochOMSolver, StochOM::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PStochOM`.
 
 See also: [`PStochOM`](@ref).
 """
 function rev_dict(S::StochOMSolver, StochOM::Dict{String,Any})
+    for key in keys(StochOM)
+        if haskey(PStochOM, key)
+            PStochOM[key][1] = StochOM[key]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+    foreach(x -> _v(x.first, x.second), PStochOM)
+end
+
+function rev_dict(S::StochOMSolver, StochOM::Dict{String,Vector{Any}})
     for key in keys(StochOM)
         if haskey(PStochOM, key)
             PStochOM[key][1] = StochOM[key]
