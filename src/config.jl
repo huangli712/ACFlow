@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/17
+# Last modified: 2022/02/21
 #
 
 """
@@ -205,12 +205,13 @@ function chk_dict()
 
         @case "StochAC"
             push!(PA, PStochAC)
+            @assert get_a("nproc") ≥ 1
             @assert get_a("nfine") ≥ 1000
             @assert get_a("ngamm") ≥ 100
-            @assert get_a("nalph") ≥ 1
             @assert get_a("nwarm") ≥ 100
             @assert get_a("nstep") ≥ 1000
             @assert get_a("ndump") ≥ 100
+            @assert get_a("nalph") ≥ 1
             @assert get_a("alpha") > 0.0
             @assert get_a("ratio") > 0.0
             break
