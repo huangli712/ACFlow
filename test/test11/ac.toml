@@ -13,12 +13,11 @@ beta   = 5.0
 offdiag = false
 
 [StochAC]
-nproc = 1
 nfine = 10000
 ngamm = 512
 nwarm = 4000
-nstep = 4000000
+nstep = 400000
 ndump = 40000
-nalph = 40
+nalph = 12
 alpha = 1.00
 ratio = 1.20
