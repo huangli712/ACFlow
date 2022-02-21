@@ -206,7 +206,7 @@ simpson       -> Numerical integration (simpson rule).
 #
 AbstractInterpolation -> Abstract struct for interpolation.
 LinearInterpolation -> Linear interpolation.
-QuadraticInterpolation -> Quadratic interpolation. 
+QuadraticInterpolation -> Quadratic interpolation.
 CubicSplineInterpolation -> Cubic spline interpolation.
 munge_data    -> Clean the x and y data for interpolation.
 _interp       -> Return interpolated value.
@@ -372,7 +372,7 @@ To define default model functions.
 build_flat_model     -> Construct a flat model.
 build_gaussian_model -> Construct a gaussian model.
 build_file_model     -> Construct a model from file.
-build_func_model     -> Construct a model by user-defined function. 
+build_func_model     -> Construct a model by user-defined function.
 ```
 =#
 

@@ -530,7 +530,7 @@ n(x), `kernel` means the kernel function, `Gᵥ` is the correlator, and
 
 See also: [`calc_hamil`](@ref).
 """
-function calc_htau(Γₐ::Vector{I64}, Γᵣ::Vector{F64}, 
+function calc_htau(Γₐ::Vector{I64}, Γᵣ::Vector{F64},
                    kernel::Matrix{F64},
                    Gᵥ::Vector{F64}, σ¹::Vector{F64})
     hτ = similar(Gᵥ)
@@ -697,7 +697,7 @@ function try_swap(MC::StochMC, SE::StochElement, SC::StochContext)
     j = rand(MC.rng) > 0.5 ? i + 1 : i - 1
     i == 1 && (j = i + 1)
     i == nalph && (j = i - 1)
- 
+
     # Calculate change of Hc
     δα = SC.αₗ[i] - SC.αₗ[j]
     δH = SC.Hα[i] - SC.Hα[j]

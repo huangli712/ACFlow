@@ -182,9 +182,9 @@ Convert `RawData` struct to `GreenData` struct. Note that `RawData` is
 provided by the users directly, while `GreenData` is more suitable for
 various analytical continuation solvers and algorithms. Note that the
 `GreenData` struct is accessed and manipulated by this code internally,
-while the `RawData` struct is exposed to the users. 
+while the `RawData` struct is exposed to the users.
 
-See also: [`RawData`](@ref), [`GreenData`](@ref). 
+See also: [`RawData`](@ref), [`GreenData`](@ref).
 """
 function make_data(rd::RawData)
     grid = get_c("grid")

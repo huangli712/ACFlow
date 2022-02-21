@@ -8,7 +8,7 @@
 #
 
 #=
-*Remarks* : 
+*Remarks* :
 
 In `ACFlow`, the following kernel functions are supported.
 
@@ -107,7 +107,7 @@ K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega}.
 \end{equation}
 ```
 
-where ``\omega_n`` is a Matsubara frequencies equal to ``2n\pi/\beta``. 
+where ``\omega_n`` is a Matsubara frequencies equal to ``2n\pi/\beta``.
 ``G_{B}(\tau)`` is related to ``G_{B}(i\omega_n)`` via the Fourier
 transform as mentioned above.
 

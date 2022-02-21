@@ -436,7 +436,7 @@ Perform numerical integration by using the composite trapezoidal rule.
 
 See also: [`simpson`](@ref).
 """
-function trapz(x::AbstractMesh, y::AbstractVector{T} where T) 
+function trapz(x::AbstractMesh, y::AbstractVector{T} where T)
     value = dot(x.weight, y)
     return value
 end
@@ -534,7 +534,7 @@ function LinearInterpolation(u::AbstractVector, t::AbstractVector)
     u, t = munge_data(u, t)
     LinearInterpolation{true}(u,t)
 end
-  
+
 """
     QuadraticInterpolation
 
