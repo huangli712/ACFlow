@@ -430,7 +430,7 @@ MaxEntContext -> Essential struct for the MaxEnt solver.
 solve         -> Wrapper function for the MaxEnt solver.
 init          -> Initialize maximum entropy simulation.
 run           -> Perform maximum entropy simulation.
-postprocess   -> Postprocess the calculated results.
+postprocess   -> Postprocess the calculated results and write them.
 #
 historic      -> historic algorithm.
 classic       -> Classic algorithm.
@@ -490,31 +490,31 @@ To implement the StochAC solver for analytically continuation problem.
 *Members* :
 
 ```text
-StochElement ->
-StochContext ->
+StochElement -> A struct that contains monte carlo field configurations.
+StochContext -> Essential struct for the StochAC solver.
 #
-solve        ->
-init         ->
-run          ->
-postprocess  ->
+solve        -> Wrapper function for the StochAC solver.
+init         -> Initialize stochastic analytical continuation simulation.
+run          -> Perform stochastic analytical continuation simulation.
+postprocess  -> Postprocess the calculated results and write them.
 #
-warmup       ->
-sample       ->
-measure      ->
+warmup       -> Warmup monte carlo engine.
+sample       -> Sample field configurations via metropolis algorithm.
+measure      -> Measure spectral functions and internal energies.
 #
-init_mc      ->
-init_element ->
-init_iodata  ->
-calc_fmesh   ->
-calc_xmesh   ->
-calc_phi     ->
-calc_delta   ->
-calc_hamil   ->
-calc_htau    ->
-calc_alpha   ->
-try_mov1     ->
-try_mov2     ->
-try_swap     ->
+init_mc      -> Create a StochMC struct.
+init_element -> Create a StochElement struct.
+init_iodata  -> Preprocess the input data.
+calc_fmesh   -> Build dense linear mesh in [wmin,wmax].
+calc_xmesh   -> Build dense linear mesh in [0,1].
+calc_phi     -> Calculate ϕ function.
+calc_delta   -> Precompute δ functions.
+calc_hamil   -> Calculate α-resolved Hc.
+calc_htau    -> Calculate α-resolved h(τ).
+calc_alpha   -> Calculate α parameters.
+try_mov1     -> Try to change the weights of δ functions.
+try_mov2     -> Try to shift the positions of δ functions.
+try_swap     -> Try to exchange configurations between two adjacent layers.
 ```
 =#
 
