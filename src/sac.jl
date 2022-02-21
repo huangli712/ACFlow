@@ -77,8 +77,16 @@ function solve(S::StochACSolver, rd::RawData)
 
     println("[ StochAC ]")
     MC, SE, SC = init(S, rd)
-    Aout, Uα = run(S, MC, SE, SC)
-    postprocess(SC, Aout, Uα)
+
+    if nproc > 1
+        addprocs(nproc)
+        A = pmap((x) -> run(S, MC, SE, SC), 1:nworkers())
+        rmprocs(nproc)
+        @show A
+    else
+        Aout, Uα = run(S, MC, SE, SC)
+        postprocess(SC, Aout, Uα)
+    end
 end
 
 """
@@ -198,7 +206,7 @@ function postprocess(SC::StochContext, Aout::Array{F64,2}, Uα::Vector{F64})
     c, d = fit_r.param
     aopt = (d - b) / (a - c)
     close = argmin( abs.( SC.αₗ .- aopt ) )
-    println("Perhaps the optimal α: ", aopt)
+    println("\nPerhaps the optimal α: ", aopt)
     write_hamil(SC.αₗ, Uα)
 
     # Calculate final spectral function
