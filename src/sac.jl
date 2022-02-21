@@ -170,7 +170,7 @@ function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
         end
 
         if iter % output_per_steps == 0
-            prog = I64(iter / nstep * 100)
+            prog = round(I64, iter / nstep * 100)
             println("Start stochastic sampling (prog: $prog)")
             write_statistics(MC)
         end
@@ -213,7 +213,7 @@ function prun(S::StochACSolver,
         end
 
         if iter % output_per_steps == 0
-            prog = I64(iter / nstep * 100)
+            prog = round(I64, iter / nstep * 100)
             println("Start stochastic sampling (prog: $prog)")
             myid() == 2 && write_statistics(MC)
         end
