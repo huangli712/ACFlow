@@ -74,12 +74,13 @@ const PMaxEnt  = Dict{String,ADT}(
 Dictionary for configuration parameters: stochastic analytical continuation method.
 """
 const PStochAC = Dict{String,ADT}(
+    "nproc"   => [missing, 1, :I64   , "Number of processors used in the simulation"],
     "nfine"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
     "ngamm"   => [missing, 1, :I64   , "Number of δ functions"],
-    "nalph"   => [missing, 1, :I64   , "Total number of the chosen α parameters"],
     "nwarm"   => [missing, 1, :I64   , "Number of Monte Carlo warmup steps"],
     "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo sweeping steps"],
     "ndump"   => [missing, 1, :I64   , "Intervals for monitoring Monte Carlo sweeps"],
+    "nalph"   => [missing, 1, :I64   , "Total number of the chosen α parameters"],
     "alpha"   => [missing, 1, :F64   , "Starting value for the α parameter"],
     "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
 )
