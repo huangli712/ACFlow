@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/20
+# Last modified: 2022/02/21
 #
 
 """
@@ -135,7 +135,8 @@ AbstractMesh    -> Abstract grid for calculated spectral function.
 LinearMesh      -> Linear mesh.
 TangentMesh     -> Tangent mesh.
 #
-StochMC         -> .
+AbstractMC      -> Abstract monte carlo engine.
+StochMC         -> Monte carlo engine used in the StochAC solver.
 ```
 =#
 
@@ -168,6 +169,7 @@ export AbstractMesh
 export LinearMesh
 export TangentMesh
 #
+export AbstractMC
 export StochMC
 
 #=
@@ -635,8 +637,7 @@ This function would be executed immediately after the module is loaded
 at runtime for the first time. It works at the REPL mode only.
 """
 __init__() = begin
-    #isinteractive() && _precompile()
-    _precompile()
+    isinteractive() && _precompile()
 end
 
 end # END OF MODULE

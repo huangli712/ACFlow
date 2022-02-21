@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/17
+# Last modified: 2022/02/21
 #
 
 #=
@@ -324,10 +324,22 @@ mutable struct TangentMesh <: AbstractMesh
     weight :: Vector{F64}
 end
 
+#=
+### *Customized Structs* : *Monte Carlo Engine*
+=#
+
+"""
+    AbstractMC
+
+An abstract type representing the monte carlo engine. It is used to build
+the internal type system.
+"""
+abstract type AbstractMC end
+
 """
     StochMC
 
-Mutable struct. It is used during monte carlo sampling. It includes random
+Mutable struct. It is used within the StochAC solver. It includes random
 number generator and some counters.
 
 ### Members
@@ -338,7 +350,7 @@ number generator and some counters.
 * Sacc -> Counter for swap operation (accepted).
 * Stry -> Counter for swap operation (tried).
 """
-mutable struct StochMC
+mutable struct StochMC <: AbstractMC
     rng :: AbstractRNG
     Macc :: Vector{I64}
     Mtry :: Vector{I64}
