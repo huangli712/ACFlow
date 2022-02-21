@@ -81,7 +81,7 @@ function solve(S::StochACSolver, rd::RawData)
     MC, SE, SC = init(S, rd)
 
     if nproc > 1
-        sol = pmap((x) -> run(S, MC, SE, SC), 1:nworkers())
+        sol = pmap((x) -> prun(S, MC, SE, SC), 1:nworkers())
         @assert length(sol) == nworkers()
         Aout = zeros(F64, nmesh, nalph)
         Uα = zeros(F64, nalph)
@@ -144,12 +144,9 @@ end
 """
     run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
 
-Perform stochastic analytical continuation simulation.
+Perform stochastic analytical continuation simulation, sequential version.
 """
 function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
-    cfg = inp_toml("ac.toml", true)
-    fil_dict(cfg)
-
     nstep = get_a("nstep")
     measure_per_steps = 100
     output_per_steps = get_a("ndump")
@@ -169,6 +166,44 @@ function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
         if iter % output_per_steps == 0
             prog = iter / nstep
             @printf("Start stochastic sampling (prog: %4.2f)\r", prog)
+            write_statistics(MC)
+        end
+    end
+
+    return average(step, SC)
+end
+
+"""
+    prun(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
+
+Perform stochastic analytical continuation simulation, parallel version.
+"""
+function prun(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
+    cfg = inp_toml("ac.toml", true)
+    fil_dict(cfg)
+
+    MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
+
+    nstep = get_a("nstep")
+    measure_per_steps = 100
+    output_per_steps = get_a("ndump")
+
+    println("Start thermalization...")
+    warmup(MC, SE, SC)
+
+    println("Start stochastic sampling...")
+    step = 0.0
+    for iter = 1:nstep
+        sample(MC, SE, SC)
+
+        if iter % measure_per_steps == 0
+            step = step + 1.0
+            measure(SE, SC)
+        end
+
+        if iter % output_per_steps == 0
+            prog = iter / nstep * 100
+            println("Start stochastic sampling (prog: $prog)")
             write_statistics(MC)
         end
     end
@@ -207,6 +242,7 @@ function postprocess(SC::StochContext, Aout::Array{F64,2}, Uα::Vector{F64})
         return @. p[1] * x + p[2]
     end
 
+    # Get dimensional parameters
     nmesh, nalph = size(Aout)
 
     # Try to fit the internal energies to find out optimal α
@@ -217,7 +253,7 @@ function postprocess(SC::StochContext, Aout::Array{F64,2}, Uα::Vector{F64})
     c, d = fit_r.param
     aopt = (d - b) / (a - c)
     close = argmin( abs.( SC.αₗ .- aopt ) )
-    println("\nPerhaps the optimal α: ", aopt)
+    println("Perhaps the optimal α is: ", aopt)
     write_hamil(SC.αₗ, Uα)
 
     # Calculate final spectral function
