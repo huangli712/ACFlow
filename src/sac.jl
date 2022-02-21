@@ -215,7 +215,7 @@ function prun(S::StochACSolver,
         if iter % output_per_steps == 0
             prog = iter / nstep * 100
             println("Start stochastic sampling (prog: $prog)")
-            write_statistics(MC)
+            myid() == 2 && write_statistics(MC)
         end
     end
 
@@ -265,7 +265,7 @@ function postprocess(SC::StochContext, Aout::Array{F64,2}, Uα::Vector{F64})
     aopt = (d - b) / (a - c)
     close = argmin( abs.( SC.αₗ .- aopt ) )
     println("Perhaps the optimal α is: ", aopt)
-    write_hamil(SC.αₗ, Uα)
+    write_hamiltonian(SC.αₗ, Uα)
 
     # Calculate final spectral function
     Asum = zeros(F64, nmesh)
@@ -279,7 +279,7 @@ function postprocess(SC::StochContext, Aout::Array{F64,2}, Uα::Vector{F64})
     # Reproduce input data
     kernel = make_kernel(SC.mesh, SC.grid)
     Gₙ = reprod(kernel, SC.mesh, Asum)
-    write_reprod(SC.grid, Gₙ)
+    write_reproduce(SC.grid, Gₙ)
 end
 
 #=

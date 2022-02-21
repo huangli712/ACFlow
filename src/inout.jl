@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/20
+# Last modified: 2022/02/21
 #
 
 """
@@ -160,12 +160,12 @@ function write_chi2(α_vec::Vector{F64}, χ²_vec::Vector{F64})
 end
 
 """
-    write_hamil(α_vec::Vector{F64}, Uα::Vector{F64})
+    write_hamiltonian(α_vec::Vector{F64}, Uα::Vector{F64})
 
 Write `α-U(α)` data to `hamil.data`. This function is only useful for the
 `StochAC` solver.
 """
-function write_hamil(α_vec::Vector{F64}, Uα::Vector{F64})
+function write_hamiltonian(α_vec::Vector{F64}, Uα::Vector{F64})
     @assert length(α_vec) == length(Uα)
     open("hamil.data", "w") do fout
         for i in eachindex(α_vec)
@@ -192,13 +192,13 @@ function write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
 end
 
 """
-    write_reprod(ag::AbstractGrid, G::Vector{F64})
+    write_reproduce(ag::AbstractGrid, G::Vector{F64})
 
 We can use the calculated spectrum in real axis to reproduce the input
 data in imaginary axis. This function will write the reproduced data to
 `repr.data`, which can be compared with the original data.
 """
-function write_reprod(ag::AbstractGrid, G::Vector{F64})
+function write_reproduce(ag::AbstractGrid, G::Vector{F64})
     ngrid = length(ag)
     ng = length(G)
     @assert ngrid == ng || ngrid * 2 == ng

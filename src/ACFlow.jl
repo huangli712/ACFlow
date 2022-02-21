@@ -338,9 +338,9 @@ read_real_data    -> Read data in imaginary time axis.
 read_complex_data -> Read data in Matsubara frequency axis.
 write_spectrum    -> Write spectral functions.
 write_chi2        -> Write χ².
-write_hamil       -> Write effective hamiltonian for StochAC solver.
+write_hamiltonian -> Write effective hamiltonian for StochAC solver.
 write_probability -> Write Bayesian a-posteriori probability.
-write_reprod      -> Write reproduced input data.
+write_reproduce   -> Write reproduced input data.
 write_statistics  -> Write statistical information for StochAC solver.
 ```
 =#
@@ -352,9 +352,9 @@ export read_real_data
 export read_complex_data
 export write_spectrum
 export write_chi2
-export write_hamil
+export write_hamiltonian
 export write_probability
-export write_reprod
+export write_reproduce
 export write_statistics
 
 #=

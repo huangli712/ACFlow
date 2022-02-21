@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/02/18
+# Last modified: 2022/02/21
 #
 
 #=
@@ -138,7 +138,7 @@ function postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
     end
 
     G = reprod(mec.kernel, mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
-    write_reprod(mec.grid, G)
+    write_reproduce(mec.grid, G)
 end
 
 #=
