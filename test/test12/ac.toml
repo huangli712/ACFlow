@@ -1,0 +1,23 @@
+[COMM]
+finput = "green.data"
+solver = "StochAC"
+ktype  = "bsymm"
+mtype  = "flat"
+grid   = "btime"
+mesh   = "linear"
+ngrid  = 501
+nmesh  = 501
+wmax   = 15.0
+wmin   = 0.0
+beta   = 5.0
+offdiag = false
+
+[StochAC]
+nfine = 10000
+ngamm = 512
+nwarm = 4000
+nstep = 800000
+ndump = 40000
+nalph = 20
+alpha = 1.00
+ratio = 1.20
