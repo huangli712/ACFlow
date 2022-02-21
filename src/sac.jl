@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/20
+# Last modified: 2022/02/21
 #
 
 #=
@@ -73,6 +73,8 @@ Solve the analytical continuation problem by the stochastic analytical
 continuation algorithm.
 """
 function solve(S::StochACSolver, rd::RawData)
+    nproc = get_a("nproc")
+
     println("[ StochAC ]")
     MC, SE, SC = init(S, rd)
     run(S, MC, SE, SC)
@@ -158,13 +160,10 @@ end
     postprocess(step::F64, SC::StochContext)
 
 Postprocess the results generated during the stochastic analytical
-continuation simulations.
+continuation simulations. It will calculate real spectral functions, and
+internal energies.
 """
 function postprocess(step::F64, SC::StochContext)
-    function fitfun(x, p)
-        return @. p[1] * x + p[2]
-    end
-
     # Get key parameters
     nmesh = length(SC.mesh)
     nalph = length(SC.αₗ)
@@ -176,10 +175,20 @@ function postprocess(step::F64, SC::StochContext)
             Aout[j,i] = SC.Aout[j,i] * SC.model[j] / π / step
         end
     end
-    write_spectrum(SC.mesh, SC.αₗ, Aout)
 
     # Renormalize the internal energies
     Uα = SC.Uα / step
+
+    return Aout, Uα
+end
+
+#=
+function postprocess()
+    function fitfun(x, p)
+        return @. p[1] * x + p[2]
+    end
+
+    write_spectrum(SC.mesh, SC.αₗ, Aout)
     write_hamil(SC.αₗ, Uα)
 
     # Try to fit the internal energies to find out optimal α
@@ -205,6 +214,7 @@ function postprocess(step::F64, SC::StochContext)
     Gₙ = reprod(kernel, SC.mesh, Asum)
     write_reprod(SC.grid, Gₙ)
 end
+=#
 
 #=
 ### *Core Algorithms*
