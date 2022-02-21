@@ -77,7 +77,7 @@ function solve(S::StochACSolver, rd::RawData)
 
     println("[ StochAC ]")
     MC, SE, SC = init(S, rd)
-    run(S, MC, SE, SC)
+    Aout, Uα = run(S, MC, SE, SC)
 end
 
 """
@@ -153,7 +153,7 @@ function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
         end
     end
 
-    postprocess(step, SC)
+    return postprocess(step, SC)
 end
 
 """
@@ -182,14 +182,12 @@ function postprocess(step::F64, SC::StochContext)
     return Aout, Uα
 end
 
-#=
-function postprocess()
+function postprocess(SC::StochContext, Aout::Array{F64,2}, Uα::Vector{F64})
     function fitfun(x, p)
         return @. p[1] * x + p[2]
     end
 
-    write_spectrum(SC.mesh, SC.αₗ, Aout)
-    write_hamil(SC.αₗ, Uα)
+    nmesh, nalph = size(Aout)
 
     # Try to fit the internal energies to find out optimal α
     guess = [1.0, 1.0]
@@ -200,6 +198,7 @@ function postprocess()
     aopt = (d - b) / (a - c)
     close = argmin( abs.( SC.αₗ .- aopt ) )
     println("Perhaps the optimal α: ", aopt)
+    write_hamil(SC.αₗ, Uα)
 
     # Calculate final spectral function
     Asum = zeros(F64, nmesh)
@@ -208,13 +207,13 @@ function postprocess()
     end
     @. Asum = Asum / (Uα[close] - Uα[end])
     write_spectrum(SC.mesh, Asum)
+    write_spectrum(SC.mesh, SC.αₗ, Aout)
 
     # Reproduce input data
     kernel = make_kernel(SC.mesh, SC.grid)
     Gₙ = reprod(kernel, SC.mesh, Asum)
     write_reprod(SC.grid, Gₙ)
 end
-=#
 
 #=
 ### *Core Algorithms*
