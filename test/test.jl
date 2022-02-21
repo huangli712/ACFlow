@@ -7,5 +7,4 @@ using ACFlow
 welcome()
 overview()
 read_param()
-raw = read_data()
-solve(raw)
+solve(read_data())
