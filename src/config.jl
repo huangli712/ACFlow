@@ -205,7 +205,6 @@ function chk_dict()
 
         @case "StochAC"
             push!(PA, PStochAC)
-            @assert get_a("nproc") ≥ 1
             @assert get_a("nfine") ≥ 1000
             @assert get_a("ngamm") ≥ 100
             @assert get_a("nwarm") ≥ 100

@@ -73,16 +73,16 @@ Solve the analytical continuation problem by the stochastic analytical
 continuation algorithm.
 """
 function solve(S::StochACSolver, rd::RawData)
-    nproc = get_a("nproc")
     nmesh = get_c("nmesh")
     nalph = get_a("nalph")
 
     println("[ StochAC ]")
     MC, SE, SC = init(S, rd)
 
-    if nproc > 1
+    if nworkers() > 1
         sol = pmap((x) -> prun(S, MC, SE, SC), 1:nworkers())
         @assert length(sol) == nworkers()
+        #
         Aout = zeros(F64, nmesh, nalph)
         Uα = zeros(F64, nalph)
         for i in eachindex(sol)
@@ -90,6 +90,7 @@ function solve(S::StochACSolver, rd::RawData)
             @. Aout = Aout + a / nworkers()
             @. Uα = Uα + b / nworkers()
         end
+        #
         postprocess(SC, Aout, Uα)
     else
         Aout, Uα = run(S, MC, SE, SC)
@@ -164,8 +165,8 @@ function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
         end
 
         if iter % output_per_steps == 0
-            prog = iter / nstep
-            @printf("Start stochastic sampling (prog: %4.2f)\r", prog)
+            prog = iter / nstep * 100
+            println("Start stochastic sampling (prog: $prog)")
             write_statistics(MC)
         end
     end
@@ -191,7 +192,6 @@ function prun(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
     println("Start thermalization...")
     warmup(MC, SE, SC)
 
-    println("Start stochastic sampling...")
     step = 0.0
     for iter = 1:nstep
         sample(MC, SE, SC)
