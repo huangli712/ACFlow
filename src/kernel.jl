@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/17
+# Last modified: 2022/02/21
 #
 
 #=
@@ -243,7 +243,7 @@ See also: [`AbstractMesh`](@ref), [`BosonicImaginaryTimeGrid`](@ref).
 function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     ntime = bg.ntime
     nmesh = am.nmesh
-    β = fg.β
+    β = bg.β
 
     kernel = zeros(F64, ntime, nmesh)
     for i = 1:nmesh
