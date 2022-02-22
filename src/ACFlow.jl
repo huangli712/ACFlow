@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/21
+# Last modified: 2022/02/22
 #
 
 """
@@ -546,6 +546,15 @@ export calc_alpha
 export try_mov1
 export try_mov2
 export try_swap
+
+#=
+### *Includes And Exports* : *som.jl*
+=#
+
+include("som.jl")
+export read_data!
+export som_run
+export som_output
 
 #=
 ### *Includes And Exports* : *base.jl*
