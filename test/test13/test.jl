@@ -1,0 +1,9 @@
+#!/usr/bin/env julia -p 4
+  
+@everywhere push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
+
+@everywhere using ACFlow
+
+ω, 𝐺 = read_data!()
+Aom = sum( pmap((x) -> som_run(ω, 𝐺), 1:nworkers()) ) ./ nworkers()
+som_output(Aom)
