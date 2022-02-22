@@ -15,7 +15,7 @@ function read_data!()
     grid  = F64[]
     value = C64[]
     error = C64[]
-    covar = F64[]
+    #covar = F64[]
 
     niw = 64
     #
@@ -32,33 +32,33 @@ function read_data!()
             arr = parse.(F64, line_to_array(fin))
             @assert grid[i] == arr[1]
             push!(error, arr[2] + arr[3] * im)
-            push!(covar, arr[2]^2)
-            push!(covar, arr[3]^2)
+            #push!(covar, arr[2]^2)
+            #push!(covar, arr[3]^2)
         end
     end
 
-    return MatsubaraGrid(grid), SOMData(value, error, covar)
+    return MatsubaraGrid(grid), SOMData(value, error)
 end
 
 struct SOMData <: AbstractData
     value :: Vector{N64}
     error :: Vector{N64}
-    covar :: Vector{N64}
+    #covar :: Vector{N64}
 end
 
 const P_SOM = Dict{String, Any}(
     "Lmax" => 200,
     "Ngrid" => 64,
+    "nmesh" => 501,
     "Nf" => 1000,
     "Tmax" => 100,
-    "Kmax" => 50,
-    "nwout" => 100,
+    "Kmax" => 100,
     "smin" => 0.005,
-    "wmin" => 0.05,
+    "wmin" => 0.002,
     "dmax" => 2.0,
     "ommax" => 10.0,
     "ommin" => -10.0,
-    "alpha" => 2.0,
+    "alpha" => 5.0,
     "temp" => 0.05,
     "norm" => -1.0,
     "monitor" => false,
@@ -294,7 +294,7 @@ end
 
 function som_spectra(𝑆::SOMContext)
     alpha = P_SOM["alpha"]
-    Ngrid = P_SOM["Ngrid"]
+    nmesh = P_SOM["nmesh"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     Lmax  = P_SOM["Lmax"]
@@ -302,12 +302,12 @@ function som_spectra(𝑆::SOMContext)
     dev_min = minimum(𝑆.Δv)
 
     Lgood = 0
-    Aom = zeros(F64, Ngrid)
+    Aom = zeros(F64, nmesh)
     for l = 1:Lmax
         if alpha * dev_min - 𝑆.Δv[l] > 0
             Lgood = Lgood + 1
-            for w = 1:Ngrid
-                _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
+            for w = 1:nmesh
+                _omega = ommin + (w - 1) * (ommax - ommin) / (nmesh - 1)
                 for r = 1:length(𝑆.Cv[l])
                     R = 𝑆.Cv[l][r]
                     if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
@@ -328,13 +328,13 @@ function som_spectra(𝑆::SOMContext)
 end
 
 function som_output(Aom::Vector{F64})
-    Ngrid = P_SOM["Ngrid"]
+    nmesh = P_SOM["nmesh"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
 
     open("Aw.data", "w") do fout
-        for w = 1:Ngrid
-            _omega = ommin + (w - 1) * (ommax - ommin) / (Ngrid - 1)
+        for w = 1:nmesh
+            _omega = ommin + (w - 1) * (ommax - ommin) / (nmesh - 1)
             println(fout, _omega, " ", Aom[w])
         end
     end
