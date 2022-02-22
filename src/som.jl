@@ -47,18 +47,18 @@ struct SOMData <: AbstractData
 end
 
 const P_SOM = Dict{String, Any}(
-    "Lmax" => 200,
+    "Lmax" => 400,
     "Ngrid" => 64,
     "nmesh" => 501,
     "Nf" => 1000,
     "Tmax" => 100,
     "Kmax" => 100,
     "smin" => 0.005,
-    "wmin" => 0.002,
+    "wmin" => 0.02,
     "dmax" => 2.0,
     "ommax" => 10.0,
     "ommin" => -10.0,
-    "alpha" => 5.0,
+    "alpha" => 10.0,
     "temp" => 0.05,
     "norm" => -1.0,
     "monitor" => false,
