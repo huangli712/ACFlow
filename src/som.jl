@@ -7,10 +7,6 @@
 # Last modified: 2022/02/27
 #
 
-#struct MatsubaraGrid <: AbstractGrid
-#    grid :: Vector{F64}
-#end
-
 function read_data!()
     grid  = F64[]
     value = C64[]
