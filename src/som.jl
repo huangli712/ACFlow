@@ -4,18 +4,17 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/02/22
+# Last modified: 2022/02/27
 #
 
-struct MatsubaraGrid <: AbstractGrid
-    grid :: Vector{F64}
-end
+#struct MatsubaraGrid <: AbstractGrid
+#    grid :: Vector{F64}
+#end
 
 function read_data!()
     grid  = F64[]
     value = C64[]
     error = C64[]
-    #covar = F64[]
 
     niw = 64
     #
@@ -37,13 +36,13 @@ function read_data!()
         end
     end
 
-    return MatsubaraGrid(grid), SOMData(value, error)
+    β = 2.0 * π / (grid[2] - grid[1])
+    return FermionicMatsubaraGrid(niw, β, grid), SOMData(value, error)
 end
 
 struct SOMData <: AbstractData
     value :: Vector{N64}
     error :: Vector{N64}
-    #covar :: Vector{N64}
 end
 
 const P_SOM = Dict{String, Any}(
