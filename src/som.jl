@@ -45,7 +45,7 @@ const P_SOM = Dict{String, Any}(
     "nmesh" => 501,
     "Nf" => 1000,
     "Tmax" => 100,
-    "Kmax" => 100,
+    "nbox" => 100,
     "smin" => 0.005,
     "wmin" => 0.02,
     "dmax" => 2.0,
@@ -55,28 +55,27 @@ const P_SOM = Dict{String, Any}(
     "norm" => -1.0,
 )
 
-mutable struct Rectangle
+mutable struct Box
     h :: F64
     w :: F64
     c :: F64
 end
 
-#abstract type AbstractMonteCarlo end
-mutable struct SOMMonteCarlo# <: AbstractMonteCarlo
+mutable struct SOMMonteCarlo
     rng :: AbstractRNG
     tri :: Vector{I64}
     acc :: Vector{I64}
 end
 
 mutable struct SOMElement
-    C :: Vector{Rectangle}
+    C :: Vector{Box}
     Λ :: Array{C64,2}
     G :: Vector{C64}
     Δ :: F64
 end
 
 mutable struct SOMContext
-    Cv :: Vector{Vector{Rectangle}}
+    Cv :: Vector{Vector{Box}}
     Δv :: Vector{F64}
 end
 
@@ -104,15 +103,15 @@ end
 
 function som_init()
     Lmax = P_SOM["Lmax"]
-    Kmax = P_SOM["Kmax"]
+    nbox = P_SOM["nbox"]
 
     Δv = zeros(F64, Lmax)
 
     Cv = []
     for _ = 1:Lmax
-        C = Rectangle[]
-        for _ = 1:Kmax
-            push!(C, Rectangle(0.0, 0.0, 0.0))
+        C = Box[]
+        for _ = 1:nbox
+            push!(C, Box(0.0, 0.0, 0.0))
         end
         push!(Cv, C)
     end
@@ -131,10 +130,10 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData
     wmin  = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-    Kmax  = P_SOM["Kmax"]
+    nbox  = P_SOM["nbox"]
     ngrid = P_SOM["ngrid"]
 
-    _Know = rand(MC.rng, 2:Kmax)
+    _Know = rand(MC.rng, 2:nbox)
     _weight = zeros(F64, _Know)
     for i = 1:_Know
         _weight[i] = rand(MC.rng, F64)
@@ -157,15 +156,15 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData
         plus_count = plus_count + 1
     end
 
-    C = Rectangle[]
-    Λ = zeros(C64, ngrid, Kmax)
+    C = Box[]
+    Λ = zeros(C64, ngrid, nbox)
     Δ = 0.0
 
     for k = 1:_Know
         c = ommin + wmin / 2.0 + (ommax - ommin - wmin) * rand(MC.rng, F64)
         w = wmin + (min(2.0 * (c - ommin), 2.0 * (ommax - c)) - wmin) * rand(MC.rng, F64)
         h = weight[k] / w
-        R = Rectangle(h, w, c)
+        R = Box(h, w, c)
         push!(C, R)
         Λ[:,k] .= _calc_lambda(R, ω)
     end
@@ -177,7 +176,7 @@ end
 
 function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
     Tmax = P_SOM["Tmax"]
-    Kmax = P_SOM["Kmax"]
+    nbox = P_SOM["nbox"]
     dmax = P_SOM["dmax"]
 
     T1 = rand(MC.rng, 1:Tmax)
@@ -191,7 +190,7 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
 
         @cswitch update_type begin
             @case 1
-                if length(ST.C) < Kmax - 1
+                if length(ST.C) < nbox - 1
                     _try_insert(ST, MC, ω, 𝐺, d1)
                 end
                 break
@@ -217,7 +216,7 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
                 break
 
             @case 6
-                if length(ST.C) < Kmax - 1
+                if length(ST.C) < nbox - 1
                     _try_split(ST, MC, ω, 𝐺, d1)
                 end
                 break
@@ -236,7 +235,7 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
 
         @cswitch update_type begin
             @case 1
-                if length(ST.C) < Kmax - 1
+                if length(ST.C) < nbox - 1
                     _try_insert(ST, MC, ω, 𝐺, d2)
                 end
                 break
@@ -262,7 +261,7 @@ function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGri
                 break
 
             @case 6
-                if length(ST.C) < Kmax - 1
+                if length(ST.C) < nbox - 1
                     _try_split(ST, MC, ω, 𝐺, d2)
                 end
                 break
@@ -358,8 +357,8 @@ function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     h = dx / w_new_max + (dx / wmin - dx / w_new_max) * r2
     w = dx / h
 
-    Rnew = Rectangle(R.h - dx / R.w, R.w, R.c)
-    Radd = Rectangle(h, w, c)
+    Rnew = Box(R.h - dx / R.w, R.w, R.c)
+    Radd = Box(h, w, c)
 
     G1 = 𝑆.Λ[:,t]
     G2 = _calc_lambda(Rnew, ω)
@@ -402,7 +401,7 @@ function _try_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     G2 = 𝑆.Λ[:,t2]
     Ge = 𝑆.Λ[:,csize]
 
-    R2n = Rectangle(R2.h + dx / R2.w, R2.w, R2.c)
+    R2n = Box(R2.h + dx / R2.w, R2.w, R2.c)
     G2n = _calc_lambda(R2n, ω)
 
     Δ = _calc_err(𝑆.G - G1 - G2 + G2n, 𝐺)
@@ -441,7 +440,7 @@ function _try_position(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsuba
     end
     dc = Pdx(dx_min, dx_max, MC.rng)
 
-    Rn = Rectangle(R.h, R.w, R.c + dc)
+    Rn = Box(R.h, R.w, R.c + dc)
     G1 = 𝑆.Λ[:,t]
     G2 = _calc_lambda(Rn, ω)
 
@@ -479,7 +478,7 @@ function _try_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     h = weight / w
     c = R.c
 
-    Rn = Rectangle(h, w, c)
+    Rn = Box(h, w, c)
     G1 = 𝑆.Λ[:,t]
     G2 = _calc_lambda(Rn, ω)
 
@@ -520,10 +519,10 @@ function _try_height(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     end
     dh = Pdx(dx_min, dx_max, MC.rng)
 
-    R1n = Rectangle(R1.h + dh, R1.w, R1.c)
+    R1n = Box(R1.h + dh, R1.w, R1.c)
     G1A = 𝑆.Λ[:,t1]
     G1B = _calc_lambda(R1n, ω)
-    R2n = Rectangle(R2.h - dh * w1 / w2, R2.w, R2.c)
+    R2n = Box(R2.h - dh * w1 / w2, R2.w, R2.c)
     G2A = 𝑆.Λ[:,t2]
     G2B = _calc_lambda(R2n, ω)
 
@@ -580,10 +579,10 @@ function _try_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
         G1 = 𝑆.Λ[:,t]
         Ge = 𝑆.Λ[:,csize]
 
-        R2 = Rectangle(h, w1, c1 + dc1)
+        R2 = Box(h, w1, c1 + dc1)
         G2 = _calc_lambda(R2, ω)
 
-        R3 = Rectangle(h, w2, c2 + dc2)
+        R3 = Box(h, w2, c2 + dc2)
         G3 = _calc_lambda(R3, ω)
         Δ = _calc_err(𝑆.G - G1 + G2 + G3, 𝐺)
 
@@ -638,7 +637,7 @@ function _try_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     G2 = 𝑆.Λ[:,t2]
     Ge = 𝑆.Λ[:,csize]
 
-    Rn = Rectangle(h_new, w_new, c_new + dc)
+    Rn = Box(h_new, w_new, c_new + dc)
     Gn = _calc_lambda(Rn, ω)
 
     Δ = _calc_err(𝑆.G - G1 - G2 + Gn, 𝐺)
@@ -661,14 +660,14 @@ function _try_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     MC.tri[7] = MC.tri[7] + 1
 end
 
-function _calc_lambda(r::Rectangle, ω::FermionicMatsubaraGrid)
+function _calc_lambda(r::Box, ω::FermionicMatsubaraGrid)
     Λ = @. r.h * log((im * ω.ω - r.c + 0.5 * r.w) / (im * ω.ω - r.c - 0.5 * r.w))
     return Λ
 end
 
 function _calc_err(Λ::Array{C64,2}, nk::I64, 𝐺::SOMData)
-    ngrid, Kmax = size(Λ)
-    @assert nk ≤ Kmax
+    ngrid, nbox = size(Λ)
+    @assert nk ≤ nbox
 
     res = 0.0
     for w = 1:ngrid
@@ -684,8 +683,8 @@ function _calc_err(Gc::Vector{C64}, 𝐺::SOMData)
 end
 
 function _calc_gf(Λ::Array{C64,2}, nk::I64)
-    ngrid, Kmax = size(Λ)
-    @assert nk ≤ Kmax
+    ngrid, nbox = size(Λ)
+    @assert nk ≤ nbox
 
     G = zeros(C64, ngrid)
     for k = 1:nk
@@ -697,7 +696,7 @@ function _calc_gf(Λ::Array{C64,2}, nk::I64)
     return G
 end
 
-function _calc_norm(C::Vector{Rectangle})
+function _calc_norm(C::Vector{Box})
     norm = sum(map(x -> x.h * x.w, C))
     return norm
 end
