@@ -41,7 +41,7 @@ end
 
 const P_SOM = Dict{String, Any}(
     "Lmax" => 400,
-    "Ngrid" => 64,
+    "ngrid" => 64,
     "nmesh" => 501,
     "Nf" => 1000,
     "Tmax" => 100,
@@ -52,9 +52,7 @@ const P_SOM = Dict{String, Any}(
     "ommax" => 10.0,
     "ommin" => -10.0,
     "alpha" => 10.0,
-    "temp" => 0.05,
     "norm" => -1.0,
-    "monitor" => false,
 )
 
 mutable struct Rectangle
@@ -134,7 +132,7 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     Kmax  = P_SOM["Kmax"]
-    Ngrid = P_SOM["Ngrid"]
+    ngrid = P_SOM["ngrid"]
 
     _Know = rand(MC.rng, 2:Kmax)
     _weight = zeros(F64, _Know)
@@ -160,7 +158,7 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData
     end
 
     C = Rectangle[]
-    Λ = zeros(C64, Ngrid, Kmax)
+    Λ = zeros(C64, ngrid, Kmax)
     Δ = 0.0
 
     for k = 1:_Know
@@ -669,11 +667,11 @@ function _calc_lambda(r::Rectangle, ω::FermionicMatsubaraGrid)
 end
 
 function _calc_err(Λ::Array{C64,2}, nk::I64, 𝐺::SOMData)
-    Ngrid, Kmax = size(Λ)
+    ngrid, Kmax = size(Λ)
     @assert nk ≤ Kmax
 
     res = 0.0
-    for w = 1:Ngrid
+    for w = 1:ngrid
         g = sum(Λ[w,1:nk])
         res = res + abs((g - 𝐺.value[w]) / 𝐺.error[w])
     end
@@ -686,12 +684,12 @@ function _calc_err(Gc::Vector{C64}, 𝐺::SOMData)
 end
 
 function _calc_gf(Λ::Array{C64,2}, nk::I64)
-    Ngrid, Kmax = size(Λ)
+    ngrid, Kmax = size(Λ)
     @assert nk ≤ Kmax
 
-    G = zeros(C64, Ngrid)
+    G = zeros(C64, ngrid)
     for k = 1:nk
-        for g = 1:Ngrid
+        for g = 1:ngrid
             G[g] = G[g] + Λ[g,k]
         end
     end
