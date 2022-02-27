@@ -31,8 +31,6 @@ function read_data!()
             arr = parse.(F64, line_to_array(fin))
             @assert grid[i] == arr[1]
             push!(error, arr[2] + arr[3] * im)
-            #push!(covar, arr[2]^2)
-            #push!(covar, arr[3]^2)
         end
     end
 
@@ -88,7 +86,7 @@ mutable struct SOMContext
     Δv :: Vector{F64}
 end
 
-function som_run(ω::MatsubaraGrid, 𝐺::SOMData)
+function som_run(ω::FermionicMatsubaraGrid, 𝐺::SOMData)
     Lmax = P_SOM["Lmax"]
     Nf = P_SOM["Nf"]
 
@@ -134,7 +132,7 @@ function som_init()
     return SOMContext(Cv, Δv), SOMMonteCarlo(rng, tri, acc)
 end
 
-function som_random(MC::SOMMonteCarlo, ω::MatsubaraGrid, 𝐺::SOMData)
+function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
     smin  = P_SOM["smin"]
     wmin  = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
@@ -183,7 +181,7 @@ function som_random(MC::SOMMonteCarlo, ω::MatsubaraGrid, 𝐺::SOMData)
     return SOMElement(C, Λ, G, Δ)
 end
 
-function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, 𝐺::SOMData)
+function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
     Tmax = P_SOM["Tmax"]
     Kmax = P_SOM["Kmax"]
     dmax = P_SOM["dmax"]
@@ -339,7 +337,7 @@ function som_output(Aom::Vector{F64})
     end
 end
 
-function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     smin  = P_SOM["smin"]
     wmin  = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
@@ -388,7 +386,7 @@ function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, �
     MC.tri[1] = MC.tri[1] + 1
 end
 
-function _try_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     csize = length(𝑆.C)
 
     t1 = rand(MC.rng, 1:csize)
@@ -433,7 +431,7 @@ function _try_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, �
     MC.tri[2] = MC.tri[2] + 1
 end
 
-function _try_position(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_position(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     csize = length(𝑆.C)
@@ -466,7 +464,7 @@ function _try_position(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, �
     MC.tri[3] = MC.tri[3] + 1
 end
 
-function _try_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     wmin  = P_SOM["wmin"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
@@ -504,7 +502,7 @@ function _try_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, 𝐺
     MC.tri[4] = MC.tri[4] + 1
 end
 
-function _try_height(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_height(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     smin  = P_SOM["smin"]
     csize = length(𝑆.C)
 
@@ -550,7 +548,7 @@ function _try_height(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, �
     MC.tri[5] = MC.tri[5] + 1
 end
 
-function _try_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     wmin  = P_SOM["wmin"]
     smin  = P_SOM["smin"]
     ommin = P_SOM["ommin"]
@@ -614,7 +612,7 @@ function _try_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, 𝐺
     MC.tri[6] = MC.tri[6] + 1
 end
 
-function _try_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
     csize = length(𝑆.C)
@@ -669,8 +667,8 @@ function _try_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::MatsubaraGrid, 𝐺
     MC.tri[7] = MC.tri[7] + 1
 end
 
-function _calc_lambda(r::Rectangle, ω::MatsubaraGrid)
-    Λ = @. r.h * log((im * ω.grid - r.c + 0.5 * r.w) / (im * ω.grid - r.c - 0.5 * r.w))
+function _calc_lambda(r::Rectangle, ω::FermionicMatsubaraGrid)
+    Λ = @. r.h * log((im * ω.ω - r.c + 0.5 * r.w) / (im * ω.ω - r.c - 0.5 * r.w))
     return Λ
 end
 
