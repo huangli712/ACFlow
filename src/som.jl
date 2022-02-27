@@ -63,8 +63,8 @@ mutable struct Rectangle
     c :: F64
 end
 
-abstract type AbstractMonteCarlo end
-mutable struct SOMMonteCarlo <: AbstractMonteCarlo
+#abstract type AbstractMonteCarlo end
+mutable struct SOMMonteCarlo# <: AbstractMonteCarlo
     rng :: AbstractRNG
     tri :: Vector{I64}
     acc :: Vector{I64}
