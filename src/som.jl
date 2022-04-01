@@ -45,11 +45,11 @@ const P_SOM = Dict{String, Any}(
     "nstep"  => 40,
     "ntry" => 1000,
     "nbox"  => 100,
-    "smin"  => 0.005,
-    "wmin"  => 0.02,
+    "sbox"  => 0.005,
+    "wbox"  => 0.02,
     "dmax"  => 2.0,
-    "ommax" => 10.0,
-    "ommin" => -10.0,
+    "wmax" => 10.0,
+    "wmin" => -10.0,
     "alpha" => 10.0,
     "norm"  => -1.0,
 )
@@ -125,10 +125,10 @@ function som_init()
 end
 
 function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
-    smin  = P_SOM["smin"]
-    wmin  = P_SOM["wmin"]
-    ommin = P_SOM["ommin"]
-    ommax = P_SOM["ommax"]
+    sbox  = P_SOM["sbox"]
+    wbox  = P_SOM["wbox"]
+    wmin = P_SOM["wmin"]
+    wmax = P_SOM["wmax"]
     nbox  = P_SOM["nbox"]
     ngrid = P_SOM["ngrid"]
 
@@ -146,12 +146,12 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData
 
     plus_count = 1
     minus_count = _Know
-    while weight[plus_count] < smin
-        while weight[minus_count] < 2 * smin
+    while weight[plus_count] < sbox
+        while weight[minus_count] < 2 * sbox
             minus_count = minus_count - 1
         end
-        weight[plus_count] = weight[plus_count] + smin
-        weight[minus_count] = weight[minus_count] - smin
+        weight[plus_count] = weight[plus_count] + sbox
+        weight[minus_count] = weight[minus_count] - sbox
         plus_count = plus_count + 1
     end
 
@@ -160,8 +160,8 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData
     Δ = 0.0
 
     for k = 1:_Know
-        c = ommin + wmin / 2.0 + (ommax - ommin - wmin) * rand(MC.rng, F64)
-        w = wmin + (min(2.0 * (c - ommin), 2.0 * (ommax - c)) - wmin) * rand(MC.rng, F64)
+        c = wmin + wbox / 2.0 + (wmax - wmin - wbox) * rand(MC.rng, F64)
+        w = wbox + (min(2.0 * (c - wmin), 2.0 * (wmax - c)) - wbox) * rand(MC.rng, F64)
         h = weight[k] / w
         R = Box(h, w, c)
         push!(C, R)
@@ -284,8 +284,8 @@ end
 function som_spectra(𝑆::SOMContext)
     alpha = P_SOM["alpha"]
     nmesh = P_SOM["nmesh"]
-    ommin = P_SOM["ommin"]
-    ommax = P_SOM["ommax"]
+    wmin = P_SOM["wmin"]
+    wmax = P_SOM["wmax"]
     nstep  = P_SOM["nstep"]
 
     dev_min = minimum(𝑆.Δv)
@@ -296,7 +296,7 @@ function som_spectra(𝑆::SOMContext)
         if alpha * dev_min - 𝑆.Δv[l] > 0
             Lgood = Lgood + 1
             for w = 1:nmesh
-                _omega = ommin + (w - 1) * (ommax - ommin) / (nmesh - 1)
+                _omega = wmin + (w - 1) * (wmax - wmin) / (nmesh - 1)
                 for r = 1:length(𝑆.Cv[l])
                     R = 𝑆.Cv[l][r]
                     if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
@@ -318,42 +318,42 @@ end
 
 function som_output(Aom::Vector{F64})
     nmesh = P_SOM["nmesh"]
-    ommin = P_SOM["ommin"]
-    ommax = P_SOM["ommax"]
+    wmin = P_SOM["wmin"]
+    wmax = P_SOM["wmax"]
 
     open("Aw.data", "w") do fout
         for w = 1:nmesh
-            _omega = ommin + (w - 1) * (ommax - ommin) / (nmesh - 1)
+            _omega = wmin + (w - 1) * (wmax - wmin) / (nmesh - 1)
             println(fout, _omega, " ", Aom[w])
         end
     end
 end
 
 function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
-    smin  = P_SOM["smin"]
-    wmin  = P_SOM["wmin"]
-    ommin = P_SOM["ommin"]
-    ommax = P_SOM["ommax"]
+    sbox  = P_SOM["sbox"]
+    wbox  = P_SOM["wbox"]
+    wmin = P_SOM["wmin"]
+    wmax = P_SOM["wmax"]
     csize = length(𝑆.C)
 
     t = rand(MC.rng, 1:csize)
 
     R = 𝑆.C[t]
-    if R.h * R.w ≤ 2.0 * smin
+    if R.h * R.w ≤ 2.0 * sbox
         return
     end
 
-    dx_min = smin
-    dx_max = R.h * R.w - smin
+    dx_min = sbox
+    dx_max = R.h * R.w - sbox
     if dx_max ≤ dx_min
         return
     end
     r1 = rand(MC.rng, F64)
     r2 = rand(MC.rng, F64)
-    c = (ommin + wmin / 2.0) + (ommax - ommin - wmin) * r1
-    w_new_max = 2.0 * min(ommax - c, c - ommin)
+    c = (wmin + wbox / 2.0) + (wmax - wmin - wbox) * r1
+    w_new_max = 2.0 * min(wmax - c, c - wmin)
     dx = Pdx(dx_min, dx_max, MC.rng)
-    h = dx / w_new_max + (dx / wmin - dx / w_new_max) * r2
+    h = dx / w_new_max + (dx / wbox - dx / w_new_max) * r2
     w = dx / h
 
     Rnew = Box(R.h - dx / R.w, R.w, R.c)
@@ -424,16 +424,16 @@ function _try_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
 end
 
 function _try_position(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
-    ommin = P_SOM["ommin"]
-    ommax = P_SOM["ommax"]
+    wmin = P_SOM["wmin"]
+    wmax = P_SOM["wmax"]
     csize = length(𝑆.C)
 
     t = rand(MC.rng, 1:csize)
 
     R = 𝑆.C[t]
 
-    dx_min = ommin + R.w / 2.0 - R.c
-    dx_max = ommax - R.w / 2.0 - R.c
+    dx_min = wmin + R.w / 2.0 - R.c
+    dx_max = wmax - R.w / 2.0 - R.c
     if dx_max ≤ dx_min
         return
     end
@@ -457,9 +457,9 @@ function _try_position(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsuba
 end
 
 function _try_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
-    wmin  = P_SOM["wmin"]
-    ommin = P_SOM["ommin"]
-    ommax = P_SOM["ommax"]
+    wbox  = P_SOM["wbox"]
+    wmin = P_SOM["wmin"]
+    wmax = P_SOM["wmax"]
     csize = length(𝑆.C)
 
     t = rand(MC.rng, 1:csize)
@@ -467,8 +467,8 @@ function _try_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     R = 𝑆.C[t]
 
     weight = R.h * R.w
-    dx_min = wmin - R.w
-    dx_max = min(2.0 * (R.c - ommin), 2.0 * (ommax - R.c)) - R.w
+    dx_min = wbox - R.w
+    dx_max = min(2.0 * (R.c - wmin), 2.0 * (wmax - R.c)) - R.w
     if dx_max ≤ dx_min
         return
     end
@@ -495,7 +495,7 @@ function _try_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
 end
 
 function _try_height(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
-    smin  = P_SOM["smin"]
+    sbox  = P_SOM["sbox"]
     csize = length(𝑆.C)
 
     t1 = rand(MC.rng, 1:csize)
@@ -511,8 +511,8 @@ function _try_height(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     w2 = R2.w
     h1 = R1.h
     h2 = R2.h
-    dx_min = smin / w1 - h1
-    dx_max = (h2 - smin / w2) * w2 / w1
+    dx_min = sbox / w1 - h1
+    dx_max = (h2 - sbox / w2) * w2 / w1
     if dx_max ≤ dx_min
         return
     end
@@ -541,39 +541,39 @@ function _try_height(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
 end
 
 function _try_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
-    wmin  = P_SOM["wmin"]
-    smin  = P_SOM["smin"]
-    ommin = P_SOM["ommin"]
-    ommax = P_SOM["ommax"]
+    wbox  = P_SOM["wbox"]
+    sbox  = P_SOM["sbox"]
+    wmin = P_SOM["wmin"]
+    wmax = P_SOM["wmax"]
     csize = length(𝑆.C)
 
     t = rand(MC.rng, 1:csize)
 
     R1 = 𝑆.C[t]
-    if R1.w ≤ 2 * wmin || R1.w * R1.h ≤ 2.0 * smin
+    if R1.w ≤ 2 * wbox || R1.w * R1.h ≤ 2.0 * sbox
         return
     end
 
     h = R1.h
-    w1 = wmin + (R1.w - 2.0 * wmin) * rand(MC.rng, F64)
+    w1 = wbox + (R1.w - 2.0 * wbox) * rand(MC.rng, F64)
     w2 = R1.w - w1
     if w1 > w2
         w1, w2 = w2, w1
     end
     c1 = R1.c - R1.w / 2.0 + w1 / 2.0
     c2 = R1.c + R1.w / 2.0 - w2 / 2.0
-    dx_min = ommin + w1 / 2.0 - c1
-    dx_max = ommax - w1 / 2.0 - c1
+    dx_min = wmin + w1 / 2.0 - c1
+    dx_max = wmax - w1 / 2.0 - c1
     if dx_max ≤ dx_min
         return
     end
     dc1 = Pdx(dx_min, dx_max, MC.rng)
     dc2 = -1.0 * w1 * dc1 / w2
 
-    if (c1 + dc1 ≥ ommin + w1 / 2.0) &&
-       (c1 + dc1 ≤ ommax - w1 / 2.0) &&
-       (c2 + dc2 ≥ ommin + w2 / 2.0) &&
-       (c2 + dc2 ≤ ommax - w2 / 2.0)
+    if (c1 + dc1 ≥ wmin + w1 / 2.0) &&
+       (c1 + dc1 ≤ wmax - w1 / 2.0) &&
+       (c2 + dc2 ≥ wmin + w2 / 2.0) &&
+       (c2 + dc2 ≤ wmax - w2 / 2.0)
 
         G1 = 𝑆.Λ[:,t]
         Ge = 𝑆.Λ[:,csize]
@@ -605,8 +605,8 @@ function _try_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
 end
 
 function _try_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
-    ommin = P_SOM["ommin"]
-    ommax = P_SOM["ommax"]
+    wmin = P_SOM["wmin"]
+    wmax = P_SOM["wmax"]
     csize = length(𝑆.C)
 
     t1 = rand(MC.rng, 1:csize)
@@ -625,8 +625,8 @@ function _try_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     w_new = 0.5 * (R1.w + R2.w)
     h_new = weight / w_new
     c_new = R1.c + (R2.c - R1.c) * R2.h * R2.w / weight
-    dx_min = ommin + w_new / 2.0 - c_new
-    dx_max = ommax - w_new / 2.0 - c_new
+    dx_min = wmin + w_new / 2.0 - c_new
+    dx_max = wmax - w_new / 2.0 - c_new
     if dx_max ≤ dx_min
         return
     end
