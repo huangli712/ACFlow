@@ -42,8 +42,8 @@ end
 const P_SOM = Dict{String, Any}(
     "ngrid" => 64,
     "nmesh" => 501,
-    "Lmax"  => 40,
-    "Nf"    => 1000,
+    "nstep"  => 40,
+    "ntry" => 1000,
     "nbox"  => 100,
     "smin"  => 0.005,
     "wmin"  => 0.02,
@@ -79,17 +79,17 @@ mutable struct SOMContext
 end
 
 function som_run(ω::FermionicMatsubaraGrid, 𝐺::SOMData)
-    Lmax = P_SOM["Lmax"]
-    Nf = P_SOM["Nf"]
+    nstep = P_SOM["nstep"]
+    ntry = P_SOM["ntry"]
 
     SC, MC = som_init()
 
-    for l = 1:Lmax
+    for l = 1:nstep
         println("try: $l")
 
         SE = som_random(MC, ω, 𝐺)
 
-        for _ = 1:Nf
+        for _ = 1:ntry
             som_update(SE, MC, ω, 𝐺)
         end
 
@@ -101,13 +101,13 @@ function som_run(ω::FermionicMatsubaraGrid, 𝐺::SOMData)
 end
 
 function som_init()
-    Lmax = P_SOM["Lmax"]
+    nstep = P_SOM["nstep"]
     nbox = P_SOM["nbox"]
 
-    Δv = zeros(F64, Lmax)
+    Δv = zeros(F64, nstep)
 
     Cv = []
-    for _ = 1:Lmax
+    for _ = 1:nstep
         C = Box[]
         for _ = 1:nbox
             push!(C, Box(0.0, 0.0, 0.0))
@@ -286,13 +286,13 @@ function som_spectra(𝑆::SOMContext)
     nmesh = P_SOM["nmesh"]
     ommin = P_SOM["ommin"]
     ommax = P_SOM["ommax"]
-    Lmax  = P_SOM["Lmax"]
+    nstep  = P_SOM["nstep"]
 
     dev_min = minimum(𝑆.Δv)
 
     Lgood = 0
     Aom = zeros(F64, nmesh)
-    for l = 1:Lmax
+    for l = 1:nstep
         if alpha * dev_min - 𝑆.Δv[l] > 0
             Lgood = Lgood + 1
             for w = 1:nmesh
