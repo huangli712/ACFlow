@@ -42,17 +42,16 @@ end
 const P_SOM = Dict{String, Any}(
     "ngrid" => 64,
     "nmesh" => 501,
-    "Lmax" => 400,
-    "Nf" => 1000,
-    "Tmax" => 100,
-    "nbox" => 100,
-    "smin" => 0.005,
-    "wmin" => 0.02,
-    "dmax" => 2.0,
+    "Lmax"  => 40,
+    "Nf"    => 1000,
+    "nbox"  => 100,
+    "smin"  => 0.005,
+    "wmin"  => 0.02,
+    "dmax"  => 2.0,
     "ommax" => 10.0,
     "ommin" => -10.0,
     "alpha" => 10.0,
-    "norm" => -1.0,
+    "norm"  => -1.0,
 )
 
 mutable struct Box
@@ -175,7 +174,7 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData
 end
 
 function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
-    Tmax = P_SOM["Tmax"]
+    Tmax = 100
     nbox = P_SOM["nbox"]
     dmax = P_SOM["dmax"]
 
