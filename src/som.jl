@@ -39,17 +39,6 @@ struct SOMData <: AbstractData
     error :: Vector{N64}
 end
 
-#const P_SOM = Dict{String, Any}(
-#    "nstep" => 40,
-#    "ntry"  => 1000,
-#    "nbox"  => 100,
-#    "sbox"  => 0.005,
-#    "wbox"  => 0.02,
-#    "dmax"  => 2.0,
-#    "alpha" => 10.0,
-#    "norm"  => -1.0,
-#)
-
 mutable struct Box
     h :: F64
     w :: F64
