@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/02/27
+# Last modified: 2022/04/03
 #
 
 function read_data!()
@@ -42,14 +42,14 @@ end
 const P_SOM = Dict{String, Any}(
     "ngrid" => 64,
     "nmesh" => 501,
-    "nstep"  => 40,
-    "ntry" => 1000,
+    "nstep" => 4000,
+    "ntry"  => 1000,
     "nbox"  => 100,
     "sbox"  => 0.005,
     "wbox"  => 0.02,
     "dmax"  => 2.0,
-    "wmax" => 10.0,
-    "wmin" => -10.0,
+    "wmax"  => 10.0,
+    "wmin"  => -10.0,
     "alpha" => 10.0,
     "norm"  => -1.0,
 )
