@@ -113,9 +113,9 @@ function som_init()
     rng = MersenneTwister(seed)
     @show "seed: ", seed
     tri = zeros(I64, 7)
-    acc = zeros(I64, 7)
+    Macc = zeros(I64, 7)
 
-    return SOMContext(Cv, Δv), StochOMMC(rng, tri, acc)
+    return SOMContext(Cv, Δv), StochOMMC(rng, tri, Macc)
 end
 
 function som_random(MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
@@ -366,7 +366,7 @@ function _try_insert(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid
         @. 𝑆.G = 𝑆.G - G1 + G2 + G3
         @. 𝑆.Λ[:,t] = G2
         @. 𝑆.Λ[:,csize+1] = G3
-        MC.acc[1] = MC.acc[1] + 1
+        MC.Macc[1] = MC.Macc[1] + 1
     end
 
     MC.tri[1] = MC.tri[1] + 1
@@ -411,7 +411,7 @@ function _try_remove(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid
         if t1 < csize
             @. 𝑆.Λ[:,t1] = Ge
         end
-        MC.acc[2] = MC.acc[2] + 1
+        MC.Macc[2] = MC.Macc[2] + 1
     end
 
     MC.tri[2] = MC.tri[2] + 1
@@ -444,7 +444,7 @@ function _try_position(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGr
         𝑆.Δ = Δ
         @. 𝑆.G = 𝑆.G - G1 + G2
         @. 𝑆.Λ[:,t] = G2
-        MC.acc[3] = MC.acc[3] + 1
+        MC.Macc[3] = MC.Macc[3] + 1
     end
 
     MC.tri[3] = MC.tri[3] + 1
@@ -482,7 +482,7 @@ function _try_width(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid,
         𝑆.Δ = Δ
         @. 𝑆.G = 𝑆.G - G1 + G2
         @. 𝑆.Λ[:,t] = G2
-        MC.acc[4] = MC.acc[4] + 1
+        MC.Macc[4] = MC.Macc[4] + 1
     end
 
     MC.tri[4] = MC.tri[4] + 1
@@ -528,7 +528,7 @@ function _try_height(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid
         @. 𝑆.G = 𝑆.G - G1A + G1B - G2A + G2B
         @. 𝑆.Λ[:,t1] = G1B
         @. 𝑆.Λ[:,t2] = G2B
-        MC.acc[5] = MC.acc[5] + 1
+        MC.Macc[5] = MC.Macc[5] + 1
     end
 
     MC.tri[5] = MC.tri[5] + 1
@@ -591,7 +591,7 @@ function _try_split(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid,
             end
             @. 𝑆.Λ[:,csize] = G2
             @. 𝑆.Λ[:,csize+1] = G3
-            MC.acc[6] = MC.acc[6] + 1
+            MC.Macc[6] = MC.Macc[6] + 1
         end
     end
 
@@ -647,7 +647,7 @@ function _try_merge(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid,
         if t2 < csize
             @. 𝑆.Λ[:,t2] = Ge
         end
-        MC.acc[7] = MC.acc[7] + 1
+        MC.Macc[7] = MC.Macc[7] + 1
     end
 
     MC.tri[7] = MC.tri[7] + 1
