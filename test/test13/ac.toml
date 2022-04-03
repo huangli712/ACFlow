@@ -1,6 +1,6 @@
 [COMM]
 finput = "green.data"
-solver = "MaxEnt"
+solver = "StochOM"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
@@ -12,9 +12,12 @@ wmin   = -10.0
 beta   = 10.0
 offdiag = false
 
-[MaxEnt]
-method = "chi2kink"
-nalph  = 12
-alpha  = 1e9
-ratio  = 10.0
-blur   = -1.0
+[StochOM]
+nstep = 40
+ntry  = 1000
+nbox  = 100
+sbox  = 0.005
+wbox  = 0.02
+dmax  = 2.0
+alpha = 10.0
+norm  = -1.0
