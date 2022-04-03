@@ -40,8 +40,8 @@ struct SOMData <: AbstractData
 end
 
 const P_SOM = Dict{String, Any}(
-    "ngrid" => 64,
-    "nmesh" => 501,
+    #"ngrid" => 64,
+    #"nmesh" => 501,
     "nstep" => 40,
     "ntry"  => 1000,
     "nbox"  => 100,
@@ -124,7 +124,7 @@ function som_random(MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
     wmin = P_SOM["wmin"]
     wmax = P_SOM["wmax"]
     nbox  = P_SOM["nbox"]
-    ngrid = P_SOM["ngrid"]
+    ngrid = get_c("ngrid")
 
     _Know = rand(MC.rng, 2:nbox)
     _weight = zeros(F64, _Know)
@@ -277,7 +277,7 @@ end
 
 function som_spectra(𝑆::StochOMContext)
     alpha = P_SOM["alpha"]
-    nmesh = P_SOM["nmesh"]
+    nmesh = get_c("nmesh")
     wmin = P_SOM["wmin"]
     wmax = P_SOM["wmax"]
     nstep  = P_SOM["nstep"]
@@ -311,7 +311,7 @@ function som_spectra(𝑆::StochOMContext)
 end
 
 function som_output(Aom::Vector{F64})
-    nmesh = P_SOM["nmesh"]
+    nmesh = get_c("nmesh")
     wmin = P_SOM["wmin"]
     wmax = P_SOM["wmax"]
 
