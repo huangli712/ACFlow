@@ -115,10 +115,10 @@ function som_init()
     tri = zeros(I64, 7)
     acc = zeros(I64, 7)
 
-    return SOMContext(Cv, Δv), SOMMonteCarlo(rng, tri, acc)
+    return SOMContext(Cv, Δv), StochOMMC(rng, tri, acc)
 end
 
-function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
+function som_random(MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
     sbox  = P_SOM["sbox"]
     wbox  = P_SOM["wbox"]
     wmin = P_SOM["wmin"]
@@ -167,7 +167,7 @@ function som_random(MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData
     return SOMElement(C, Λ, G, Δ)
 end
 
-function som_update(SE::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
+function som_update(SE::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
     Tmax = 100
     nbox = P_SOM["nbox"]
     dmax = P_SOM["dmax"]
@@ -323,7 +323,7 @@ function som_output(Aom::Vector{F64})
     end
 end
 
-function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_insert(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     sbox  = P_SOM["sbox"]
     wbox  = P_SOM["wbox"]
     wmin = P_SOM["wmin"]
@@ -372,7 +372,7 @@ function _try_insert(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     MC.tri[1] = MC.tri[1] + 1
 end
 
-function _try_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_remove(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     csize = length(𝑆.C)
 
     t1 = rand(MC.rng, 1:csize)
@@ -417,7 +417,7 @@ function _try_remove(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     MC.tri[2] = MC.tri[2] + 1
 end
 
-function _try_position(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_position(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     wmin = P_SOM["wmin"]
     wmax = P_SOM["wmax"]
     csize = length(𝑆.C)
@@ -450,7 +450,7 @@ function _try_position(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsuba
     MC.tri[3] = MC.tri[3] + 1
 end
 
-function _try_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_width(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     wbox  = P_SOM["wbox"]
     wmin = P_SOM["wmin"]
     wmax = P_SOM["wmax"]
@@ -488,7 +488,7 @@ function _try_width(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     MC.tri[4] = MC.tri[4] + 1
 end
 
-function _try_height(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_height(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     sbox  = P_SOM["sbox"]
     csize = length(𝑆.C)
 
@@ -534,7 +534,7 @@ function _try_height(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubara
     MC.tri[5] = MC.tri[5] + 1
 end
 
-function _try_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_split(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     wbox  = P_SOM["wbox"]
     sbox  = P_SOM["sbox"]
     wmin = P_SOM["wmin"]
@@ -598,7 +598,7 @@ function _try_split(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraG
     MC.tri[6] = MC.tri[6] + 1
 end
 
-function _try_merge(𝑆::SOMElement, MC::SOMMonteCarlo, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_merge(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     wmin = P_SOM["wmin"]
     wmax = P_SOM["wmax"]
     csize = length(𝑆.C)
