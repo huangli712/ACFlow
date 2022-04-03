@@ -490,7 +490,7 @@ To implement the StochAC solver for analytically continuation problem.
 *Members* :
 
 ```text
-StochElement -> A struct that contains monte carlo field configurations.
+StochACElement -> A struct that contains monte carlo field configurations.
 StochContext -> Essential struct for the StochAC solver.
 #
 solve        -> Wrapper function for the StochAC solver.
@@ -503,7 +503,7 @@ sample       -> Sample field configurations via metropolis algorithm.
 measure      -> Measure spectral functions and internal energies.
 #
 init_mc      -> Create a StochACMC struct.
-init_element -> Create a StochElement struct.
+init_element -> Create a StochACElement struct.
 init_iodata  -> Preprocess the input data.
 calc_fmesh   -> Build dense linear mesh in [wmin,wmax].
 calc_xmesh   -> Build dense linear mesh in [0,1].
@@ -521,7 +521,7 @@ try_swap     -> Try to exchange configurations between two adjacent layers.
 #
 include("sac.jl")
 #
-export StochElement
+export StochACElement
 export StochContext
 #
 export solve
