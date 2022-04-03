@@ -60,12 +60,6 @@ mutable struct Box
     c :: F64
 end
 
-mutable struct SOMMonteCarlo
-    rng :: AbstractRNG
-    tri :: Vector{I64}
-    acc :: Vector{I64}
-end
-
 mutable struct SOMElement
     C :: Vector{Box}
     Λ :: Array{C64,2}

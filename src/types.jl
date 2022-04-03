@@ -357,3 +357,21 @@ mutable struct StochACMC <: AbstractMC
     Sacc :: Vector{I64}
     Stry :: Vector{I64}
 end
+
+"""
+    StochOMMC
+
+Mutable struct. It is used within the StochOM solver. It includes random
+number generator and some counters.
+
+### Members
+
+* rng  -> Random number generator.
+* Macc -> Counter for move operation (accepted).
+* Mtry -> Counter for move operation (tried).
+"""
+mutable struct StochOMMC <: AbstractMC
+    rng :: AbstractRNG
+    Macc :: Vector{I64}
+    Mtry :: Vector{I64}
+end
