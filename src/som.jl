@@ -42,7 +42,7 @@ end
 const P_SOM = Dict{String, Any}(
     "ngrid" => 64,
     "nmesh" => 501,
-    "nstep" => 4000,
+    "nstep" => 40,
     "ntry"  => 1000,
     "nbox"  => 100,
     "sbox"  => 0.005,
