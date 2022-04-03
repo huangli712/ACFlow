@@ -219,14 +219,14 @@ function write_reproduce(ag::AbstractGrid, G::Vector{F64})
 end
 
 """
-    write_statistics(MC::StochMC)
+    write_statistics(MC::StochACMC)
 
 Write statistical information for the StochAC solver. Note that StochAC
 solver is based on a stochastic approach.
 
-See also: [`StochAC`](@ref), [`StochMC`](@ref).
+See also: [`StochAC`](@ref), [`StochACMC`](@ref).
 """
-function write_statistics(MC::StochMC)
+function write_statistics(MC::StochACMC)
     nalph = get_a("nalph")
 
     open("stat.data", "w") do fout
