@@ -39,18 +39,16 @@ struct SOMData <: AbstractData
     error :: Vector{N64}
 end
 
-const P_SOM = Dict{String, Any}(
-    "nstep" => 40,
-    "ntry"  => 1000,
-    "nbox"  => 100,
-    "sbox"  => 0.005,
-    "wbox"  => 0.02,
-    "dmax"  => 2.0,
-    "wmax"  => 10.0,
-    "wmin"  => -10.0,
-    "alpha" => 10.0,
-    "norm"  => -1.0,
-)
+#const P_SOM = Dict{String, Any}(
+#    "nstep" => 40,
+#    "ntry"  => 1000,
+#    "nbox"  => 100,
+#    "sbox"  => 0.005,
+#    "wbox"  => 0.02,
+#    "dmax"  => 2.0,
+#    "alpha" => 10.0,
+#    "norm"  => -1.0,
+#)
 
 mutable struct Box
     h :: F64
@@ -71,8 +69,8 @@ mutable struct StochOMContext
 end
 
 function som_run(ω::FermionicMatsubaraGrid, 𝐺::SOMData)
-    nstep = P_SOM["nstep"]
-    ntry = P_SOM["ntry"]
+    nstep = get_s("nstep")
+    ntry = get_s("ntry")
 
     SC, MC = som_init()
 
@@ -93,8 +91,8 @@ function som_run(ω::FermionicMatsubaraGrid, 𝐺::SOMData)
 end
 
 function som_init()
-    nstep = P_SOM["nstep"]
-    nbox = P_SOM["nbox"]
+    nstep = get_s("nstep")
+    nbox = get_s("nbox")
 
     Δv = zeros(F64, nstep)
 
@@ -117,11 +115,11 @@ function som_init()
 end
 
 function som_random(MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
-    sbox  = P_SOM["sbox"]
-    wbox  = P_SOM["wbox"]
-    wmin = P_SOM["wmin"]
-    wmax = P_SOM["wmax"]
-    nbox  = P_SOM["nbox"]
+    sbox  = get_s("sbox")
+    wbox  = get_s("wbox")
+    wmin = get_c("wmin")
+    wmax = get_c("wmax")
+    nbox  = get_s("nbox")
     ngrid = get_c("ngrid")
 
     _Know = rand(MC.rng, 2:nbox)
@@ -167,8 +165,8 @@ end
 
 function som_update(SE::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
     Tmax = 100
-    nbox = P_SOM["nbox"]
-    dmax = P_SOM["dmax"]
+    nbox = get_s("nbox")
+    dmax = get_s("dmax")
 
     T1 = rand(MC.rng, 1:Tmax)
     d1 = rand(MC.rng, F64)
@@ -274,11 +272,11 @@ function som_update(SE::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGri
 end
 
 function som_spectra(𝑆::StochOMContext)
-    alpha = P_SOM["alpha"]
+    alpha = get_s("alpha")
     nmesh = get_c("nmesh")
-    wmin = P_SOM["wmin"]
-    wmax = P_SOM["wmax"]
-    nstep  = P_SOM["nstep"]
+    wmin = get_c("wmin")
+    wmax = get_c("wmax")
+    nstep  = get_s("nstep")
 
     dev_min = minimum(𝑆.Δv)
 
@@ -310,8 +308,8 @@ end
 
 function som_output(Aom::Vector{F64})
     nmesh = get_c("nmesh")
-    wmin = P_SOM["wmin"]
-    wmax = P_SOM["wmax"]
+    wmin = get_c("wmin")
+    wmax = get_c("wmax")
 
     open("Aw.data", "w") do fout
         for w = 1:nmesh
@@ -322,10 +320,10 @@ function som_output(Aom::Vector{F64})
 end
 
 function _try_insert(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
-    sbox  = P_SOM["sbox"]
-    wbox  = P_SOM["wbox"]
-    wmin = P_SOM["wmin"]
-    wmax = P_SOM["wmax"]
+    sbox  = get_s("sbox")
+    wbox  = get_s("wbox")
+    wmin = get_c("wmin")
+    wmax = get_c("wmax")
     csize = length(𝑆.C)
 
     t = rand(MC.rng, 1:csize)
@@ -416,8 +414,8 @@ function _try_remove(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubara
 end
 
 function _try_position(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
-    wmin = P_SOM["wmin"]
-    wmax = P_SOM["wmax"]
+    wmin = get_c("wmin")
+    wmax = get_c("wmax")
     csize = length(𝑆.C)
 
     t = rand(MC.rng, 1:csize)
@@ -449,9 +447,9 @@ function _try_position(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsuba
 end
 
 function _try_width(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
-    wbox  = P_SOM["wbox"]
-    wmin = P_SOM["wmin"]
-    wmax = P_SOM["wmax"]
+    wbox  = get_s("wbox")
+    wmin = get_c("wmin")
+    wmax = get_c("wmax")
     csize = length(𝑆.C)
 
     t = rand(MC.rng, 1:csize)
@@ -487,7 +485,7 @@ function _try_width(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraG
 end
 
 function _try_height(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
-    sbox  = P_SOM["sbox"]
+    sbox  = get_s("sbox")
     csize = length(𝑆.C)
 
     t1 = rand(MC.rng, 1:csize)
@@ -533,10 +531,10 @@ function _try_height(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubara
 end
 
 function _try_split(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
-    wbox  = P_SOM["wbox"]
-    sbox  = P_SOM["sbox"]
-    wmin = P_SOM["wmin"]
-    wmax = P_SOM["wmax"]
+    wbox  = get_s("wbox")
+    sbox  = get_s("sbox")
+    wmin = get_c("wmin")
+    wmax = get_c("wmax")
     csize = length(𝑆.C)
 
     t = rand(MC.rng, 1:csize)
@@ -597,8 +595,8 @@ function _try_split(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraG
 end
 
 function _try_merge(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
-    wmin = P_SOM["wmin"]
-    wmax = P_SOM["wmax"]
+    wmin = get_c("wmin")
+    wmax = get_c("wmax")
     csize = length(𝑆.C)
 
     t1 = rand(MC.rng, 1:csize)
