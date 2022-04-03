@@ -28,7 +28,7 @@ mutable struct StochACElement
 end
 
 """
-    StochContext
+    StochACContext
 
 Mutable struct. It is used within the StochAC solver only.
 
@@ -47,7 +47,7 @@ Mutable struct. It is used within the StochAC solver only.
 * Uα     -> α-resolved internal energy, it is actually ⟨Hα⟩.
 * αₗ     -> Vector of the α parameters.
 """
-mutable struct StochContext
+mutable struct StochACContext
     Gᵥ     :: Vector{F64}
     σ¹     :: Vector{F64}
     grid   :: AbstractGrid
@@ -106,7 +106,7 @@ end
 """
     init(S::StochACSolver, rd::RawData)
 
-Initialize the StochAC solver and return a StochContext struct.
+Initialize the StochAC solver and return a StochACContext struct.
 """
 function init(S::StochACSolver, rd::RawData)
     MC = init_mc()
@@ -142,17 +142,17 @@ function init(S::StochACSolver, rd::RawData)
     αₗ = calc_alpha()
     println("Precompute α parameters")
 
-    SC = StochContext(Gᵥ, σ¹, grid, mesh, model, kernel, Aout, Δ, hτ, Hα, Uα, αₗ)
+    SC = StochACContext(Gᵥ, σ¹, grid, mesh, model, kernel, Aout, Δ, hτ, Hα, Uα, αₗ)
 
     return MC, SE, SC
 end
 
 """
-    run(S::StochACSolver, MC::StochACMC, SE::StochACElement, SC::StochContext)
+    run(S::StochACSolver, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Perform stochastic analytical continuation simulation, sequential version.
 """
-function run(S::StochACSolver, MC::StochACMC, SE::StochACElement, SC::StochContext)
+function run(S::StochACSolver, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     nstep = get_a("nstep")
     measure_per_steps = 100
     output_per_steps = get_a("ndump")
@@ -183,14 +183,14 @@ end
     prun(S::StochACSolver,
          p1::Dict{String,Vector{Any}},
          p2::Dict{String,Vector{Any}},
-         MC::StochACMC, SE::StochACElement, SC::StochContext)
+         MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Perform stochastic analytical continuation simulation, parallel version.
 The arguments `p1` and `p2` are copies of PCOMM and PStochAC, respectively.
 """
 function prun(S::StochACSolver,
               p1::Dict{String,Vector{Any}}, p2::Dict{String,Vector{Any}},
-              MC::StochACMC, SE::StochACElement, SC::StochContext)
+              MC::StochACMC, SE::StochACElement, SC::StochACContext)
     rev_dict(p1)
     rev_dict(S, p2)
 
@@ -223,13 +223,13 @@ function prun(S::StochACSolver,
 end
 
 """
-    average(step::F64, SC::StochContext)
+    average(step::F64, SC::StochACContext)
 
 Postprocess the results generated during the stochastic analytical
 continuation simulations. It will calculate real spectral functions, and
 internal energies.
 """
-function average(step::F64, SC::StochContext)
+function average(step::F64, SC::StochACContext)
     # Get key parameters
     nmesh = length(SC.mesh)
     nalph = length(SC.αₗ)
@@ -248,7 +248,7 @@ function average(step::F64, SC::StochContext)
     return Aout, Uα
 end
 
-function postprocess(SC::StochContext, Aout::Array{F64,2}, Uα::Vector{F64})
+function postprocess(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     function fitfun(x, p)
         return @. p[1] * x + p[2]
     end
@@ -287,11 +287,11 @@ end
 =#
 
 """
-    warmup(MC::StochACMC, SE::StochACElement, SC::StochContext)
+    warmup(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Warmup the monte carlo engine to acheieve thermalized equilibrium.
 """
-function warmup(MC::StochACMC, SE::StochACElement, SC::StochContext)
+function warmup(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     nwarm = get_a("nwarm")
 
     for _ = 1:nwarm
@@ -306,11 +306,11 @@ function warmup(MC::StochACMC, SE::StochACElement, SC::StochContext)
 end
 
 """
-    sample(MC::StochACMC, SE::StochACElement, SC::StochContext)
+    sample(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Perform monte carlo sweeps and sample the field configurations.
 """
-function sample(MC::StochACMC, SE::StochACElement, SC::StochContext)
+function sample(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     nalph = get_a("nalph")
 
     if rand(MC.rng) < 0.9
@@ -331,11 +331,11 @@ function sample(MC::StochACMC, SE::StochACElement, SC::StochContext)
 end
 
 """
-    measure(SE::StochACElement, SC::StochContext)
+    measure(SE::StochACElement, SC::StochACContext)
 
 Measure the spectral functions and internal energies.
 """
-function measure(SE::StochACElement, SC::StochContext)
+function measure(SE::StochACElement, SC::StochACContext)
     nalph = get_a("nalph")
 
     for ia = 1:nalph
@@ -560,14 +560,14 @@ function calc_alpha()
 end
 
 """
-    try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochContext)
+    try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Select two δ functions and then change their weights. Here `i` means the
 index for α parameters.
 
 See also: [`try_mov2`](@ref).
 """
-function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochContext)
+function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Get current number of δ functions
     ngamm = get_a("ngamm")
 
@@ -623,14 +623,14 @@ function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochContext)
 end
 
 """
-    try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochContext)
+    try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Select two δ functions and then change their positions. Here `i` means the
 index for α parameters.
 
 See also: [`try_mov1`](@ref).
 """
-function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochContext)
+function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Get current number of δ functions
     ngamm = get_a("ngamm")
 
@@ -684,11 +684,11 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochContext)
 end
 
 """
-    try_swap(MC::StochACMC, SE::StochACElement, SC::StochContext)
+    try_swap(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Try to exchange field configurations between two adjacent layers.
 """
-function try_swap(MC::StochACMC, SE::StochACElement, SC::StochContext)
+function try_swap(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Get number of α parameters
     nalph = get_a("nalph")
 

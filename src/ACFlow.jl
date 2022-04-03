@@ -491,30 +491,30 @@ To implement the StochAC solver for analytically continuation problem.
 
 ```text
 StochACElement -> A struct that contains monte carlo field configurations.
-StochContext -> Essential struct for the StochAC solver.
+StochACContext -> Essential struct for the StochAC solver.
 #
-solve        -> Wrapper function for the StochAC solver.
-init         -> Initialize stochastic analytical continuation simulation.
-run          -> Perform stochastic analytical continuation simulation.
-postprocess  -> Postprocess the calculated results and write them.
+solve          -> Wrapper function for the StochAC solver.
+init           -> Initialize stochastic analytical continuation simulation.
+run            -> Perform stochastic analytical continuation simulation.
+postprocess    -> Postprocess the calculated results and write them.
 #
-warmup       -> Warmup monte carlo engine.
-sample       -> Sample field configurations via metropolis algorithm.
-measure      -> Measure spectral functions and internal energies.
+warmup         -> Warmup monte carlo engine.
+sample         -> Sample field configurations via metropolis algorithm.
+measure        -> Measure spectral functions and internal energies.
 #
-init_mc      -> Create a StochACMC struct.
-init_element -> Create a StochACElement struct.
-init_iodata  -> Preprocess the input data.
-calc_fmesh   -> Build dense linear mesh in [wmin,wmax].
-calc_xmesh   -> Build dense linear mesh in [0,1].
-calc_phi     -> Calculate ϕ function.
-calc_delta   -> Precompute δ functions.
-calc_hamil   -> Calculate α-resolved Hc.
-calc_htau    -> Calculate α-resolved h(τ).
-calc_alpha   -> Calculate α parameters.
-try_mov1     -> Try to change the weights of δ functions.
-try_mov2     -> Try to shift the positions of δ functions.
-try_swap     -> Try to exchange configurations between two adjacent layers.
+init_mc        -> Create a StochACMC struct.
+init_element   -> Create a StochACElement struct.
+init_iodata    -> Preprocess the input data.
+calc_fmesh     -> Build dense linear mesh in [wmin,wmax].
+calc_xmesh     -> Build dense linear mesh in [0,1].
+calc_phi       -> Calculate ϕ function.
+calc_delta     -> Precompute δ functions.
+calc_hamil     -> Calculate α-resolved Hc.
+calc_htau      -> Calculate α-resolved h(τ).
+calc_alpha     -> Calculate α parameters.
+try_mov1       -> Try to change the weights of δ functions.
+try_mov2       -> Try to shift the positions of δ functions.
+try_swap       -> Try to exchange configurations between two adjacent layers.
 ```
 =#
 
@@ -522,7 +522,7 @@ try_swap     -> Try to exchange configurations between two adjacent layers.
 include("sac.jl")
 #
 export StochACElement
-export StochContext
+export StochACContext
 #
 export solve
 export init
