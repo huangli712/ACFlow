@@ -112,10 +112,10 @@ function som_init()
     seed = rand(1:1000000)#;  seed = 112414
     rng = MersenneTwister(seed)
     @show "seed: ", seed
-    tri = zeros(I64, 7)
+    Mtry = zeros(I64, 7)
     Macc = zeros(I64, 7)
 
-    return SOMContext(Cv, Δv), StochOMMC(rng, tri, Macc)
+    return SOMContext(Cv, Δv), StochOMMC(rng, Mtry, Macc)
 end
 
 function som_random(MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
@@ -369,7 +369,7 @@ function _try_insert(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid
         MC.Macc[1] = MC.Macc[1] + 1
     end
 
-    MC.tri[1] = MC.tri[1] + 1
+    MC.Mtry[1] = MC.Mtry[1] + 1
 end
 
 function _try_remove(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
@@ -414,7 +414,7 @@ function _try_remove(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid
         MC.Macc[2] = MC.Macc[2] + 1
     end
 
-    MC.tri[2] = MC.tri[2] + 1
+    MC.Mtry[2] = MC.Mtry[2] + 1
 end
 
 function _try_position(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
@@ -447,7 +447,7 @@ function _try_position(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGr
         MC.Macc[3] = MC.Macc[3] + 1
     end
 
-    MC.tri[3] = MC.tri[3] + 1
+    MC.Mtry[3] = MC.Mtry[3] + 1
 end
 
 function _try_width(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
@@ -485,7 +485,7 @@ function _try_width(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid,
         MC.Macc[4] = MC.Macc[4] + 1
     end
 
-    MC.tri[4] = MC.tri[4] + 1
+    MC.Mtry[4] = MC.Mtry[4] + 1
 end
 
 function _try_height(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
@@ -531,7 +531,7 @@ function _try_height(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid
         MC.Macc[5] = MC.Macc[5] + 1
     end
 
-    MC.tri[5] = MC.tri[5] + 1
+    MC.Mtry[5] = MC.Mtry[5] + 1
 end
 
 function _try_split(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
@@ -595,7 +595,7 @@ function _try_split(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid,
         end
     end
 
-    MC.tri[6] = MC.tri[6] + 1
+    MC.Mtry[6] = MC.Mtry[6] + 1
 end
 
 function _try_merge(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
@@ -650,7 +650,7 @@ function _try_merge(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid,
         MC.Macc[7] = MC.Macc[7] + 1
     end
 
-    MC.tri[7] = MC.tri[7] + 1
+    MC.Mtry[7] = MC.Mtry[7] + 1
 end
 
 function _calc_lambda(r::Box, ω::FermionicMatsubaraGrid)
