@@ -40,8 +40,6 @@ struct SOMData <: AbstractData
 end
 
 const P_SOM = Dict{String, Any}(
-    #"ngrid" => 64,
-    #"nmesh" => 501,
     "nstep" => 40,
     "ntry"  => 1000,
     "nbox"  => 100,
