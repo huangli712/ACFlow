@@ -60,14 +60,14 @@ mutable struct Box
     c :: F64
 end
 
-mutable struct SOMElement
+mutable struct StochOMElement
     C :: Vector{Box}
     Λ :: Array{C64,2}
     G :: Vector{C64}
     Δ :: F64
 end
 
-mutable struct SOMContext
+mutable struct StochOMContext
     Cv :: Vector{Vector{Box}}
     Δv :: Vector{F64}
 end
@@ -115,7 +115,7 @@ function som_init()
     Mtry = zeros(I64, 7)
     Macc = zeros(I64, 7)
 
-    return SOMContext(Cv, Δv), StochOMMC(rng, Mtry, Macc)
+    return StochOMContext(Cv, Δv), StochOMMC(rng, Mtry, Macc)
 end
 
 function som_random(MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
@@ -164,10 +164,10 @@ function som_random(MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
     Δ = _calc_err(Λ, _Know, 𝐺)
     G = _calc_gf(Λ, _Know)
 
-    return SOMElement(C, Λ, G, Δ)
+    return StochOMElement(C, Λ, G, Δ)
 end
 
-function som_update(SE::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
+function som_update(SE::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData)
     Tmax = 100
     nbox = P_SOM["nbox"]
     dmax = P_SOM["dmax"]
@@ -275,7 +275,7 @@ function som_update(SE::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, �
     end
 end
 
-function som_spectra(𝑆::SOMContext)
+function som_spectra(𝑆::StochOMContext)
     alpha = P_SOM["alpha"]
     nmesh = P_SOM["nmesh"]
     wmin = P_SOM["wmin"]
@@ -323,7 +323,7 @@ function som_output(Aom::Vector{F64})
     end
 end
 
-function _try_insert(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_insert(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     sbox  = P_SOM["sbox"]
     wbox  = P_SOM["wbox"]
     wmin = P_SOM["wmin"]
@@ -372,7 +372,7 @@ function _try_insert(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid
     MC.Mtry[1] = MC.Mtry[1] + 1
 end
 
-function _try_remove(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_remove(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     csize = length(𝑆.C)
 
     t1 = rand(MC.rng, 1:csize)
@@ -417,7 +417,7 @@ function _try_remove(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid
     MC.Mtry[2] = MC.Mtry[2] + 1
 end
 
-function _try_position(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_position(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     wmin = P_SOM["wmin"]
     wmax = P_SOM["wmax"]
     csize = length(𝑆.C)
@@ -450,7 +450,7 @@ function _try_position(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGr
     MC.Mtry[3] = MC.Mtry[3] + 1
 end
 
-function _try_width(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_width(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     wbox  = P_SOM["wbox"]
     wmin = P_SOM["wmin"]
     wmax = P_SOM["wmax"]
@@ -488,7 +488,7 @@ function _try_width(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid,
     MC.Mtry[4] = MC.Mtry[4] + 1
 end
 
-function _try_height(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_height(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     sbox  = P_SOM["sbox"]
     csize = length(𝑆.C)
 
@@ -534,7 +534,7 @@ function _try_height(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid
     MC.Mtry[5] = MC.Mtry[5] + 1
 end
 
-function _try_split(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_split(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     wbox  = P_SOM["wbox"]
     sbox  = P_SOM["sbox"]
     wmin = P_SOM["wmin"]
@@ -598,7 +598,7 @@ function _try_split(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid,
     MC.Mtry[6] = MC.Mtry[6] + 1
 end
 
-function _try_merge(𝑆::SOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
+function _try_merge(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::SOMData, dacc)
     wmin = P_SOM["wmin"]
     wmax = P_SOM["wmax"]
     csize = length(𝑆.C)
