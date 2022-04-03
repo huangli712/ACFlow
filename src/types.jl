@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/21
+# Last modified: 2022/04/03
 #
 
 #=
@@ -337,7 +337,7 @@ the internal type system.
 abstract type AbstractMC end
 
 """
-    StochMC
+    StochACMC
 
 Mutable struct. It is used within the StochAC solver. It includes random
 number generator and some counters.
@@ -350,7 +350,7 @@ number generator and some counters.
 * Sacc -> Counter for swap operation (accepted).
 * Stry -> Counter for swap operation (tried).
 """
-mutable struct StochMC <: AbstractMC
+mutable struct StochACMC <: AbstractMC
     rng :: AbstractRNG
     Macc :: Vector{I64}
     Mtry :: Vector{I64}
