@@ -148,11 +148,11 @@ function init(S::StochACSolver, rd::RawData)
 end
 
 """
-    run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
+    run(S::StochACSolver, MC::StochACMC, SE::StochElement, SC::StochContext)
 
 Perform stochastic analytical continuation simulation, sequential version.
 """
-function run(S::StochACSolver, MC::StochMC, SE::StochElement, SC::StochContext)
+function run(S::StochACSolver, MC::StochACMC, SE::StochElement, SC::StochContext)
     nstep = get_a("nstep")
     measure_per_steps = 100
     output_per_steps = get_a("ndump")
@@ -183,14 +183,14 @@ end
     prun(S::StochACSolver,
          p1::Dict{String,Vector{Any}},
          p2::Dict{String,Vector{Any}},
-         MC::StochMC, SE::StochElement, SC::StochContext)
+         MC::StochACMC, SE::StochElement, SC::StochContext)
 
 Perform stochastic analytical continuation simulation, parallel version.
 The arguments `p1` and `p2` are copies of PCOMM and PStochAC, respectively.
 """
 function prun(S::StochACSolver,
               p1::Dict{String,Vector{Any}}, p2::Dict{String,Vector{Any}},
-              MC::StochMC, SE::StochElement, SC::StochContext)
+              MC::StochACMC, SE::StochElement, SC::StochContext)
     rev_dict(p1)
     rev_dict(S, p2)
 
@@ -287,11 +287,11 @@ end
 =#
 
 """
-    warmup(MC::StochMC, SE::StochElement, SC::StochContext)
+    warmup(MC::StochACMC, SE::StochElement, SC::StochContext)
 
 Warmup the monte carlo engine to acheieve thermalized equilibrium.
 """
-function warmup(MC::StochMC, SE::StochElement, SC::StochContext)
+function warmup(MC::StochACMC, SE::StochElement, SC::StochContext)
     nwarm = get_a("nwarm")
 
     for _ = 1:nwarm
@@ -306,11 +306,11 @@ function warmup(MC::StochMC, SE::StochElement, SC::StochContext)
 end
 
 """
-    sample(MC::StochMC, SE::StochElement, SC::StochContext)
+    sample(MC::StochACMC, SE::StochElement, SC::StochContext)
 
 Perform monte carlo sweeps and sample the field configurations.
 """
-function sample(MC::StochMC, SE::StochElement, SC::StochContext)
+function sample(MC::StochACMC, SE::StochElement, SC::StochContext)
     nalph = get_a("nalph")
 
     if rand(MC.rng) < 0.9
@@ -353,7 +353,7 @@ end
 """
     init_mc()
 
-Try to create a StochMC struct.
+Try to create a StochACMC struct.
 
 See also: [`StochAC`](@ref).
 """
@@ -367,7 +367,7 @@ function init_mc()
     Sacc = zeros(F64, nalph)
     Stry = zeros(F64, nalph)
 
-    MC = StochMC(rng, Macc, Mtry, Sacc, Stry)
+    MC = StochACMC(rng, Macc, Mtry, Sacc, Stry)
 
     return MC
 end
@@ -560,14 +560,14 @@ function calc_alpha()
 end
 
 """
-    try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
+    try_mov1(i::I64, MC::StochACMC, SE::StochElement, SC::StochContext)
 
 Select two δ functions and then change their weights. Here `i` means the
 index for α parameters.
 
 See also: [`try_mov2`](@ref).
 """
-function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
+function try_mov1(i::I64, MC::StochACMC, SE::StochElement, SC::StochContext)
     # Get current number of δ functions
     ngamm = get_a("ngamm")
 
@@ -623,14 +623,14 @@ function try_mov1(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 end
 
 """
-    try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
+    try_mov2(i::I64, MC::StochACMC, SE::StochElement, SC::StochContext)
 
 Select two δ functions and then change their positions. Here `i` means the
 index for α parameters.
 
 See also: [`try_mov1`](@ref).
 """
-function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
+function try_mov2(i::I64, MC::StochACMC, SE::StochElement, SC::StochContext)
     # Get current number of δ functions
     ngamm = get_a("ngamm")
 
@@ -684,11 +684,11 @@ function try_mov2(i::I64, MC::StochMC, SE::StochElement, SC::StochContext)
 end
 
 """
-    try_swap(MC::StochMC, SE::StochElement, SC::StochContext)
+    try_swap(MC::StochACMC, SE::StochElement, SC::StochContext)
 
 Try to exchange field configurations between two adjacent layers.
 """
-function try_swap(MC::StochMC, SE::StochElement, SC::StochContext)
+function try_swap(MC::StochACMC, SE::StochElement, SC::StochContext)
     # Get number of α parameters
     nalph = get_a("nalph")
 
