@@ -7,8 +7,8 @@ grid   = "ffreq"
 mesh   = "linear"
 ngrid  = 64
 nmesh  = 501
-wmax   = 5.0
-wmin   = -5.0
+wmax   = 10.0
+wmin   = -10.0
 beta   = 10.0
 offdiag = false
 
