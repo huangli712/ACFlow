@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/22
+# Last modified: 2022/04/03
 #
 
 """
@@ -136,7 +136,7 @@ LinearMesh      -> Linear mesh.
 TangentMesh     -> Tangent mesh.
 #
 AbstractMC      -> Abstract monte carlo engine.
-StochMC         -> Monte carlo engine used in the StochAC solver.
+StochACMC       -> Monte carlo engine used in the StochAC solver.
 ```
 =#
 
@@ -170,7 +170,7 @@ export LinearMesh
 export TangentMesh
 #
 export AbstractMC
-export StochMC
+export StochACMC
 
 #=
 ### *Includes And Exports* : *util.jl*
@@ -502,7 +502,7 @@ warmup       -> Warmup monte carlo engine.
 sample       -> Sample field configurations via metropolis algorithm.
 measure      -> Measure spectral functions and internal energies.
 #
-init_mc      -> Create a StochMC struct.
+init_mc      -> Create a StochACMC struct.
 init_element -> Create a StochElement struct.
 init_iodata  -> Preprocess the input data.
 calc_fmesh   -> Build dense linear mesh in [wmin,wmax].
