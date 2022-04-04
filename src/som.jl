@@ -28,6 +28,7 @@ mutable struct StochOMContext
     Gᵥ :: Vector{C64}
     σ¹ :: Vector{C64}
     grid :: AbstractGrid
+    mesh :: AbstractMesh
     Cv :: Vector{Vector{Box}}
     Δv :: Vector{F64} 
 end
@@ -44,7 +45,7 @@ function solve(S::StochOMSolver, rd::RawData)
     else
         Aom = run(S, MC, SC)
     end
-    som_output(Aom)
+    write_spectrum(SC.mesh, Aom)
 end
 
 function init(S::StochOMSolver, rd::RawData)
@@ -56,9 +57,12 @@ function init(S::StochOMSolver, rd::RawData)
     grid = make_grid(rd)
     println("Build grid for input data: ", length(grid), " points")
 
+    mesh = make_mesh()
+    println("Build mesh for spectrum: ", length(mesh), " points")
+
     Cv, Δv = init_context(S)
 
-    SC = StochOMContext(rd.value, rd.error, grid, Cv, Δv)
+    SC = StochOMContext(rd.value, rd.error, grid, mesh, Cv, Δv)
 
     return MC, SC
 end
