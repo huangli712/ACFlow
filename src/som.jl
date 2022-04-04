@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/04/04
+# Last modified: 2022/04/05
 #
 
 #=
@@ -27,6 +27,9 @@ end
 mutable struct StochOMContext
     Cv :: Vector{Vector{Box}}
     Δv :: Vector{F64}
+    grid :: AbstractGrid
+    value :: Vector{C64}
+    error :: Vector{C64}
 end
 
 #=
@@ -35,11 +38,11 @@ end
 
 function solve(S::StochOMSolver, rd::RawData)
     println("[ StochOM ]")
-    grid, MC, SC = init(S, rd)
+    MC, SC = init(S, rd)
 
     if nworkers() > 1
     else
-        Aom = run(S, MC, SC, grid, rd)
+        Aom = run(S, MC, SC)
         som_output(Aom)
     end
 end
@@ -53,22 +56,24 @@ function init(S::StochOMSolver, rd::RawData)
     grid = make_grid(rd)
     println("Build grid for input data: ", length(grid), " points")
 
-    SC = init_context(S)
+    Cv, Δv = init_context(S)
 
-    return grid, MC, SC
+    SC = StochOMContext(Cv, Δv, grid, rd.value, rd.error)
+
+    return MC, SC
 end
 
-function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext, ω::AbstractGrid, 𝐺::RawData)
+function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
     nstep = get_s("nstep")
     ntry = get_s("ntry")
 
     for l = 1:nstep
         println("try: $l")
 
-        SE = init_element(MC, ω, 𝐺)
+        SE = init_element(MC, SC)
 
         for _ = 1:ntry
-            update(SE, MC, ω, 𝐺)
+            update(SE, MC, SC)
         end
 
         SC.Δv[l] = SE.Δ
@@ -123,7 +128,7 @@ end
 ### *Core Algorithms*
 =#
 
-function update(SE::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData)
+function update(SE::StochOMElement, MC::StochOMMC, SC::StochOMContext)
     Tmax = 100
     nbox = get_s("nbox")
     dmax = get_s("dmax")
@@ -140,39 +145,39 @@ function update(SE::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, �
         @cswitch update_type begin
             @case 1
                 if length(ST.C) < nbox - 1
-                    _try_insert(ST, MC, ω, 𝐺, d1)
+                    _try_insert(ST, MC, SC, d1)
                 end
                 break
 
             @case 2
                 if length(ST.C) > 1
-                    _try_remove(ST, MC, ω, 𝐺, d1)
+                    _try_remove(ST, MC, SC, d1)
                 end
                 break
 
             @case 3
-                _try_position(ST, MC, ω, 𝐺, d1)
+                _try_position(ST, MC, SC, d1)
                 break
 
             @case 4
-                _try_width(ST, MC, ω, 𝐺, d1)
+                _try_width(ST, MC, SC, d1)
                 break
 
             @case 5
                 if length(ST.C) > 1
-                    _try_height(ST, MC, ω, 𝐺, d1)
+                    _try_height(ST, MC, SC, d1)
                 end
                 break
 
             @case 6
                 if length(ST.C) < nbox - 1
-                    _try_split(ST, MC, ω, 𝐺, d1)
+                    _try_split(ST, MC, SC, d1)
                 end
                 break
 
             @case 7
                 if length(ST.C) > 1
-                    _try_merge(ST, MC, ω, 𝐺, d1)
+                    _try_merge(ST, MC, SC, d1)
                 end
                 break
         end
@@ -185,39 +190,39 @@ function update(SE::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, �
         @cswitch update_type begin
             @case 1
                 if length(ST.C) < nbox - 1
-                    _try_insert(ST, MC, ω, 𝐺, d2)
+                    _try_insert(ST, MC, SC, d2)
                 end
                 break
 
             @case 2
                 if length(ST.C) > 1
-                    _try_remove(ST, MC, ω, 𝐺, d2)
+                    _try_remove(ST, MC, SC, d2)
                 end
                 break
 
             @case 3
-                _try_position(ST, MC, ω, 𝐺, d2)
+                _try_position(ST, MC, SC, d2)
                 break
 
             @case 4
-                _try_width(ST, MC, ω, 𝐺, d2)
+                _try_width(ST, MC, SC, d2)
                 break
 
             @case 5
                 if length(ST.C) > 1
-                    _try_height(ST, MC, ω, 𝐺, d2)
+                    _try_height(ST, MC, SC, d2)
                 end
                 break
 
             @case 6
                 if length(ST.C) < nbox - 1
-                    _try_split(ST, MC, ω, 𝐺, d2)
+                    _try_split(ST, MC, SC, d2)
                 end
                 break
 
             @case 7
                 if length(ST.C) > 1
-                    _try_merge(ST, MC, ω, 𝐺, d2)
+                    _try_merge(ST, MC, SC, d2)
                 end
                 break
         end
