@@ -240,19 +240,6 @@ function update(SE::StochOMElement, MC::StochOMMC, SC::StochOMContext)
     end
 end
 
-function som_output(Aom::Vector{F64})
-    nmesh = get_c("nmesh")
-    wmin = get_c("wmin")
-    wmax = get_c("wmax")
-
-    open("Aw.data", "w") do fout
-        for w = 1:nmesh
-            _omega = wmin + (w - 1) * (wmax - wmin) / (nmesh - 1)
-            println(fout, _omega, " ", Aom[w])
-        end
-    end
-end
-
 #=
 ### *Service Functions*
 =#
