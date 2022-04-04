@@ -25,11 +25,11 @@ mutable struct StochOMElement
 end
 
 mutable struct StochOMContext
-    Cv :: Vector{Vector{Box}}
-    Δv :: Vector{F64}
+    Gᵥ :: Vector{C64}
+    σ¹ :: Vector{C64}
     grid :: AbstractGrid
-    value :: Vector{C64}
-    error :: Vector{C64}
+    Cv :: Vector{Vector{Box}}
+    Δv :: Vector{F64} 
 end
 
 #=
@@ -43,8 +43,8 @@ function solve(S::StochOMSolver, rd::RawData)
     if nworkers() > 1
     else
         Aom = run(S, MC, SC)
-        som_output(Aom)
     end
+    som_output(Aom)
 end
 
 function init(S::StochOMSolver, rd::RawData)
@@ -58,7 +58,7 @@ function init(S::StochOMSolver, rd::RawData)
 
     Cv, Δv = init_context(S)
 
-    SC = StochOMContext(Cv, Δv, grid, rd.value, rd.error)
+    SC = StochOMContext(rd.value, rd.error, grid, Cv, Δv)
 
     return MC, SC
 end
