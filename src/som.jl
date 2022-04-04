@@ -57,6 +57,9 @@ mutable struct StochOMContext
     Δv :: Vector{F64}
 end
 
+function solve(S::StochOMSolver, rd::RawData)
+end
+
 function som_run(ω::FermionicMatsubaraGrid, 𝐺::SOMData)
     nstep = get_s("nstep")
     ntry = get_s("ntry")

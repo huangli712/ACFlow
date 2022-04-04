@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/03
+# Last modified: 2022/04/04
 #
 
 """
@@ -552,9 +552,7 @@ export try_swap
 =#
 
 include("som.jl")
-export read_data!
-export som_run
-export som_output
+export solve
 
 #=
 ### *Includes And Exports* : *base.jl*
