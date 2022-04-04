@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/21
+# Last modified: 2022/04/04
 #
 
 #=
@@ -109,13 +109,13 @@ end
 Initialize the StochAC solver and return a StochACContext struct.
 """
 function init(S::StochACSolver, rd::RawData)
-    MC = init_mc()
+    MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
-    SE = init_element(MC.rng)
+    SE = init_element(S, MC.rng)
     println("Randomize Monte Carlo configurations")
 
-    Gᵥ, σ¹, Aout = init_iodata(rd)
+    Gᵥ, σ¹, Aout = init_iodata(S, rd)
     println("Postprocess input data: ", length(σ¹), " points")
 
     grid = make_grid(rd)
@@ -351,13 +351,13 @@ end
 =#
 
 """
-    init_mc()
+    init_mc(S::StochACSolver)
 
 Try to create a StochACMC struct.
 
 See also: [`StochAC`](@ref).
 """
-function init_mc()
+function init_mc(S::StochACSolver)
     nalph = get_a("nalph")
 
     seed = rand(1:100000000)
@@ -373,14 +373,14 @@ function init_mc()
 end
 
 """
-    init_element(rng::AbstractRNG)
+    init_element(S::StochACSolver, rng::AbstractRNG)
 
 Randomize the configurations for future monte carlo sampling. It will
 return a StochACElement object.
 
 See also: [`StochACElement`](@ref).
 """
-function init_element(rng::AbstractRNG)
+function init_element(S::StochACSolver, rng::AbstractRNG)
     nalph = get_a("nalph")
     nfine = get_a("nfine")
     ngamm = get_a("ngamm")
@@ -400,14 +400,14 @@ function init_element(rng::AbstractRNG)
 end
 
 """
-    init_iodata(rd::RawData)
+    init_iodata(S::StochACSolver, rd::RawData)
 
 Preprocess the input data (`rd`), then allocate memory for the α-resolved
 spectral functions.
 
 See also: [`RawData`](@ref).
 """
-function init_iodata(rd::RawData)
+function init_iodata(S::StochACSolver, rd::RawData)
     nalph = get_a("nalph")
     nmesh = get_c("nmesh")
 
