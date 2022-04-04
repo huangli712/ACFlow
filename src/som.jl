@@ -4,9 +4,10 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/04/03
+# Last modified: 2022/04/04
 #
 
+#=
 function read_data!()
     grid  = F64[]
     value = C64[]
@@ -33,6 +34,7 @@ function read_data!()
     β = 2.0 * π / (grid[2] - grid[1])
     return FermionicMatsubaraGrid(niw, β, grid), SOMData(value, error)
 end
+=#
 
 struct SOMData <: AbstractData
     value :: Vector{N64}
