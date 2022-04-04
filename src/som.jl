@@ -7,6 +7,10 @@
 # Last modified: 2022/04/04
 #
 
+#=
+### *Customized Structs* : *StochOM Solver*
+=#
+
 mutable struct Box
     h :: F64
     w :: F64
@@ -25,11 +29,34 @@ mutable struct StochOMContext
     Δv :: Vector{F64}
 end
 
+#=
+### *Global Drivers*
+=#
+
 function solve(S::StochOMSolver, rd::RawData)
     ω = make_grid(rd)
     Aom = som_run(ω, rd)
     som_output(Aom)
 end
+
+function init()
+end
+
+function run()
+end
+
+function prun()
+end
+
+function average()
+end
+
+function postprocess()
+end
+
+#=
+### *Core Algorithms*
+=#
 
 function som_run(ω::FermionicMatsubaraGrid, 𝐺::RawData)
     nstep = get_s("nstep")
