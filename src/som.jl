@@ -145,39 +145,39 @@ function update(SE::StochOMElement, MC::StochOMMC, SC::StochOMContext)
         @cswitch update_type begin
             @case 1
                 if length(ST.C) < nbox - 1
-                    _try_insert(ST, MC, SC, d1)
+                    try_insert(ST, MC, SC, d1)
                 end
                 break
 
             @case 2
                 if length(ST.C) > 1
-                    _try_remove(ST, MC, SC, d1)
+                    try_remove(ST, MC, SC, d1)
                 end
                 break
 
             @case 3
-                _try_position(ST, MC, SC, d1)
+                try_position(ST, MC, SC, d1)
                 break
 
             @case 4
-                _try_width(ST, MC, SC, d1)
+                try_width(ST, MC, SC, d1)
                 break
 
             @case 5
                 if length(ST.C) > 1
-                    _try_height(ST, MC, SC, d1)
+                    try_height(ST, MC, SC, d1)
                 end
                 break
 
             @case 6
                 if length(ST.C) < nbox - 1
-                    _try_split(ST, MC, SC, d1)
+                    try_split(ST, MC, SC, d1)
                 end
                 break
 
             @case 7
                 if length(ST.C) > 1
-                    _try_merge(ST, MC, SC, d1)
+                    try_merge(ST, MC, SC, d1)
                 end
                 break
         end
@@ -190,39 +190,39 @@ function update(SE::StochOMElement, MC::StochOMMC, SC::StochOMContext)
         @cswitch update_type begin
             @case 1
                 if length(ST.C) < nbox - 1
-                    _try_insert(ST, MC, SC, d2)
+                    try_insert(ST, MC, SC, d2)
                 end
                 break
 
             @case 2
                 if length(ST.C) > 1
-                    _try_remove(ST, MC, SC, d2)
+                    try_remove(ST, MC, SC, d2)
                 end
                 break
 
             @case 3
-                _try_position(ST, MC, SC, d2)
+                try_position(ST, MC, SC, d2)
                 break
 
             @case 4
-                _try_width(ST, MC, SC, d2)
+                try_width(ST, MC, SC, d2)
                 break
 
             @case 5
                 if length(ST.C) > 1
-                    _try_height(ST, MC, SC, d2)
+                    try_height(ST, MC, SC, d2)
                 end
                 break
 
             @case 6
                 if length(ST.C) < nbox - 1
-                    _try_split(ST, MC, SC, d2)
+                    try_split(ST, MC, SC, d2)
                 end
                 break
 
             @case 7
                 if length(ST.C) > 1
-                    _try_merge(ST, MC, SC, d2)
+                    try_merge(ST, MC, SC, d2)
                 end
                 break
         end
@@ -312,10 +312,10 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
         h = weight[k] / w
         R = Box(h, w, c)
         push!(C, R)
-        Λ[:,k] .= _calc_lambda(R, SC.grid)
+        Λ[:,k] .= calc_lambda(R, SC.grid)
     end
-    Δ = _calc_err(Λ, _Know, SC.value, SC.error)
-    G = _calc_gf(Λ, _Know)
+    Δ = calc_err(Λ, _Know, SC.value, SC.error)
+    G = calc_gf(Λ, _Know)
 
     return StochOMElement(C, Λ, G, Δ)
 end
@@ -341,7 +341,48 @@ end
 function init_iodata(S::StochOMSolver, rd::RawData)
 end
 
-function _try_insert(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function calc_lambda(r::Box, ω::FermionicMatsubaraGrid)
+    Λ = @. r.h * log((im * ω.ω - r.c + 0.5 * r.w) / (im * ω.ω - r.c - 0.5 * r.w))
+    return Λ
+end
+
+function calc_err(Λ::Array{C64,2}, nk::I64, value::Vector{C64}, error::Vector{C64})
+    ngrid, nbox = size(Λ)
+    @assert nk ≤ nbox
+
+    res = 0.0
+    for w = 1:ngrid
+        g = sum(Λ[w,1:nk])
+        res = res + abs((g - value[w]) / error[w])
+    end
+
+    return res
+end
+
+function calc_err(Gc::Vector{C64}, value::Vector{C64}, error::Vector{C64})
+    return sum( @. abs((Gc - value) / error) )
+end
+
+function calc_gf(Λ::Array{C64,2}, nk::I64)
+    ngrid, nbox = size(Λ)
+    @assert nk ≤ nbox
+
+    G = zeros(C64, ngrid)
+    for k = 1:nk
+        for g = 1:ngrid
+            G[g] = G[g] + Λ[g,k]
+        end
+    end
+
+    return G
+end
+
+function calc_norm(C::Vector{Box})
+    norm = sum(map(x -> x.h * x.w, C))
+    return norm
+end
+
+function try_insert(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     sbox  = get_s("sbox")
     wbox  = get_s("wbox")
     wmin = get_c("wmin")
@@ -372,10 +413,10 @@ function _try_insert(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, da
     Radd = Box(h, w, c)
 
     G1 = 𝑆.Λ[:,t]
-    G2 = _calc_lambda(Rnew, SC.grid)
-    G3 = _calc_lambda(Radd, SC.grid)
+    G2 = calc_lambda(Rnew, SC.grid)
+    G3 = calc_lambda(Radd, SC.grid)
 
-    Δ = _calc_err(𝑆.G - G1 + G2 + G3, SC.value, SC.error)
+    Δ = calc_err(𝑆.G - G1 + G2 + G3, SC.value, SC.error)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t] = Rnew
@@ -390,7 +431,7 @@ function _try_insert(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, da
     MC.Mtry[1] = MC.Mtry[1] + 1
 end
 
-function _try_remove(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function try_remove(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     csize = length(𝑆.C)
 
     t1 = rand(MC.rng, 1:csize)
@@ -413,9 +454,9 @@ function _try_remove(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, da
     Ge = 𝑆.Λ[:,csize]
 
     R2n = Box(R2.h + dx / R2.w, R2.w, R2.c)
-    G2n = _calc_lambda(R2n, SC.grid)
+    G2n = calc_lambda(R2n, SC.grid)
 
-    Δ = _calc_err(𝑆.G - G1 - G2 + G2n, SC.value, SC.error)
+    Δ = calc_err(𝑆.G - G1 - G2 + G2n, SC.value, SC.error)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t2] = R2n
@@ -435,7 +476,7 @@ function _try_remove(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, da
     MC.Mtry[2] = MC.Mtry[2] + 1
 end
 
-function _try_position(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function try_position(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
     csize = length(𝑆.C)
@@ -453,9 +494,9 @@ function _try_position(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, 
 
     Rn = Box(R.h, R.w, R.c + dc)
     G1 = 𝑆.Λ[:,t]
-    G2 = _calc_lambda(Rn, SC.grid)
+    G2 = calc_lambda(Rn, SC.grid)
 
-    Δ = _calc_err(𝑆.G - G1 + G2, SC.value, SC.error)
+    Δ = calc_err(𝑆.G - G1 + G2, SC.value, SC.error)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t] = Rn
@@ -468,7 +509,7 @@ function _try_position(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, 
     MC.Mtry[3] = MC.Mtry[3] + 1
 end
 
-function _try_width(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function try_width(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     wbox  = get_s("wbox")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
@@ -491,9 +532,9 @@ function _try_width(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dac
 
     Rn = Box(h, w, c)
     G1 = 𝑆.Λ[:,t]
-    G2 = _calc_lambda(Rn, SC.grid)
+    G2 = calc_lambda(Rn, SC.grid)
 
-    Δ = _calc_err(𝑆.G - G1 + G2, SC.value, SC.error)
+    Δ = calc_err(𝑆.G - G1 + G2, SC.value, SC.error)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t] = Rn
@@ -506,7 +547,7 @@ function _try_width(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dac
     MC.Mtry[4] = MC.Mtry[4] + 1
 end
 
-function _try_height(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function try_height(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     sbox  = get_s("sbox")
     csize = length(𝑆.C)
 
@@ -532,12 +573,12 @@ function _try_height(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, da
 
     R1n = Box(R1.h + dh, R1.w, R1.c)
     G1A = 𝑆.Λ[:,t1]
-    G1B = _calc_lambda(R1n, SC.grid)
+    G1B = calc_lambda(R1n, SC.grid)
     R2n = Box(R2.h - dh * w1 / w2, R2.w, R2.c)
     G2A = 𝑆.Λ[:,t2]
-    G2B = _calc_lambda(R2n, SC.grid)
+    G2B = calc_lambda(R2n, SC.grid)
 
-    Δ = _calc_err(𝑆.G - G1A + G1B - G2A + G2B, SC.value, SC.error)
+    Δ = calc_err(𝑆.G - G1A + G1B - G2A + G2B, SC.value, SC.error)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t1] = R1n
@@ -552,7 +593,7 @@ function _try_height(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, da
     MC.Mtry[5] = MC.Mtry[5] + 1
 end
 
-function _try_split(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function try_split(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     wbox  = get_s("wbox")
     sbox  = get_s("sbox")
     wmin = get_c("wmin")
@@ -591,11 +632,11 @@ function _try_split(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dac
         Ge = 𝑆.Λ[:,csize]
 
         R2 = Box(h, w1, c1 + dc1)
-        G2 = _calc_lambda(R2, SC.grid)
+        G2 = calc_lambda(R2, SC.grid)
 
         R3 = Box(h, w2, c2 + dc2)
-        G3 = _calc_lambda(R3, SC.grid)
-        Δ = _calc_err(𝑆.G - G1 + G2 + G3, SC.value, SC.error)
+        G3 = calc_lambda(R3, SC.grid)
+        Δ = calc_err(𝑆.G - G1 + G2 + G3, SC.value, SC.error)
 
         if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
             𝑆.C[t] = 𝑆.C[end]
@@ -616,7 +657,7 @@ function _try_split(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dac
     MC.Mtry[6] = MC.Mtry[6] + 1
 end
 
-function _try_merge(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function try_merge(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
     csize = length(𝑆.C)
@@ -649,9 +690,9 @@ function _try_merge(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dac
     Ge = 𝑆.Λ[:,csize]
 
     Rn = Box(h_new, w_new, c_new + dc)
-    Gn = _calc_lambda(Rn, SC.grid)
+    Gn = calc_lambda(Rn, SC.grid)
 
-    Δ = _calc_err(𝑆.G - G1 - G2 + Gn, SC.value, SC.error)
+    Δ = calc_err(𝑆.G - G1 - G2 + Gn, SC.value, SC.error)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t1] = Rn
@@ -669,47 +710,6 @@ function _try_merge(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dac
     end
 
     MC.Mtry[7] = MC.Mtry[7] + 1
-end
-
-function _calc_lambda(r::Box, ω::FermionicMatsubaraGrid)
-    Λ = @. r.h * log((im * ω.ω - r.c + 0.5 * r.w) / (im * ω.ω - r.c - 0.5 * r.w))
-    return Λ
-end
-
-function _calc_err(Λ::Array{C64,2}, nk::I64, value::Vector{C64}, error::Vector{C64})
-    ngrid, nbox = size(Λ)
-    @assert nk ≤ nbox
-
-    res = 0.0
-    for w = 1:ngrid
-        g = sum(Λ[w,1:nk])
-        res = res + abs((g - value[w]) / error[w])
-    end
-
-    return res
-end
-
-function _calc_err(Gc::Vector{C64}, value::Vector{C64}, error::Vector{C64})
-    return sum( @. abs((Gc - value) / error) )
-end
-
-function _calc_gf(Λ::Array{C64,2}, nk::I64)
-    ngrid, nbox = size(Λ)
-    @assert nk ≤ nbox
-
-    G = zeros(C64, ngrid)
-    for k = 1:nk
-        for g = 1:ngrid
-            G[g] = G[g] + Λ[g,k]
-        end
-    end
-
-    return G
-end
-
-function _calc_norm(C::Vector{Box})
-    norm = sum(map(x -> x.h * x.w, C))
-    return norm
 end
 
 function Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
