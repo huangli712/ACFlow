@@ -58,6 +58,9 @@ mutable struct StochOMContext
 end
 
 function solve(S::StochOMSolver, rd::RawData)
+    ω, 𝐺 = read_data!()
+    Aom = som_run(ω, 𝐺)
+    som_output(Aom)
 end
 
 function som_run(ω::FermionicMatsubaraGrid, 𝐺::SOMData)
