@@ -65,7 +65,7 @@ function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext, ω::AbstractGr
     for l = 1:nstep
         println("try: $l")
 
-        SE = som_random(MC, ω, 𝐺)
+        SE = init_element(MC, ω, 𝐺)
 
         for _ = 1:ntry
             som_update(SE, MC, ω, 𝐺)
@@ -122,55 +122,6 @@ end
 #=
 ### *Core Algorithms*
 =#
-
-function som_random(MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData)
-    sbox  = get_s("sbox")
-    wbox  = get_s("wbox")
-    wmin = get_c("wmin")
-    wmax = get_c("wmax")
-    nbox  = get_s("nbox")
-    ngrid = get_c("ngrid")
-
-    _Know = rand(MC.rng, 2:nbox)
-    _weight = zeros(F64, _Know)
-    for i = 1:_Know
-        _weight[i] = rand(MC.rng, F64)
-    end
-    _weight[end] = 1.0
-
-    sort!(_weight)
-    weight = diff(_weight)
-    insert!(weight, 1, _weight[1])
-    sort!(weight)
-
-    plus_count = 1
-    minus_count = _Know
-    while weight[plus_count] < sbox
-        while weight[minus_count] < 2 * sbox
-            minus_count = minus_count - 1
-        end
-        weight[plus_count] = weight[plus_count] + sbox
-        weight[minus_count] = weight[minus_count] - sbox
-        plus_count = plus_count + 1
-    end
-
-    C = Box[]
-    Λ = zeros(C64, ngrid, nbox)
-    Δ = 0.0
-
-    for k = 1:_Know
-        c = wmin + wbox / 2.0 + (wmax - wmin - wbox) * rand(MC.rng, F64)
-        w = wbox + (min(2.0 * (c - wmin), 2.0 * (wmax - c)) - wbox) * rand(MC.rng, F64)
-        h = weight[k] / w
-        R = Box(h, w, c)
-        push!(C, R)
-        Λ[:,k] .= _calc_lambda(R, ω)
-    end
-    Δ = _calc_err(Λ, _Know, 𝐺)
-    G = _calc_gf(Λ, _Know)
-
-    return StochOMElement(C, Λ, G, Δ)
-end
 
 function som_update(SE::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData)
     Tmax = 100
@@ -315,7 +266,53 @@ function init_mc(S::StochOMSolver)
     return MC
 end
 
-function init_element(S::StochOMSolver)
+function init_element(MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData)
+    sbox  = get_s("sbox")
+    wbox  = get_s("wbox")
+    wmin = get_c("wmin")
+    wmax = get_c("wmax")
+    nbox  = get_s("nbox")
+    ngrid = get_c("ngrid")
+
+    _Know = rand(MC.rng, 2:nbox)
+    _weight = zeros(F64, _Know)
+    for i = 1:_Know
+        _weight[i] = rand(MC.rng, F64)
+    end
+    _weight[end] = 1.0
+
+    sort!(_weight)
+    weight = diff(_weight)
+    insert!(weight, 1, _weight[1])
+    sort!(weight)
+
+    plus_count = 1
+    minus_count = _Know
+    while weight[plus_count] < sbox
+        while weight[minus_count] < 2 * sbox
+            minus_count = minus_count - 1
+        end
+        weight[plus_count] = weight[plus_count] + sbox
+        weight[minus_count] = weight[minus_count] - sbox
+        plus_count = plus_count + 1
+    end
+
+    C = Box[]
+    Λ = zeros(C64, ngrid, nbox)
+    Δ = 0.0
+
+    for k = 1:_Know
+        c = wmin + wbox / 2.0 + (wmax - wmin - wbox) * rand(MC.rng, F64)
+        w = wbox + (min(2.0 * (c - wmin), 2.0 * (wmax - c)) - wbox) * rand(MC.rng, F64)
+        h = weight[k] / w
+        R = Box(h, w, c)
+        push!(C, R)
+        Λ[:,k] .= _calc_lambda(R, ω)
+    end
+    Δ = _calc_err(Λ, _Know, 𝐺)
+    G = _calc_gf(Λ, _Know)
+
+    return StochOMElement(C, Λ, G, Δ)
 end
 
 function init_context(S::StochOMSolver)
