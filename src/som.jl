@@ -271,13 +271,13 @@ function init_mc(S::StochOMSolver)
     return MC
 end
 
-function init_element(MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData)
-    sbox  = get_s("sbox")
-    wbox  = get_s("wbox")
+function init_element(MC::StochOMMC, SC::StochOMContext)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
-    nbox  = get_s("nbox")
     ngrid = get_c("ngrid")
+    nbox  = get_s("nbox")
+    sbox  = get_s("sbox")
+    wbox  = get_s("wbox")
 
     _Know = rand(MC.rng, 2:nbox)
     _weight = zeros(F64, _Know)
@@ -312,9 +312,9 @@ function init_element(MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData)
         h = weight[k] / w
         R = Box(h, w, c)
         push!(C, R)
-        Λ[:,k] .= _calc_lambda(R, ω)
+        Λ[:,k] .= _calc_lambda(R, SC.grid)
     end
-    Δ = _calc_err(Λ, _Know, 𝐺)
+    Δ = _calc_err(Λ, _Know, SC.value, SC.error)
     G = _calc_gf(Λ, _Know)
 
     return StochOMElement(C, Λ, G, Δ)
@@ -335,15 +335,13 @@ function init_context(S::StochOMSolver)
         push!(Cv, C)
     end
 
-    SC = StochOMContext(Cv, Δv)
-
-    return SC
+    return Cv, Δv
 end
 
 function init_iodata(S::StochOMSolver, rd::RawData)
 end
 
-function _try_insert(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData, dacc)
+function _try_insert(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     sbox  = get_s("sbox")
     wbox  = get_s("wbox")
     wmin = get_c("wmin")
@@ -374,10 +372,10 @@ function _try_insert(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubara
     Radd = Box(h, w, c)
 
     G1 = 𝑆.Λ[:,t]
-    G2 = _calc_lambda(Rnew, ω)
-    G3 = _calc_lambda(Radd, ω)
+    G2 = _calc_lambda(Rnew, SC.grid)
+    G3 = _calc_lambda(Radd, SC.grid)
 
-    Δ = _calc_err(𝑆.G - G1 + G2 + G3, 𝐺)
+    Δ = _calc_err(𝑆.G - G1 + G2 + G3, SC.value, SC.error)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t] = Rnew
@@ -392,7 +390,7 @@ function _try_insert(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubara
     MC.Mtry[1] = MC.Mtry[1] + 1
 end
 
-function _try_remove(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData, dacc)
+function _try_remove(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     csize = length(𝑆.C)
 
     t1 = rand(MC.rng, 1:csize)
@@ -415,9 +413,9 @@ function _try_remove(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubara
     Ge = 𝑆.Λ[:,csize]
 
     R2n = Box(R2.h + dx / R2.w, R2.w, R2.c)
-    G2n = _calc_lambda(R2n, ω)
+    G2n = _calc_lambda(R2n, SC.grid)
 
-    Δ = _calc_err(𝑆.G - G1 - G2 + G2n, 𝐺)
+    Δ = _calc_err(𝑆.G - G1 - G2 + G2n, SC.value, SC.error)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t2] = R2n
@@ -437,7 +435,7 @@ function _try_remove(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubara
     MC.Mtry[2] = MC.Mtry[2] + 1
 end
 
-function _try_position(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData, dacc)
+function _try_position(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
     csize = length(𝑆.C)
@@ -455,9 +453,9 @@ function _try_position(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsuba
 
     Rn = Box(R.h, R.w, R.c + dc)
     G1 = 𝑆.Λ[:,t]
-    G2 = _calc_lambda(Rn, ω)
+    G2 = _calc_lambda(Rn, SC.grid)
 
-    Δ = _calc_err(𝑆.G - G1 + G2, 𝐺)
+    Δ = _calc_err(𝑆.G - G1 + G2, SC.value, SC.error)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t] = Rn
@@ -470,7 +468,7 @@ function _try_position(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsuba
     MC.Mtry[3] = MC.Mtry[3] + 1
 end
 
-function _try_width(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData, dacc)
+function _try_width(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     wbox  = get_s("wbox")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
@@ -493,9 +491,9 @@ function _try_width(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraG
 
     Rn = Box(h, w, c)
     G1 = 𝑆.Λ[:,t]
-    G2 = _calc_lambda(Rn, ω)
+    G2 = _calc_lambda(Rn, SC.grid)
 
-    Δ = _calc_err(𝑆.G - G1 + G2, 𝐺)
+    Δ = _calc_err(𝑆.G - G1 + G2, SC.value, SC.error)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t] = Rn
@@ -508,7 +506,7 @@ function _try_width(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraG
     MC.Mtry[4] = MC.Mtry[4] + 1
 end
 
-function _try_height(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData, dacc)
+function _try_height(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     sbox  = get_s("sbox")
     csize = length(𝑆.C)
 
@@ -534,12 +532,12 @@ function _try_height(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubara
 
     R1n = Box(R1.h + dh, R1.w, R1.c)
     G1A = 𝑆.Λ[:,t1]
-    G1B = _calc_lambda(R1n, ω)
+    G1B = _calc_lambda(R1n, SC.grid)
     R2n = Box(R2.h - dh * w1 / w2, R2.w, R2.c)
     G2A = 𝑆.Λ[:,t2]
-    G2B = _calc_lambda(R2n, ω)
+    G2B = _calc_lambda(R2n, SC.grid)
 
-    Δ = _calc_err(𝑆.G - G1A + G1B - G2A + G2B, 𝐺)
+    Δ = _calc_err(𝑆.G - G1A + G1B - G2A + G2B, SC.value, SC.error)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t1] = R1n
@@ -554,7 +552,7 @@ function _try_height(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubara
     MC.Mtry[5] = MC.Mtry[5] + 1
 end
 
-function _try_split(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData, dacc)
+function _try_split(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     wbox  = get_s("wbox")
     sbox  = get_s("sbox")
     wmin = get_c("wmin")
@@ -593,11 +591,11 @@ function _try_split(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraG
         Ge = 𝑆.Λ[:,csize]
 
         R2 = Box(h, w1, c1 + dc1)
-        G2 = _calc_lambda(R2, ω)
+        G2 = _calc_lambda(R2, SC.grid)
 
         R3 = Box(h, w2, c2 + dc2)
-        G3 = _calc_lambda(R3, ω)
-        Δ = _calc_err(𝑆.G - G1 + G2 + G3, 𝐺)
+        G3 = _calc_lambda(R3, SC.grid)
+        Δ = _calc_err(𝑆.G - G1 + G2 + G3, SC.value, SC.error)
 
         if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
             𝑆.C[t] = 𝑆.C[end]
@@ -618,7 +616,7 @@ function _try_split(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraG
     MC.Mtry[6] = MC.Mtry[6] + 1
 end
 
-function _try_merge(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData, dacc)
+function _try_merge(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
     csize = length(𝑆.C)
@@ -651,9 +649,9 @@ function _try_merge(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraG
     Ge = 𝑆.Λ[:,csize]
 
     Rn = Box(h_new, w_new, c_new + dc)
-    Gn = _calc_lambda(Rn, ω)
+    Gn = _calc_lambda(Rn, SC.grid)
 
-    Δ = _calc_err(𝑆.G - G1 - G2 + Gn, 𝐺)
+    Δ = _calc_err(𝑆.G - G1 - G2 + Gn, SC.value, SC.error)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t1] = Rn
@@ -678,21 +676,21 @@ function _calc_lambda(r::Box, ω::FermionicMatsubaraGrid)
     return Λ
 end
 
-function _calc_err(Λ::Array{C64,2}, nk::I64, 𝐺::RawData)
+function _calc_err(Λ::Array{C64,2}, nk::I64, value::Vector{C64}, error::Vector{C64})
     ngrid, nbox = size(Λ)
     @assert nk ≤ nbox
 
     res = 0.0
     for w = 1:ngrid
         g = sum(Λ[w,1:nk])
-        res = res + abs((g - 𝐺.value[w]) / 𝐺.error[w])
+        res = res + abs((g - value[w]) / error[w])
     end
 
     return res
 end
 
-function _calc_err(Gc::Vector{C64}, 𝐺::RawData)
-    return sum( @. abs((Gc - 𝐺.value) / 𝐺.error) )
+function _calc_err(Gc::Vector{C64}, value::Vector{C64}, error::Vector{C64})
+    return sum( @. abs((Gc - value) / error) )
 end
 
 function _calc_gf(Λ::Array{C64,2}, nk::I64)
