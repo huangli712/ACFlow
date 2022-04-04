@@ -318,7 +318,7 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
         push!(C, R)
         Λ[:,k] .= calc_lambda(R, SC.grid)
     end
-    Δ = calc_err(Λ, _Know, SC.value, SC.error)
+    Δ = calc_err(Λ, _Know, SC.Gᵥ, SC.σ¹)
     G = calc_gf(Λ, _Know)
 
     return StochOMElement(C, Λ, G, Δ)
@@ -420,7 +420,7 @@ function try_insert(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dac
     G2 = calc_lambda(Rnew, SC.grid)
     G3 = calc_lambda(Radd, SC.grid)
 
-    Δ = calc_err(𝑆.G - G1 + G2 + G3, SC.value, SC.error)
+    Δ = calc_err(𝑆.G - G1 + G2 + G3, SC.Gᵥ, SC.σ¹)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t] = Rnew
@@ -460,7 +460,7 @@ function try_remove(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dac
     R2n = Box(R2.h + dx / R2.w, R2.w, R2.c)
     G2n = calc_lambda(R2n, SC.grid)
 
-    Δ = calc_err(𝑆.G - G1 - G2 + G2n, SC.value, SC.error)
+    Δ = calc_err(𝑆.G - G1 - G2 + G2n, SC.Gᵥ, SC.σ¹)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t2] = R2n
@@ -500,7 +500,7 @@ function try_position(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, d
     G1 = 𝑆.Λ[:,t]
     G2 = calc_lambda(Rn, SC.grid)
 
-    Δ = calc_err(𝑆.G - G1 + G2, SC.value, SC.error)
+    Δ = calc_err(𝑆.G - G1 + G2, SC.Gᵥ, SC.σ¹)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t] = Rn
@@ -538,7 +538,7 @@ function try_width(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc
     G1 = 𝑆.Λ[:,t]
     G2 = calc_lambda(Rn, SC.grid)
 
-    Δ = calc_err(𝑆.G - G1 + G2, SC.value, SC.error)
+    Δ = calc_err(𝑆.G - G1 + G2, SC.Gᵥ, SC.σ¹)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t] = Rn
@@ -582,7 +582,7 @@ function try_height(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dac
     G2A = 𝑆.Λ[:,t2]
     G2B = calc_lambda(R2n, SC.grid)
 
-    Δ = calc_err(𝑆.G - G1A + G1B - G2A + G2B, SC.value, SC.error)
+    Δ = calc_err(𝑆.G - G1A + G1B - G2A + G2B, SC.Gᵥ, SC.σ¹)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t1] = R1n
@@ -640,7 +640,7 @@ function try_split(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc
 
         R3 = Box(h, w2, c2 + dc2)
         G3 = calc_lambda(R3, SC.grid)
-        Δ = calc_err(𝑆.G - G1 + G2 + G3, SC.value, SC.error)
+        Δ = calc_err(𝑆.G - G1 + G2 + G3, SC.Gᵥ, SC.σ¹)
 
         if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
             𝑆.C[t] = 𝑆.C[end]
@@ -696,7 +696,7 @@ function try_merge(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc
     Rn = Box(h_new, w_new, c_new + dc)
     Gn = calc_lambda(Rn, SC.grid)
 
-    Δ = calc_err(𝑆.G - G1 - G2 + Gn, SC.value, SC.error)
+    Δ = calc_err(𝑆.G - G1 - G2 + Gn, SC.Gᵥ, SC.σ¹)
 
     if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
         𝑆.C[t1] = Rn
