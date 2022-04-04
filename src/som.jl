@@ -58,50 +58,6 @@ function init(S::StochOMSolver, rd::RawData)
     return grid, MC, SC
 end
 
-"""
-    init_mc(S::StochOMSolver)
-
-Try to create a StochOMMC struct.
-
-See also: [`StochOM`](@ref).
-"""
-function init_mc(S::StochOMSolver)
-    seed = rand(1:100000000)
-    rng = MersenneTwister(seed)
-    Macc = zeros(I64, 7)
-    Mtry = zeros(I64, 7)
-    
-    MC = StochOMMC(rng, Macc, Mtry)
-
-    return MC
-end
-
-function init_element(S::StochOMSolver)
-end
-
-function init_context(S::StochOMSolver)
-    nstep = get_s("nstep")
-    nbox = get_s("nbox")
-
-    Δv = zeros(F64, nstep)
-
-    Cv = []
-    for _ = 1:nstep
-        C = Box[]
-        for _ = 1:nbox
-            push!(C, Box(0.0, 0.0, 0.0))
-        end
-        push!(Cv, C)
-    end
-
-    SC = StochOMContext(Cv, Δv)
-
-    return SC
-end
-
-function init_iodata(S::StochOMSolver, rd::RawData)
-end
-
 function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext, ω::AbstractGrid, 𝐺::RawData)
     nstep = get_s("nstep")
     ntry = get_s("ntry")
@@ -338,6 +294,54 @@ function som_output(Aom::Vector{F64})
             println(fout, _omega, " ", Aom[w])
         end
     end
+end
+
+#=
+### *Service Functions*
+=#
+
+"""
+    init_mc(S::StochOMSolver)
+
+Try to create a StochOMMC struct.
+
+See also: [`StochOM`](@ref).
+"""
+function init_mc(S::StochOMSolver)
+    seed = rand(1:100000000)
+    rng = MersenneTwister(seed)
+    Macc = zeros(I64, 7)
+    Mtry = zeros(I64, 7)
+    
+    MC = StochOMMC(rng, Macc, Mtry)
+
+    return MC
+end
+
+function init_element(S::StochOMSolver)
+end
+
+function init_context(S::StochOMSolver)
+    nstep = get_s("nstep")
+    nbox = get_s("nbox")
+
+    Δv = zeros(F64, nstep)
+
+    Cv = []
+    for _ = 1:nstep
+        C = Box[]
+        for _ = 1:nbox
+            push!(C, Box(0.0, 0.0, 0.0))
+        end
+        push!(Cv, C)
+    end
+
+    SC = StochOMContext(Cv, Δv)
+
+    return SC
+end
+
+function init_iodata(S::StochOMSolver, rd::RawData)
 end
 
 function _try_insert(𝑆::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData, dacc)
