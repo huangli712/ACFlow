@@ -34,35 +34,77 @@ end
 =#
 
 function solve(S::StochOMSolver, rd::RawData)
-    ω = make_grid(rd)
-    Aom = som_run(ω, rd)
-    som_output(Aom)
+    println("[ StochOM ]")
+    grid, MC, SC = init(S, rd)
+
+    if nworkers() > 1
+    else
+        Aom = run(S, MC, SC, grid, rd)
+        som_output(Aom)
+    end
 end
 
-function init()
+function init(S::StochOMSolver, rd::RawData)
+    MC = init_mc(S)
+    println("Create infrastructure for Monte Carlo sampling")
+
+    init_iodata(S, rd)
+
+    grid = make_grid(rd)
+    println("Build grid for input data: ", length(grid), " points")
+
+    SC = init_context(S)
+
+    return grid, MC, SC
 end
 
-function run()
+"""
+    init_mc(S::StochOMSolver)
+
+Try to create a StochOMMC struct.
+
+See also: [`StochOM`](@ref).
+"""
+function init_mc(S::StochOMSolver)
+    seed = rand(1:100000000)
+    rng = MersenneTwister(seed)
+    Macc = zeros(I64, 7)
+    Mtry = zeros(I64, 7)
+    
+    MC = StochOMMC(rng, Macc, Mtry)
+
+    return MC
 end
 
-function prun()
+function init_element(S::StochOMSolver)
 end
 
-function average()
+function init_context(S::StochOMSolver)
+    nstep = get_s("nstep")
+    nbox = get_s("nbox")
+
+    Δv = zeros(F64, nstep)
+
+    Cv = []
+    for _ = 1:nstep
+        C = Box[]
+        for _ = 1:nbox
+            push!(C, Box(0.0, 0.0, 0.0))
+        end
+        push!(Cv, C)
+    end
+
+    SC = StochOMContext(Cv, Δv)
+
+    return SC
 end
 
-function postprocess()
+function init_iodata(S::StochOMSolver, rd::RawData)
 end
 
-#=
-### *Core Algorithms*
-=#
-
-function som_run(ω::FermionicMatsubaraGrid, 𝐺::RawData)
+function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext, ω::AbstractGrid, 𝐺::RawData)
     nstep = get_s("nstep")
     ntry = get_s("ntry")
-
-    SC, MC = som_init()
 
     for l = 1:nstep
         println("try: $l")
@@ -80,29 +122,18 @@ function som_run(ω::FermionicMatsubaraGrid, 𝐺::RawData)
     return som_spectra(SC)
 end
 
-function som_init()
-    nstep = get_s("nstep")
-    nbox = get_s("nbox")
-
-    Δv = zeros(F64, nstep)
-
-    Cv = []
-    for _ = 1:nstep
-        C = Box[]
-        for _ = 1:nbox
-            push!(C, Box(0.0, 0.0, 0.0))
-        end
-        push!(Cv, C)
-    end
-
-    seed = rand(1:1000000)#;  seed = 112414
-    rng = MersenneTwister(seed)
-    @show "seed: ", seed
-    Mtry = zeros(I64, 7)
-    Macc = zeros(I64, 7)
-
-    return StochOMContext(Cv, Δv), StochOMMC(rng, Mtry, Macc)
+function prun()
 end
+
+function average()
+end
+
+function postprocess()
+end
+
+#=
+### *Core Algorithms*
+=#
 
 function som_random(MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData)
     sbox  = get_s("sbox")
