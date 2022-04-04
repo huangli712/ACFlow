@@ -75,7 +75,7 @@ function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext, ω::AbstractGr
         SC.Cv[l] = deepcopy(SE.C)
     end
 
-    return som_spectra(SC)
+    return postprocess(SC)
 end
 
 function prun()
@@ -84,7 +84,39 @@ end
 function average()
 end
 
-function postprocess()
+function postprocess(𝑆::StochOMContext)
+    alpha = get_s("alpha")
+    nmesh = get_c("nmesh")
+    wmin = get_c("wmin")
+    wmax = get_c("wmax")
+    nstep  = get_s("nstep")
+
+    dev_min = minimum(𝑆.Δv)
+
+    Lgood = 0
+    Aom = zeros(F64, nmesh)
+    for l = 1:nstep
+        if alpha * dev_min - 𝑆.Δv[l] > 0
+            Lgood = Lgood + 1
+            for w = 1:nmesh
+                _omega = wmin + (w - 1) * (wmax - wmin) / (nmesh - 1)
+                for r = 1:length(𝑆.Cv[l])
+                    R = 𝑆.Cv[l][r]
+                    if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
+                        Aom[w] = Aom[w] + R.h
+                    end
+                end
+            end
+        end
+    end
+
+    @show 𝑆.Δv, dev_min, Lgood
+
+    if Lgood > 0
+        @. Aom = Aom / Lgood
+    end
+
+    return Aom
 end
 
 #=
@@ -246,41 +278,6 @@ function som_update(SE::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGri
         SE.G .= ST.G
         SE.Δ  = ST.Δ
     end
-end
-
-function som_spectra(𝑆::StochOMContext)
-    alpha = get_s("alpha")
-    nmesh = get_c("nmesh")
-    wmin = get_c("wmin")
-    wmax = get_c("wmax")
-    nstep  = get_s("nstep")
-
-    dev_min = minimum(𝑆.Δv)
-
-    Lgood = 0
-    Aom = zeros(F64, nmesh)
-    for l = 1:nstep
-        if alpha * dev_min - 𝑆.Δv[l] > 0
-            Lgood = Lgood + 1
-            for w = 1:nmesh
-                _omega = wmin + (w - 1) * (wmax - wmin) / (nmesh - 1)
-                for r = 1:length(𝑆.Cv[l])
-                    R = 𝑆.Cv[l][r]
-                    if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
-                        Aom[w] = Aom[w] + R.h
-                    end
-                end
-            end
-        end
-    end
-
-    @show 𝑆.Δv, dev_min, Lgood
-
-    if Lgood > 0
-        @. Aom = Aom / Lgood
-    end
-
-    return Aom
 end
 
 function som_output(Aom::Vector{F64})
