@@ -9,7 +9,7 @@ ngrid  = 64
 nmesh  = 501
 wmax   = 10.0
 wmin   = -10.0
-beta   = 10.0
+beta   = 20.0
 offdiag = false
 
 [StochOM]

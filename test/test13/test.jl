@@ -7,6 +7,4 @@ using ACFlow
 welcome()
 overview()
 read_param()
-ω, 𝐺 = read_data!()
-Aom = som_run(ω, 𝐺)
-som_output(Aom)
+solve(read_data(5))
