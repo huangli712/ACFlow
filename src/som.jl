@@ -68,7 +68,7 @@ function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext, ω::AbstractGr
         SE = init_element(MC, ω, 𝐺)
 
         for _ = 1:ntry
-            som_update(SE, MC, ω, 𝐺)
+            update(SE, MC, ω, 𝐺)
         end
 
         SC.Δv[l] = SE.Δ
@@ -123,7 +123,7 @@ end
 ### *Core Algorithms*
 =#
 
-function som_update(SE::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData)
+function update(SE::StochOMElement, MC::StochOMMC, ω::FermionicMatsubaraGrid, 𝐺::RawData)
     Tmax = 100
     nbox = get_s("nbox")
     dmax = get_s("dmax")
