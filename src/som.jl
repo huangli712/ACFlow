@@ -58,7 +58,11 @@ mutable struct StochOMContext
 end
 
 function solve(S::StochOMSolver, rd::RawData)
-    ω, 𝐺 = read_data!()
+    #nfreq = get_c("nfreq")
+    #β = get_c("beta")
+    𝐺 = SOMData(rd.value, rd.error)
+    #ω = FermionicMatsubaraGrid(nfreq, β, rd._grid)
+    ω = make_grid(rd)
     Aom = som_run(ω, 𝐺)
     som_output(Aom)
 end
