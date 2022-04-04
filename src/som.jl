@@ -7,13 +7,6 @@
 # Last modified: 2022/04/04
 #
 
-#=
-struct SOMData <: AbstractData
-    value :: Vector{N64}
-    error :: Vector{N64}
-end
-=#
-
 mutable struct Box
     h :: F64
     w :: F64
@@ -33,7 +26,6 @@ mutable struct StochOMContext
 end
 
 function solve(S::StochOMSolver, rd::RawData)
-    #𝐺 = SOMData(rd.value, rd.error)
     ω = make_grid(rd)
     Aom = som_run(ω, rd)
     som_output(Aom)
