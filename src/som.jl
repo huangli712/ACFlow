@@ -25,12 +25,12 @@ mutable struct StochOMElement
 end
 
 mutable struct StochOMContext
-    Gᵥ :: Vector{C64}
-    σ¹ :: Vector{C64}
+    Gᵥ   :: Vector{C64}
+    σ¹   :: Vector{C64}
     grid :: AbstractGrid
     mesh :: AbstractMesh
-    Cv :: Vector{Vector{Box}}
-    Δv :: Vector{F64} 
+    Cv   :: Vector{Vector{Box}}
+    Δv   :: Vector{F64} 
 end
 
 #=
@@ -38,14 +38,30 @@ end
 =#
 
 function solve(S::StochOMSolver, rd::RawData)
+    nmesh = get_c("nmesh")
+
     println("[ StochOM ]")
     MC, SC = init(S, rd)
 
     if nworkers() > 1
+        println("Using $(nworkers()) workers")
+        #
+        p1 = deepcopy(PCOMM)
+        p2 = deepcopy(PStochOM)
+        #
+        sol = pmap((x) -> prun(S, p1, p2, MC, SC), 1:nworkers())
+        @assert length(sol) == nworkers()
+        #
+        Aout = zeros(F64, nmesh)
+        for i in eachindex(sol)
+            @. Aout = Aout + sol[i] / nworkers()
+        end
+        #
+        postprocess(SC, Aout)
     else
-        Aom = run(S, MC, SC)
+        Aout = run(S, MC, SC)
+        postprocess(SC, Aout)
     end
-    write_spectrum(SC.mesh, Aom)
 end
 
 function init(S::StochOMSolver, rd::RawData)
