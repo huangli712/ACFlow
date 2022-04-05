@@ -166,7 +166,8 @@ function average(𝑆::StochOMContext)
     return Aom
 end
 
-function postprocess()
+function postprocess(SC::StochOMContext, Aout::Vector{F64})
+    write_spectrum(SC.mesh, Aout)
 end
 
 #=
