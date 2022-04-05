@@ -414,7 +414,7 @@ function calc_norm(C::Vector{Box})
     return norm
 end
 
-function try_insert(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function try_insert(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc)
     sbox  = get_s("sbox")
     wbox  = get_s("wbox")
     wmin = get_c("wmin")
@@ -463,7 +463,7 @@ function try_insert(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dac
     MC.Mtry[1] = MC.Mtry[1] + 1
 end
 
-function try_remove(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function try_remove(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc)
     csize = length(𝑆.C)
 
     t1 = rand(MC.rng, 1:csize)
@@ -508,7 +508,7 @@ function try_remove(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dac
     MC.Mtry[2] = MC.Mtry[2] + 1
 end
 
-function try_position(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function try_position(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
     csize = length(𝑆.C)
@@ -541,7 +541,7 @@ function try_position(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, d
     MC.Mtry[3] = MC.Mtry[3] + 1
 end
 
-function try_width(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function try_width(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc)
     wbox  = get_s("wbox")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
@@ -579,7 +579,7 @@ function try_width(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc
     MC.Mtry[4] = MC.Mtry[4] + 1
 end
 
-function try_height(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function try_height(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc)
     sbox  = get_s("sbox")
     csize = length(𝑆.C)
 
@@ -625,7 +625,7 @@ function try_height(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dac
     MC.Mtry[5] = MC.Mtry[5] + 1
 end
 
-function try_split(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function try_split(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc)
     wbox  = get_s("wbox")
     sbox  = get_s("sbox")
     wmin = get_c("wmin")
@@ -689,7 +689,7 @@ function try_split(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc
     MC.Mtry[6] = MC.Mtry[6] + 1
 end
 
-function try_merge(𝑆::StochOMElement, MC::StochOMMC, SC::StochOMContext, dacc)
+function try_merge(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
     csize = length(𝑆.C)
