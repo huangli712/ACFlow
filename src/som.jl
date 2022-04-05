@@ -134,8 +134,6 @@ end
 function average(𝑆::StochOMContext)
     alpha = get_s("alpha")
     nmesh = get_c("nmesh")
-    wmin = get_c("wmin")
-    wmax = get_c("wmax")
     nstep  = get_s("nstep")
 
     dev_min = minimum(𝑆.Δv)
@@ -146,7 +144,6 @@ function average(𝑆::StochOMContext)
         if alpha * dev_min - 𝑆.Δv[l] > 0
             Lgood = Lgood + 1
             for w = 1:nmesh
-                #_omega = wmin + (w - 1) * (wmax - wmin) / (nmesh - 1)
                 _omega = 𝑆.mesh[w]
                 for r = 1:length(𝑆.Cv[l])
                     R = 𝑆.Cv[l][r]
