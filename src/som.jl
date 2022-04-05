@@ -93,23 +93,45 @@ function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
         SE = init_element(MC, SC)
 
         for _ = 1:ntry
-            update(SE, MC, SC)
+            update(MC, SE, SC)
         end
 
         SC.Δv[l] = SE.Δ
         SC.Cv[l] = deepcopy(SE.C)
     end
 
-    return postprocess(SC)
+    return average(SC)
 end
 
-function prun()
+function prun(S::StochOMSolver,
+              p1::Dict{String,Vector{Any}},
+              p2::Dict{String,Vector{Any}},
+              MC::StochOMMC, SC::StochOMContext)
+    rev_dict(p1)
+    rev_dict(S, p2)
+
+    MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
+
+    nstep = get_s("nstep")
+    ntry = get_s("ntry")
+
+    for l = 1:nstep
+        println("try: $l")
+
+        SE = init_element(MC, SC)
+
+        for _ = 1:ntry
+            update(MC, SE, SC)
+        end
+
+        SC.Δv[l] = SE.Δ
+        SC.Cv[l] = deepcopy(SE.C)
+    end
+
+    return average(SC)
 end
 
-function average()
-end
-
-function postprocess(𝑆::StochOMContext)
+function average(𝑆::StochOMContext)
     alpha = get_s("alpha")
     nmesh = get_c("nmesh")
     wmin = get_c("wmin")
@@ -144,11 +166,14 @@ function postprocess(𝑆::StochOMContext)
     return Aom
 end
 
+function postprocess()
+end
+
 #=
 ### *Core Algorithms*
 =#
 
-function update(SE::StochOMElement, MC::StochOMMC, SC::StochOMContext)
+function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
     Tmax = 100
     nbox = get_s("nbox")
     dmax = get_s("dmax")
