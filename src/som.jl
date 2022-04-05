@@ -190,39 +190,39 @@ function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
         @cswitch update_type begin
             @case 1
                 if length(ST.C) < nbox - 1
-                    try_insert(ST, MC, SC, d1)
+                    try_insert(MC, ST, SC, d1)
                 end
                 break
 
             @case 2
                 if length(ST.C) > 1
-                    try_remove(ST, MC, SC, d1)
+                    try_remove(MC, ST, SC, d1)
                 end
                 break
 
             @case 3
-                try_position(ST, MC, SC, d1)
+                try_position(MC, ST, SC, d1)
                 break
 
             @case 4
-                try_width(ST, MC, SC, d1)
+                try_width(MC, ST, SC, d1)
                 break
 
             @case 5
                 if length(ST.C) > 1
-                    try_height(ST, MC, SC, d1)
+                    try_height(MC, ST, SC, d1)
                 end
                 break
 
             @case 6
                 if length(ST.C) < nbox - 1
-                    try_split(ST, MC, SC, d1)
+                    try_split(MC, ST, SC, d1)
                 end
                 break
 
             @case 7
                 if length(ST.C) > 1
-                    try_merge(ST, MC, SC, d1)
+                    try_merge(MC, ST, SC, d1)
                 end
                 break
         end
@@ -235,39 +235,39 @@ function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
         @cswitch update_type begin
             @case 1
                 if length(ST.C) < nbox - 1
-                    try_insert(ST, MC, SC, d2)
+                    try_insert(MC, ST, SC, d2)
                 end
                 break
 
             @case 2
                 if length(ST.C) > 1
-                    try_remove(ST, MC, SC, d2)
+                    try_remove(MC, ST, SC, d2)
                 end
                 break
 
             @case 3
-                try_position(ST, MC, SC, d2)
+                try_position(MC, ST, SC, d2)
                 break
 
             @case 4
-                try_width(ST, MC, SC, d2)
+                try_width(MC, ST, SC, d2)
                 break
 
             @case 5
                 if length(ST.C) > 1
-                    try_height(ST, MC, SC, d2)
+                    try_height(MC, ST, SC, d2)
                 end
                 break
 
             @case 6
                 if length(ST.C) < nbox - 1
-                    try_split(ST, MC, SC, d2)
+                    try_split(MC, ST, SC, d2)
                 end
                 break
 
             @case 7
                 if length(ST.C) > 1
-                    try_merge(ST, MC, SC, d2)
+                    try_merge(MC, ST, SC, d2)
                 end
                 break
         end
