@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/21
+# Last modified: 2022/04/06
 #
 
 """
@@ -215,7 +215,7 @@ end
 function rev_dict(S::StochOMSolver, StochOM::Dict{String,Vector{Any}})
     for key in keys(StochOM)
         if haskey(PStochOM, key)
-            PStochOM[key][1] = StochOM[key]
+            PStochOM[key][1] = StochOM[key][1]
         else
             error("Sorry, $key is not supported currently")
         end
