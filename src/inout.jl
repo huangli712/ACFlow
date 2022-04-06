@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/21
+# Last modified: 2022/04/06
 #
 
 """
@@ -35,7 +35,7 @@ function read_real_data(finput::AbstractString, ngrid::I64)
 end
 
 """
-    read_complex_data(finput::AbstractString, ngrid::I64, ncols::I64 = 4)
+    read_complex_data(finput::AbstractString, ngrid::I64)
 
 Read input data. This function is used for Matsubara frequency data. The
 input should contain four columns or five columns. The first column is
@@ -47,10 +47,13 @@ same standard deviations.
 
 See also: [`read_time_data`](@ref).
 """
-function read_complex_data(finput::AbstractString, ngrid::I64, ncols::I64 = 4)
+function read_complex_data(finput::AbstractString, ngrid::I64)
     _grid = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)
+
+    dlm = readdlm(finput)
+    _, ncols = size(dlm)
 
     @assert ncols in (4, 5)
 
@@ -88,6 +91,11 @@ function read_complex_data(finput::AbstractString, ngrid::I64, only_real_part::B
     _grid = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)
+
+    dlm = readdlm(finput)
+    _, ncols = size(dlm)
+
+    @assert ncols == 3
 
     open(finput, "r") do fin
         for i = 1:ngrid
