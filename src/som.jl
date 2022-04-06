@@ -380,8 +380,8 @@ function init_iodata(S::StochOMSolver, rd::RawData)
     return Gᵥ, σ¹
 end
 
-function calc_lambda(r::Box, ω::FermionicMatsubaraGrid)
-    Λ = @. r.h * log((im * ω.ω - r.c + 0.5 * r.w) / (im * ω.ω - r.c - 0.5 * r.w))
+function calc_lambda(r::Box, grid::FermionicMatsubaraGrid)
+    Λ = @. r.h * log((im * grid.ω - r.c + 0.5 * r.w) / (im * grid.ω - r.c - 0.5 * r.w))
     return vcat(real(Λ), imag(Λ))
 end
 
