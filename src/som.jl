@@ -19,14 +19,14 @@ end
 
 mutable struct StochOMElement
     C :: Vector{Box}
-    Λ :: Array{C64,2}
-    G :: Vector{C64}
+    Λ :: Array{F64,2}
+    G :: Vector{F64}
     Δ :: F64
 end
 
 mutable struct StochOMContext
-    Gᵥ   :: Vector{C64}
-    σ¹   :: Vector{C64}
+    Gᵥ   :: Vector{F64}
+    σ¹   :: Vector{F64}
     grid :: AbstractGrid
     mesh :: AbstractMesh
     Cᵥ   :: Vector{Vector{Box}}
@@ -335,7 +335,7 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
     end
 
     C = Box[]
-    Λ = zeros(C64, ngrid, nbox)
+    Λ = zeros(F64, 2*ngrid, nbox)
     Δ = 0.0
 
     for k = 1:_Know
@@ -371,17 +371,21 @@ function init_context(S::StochOMSolver)
 end
 
 function init_iodata(S::StochOMSolver, rd::RawData)
-    Gᵥ = rd.value
-    σ¹ = 1.0 ./ rd.error
+    val = rd.value
+    err = 1.0 ./ rd.error
+    
+    Gᵥ = vcat(real(val), imag(val))
+    σ¹ = vcat(real(err), imag(err))
+
     return Gᵥ, σ¹
 end
 
 function calc_lambda(r::Box, ω::FermionicMatsubaraGrid)
     Λ = @. r.h * log((im * ω.ω - r.c + 0.5 * r.w) / (im * ω.ω - r.c - 0.5 * r.w))
-    return Λ
+    return vcat(real(Λ), imag(Λ))
 end
 
-function calc_err(Λ::Array{C64,2}, nk::I64, Gᵥ::Vector{C64}, σ¹::Vector{C64})
+function calc_err(Λ::Array{F64,2}, nk::I64, Gᵥ::Vector{F64}, σ¹::Vector{F64})
     ngrid, nbox = size(Λ)
     @assert nk ≤ nbox
 
@@ -394,15 +398,15 @@ function calc_err(Λ::Array{C64,2}, nk::I64, Gᵥ::Vector{C64}, σ¹::Vector{C64
     return res
 end
 
-function calc_err(Gc::Vector{C64}, Gᵥ::Vector{C64}, σ¹::Vector{C64})
-    return sum( @. abs((Gc - Gᵥ) * σ¹) )
+function calc_err(G::Vector{F64}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
+    return sum( @. abs((G - Gᵥ) * σ¹) )
 end
 
-function calc_gf(Λ::Array{C64,2}, nk::I64)
+function calc_gf(Λ::Array{F64,2}, nk::I64)
     ngrid, nbox = size(Λ)
     @assert nk ≤ nbox
 
-    G = zeros(C64, ngrid)
+    G = zeros(F64, ngrid)
     for k = 1:nk
         for g = 1:ngrid
             G[g] = G[g] + Λ[g,k]
