@@ -470,8 +470,8 @@ function try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
     MC.Mtry[1] = MC.Mtry[1] + 1
 end
 
-function try_remove(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc::F64)
-    csize = length(𝑆.C)
+function try_remove(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+    csize = length(SE.C)
 
     t1 = rand(MC.rng, 1:csize)
     t2 = rand(MC.rng, 1:csize)
@@ -482,32 +482,32 @@ function try_remove(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dac
         t1, t2 = t2, t1
     end
 
-    R1 = 𝑆.C[t1]
-    R2 = 𝑆.C[t2]
-    Re = 𝑆.C[end]
+    R1 = SE.C[t1]
+    R2 = SE.C[t2]
+    Re = SE.C[end]
 
     dx = R1.h * R1.w
 
-    G1 = 𝑆.Λ[:,t1]
-    G2 = 𝑆.Λ[:,t2]
-    Ge = 𝑆.Λ[:,csize]
+    G1 = SE.Λ[:,t1]
+    G2 = SE.Λ[:,t2]
+    Ge = SE.Λ[:,csize]
 
     R2n = Box(R2.h + dx / R2.w, R2.w, R2.c)
     G2n = calc_lambda(R2n, SC.grid)
 
-    Δ = calc_err(𝑆.G - G1 - G2 + G2n, SC.Gᵥ, SC.σ²)
+    Δ = calc_err(SE.G - G1 - G2 + G2n, SC.Gᵥ, SC.σ²)
 
-    if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
-        𝑆.C[t2] = R2n
+    if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+        SE.C[t2] = R2n
         if t1 < csize
-            𝑆.C[t1] = Re
+            SE.C[t1] = Re
         end
-        pop!(𝑆.C)
-        𝑆.Δ = Δ
-        @. 𝑆.G = 𝑆.G - G1 - G2 + G2n
-        @. 𝑆.Λ[:,t2] = G2n
+        pop!(SE.C)
+        SE.Δ = Δ
+        @. SE.G = SE.G - G1 - G2 + G2n
+        @. SE.Λ[:,t2] = G2n
         if t1 < csize
-            @. 𝑆.Λ[:,t1] = Ge
+            @. SE.Λ[:,t1] = Ge
         end
         MC.Macc[2] = MC.Macc[2] + 1
     end
@@ -515,14 +515,14 @@ function try_remove(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dac
     MC.Mtry[2] = MC.Mtry[2] + 1
 end
 
-function try_position(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_position(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
-    csize = length(𝑆.C)
+    csize = length(SE.C)
 
     t = rand(MC.rng, 1:csize)
 
-    R = 𝑆.C[t]
+    R = SE.C[t]
 
     dx_min = wmin + R.w / 2.0 - R.c
     dx_max = wmax - R.w / 2.0 - R.c
@@ -532,16 +532,16 @@ function try_position(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, d
     dc = Pdx(dx_min, dx_max, MC.rng)
 
     Rn = Box(R.h, R.w, R.c + dc)
-    G1 = 𝑆.Λ[:,t]
+    G1 = SE.Λ[:,t]
     G2 = calc_lambda(Rn, SC.grid)
 
-    Δ = calc_err(𝑆.G - G1 + G2, SC.Gᵥ, SC.σ²)
+    Δ = calc_err(SE.G - G1 + G2, SC.Gᵥ, SC.σ²)
 
-    if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
-        𝑆.C[t] = Rn
-        𝑆.Δ = Δ
-        @. 𝑆.G = 𝑆.G - G1 + G2
-        @. 𝑆.Λ[:,t] = G2
+    if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+        SE.C[t] = Rn
+        SE.Δ = Δ
+        @. SE.G = SE.G - G1 + G2
+        @. SE.Λ[:,t] = G2
         MC.Macc[3] = MC.Macc[3] + 1
     end
 
