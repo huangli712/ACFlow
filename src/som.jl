@@ -132,22 +132,22 @@ function prun(S::StochOMSolver,
     return average(SC)
 end
 
-function average(𝑆::StochOMContext)
+function average(SC::StochOMContext)
     nmesh = get_c("nmesh")
     alpha = get_s("alpha")
     nstep  = get_s("nstep")
 
-    dev_min = minimum(𝑆.Δᵥ)
+    dev_min = minimum(SC.Δᵥ)
 
     Lgood = 0
     Aom = zeros(F64, nmesh)
     for l = 1:nstep
-        if alpha * dev_min - 𝑆.Δᵥ[l] > 0
+        if alpha * dev_min - SC.Δᵥ[l] > 0
             Lgood = Lgood + 1
             for w = 1:nmesh
-                _omega = 𝑆.mesh[w]
-                for r = 1:length(𝑆.Cᵥ[l])
-                    R = 𝑆.Cᵥ[l][r]
+                _omega = SC.mesh[w]
+                for r = 1:length(SC.Cᵥ[l])
+                    R = SC.Cᵥ[l][r]
                     if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
                         Aom[w] = Aom[w] + R.h
                     end
@@ -156,7 +156,7 @@ function average(𝑆::StochOMContext)
         end
     end
 
-    @show 𝑆.Δᵥ, dev_min, Lgood
+    @show SC.Δᵥ, dev_min, Lgood
 
     if Lgood > 0
         @. Aom = Aom / Lgood
@@ -421,16 +421,16 @@ function calc_norm(C::Vector{Box})
     return norm
 end
 
-function try_insert(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     sbox  = get_s("sbox")
     wbox  = get_s("wbox")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
-    csize = length(𝑆.C)
+    csize = length(SE.C)
 
     t = rand(MC.rng, 1:csize)
 
-    R = 𝑆.C[t]
+    R = SE.C[t]
     if R.h * R.w ≤ 2.0 * sbox
         return
     end
@@ -451,19 +451,19 @@ function try_insert(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dac
     Rnew = Box(R.h - dx / R.w, R.w, R.c)
     Radd = Box(h, w, c)
 
-    G1 = 𝑆.Λ[:,t]
+    G1 = SE.Λ[:,t]
     G2 = calc_lambda(Rnew, SC.grid)
     G3 = calc_lambda(Radd, SC.grid)
 
-    Δ = calc_err(𝑆.G - G1 + G2 + G3, SC.Gᵥ, SC.σ²)
+    Δ = calc_err(SE.G - G1 + G2 + G3, SC.Gᵥ, SC.σ²)
 
-    if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
-        𝑆.C[t] = Rnew
-        push!(𝑆.C, Radd)
-        𝑆.Δ = Δ
-        @. 𝑆.G = 𝑆.G - G1 + G2 + G3
-        @. 𝑆.Λ[:,t] = G2
-        @. 𝑆.Λ[:,csize+1] = G3
+    if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+        SE.C[t] = Rnew
+        push!(SE.C, Radd)
+        SE.Δ = Δ
+        @. SE.G = SE.G - G1 + G2 + G3
+        @. SE.Λ[:,t] = G2
+        @. SE.Λ[:,csize+1] = G3
         MC.Macc[1] = MC.Macc[1] + 1
     end
 
