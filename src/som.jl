@@ -68,7 +68,8 @@ function init(S::StochOMSolver, rd::RawData)
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
-    init_iodata(S, rd)
+    Gᵥ, σ¹ = init_iodata(S, rd)
+    println("Postprocess input data: ", length(σ¹), " points")
 
     grid = make_grid(rd)
     println("Build grid for input data: ", length(grid), " points")
@@ -78,7 +79,7 @@ function init(S::StochOMSolver, rd::RawData)
 
     Cᵥ, Δᵥ = init_context(S)
 
-    SC = StochOMContext(rd.value, rd.error, grid, mesh, Cᵥ, Δᵥ)
+    SC = StochOMContext(Gᵥ, σ¹, grid, mesh, Cᵥ, Δᵥ)
 
     return MC, SC
 end
@@ -370,6 +371,9 @@ function init_context(S::StochOMSolver)
 end
 
 function init_iodata(S::StochOMSolver, rd::RawData)
+    Gᵥ = rd.value
+    σ¹ = 1.0 / rd.error
+    return Gᵥ, σ¹
 end
 
 function calc_lambda(r::Box, ω::FermionicMatsubaraGrid)
@@ -384,14 +388,14 @@ function calc_err(Λ::Array{C64,2}, nk::I64, Gᵥ::Vector{C64}, σ¹::Vector{C64
     res = 0.0
     for w = 1:ngrid
         g = sum(Λ[w,1:nk])
-        res = res + abs((g - Gᵥ[w]) / σ¹[w])
+        res = res + abs((g - Gᵥ[w]) * σ¹[w])
     end
 
     return res
 end
 
 function calc_err(Gc::Vector{C64}, Gᵥ::Vector{C64}, σ¹::Vector{C64})
-    return sum( @. abs((Gc - Gᵥ) / σ¹) )
+    return sum( @. abs((Gc - Gᵥ) * σ¹) )
 end
 
 function calc_gf(Λ::Array{C64,2}, nk::I64)
