@@ -306,7 +306,6 @@ end
 function init_element(MC::StochOMMC, SC::StochOMContext)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
-    ngrid = get_c("ngrid")
     nbox  = get_s("nbox")
     sbox  = get_s("sbox")
     wbox  = get_s("wbox")
@@ -335,7 +334,7 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
     end
 
     C = Box[]
-    Λ = zeros(F64, 2*ngrid, nbox)
+    Λ = zeros(F64, length(SC.Gᵥ), nbox)
     Δ = 0.0
 
     for k = 1:_Know
