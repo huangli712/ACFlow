@@ -377,21 +377,21 @@ function calc_lambda(r::Box, ω::FermionicMatsubaraGrid)
     return Λ
 end
 
-function calc_err(Λ::Array{C64,2}, nk::I64, Gᵥ::Vector{C64}, error::Vector{C64})
+function calc_err(Λ::Array{C64,2}, nk::I64, Gᵥ::Vector{C64}, σ¹::Vector{C64})
     ngrid, nbox = size(Λ)
     @assert nk ≤ nbox
 
     res = 0.0
     for w = 1:ngrid
         g = sum(Λ[w,1:nk])
-        res = res + abs((g - Gᵥ[w]) / error[w])
+        res = res + abs((g - Gᵥ[w]) / σ¹[w])
     end
 
     return res
 end
 
-function calc_err(Gc::Vector{C64}, Gᵥ::Vector{C64}, error::Vector{C64})
-    return sum( @. abs((Gc - Gᵥ) / error) )
+function calc_err(Gc::Vector{C64}, Gᵥ::Vector{C64}, σ¹::Vector{C64})
+    return sum( @. abs((Gc - Gᵥ) / σ¹) )
 end
 
 function calc_gf(Λ::Array{C64,2}, nk::I64)
