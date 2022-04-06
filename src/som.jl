@@ -136,17 +136,17 @@ function average(𝑆::StochOMContext)
     nmesh = get_c("nmesh")
     nstep  = get_s("nstep")
 
-    dev_min = minimum(𝑆.Δv)
+    dev_min = minimum(𝑆.Δᵥ)
 
     Lgood = 0
     Aom = zeros(F64, nmesh)
     for l = 1:nstep
-        if alpha * dev_min - 𝑆.Δv[l] > 0
+        if alpha * dev_min - 𝑆.Δᵥ[l] > 0
             Lgood = Lgood + 1
             for w = 1:nmesh
                 _omega = 𝑆.mesh[w]
-                for r = 1:length(𝑆.Cv[l])
-                    R = 𝑆.Cv[l][r]
+                for r = 1:length(𝑆.Cᵥ[l])
+                    R = 𝑆.Cᵥ[l][r]
                     if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
                         Aom[w] = Aom[w] + R.h
                     end
@@ -155,7 +155,7 @@ function average(𝑆::StochOMContext)
         end
     end
 
-    @show 𝑆.Δv, dev_min, Lgood
+    @show 𝑆.Δᵥ, dev_min, Lgood
 
     if Lgood > 0
         @. Aom = Aom / Lgood
@@ -377,21 +377,21 @@ function calc_lambda(r::Box, ω::FermionicMatsubaraGrid)
     return Λ
 end
 
-function calc_err(Λ::Array{C64,2}, nk::I64, value::Vector{C64}, error::Vector{C64})
+function calc_err(Λ::Array{C64,2}, nk::I64, Gᵥ::Vector{C64}, error::Vector{C64})
     ngrid, nbox = size(Λ)
     @assert nk ≤ nbox
 
     res = 0.0
     for w = 1:ngrid
         g = sum(Λ[w,1:nk])
-        res = res + abs((g - value[w]) / error[w])
+        res = res + abs((g - Gᵥ[w]) / error[w])
     end
 
     return res
 end
 
-function calc_err(Gc::Vector{C64}, value::Vector{C64}, error::Vector{C64})
-    return sum( @. abs((Gc - value) / error) )
+function calc_err(Gc::Vector{C64}, Gᵥ::Vector{C64}, error::Vector{C64})
+    return sum( @. abs((Gc - Gᵥ) / error) )
 end
 
 function calc_gf(Λ::Array{C64,2}, nk::I64)
