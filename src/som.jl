@@ -97,7 +97,7 @@ function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
 
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
-        @printf("try -> %5i Δ -> %16.12e \n", l, SE.Δ)
+        @printf("try -> %5i (%5i) Δ -> %16.12e \n", l, nstep, SE.Δ)
     end
 
     return average(SC)
@@ -124,7 +124,7 @@ function prun(S::StochOMSolver,
 
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
-        @printf("try -> %5i Δ -> %16.12e \n", l, SE.Δ)
+        @printf("try -> %5i (%5i) Δ -> %16.12e \n", l, nstep, SE.Δ)
     end
 
     return average(SC)
