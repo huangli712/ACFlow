@@ -632,16 +632,16 @@ function try_height(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
     MC.Mtry[5] = MC.Mtry[5] + 1
 end
 
-function try_split(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     wbox  = get_s("wbox")
     sbox  = get_s("sbox")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
-    csize = length(𝑆.C)
+    csize = length(SE.C)
 
     t = rand(MC.rng, 1:csize)
 
-    R1 = 𝑆.C[t]
+    R1 = SE.C[t]
     if R1.w ≤ 2 * wbox || R1.w * R1.h ≤ 2.0 * sbox
         return
     end
@@ -667,28 +667,28 @@ function try_split(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc
        (c2 + dc2 ≥ wmin + w2 / 2.0) &&
        (c2 + dc2 ≤ wmax - w2 / 2.0)
 
-        G1 = 𝑆.Λ[:,t]
-        Ge = 𝑆.Λ[:,csize]
+        G1 = SE.Λ[:,t]
+        Ge = SE.Λ[:,csize]
 
         R2 = Box(h, w1, c1 + dc1)
         G2 = calc_lambda(R2, SC.grid)
 
         R3 = Box(h, w2, c2 + dc2)
         G3 = calc_lambda(R3, SC.grid)
-        Δ = calc_err(𝑆.G - G1 + G2 + G3, SC.Gᵥ, SC.σ²)
+        Δ = calc_err(SE.G - G1 + G2 + G3, SC.Gᵥ, SC.σ²)
 
-        if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
-            𝑆.C[t] = 𝑆.C[end]
-            pop!(𝑆.C)
-            push!(𝑆.C, R2)
-            push!(𝑆.C, R3)
-            𝑆.Δ = Δ
-            @. 𝑆.G = 𝑆.G - G1 + G2 + G3
+        if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+            SE.C[t] = SE.C[end]
+            pop!(SE.C)
+            push!(SE.C, R2)
+            push!(SE.C, R3)
+            SE.Δ = Δ
+            @. SE.G = SE.G - G1 + G2 + G3
             if t < csize
-                @. 𝑆.Λ[:,t] = Ge
+                @. SE.Λ[:,t] = Ge
             end
-            @. 𝑆.Λ[:,csize] = G2
-            @. 𝑆.Λ[:,csize+1] = G3
+            @. SE.Λ[:,csize] = G2
+            @. SE.Λ[:,csize+1] = G3
             MC.Macc[6] = MC.Macc[6] + 1
         end
     end
