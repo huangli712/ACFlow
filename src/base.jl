@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/17
+# Last modified: 2022/04/06
 #
 
 """
@@ -142,13 +142,13 @@ function read_param()
 end
 
 """
-    read_data(ncols::I64 = 4, only_real_part::Bool = true)
+    read_data(only_real_part::Bool = true)
 
 Read data in imaginary axis and return a `RawData` struct.
 
 See also: [`RawData`](@ref).
 """
-function read_data(ncols::I64 = 4, only_real_part::Bool = true)
+function read_data(only_real_part::Bool = true)
     finput = get_c("finput")
     ngrid = get_c("ngrid")
 
@@ -162,7 +162,7 @@ function read_data(ncols::I64 = 4, only_real_part::Bool = true)
             break
 
         @case "ffreq"
-            return read_complex_data(finput, ngrid, ncols)
+            return read_complex_data(finput, ngrid)
             break
 
         @case "bfreq"
