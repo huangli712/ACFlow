@@ -548,15 +548,15 @@ function try_position(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dac
     MC.Mtry[3] = MC.Mtry[3] + 1
 end
 
-function try_width(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     wbox  = get_s("wbox")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
-    csize = length(𝑆.C)
+    csize = length(SE.C)
 
     t = rand(MC.rng, 1:csize)
 
-    R = 𝑆.C[t]
+    R = SE.C[t]
 
     weight = R.h * R.w
     dx_min = wbox - R.w
@@ -570,16 +570,16 @@ function try_width(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc
     c = R.c
 
     Rn = Box(h, w, c)
-    G1 = 𝑆.Λ[:,t]
+    G1 = SE.Λ[:,t]
     G2 = calc_lambda(Rn, SC.grid)
 
-    Δ = calc_err(𝑆.G - G1 + G2, SC.Gᵥ, SC.σ²)
+    Δ = calc_err(SE.G - G1 + G2, SC.Gᵥ, SC.σ²)
 
-    if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
-        𝑆.C[t] = Rn
-        𝑆.Δ = Δ
-        @. 𝑆.G = 𝑆.G - G1 + G2
-        @. 𝑆.Λ[:,t] = G2
+    if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+        SE.C[t] = Rn
+        SE.Δ = Δ
+        @. SE.G = SE.G - G1 + G2
+        @. SE.Λ[:,t] = G2
         MC.Macc[4] = MC.Macc[4] + 1
     end
 
