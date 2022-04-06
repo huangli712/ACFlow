@@ -390,7 +390,7 @@ function calc_err(Λ::Array{F64,2}, Gᵥ::Vector{F64}, σ²::Vector{F64}, nk::I6
 
     res = 0.0
     for w = 1:ngrid
-        g = sum(Λ[w,1:nk])
+        g = sum( Λ[w,1:nk] )
         res = res + (g - Gᵥ[w]) ^ 2.0 * σ²[w]
     end
 
