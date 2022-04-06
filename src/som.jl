@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2022/04/05
+# Last modified: 2022/04/06
 #
 
 #=
@@ -29,8 +29,8 @@ mutable struct StochOMContext
     σ¹   :: Vector{C64}
     grid :: AbstractGrid
     mesh :: AbstractMesh
-    Cv   :: Vector{Vector{Box}}
-    Δv   :: Vector{F64} 
+    Cᵥ   :: Vector{Vector{Box}}
+    Δᵥ   :: Vector{F64} 
 end
 
 #=
@@ -76,9 +76,9 @@ function init(S::StochOMSolver, rd::RawData)
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    Cv, Δv = init_context(S)
+    Cᵥ, Δᵥ = init_context(S)
 
-    SC = StochOMContext(rd.value, rd.error, grid, mesh, Cv, Δv)
+    SC = StochOMContext(rd.value, rd.error, grid, mesh, Cᵥ, Δᵥ)
 
     return MC, SC
 end
@@ -96,8 +96,8 @@ function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
             update(MC, SE, SC)
         end
 
-        SC.Δv[l] = SE.Δ
-        SC.Cv[l] = deepcopy(SE.C)
+        SC.Δᵥ[l] = SE.Δ
+        SC.Cᵥ[l] = deepcopy(SE.C)
     end
 
     return average(SC)
@@ -124,8 +124,8 @@ function prun(S::StochOMSolver,
             update(MC, SE, SC)
         end
 
-        SC.Δv[l] = SE.Δ
-        SC.Cv[l] = deepcopy(SE.C)
+        SC.Δᵥ[l] = SE.Δ
+        SC.Cᵥ[l] = deepcopy(SE.C)
     end
 
     return average(SC)
