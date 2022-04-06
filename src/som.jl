@@ -133,8 +133,8 @@ function prun(S::StochOMSolver,
 end
 
 function average(𝑆::StochOMContext)
-    alpha = get_s("alpha")
     nmesh = get_c("nmesh")
+    alpha = get_s("alpha")
     nstep  = get_s("nstep")
 
     dev_min = minimum(𝑆.Δᵥ)
