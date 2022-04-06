@@ -696,10 +696,10 @@ function try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     MC.Mtry[6] = MC.Mtry[6] + 1
 end
 
-function try_merge(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_merge(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
-    csize = length(𝑆.C)
+    csize = length(SE.C)
 
     t1 = rand(MC.rng, 1:csize)
     t2 = rand(MC.rng, 1:csize)
@@ -710,8 +710,8 @@ function try_merge(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc
         t1, t2 = t2, t1
     end
 
-    R1 = 𝑆.C[t1]
-    R2 = 𝑆.C[t2]
+    R1 = SE.C[t1]
+    R2 = SE.C[t2]
 
     weight = R1.h * R1.w + R2.h * R2.w
     w_new = 0.5 * (R1.w + R2.w)
@@ -724,26 +724,26 @@ function try_merge(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc
     end
     dc = Pdx(dx_min, dx_max, MC.rng)
 
-    G1 = 𝑆.Λ[:,t1]
-    G2 = 𝑆.Λ[:,t2]
-    Ge = 𝑆.Λ[:,csize]
+    G1 = SE.Λ[:,t1]
+    G2 = SE.Λ[:,t2]
+    Ge = SE.Λ[:,csize]
 
     Rn = Box(h_new, w_new, c_new + dc)
     Gn = calc_lambda(Rn, SC.grid)
 
-    Δ = calc_err(𝑆.G - G1 - G2 + Gn, SC.Gᵥ, SC.σ²)
+    Δ = calc_err(SE.G - G1 - G2 + Gn, SC.Gᵥ, SC.σ²)
 
-    if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
-        𝑆.C[t1] = Rn
+    if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+        SE.C[t1] = Rn
         if t2 < csize
-            𝑆.C[t2] = 𝑆.C[end]
+            SE.C[t2] = SE.C[end]
         end
-        pop!(𝑆.C)
-        𝑆.Δ = Δ
-        @. 𝑆.G = 𝑆.G - G1 - G2 + Gn
-        @. 𝑆.Λ[:,t1] = Gn
+        pop!(SE.C)
+        SE.Δ = Δ
+        @. SE.G = SE.G - G1 - G2 + Gn
+        @. SE.Λ[:,t1] = Gn
         if t2 < csize
-            @. 𝑆.Λ[:,t2] = Ge
+            @. SE.Λ[:,t2] = Ge
         end
         MC.Macc[7] = MC.Macc[7] + 1
     end
