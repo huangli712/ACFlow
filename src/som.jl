@@ -372,7 +372,7 @@ end
 
 function init_iodata(S::StochOMSolver, rd::RawData)
     Gᵥ = rd.value
-    σ¹ = 1.0 / rd.error
+    σ¹ = 1.0 ./ rd.error
     return Gᵥ, σ¹
 end
 
