@@ -85,19 +85,19 @@ function init(S::StochOMSolver, rd::RawData)
 end
 
 function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
-    nstep = get_s("nstep")
     ntry = get_s("ntry")
+    nstep = get_s("nstep")
 
-    for l = 1:nstep
+    for l = 1:ntry
         SE = init_element(MC, SC)
 
-        for _ = 1:ntry
+        for _ = 1:nstep
             update(MC, SE, SC)
         end
 
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
-        @printf("try -> %5i (%5i) Δ -> %16.12e \n", l, nstep, SE.Δ)
+        @printf("try -> %5i (%5i) Δ -> %16.12e \n", l, ntry, SE.Δ)
     end
 
     return average(SC)
@@ -112,19 +112,19 @@ function prun(S::StochOMSolver,
 
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
 
-    nstep = get_s("nstep")
     ntry = get_s("ntry")
+    nstep = get_s("nstep")
 
-    for l = 1:nstep
+    for l = 1:ntry
         SE = init_element(MC, SC)
 
-        for _ = 1:ntry
+        for _ = 1:nstep
             update(MC, SE, SC)
         end
 
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
-        @printf("try -> %5i (%5i) Δ -> %16.12e \n", l, nstep, SE.Δ)
+        @printf("try -> %5i (%5i) Δ -> %16.12e \n", l, ntry, SE.Δ)
     end
 
     return average(SC)
@@ -133,13 +133,13 @@ end
 function average(SC::StochOMContext)
     nmesh = get_c("nmesh")
     alpha = get_s("alpha")
-    nstep  = get_s("nstep")
+    ntry  = get_s("ntry")
 
     dev_min = minimum(SC.Δᵥ)
 
     Lgood = 0
     Aom = zeros(F64, nmesh)
-    for l = 1:nstep
+    for l = 1:ntry
         if alpha * dev_min - SC.Δᵥ[l] > 0
             Lgood = Lgood + 1
             for w = 1:nmesh
@@ -174,11 +174,10 @@ end
 function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
     Tmax = 100
     nbox = get_s("nbox")
-    dmax = get_s("dmax")
 
     T1 = rand(MC.rng, 1:Tmax)
     d1 = rand(MC.rng, F64)
-    d2 = 1.0 + (dmax - 1.0) * rand(MC.rng, F64)
+    d2 = 1.0 + rand(MC.rng, F64)
 
     ST = deepcopy(SE)
 
@@ -350,13 +349,13 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
 end
 
 function init_context(S::StochOMSolver)
-    nstep = get_s("nstep")
+    ntry = get_s("ntry")
     nbox = get_s("nbox")
 
-    Δv = zeros(F64, nstep)
+    Δv = zeros(F64, ntry)
 
     Cv = []
-    for _ = 1:nstep
+    for _ = 1:ntry
         C = Box[]
         for _ = 1:nbox
             push!(C, Box(0.0, 0.0, 0.0))

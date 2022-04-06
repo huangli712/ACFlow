@@ -90,12 +90,11 @@ const PStochAC = Dict{String,ADT}(
 Dictionary for configuration parameters: stochastic optimization method.
 """
 const PStochOM = Dict{String,ADT}(
-    "nstep"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
     "ntry"    => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
+    "nstep"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
     "nbox"    => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
     "sbox"    => [missing, 1, :F64   , "Number of points of a very fine linear mesh"],
     "wbox"    => [missing, 1, :F64   , "Number of points of a very fine linear mesh"],
-    "dmax"    => [missing, 1, :F64   , "Number of points of a very fine linear mesh"],
     "alpha"   => [missing, 1, :F64   , "Number of points of a very fine linear mesh"],
     "norm"    => [missing, 1, :F64   , "Number of points of a very fine linear mesh"],
 )
