@@ -154,7 +154,7 @@ function average(SC::StochOMContext)
         end
     end
 
-    @show SC.Δᵥ, dev_min, Lgood
+    @printf("Minimum χ² : %16.12e Accepted configurations : %5i \n", dev_min, Lgood)
 
     if Lgood > 0
         @. Aom = Aom / Lgood
