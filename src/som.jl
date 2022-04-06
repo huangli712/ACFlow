@@ -89,8 +89,6 @@ function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
     ntry = get_s("ntry")
 
     for l = 1:nstep
-        println("try: $l")
-
         SE = init_element(MC, SC)
 
         for _ = 1:ntry
@@ -99,6 +97,7 @@ function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
 
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
+        @printf("try -> %5i Δ -> %16.12e \n", l, SE.Δ)
     end
 
     return average(SC)
@@ -117,8 +116,6 @@ function prun(S::StochOMSolver,
     ntry = get_s("ntry")
 
     for l = 1:nstep
-        println("try: $l")
-
         SE = init_element(MC, SC)
 
         for _ = 1:ntry
@@ -127,6 +124,7 @@ function prun(S::StochOMSolver,
 
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
+        @printf("try -> %5i Δ -> %16.12e \n", l, SE.Δ)
     end
 
     return average(SC)
