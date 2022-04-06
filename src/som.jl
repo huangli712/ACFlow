@@ -586,9 +586,9 @@ function try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     MC.Mtry[4] = MC.Mtry[4] + 1
 end
 
-function try_height(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_height(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     sbox  = get_s("sbox")
-    csize = length(𝑆.C)
+    csize = length(SE.C)
 
     t1 = rand(MC.rng, 1:csize)
     t2 = rand(MC.rng, 1:csize)
@@ -596,8 +596,8 @@ function try_height(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dac
         t2 = rand(MC.rng, 1:csize)
     end
 
-    R1 = 𝑆.C[t1]
-    R2 = 𝑆.C[t2]
+    R1 = SE.C[t1]
+    R2 = SE.C[t2]
 
     w1 = R1.w
     w2 = R2.w
@@ -611,21 +611,21 @@ function try_height(MC::StochOMMC, 𝑆::StochOMElement, SC::StochOMContext, dac
     dh = Pdx(dx_min, dx_max, MC.rng)
 
     R1n = Box(R1.h + dh, R1.w, R1.c)
-    G1A = 𝑆.Λ[:,t1]
+    G1A = SE.Λ[:,t1]
     G1B = calc_lambda(R1n, SC.grid)
     R2n = Box(R2.h - dh * w1 / w2, R2.w, R2.c)
-    G2A = 𝑆.Λ[:,t2]
+    G2A = SE.Λ[:,t2]
     G2B = calc_lambda(R2n, SC.grid)
 
-    Δ = calc_err(𝑆.G - G1A + G1B - G2A + G2B, SC.Gᵥ, SC.σ²)
+    Δ = calc_err(SE.G - G1A + G1B - G2A + G2B, SC.Gᵥ, SC.σ²)
 
-    if rand(MC.rng, F64) < ((𝑆.Δ/Δ) ^ (1.0 + dacc))
-        𝑆.C[t1] = R1n
-        𝑆.C[t2] = R2n
-        𝑆.Δ = Δ
-        @. 𝑆.G = 𝑆.G - G1A + G1B - G2A + G2B
-        @. 𝑆.Λ[:,t1] = G1B
-        @. 𝑆.Λ[:,t2] = G2B
+    if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+        SE.C[t1] = R1n
+        SE.C[t2] = R2n
+        SE.Δ = Δ
+        @. SE.G = SE.G - G1A + G1B - G2A + G2B
+        @. SE.Λ[:,t1] = G1B
+        @. SE.Λ[:,t2] = G2B
         MC.Macc[5] = MC.Macc[5] + 1
     end
 
