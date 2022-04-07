@@ -563,8 +563,75 @@ export try_swap
 ### *Includes And Exports* : *som.jl*
 =#
 
+#=
+*Summary* :
+
+To implement the StochOM solver for analytically continuation problem.
+
+*Members* :
+
+```text
+Box            -> A struct for describing the field configuration.
+StochOMElement -> A struct that contains monte carlo field configurations.
+StochOMContext -> Essential struct for the StochOM solver.
+#
+solve          -> Wrapper function for the StochOM solver.
+init           -> Initialize stochastic optimization simulation.
+run (prun)     -> Perform stochastic optimization simulation.
+average        -> Evaluate the averaged results.
+postprocess    -> Postprocess the calculated results and write them.
+#
+update         -> Sample field configurations via metropolis algorithm.
+#
+init_mc        -> Create a StochOMMC struct.
+init_element   -> Create a StochOMElement struct.
+init_context   -> Prepare data for a StochOMContext struct.
+init_iodata    -> Preprocess the input data.
+calc_lambda    -> Build kernel function.
+calc_error     -> Calculate χ².
+calc_green     -> Reproduce green's function via the field configurations.
+calc_norm      -> Calculate norm of the field configurations.
+try_insert     -> Try to insert a new box in the configuration.
+try_remove     -> Try to remove a box.
+try_position   -> Try to shift a box.
+try_width      -> Try to change width of a box.
+try_height     -> Try to change height of a box.
+try_split      -> Try to split a box.
+try_merge      -> Try to merge two boxes.
+```
+=#
+
+#
 include("som.jl")
+#
+export Box
+export StochOMElement
+export StochOMContext
+#
 export solve
+export init
+export run
+export prun
+export average
+export postprocess
+#
+export update
+#
+export init_mc
+export init_element
+export init_context
+export init_iodata
+export calc_lambda
+export calc_error
+export calc_green
+export calc_norm
+export try_insert
+export try_remove
+export try_position
+export try_width
+export try_height
+export try_split
+export try_merge
 
 #=
 ### *Includes And Exports* : *base.jl*
