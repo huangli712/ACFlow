@@ -30,7 +30,7 @@ mutable struct StochOMContext
     grid :: AbstractGrid
     mesh :: AbstractMesh
     Cᵥ   :: Vector{Vector{Box}}
-    Δᵥ   :: Vector{F64} 
+    Δᵥ   :: Vector{F64}
 end
 
 #=
@@ -298,7 +298,7 @@ function init_mc(S::StochOMSolver)
     rng = MersenneTwister(seed)
     Macc = zeros(I64, 7)
     Mtry = zeros(I64, 7)
-    
+
     MC = StochOMMC(rng, Macc, Mtry)
 
     return MC
@@ -373,7 +373,7 @@ end
 function init_iodata(S::StochOMSolver, rd::RawData)
     val = rd.value
     err = 1.0 ./ rd.error
-    
+
     Gᵥ = vcat(real(val), imag(val))
     σ² = vcat(real(err), imag(err)) .^ 2.0
 
