@@ -97,7 +97,7 @@ function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
 
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
-        @printf("try -> %5i (%5i) Δ -> %16.12e \n", l, ntry, SE.Δ)
+        @printf("try -> %5i (%5i) Δ -> %8.4e \n", l, ntry, SE.Δ)
     end
 
     return average(SC)
@@ -124,7 +124,7 @@ function prun(S::StochOMSolver,
 
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
-        @printf("try -> %5i (%5i) Δ -> %16.12e \n", l, ntry, SE.Δ)
+        @printf("try -> %5i (%5i) Δ -> %8.4e \n", l, ntry, SE.Δ)
     end
 
     return average(SC)
@@ -134,12 +134,12 @@ function average(SC::StochOMContext)
     nmesh = get_c("nmesh")
     ntry  = get_s("ntry")
 
-    dev_ave = mean(SC.Δᵥ)
+    dev_ave = median(SC.Δᵥ)
 
     Lgood = 0
     Aom = zeros(F64, nmesh)
     for l = 1:ntry
-        if dev_ave - SC.Δᵥ[l] > 0
+        if dev_ave / 1.2 - SC.Δᵥ[l] > 0
             Lgood = Lgood + 1
             for w = 1:nmesh
                 _omega = SC.mesh[w]
@@ -157,7 +157,7 @@ function average(SC::StochOMContext)
         @. Aom = Aom / Lgood
     end
 
-    @printf("Averaged χ² : %16.12e Accepted configurations : %5i \n", dev_ave, Lgood)
+    @printf("Median χ² : %16.12e Accepted configurations : %5i \n", dev_ave, Lgood)
 
     return Aom
 end
