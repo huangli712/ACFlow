@@ -165,6 +165,11 @@ end
 
 function postprocess(SC::StochOMContext, Aout::Vector{F64})
     write_spectrum(SC.mesh, Aout)
+
+    # Reproduce input data
+    kernel = make_kernel(SC.mesh, SC.grid)
+    Gₙ = reprod(kernel, SC.mesh, Aout)
+    write_reproduce(SC.grid, Gₙ)
 end
 
 #=

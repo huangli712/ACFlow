@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/21
+# Last modified: 2022/04/07
 #
 
 #=
@@ -207,7 +207,13 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
 
     _kernel = zeros(C64, nfreq, nmesh)
 
-    if blur > 0.0
+    if blur isa Missing || blur < 0.0
+        for i = 1:nmesh
+            for j = 1:nfreq
+                _kernel[j,i] = 1.0 / (im * fg[j] - am[i])
+            end
+        end
+    else
         bmesh, gaussian = make_gauss_peaks(blur)
         nsize = length(bmesh)
         integrand = zeros(C64, nsize)
@@ -218,12 +224,6 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
                     integrand[k] = gaussian[k] / (z - bmesh[k])
                 end
                 _kernel[j,i] = simpson(bmesh, integrand)
-            end
-        end
-    else
-        for i = 1:nmesh
-            for j = 1:nfreq
-                _kernel[j,i] = 1.0 / (im * fg[j] - am[i])
             end
         end
     end
@@ -325,7 +325,16 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 
     kernel = zeros(F64, nfreq, nmesh)
 
-    if blur > 0.0
+    if blur isa Missing || blur < 0.0
+        for i = 1:nmesh
+            for j = 1:nfreq
+                kernel[j,i] = am[i] ^ 2.0 / ( bg[j] ^ 2.0 + am[i] ^ 2.0 )
+            end
+        end
+        if am[1] == 0.0 && bg[1] == 0.0
+            kernel[1,1] = 1.0
+        end
+    else
         bmesh, gaussian = make_gauss_peaks(blur)
         nsize = length(bmesh)
 
@@ -347,15 +356,6 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
                 @. I₃ = (I₁ + I₂) * gaussian / 2.0
                 kernel[j,i] = simpson(bmesh, I₃)
             end
-        end
-    else
-        for i = 1:nmesh
-            for j = 1:nfreq
-                kernel[j,i] = am[i] ^ 2.0 / ( bg[j] ^ 2.0 + am[i] ^ 2.0 )
-            end
-        end
-        if am[1] == 0.0 && bg[1] == 0.0
-            kernel[1,1] = 1.0
         end
     end
 
