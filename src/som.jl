@@ -202,7 +202,7 @@ function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
                 break
 
             @case 3
-                try_position(MC, ST, SC, d1)
+                try_shift(MC, ST, SC, d1)
                 break
 
             @case 4
@@ -247,7 +247,7 @@ function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
                 break
 
             @case 3
-                try_position(MC, ST, SC, d2)
+                try_shift(MC, ST, SC, d2)
                 break
 
             @case 4
@@ -515,7 +515,7 @@ function try_remove(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
     MC.Mtry[2] = MC.Mtry[2] + 1
 end
 
-function try_position(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_shift(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
     csize = length(SE.C)

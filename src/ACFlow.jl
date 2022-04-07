@@ -593,7 +593,7 @@ calc_green     -> Reproduce green's function via the field configurations.
 calc_norm      -> Calculate norm of the field configurations.
 try_insert     -> Try to insert a new box in the configuration.
 try_remove     -> Try to remove a box.
-try_position   -> Try to shift a box.
+try_shift      -> Try to shift a box.
 try_width      -> Try to change width of a box.
 try_height     -> Try to change height of a box.
 try_split      -> Try to split a box.
@@ -627,7 +627,7 @@ export calc_green
 export calc_norm
 export try_insert
 export try_remove
-export try_position
+export try_shift
 export try_width
 export try_height
 export try_split
