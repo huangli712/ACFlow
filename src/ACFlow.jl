@@ -41,6 +41,7 @@ module ACFlow
 
 using Distributed
 using LinearAlgebra
+using Statistics
 using DelimitedFiles
 using Random
 using Printf

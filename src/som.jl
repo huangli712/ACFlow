@@ -132,15 +132,14 @@ end
 
 function average(SC::StochOMContext)
     nmesh = get_c("nmesh")
-    alpha = get_s("alpha")
     ntry  = get_s("ntry")
 
-    dev_min = minimum(SC.Δᵥ)
+    dev_ave = mean(SC.Δᵥ)
 
     Lgood = 0
     Aom = zeros(F64, nmesh)
     for l = 1:ntry
-        if alpha * dev_min - SC.Δᵥ[l] > 0
+        if dev_ave - SC.Δᵥ[l] > 0
             Lgood = Lgood + 1
             for w = 1:nmesh
                 _omega = SC.mesh[w]
@@ -158,7 +157,7 @@ function average(SC::StochOMContext)
         @. Aom = Aom / Lgood
     end
 
-    @printf("Minimum χ² : %16.12e Accepted configurations : %5i \n", dev_min, Lgood)
+    @printf("Averaged χ² : %16.12e Accepted configurations : %5i \n", dev_ave, Lgood)
 
     return Aom
 end

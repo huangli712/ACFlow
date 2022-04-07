@@ -95,7 +95,6 @@ const PStochOM = Dict{String,ADT}(
     "nbox"    => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
     "sbox"    => [missing, 1, :F64   , "Number of points of a very fine linear mesh"],
     "wbox"    => [missing, 1, :F64   , "Number of points of a very fine linear mesh"],
-    "alpha"   => [missing, 1, :F64   , "Number of points of a very fine linear mesh"],
     "norm"    => [missing, 1, :F64   , "Number of points of a very fine linear mesh"],
 )
 
