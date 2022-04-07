@@ -144,6 +144,7 @@ TangentMesh     -> Tangent mesh.
 #
 AbstractMC      -> Abstract monte carlo engine.
 StochACMC       -> Monte carlo engine used in the StochAC solver.
+StochOMMC       -> Monte Carlo engine used in the StochOM solver.
 ```
 =#
 
@@ -178,6 +179,7 @@ export TangentMesh
 #
 export AbstractMC
 export StochACMC
+export StochOMMC
 
 #=
 ### *Includes And Exports* : *util.jl*
@@ -348,7 +350,7 @@ write_chi2        -> Write χ².
 write_hamiltonian -> Write effective hamiltonian for StochAC solver.
 write_probability -> Write Bayesian a-posteriori probability.
 write_reproduce   -> Write reproduced input data.
-write_statistics  -> Write statistical information for StochAC solver.
+write_statistics  -> Write statistical information for StochAC/StochOM solver.
 ```
 =#
 
@@ -502,7 +504,8 @@ StochACContext -> Essential struct for the StochAC solver.
 #
 solve          -> Wrapper function for the StochAC solver.
 init           -> Initialize stochastic analytical continuation simulation.
-run            -> Perform stochastic analytical continuation simulation.
+run (prun)     -> Perform stochastic analytical continuation simulation.
+average        -> Evaluate the averaged results.
 postprocess    -> Postprocess the calculated results and write them.
 #
 warmup         -> Warmup monte carlo engine.
@@ -534,6 +537,8 @@ export StochACContext
 export solve
 export init
 export run
+export prun
+export average
 export postprocess
 #
 export warmup
