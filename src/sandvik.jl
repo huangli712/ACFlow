@@ -7,6 +7,52 @@
 # Last modified: 2022/01/08
 #
 
+abstract type AbstractData end
+abstract type AbstractGrid end
+
+struct GreenData <: AbstractData
+    value :: Vector{N64}
+    error :: Vector{N64}
+    covar :: Vector{N64}
+end
+
+struct ImaginaryTimeGrid <: AbstractGrid
+    grid :: Vector{F64}
+end
+
+struct FermionicMatsubaraGrid <: AbstractGrid
+    grid :: Vector{F64}
+end
+
+function read_data!(::Type{FermionicMatsubaraGrid})
+    grid  = F64[] 
+    value = C64[]
+    error = C64[]
+    covar = F64[]
+
+    niw = 64
+    #
+    open("giw.data", "r") do fin
+        for i = 1:niw
+            arr = parse.(F64, line_to_array(fin))
+            push!(grid, arr[1])
+            push!(value, arr[2] + arr[3] * im)
+        end
+    end
+    #
+    open("err.data", "r") do fin
+        for i = 1:niw
+            arr = parse.(F64, line_to_array(fin))
+            @assert grid[i] == arr[1]
+            push!(error, arr[2] + arr[3] * im)
+            push!(covar, arr[2]^2)
+            push!(covar, arr[3]^2)
+        end
+    end
+
+    return FermionicMatsubaraGrid(grid), GreenData(value, error, covar)
+end
+
 const P_SAC = Dict{String,Any}(
     "ommax" => 10.0,
     "ommin" => -10.0,
