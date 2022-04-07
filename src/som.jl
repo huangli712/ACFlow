@@ -1,10 +1,10 @@
 #
 # Project : Gardenia
 # Source  : som.jl
-# Author  : Li Huang (lihuang.dmft@gmail.com)
+# Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/06
+# Last modified: 2022/04/07
 #
 
 #=
