@@ -77,6 +77,12 @@ end
 ### *Global Drivers*
 =#
 
+"""
+    solve(S::StochOMSolver, rd::RawData)
+
+Solve the analytical continuation problem by the stochastic optimization
+method.
+"""
 function solve(S::StochOMSolver, rd::RawData)
     nmesh = get_c("nmesh")
 
@@ -104,6 +110,12 @@ function solve(S::StochOMSolver, rd::RawData)
     end
 end
 
+"""
+    init(S::StochOMSolver, rd::RawData)
+
+Initialize the StochOM solver and return the StochOMMC and StochOMContext
+structs.
+"""
 function init(S::StochOMSolver, rd::RawData)
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")

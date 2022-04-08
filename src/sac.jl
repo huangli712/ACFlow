@@ -106,7 +106,8 @@ end
 """
     init(S::StochACSolver, rd::RawData)
 
-Initialize the StochAC solver and return a StochACContext struct.
+Initialize the StochAC solver and return the StochACMC, StochACElement,
+and StochACContext structs.
 """
 function init(S::StochACSolver, rd::RawData)
     MC = init_mc(S)
