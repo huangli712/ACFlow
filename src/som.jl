@@ -560,6 +560,11 @@ function calc_norm(C::Vector{Box})
     return norm
 end
 
+"""
+    try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+
+Insert a new box into the field configuration.
+"""
 function try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     sbox  = get_s("sbox")
     wbox  = get_s("wbox")
@@ -609,6 +614,11 @@ function try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
     MC.Mtry[1] = MC.Mtry[1] + 1
 end
 
+"""
+    try_remove(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+
+Remove an old box from the field configuration.
+"""
 function try_remove(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     csize = length(SE.C)
 
@@ -654,6 +664,11 @@ function try_remove(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
     MC.Mtry[2] = MC.Mtry[2] + 1
 end
 
+"""
+    try_shift(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+
+Change the position of given box in the field configuration.
+"""
 function try_shift(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
@@ -687,6 +702,11 @@ function try_shift(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     MC.Mtry[3] = MC.Mtry[3] + 1
 end
 
+"""
+    try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+
+Change the width of given box in the field configuration.
+"""
 function try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     wbox  = get_s("wbox")
     wmin = get_c("wmin")
@@ -725,6 +745,11 @@ function try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     MC.Mtry[4] = MC.Mtry[4] + 1
 end
 
+"""
+    try_height(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+
+Change the height of given box in the field configuration.
+"""
 function try_height(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     sbox  = get_s("sbox")
     csize = length(SE.C)
