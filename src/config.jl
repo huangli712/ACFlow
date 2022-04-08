@@ -105,7 +105,6 @@ end
 
 """
     rev_dict(COMM::Dict{String,Any})
-    rev_dict(COMM::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PCOMM`.
 
@@ -122,6 +121,13 @@ function rev_dict(COMM::Dict{String,Any})
     foreach(x -> _v(x.first, x.second), PCOMM)
 end
 
+"""
+    rev_dict(COMM::Dict{String,Vector{Any}})
+
+Setup the configuration dictionary: `PCOMM`.
+
+See also: [`PCOMM`](@ref).
+"""
 function rev_dict(COMM::Dict{String,Vector{Any}})
     for key in keys(COMM)
         if haskey(PCOMM, key)
@@ -135,7 +141,6 @@ end
 
 """
     rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
-    rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PMaxEnt`.
 
@@ -152,6 +157,13 @@ function rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
     foreach(x -> _v(x.first, x.second), PMaxEnt)
 end
 
+"""
+    rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Vector{Any}})
+
+Setup the configuration dictionary: `PMaxEnt`.
+
+See also: [`PMaxEnt`](@ref).
+"""
 function rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Vector{Any}})
     for key in keys(MaxEnt)
         if haskey(PMaxEnt, key)
@@ -165,7 +177,6 @@ end
 
 """
     rev_dict(S::StochACSolver, StochAC::Dict{String,Any})
-    rev_dict(S::StochACSolver, StochAC::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PStochAC`.
 
@@ -182,6 +193,13 @@ function rev_dict(S::StochACSolver, StochAC::Dict{String,Any})
     foreach(x -> _v(x.first, x.second), PStochAC)
 end
 
+"""
+    rev_dict(S::StochACSolver, StochAC::Dict{String,Vector{Any}})
+
+Setup the configuration dictionary: `PStochAC`.
+
+See also: [`PStochAC`](@ref).
+"""
 function rev_dict(S::StochACSolver, StochAC::Dict{String,Vector{Any}})
     for key in keys(StochAC)
         if haskey(PStochAC, key)
@@ -195,7 +213,6 @@ end
 
 """
     rev_dict(S::StochOMSolver, StochOM::Dict{String,Any})
-    rev_dict(S::StochOMSolver, StochOM::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PStochOM`.
 
@@ -212,6 +229,13 @@ function rev_dict(S::StochOMSolver, StochOM::Dict{String,Any})
     foreach(x -> _v(x.first, x.second), PStochOM)
 end
 
+"""
+    rev_dict(S::StochOMSolver, StochOM::Dict{String,Vector{Any}})
+
+Setup the configuration dictionary: `PStochOM`.
+
+See also: [`PStochOM`](@ref).
+"""
 function rev_dict(S::StochOMSolver, StochOM::Dict{String,Vector{Any}})
     for key in keys(StochOM)
         if haskey(PStochOM, key)
