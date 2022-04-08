@@ -796,6 +796,11 @@ function try_height(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
     MC.Mtry[5] = MC.Mtry[5] + 1
 end
 
+"""
+    try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+
+Split a given box into two boxes in the field configuration.
+"""
 function try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     wbox  = get_s("wbox")
     sbox  = get_s("sbox")
@@ -860,6 +865,11 @@ function try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     MC.Mtry[6] = MC.Mtry[6] + 1
 end
 
+"""
+    try_merge(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+
+Merge two given boxes into one box in the field configuration.
+"""
 function try_merge(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
