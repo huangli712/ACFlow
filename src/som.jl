@@ -135,6 +135,11 @@ function init(S::StochOMSolver, rd::RawData)
     return MC, SC
 end
 
+"""
+    run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
+
+Perform stochastic optimization simulation, sequential version.
+"""
 function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
     ntry = get_s("ntry")
     nstep = get_s("nstep")
