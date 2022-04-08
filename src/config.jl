@@ -255,7 +255,7 @@ Validate the correctness and consistency of configurations.
 See also: [`fil_dict`](@ref), [`_v`](@ref).
 """
 function chk_dict()
-    @assert get_c("solver") in ("MaxEnt", "StochOM", "StochAC")
+    @assert get_c("solver") in ("MaxEnt", "StochAC", "StochOM")
     @assert get_c("ktype") in ("fermi", "boson", "bsymm")
     @assert get_c("mtype") in ("flat", "gauss", "file")
     @assert get_c("grid") in ("ftime", "btime", "ffreq", "bfreq")
@@ -289,6 +289,11 @@ function chk_dict()
 
         @case "StochOM"
             push!(PA, PStochOM)
+            @assert get_s("ntry")  ≥ 40
+            @assert get_s("nstep") ≥ 1000
+            @assert get_s("nbox")  ≥ 100
+            @assert get_s("sbox")  > 0.0
+            @assert get_s("wbox")  > 0.0
             break
     end
 
