@@ -154,7 +154,7 @@ function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
         @printf("try -> %5i (%5i) Δ -> %8.4e \n", l, ntry, SE.Δ)
-        write_statistics(MC)
+        (l % 10 == 0) && write_statistics(MC)
     end
 
     return average(SC)
@@ -191,12 +191,19 @@ function prun(S::StochOMSolver,
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
         @printf("try -> %5i (%5i) Δ -> %8.4e \n", l, ntry, SE.Δ)
-        myid() == 2 && write_statistics(MC)
+        (myid() == 2) && (l % 10 == 0) && write_statistics(MC)
     end
 
     return average(SC)
 end
 
+"""
+    average(step::F64, SC::StochACContext)
+
+Postprocess the results generated during the stochastic analytical
+continuation simulations. It will calculate real spectral functions, and
+internal energies.
+"""
 function average(SC::StochOMContext)
     nmesh = get_c("nmesh")
     ntry  = get_s("ntry")
