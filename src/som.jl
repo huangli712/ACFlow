@@ -255,6 +255,12 @@ end
 ### *Core Algorithms*
 =#
 
+"""
+    update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
+
+Using the Metropolis algorithm to update the field configuration, i.e, a
+collection of hundreds of boxes.
+"""
 function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
     Tmax = 100
     nbox = get_s("nbox")
