@@ -42,7 +42,7 @@ Dictionary for configuration parameters: general setup.
 """
 const PCOMM    = Dict{String,ADT}(
     "finput"  => [missing, 1, :String, "Filename for input data"],
-    "solver"  => [missing, 1, :String, "Solve for the analytical continuation problem"],
+    "solver"  => [missing, 1, :String, "Solver for the analytical continuation problem"],
     "ktype"   => [missing, 1, :String, "Type of kernel function"],
     "mtype"   => [missing, 1, :String, "Type of default model"],
     "grid"    => [missing, 1, :String, "Grid for input data (imaginary axis)"],
@@ -90,12 +90,12 @@ const PStochAC = Dict{String,ADT}(
 Dictionary for configuration parameters: stochastic optimization method.
 """
 const PStochOM = Dict{String,ADT}(
-    "ntry"    => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
-    "nstep"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
-    "nbox"    => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
-    "sbox"    => [missing, 1, :F64   , "Number of points of a very fine linear mesh"],
-    "wbox"    => [missing, 1, :F64   , "Number of points of a very fine linear mesh"],
-    "norm"    => [missing, 1, :F64   , "Number of points of a very fine linear mesh"],
+    "ntry"    => [missing, 1, :I64   , "Number of attempts to figure out the solution"],
+    "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo steps per try"],
+    "nbox"    => [missing, 1, :I64   , "Number of boxes in the Monte Carlo sampling"],
+    "sbox"    => [missing, 1, :F64   , "Maximum area of generated boxes"],
+    "wbox"    => [missing, 1, :F64   , "Maximum width of generated boxes"],
+    "norm"    => [missing, 1, :F64   , "Is the norm calculated"],
 )
 
 #=
