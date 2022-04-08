@@ -160,6 +160,15 @@ function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
     return average(SC)
 end
 
+"""
+    prun(S::StochOMSolver,
+         p1::Dict{String,Vector{Any}},
+         p2::Dict{String,Vector{Any}},
+         MC::StochOMMC, SC::StochOMContext)
+
+Perform stochastic optimization simulation, parallel version.
+The arguments `p1` and `p2` are copies of PCOMM and PStochOM, respectively.
+"""
 function prun(S::StochOMSolver,
               p1::Dict{String,Vector{Any}},
               p2::Dict{String,Vector{Any}},
