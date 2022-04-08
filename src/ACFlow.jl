@@ -57,8 +57,10 @@ using TOML
 ### *Using Third-party Libraries*
 =#
 
-using Einsum
+#using Einsum
 using LsqFit
+
+include("einsum.jl")
 
 #=
 ### *Includes And Exports* : *global.jl*
