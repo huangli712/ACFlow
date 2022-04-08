@@ -236,6 +236,12 @@ function average(SC::StochOMContext)
     return Aom
 end
 
+"""
+    postprocess(SC::StochOMContext, Aout::Vector{F64})
+
+It will process and write the calculated results by the StochOM solver,
+including final spectral function and reproduced correlator.
+"""
 function postprocess(SC::StochOMContext, Aout::Vector{F64})
     write_spectrum(SC.mesh, Aout)
 

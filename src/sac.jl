@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/04
+# Last modified: 2022/04/08
 #
 
 #=
@@ -249,6 +249,13 @@ function average(step::F64, SC::StochACContext)
     return Aout, Uα
 end
 
+"""
+    postprocess(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
+
+It will process and write the calculated results by the StochAC solver,
+including effective hamiltonian, final spectral function, reproduced
+correlator.
+"""
 function postprocess(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     function fitfun(x, p)
         return @. p[1] * x + p[2]
