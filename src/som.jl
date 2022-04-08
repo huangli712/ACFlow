@@ -487,11 +487,27 @@ function init_iodata(S::StochOMSolver, rd::RawData)
     return Gᵥ, σ²
 end
 
+"""
+    calc_lambda(r::Box, grid::FermionicMatsubaraGrid)
+
+Try to calculate the kernel-related function Λ. This function works for
+FermionicMatsubaraGrid only.
+
+See also: [`FermionicMatsubaraGrid`](@ref).
+"""
 function calc_lambda(r::Box, grid::FermionicMatsubaraGrid)
     Λ = @. r.h * log((im * grid.ω - r.c + 0.5 * r.w) / (im * grid.ω - r.c - 0.5 * r.w))
     return vcat(real(Λ), imag(Λ))
 end
 
+"""
+    calc_error(Λ::Array{F64,2}, Gᵥ::Vector{F64}, σ²::Vector{F64}, nk::I64)
+
+Try to calculate χ². Here `Gᵥ` and `σ²` denote the raw correlator and
+related standard deviation. `Λ` and `nk` are used to construct a new
+correlator. The χ² is used to measure the distance between old and new
+correlators.
+"""
 function calc_error(Λ::Array{F64,2}, Gᵥ::Vector{F64}, σ²::Vector{F64}, nk::I64)
     ngrid, nbox = size(Λ)
     @assert nk ≤ nbox
