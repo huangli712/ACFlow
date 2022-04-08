@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/07
+# Last modified: 2022/04/08
 #
 
 """
@@ -58,8 +58,6 @@ using TOML
 =#
 
 using LsqFit
-
-include("einsum.jl")
 
 #=
 ### *Includes And Exports* : *global.jl*
