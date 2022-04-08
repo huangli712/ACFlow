@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/06
+# Last modified: 2022/04/08
 #
 
 """
@@ -52,9 +52,9 @@ function read_complex_data(finput::AbstractString, ngrid::I64)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)
 
+    # We have to determine the number of columns at first.
     dlm = readdlm(finput)
     _, ncols = size(dlm)
-
     @assert ncols in (4, 5)
 
     open(finput, "r") do fin
@@ -92,9 +92,9 @@ function read_complex_data(finput::AbstractString, ngrid::I64, only_real_part::B
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)
 
+    # We have to determine the number of columns at first.
     dlm = readdlm(finput)
     _, ncols = size(dlm)
-
     @assert ncols == 3
 
     open(finput, "r") do fin
@@ -134,7 +134,7 @@ end
 
 Write α-resolved spectrum A(ω) to `Aout.data.alpha`. The grid is defined
 in `am`, the α-resolved spectrum is contained in `Aout`, `αₗ` is the list
-for the α parameters.
+for the α parameters. This function is called by the `StochAC` solver.
 """
 function write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2})
     nmesh, nalph = size(Aout)
@@ -142,7 +142,7 @@ function write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2}
     @assert nalph == length(αₗ)
 
     for i in eachindex(αₗ)
-        open("Aout.data.α_$i", "w") do fout
+        open("Aout.data.alpha_$i", "w") do fout
             println(fout, "# $i : α = ", αₗ[i])
             for j in eachindex(am)
                 @printf(fout, "%16.12f %16.12f\n", am[j], Aout[j,i])
@@ -211,12 +211,14 @@ function write_reproduce(ag::AbstractGrid, G::Vector{F64})
     ng = length(G)
     @assert ngrid == ng || ngrid * 2 == ng
 
+    # The original data are defined in imaginary time axis.
     if ngrid == ng
         open("repr.data", "w") do fout
             for i in eachindex(ag)
                 @printf(fout, "%16.12f %16.12f\n", ag[i], G[i])
             end
         end
+    # The original data are defined in imaginary frequency axis.
     else
         open("repr.data", "w") do fout
             for i in eachindex(ag)
@@ -229,8 +231,8 @@ end
 """
     write_statistics(MC::StochACMC)
 
-Write statistical information for the StochAC solver. Note that StochAC
-solver is based on a stochastic approach.
+Write Monte Carlo statistical information for the `StochAC` solver. Note
+that the `StochAC` solver is based on a stochastic approach.
 
 See also: [`StochAC`](@ref), [`StochACMC`](@ref).
 """

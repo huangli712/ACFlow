@@ -149,7 +149,8 @@ abstract type AbstractData end
 """
     RawData
 
-Mutable struct. It represent the raw input data.
+Mutable struct. It represent the raw input data. The datatype of raw data
+may be float or complex.
 
 ### Members
 
