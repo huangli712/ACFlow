@@ -531,6 +531,11 @@ function calc_error(G::Vector{F64}, Gᵥ::Vector{F64}, σ²::Vector{F64})
     return sum( (G .- Gᵥ) .^ 2.0 .* σ² )
 end
 
+"""
+    calc_green(Λ::Array{F64,2}, nk::I64)
+
+Try to reconstruct the correlator via the field configuration.
+"""
 function calc_green(Λ::Array{F64,2}, nk::I64)
     ngrid, nbox = size(Λ)
     @assert nk ≤ nbox
@@ -545,6 +550,11 @@ function calc_green(Λ::Array{F64,2}, nk::I64)
     return G
 end
 
+"""
+    calc_norm(C::Vector{Box})
+
+Calculate the total area of all boxes.
+"""
 function calc_norm(C::Vector{Box})
     norm = sum(map(x -> x.h * x.w, C))
     return norm
