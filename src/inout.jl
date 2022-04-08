@@ -234,7 +234,7 @@ end
 Write Monte Carlo statistical information for the `StochAC` solver. Note
 that the `StochAC` solver is based on a stochastic approach.
 
-See also: [`StochAC`](@ref), [`StochACMC`](@ref).
+See also: [`PStochAC`](@ref), [`StochACMC`](@ref).
 """
 function write_statistics(MC::StochACMC)
     nalph = get_a("nalph")
@@ -249,5 +249,26 @@ function write_statistics(MC::StochACMC)
         for i = 1:nalph
             @printf(fout, "α %3i -> %16.12f\n", i, MC.Sacc[i] / MC.Stry[i])
         end
+    end
+end
+
+"""
+    write_statistics(MC::StochOMMC)
+
+Write Monte Carlo statistical information for the `StochOM` solver. Note
+that the `StochOM` solver is based on a stochastic approach.
+
+See also: [`PStochOM`](@ref), [`StochOMMC`](@ref).
+"""
+function write_statistics(MC::StochOMMC)
+    open("stat.data", "w") do fout
+        println(fout, "# Update statistics:")
+        @printf(fout, "insert box -> %16.12f\n", MC.Macc[1] / MC.Mtry[1])
+        @printf(fout, "remove box -> %16.12f\n", MC.Macc[2] / MC.Mtry[2])
+        @printf(fout, "shift  box -> %16.12f\n", MC.Macc[3] / MC.Mtry[3])
+        @printf(fout, "width  box -> %16.12f\n", MC.Macc[4] / MC.Mtry[4])
+        @printf(fout, "height box -> %16.12f\n", MC.Macc[5] / MC.Mtry[5])
+        @printf(fout, "split  box -> %16.12f\n", MC.Macc[6] / MC.Mtry[6])
+        @printf(fout, "merge  box -> %16.12f\n", MC.Macc[7] / MC.Mtry[7])
     end
 end
