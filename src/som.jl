@@ -394,6 +394,8 @@ end
     init_element(MC::StochOMMC, SC::StochOMContext)
 
 Try to initialize a StochOMElement struct.
+
+See also: [`StochOMElement`](@ref).
 """
 function init_element(MC::StochOMMC, SC::StochOMContext)
     wmin = get_c("wmin")
@@ -443,6 +445,13 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
     return StochOMElement(C, Λ, G, Δ)
 end
 
+"""
+    init_context(S::StochOMSolver)
+
+Try to initialize the key members of a StochOMContext struct.
+
+See also: [`StochOMContext`](@ref).
+"""
 function init_context(S::StochOMSolver)
     ntry = get_s("ntry")
     nbox = get_s("nbox")
@@ -461,6 +470,14 @@ function init_context(S::StochOMSolver)
     return Cv, Δv
 end
 
+"""
+    init_iodata(S::StochACSolver, rd::RawData)
+
+Preprocess the input data (`rd`), then allocate memory for the α-resolved
+spectral functions.
+
+See also: [`RawData`](@ref).
+"""
 function init_iodata(S::StochOMSolver, rd::RawData)
     val = rd.value
     err = 1.0 ./ rd.error
