@@ -473,8 +473,7 @@ end
 """
     init_iodata(S::StochACSolver, rd::RawData)
 
-Preprocess the input data (`rd`), then allocate memory for the α-resolved
-spectral functions.
+Preprocess the input data (`rd`).
 
 See also: [`RawData`](@ref).
 """
