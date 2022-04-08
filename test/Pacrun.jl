@@ -1,4 +1,4 @@
-#!/usr/bin/env julia -p 4
+#!/usr/bin/env julia -p 8
 
 @everywhere push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
 
