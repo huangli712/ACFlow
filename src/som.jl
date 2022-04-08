@@ -11,12 +11,38 @@
 ### *Customized Structs* : *StochOM Solver*
 =#
 
+"""
+    Box
+
+Rectangle. The field configuration consists of many boxes. They exhibit
+various areas (width × height ). We used the Metropolis algorithm to
+sample them and evaluate their contributions to the spectrum.
+
+### Members
+
+* h -> Height of the box.
+* w -> Width of the box.
+* c -> Position of the box.
+"""
 mutable struct Box
     h :: F64
     w :: F64
     c :: F64
 end
 
+"""
+    StochOMElement
+
+Mutable struct. It is used to record the field configurations, which will
+be sampled by monte carlo procedure.
+
+### Members
+
+* C -> Field configuration.
+* Λ -> Contributions of the field configuration to the correlator.
+* G -> Reproduced correlator.
+* Δ -> Difference between reproduced and raw correlators.
+"""
 mutable struct StochOMElement
     C :: Vector{Box}
     Λ :: Array{F64,2}
@@ -24,6 +50,20 @@ mutable struct StochOMElement
     Δ :: F64
 end
 
+"""
+    StochOMContext
+
+Mutable struct. It is used within the StochOM solver only.
+
+### Members
+
+* Gᵥ    -> Input data for correlator.
+* σ²    -> Actually 1.0 / σ².
+* grid  -> Grid for input data.
+* mesh  -> Mesh for output spectrum.
+* Cᵥ    -> It is used to record the field configurations for all attempts.
+* Δᵥ    -> It is used to record the errors for all attempts.
+"""
 mutable struct StochOMContext
     Gᵥ   :: Vector{F64}
     σ²   :: Vector{F64}
@@ -78,7 +118,6 @@ function init(S::StochOMSolver, rd::RawData)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
     Cᵥ, Δᵥ = init_context(S)
-
     SC = StochOMContext(Gᵥ, σ², grid, mesh, Cᵥ, Δᵥ)
 
     return MC, SC
