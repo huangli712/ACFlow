@@ -198,11 +198,10 @@ function prun(S::StochOMSolver,
 end
 
 """
-    average(step::F64, SC::StochACContext)
+    average(SC::StochOMContext)
 
-Postprocess the results generated during the stochastic analytical
-continuation simulations. It will calculate real spectral functions, and
-internal energies.
+Postprocess the collected results after the stochastic optimization
+simulations. It will calculate real spectral functions.
 """
 function average(SC::StochOMContext)
     nmesh = get_c("nmesh")
@@ -212,6 +211,7 @@ function average(SC::StochOMContext)
 
     Lgood = 0
     Aom = zeros(F64, nmesh)
+
     for l = 1:ntry
         if dev_ave / 1.2 - SC.Δᵥ[l] > 0
             Lgood = Lgood + 1
