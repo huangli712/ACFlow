@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/07
+# Last modified: 2022/04/08
 #
 
 #=
@@ -98,6 +98,7 @@ function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
         @printf("try -> %5i (%5i) Δ -> %8.4e \n", l, ntry, SE.Δ)
+        write_statistics(MC)
     end
 
     return average(SC)
@@ -125,6 +126,7 @@ function prun(S::StochOMSolver,
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
         @printf("try -> %5i (%5i) Δ -> %8.4e \n", l, ntry, SE.Δ)
+        myid() == 2 && write_statistics(MC)
     end
 
     return average(SC)
