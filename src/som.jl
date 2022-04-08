@@ -521,6 +521,12 @@ function calc_error(Λ::Array{F64,2}, Gᵥ::Vector{F64}, σ²::Vector{F64}, nk::
     return res
 end
 
+"""
+    calc_error(G::Vector{F64}, Gᵥ::Vector{F64}, σ²::Vector{F64})
+
+Try to calculate χ². Here `Gᵥ` and `σ²` denote the raw correlator and
+related standard deviation. `G` means the reproduced correlator.
+"""
 function calc_error(G::Vector{F64}, Gᵥ::Vector{F64}, σ²::Vector{F64})
     return sum( (G .- Gᵥ) .^ 2.0 .* σ² )
 end
