@@ -377,7 +377,7 @@ end
 
 Try to create a StochOMMC struct.
 
-See also: [`StochOM`](@ref).
+See also: [`StochOMMC`](@ref).
 """
 function init_mc(S::StochOMSolver)
     seed = rand(1:100000000)
@@ -390,12 +390,17 @@ function init_mc(S::StochOMSolver)
     return MC
 end
 
+"""
+    init_element(MC::StochOMMC, SC::StochOMContext)
+
+Try to initialize a StochOMElement struct.
+"""
 function init_element(MC::StochOMMC, SC::StochOMContext)
     wmin = get_c("wmin")
     wmax = get_c("wmax")
-    nbox  = get_s("nbox")
-    sbox  = get_s("sbox")
-    wbox  = get_s("wbox")
+    nbox = get_s("nbox")
+    sbox = get_s("sbox")
+    wbox = get_s("wbox")
 
     _Know = rand(MC.rng, 2:nbox)
     _weight = zeros(F64, _Know)
