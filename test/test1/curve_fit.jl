@@ -101,26 +101,21 @@ converged(r::OptimizationResults) = r.x_converged || r.f_converged || r.g_conver
     levenberg_marquardt(f, initial_x; kwargs...)
 
 Returns the argmin over x of `sum(f(x).^2)` using the Levenberg-Marquardt
-algorithm, and an estimate of the Jacobian of `f` at x.
-
-The function `f` should take an input vector of length n and return an output
-vector of length m. `initial_x` is an initial guess for the solution.
-
-# Keyword arguments
-* `x_tol::Real=1e-8`: search tolerance in x
-* `g_tol::Real=1e-12`: search tolerance in gradient
-* `maxIter::Integer=1000`: maximum number of iterations
-* `min_step_quality=1e-3`: for steps below this quality, the trust region is shrinked
-* `good_step_quality=0.75`: for steps above this quality, the trust region is expanded
-* `lambda::Real=10`: (inverse of) initial trust region radius
-* `tau=Inf`: set initial trust region radius using the heuristic : tau*maximum(jacobian(df)'*jacobian(df))
-* `lambda_increase=10.0`: `lambda` is multiplied by this factor after step below min quality
-* `lambda_decrease=0.1`: `lambda` is multiplied by this factor after good quality steps
+algorithm, and an estimate of the Jacobian of `f` at x. The function `f`
+should take an input vector of length n and return an output vector of
+length m. `initial_x` is an initial guess for the solution.
 """
 function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T};
-    x_tol::Real = 1e-8, g_tol::Real = 1e-12, maxIter::Integer = 1000,
-    lambda = T(10), tau=T(Inf), lambda_increase::Real = 10.0, lambda_decrease::Real = 0.1,
-    min_step_quality::Real = 1e-3, good_step_quality::Real = 0.75) where T
+    x_tol::Real = 1e-8, #  search tolerance in x
+    g_tol::Real = 1e-12, # search tolerance in gradient
+    maxIter::Integer = 1000, # maximum number of iterations
+    lambda = T(10), # (inverse of) initial trust region radius
+    tau=T(Inf), # set initial trust region radius using the heuristic : tau*maximum(jacobian(df)'*jacobian(df))
+    lambda_increase::Real = 10.0, # `lambda` is multiplied by this factor after step below min quality
+    lambda_decrease::Real = 0.1, # `lambda` is multiplied by this factor after good quality steps
+    min_step_quality::Real = 1e-3, # for steps below this quality, the trust region is shrinked
+    good_step_quality::Real = 0.75 # for steps above this quality, the trust region is expanded
+) where T
 
     # First evaluation
     value_jacobian!!(df, initial_x)
