@@ -104,17 +104,27 @@ Returns the argmin over x of `sum(f(x).^2)` using the Levenberg-Marquardt
 algorithm, and an estimate of the Jacobian of `f` at x. The function `f`
 should take an input vector of length n and return an output vector of
 length m. `initial_x` is an initial guess for the solution.
+
+* x_tol, search tolerance in x
+* g_tol, search tolerance in gradient
+* maxIter, maximum number of iterations
+* lambda, (inverse of) initial trust region radius
+* tau, set initial trust region radius using the heuristic
+* lambda_increase, lambda is multiplied by this factor after step below min quality
+* lambda_decrease, lambda is multiplied by this factor after good quality steps
+* min_step_quality, for steps below this quality, the trust region is shrinked
+* good_step_quality, for steps above this quality, the trust region is expanded
 """
 function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T};
-    x_tol::Real = 1e-8, #  search tolerance in x
-    g_tol::Real = 1e-12, # search tolerance in gradient
-    maxIter::Integer = 1000, # maximum number of iterations
-    lambda = T(10), # (inverse of) initial trust region radius
-    tau=T(Inf), # set initial trust region radius using the heuristic : tau*maximum(jacobian(df)'*jacobian(df))
-    lambda_increase::Real = 10.0, # `lambda` is multiplied by this factor after step below min quality
-    lambda_decrease::Real = 0.1, # `lambda` is multiplied by this factor after good quality steps
-    min_step_quality::Real = 1e-3, # for steps below this quality, the trust region is shrinked
-    good_step_quality::Real = 0.75 # for steps above this quality, the trust region is expanded
+    x_tol::Real = 1e-8,
+    g_tol::Real = 1e-12,
+    maxIter::Integer = 1000,
+    lambda = T(10),
+    tau = T(Inf),
+    lambda_increase::Real = 10.0,
+    lambda_decrease::Real = 0.1,
+    min_step_quality::Real = 1e-3,
+    good_step_quality::Real = 0.75
 ) where T
 
     # First evaluation
