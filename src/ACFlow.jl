@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/08
+# Last modified: 2022/04/09
 #
 
 """
@@ -52,12 +52,6 @@ using Random
 using Printf
 using Dates
 using TOML
-
-#=
-### *Using Third-party Libraries*
-=#
-
-using LsqFit
 
 #=
 ### *Includes And Exports* : *global.jl*
