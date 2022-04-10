@@ -10,6 +10,10 @@ mutable struct OnceDifferentiable
 end
 
 function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
+    function calc_F!(F, x)
+        copyto!(F, f(x))
+    end
+
     function calc_J!(J, x)
         relstep = cbrt(eps(real(eltype(x))))
         absstep = relstep
@@ -28,10 +32,6 @@ function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
             x1[i] = x_save
         end
         nothing
-    end
-
-    function calc_F!(F, x)
-        copyto!(F, f(x))
     end
 
     function calc_FJ!(F, J, x)
