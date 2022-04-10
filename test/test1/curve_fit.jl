@@ -10,7 +10,7 @@ mutable struct OnceDifferentiable
 end
 
 function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
-    function calc_jacobian!(J, ff, x)
+    function calc_jacobian!(J, f!, x)
         relstep = cbrt(eps(real(eltype(x))))
         absstep = relstep
         x1, fx, fx1 = cache
@@ -21,9 +21,9 @@ function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
             x_save = x[i]
             epsilon = max(relstep * abs(x_save), absstep)
             x1[i] = x_save + epsilon
-            ff(fx1, x1)
+            f!(fx1, x1)
             x1[i] = x_save - epsilon
-            ff(fx, x1)
+            f!(fx, x1)
             @. J[:,i] = (vfx1 - vfx) / (2 * epsilon)
             x1[i] = x_save
         end
