@@ -1,3 +1,29 @@
+mutable struct JacobianCache
+    x1
+    fx
+    fx1
+end
+
+function finite_difference_jacobian!(J, f, x, cache::JacobianCache)
+    relstep = cbrt(eps(real(eltype(x))))
+    absstep = relstep
+    x1, fx, fx1 = cache.x1, cache.fx, cache.fx1
+    copyto!(x1, x)
+    vfx = vec(fx)
+    vfx1 = vec(fx1)
+    @inbounds for color_i ∈ 1:length(x1)
+        x_save = x[color_i]
+        epsilon = max(relstep * abs(x_save), absstep)
+        x1[color_i] = x_save .+ epsilon
+        f(fx1, x1)
+        x1[color_i] = x_save .- epsilon
+        f(fx, x1)
+        @. J[:,color_i] = (vfx1 - vfx) / (2 * epsilon)
+        x1[color_i] = x_save
+    end
+    nothing
+end
+
 x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
 
 # Used for objectives and solvers where the gradient is available/exists
@@ -9,8 +35,6 @@ mutable struct OnceDifferentiable{TF, TDF, TX}
     DF::TDF # cache for df output
     x_f::TX # x used to evaluate f (stored in F)
     x_df::TX # x used to evaluate df (stored in DF)
-    f_calls::Vector{Int}
-    df_calls::Vector{Int}
 end
 
 function OnceDifferentiable(f, x_seed::AbstractArray, F::AbstractArray)
@@ -21,7 +45,7 @@ function OnceDifferentiable(f, x_seed::AbstractArray, F::AbstractArray)
 
     function fj_finitediff!(F, J, x)
         f!(F, x)
-        FiniteDiff.finite_difference_jacobian!(J, f!, x, j_finitediff_cache)
+        finite_difference_jacobian!(J, f!, x, j_finitediff_cache)
         F
     end
 
@@ -31,20 +55,13 @@ function OnceDifferentiable(f, x_seed::AbstractArray, F::AbstractArray)
     end
 
     DF = eltype(x_seed)(NaN) .* vec(F) .* vec(x_seed)'
-
-    # Figure out which Val-type to use for FiniteDiff based on our symbol interface.
-    fdtype = Val{:central}
-
-    # Apparently only the third input is aliased.
-    j_finitediff_cache = FiniteDiff.JacobianCache(copy(x_seed), copy(F), copy(F), fdtype)
-
+    j_finitediff_cache = JacobianCache(copy(x_seed), copy(F), copy(F))
     x_f, x_df = x_of_nans(x_seed), x_of_nans(x_seed)
-    OnceDifferentiable(f!, j_finitediff!, fj_finitediff!, copy(F), copy(DF), x_f, x_df, [0,], [0,])
+    OnceDifferentiable(f!, j_finitediff!, fj_finitediff!, copy(F), copy(DF), x_f, x_df) #, [0,], [0,])
 end
 
 value(obj::OnceDifferentiable) = obj.F
 function value(obj::OnceDifferentiable, F, x)
-    obj.f_calls .+= 1
     return obj.f(F, x)
 end
 function value!(obj::OnceDifferentiable, x)
@@ -65,8 +82,6 @@ jacobian!!(obj, x) = jacobian!!(obj, obj.DF, x)
 function jacobian!!(obj, J, x)
     obj.df(J, x)
     copyto!(obj.x_df, x)
-    obj.df_calls .+= 1
-    obj.df_calls
     J
 end
 
@@ -75,9 +90,6 @@ function value_jacobian!!(obj, F, J, x)
     obj.fdf(F, J, x)
     copyto!(obj.x_f, x)
     copyto!(obj.x_df, x)
-    obj.f_calls .+= 1
-    obj.df_calls .+= 1
-    obj.df_calls
     F, J
 end
 
@@ -88,14 +100,10 @@ mutable struct OptimizationResults{T,N}
     iterations::Int
     iteration_converged::Bool
     x_converged::Bool
-    f_converged::Bool
     g_converged::Bool
-    f_increased::Bool
-    f_calls::Int
-    g_calls::Int
 end
 minimizer(r::OptimizationResults) = r.minimizer
-converged(r::OptimizationResults) = r.x_converged || r.f_converged || r.g_converged
+converged(r::OptimizationResults) = r.x_converged || r.g_converged
 
 """
     levenberg_marquardt(f, initial_x; kwargs...)
@@ -164,7 +172,6 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
 
     # and an alias for the jacobian
     J = jacobian(df)
-    dir_deriv = Array{T}(undef,m)
     v = Array{T}(undef,n)
 
     while (~converged && iterCt < maxIter)
@@ -206,10 +213,6 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
         predicted_residual = sum(abs2, Jdelta_buffer)
 
         # try the step and compute its quality
-        # compute it inplace according to NLSolversBase value(obj, cache, state)
-        # interface. No bang (!) because it doesn't update df besides mutating
-        # the number of f_calls
-
         # re-use n_buffer
         n_buffer .= x .+ delta_x
         value(df, trial_f, n_buffer)
@@ -257,11 +260,7 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
         iterCt,                # iterations
         !converged,            # iteration_converged
         x_converged,           # x_converged
-        false,                 # f_converged
         g_converged,           # g_converged
-        false,                 # f_increased
-        first(df.f_calls),     # f_calls
-        first(df.df_calls),    # g_calls
     )
 end
 
