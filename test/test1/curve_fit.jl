@@ -17,21 +17,16 @@ function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
     function calc_J!(J, x)
         relstep = cbrt(eps(real(eltype(x))))
         absstep = relstep
-        x1, fx, fx1 = cache
-        copyto!(x1, x)
-        vfx = vec(fx)
-        vfx1 = vec(fx1)
-        @inbounds for i ∈ 1:length(x1)
+        @inbounds for i ∈ 1:length(x)
             x_save = x[i]
             epsilon = max(relstep * abs(x_save), absstep)
-            x1[i] = x_save + epsilon
-            copyto!(fx1, f(x1))
-            x1[i] = x_save - epsilon
-            copyto!(fx, f(x1))
-            @. J[:,i] = (vfx1 - vfx) / (2 * epsilon)
-            x1[i] = x_save
+            x[i] = x_save + epsilon
+            fx2 = vec(f(x))
+            x[i] = x_save - epsilon
+            fx1 = vec(f(x))
+            J[:,i] = (fx2 - fx1) ./ (2 * epsilon)
+            x[i] = x_save
         end
-        nothing
     end
 
     function calc_FJ!(F, J, x)
@@ -40,7 +35,6 @@ function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
     end
 
     DF = eltype(p0)(NaN) .* vec(F) .* vec(p0)'
-    cache = (copy(p0), copy(F), copy(F))
     x_f = fill(NaN, length(p0))
     x_df = fill(NaN, length(p0))
     OnceDifferentiable(calc_F!, calc_J!, calc_FJ!, F, DF, x_f, x_df)
@@ -48,7 +42,7 @@ end
 
 value(obj::OnceDifferentiable) = obj.F
 function value(obj::OnceDifferentiable, F, x)
-    return obj.f(F, x)
+    obj.f(F, x)
 end
 function value!(obj::OnceDifferentiable, x)
     if x != obj.x_f
@@ -60,19 +54,14 @@ end
 jacobian(obj::OnceDifferentiable) = obj.DF
 function jacobian!(obj, x)
     if x != obj.x_df
-        jacobian!!(obj, x)
+        obj.df(obj.DF, x)
+        copyto!(obj.x_df, x)
     end
-    jacobian(obj)
-end
-jacobian!!(obj, x) = jacobian!!(obj, obj.DF, x)
-function jacobian!!(obj, J, x)
-    obj.df(J, x)
-    copyto!(obj.x_df, x)
-    J
+    obj.DF
 end
 
-value_jacobian!!(obj, x) = value_jacobian!!(obj, obj.F, obj.DF, x)
-function value_jacobian!!(obj, F, J, x)
+value_jacobian!(obj, x) = value_jacobian!(obj, obj.F, obj.DF, x)
+function value_jacobian!(obj, F, J, x)
     obj.fdf(F, J, x)
     copyto!(obj.x_f, x)
     copyto!(obj.x_df, x)
@@ -118,7 +107,7 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
 ) where T
 
     # First evaluation
-    value_jacobian!!(df, initial_x)
+    value_jacobian!(df, initial_x)
     
     # other constants
     max_lambda = 1e16 # minimum trust region radius
