@@ -57,7 +57,7 @@ function OnceDifferentiable(f, x_seed::AbstractArray, F::AbstractArray)
     DF = eltype(x_seed)(NaN) .* vec(F) .* vec(x_seed)'
     j_finitediff_cache = JacobianCache(copy(x_seed), copy(F), copy(F))
     x_f, x_df = x_of_nans(x_seed), x_of_nans(x_seed)
-    OnceDifferentiable(f!, j_finitediff!, fj_finitediff!, copy(F), copy(DF), x_f, x_df) #, [0,], [0,])
+    OnceDifferentiable(f!, j_finitediff!, fj_finitediff!, copy(F), copy(DF), x_f, x_df)
 end
 
 value(obj::OnceDifferentiable) = obj.F
