@@ -1,63 +1,53 @@
-mutable struct JacobianCache
-    x1
-    fx
-    fx1
-end
-
-function finite_difference_jacobian!(J, f, x, cache::JacobianCache)
-    relstep = cbrt(eps(real(eltype(x))))
-    absstep = relstep
-    x1, fx, fx1 = cache.x1, cache.fx, cache.fx1
-    copyto!(x1, x)
-    vfx = vec(fx)
-    vfx1 = vec(fx1)
-    @inbounds for i ∈ 1:length(x1)
-        x_save = x[i]
-        epsilon = max(relstep * abs(x_save), absstep)
-        x1[i] = x_save + epsilon
-        f(fx1, x1)
-        x1[i] = x_save - epsilon
-        f(fx, x1)
-        @. J[:,i] = (vfx1 - vfx) / (2 * epsilon)
-        x1[i] = x_save
-    end
-    nothing
-end
-
-x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
-
 # Used for objectives and solvers where the gradient is available/exists
-mutable struct OnceDifferentiable{TF, TDF, TX}
-    f # objective
-    df # (partial) derivative of objective
-    fdf # objective and (partial) derivative of objective
-    F::TF # cache for f output
-    DF::TDF # cache for df output
-    x_f::TX # x used to evaluate f (stored in F)
-    x_df::TX # x used to evaluate df (stored in DF)
+mutable struct OnceDifferentiable
+    f    # objective
+    df   # (partial) derivative of objective
+    fdf  # objective and (partial) derivative of objective
+    F    # cache for f output
+    DF   # cache for df output
+    x_f  # x used to evaluate f (stored in F)
+    x_df # x used to evaluate df (stored in DF)
 end
 
-function OnceDifferentiable(f, x_seed::AbstractArray, F::AbstractArray)
-    function f!(F, x)
+function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
+    function calc_jacobian!(J, ff, x)
+        relstep = cbrt(eps(real(eltype(x))))
+        absstep = relstep
+        x1, fx, fx1 = cache
+        copyto!(x1, x)
+        vfx = vec(fx)
+        vfx1 = vec(fx1)
+        @inbounds for i ∈ 1:length(x1)
+            x_save = x[i]
+            epsilon = max(relstep * abs(x_save), absstep)
+            x1[i] = x_save + epsilon
+            ff(fx1, x1)
+            x1[i] = x_save - epsilon
+            ff(fx, x1)
+            @. J[:,i] = (vfx1 - vfx) / (2 * epsilon)
+            x1[i] = x_save
+        end
+        nothing
+    end
+
+    function calc_F!(F, x)
         copyto!(F, f(x))
-        F
     end
 
-    function fj_finitediff!(F, J, x)
-        f!(F, x)
-        finite_difference_jacobian!(J, f!, x, j_finitediff_cache)
-        F
+    function calc_J!(J, x)
+        calc_jacobian!(J, calc_F!, x)
     end
 
-    function j_finitediff!(J, x)
-        F_cache = copy(F)
-        fj_finitediff!(F_cache, J, x)
+    function calc_FJ!(F, J, x)
+        copyto!(F, f(x))
+        calc_jacobian!(J, calc_F!, x)
     end
 
-    DF = eltype(x_seed)(NaN) .* vec(F) .* vec(x_seed)'
-    j_finitediff_cache = JacobianCache(copy(x_seed), copy(F), copy(F))
-    x_f, x_df = x_of_nans(x_seed), x_of_nans(x_seed)
-    OnceDifferentiable(f!, j_finitediff!, fj_finitediff!, copy(F), copy(DF), x_f, x_df)
+    DF = eltype(p0)(NaN) .* vec(F) .* vec(p0)'
+    cache = (copy(p0), copy(F), copy(F))
+    x_f = fill(NaN, length(p0))
+    x_df = fill(NaN, length(p0))
+    OnceDifferentiable(calc_F!, calc_J!, calc_FJ!, F, DF, x_f, x_df)
 end
 
 value(obj::OnceDifferentiable) = obj.F
@@ -102,8 +92,6 @@ mutable struct OptimizationResults{T,N}
     x_converged::Bool
     g_converged::Bool
 end
-minimizer(r::OptimizationResults) = r.minimizer
-converged(r::OptimizationResults) = r.x_converged || r.g_converged
 
 """
     levenberg_marquardt(f, initial_x; kwargs...)
@@ -117,7 +105,6 @@ length m. `initial_x` is an initial guess for the solution.
 * g_tol, search tolerance in gradient
 * maxIter, maximum number of iterations
 * lambda, (inverse of) initial trust region radius
-* tau, set initial trust region radius using the heuristic
 * lambda_increase, lambda is multiplied by this factor after step below min quality
 * lambda_decrease, lambda is multiplied by this factor after good quality steps
 * min_step_quality, for steps below this quality, the trust region is shrinked
@@ -128,7 +115,6 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
     g_tol::Real = 1e-12,
     maxIter::Integer = 1000,
     lambda = T(10),
-    tau = T(Inf),
     lambda_increase::Real = 10.0,
     lambda_decrease::Real = 0.1,
     min_step_quality::Real = 1e-3,
@@ -138,19 +124,10 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
     # First evaluation
     value_jacobian!!(df, initial_x)
     
-    if isfinite(tau)
-        lambda = tau*maximum(jacobian(df)'*jacobian(df))
-    end
-
-    # check parameters
-    (0 <= min_step_quality < 1) || throw(ArgumentError(" 0 <= min_step_quality < 1 must hold."))
-    (0 < good_step_quality <= 1) || throw(ArgumentError(" 0 < good_step_quality <= 1 must hold."))
-    (min_step_quality < good_step_quality) || throw(ArgumentError("min_step_quality < good_step_quality must hold."))
-
     # other constants
-    MAX_LAMBDA = 1e16 # minimum trust region radius
-    MIN_LAMBDA = 1e-16 # maximum trust region radius
-    MIN_DIAGONAL = 1e-6 # lower bound on values of diagonal matrix used to regularize the trust region step
+    max_lambda = 1e16 # minimum trust region radius
+    min_lambda = 1e-16 # maximum trust region radius
+    min_diagonal = 1e-6 # lower bound on values of diagonal matrix used to regularize the trust region step
 
     converged = false
     x_converged = false
@@ -189,8 +166,8 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
 
         DtD = vec(sum(abs2, J, dims=1))
         for i in 1:length(DtD)
-            if DtD[i] <= MIN_DIAGONAL
-                DtD[i] = MIN_DIAGONAL
+            if DtD[i] <= min_diagonal
+                DtD[i] = min_diagonal
             end
         end
 
@@ -232,11 +209,11 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
             residual = trial_residual
             if rho > good_step_quality
                 # increase trust region radius
-                lambda = max(lambda_decrease*lambda, MIN_LAMBDA)
+                lambda = max(lambda_decrease*lambda, min_lambda)
             end
         else
             # decrease trust region radius
-            lambda = min(lambda_increase*lambda, MAX_LAMBDA)
+            lambda = min(lambda_increase*lambda, max_lambda)
         end
 
         iterCt += 1
@@ -264,11 +241,11 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
     )
 end
 
-struct LsqFitResult{P, R, J}
-    param::P
-    resid::R
-    jacobian::J
-    converged::Bool
+struct LsqFitResult
+    param
+    resid
+    jacobian
+    converged
 end
 
 """
@@ -280,8 +257,9 @@ The return object is a composite type (`LsqFitResult`).
 function curve_fit(model, x::AbstractArray, y::AbstractArray, p0::AbstractArray)
     f = (p) -> model(x, p) - y
     r = f(p0)
-    R = OnceDifferentiable(f, p0, copy(r))
+    R = OnceDifferentiable(f, p0, r)
     results = levenberg_marquardt(R, p0)
-    p = minimizer(results)
-    return LsqFitResult(p, value!(R, p), jacobian!(R, p), converged(results))
+    p = results.minimizer
+    conv = results.x_converged || results.g_converged
+    return LsqFitResult(p, value!(R, p), jacobian!(R, p), conv)
 end
