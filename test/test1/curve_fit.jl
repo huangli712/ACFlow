@@ -11,15 +11,15 @@ function finite_difference_jacobian!(J, f, x, cache::JacobianCache)
     copyto!(x1, x)
     vfx = vec(fx)
     vfx1 = vec(fx1)
-    @inbounds for color_i ∈ 1:length(x1)
-        x_save = x[color_i]
+    @inbounds for i ∈ 1:length(x1)
+        x_save = x[i]
         epsilon = max(relstep * abs(x_save), absstep)
-        x1[color_i] = x_save .+ epsilon
+        x1[i] = x_save + epsilon
         f(fx1, x1)
-        x1[color_i] = x_save .- epsilon
+        x1[i] = x_save - epsilon
         f(fx, x1)
-        @. J[:,color_i] = (vfx1 - vfx) / (2 * epsilon)
-        x1[color_i] = x_save
+        @. J[:,i] = (vfx1 - vfx) / (2 * epsilon)
+        x1[i] = x_save
     end
     nothing
 end
