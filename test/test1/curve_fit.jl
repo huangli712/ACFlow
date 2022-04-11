@@ -86,7 +86,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
     converged = false
     x_converged = false
     g_converged = false
-    iterCt = 0
+    iter = 0
     x = copy(x₀)
 
     trial_f = similar(𝐹)
@@ -98,7 +98,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
     n_buffer = Vector{T}(undef, n)
     Jdelta_buffer = similar(𝐹)
 
-    while (~converged && iterCt < maxIter)
+    while (~converged && iter < maxIter)
         # jacobian! will check if x is new or not, so it is only actually
         # evaluated if x was updated last iteration.
         jacobian!(df, x) # has alias J
@@ -160,7 +160,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
             lambda = min(lambda_increase*lambda, max_lambda)
         end
 
-        iterCt += 1
+        iter += 1
 
         # check convergence criteria:
         # 1. Small gradient: norm(J^T * value(df), Inf) < g_tol
@@ -178,7 +178,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         x₀,             # x₀
         x,                     # minimizer
         sum(abs2, value(df)),  # minimum
-        iterCt,                # iterations
+        iter,                # iterations
         !converged,            # iteration_converged
         x_converged,           # x_converged
         g_converged,           # g_converged
