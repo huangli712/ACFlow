@@ -7,11 +7,11 @@ mutable struct OnceDifferentiable
 end
 
 function OnceDifferentiable(𝑓, p0::AbstractArray, 𝐹::AbstractArray)
-    function ℱ!(F, x)
-        copyto!(F, 𝑓(x))
+    function ℱ!(𝐹, x)
+        copyto!(𝐹, 𝑓(x))
     end
 
-    function 𝒥!(J, x)
+    function 𝒥!(𝐽, x)
         rel_step = cbrt(eps(real(eltype(x))))
         abs_step = rel_step
         @inbounds for i ∈ 1:length(x)
@@ -21,7 +21,7 @@ function OnceDifferentiable(𝑓, p0::AbstractArray, 𝐹::AbstractArray)
             f₂ = vec(𝑓(x))
             x[i] = xₛ - ϵ
             f₁ = vec(𝑓(x))
-            J[:,i] = (f₂ - f₁) ./ (2 * ϵ)
+            𝐽[:,i] = (f₂ - f₁) ./ (2 * ϵ)
             x[i] = xₛ
         end
     end
@@ -31,15 +31,14 @@ function OnceDifferentiable(𝑓, p0::AbstractArray, 𝐹::AbstractArray)
 end
 
 value(obj::OnceDifferentiable) = obj.𝐹
-function value(obj::OnceDifferentiable, F, x)
-    obj.ℱ(F, x)
-end
+value(obj::OnceDifferentiable, 𝐹, x) = obj.ℱ(𝐹, x)
 function value!(obj::OnceDifferentiable, x)
     obj.ℱ(obj.𝐹, x)
     obj.𝐹
 end
 
 jacobian(obj::OnceDifferentiable) = obj.𝐽
+jacobian(obj::OnceDifferentiable, 𝐽, x) = obj.𝒥(𝐽, x)
 function jacobian!(obj::OnceDifferentiable, x)
     obj.𝒥(obj.𝐽, x)
     obj.𝐽
@@ -155,8 +154,7 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
         # try the step and compute its quality
         # re-use n_buffer
         n_buffer .= x .+ delta_x
-        #value(df, trial_f, n_buffer)
-        df.ℱ(trial_f, n_buffer)
+        value(df, trial_f, n_buffer)
 
         # update the sum of squares
         trial_residual = sum(abs2, trial_f)
