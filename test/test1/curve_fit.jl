@@ -1,12 +1,12 @@
 # Used for objectives and solvers where the gradient is available/exists
 mutable struct OnceDifferentiable
-    f    # objective
-    j   # (partial) derivative of objective
-    𝐹    # cache for f output
-    𝐽   # cache for j output
+    ℱ  # objective
+    𝒥  # (partial) derivative of objective
+    𝐹  # cache for f output
+    𝐽  # cache for j output
 end
 
-function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
+function OnceDifferentiable(f, p0::AbstractArray, 𝐹::AbstractArray)
     function calc_F!(F, x)
         copyto!(F, f(x))
     end
@@ -26,22 +26,22 @@ function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
         end
     end
 
-    J = eltype(p0)(NaN) .* vec(F) .* vec(p0)'
-    OnceDifferentiable(calc_F!, calc_J!, F, J)
+    𝐽 = eltype(p0)(NaN) .* vec(𝐹) .* vec(p0)'
+    OnceDifferentiable(calc_F!, calc_J!, 𝐹, 𝐽)
 end
 
 value(obj::OnceDifferentiable) = obj.𝐹
 function value(obj::OnceDifferentiable, F, x)
-    obj.f(F, x)
+    obj.ℱ(F, x)
 end
 function value!(obj::OnceDifferentiable, x)
-    obj.f(obj.𝐹, x)
+    obj.ℱ(obj.𝐹, x)
     obj.𝐹
 end
 
 jacobian(obj::OnceDifferentiable) = obj.𝐽
 function jacobian!(obj::OnceDifferentiable, x)
-    obj.j(obj.𝐽, x)
+    obj.𝒥(obj.𝐽, x)
     obj.𝐽
 end
 
