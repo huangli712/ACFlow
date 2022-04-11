@@ -45,7 +45,7 @@ function jacobian!(obj::OnceDifferentiable, x)
 end
 
 mutable struct OptimizationResults{T,N}
-    initial_x::Array{T,N}
+    x₀::Array{T,N}
     minimizer::Array{T,N}
     minimum::T
     iterations::Int
@@ -55,63 +55,48 @@ mutable struct OptimizationResults{T,N}
 end
 
 """
-    levenberg_marquardt(f, initial_x; kwargs...)
+    levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T})
 
 Returns the argmin over x of `sum(f(x).^2)` using the Levenberg-Marquardt
 algorithm, and an estimate of the Jacobian of `f` at x. The function `f`
-should take an input vector of length n and return an output vector of
-length m. `initial_x` is an initial guess for the solution.
+is encoded in `df`. `x₀` is an initial guess for the solution.
 
-* x_tol, search tolerance in x
-* g_tol, search tolerance in gradient
-* maxIter, maximum number of iterations
-* lambda, (inverse of) initial trust region radius
-* lambda_increase, lambda is multiplied by this factor after step below min quality
-* lambda_decrease, lambda is multiplied by this factor after good quality steps
-* min_step_quality, for steps below this quality, the trust region is shrinked
-* good_step_quality, for steps above this quality, the trust region is expanded
+See also: [`OnceDifferentiable`](@ref).
 """
-function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T};
-    x_tol::Real = 1e-8,
-    g_tol::Real = 1e-12,
-    maxIter::Integer = 1000,
-    lambda = T(10),
-    lambda_increase::Real = 10.0,
-    lambda_decrease::Real = 0.1,
-    min_step_quality::Real = 1e-3,
-    good_step_quality::Real = 0.75
-) where T
-
-    # First evaluation
-    value!(df, initial_x)
-    jacobian!(df, initial_x)
-    
-    # other constants
+function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) where T
+    # Some constants
     max_lambda = 1e16 # minimum trust region radius
     min_lambda = 1e-16 # maximum trust region radius
     min_diagonal = 1e-6 # lower bound on values of diagonal matrix used to regularize the trust region step
+    x_tol = 1e-8 # search tolerance in x
+    g_tol = 1e-12 # search tolerance in gradient
+    maxIter = 1000 # maximum number of iterations
+    lambda = T(10) # (inverse of) initial trust region radius
+    lambda_increase = 10.0 # lambda is multiplied by this factor after step below min quality
+    lambda_decrease = 0.1 # lambda is multiplied by this factor after good quality steps
+    min_step_quality = 1e-3 # for steps below this quality, the trust region is shrinked
+    good_step_quality = 0.75 # for steps above this quality, the trust region is expanded
+
+    # First evaluation
+    value!(df, x₀)
+    jacobian!(df, x₀)
+    𝐹 = value(df)
+    𝐽 = jacobian(df)
 
     converged = false
     x_converged = false
     g_converged = false
     iterCt = 0
-    x = copy(initial_x)
-    delta_x = copy(initial_x)
-    #a = similar(x)
+    x = copy(x₀)
 
-    trial_f = similar(value(df))
-    residual = sum(abs2, value(df))
+    trial_f = similar(𝐹)
+    residual = sum(abs2, 𝐹)
 
     # Create buffers
     n = length(x)
-    #m = length(value(df))
     JJ = Matrix{T}(undef, n, n)
     n_buffer = Vector{T}(undef, n)
-    Jdelta_buffer = similar(value(df))
-
-    # and an alias for the jacobian
-    J = jacobian(df)
-    v = Array{T}(undef,n)
+    Jdelta_buffer = similar(𝐹)
 
     while (~converged && iterCt < maxIter)
         # jacobian! will check if x is new or not, so it is only actually
@@ -126,7 +111,7 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
         # It is additionally useful to bound the elements of DtD below to help
         # prevent "parameter evaporation".
 
-        DtD = vec(sum(abs2, J, dims=1))
+        DtD = vec(sum(abs2, 𝐽, dims=1))
         for i in 1:length(DtD)
             if DtD[i] <= min_diagonal
                 DtD[i] = min_diagonal
@@ -134,21 +119,19 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
         end
 
         # delta_x = ( J'*J + lambda * Diagonal(DtD) ) \ ( -J'*value(df) )
-        mul!(JJ, transpose(J), J)
+        mul!(JJ, 𝐽', 𝐽)
         @simd for i in 1:n
             @inbounds JJ[i, i] += lambda * DtD[i]
         end
         #n_buffer is delta C, JJ is g compared to Mark's code
-        mul!(n_buffer, transpose(J), value(df))
+        mul!(n_buffer, 𝐽', 𝐹)
         rmul!(n_buffer, -1)
 
-        v .= JJ \ n_buffer
-
-        delta_x = v
+        delta_x = JJ \ n_buffer
 
         # if the linear assumption is valid, our new residual should be:
-        mul!(Jdelta_buffer, J, delta_x)
-        Jdelta_buffer .= Jdelta_buffer .+ value(df)
+        mul!(Jdelta_buffer, 𝐽, delta_x)
+        Jdelta_buffer .= Jdelta_buffer .+ 𝐹
         predicted_residual = sum(abs2, Jdelta_buffer)
 
         # try the step and compute its quality
@@ -166,7 +149,7 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
             # calculations after this step.
             x .= n_buffer
             # There should be an update_x_value to do this safely
-            copyto!(value(df), trial_f)
+            value!(df, n_buffer)
             residual = trial_residual
             if rho > good_step_quality
                 # increase trust region radius
@@ -182,7 +165,7 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
         # check convergence criteria:
         # 1. Small gradient: norm(J^T * value(df), Inf) < g_tol
         # 2. Small step size: norm(delta_x) < x_tol
-        if norm(J' * value(df), Inf) < g_tol
+        if norm(𝐽' * 𝐹, Inf) < g_tol
             g_converged = true
         end
         if norm(delta_x) < x_tol*(x_tol + norm(x))
@@ -192,7 +175,7 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
     end
 
     OptimizationResults(
-        initial_x,             # initial_x
+        x₀,             # x₀
         x,                     # minimizer
         sum(abs2, value(df)),  # minimum
         iterCt,                # iterations
