@@ -6,28 +6,28 @@ mutable struct OnceDifferentiable
     𝐽  # cache for j output
 end
 
-function OnceDifferentiable(f, p0::AbstractArray, 𝐹::AbstractArray)
-    function calc_F!(F, x)
-        copyto!(F, f(x))
+function OnceDifferentiable(𝑓, p0::AbstractArray, 𝐹::AbstractArray)
+    function ℱ!(F, x)
+        copyto!(F, 𝑓(x))
     end
 
-    function calc_J!(J, x)
+    function 𝒥!(J, x)
         relstep = cbrt(eps(real(eltype(x))))
         absstep = relstep
         @inbounds for i ∈ 1:length(x)
             x_save = x[i]
             epsilon = max(relstep * abs(x_save), absstep)
             x[i] = x_save + epsilon
-            fx2 = vec(f(x))
+            f₂ = vec(𝑓(x))
             x[i] = x_save - epsilon
-            fx1 = vec(f(x))
-            J[:,i] = (fx2 - fx1) ./ (2 * epsilon)
+            f₁ = vec(𝑓(x))
+            J[:,i] = (f₂ - f₁) ./ (2 * epsilon)
             x[i] = x_save
         end
     end
 
     𝐽 = eltype(p0)(NaN) .* vec(𝐹) .* vec(p0)'
-    OnceDifferentiable(calc_F!, calc_J!, 𝐹, 𝐽)
+    OnceDifferentiable(ℱ!, 𝒥!, 𝐹, 𝐽)
 end
 
 value(obj::OnceDifferentiable) = obj.𝐹
