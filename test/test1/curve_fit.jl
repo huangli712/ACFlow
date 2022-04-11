@@ -2,7 +2,6 @@
 mutable struct OnceDifferentiable
     f    # objective
     df   # (partial) derivative of objective
-    fdf  # objective and (partial) derivative of objective
     F    # cache for f output
     DF   # cache for df output
     x_f  # x used to evaluate f (stored in F)
@@ -29,15 +28,10 @@ function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
         end
     end
 
-    function calc_FJ!(F, J, x)
-        calc_F!(F, x)
-        calc_J!(J, x)
-    end
-
     DF = eltype(p0)(NaN) .* vec(F) .* vec(p0)'
     x_f = fill(NaN, length(p0))
     x_df = fill(NaN, length(p0))
-    OnceDifferentiable(calc_F!, calc_J!, calc_FJ!, F, DF, x_f, x_df)
+    OnceDifferentiable(calc_F!, calc_J!, F, DF, x_f, x_df)
 end
 
 value(obj::OnceDifferentiable) = obj.F
@@ -46,9 +40,10 @@ function value(obj::OnceDifferentiable, F, x)
 end
 function value!(obj::OnceDifferentiable, x)
     if x != obj.x_f
-        value!!(obj, x)
+        obj.f(obj.F, x)
+        copyto!(obj.x_f, x)
     end
-    value(obj)
+    obj.F
 end
 
 jacobian(obj::OnceDifferentiable) = obj.DF
@@ -58,14 +53,6 @@ function jacobian!(obj, x)
         copyto!(obj.x_df, x)
     end
     obj.DF
-end
-
-value_jacobian!(obj, x) = value_jacobian!(obj, obj.F, obj.DF, x)
-function value_jacobian!(obj, F, J, x)
-    obj.fdf(F, J, x)
-    copyto!(obj.x_f, x)
-    copyto!(obj.x_df, x)
-    F, J
 end
 
 mutable struct OptimizationResults{T,N}
@@ -107,7 +94,8 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
 ) where T
 
     # First evaluation
-    value_jacobian!(df, initial_x)
+    value!(df, initial_x)
+    jacobian!(df, initial_x)
     
     # other constants
     max_lambda = 1e16 # minimum trust region radius
