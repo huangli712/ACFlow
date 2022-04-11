@@ -1,11 +1,9 @@
 # Used for objectives and solvers where the gradient is available/exists
 mutable struct OnceDifferentiable
     f    # objective
-    df   # (partial) derivative of objective
+    j   # (partial) derivative of objective
     F    # cache for f output
-    DF   # cache for df output
-    x_f  # x used to evaluate f (stored in F)
-    x_df # x used to evaluate df (stored in DF)
+    J   # cache for j output
 end
 
 function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
@@ -28,10 +26,8 @@ function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
         end
     end
 
-    DF = eltype(p0)(NaN) .* vec(F) .* vec(p0)'
-    x_f = fill(NaN, length(p0))
-    x_df = fill(NaN, length(p0))
-    OnceDifferentiable(calc_F!, calc_J!, F, DF, x_f, x_df)
+    J = eltype(p0)(NaN) .* vec(F) .* vec(p0)'
+    OnceDifferentiable(calc_F!, calc_J!, F, J)
 end
 
 value(obj::OnceDifferentiable) = obj.F
@@ -39,20 +35,14 @@ function value(obj::OnceDifferentiable, F, x)
     obj.f(F, x)
 end
 function value!(obj::OnceDifferentiable, x)
-    if x != obj.x_f
-        obj.f(obj.F, x)
-        copyto!(obj.x_f, x)
-    end
+    obj.f(obj.F, x)
     obj.F
 end
 
-jacobian(obj::OnceDifferentiable) = obj.DF
-function jacobian!(obj, x)
-    if x != obj.x_df
-        obj.df(obj.DF, x)
-        copyto!(obj.x_df, x)
-    end
-    obj.DF
+jacobian(obj::OnceDifferentiable) = obj.J
+function jacobian!(obj::OnceDifferentiable, x)
+    obj.j(obj.J, x)
+    obj.J
 end
 
 mutable struct OptimizationResults{T,N}
@@ -177,7 +167,6 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
             # calculations after this step.
             x .= n_buffer
             # There should be an update_x_value to do this safely
-            copyto!(df.x_f, x)
             copyto!(value(df), trial_f)
             residual = trial_residual
             if rho > good_step_quality
