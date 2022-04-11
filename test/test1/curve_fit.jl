@@ -2,8 +2,8 @@
 mutable struct OnceDifferentiable
     f    # objective
     j   # (partial) derivative of objective
-    F    # cache for f output
-    J   # cache for j output
+    𝐹    # cache for f output
+    𝐽   # cache for j output
 end
 
 function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
@@ -30,19 +30,19 @@ function OnceDifferentiable(f, p0::AbstractArray, F::AbstractArray)
     OnceDifferentiable(calc_F!, calc_J!, F, J)
 end
 
-value(obj::OnceDifferentiable) = obj.F
+value(obj::OnceDifferentiable) = obj.𝐹
 function value(obj::OnceDifferentiable, F, x)
     obj.f(F, x)
 end
 function value!(obj::OnceDifferentiable, x)
-    obj.f(obj.F, x)
-    obj.F
+    obj.f(obj.𝐹, x)
+    obj.𝐹
 end
 
-jacobian(obj::OnceDifferentiable) = obj.J
+jacobian(obj::OnceDifferentiable) = obj.𝐽
 function jacobian!(obj::OnceDifferentiable, x)
-    obj.j(obj.J, x)
-    obj.J
+    obj.j(obj.𝐽, x)
+    obj.𝐽
 end
 
 mutable struct OptimizationResults{T,N}
