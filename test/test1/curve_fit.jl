@@ -118,15 +118,13 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
             end
         end
 
-        # delta_x = ( J'*J + lambda * Diagonal(DtD) ) \ ( -J'*value(df) )
+        # delta_x = ( J'*J + lambda * Diagonal(DtD) ) \ ( -J'*F )
         mul!(JJ, 𝐽', 𝐽)
         @simd for i in 1:n
             @inbounds JJ[i, i] += lambda * DtD[i]
         end
-        #n_buffer is delta C, JJ is g compared to Mark's code
         mul!(n_buffer, 𝐽', 𝐹)
         rmul!(n_buffer, -1)
-
         delta_x = JJ \ n_buffer
 
         # if the linear assumption is valid, our new residual should be:
@@ -136,7 +134,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
 
         # try the step and compute its quality
         # re-use n_buffer
-        n_buffer .= x .+ delta_x
+        @. n_buffer = x + delta_x
         value(df, trial_f, n_buffer)
 
         # update the sum of squares
