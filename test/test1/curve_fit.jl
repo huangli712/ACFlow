@@ -97,14 +97,14 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
     iterCt = 0
     x = copy(initial_x)
     delta_x = copy(initial_x)
-    a = similar(x)
+    #a = similar(x)
 
     trial_f = similar(value(df))
     residual = sum(abs2, value(df))
 
     # Create buffers
     n = length(x)
-    m = length(value(df))
+    #m = length(value(df))
     JJ = Matrix{T}(undef, n, n)
     n_buffer = Vector{T}(undef, n)
     Jdelta_buffer = similar(value(df))
