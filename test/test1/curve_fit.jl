@@ -12,17 +12,17 @@ function OnceDifferentiable(𝑓, p0::AbstractArray, 𝐹::AbstractArray)
     end
 
     function 𝒥!(J, x)
-        relstep = cbrt(eps(real(eltype(x))))
-        absstep = relstep
+        rel_step = cbrt(eps(real(eltype(x))))
+        abs_step = rel_step
         @inbounds for i ∈ 1:length(x)
-            x_save = x[i]
-            epsilon = max(relstep * abs(x_save), absstep)
-            x[i] = x_save + epsilon
+            xₛ = x[i]
+            ϵ = max(rel_step * abs(xₛ), abs_step)
+            x[i] = xₛ + ϵ
             f₂ = vec(𝑓(x))
-            x[i] = x_save - epsilon
+            x[i] = xₛ - ϵ
             f₁ = vec(𝑓(x))
-            J[:,i] = (f₂ - f₁) ./ (2 * epsilon)
-            x[i] = x_save
+            J[:,i] = (f₂ - f₁) ./ (2 * ϵ)
+            x[i] = xₛ
         end
     end
 
