@@ -155,7 +155,8 @@ function levenberg_marquardt(df::OnceDifferentiable, initial_x::AbstractVector{T
         # try the step and compute its quality
         # re-use n_buffer
         n_buffer .= x .+ delta_x
-        value(df, trial_f, n_buffer)
+        #value(df, trial_f, n_buffer)
+        df.ℱ(trial_f, n_buffer)
 
         # update the sum of squares
         trial_residual = sum(abs2, trial_f)
