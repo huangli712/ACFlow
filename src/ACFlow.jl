@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/09
+# Last modified: 2022/04/12
 #
 
 """
@@ -244,6 +244,8 @@ export QuadraticInterpolation
 export CubicSplineInterpolation
 export munge_data
 export _interp
+
+include("math.jl")
 
 #=
 ### *Includes And Exports* : *grid.jl*
