@@ -104,10 +104,10 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
 
         # Solve the equation: [𝐽ᵀ𝐽 + λ diag(𝐽ᵀ𝐽)] δ = 𝐽ᵀ𝐹
         mul!(𝐽ᵀ𝐽, 𝐽', 𝐽)
-        DtD = diag(𝐽ᵀ𝐽)
-        replace!(x -> x ≤ min_diagonal ? min_diagonal : x, DtD)
+        𝐷ᵀ𝐷 = diag(𝐽ᵀ𝐽)
+        replace!(x -> x ≤ min_diagonal ? min_diagonal : x, 𝐷ᵀ𝐷)
         @simd for i in 1:n
-            @inbounds 𝐽ᵀ𝐽[i,i] += lambda * DtD[i]
+            @inbounds 𝐽ᵀ𝐽[i,i] += lambda * 𝐷ᵀ𝐷[i]
         end
         mul!(n_buffer, 𝐽', 𝐹)
         rmul!(n_buffer, -1)
