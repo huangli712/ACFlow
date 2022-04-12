@@ -94,33 +94,33 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
 
     # Create buffers
     n = length(x)
-    JJ = Matrix{T}(undef, n, n)
+    𝐽ᵀ𝐽 = Matrix{T}(undef, n, n)
     n_buffer = Vector{T}(undef, n)
-    Jdelta_buffer = similar(𝐹)
+    𝐽δx = similar(𝐹)
 
     while (~converged && iter < maxIter)
         # Update jacobian 𝐽
         jacobian!(df, x)
 
         # Solve the equation: [𝐽ᵀ𝐽 + λ diag(𝐽ᵀ𝐽)] δ = 𝐽ᵀ𝐹
-        mul!(JJ, 𝐽', 𝐽)
-        DtD = diag(JJ)
+        mul!(𝐽ᵀ𝐽, 𝐽', 𝐽)
+        DtD = diag(𝐽ᵀ𝐽)
         replace!(x -> x ≤ min_diagonal ? min_diagonal : x, DtD)
         @simd for i in 1:n
-            @inbounds JJ[i,i] += lambda * DtD[i]
+            @inbounds 𝐽ᵀ𝐽[i,i] += lambda * DtD[i]
         end
         mul!(n_buffer, 𝐽', 𝐹)
         rmul!(n_buffer, -1)
-        delta_x = JJ \ n_buffer
+        δx = 𝐽ᵀ𝐽 \ n_buffer
 
         # if the linear assumption is valid, our new residual should be:
-        mul!(Jdelta_buffer, 𝐽, delta_x)
-        Jdelta_buffer .= Jdelta_buffer .+ 𝐹
-        predicted_residual = sum(abs2, Jdelta_buffer)
+        mul!(𝐽δx, 𝐽, δx)
+        𝐽δx .= 𝐽δx .+ 𝐹
+        predicted_residual = sum(abs2, 𝐽δx)
 
         # try the step and compute its quality
         # re-use n_buffer
-        @. n_buffer = x + delta_x
+        @. n_buffer = x + δx
         value(df, trial_f, n_buffer)
 
         # update the sum of squares
@@ -152,7 +152,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         if norm(𝐽' * 𝐹, Inf) < g_tol
             g_converged = true
         end
-        if norm(delta_x) < x_tol*(x_tol + norm(x))
+        if norm(δx) < x_tol*(x_tol + norm(x))
             x_converged = true
         end
         converged = g_converged | x_converged
