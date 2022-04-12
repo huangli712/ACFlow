@@ -65,15 +65,15 @@ See also: [`OnceDifferentiable`](@ref).
 """
 function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) where T
     # Some constants
-    max_lambda = 1e16 # minimum trust region radius
-    min_lambda = 1e-16 # maximum trust region radius
+    Λₘ = 1e16 # minimum trust region radius
+    λₘ = 1e-16 # maximum trust region radius
     min_diagonal = 1e-6 # lower bound on values of diagonal matrix
     x_tol = 1e-8 # search tolerance in x
     g_tol = 1e-12 # search tolerance in gradient
     maxIter = 1000 # maximum number of iterations
-    lambda = T(10) # (inverse of) initial trust region radius
-    lambda_increase = 10.0 # lambda is multiplied by this factor after step below min quality
-    lambda_decrease = 0.1 # lambda is multiplied by this factor after good quality steps
+    λ = T(10) # (inverse of) initial trust region radius
+    λᵢ = 10.0 # λ is multiplied by this factor after step below min quality
+    λᵣ = 0.1 # λ is multiplied by this factor after good quality steps
     min_step_quality = 1e-3 # for steps below this quality, the trust region is shrinked
     good_step_quality = 0.75 # for steps above this quality, the trust region is expanded
 
@@ -105,7 +105,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         𝐷ᵀ𝐷 = diag(𝐽ᵀ𝐽)
         replace!(x -> x ≤ min_diagonal ? min_diagonal : x, 𝐷ᵀ𝐷)
         @simd for i in eachindex(𝐷ᵀ𝐷)
-            @inbounds 𝐽ᵀ𝐽[i,i] += lambda * 𝐷ᵀ𝐷[i]
+            @inbounds 𝐽ᵀ𝐽[i,i] += λ * 𝐷ᵀ𝐷[i]
         end
         δx = - 𝐽ᵀ𝐽 \ (𝐽' * 𝐹)
 
@@ -132,11 +132,11 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
             C_resid = T_resid
             if rho > good_step_quality
                 # increase trust region radius
-                lambda = max(lambda_decrease*lambda, min_lambda)
+                λ = max(λᵣ * λ, λₘ)
             end
         else
             # decrease trust region radius
-            lambda = min(lambda_increase*lambda, max_lambda)
+            λ = min(λᵢ * λ, Λₘ)
         end
 
         iter += 1
