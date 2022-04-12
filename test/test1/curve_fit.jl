@@ -90,7 +90,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
     x = copy(x₀)
 
     trial_f = similar(𝐹)
-    residual = sum(abs2, 𝐹)
+    C_resid = sum(abs2, 𝐹)
 
     # Create buffers
     𝐽ᵀ𝐽 = diagm(x)
@@ -112,24 +112,24 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         # if the linear assumption is valid, our new residual should be:
         mul!(𝐽δx, 𝐽, δx)
         𝐽δx .= 𝐽δx .+ 𝐹
-        predicted_residual = sum(abs2, 𝐽δx)
+        P_resid = sum(abs2, 𝐽δx)
 
         # try the step and compute its quality
         xnew = x + δx
         value(df, trial_f, xnew)
 
         # update the sum of squares
-        trial_residual = sum(abs2, trial_f)
+        T_resid = sum(abs2, trial_f)
 
         # step quality = residual change / predicted residual change
-        rho = (trial_residual - residual) / (predicted_residual - residual)
+        rho = (T_resid - C_resid) / (P_resid - C_resid)
         if rho > min_step_quality
             # apply the step to x - n_buffer is ready to be used by the delta_x
             # calculations after this step.
             x .= xnew
             # There should be an update_x_value to do this safely
             value!(df, x)
-            residual = trial_residual
+            C_resid = T_resid
             if rho > good_step_quality
                 # increase trust region radius
                 lambda = max(lambda_decrease*lambda, min_lambda)
