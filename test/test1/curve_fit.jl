@@ -1,7 +1,7 @@
 # Used for objectives and solvers where the gradient is available/exists
 mutable struct OnceDifferentiable
-    ℱ  # objective
-    𝒥  # (partial) derivative of objective
+    ℱ! # objective
+    𝒥! # (partial) derivative of objective
     𝐹  # cache for f output
     𝐽  # cache for j output
 end
@@ -31,16 +31,16 @@ function OnceDifferentiable(𝑓, p0::AbstractArray, 𝐹::AbstractArray)
 end
 
 value(obj::OnceDifferentiable) = obj.𝐹
-value(obj::OnceDifferentiable, 𝐹, x) = obj.ℱ(𝐹, x)
+value(obj::OnceDifferentiable, 𝐹, x) = obj.ℱ!(𝐹, x)
 function value!(obj::OnceDifferentiable, x)
-    obj.ℱ(obj.𝐹, x)
+    obj.ℱ!(obj.𝐹, x)
     obj.𝐹
 end
 
 jacobian(obj::OnceDifferentiable) = obj.𝐽
-jacobian(obj::OnceDifferentiable, 𝐽, x) = obj.𝒥(𝐽, x)
+jacobian(obj::OnceDifferentiable, 𝐽, x) = obj.𝒥!(𝐽, x)
 function jacobian!(obj::OnceDifferentiable, x)
-    obj.𝒥(obj.𝐽, x)
+    obj.𝒥!(obj.𝐽, x)
     obj.𝐽
 end
 
@@ -67,7 +67,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
     # Some constants
     max_lambda = 1e16 # minimum trust region radius
     min_lambda = 1e-16 # maximum trust region radius
-    min_diagonal = 1e-6 # lower bound on values of diagonal matrix used to regularize the trust region step
+    min_diagonal = 1e-6 # lower bound on values of diagonal matrix
     x_tol = 1e-8 # search tolerance in x
     g_tol = 1e-12 # search tolerance in gradient
     maxIter = 1000 # maximum number of iterations
@@ -99,27 +99,19 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
     Jdelta_buffer = similar(𝐹)
 
     while (~converged && iter < maxIter)
-        # jacobian! will check if x is new or not, so it is only actually
-        # evaluated if x was updated last iteration.
-        jacobian!(df, x) # has alias J
+        # Update jacobian 𝐽
+        jacobian!(df, x)
 
-        # we want to solve:
-        #    argmin 0.5*||J(x)*delta_x + f(x)||^2 + lambda*||diagm(J'*J)*delta_x||^2
-        # Solving for the minimum gives:
-        #    (J'*J + lambda*diagm(DtD)) * delta_x == -J' * f(x), where DtD = sum(abs2, J,1)
-        # Where we have used the equivalence: diagm(J'*J) = diagm(sum(abs2, J,1))
-        # It is additionally useful to bound the elements of DtD below to help
-        # prevent "parameter evaporation".
-
-        DtD = vec(sum(abs2, 𝐽, dims=1))
+        # delta_x = ( J'*J + lambda * Diagonal(DtD) ) \ ( -J'*F )
+        mul!(JJ, 𝐽', 𝐽)
+        #@show DtD, diag(JJ)
+        DtD = diag(JJ)
         for i in 1:length(DtD)
             if DtD[i] <= min_diagonal
                 DtD[i] = min_diagonal
             end
         end
 
-        # delta_x = ( J'*J + lambda * Diagonal(DtD) ) \ ( -J'*F )
-        mul!(JJ, 𝐽', 𝐽)
         @simd for i in 1:n
             @inbounds JJ[i, i] += lambda * DtD[i]
         end
