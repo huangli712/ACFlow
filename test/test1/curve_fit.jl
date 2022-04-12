@@ -93,9 +93,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
     residual = sum(abs2, 𝐹)
 
     # Create buffers
-    n = length(x)
-    𝐽ᵀ𝐽 = Matrix{T}(undef, n, n)
-    n_buffer = Vector{T}(undef, n)
+    𝐽ᵀ𝐽 = diagm(x)
     𝐽δx = similar(𝐹)
 
     while (~converged && iter < maxIter)
@@ -106,12 +104,10 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         mul!(𝐽ᵀ𝐽, 𝐽', 𝐽)
         𝐷ᵀ𝐷 = diag(𝐽ᵀ𝐽)
         replace!(x -> x ≤ min_diagonal ? min_diagonal : x, 𝐷ᵀ𝐷)
-        @simd for i in 1:n
+        @simd for i in eachindex(𝐷ᵀ𝐷)
             @inbounds 𝐽ᵀ𝐽[i,i] += lambda * 𝐷ᵀ𝐷[i]
         end
-        mul!(n_buffer, 𝐽', 𝐹)
-        rmul!(n_buffer, -1)
-        δx = 𝐽ᵀ𝐽 \ n_buffer
+        δx = - 𝐽ᵀ𝐽 \ (𝐽' * 𝐹)
 
         # if the linear assumption is valid, our new residual should be:
         mul!(𝐽δx, 𝐽, δx)
@@ -119,9 +115,8 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         predicted_residual = sum(abs2, 𝐽δx)
 
         # try the step and compute its quality
-        # re-use n_buffer
-        @. n_buffer = x + δx
-        value(df, trial_f, n_buffer)
+        xnew = x + δx
+        value(df, trial_f, xnew)
 
         # update the sum of squares
         trial_residual = sum(abs2, trial_f)
@@ -131,7 +126,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         if rho > min_step_quality
             # apply the step to x - n_buffer is ready to be used by the delta_x
             # calculations after this step.
-            x .= n_buffer
+            x .= xnew
             # There should be an update_x_value to do this safely
             value!(df, x)
             residual = trial_residual
