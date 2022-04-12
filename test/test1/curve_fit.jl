@@ -109,58 +109,57 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         end
         δx = - 𝐽ᵀ𝐽 \ (𝐽' * 𝐹)
 
-        # if the linear assumption is valid, our new residual should be:
+        # If the linear assumption is valid, our new residual should be:
         mul!(𝐽δx, 𝐽, δx)
         𝐽δx .= 𝐽δx .+ 𝐹
         P_resid = sum(abs2, 𝐽δx)
 
-        # try the step and compute its quality
+        # Try to calculate new x, and then 𝐹, and then the residual.
         xnew = x + δx
         value(df, trial_f, xnew)
-
-        # update the sum of squares
         T_resid = sum(abs2, trial_f)
 
-        # step quality = residual change / predicted residual change
+        # Step quality = residual change / predicted residual change
         rho = (T_resid - C_resid) / (P_resid - C_resid)
         if rho > min_step_quality
-            # apply the step to x - n_buffer is ready to be used by the delta_x
-            # calculations after this step.
+            # Update x, 𝐹, and residual
             x .= xnew
-            # There should be an update_x_value to do this safely
             value!(df, x)
             C_resid = T_resid
+
+            # Increase trust region radius
             if rho > good_step_quality
-                # increase trust region radius
                 λ = max(λᵣ * λ, λₘ)
             end
         else
-            # decrease trust region radius
+            # Decrease trust region radius
             λ = min(λᵢ * λ, Λₘ)
         end
 
+        # Increase the iteration
         iter += 1
 
-        # check convergence criteria:
-        # 1. Small gradient: norm(J^T * value(df), Inf) < g_tol
-        # 2. Small step size: norm(delta_x) < x_tol
+        # Check convergence criteria:
+        # 1. Small gradient: norm(𝐽ᵀ * 𝐹, Inf) < g_tol
         if norm(𝐽' * 𝐹, Inf) < g_tol
             g_converged = true
         end
-        if norm(δx) < x_tol*(x_tol + norm(x))
+        # 2. Small step size: norm(δx) < x_tol
+        if norm(δx) < x_tol * (x_tol + norm(x))
             x_converged = true
         end
         converged = g_converged | x_converged
     end
 
+    # Return the results
     OptimizationResults(
-        x₀,             # x₀
-        x,                     # minimizer
-        sum(abs2, value(df)),  # minimum
-        iter,                # iterations
-        !converged,            # iteration_converged
-        x_converged,           # x_converged
-        g_converged,           # g_converged
+        x₀,          # x₀
+        x,           # minimizer
+        C_resid,     # minimum (residual)
+        iter,        # iterations
+        !converged,  # iteration_converged
+        x_converged, # x_converged
+        g_converged, # g_converged
     )
 end
 
