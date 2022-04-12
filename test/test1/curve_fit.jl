@@ -102,15 +102,15 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         # Update jacobian 𝐽
         jacobian!(df, x)
 
-        # delta_x = ( J'*J + lambda * Diagonal(DtD) ) \ ( -J'*F )
+        # Solve the equation: [𝐽ᵀ𝐽 + λ diag(𝐽ᵀ𝐽)] δ = 𝐽ᵀ𝐹
         mul!(JJ, 𝐽', 𝐽)
-        #@show DtD, diag(JJ)
         DtD = diag(JJ)
-        for i in 1:length(DtD)
-            if DtD[i] <= min_diagonal
-                DtD[i] = min_diagonal
-            end
-        end
+        replace!(x -> x ≤ min_diagonal ? min_diagonal : x, DtD)
+        #for i in 1:length(DtD)
+        #    if DtD[i] <= min_diagonal
+        #        DtD[i] = min_diagonal
+        #    end
+        #end
 
         @simd for i in 1:n
             @inbounds JJ[i, i] += lambda * DtD[i]
