@@ -133,7 +133,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
             # calculations after this step.
             x .= n_buffer
             # There should be an update_x_value to do this safely
-            value!(df, n_buffer)
+            value!(df, x)
             residual = trial_residual
             if rho > good_step_quality
                 # increase trust region radius
