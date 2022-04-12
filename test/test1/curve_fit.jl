@@ -106,14 +106,8 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         mul!(JJ, 𝐽', 𝐽)
         DtD = diag(JJ)
         replace!(x -> x ≤ min_diagonal ? min_diagonal : x, DtD)
-        #for i in 1:length(DtD)
-        #    if DtD[i] <= min_diagonal
-        #        DtD[i] = min_diagonal
-        #    end
-        #end
-
         @simd for i in 1:n
-            @inbounds JJ[i, i] += lambda * DtD[i]
+            @inbounds JJ[i,i] += lambda * DtD[i]
         end
         mul!(n_buffer, 𝐽', 𝐹)
         rmul!(n_buffer, -1)
