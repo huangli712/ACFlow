@@ -44,7 +44,7 @@ function jacobian!(obj::OnceDifferentiable, x)
     obj.𝐽
 end
 
-mutable struct OptimizationResults{T,N}
+struct OptimizationResults{T,N}
     x₀::Array{T,N}
     minimizer::Array{T,N}
     minimum::T
