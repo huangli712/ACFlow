@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/12
+# Last modified: 2022/04/13
 #
 
 """
@@ -232,6 +232,38 @@ export goodbye
 export sorry
 export prompt
 export line_to_array
+
+#=
+### *Includes And Exports* : *math.jl*
+=#
+
+#=
+*Summary* :
+
+To provide some numerical algorithms, such as numerical integrations,
+interpolations, Einstein summation notation, and optimization method. 
+
+*Members* :
+
+```text
+secant    -> Root finding secant algorithm.
+newton    -> Root finding newton algorithm.
+trapz     -> Numerical integration (composite trapezoidal rule).
+simpson   -> Numerical integration (simpson rule).
+#
+AbstractInterpolation -> Abstract struct for interpolation.
+LinearInterpolation -> Linear interpolation.
+QuadraticInterpolation -> Quadratic interpolation.
+CubicSplineInterpolation -> Cubic spline interpolation.
+#
+@einsum   -> Macro for Einstein summation notation.
+#
+curve_fit -> Try to fit the given data to a predefined curve.
+```
+=#
+
+#
+include("math.jl")
 #
 export secant
 export newton
@@ -242,10 +274,10 @@ export AbstractInterpolation
 export LinearInterpolation
 export QuadraticInterpolation
 export CubicSplineInterpolation
-export munge_data
-export _interp
-
-include("math.jl")
+#
+export @einsum
+#
+export curve_fit
 
 #=
 ### *Includes And Exports* : *grid.jl*
