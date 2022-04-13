@@ -1,3 +1,12 @@
+#
+# Project : Gardenia
+# Source  : math.jl
+# Author  : Li Huang (huangli@caep.cn)
+# Status  : Unstable
+#
+# Last modified: 2022/04/13
+#
+
 #=
 ### *Math* : *Root Finding*
 =#
@@ -367,10 +376,8 @@ function _interp(A::CubicSplineInterpolation{<:AbstractVector{<:Number}}, t::Num
 end
 
 #=
-### *Einstein Summation Convention*
+### *Math* : *Einstein Summation Convention*
 =#
-
-export @einsum
 
 macro einsum(ex)
     _einsum(ex)
@@ -659,6 +666,10 @@ function unquote_offsets!(expr::Expr, inside_ref = false)
 
     return expr
 end
+
+#=
+### *Math* : *Curve Fitting*
+=#
 
 # Used for objectives and solvers where the gradient is available/exists
 mutable struct OnceDifferentiable
