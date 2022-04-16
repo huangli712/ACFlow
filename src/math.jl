@@ -389,13 +389,47 @@ The following codes export a single macro `@einsum`, which implements
 *similar* notation to the Einstein summation convention to flexibly
 specify operations on Julia `Array`s, similar to numpy's `einsum`
 function (but more flexible!).
-
-Please check the following websites for more details:
-
-* https://en.wikipedia.org/wiki/Einstein_notation
-* http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.einsum.html
 =#
 
+"""
+    @einsum(ex)
+
+Perform Einstein summation like operations on Julia `Array`s.
+This implementation was borrowed from the following github repository:
+
+* https://github.com/Gnimuc/CSyntax.jl
+
+### Examples
+
+Basic matrix multiplication can be implemented as:
+
+```julia
+@einsum A[i, j] := B[i, k] * C[k, j]
+```
+
+If the destination array is preallocated, then use `=`:
+
+```julia
+A = ones(5, 6, 7) # preallocated space
+X = randn(5, 2)
+Y = randn(6, 2)
+Z = randn(7, 2)
+
+# Store the result in A, overwriting as necessary:
+@einsum A[i, j, k] = X[i, r] * Y[j, r] * Z[k, r]
+```
+
+If destination is not preallocated, then use `:=` to automatically create a new array for the result:
+
+```julia
+X = randn(5, 2)
+Y = randn(6, 2)
+Z = randn(7, 2)
+
+# Create new array B with appropriate dimensions:
+@einsum B[i, j, k] := X[i, r] * Y[j, r] * Z[k, r]
+```
+"""
 macro einsum(ex)
     _einsum(ex)
 end
@@ -405,15 +439,15 @@ function _einsum(expr::Expr, inbounds = true)
     lhs = expr.args[1]
     rhs = expr.args[2]
 
-    # Get info on the left-hand side
+    # Get info on the left hand side
     lhs_arrays, lhs_indices, lhs_axis_exprs = extractindices(lhs)
 
-    # Get info on the right-hand side
+    # Get info on the right hand side
     rhs_arrays, rhs_indices, rhs_axis_exprs = extractindices(rhs)
     
     check_index_occurrence(lhs_indices, rhs_indices)
 
-    # Remove duplicate indices on left-hand and right-hand side
+    # Remove duplicate indices on left hand and right hand side
     # and ensure that the array sizes match along these dimensions.
     dimension_checks = Expr[]
 
