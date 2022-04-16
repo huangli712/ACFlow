@@ -737,10 +737,10 @@ is available/exists.
 
 ### Members
 
-* ℱ! -> Objective
-* 𝒥! -> (partial) derivative of objective
-* 𝐹  -> Cache for ℱ! output
-* 𝐽  -> Cache for 𝒥! output
+* ℱ! -> Objective. It is actually a function call and return objective.
+* 𝒥! -> It is a function call as well and returns jacobian of objective.
+* 𝐹  -> Cache for ℱ! output.
+* 𝐽  -> Cache for 𝒥! output.
 """
 mutable struct OnceDifferentiable
     ℱ!
@@ -749,11 +749,20 @@ mutable struct OnceDifferentiable
     𝐽
 end
 
+"""
+    OnceDifferentiable(𝑓, p0::AbstractArray, 𝐹::AbstractArray)
+
+Constructor for OnceDifferentiable struct. `𝑓` is the function, `p0` is
+the inital guess, `𝐹 = 𝑓(p0)` is the cache for `𝑓`'s output.
+"""
 function OnceDifferentiable(𝑓, p0::AbstractArray, 𝐹::AbstractArray)
+    # Backup 𝑓(x) to 𝐹.
     function ℱ!(𝐹, x)
         copyto!(𝐹, 𝑓(x))
     end
 
+    # Calculate jacobian for 𝑓(x), the results are stored in 𝐽.
+    # The finite difference method is used.
     function 𝒥!(𝐽, x)
         rel_step = cbrt(eps(real(eltype(x))))
         abs_step = rel_step
@@ -769,7 +778,10 @@ function OnceDifferentiable(𝑓, p0::AbstractArray, 𝐹::AbstractArray)
         end
     end
 
+    # Create memory space for jacobian matrix.
     𝐽 = eltype(p0)(NaN) .* vec(𝐹) .* vec(p0)'
+
+    # Call the default constructor
     OnceDifferentiable(ℱ!, 𝒥!, 𝐹, 𝐽)
 end
 
