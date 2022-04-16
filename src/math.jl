@@ -382,6 +382,20 @@ end
 ### *Math* : *Einstein Summation Convention*
 =#
 
+#=
+*Remarks* :
+
+The following codes export a single macro `@einsum`, which implements
+*similar* notation to the Einstein summation convention to flexibly
+specify operations on Julia `Array`s, similar to numpy's `einsum`
+function (but more flexible!).
+
+Please check the following websites for more details:
+
+* https://en.wikipedia.org/wiki/Einstein_notation
+* http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.einsum.html
+=#
+
 macro einsum(ex)
     _einsum(ex)
 end
