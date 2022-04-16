@@ -722,12 +722,31 @@ end
 ### *Math* : *Curve Fitting*
 =#
 
-# Used for objectives and solvers where the gradient is available/exists
+#=
+*Remarks* :
+
+The following codes implements the Levenberg-Marquardt algorithm for
+curve fitting.
+=#
+
+"""
+    OnceDifferentiable
+
+This mutable struct is used for objectives and solvers where the gradient
+is available/exists.
+
+### Members
+
+* ℱ! -> Objective
+* 𝒥! -> (partial) derivative of objective
+* 𝐹  -> Cache for ℱ! output
+* 𝐽  -> Cache for 𝒥! output
+"""
 mutable struct OnceDifferentiable
-    ℱ! # objective
-    𝒥! # (partial) derivative of objective
-    𝐹  # cache for f output
-    𝐽  # cache for j output
+    ℱ!
+    𝒥! 
+    𝐹
+    𝐽
 end
 
 function OnceDifferentiable(𝑓, p0::AbstractArray, 𝐹::AbstractArray)
