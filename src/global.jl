@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/13
+# Last modified: 2022/04/16
 #
 
 #=
@@ -121,7 +121,7 @@ Version of this julia package.
 
 See also: [`__RELEASE__`](@ref).
 """
-const __VERSION__ = v"0.5.0-devel.220413"
+const __VERSION__ = v"0.5.1-devel.220416"
 
 """
     __RELEASE__

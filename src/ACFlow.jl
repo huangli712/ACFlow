@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/13
+# Last modified: 2022/04/16
 #
 
 """
@@ -191,6 +191,7 @@ input strings, etc.
 @cswitch      -> C-style switch.
 @time_call    -> Evaluate a function call and print the elapsed time.
 @pcs          -> Print colorful strings.
+#
 require       -> Check julia envirnoment.
 setup_args    -> Setup ARGS manually.
 query_args    -> Query program's arguments.
@@ -200,18 +201,6 @@ goodbye       -> Say goodbye.
 sorry         -> Say sorry.
 prompt        -> Print some messages or logs to the output devices.
 line_to_array -> Convert a line to a string array.
-#
-secant        -> Root finding secant algorithm.
-newton        -> Root finding newton algorithm.
-trapz         -> Numerical integration (composite trapezoidal rule).
-simpson       -> Numerical integration (simpson rule).
-#
-AbstractInterpolation -> Abstract struct for interpolation.
-LinearInterpolation -> Linear interpolation.
-QuadraticInterpolation -> Quadratic interpolation.
-CubicSplineInterpolation -> Cubic spline interpolation.
-munge_data    -> Clean the x and y data for interpolation.
-_interp       -> Return interpolated value.
 ```
 =#
 
@@ -221,6 +210,7 @@ include("util.jl")
 export @cswitch
 export @time_call
 export @pcs
+#
 export require
 export setup_args
 export query_args

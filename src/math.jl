@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/13
+# Last modified: 2022/04/16
 #
 
 #=
@@ -155,10 +155,12 @@ Perform numerical integration by using the composite trapezoidal rule.
 See also: [`simpson`](@ref).
 """
 function trapz(x::Vector{F64}, y::Vector{T} where T, linear::Bool = false)
+    # For linear mesh
     if linear
         h = x[2] - x[1]
         value = y[1] + y[end] + 2.0 * sum(y[2:end-1])
         value = h * value / 2.0
+    # For non-equidistant mesh
     else
         len = length(x)
         value = 0.0
@@ -206,7 +208,8 @@ end
 The following codes are used to perform interpolations. Three algorithms
 are implemented. They are linear interpolation, quadratic interpolation,
 and cubic spline interpolation. Note that these implementations are taken
-directly from https://github.com/PumasAI/DataInterpolations.jl.
+directly from https://github.com/PumasAI/DataInterpolations.jl. Of cource,
+small modifications are made.
 =#
 
 """
