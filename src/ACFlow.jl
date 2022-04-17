@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/16
+# Last modified: 2022/04/18
 #
 
 """
@@ -248,7 +248,7 @@ CubicSplineInterpolation -> Cubic spline interpolation.
 #
 @einsum   -> Macro for Einstein summation notation.
 #
-curve_fit -> Try to fit the given data to a predefined curve.
+curve_fit -> Try to fit the given (x,y) data to a predefined model.
 ```
 =#
 
