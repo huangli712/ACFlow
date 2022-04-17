@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/16
+# Last modified: 2022/04/18
 #
 
 #=
@@ -397,7 +397,7 @@ function (but more flexible!).
 Perform Einstein summation like operations on Julia `Array`s.
 This implementation was borrowed from the following github repository:
 
-* https://github.com/Gnimuc/CSyntax.jl
+* https://github.com/ahwillia/Einsum.jl
 
 ### Examples
 
@@ -727,6 +727,18 @@ end
 
 The following codes implements the Levenberg-Marquardt algorithm for
 curve fitting.
+
+Actually, these codes are borrowed from the following repositories:
+
+* https://github.com/JuliaNLSolvers/LsqFit.jl
+* https://github.com/JuliaNLSolvers/OptimBase.jl
+* https://github.com/JuliaNLSolvers/NLSolversBase.jl
+* https://github.com/JuliaDiff/FiniteDiff.jl
+
+Of cource, these codes are greatly simplified, and only the vital
+features are retained. Only the `curve_fit()` function is exported. If
+any errors occur, please turn to the original version of `curve_fit()`
+as implemented in the `LsqFit.jl` package.
 =#
 
 """
@@ -778,22 +790,46 @@ function OnceDifferentiable(𝑓, p0::AbstractArray, 𝐹::AbstractArray)
         end
     end
 
-    # Create memory space for jacobian matrix.
+    # Create memory space for jacobian matrix
     𝐽 = eltype(p0)(NaN) .* vec(𝐹) .* vec(p0)'
 
     # Call the default constructor
     OnceDifferentiable(ℱ!, 𝒥!, 𝐹, 𝐽)
 end
 
+"""
+    value(obj::OnceDifferentiable)
+    value(obj::OnceDifferentiable, 𝐹, x)
+
+Return `𝑓(x)`. `obj` will not be affected, but `𝐹` is updated.
+"""
 value(obj::OnceDifferentiable) = obj.𝐹
 value(obj::OnceDifferentiable, 𝐹, x) = obj.ℱ!(𝐹, x)
+
+"""
+    value!(obj::OnceDifferentiable, x)
+
+Return `𝑓(x)`. `obj.𝐹` will be updated.
+"""
 function value!(obj::OnceDifferentiable, x)
     obj.ℱ!(obj.𝐹, x)
     obj.𝐹
 end
 
+"""
+    jacobian(obj::OnceDifferentiable) = obj.𝐽
+    jacobian(obj::OnceDifferentiable, 𝐽, x) = obj.𝒥!(𝐽, x)
+
+Return jacobian. `obj` will not be affected, but `𝐽` is updated.
+"""
 jacobian(obj::OnceDifferentiable) = obj.𝐽
 jacobian(obj::OnceDifferentiable, 𝐽, x) = obj.𝒥!(𝐽, x)
+
+"""
+    jacobian!(obj::OnceDifferentiable, x)
+
+Return jacobian. `obj.𝐽` will be updated.
+"""
 function jacobian!(obj::OnceDifferentiable, x)
     obj.𝒥!(obj.𝐽, x)
     obj.𝐽
