@@ -835,12 +835,26 @@ function jacobian!(obj::OnceDifferentiable, x)
     obj.𝐽
 end
 
+"""
+    OptimizationResults{T,N}
+
+It is used to save the optimization results of the levenberg_marquardt
+algorithm.
+
+### Members
+
+* x₀          -> Initial guess for the solution.
+* minimizer   -> Final results for the solution.
+* minimum     -> Residual.
+* iterations  -> Number of iterations.
+* x_converged -> If the convergence criterion 1 is satisfied.
+* g_converged -> If the convergence criterion 2 is satisfied.
+"""
 struct OptimizationResults{T,N}
     x₀::Array{T,N}
     minimizer::Array{T,N}
     minimum::T
     iterations::Int
-    iteration_converged::Bool
     x_converged::Bool
     g_converged::Bool
 end
@@ -849,23 +863,26 @@ end
     levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T})
 
 Returns the argmin over x of `sum(f(x).^2)` using the Levenberg-Marquardt
-algorithm, and an estimate of the Jacobian of `f` at x. The function `f`
-is encoded in `df`. `x₀` is an initial guess for the solution.
+algorithm. The function `f` is encoded in `df`. `x₀` is an initial guess
+for the solution.
 
 See also: [`OnceDifferentiable`](@ref).
 """
 function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) where T
-    # Some constants
-    Λₘ = 1e16 # minimum trust region radius
-    λₘ = 1e-16 # maximum trust region radius
+    # Some predefined constants
     min_diagonal = 1e-6 # lower bound on values of diagonal matrix
-    x_tol = 1e-8 # search tolerance in x
-    g_tol = 1e-12 # search tolerance in gradient
-    maxIter = 1000 # maximum number of iterations
-    λ = T(10) # (inverse of) initial trust region radius
-    λᵢ = 10.0 # λ is multiplied by this factor after step below min quality
-    λᵣ = 0.1 # λ is multiplied by this factor after good quality steps
-    min_step_quality = 1e-3 # for steps below this quality, the trust region is shrinked
+    #
+    x_tol   = 1e-08 # search tolerance in x
+    g_tol   = 1e-12 # search tolerance in gradient
+    maxIter = 1000  # maximum number of iterations
+    #
+    Λₘ = 1e+16 # minimum trust region radius
+    λₘ = 1e-16 # maximum trust region radius
+    λ  = T(10) # (inverse of) initial trust region radius
+    λᵢ = 10.0  # λ is multiplied by this factor after step below min quality
+    λᵣ = 0.10  # λ is multiplied by this factor after good quality steps
+    #
+    min_step_quality  = 1e-3 # for steps below this quality, the trust region is shrinked
     good_step_quality = 0.75 # for steps above this quality, the trust region is expanded
 
     # First evaluation
@@ -948,7 +965,6 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         x,           # minimizer
         C_resid,     # minimum (residual)
         iter,        # iterations
-        !converged,  # iteration_converged
         x_converged, # x_converged
         g_converged, # g_converged
     )
