@@ -886,17 +886,21 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
     good_step_quality = 0.75 # for steps above this quality, the trust region is expanded
 
     # First evaluation
-    value!(df, x₀)
+    # Both df.𝐹 and df.𝐽 are updated.
+    # And 𝐹 and 𝐽 become aliases of df.𝐹 and df.𝐽, respectively.
+    value!(df, x₀) 
     jacobian!(df, x₀)
     𝐹 = value(df)
     𝐽 = jacobian(df)
 
+    # Setup convergence criteria
     converged = false
     x_converged = false
     g_converged = false
     iter = 0
-    x = copy(x₀)
 
+    # Calculate 𝑓(x₀) and initial residual
+    x = copy(x₀)
     trial_f = similar(𝐹)
     C_resid = sum(abs2, 𝐹)
 
@@ -904,39 +908,44 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
     𝐽ᵀ𝐽 = diagm(x)
     𝐽δx = similar(𝐹)
 
+    # Main iteration
     while (~converged && iter < maxIter)
-        # Update jacobian 𝐽
+        # Update jacobian 𝐽 for new x
         jacobian!(df, x)
 
         # Solve the equation: [𝐽ᵀ𝐽 + λ diag(𝐽ᵀ𝐽)] δ = 𝐽ᵀ𝐹
+        # What we want to get is δ.
         mul!(𝐽ᵀ𝐽, 𝐽', 𝐽)
+        #
         𝐷ᵀ𝐷 = diag(𝐽ᵀ𝐽)
         replace!(x -> x ≤ min_diagonal ? min_diagonal : x, 𝐷ᵀ𝐷)
+        #
         @simd for i in eachindex(𝐷ᵀ𝐷)
             @inbounds 𝐽ᵀ𝐽[i,i] += λ * 𝐷ᵀ𝐷[i]
         end
+        #
         δx = - 𝐽ᵀ𝐽 \ (𝐽' * 𝐹)
 
-        # If the linear assumption is valid, our new residual should be:
+        # If the linear assumption is valid, the new residual is predicted.
         mul!(𝐽δx, 𝐽, δx)
         𝐽δx .= 𝐽δx .+ 𝐹
         P_resid = sum(abs2, 𝐽δx)
 
-        # Try to calculate new x, and then 𝐹, and then the residual.
+        # Try to calculate new x, and then 𝐹 ≡ 𝑓(x), and then the residual.
         xnew = x + δx
         value(df, trial_f, xnew)
         T_resid = sum(abs2, trial_f)
 
         # Step quality = residual change / predicted residual change
-        rho = (T_resid - C_resid) / (P_resid - C_resid)
-        if rho > min_step_quality
-            # Update x, 𝐹, and residual
+        ρ = (T_resid - C_resid) / (P_resid - C_resid)
+        if ρ > min_step_quality
+            # Update x, 𝑓(x), and residual.
             x .= xnew
             value!(df, x)
             C_resid = T_resid
 
             # Increase trust region radius
-            if rho > good_step_quality
+            if ρ > good_step_quality
                 λ = max(λᵣ * λ, λₘ)
             end
         else
@@ -956,6 +965,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         if norm(δx) < x_tol * (x_tol + norm(x))
             x_converged = true
         end
+        # 3. Calculate converged
         converged = g_converged | x_converged
     end
 
@@ -963,7 +973,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
     OptimizationResults(
         x₀,          # x₀
         x,           # minimizer
-        C_resid,     # minimum (residual)
+        C_resid,     # residual
         iter,        # iterations
         x_converged, # x_converged
         g_converged, # g_converged
