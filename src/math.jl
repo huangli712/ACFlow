@@ -809,7 +809,7 @@ value(obj::OnceDifferentiable, 𝐹, x) = obj.ℱ!(𝐹, x)
 """
     value!(obj::OnceDifferentiable, x)
 
-Return `𝑓(x)`. `obj.𝐹` will be updated.
+Return `𝑓(x)`. `obj.𝐹` will be updated and returned.
 """
 function value!(obj::OnceDifferentiable, x)
     obj.ℱ!(obj.𝐹, x)
@@ -828,7 +828,7 @@ jacobian(obj::OnceDifferentiable, 𝐽, x) = obj.𝒥!(𝐽, x)
 """
     jacobian!(obj::OnceDifferentiable, x)
 
-Return jacobian. `obj.𝐽` will be updated.
+Return jacobian. `obj.𝐽` will be updated and returned.
 """
 function jacobian!(obj::OnceDifferentiable, x)
     obj.𝒥!(obj.𝐽, x)
