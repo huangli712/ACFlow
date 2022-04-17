@@ -980,6 +980,18 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
     )
 end
 
+"""
+    LsqFitResult
+
+It encapsulates the results for curve fitting.
+
+### Members
+
+* param     -> Fitted results, i.e, the fitting parameters.
+* resid     -> Residuals.
+* jacobian  -> Jacobian matrix.
+* converged -> If the curve-fitting algorithm is converged.
+"""
 struct LsqFitResult
     param
     resid
