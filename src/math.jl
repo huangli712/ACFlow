@@ -1009,8 +1009,8 @@ function curve_fit(model, x::AbstractArray, y::AbstractArray, p0::AbstractArray)
     f = (p) -> model(x, p) - y
     r = f(p0)
     R = OnceDifferentiable(f, p0, r)
-    results = levenberg_marquardt(R, p0)
-    p = results.minimizer
-    conv = results.x_converged || results.g_converged
+    OR = levenberg_marquardt(R, p0)
+    p = OR.minimizer
+    conv = OR.x_converged || OR.g_converged
     return LsqFitResult(p, value!(R, p), jacobian!(R, p), conv)
 end
