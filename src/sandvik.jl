@@ -25,7 +25,7 @@ struct FermionicMatsubaraGrid <: AbstractGrid
 end
 
 function read_data!(::Type{FermionicMatsubaraGrid})
-    grid  = F64[] 
+    grid  = F64[]
     value = C64[]
     error = C64[]
     covar = F64[]
@@ -363,7 +363,7 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
     for i = 1:ndelta
         select_delta = rand(MC.rng, 1:ndelta)
 #        select_delta = 384 # debug
-        location_current = SE.C[select_delta]        
+        location_current = SE.C[select_delta]
 #        @show location_current
         #error()
 
@@ -469,3 +469,4 @@ function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement
         end
     end
 end
+

@@ -208,7 +208,7 @@ end
 The following codes are used to perform interpolations. Three algorithms
 are implemented. They are linear interpolation, quadratic interpolation,
 and cubic spline interpolation. Note that these implementations are taken
-directly from 
+directly from
 
 * https://github.com/PumasAI/DataInterpolations.jl
 
@@ -447,7 +447,7 @@ function _einsum(expr::Expr, inbounds = true)
 
     # Get info on the right hand side
     rhs_arrays, rhs_indices, rhs_axis_exprs = extractindices(rhs)
-    
+
     check_index_occurrence(lhs_indices, rhs_indices)
 
     # Remove duplicate indices on left hand and right hand side
@@ -458,7 +458,7 @@ function _einsum(expr::Expr, inbounds = true)
     for i in reverse(eachindex(rhs_indices))
         duplicated = false
         di = rhs_axis_exprs[i]
-        
+
         for j = 1:(i - 1)
             if rhs_indices[j] == rhs_indices[i]
                 duplicated = true
@@ -466,7 +466,7 @@ function _einsum(expr::Expr, inbounds = true)
                 push!(dimension_checks, :(@assert $dj == $di))
             end
         end
-        
+
         for j = eachindex(lhs_indices)
             if lhs_indices[j] == rhs_indices[i]
                 dj = lhs_axis_exprs[j]
@@ -481,7 +481,7 @@ function _einsum(expr::Expr, inbounds = true)
                 duplicated = true
             end
         end
-        
+
         if duplicated
             deleteat!(rhs_indices, i)
             deleteat!(rhs_axis_exprs, i)
@@ -502,7 +502,7 @@ function _einsum(expr::Expr, inbounds = true)
                 push!(dimension_checks, :(@assert $dj == $di))
             end
         end
-        
+
         if duplicated
             deleteat!(lhs_indices, i)
             deleteat!(lhs_axis_exprs, i)
@@ -568,7 +568,7 @@ function _einsum(expr::Expr, inbounds = true)
         $type_definition
         $output_definition
         $(dimension_checks...)
-        
+
         let $([lhs_indices; rhs_indices]...)
             $loop_expr
         end
@@ -707,7 +707,7 @@ end
 
 function unquote_offsets!(expr::Expr, inside_ref = false)
     inside_ref |= Meta.isexpr(expr, :ref)
-    
+
     for i in eachindex(expr.args)
         if expr.args[i] isa Expr
             if Meta.isexpr(expr.args[i], :quote) && inside_ref
@@ -759,7 +759,7 @@ is available/exists.
 """
 mutable struct OnceDifferentiable
     ℱ!
-    𝒥! 
+    𝒥!
     𝐹
     𝐽
 end
@@ -902,7 +902,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
     # First evaluation
     # Both df.𝐹 and df.𝐽 are updated.
     # And 𝐹 and 𝐽 become aliases of df.𝐹 and df.𝐽, respectively.
-    value!(df, x₀) 
+    value!(df, x₀)
     jacobian!(df, x₀)
     𝐹 = value(df)
     𝐽 = jacobian(df)

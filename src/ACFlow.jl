@@ -17,9 +17,9 @@ package is under heavy development. **PLEASE USE IT AT YOUR OWN RISK**.
 
 Nowadays the ACFlow package supports the following algorithms:
 
-* Maximum Entropy Method (`MaxEnt`)
-* Stochastic Analytical Continuation (`StochAC`)
-* Stochastic Optimization Method (`StochOM`)
+* Maximum Entropy Method (`MaxEnt` solver)
+* Stochastic Analytical Continuation (`StochAC` solver)
+* Stochastic Optimization Method (`StochOM` solver)
 
 More algorithms will be implemented soon.
 
@@ -47,10 +47,10 @@ module ACFlow
 using Distributed
 using LinearAlgebra
 using Statistics
-using DelimitedFiles
 using Random
-using Printf
 using Dates
+using Printf
+using DelimitedFiles
 using TOML
 
 #=
@@ -231,13 +231,14 @@ export line_to_array
 *Summary* :
 
 To provide some numerical algorithms, such as numerical integrations,
-interpolations, Einstein summation notation, and optimization method. 
+interpolations, Einstein summation notation, and optimization method.
 
 *Members* :
 
 ```text
 secant    -> Root finding secant algorithm.
 newton    -> Root finding newton algorithm.
+#
 trapz     -> Numerical integration (composite trapezoidal rule).
 simpson   -> Numerical integration (simpson rule).
 #
@@ -257,6 +258,7 @@ include("math.jl")
 #
 export secant
 export newton
+#
 export trapz
 export simpson
 #
