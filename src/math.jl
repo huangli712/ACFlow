@@ -208,8 +208,11 @@ end
 The following codes are used to perform interpolations. Three algorithms
 are implemented. They are linear interpolation, quadratic interpolation,
 and cubic spline interpolation. Note that these implementations are taken
-directly from https://github.com/PumasAI/DataInterpolations.jl. Of cource,
-small modifications are made.
+directly from 
+
+* https://github.com/PumasAI/DataInterpolations.jl
+
+Of cource, small modifications are made.
 =#
 
 """
@@ -799,11 +802,16 @@ end
 
 """
     value(obj::OnceDifferentiable)
+
+Return `obj.𝐹`. `obj` will not be affected.
+"""
+value(obj::OnceDifferentiable) = obj.𝐹
+
+"""
     value(obj::OnceDifferentiable, 𝐹, x)
 
 Return `𝑓(x)`. `obj` will not be affected, but `𝐹` is updated.
 """
-value(obj::OnceDifferentiable) = obj.𝐹
 value(obj::OnceDifferentiable, 𝐹, x) = obj.ℱ!(𝐹, x)
 
 """
@@ -817,12 +825,18 @@ function value!(obj::OnceDifferentiable, x)
 end
 
 """
-    jacobian(obj::OnceDifferentiable) = obj.𝐽
-    jacobian(obj::OnceDifferentiable, 𝐽, x) = obj.𝒥!(𝐽, x)
+    jacobian(obj::OnceDifferentiable)
+
+Return `obj.𝐽`. `obj` will not be affected.
+"""
+jacobian(obj::OnceDifferentiable) = obj.𝐽
+
+"""
+    jacobian(obj::OnceDifferentiable, 𝐽, x)
 
 Return jacobian. `obj` will not be affected, but `𝐽` is updated.
 """
-jacobian(obj::OnceDifferentiable) = obj.𝐽
+
 jacobian(obj::OnceDifferentiable, 𝐽, x) = obj.𝒥!(𝐽, x)
 
 """
