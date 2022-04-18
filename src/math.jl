@@ -857,12 +857,12 @@ algorithm.
 
 ### Members
 
-* x₀          -> Initial guess for the solution.
-* minimizer   -> Final results for the solution.
-* minimum     -> Residual.
-* iterations  -> Number of iterations.
-* xconv -> If the convergence criterion 1 is satisfied.
-* gconv -> If the convergence criterion 2 is satisfied.
+* x₀         -> Initial guess for the solution.
+* minimizer  -> Final results for the solution.
+* minimum    -> Residual.
+* iterations -> Number of iterations.
+* xconv      -> If the convergence criterion 1 is satisfied.
+* gconv      -> If the convergence criterion 2 is satisfied.
 """
 struct OptimizationResults{T,N}
     x₀::Array{T,N}
@@ -985,12 +985,12 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
 
     # Return the results
     OptimizationResults(
-        x₀,          # x₀
-        x,           # minimizer
-        C_resid,     # residual
-        iter,        # iterations
-        xconv, # xconv
-        gconv, # gconv
+        x₀,      # x₀
+        x,       # minimizer
+        C_resid, # residual
+        iter,    # iterations
+        xconv,   # xconv
+        gconv,   # gconv
     )
 end
 
