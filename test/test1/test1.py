@@ -14,6 +14,7 @@ rng = np.random.RandomState(123)
 noise_abs = rng.normal(0., noise_amplitude, iw.shape[0])
 noise_phase = rng.uniform(0., 2.*np.pi, iw.shape[0])
 noise = noise_abs * np.exp(1j * noise_phase)
+print(noise_abs)
 
 kernel = 1./(1j*iw[:,None] - w_real[None,:])
 gf_mats = np.trapz(kernel*spec_real[None,:], w_real, axis=1) + noise
