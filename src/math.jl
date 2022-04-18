@@ -861,16 +861,16 @@ algorithm.
 * minimizer   -> Final results for the solution.
 * minimum     -> Residual.
 * iterations  -> Number of iterations.
-* x_converged -> If the convergence criterion 1 is satisfied.
-* g_converged -> If the convergence criterion 2 is satisfied.
+* xconv -> If the convergence criterion 1 is satisfied.
+* gconv -> If the convergence criterion 2 is satisfied.
 """
 struct OptimizationResults{T,N}
     x₀::Array{T,N}
     minimizer::Array{T,N}
     minimum::T
     iterations::Int
-    x_converged::Bool
-    g_converged::Bool
+    xconv::Bool
+    gconv::Bool
 end
 
 """
@@ -909,8 +909,8 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
 
     # Setup convergence criteria
     converged = false
-    x_converged = false
-    g_converged = false
+    xconv = false
+    gconv = false
     iter = 0
 
     # Calculate 𝑓(x₀) and initial residual
@@ -973,14 +973,14 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         # Check convergence criteria:
         # 1. Small gradient: norm(𝐽ᵀ * 𝐹, Inf) < g_tol
         if norm(𝐽' * 𝐹, Inf) < g_tol
-            g_converged = true
+            gconv = true
         end
         # 2. Small step size: norm(δx) < x_tol
         if norm(δx) < x_tol * (x_tol + norm(x))
-            x_converged = true
+            xconv = true
         end
         # 3. Calculate converged
-        converged = g_converged | x_converged
+        converged = gconv | xconv
     end
 
     # Return the results
@@ -989,8 +989,8 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) wh
         x,           # minimizer
         C_resid,     # residual
         iter,        # iterations
-        x_converged, # x_converged
-        g_converged, # g_converged
+        xconv, # xconv
+        gconv, # gconv
     )
 end
 
@@ -1025,6 +1025,6 @@ function curve_fit(model, x::AbstractArray, y::AbstractArray, p0::AbstractArray)
     R = OnceDifferentiable(f, p0, r)
     OR = levenberg_marquardt(R, p0)
     p = OR.minimizer
-    conv = OR.x_converged || OR.g_converged
+    conv = OR.xconv || OR.gconv
     return LsqFitResult(p, value!(R, p), jacobian!(R, p), conv)
 end
