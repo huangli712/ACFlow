@@ -58,7 +58,7 @@ const PCOMM    = Dict{String,ADT}(
 """
     PMaxEnt
 
-Dictionary for configuration parameters: maximum entropy method.
+Dictionary for configuration parameters: the maximum entropy method.
 """
 const PMaxEnt  = Dict{String,ADT}(
     "method"  => [missing, 1, :String, "How to determine the optimized α parameter"],
@@ -71,7 +71,7 @@ const PMaxEnt  = Dict{String,ADT}(
 """
     PStochAC
 
-Dictionary for configuration parameters: stochastic analytical continuation method.
+Dictionary for configuration parameters: the stochastic analytical continuation method.
 """
 const PStochAC = Dict{String,ADT}(
     "nfine"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
@@ -87,7 +87,7 @@ const PStochAC = Dict{String,ADT}(
 """
     PStochOM
 
-Dictionary for configuration parameters: stochastic optimization method.
+Dictionary for configuration parameters: the stochastic optimization method.
 """
 const PStochOM = Dict{String,ADT}(
     "ntry"    => [missing, 1, :I64   , "Number of attempts to figure out the solution"],
@@ -356,6 +356,8 @@ number generator and some counters.
 * Mtry -> Counter for move operation (tried).
 * Sacc -> Counter for swap operation (accepted).
 * Stry -> Counter for swap operation (tried).
+
+See also: [`StochACSolver`](@ref).
 """
 mutable struct StochACMC <: AbstractMC
     rng :: AbstractRNG
@@ -376,6 +378,8 @@ number generator and some counters.
 * rng  -> Random number generator.
 * Macc -> Counter for move operation (accepted).
 * Mtry -> Counter for move operation (tried).
+
+See also: [`StochOMSolver`](@ref).
 """
 mutable struct StochOMMC <: AbstractMC
     rng :: AbstractRNG
