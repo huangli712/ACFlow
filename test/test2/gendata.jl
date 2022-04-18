@@ -23,7 +23,7 @@ function trapz(x, y, linear::Bool = false)
     return value
 end
 
-wmin = -5.0  # Left boundary
+wmin = +0.0  # Left boundary
 wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 10    # Number of Matsubara frequencies
@@ -34,39 +34,42 @@ w_real = collect(LinRange(wmin, wmax, nmesh))
 
 # Spectral function
 spec_real = similar(w_real)
-@. spec_real = exp(-(w_real - 0.5) ^ 2.0 / (2.0 * 0.2 ^ 2.0))
-@. spec_real += 0.3 * exp(-(w_real + 2.5) ^ 2.0 / (2.0 * 0.8 ^ 2.0))
+@. spec_real = exp(-w_real ^ 2.0 / (2.0 * 0.2 ^ 2.0))
+@. spec_real += 0.3 * exp(-(w_real - 1.5) ^ 2.0 / (2.0 * 0.8 ^ 2.0))
+@. spec_real += 0.3 * exp(-(w_real + 1.5) ^ 2.0 / (2.0 * 0.8 ^ 2.0))
 spec_real = spec_real ./ trapz(w_real, spec_real)
 
 # Matsubara frequency mesh
-iw = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
+iw = 2.0 * π / beta * collect(0:niw-1)
 
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
 noise_amplitude = 1.0e-4
-noise_abs = randn(rng, Float64, niw) * noise_amplitude
-noise_phase = rand(rng, niw) * 2.0 * π
-noise = noise_abs .* exp.(noise_phase * im)
+noise = randn(rng, Float64, niw) * noise_amplitude
 
 # Kernel function
-kernel = 1.0 ./ (im * reshape(iw, (niw,1)) .- reshape(w_real, (1,nmesh)))
+kernel = reshape(w_real .^ 2.0, (1,nmesh)) ./ 
+         (reshape(iw .^ 2.0, (niw,1)) .+ reshape(w_real .^ 2.0, (1,nmesh)))
+kernel[1,1] = 1.0
 
 # Build green's function
 KA = kernel  .* reshape(spec_real, (1,nmesh))
-gf_mats = zeros(ComplexF64, niw)
+gf_mats = zeros(Float64, niw)
 for i in eachindex(gf_mats)
     gf_mats[i] = trapz(w_real, KA[i,:]) + noise[i]
 end
+norm = gf_mats[1]
+gf_mats = gf_mats / norm
 
 # Build error
-err = ones(Float64, niw) * noise_amplitude
+err = ones(Float64, niw) * noise_amplitude / norm
 
 # Write green's function
 open("green.data", "w") do fout
     for i in eachindex(gf_mats)
         z = gf_mats[i]
-        @printf(fout, "%16.12f %16.12f %16.12f %16.12f\n", iw[i], real(z), imag(z), err[i])
+        @printf(fout, "%16.12f %16.12f %16.12f\n", iw[i], z, err[i])
     end
 end
 
