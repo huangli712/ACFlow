@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/08
+# Last modified: 2022/04/19
 #
 
 """
@@ -224,6 +224,15 @@ function write_reproduce(ag::AbstractGrid, G::Vector{F64})
             for i in eachindex(ag)
                 @printf(fout, "%16.12f %16.12f %16.12f\n", ag[i], G[i], G[i+ngrid])
             end
+        end
+    end
+end
+
+function write_kramersdata(am::AbstractMesh, Gre::Vector{F64}, Gim::Vector{F64})
+    nmesh = length(am)
+    open("Gout.data", "w") do fout
+        for i in eachindex(am)
+            @printf(fout, "%16.12f %16.12f %16.12f\n", am[i], Gre[i], Gim[i])
         end
     end
 end

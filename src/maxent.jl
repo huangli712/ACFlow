@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/21
+# Last modified: 2022/04/19
 #
 
 #=
@@ -139,6 +139,9 @@ function postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
 
     G = reprod(mec.kernel, mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
     write_reproduce(mec.grid, G)
+
+    Gre, Gim = kramers(mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
+    write_kramersdata(mec.mesh, Gre, Gim)
 end
 
 #=

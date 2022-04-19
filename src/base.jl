@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/06
+# Last modified: 2022/04/19
 #
 
 """
@@ -118,7 +118,21 @@ The Kramers-Kronig relations provide a way to get the real part from the
 imaginary part.
 """
 function kramers(am::AbstractMesh, A::Vector{F64})
-    
+    nmesh = length(am)
+    spectrum = reshape(A, (nmesh,1))
+    weight = reshape(am.weight, (nmesh,1))
+    w₁ = reshape(am.mesh, (1,nmesh))
+    w₂ = reshape(am.mesh, (nmesh,1))
+
+    m = weight .* spectrum ./ (w₁ .- w₂)
+    for i = 1:nmesh
+        m[i,i] = 0.0
+    end
+
+    gre = reshape(sum(m, dims = 1), (nmesh))
+    gim = -A * π
+
+    return gre, gim
 end
 
 """
