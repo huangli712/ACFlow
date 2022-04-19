@@ -95,6 +95,32 @@ function reprod(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
     return G
 end
 
+#=
+*Remarks* : Kramers-Kronig transformation
+```math
+\begin{equation}
+A(\omega) = -\frac{1}{\pi} \mathrm{Im} G(\omega)
+\end{equation}
+```
+
+```math
+\begin{equation}
+\mathrm{Re} G(\omega) = \frac{1}{\pi} \mathcal{P} 
+\int_{-\infty}^\infty d\omega~\frac{\mathrm{Im} G(\omega')}{\omega'-\omega}
+\end{equation}
+```
+=#
+
+"""
+    kramers(am::AbstractMesh, A::Vector{F64})
+
+The Kramers-Kronig relations provide a way to get the real part from the
+imaginary part.
+"""
+function kramers(am::AbstractMesh, A::Vector{F64})
+    
+end
+
 """
     setup_param(C::Dict{String,Any}, S::Dict{String,Any})
 
