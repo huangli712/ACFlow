@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/19
+# Last modified: 2022/04/20
 #
 
 """
@@ -152,11 +152,11 @@ function write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2}
 end
 
 """
-    write_chi2(α_vec::Vector{F64}, χ²_vec::Vector{F64})
+    write_misfit(α_vec::Vector{F64}, χ²_vec::Vector{F64})
 
 Write `log10(α)-log10(χ²)` data to `chi2.data`.
 """
-function write_chi2(α_vec::Vector{F64}, χ²_vec::Vector{F64})
+function write_misfit(α_vec::Vector{F64}, χ²_vec::Vector{F64})
     @assert length(α_vec) == length(χ²_vec)
     open("chi2.data", "w") do fout
         _α = log10.(α_vec)
@@ -200,13 +200,13 @@ function write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
 end
 
 """
-    write_reproduce(ag::AbstractGrid, G::Vector{F64})
+    write_backward(ag::AbstractGrid, G::Vector{F64})
 
 We can use the calculated spectrum in real axis to reproduce the input
 data in imaginary axis. This function will write the reproduced data to
 `repr.data`, which can be compared with the original data.
 """
-function write_reproduce(ag::AbstractGrid, G::Vector{F64})
+function write_backward(ag::AbstractGrid, G::Vector{F64})
     ngrid = length(ag)
     ng = length(G)
     @assert ngrid == ng || ngrid * 2 == ng
@@ -228,7 +228,7 @@ function write_reproduce(ag::AbstractGrid, G::Vector{F64})
     end
 end
 
-function write_kramersdata(am::AbstractMesh, Gre::Vector{F64}, Gim::Vector{F64})
+function write_realaxis(am::AbstractMesh, Gre::Vector{F64}, Gim::Vector{F64})
     nmesh = length(am)
     open("Gout.data", "w") do fout
         for i in eachindex(am)

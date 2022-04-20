@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/19
+# Last modified: 2022/04/20
 #
 
 #=
@@ -130,7 +130,7 @@ function postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
 
     α_vec = map(x -> x[:α], svec)
     χ_vec = map(x -> x[:χ²], svec)
-    write_chi2(α_vec, χ_vec)
+    write_misfit(α_vec, χ_vec)
 
     if haskey(svec[end], :prob)
         p_vec = map(x -> x[:prob], svec)
@@ -138,10 +138,10 @@ function postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
     end
 
     G = reprod(mec.kernel, mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
-    write_reproduce(mec.grid, G)
+    write_backward(mec.grid, G)
 
     Gre, Gim = kramers(mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
-    write_kramersdata(mec.mesh, Gre, Gim)
+    write_realaxis(mec.mesh, Gre, Gim)
 end
 
 #=

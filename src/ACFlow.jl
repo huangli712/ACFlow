@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/18
+# Last modified: 2022/04/20
 #
 
 """
@@ -365,10 +365,11 @@ To read the input data or write the calculated results.
 read_real_data    -> Read data in imaginary time axis.
 read_complex_data -> Read data in Matsubara frequency axis.
 write_spectrum    -> Write spectral functions.
-write_chi2        -> Write χ².
+write_misfit      -> Write χ².
 write_hamiltonian -> Write effective hamiltonian for StochAC solver.
 write_probability -> Write Bayesian a-posteriori probability.
-write_reproduce   -> Write reproduced input data.
+write_backward    -> Write reproduced input data.
+write_realaxis    ->
 write_statistics  -> Write statistical information for StochAC/StochOM solver.
 ```
 =#
@@ -379,10 +380,11 @@ include("inout.jl")
 export read_real_data
 export read_complex_data
 export write_spectrum
-export write_chi2
+export write_misfit
 export write_hamiltonian
 export write_probability
-export write_reproduce
+export write_backward
+export write_realaxis
 export write_statistics
 
 #=
