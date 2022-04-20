@@ -121,7 +121,7 @@ Version of this julia package.
 
 See also: [`__RELEASE__`](@ref).
 """
-const __VERSION__ = v"0.5.3-devel.220418"
+const __VERSION__ = v"0.5.4-devel.220421"
 
 """
     __RELEASE__
