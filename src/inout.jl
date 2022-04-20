@@ -7,6 +7,10 @@
 # Last modified: 2022/04/20
 #
 
+#=
+### *Input Functions*
+=#
+
 """
     read_real_data(finput::AbstractString, ngrid::I64)
 
@@ -119,6 +123,10 @@ function read_cmplx_data(finput::AbstractString, ngrid::I64, only_real_part::Boo
     return RawData(_grid, value, error)
 end
 
+#=
+### *Output Functions*
+=#
+
 """
     write_spectrum(am::AbstractMesh, Aout::Vector{F64})
 
@@ -127,6 +135,7 @@ the spectrum is contained in `Aout`.
 """
 function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
     @assert length(am) == length(Aout)
+
     open("Aout.data", "w") do fout
         for i in eachindex(am)
             @printf(fout, "%16.12f %16.12f\n", am[i], Aout[i])
@@ -159,10 +168,12 @@ end
 """
     write_misfit(α_vec::Vector{F64}, χ²_vec::Vector{F64})
 
-Write `log10(α)-log10(χ²)` data to `chi2.data`.
+Write `log10(α)-log10(χ²)` data to `chi2.data`, which could be used to
+judge whether the obtained optimal α parameter is reasonable.
 """
 function write_misfit(α_vec::Vector{F64}, χ²_vec::Vector{F64})
     @assert length(α_vec) == length(χ²_vec)
+
     open("chi2.data", "w") do fout
         _α = log10.(α_vec)
         _χ² = log10.(χ²_vec)
