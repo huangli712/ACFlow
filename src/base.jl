@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/20
+# Last modified: 2022/04/21
 #
 
 """
@@ -96,7 +96,8 @@ function reprod(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
 end
 
 #=
-*Remarks* : Kramers-Kronig transformation
+*Remarks* : Kramers-Kronig Transformation
+
 ```math
 \begin{equation}
 A(\omega) = -\frac{1}{\pi} \mathrm{Im} G(\omega)
@@ -106,7 +107,16 @@ A(\omega) = -\frac{1}{\pi} \mathrm{Im} G(\omega)
 ```math
 \begin{equation}
 \mathrm{Re} G(\omega) = \frac{1}{\pi} \mathcal{P} 
-\int_{-\infty}^\infty d\omega~\frac{\mathrm{Im} G(\omega')}{\omega'-\omega}
+\int_{-\infty}^{\infty} d\omega'~
+\frac{\mathrm{Im} G(\omega')}{\omega'-\omega}
+\end{equation}
+```
+
+```math
+\begin{equation}
+\mathrm{Re} G(\omega) = \frac{2}{\pi} \mathcal{P}
+\int_{0}^{\infty} d\omega'~
+\frac{\omega'\mathrm{Im} G(\omega')}{\omega'^2 - \omega^2}
 \end{equation}
 ```
 =#
@@ -114,8 +124,8 @@ A(\omega) = -\frac{1}{\pi} \mathrm{Im} G(\omega)
 """
     kramers(am::AbstractMesh, A::Vector{F64})
 
-The Kramers-Kronig relations provide a way to get the real part from the
-imaginary part.
+Try to calculate the real part of the green's function from its imaginary
+part via the Kramers-Kronig relations.
 """
 function kramers(am::AbstractMesh, A::Vector{F64})
     nmesh = length(am)
@@ -124,7 +134,15 @@ function kramers(am::AbstractMesh, A::Vector{F64})
     w₁ = reshape(am.mesh, (1,nmesh))
     w₂ = reshape(am.mesh, (nmesh,1))
 
-    m = weight .* spectrum ./ (w₁ .- w₂)
+    # For fermionic system
+    if am[1] < 0.0
+        m = weight .* spectrum ./ (w₁ .- w₂)
+    # For bosonic system, the mesh is defined in positive half-axis only.
+    else
+        m = 2.0 * weight .* w₁ .* spectrum ./ (w₁ .^ 2.0 .- w₂ .^ 2.0)
+    end
+
+    # Setup the diagonal elements
     for i = 1:nmesh
         m[i,i] = 0.0
     end
