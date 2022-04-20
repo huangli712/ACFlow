@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/20
+# Last modified: 2022/04/21
 #
 
 #=
@@ -248,8 +248,20 @@ function write_backward(ag::AbstractGrid, G::Vector{F64})
     end
 end
 
-function write_realaxis(am::AbstractMesh, Gre::Vector{F64}, Gim::Vector{F64})
+"""
+    write_complete(am::AbstractMesh, Gre::Vector{F64}, Gim::Vector{F64})
+
+Write the full data at real axis to `Gout.data`. `am` denotes the real
+axis, `Gre` and `Gim` are the real and imaginary parts of the calculated
+data, respectively. Note that the real part is obtained via the so-called
+Kramers-Kronig transformation.
+
+See also: [`kramers`](@ref).
+"""
+function write_complete(am::AbstractMesh, Gre::Vector{F64}, Gim::Vector{F64})
     nmesh = length(am)
+    @assert nmesh == length(Gre) && nmesh == length(Gim)
+
     open("Gout.data", "w") do fout
         for i in eachindex(am)
             @printf(fout, "%16.12f %16.12f %16.12f\n", am[i], Gre[i], Gim[i])
