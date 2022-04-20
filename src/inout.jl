@@ -208,6 +208,7 @@ Write `p(α)` data to `prob.data`. This function is only useful for the
 """
 function write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
     @assert length(α_vec) == length(p_vec)
+
     open("prob.data", "w") do fout
         _p = -p_vec ./ trapz(α_vec, p_vec)
         _α = log10.(α_vec)
@@ -222,21 +223,22 @@ end
 
 We can use the calculated spectrum in real axis to reproduce the input
 data in imaginary axis. This function will write the reproduced data to
-`repr.data`, which can be compared with the original data.
+`repr.data`, which can be compared with the original data. Here, `G` is
+the reproduced data.
 """
 function write_backward(ag::AbstractGrid, G::Vector{F64})
     ngrid = length(ag)
     ng = length(G)
     @assert ngrid == ng || ngrid * 2 == ng
 
-    # The original data are defined in imaginary time axis.
+    # The reproduced data are defined in imaginary time axis.
     if ngrid == ng
         open("repr.data", "w") do fout
             for i in eachindex(ag)
                 @printf(fout, "%16.12f %16.12f\n", ag[i], G[i])
             end
         end
-    # The original data are defined in imaginary frequency axis.
+    # The reproduced data are defined in imaginary frequency axis.
     else
         open("repr.data", "w") do fout
             for i in eachindex(ag)
