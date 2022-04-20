@@ -22,6 +22,11 @@ function read_real_data(finput::AbstractString, ngrid::I64)
     value = zeros(F64, ngrid)
     error = zeros(F64, ngrid)
 
+    # We have to determine the number of columns at first.
+    dlm = readdlm(finput)
+    _, ncols = size(dlm)
+    @assert ncols == 3
+
     open(finput, "r") do fin
         for i = 1:ngrid
             arr = parse.(F64, line_to_array(fin)[1:3])
