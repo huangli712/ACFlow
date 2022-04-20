@@ -186,11 +186,13 @@ end
 """
     write_hamiltonian(α_vec::Vector{F64}, Uα::Vector{F64})
 
-Write `α-U(α)` data to `hamil.data`. This function is only useful for the
-`StochAC` solver.
+Write `α-U(α)` data to `hamil.data`, which could be used to judge whether
+the obtained optimal α parameter is reasonable. This function is only
+useful for the `StochAC` solver.
 """
 function write_hamiltonian(α_vec::Vector{F64}, Uα::Vector{F64})
     @assert length(α_vec) == length(Uα)
+
     open("hamil.data", "w") do fout
         for i in eachindex(α_vec)
             @printf(fout, "%16.8f %16.12f\n", α_vec[i], Uα[i])
