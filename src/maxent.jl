@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/20
+# Last modified: 2022/04/21
 #
 
 #=
@@ -141,7 +141,7 @@ function postprocess(mec::MaxEntContext, svec::Vector, sol::Dict)
     write_backward(mec.grid, G)
 
     Gre, Gim = kramers(mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
-    write_realaxis(mec.mesh, Gre, Gim)
+    write_complete(mec.mesh, Gre, Gim)
 end
 
 #=
