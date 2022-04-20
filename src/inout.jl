@@ -15,7 +15,7 @@ file should contain three columns. The first column is the imaginary-time
 grid, the second column is the value, the third column is the standard
 deviation σ. Here, `ngrid` specifies the number of grid points.
 
-See also: [`read_complex_data`](@ref).
+See also: [`read_cmplx_data`](@ref).
 """
 function read_real_data(finput::AbstractString, ngrid::I64)
     _grid = zeros(F64, ngrid)
@@ -40,7 +40,7 @@ function read_real_data(finput::AbstractString, ngrid::I64)
 end
 
 """
-    read_complex_data(finput::AbstractString, ngrid::I64)
+    read_cmplx_data(finput::AbstractString, ngrid::I64)
 
 Read input data. This function is used for Matsubara frequency data. The
 input should contain four columns or five columns. The first column is
@@ -52,7 +52,7 @@ same standard deviations.
 
 See also: [`read_time_data`](@ref).
 """
-function read_complex_data(finput::AbstractString, ngrid::I64)
+function read_cmplx_data(finput::AbstractString, ngrid::I64)
     _grid = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)
@@ -82,7 +82,7 @@ function read_complex_data(finput::AbstractString, ngrid::I64)
 end
 
 """
-    read_complex_data(finput::AbstractString, ngrid::I64, only_real_part::Bool)
+    read_cmplx_data(finput::AbstractString, ngrid::I64, only_real_part::Bool)
 
 Read input data. This function is used for Matsubara frequency data. The
 input file only contains three columns. The first column is the Matsubara
@@ -92,7 +92,7 @@ third column is the standard deviation σ.
 
 See also: [`read_time_data`](@ref).
 """
-function read_complex_data(finput::AbstractString, ngrid::I64, only_real_part::Bool)
+function read_cmplx_data(finput::AbstractString, ngrid::I64, only_real_part::Bool)
     _grid = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)

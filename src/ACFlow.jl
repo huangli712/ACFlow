@@ -363,7 +363,7 @@ To read the input data or write the calculated results.
 
 ```text
 read_real_data    -> Read data in imaginary time axis.
-read_complex_data -> Read data in Matsubara frequency axis.
+read_cmplx_data   -> Read data in Matsubara frequency axis.
 write_spectrum    -> Write spectral functions.
 write_misfit      -> Write χ².
 write_hamiltonian -> Write effective hamiltonian for StochAC solver.
@@ -378,7 +378,7 @@ write_statistics  -> Write statistical information for StochAC/StochOM solver.
 include("inout.jl")
 #
 export read_real_data
-export read_complex_data
+export read_cmplx_data
 export write_spectrum
 export write_misfit
 export write_hamiltonian

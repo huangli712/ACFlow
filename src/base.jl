@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/19
+# Last modified: 2022/04/20
 #
 
 """
@@ -202,11 +202,11 @@ function read_data(only_real_part::Bool = true)
             break
 
         @case "ffreq"
-            return read_complex_data(finput, ngrid)
+            return read_cmplx_data(finput, ngrid)
             break
 
         @case "bfreq"
-            return read_complex_data(finput, ngrid, only_real_part)
+            return read_cmplx_data(finput, ngrid, only_real_part)
             break
 
         @default
