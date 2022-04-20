@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/20
+# Last modified: 2022/04/21
 #
 
 """
@@ -368,8 +368,8 @@ write_spectrum    -> Write spectral functions.
 write_misfit      -> Write χ².
 write_hamiltonian -> Write effective hamiltonian for StochAC solver.
 write_probability -> Write Bayesian a-posteriori probability.
-write_backward    -> Write reproduced input data.
-write_realaxis    ->
+write_backward    -> Write reproduced input data in imaginary axis.
+write_complete    -> Write full data in real axis.
 write_statistics  -> Write statistical information for StochAC/StochOM solver.
 ```
 =#
@@ -384,7 +384,7 @@ export write_misfit
 export write_hamiltonian
 export write_probability
 export write_backward
-export write_realaxis
+export write_complete
 export write_statistics
 
 #=
