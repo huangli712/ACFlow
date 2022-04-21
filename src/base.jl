@@ -154,7 +154,7 @@ function kramers(am::AbstractMesh, A::Vector{F64})
 end
 
 """
-    setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = false)
+    setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = true)
 
 Setup the configuration dictionaries via function call. Here `C` contains
 parameters for general setup, while `S` contains parameters for selected
@@ -164,7 +164,7 @@ dictionaries will be reset to their default values at first. Later, `C`
 
 See also: [`read_param`](@ref), [`rev_dict`](@ref).
 """
-function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = false)
+function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = true)
     # _PCOMM, _PMaxEnt, _PStochAC, and _PStochOM contain the default
     # parameters. If reset is true, they will be used to update the
     # PCOMM, PMaxEnt, PStochAC, and PStochOM dictionaries, respectively.
