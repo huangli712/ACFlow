@@ -31,3 +31,8 @@
     * Tangent mesh
     * Gauss model
     * preblur
+
+* **A07**
+    * Bosonic + Matsubara
+    * MaxEnt solver
+    * preblur
