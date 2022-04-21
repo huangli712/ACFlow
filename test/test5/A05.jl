@@ -7,7 +7,7 @@ using ACFlow
 C = Dict{String,Any}(
     "finput" => "sigma.inp",
     "mtype"  => "gauss",
-    "mesh"   => "tangent"
+    "mesh"   => "tangent",
     "ngrid"  => 300,
     "wmax"   => 30.0,
     "wmin"   => -30.0,
