@@ -16,3 +16,11 @@
     * MaxEnt solver
     * Script mode
     * Fixed error bar
+
+* **A05**
+    * Fermionic + Matsubara
+    * MaxEnt solver
+    * Script mode
+    * Tangent mesh
+    * Gauss model
+    * preblur
