@@ -460,7 +460,7 @@ MaxEntContext -> Essential struct for the MaxEnt solver.
 solve         -> Wrapper function for the MaxEnt solver.
 init          -> Initialize maximum entropy simulation.
 run           -> Perform maximum entropy simulation.
-postprocess   -> Postprocess the calculated results and write them.
+last          -> Postprocess the calculated results and write them.
 #
 historic      -> historic algorithm.
 classic       -> Classic algorithm.
@@ -489,7 +489,7 @@ export MaxEntContext
 export solve
 export init
 export run
-export postprocess
+export last
 #
 export historic
 export classic
