@@ -55,7 +55,8 @@ Solve the analytical continuation problem by the maximum entropy method.
 function solve(S::MaxEntSolver, rd::RawData)
     println("[ MaxEnt ]")
     mec = init(S, rd)
-    run(S, mec)
+    darr, sol = run(S, mec)
+    postprocess(mec, darr, sol)
 end
 
 """
@@ -98,23 +99,21 @@ function run(S::MaxEntSolver, mec::MaxEntContext)
 
     @cswitch method begin
         @case "historic"
-            darr, sol = historic(mec)
+            return historic(mec)
             break
 
         @case "classic"
-            darr, sol = classic(mec)
+            return classic(mec)
             break
 
         @case "bryan"
-            darr, sol = bryan(mec)
+            return bryan(mec)
             break
 
         @case "chi2kink"
-            darr, sol = chi2kink(mec)
+            return chi2kink(mec)
             break
     end
-
-    postprocess(mec, darr, sol)
 end
 
 """
