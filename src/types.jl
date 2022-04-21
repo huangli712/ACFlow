@@ -55,6 +55,7 @@ const PCOMM    = Dict{String,ADT}(
     "offdiag" => [missing, 1, :Bool  , "Is it the offdiagonal part in matrix-valued function"],
 )
 
+# Default parameters for PCOMM
 const _PCOMM   = Dict{String,Any}(
     "finput"  => "green.data",
     "solver"  => "MaxEnt",
@@ -83,6 +84,7 @@ const PMaxEnt  = Dict{String,ADT}(
     "blur"    => [missing, 1, :F64   , "Shall we preblur the kernel and spectrum"],
 )
 
+# Default parameters for PMaxEnt
 const _PMaxEnt = Dict{String,Any}(
     "method"  => "chi2kink",
     "nalph"   => 12,
@@ -107,6 +109,7 @@ const PStochAC = Dict{String,ADT}(
     "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
 )
 
+# Default parameters for PStochAC
 const _PStochAC= Dict{String,Any}(
     "nfine"   => 10000,
     "ngamm"   => 512,
@@ -132,6 +135,7 @@ const PStochOM = Dict{String,ADT}(
     "norm"    => [missing, 1, :F64   , "Is the norm calculated"],
 )
 
+# Default parameters for PStochOM
 const _PStochOM = Dict{String,Any}(
     "ntry"    => 2000,
     "nstep"   => 1000,
