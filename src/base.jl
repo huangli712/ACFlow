@@ -154,28 +154,37 @@ function kramers(am::AbstractMesh, A::Vector{F64})
 end
 
 """
-    setup_param(C::Dict{String,Any}, S::Dict{String,Any})
+    setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = false)
 
 Setup the configuration dictionaries via function call. Here `C` contains
 parameters for general setup, while `S` contains parameters for selected
-analytical continuation solver.
+analytical continuation solver. If `reset` is true, then the configuration
+dictionaries will be reset to their default values at first. Later, `C`
+`S` will be used to customized the dictionaries further.
 
 See also: [`read_param`](@ref), [`rev_dict`](@ref).
 """
-function setup_param(C::Dict{String,Any}, S::Dict{String,Any})
+function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = false)
+    # _PCOMM, _PMaxEnt, _PStochAC, and _PStochOM contain the default
+    # parameters. If reset is true, they will be used to update the
+    # PCOMM, PMaxEnt, PStochAC, and PStochOM dictionaries, respectively.
+    reset && rev_dict(_PCOMM)
     rev_dict(C)
 
     solver = get_c("solver")
     @cswitch solver begin
         @case "MaxEnt"
+            reset && rev_dict(MaxEntSolver(), _PMaxEnt)
             rev_dict(MaxEntSolver(), S)
             break
 
         @case "StochAC"
+            reset && rev_dict(StochACSolver(), _PStochAC)
             rev_dict(StochACSolver(), S)
             break
 
         @case "StochOM"
+            reset && rev_dict(StochOMSolver(), _PStochOM)
             rev_dict(StochOMSolver(), S)
             break
 
