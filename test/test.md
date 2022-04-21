@@ -24,3 +24,10 @@
     * Tangent mesh
     * Gauss model
     * preblur
+
+* **A06**
+    * Fermionic + Matsubara
+    * MaxEnt solver
+    * Tangent mesh
+    * Gauss model
+    * preblur
