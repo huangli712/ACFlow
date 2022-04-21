@@ -10,3 +10,9 @@
     * Fermionic + Matsubara
     * MaxEnt solver
     * Script mode
+
+* **A04**
+    * Fermionic + Matsubara
+    * MaxEnt solver
+    * Script mode
+    * Fixed error bar
