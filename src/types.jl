@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/08
+# Last modified: 2022/04/21
 #
 
 #=
@@ -55,6 +55,21 @@ const PCOMM    = Dict{String,ADT}(
     "offdiag" => [missing, 1, :Bool  , "Is it the offdiagonal part in matrix-valued function"],
 )
 
+const _PCOMM   = Dict{String,Any}(
+    "finput"  => "green.data",
+    "solver"  => "MaxEnt",
+    "ktype"   => "fermi",
+    "mtype"   => "flat",
+    "grid"    => "ffreq",
+    "mesh"    => "linear",
+    "ngrid"   => 10,
+    "nmesh"   => 501,
+    "wmax"    => 5.0,
+    "wmin"    => -5.0,
+    "beta"    => 10.0,
+    "offdiag" => false,
+)
+
 """
     PMaxEnt
 
@@ -66,6 +81,14 @@ const PMaxEnt  = Dict{String,ADT}(
     "alpha"   => [missing, 1, :F64   , "Starting value for the α parameter"],
     "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
     "blur"    => [missing, 1, :F64   , "Shall we preblur the kernel and spectrum"],
+)
+
+const _PMaxEnt = Dict{String,Any}(
+    "method"  => "chi2kink",
+    "nalph"   => 12,
+    "alpha"   => 1e9,
+    "ratio"   => 10.0,
+    "blur"    => -1.0,
 )
 
 """
@@ -84,6 +107,17 @@ const PStochAC = Dict{String,ADT}(
     "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
 )
 
+const _PStochAC= Dict{String,Any}(
+    "nfine"   => 10000,
+    "ngamm"   => 512,
+    "nwarm"   => 4000,
+    "nstep"   => 800000,
+    "ndump"   => 40000,
+    "nalph"   => 20,
+    "alpha"   => 1.00,
+    "ratio"   => 1.20,
+)
+
 """
     PStochOM
 
@@ -96,6 +130,15 @@ const PStochOM = Dict{String,ADT}(
     "sbox"    => [missing, 1, :F64   , "Maximum area of generated boxes"],
     "wbox"    => [missing, 1, :F64   , "Maximum width of generated boxes"],
     "norm"    => [missing, 1, :F64   , "Is the norm calculated"],
+)
+
+const _PStochOM = Dict{String,Any}(
+    "ntry"    => 2000,
+    "nstep"   => 1000,
+    "nbox"    => 100,
+    "sbox"    => 0.005,
+    "wbox"    => 0.02,
+    "norm"    => -1.0,
 )
 
 #=
