@@ -141,6 +141,8 @@ function last(mec::MaxEntContext, svec::Vector, sol::Dict)
 
     Gre, Gim = kramers(mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
     write_complete(mec.mesh, Gre, Gim)
+
+    return sol[:A], Gre, Gim
 end
 
 #=
