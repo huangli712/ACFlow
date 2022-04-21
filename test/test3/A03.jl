@@ -19,4 +19,4 @@ S = Dict{String,Any}(
 
 welcome()
 setup_param(C, S)
-solve(read_data())
+Aout, Gout = solve(read_data())
