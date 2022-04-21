@@ -5,16 +5,19 @@ push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
 using ACFlow
 
 C = Dict{String,Any}(
-    "finput" => "green.inp",
-    "ngrid"  => 100,
-    "wmax"   => 12.0,
-    "wmin"   => -12.0,
-    "beta"   => 5.0,
+    "finput" => "sigma.inp",
+    "mtype"  => "gauss",
+    "mesh"   => "tangent"
+    "ngrid"  => 300,
+    "wmax"   => 30.0,
+    "wmin"   => -30.0,
+    "beta"   => 38.0,
 )
 
 S = Dict{String,Any}(
-    "nalph"  => 15,
-    "alpha"  => 1e11,
+    "nalph"  => 13,
+    "alpha"  => 1e12,
+    "blur"   => 0.3,
 )
 
 welcome()
