@@ -14,7 +14,7 @@ Solve the analytical continuation problem. The arguments `grid`, `Gval`,
 and `Gerr` are the grid, value, and error bar, respectively.
 """
 function solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T}) where {T}
-    solve(RawData(grid, Gval, Gerr))
+    return solve(RawData(grid, Gval, Gerr))
 end
 
 """
@@ -26,7 +26,7 @@ and `err` are the grid, value, and error bar, respectively.
 function solve(grid::Vector, Gval::Vector{T}, err::T) where {T}
     Gerr = similar(Gval)
     fill!(Gerr, err)
-    solve(RawData(grid, Gval, Gerr))
+    return solve(RawData(grid, Gval, Gerr))
 end
 
 """
@@ -39,7 +39,7 @@ a fixed value `1.0e-4`.
 function solve(grid::Vector{F64}, Gval::Vector{T}) where {T}
     Gerr = similar(Gval)
     fill!(Gerr, 1.0e-4)
-    solve(RawData(grid, Gval, Gerr))
+    return solve(RawData(grid, Gval, Gerr))
 end
 
 """
@@ -55,15 +55,15 @@ function solve(rd::RawData)
 
     @cswitch solver begin
         @case "MaxEnt"
-            solve(MaxEntSolver(), rd)
+            return solve(MaxEntSolver(), rd)
             break
 
         @case "StochAC"
-            solve(StochACSolver(), rd)
+            return solve(StochACSolver(), rd)
             break
 
         @case "StochOM"
-            solve(StochOMSolver(), rd)
+            return solve(StochOMSolver(), rd)
             break
 
         @default
@@ -150,7 +150,7 @@ function kramers(am::AbstractMesh, A::Vector{F64})
     gre = reshape(sum(m, dims = 1), (nmesh))
     gim = -A * π
 
-    return gre, gim
+    return map((x,y) -> x + im * y, gre, gim)
 end
 
 """

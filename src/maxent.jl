@@ -56,7 +56,8 @@ function solve(S::MaxEntSolver, rd::RawData)
     println("[ MaxEnt ]")
     mec = init(S, rd)
     darr, sol = run(S, mec)
-    last(mec, darr, sol)
+    gout = last(mec, darr, sol)
+    return sol[:A], gout
 end
 
 """
@@ -139,10 +140,10 @@ function last(mec::MaxEntContext, svec::Vector, sol::Dict)
     G = reprod(mec.kernel, mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
     write_backward(mec.grid, G)
 
-    Gre, Gim = kramers(mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
-    write_complete(mec.mesh, Gre, Gim)
+    _G = kramers(mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
+    write_complete(mec.mesh, _G)
 
-    return sol[:A], Gre, Gim
+    return _G
 end
 
 #=

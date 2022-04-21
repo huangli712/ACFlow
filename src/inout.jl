@@ -249,22 +249,21 @@ function write_backward(ag::AbstractGrid, G::Vector{F64})
 end
 
 """
-    write_complete(am::AbstractMesh, Gre::Vector{F64}, Gim::Vector{F64})
+    write_complete(am::AbstractMesh, G::Vector{C64})
 
 Write the full data at real axis to `Gout.data`. `am` denotes the real
-axis, `Gre` and `Gim` are the real and imaginary parts of the calculated
-data, respectively. Note that the real part is obtained via the so-called
-Kramers-Kronig transformation.
+axis, `G` is the calculated green's function data. Note that its real
+part is obtained via the so-called Kramers-Kronig transformation.
 
 See also: [`kramers`](@ref).
 """
-function write_complete(am::AbstractMesh, Gre::Vector{F64}, Gim::Vector{F64})
-    nmesh = length(am)
-    @assert nmesh == length(Gre) && nmesh == length(Gim)
+function write_complete(am::AbstractMesh, G::Vector{C64})
+    @assert length(am) == length(G)
 
     open("Gout.data", "w") do fout
         for i in eachindex(am)
-            @printf(fout, "%16.12f %16.12f %16.12f\n", am[i], Gre[i], Gim[i])
+            z = G[i]
+            @printf(fout, "%16.12f %16.12f %16.12f\n", am[i], real(z), imag(z))
         end
     end
 end
