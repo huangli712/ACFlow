@@ -38,6 +38,11 @@
     * preblur
 
 * **A09**
-    * Fermionic + Imaginary Time
+    * Fermionic + Imaginary time
     * MaxEnt solver + StochAC solver
     * bryan algorithm
+
+* **A10**
+    * Bosonic + Imaginary time
+    * MaxEnt solver + StochAC solver
+    * chi2kink algorithm
