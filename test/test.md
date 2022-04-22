@@ -36,3 +36,8 @@
     * Bosonic + Matsubara
     * MaxEnt solver
     * preblur
+
+* **A09**
+    * Fermionic + Imaginary Time
+    * MaxEnt solver + StochAC solver
+    * bryan algorithm
