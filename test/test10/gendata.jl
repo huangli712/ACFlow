@@ -23,10 +23,10 @@ function trapz(x, y, linear::Bool = false)
     return value
 end
 
-wmin = -5.0  # Left boundary
-wmax = +5.0  # Right boundary
+wmin = +0.0  # Left boundary
+wmax = +15.  # Right boundary
 nmesh = 1001 # Number of real-frequency points
-ntau = 1000  # Number of imaginary time points
+ntau = 501   # Number of imaginary time points
 beta = 5.0   # Inverse temperature
 
 # Real frequency mesh
@@ -34,9 +34,11 @@ w_real = collect(LinRange(wmin, wmax, nmesh))
 
 # Spectral function
 spec_real = similar(w_real)
-@. spec_real  = exp(-0.5 * (w_real - 2.0) ^ 2.0 / (0.5 ^ 2.0)) / (sqrt(2.0 * π) * 0.5)
-@. spec_real += exp(-0.5 * (w_real + 2.0) ^ 2.0 / (0.5 ^ 2.0)) / (sqrt(2.0 * π) * 0.5)
-spec_real = spec_real ./ trapz(w_real, spec_real)
+@. spec_real  = exp(-0.5 * (w_real - 1.0) ^ 2.0 / (1.0 ^ 2.0)) / (sqrt(2.0 * π) * 0.5)
+@. spec_real -= exp(-0.5 * (w_real + 1.0) ^ 2.0 / (1.0 ^ 2.0)) / (sqrt(2.0 * π) * 0.5)
+@. spec_real += exp(-0.5 * (w_real - 6.0) ^ 2.0 / (0.5 ^ 2.0)) / (sqrt(2.0 * π) * 0.5) * 0.2
+@. spec_real -= exp(-0.5 * (w_real + 6.0) ^ 2.0 / (0.5 ^ 2.0)) / (sqrt(2.0 * π) * 0.5) * 0.2
+spec_real = spec_real ./ trapz(w_real[2:end], spec_real[2:end]./ w_real[2:end])
 
 # Imaginary time mesh
 t_mesh = collect(LinRange(0, beta, ntau))
@@ -52,11 +54,14 @@ gtau = zeros(Float64, ntau)
 for i = 1:ntau
     tw = exp.(-t_mesh[i] * w_real)
     bw = exp.(-beta * w_real)
-    gtau[i] = trapz(w_real, spec_real .* tw ./ (1.0 .+ bw)) + noise[i]
+    btw = exp.(-(beta - t_mesh[i]) * w_real)
+    integrand = 0.5 * spec_real .* (tw .+ btw) ./ (1.0 .- bw)
+    integrand[1] = 0.0
+    gtau[i] = trapz(w_real, integrand) + noise[i]
 end
 
 # Build error
-err = ones(Float64, ntau) * noise_amplitude * 10.0
+err = ones(Float64, ntau) * noise_amplitude
 
 # Write green's function
 open("green.data", "w") do fout
