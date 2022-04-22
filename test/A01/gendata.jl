@@ -53,7 +53,7 @@ noise = noise_abs .* exp.(noise_phase * im)
 kernel = 1.0 ./ (im * reshape(iw, (niw,1)) .- reshape(w_real, (1,nmesh)))
 
 # Build green's function
-KA = kernel  .* reshape(spec_real, (1,nmesh))
+KA = kernel .* reshape(spec_real, (1,nmesh))
 gf_mats = zeros(ComplexF64, niw)
 for i in eachindex(gf_mats)
     gf_mats[i] = trapz(w_real, KA[i,:]) + noise[i]
