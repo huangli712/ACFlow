@@ -57,7 +57,7 @@ for i = 1:ntau
     btw = exp.(-(beta - t_mesh[i]) * w_real)
     integrand = 0.5 * spec_real .* (tw .+ btw) ./ (1.0 .- bw)
     integrand[1] = 0.0
-    gtau[i] = trapz(w_real, integrand) + noise[i]
+    gtau[i] = trapz(w_real, integrand) #+ noise[i]
 end
 
 # Build error
