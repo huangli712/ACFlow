@@ -1,6 +1,7 @@
 * **A01**
     * Fermionic + Matsubara
     * MaxEnt solver
+    * StochOM solver
 
 * **A02**
     * Bosonic + Matsubara
