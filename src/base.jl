@@ -168,23 +168,26 @@ function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = tru
     # _PCOMM, _PMaxEnt, _PStochAC, and _PStochOM contain the default
     # parameters. If reset is true, they will be used to update the
     # PCOMM, PMaxEnt, PStochAC, and PStochOM dictionaries, respectively.
-    reset && rev_dict(_PCOMM)
-    rev_dict(C)
+    reset && begin
+        rev_dict(_PCOMM)
+        rev_dict(MaxEntSolver(), _PMaxEnt)
+        rev_dict(StochACSolver(), _PStochAC)
+        rev_dict(StochOMSolver(), _PStochOM)
+    end
 
+    rev_dict(C)
+    #
     solver = get_c("solver")
     @cswitch solver begin
         @case "MaxEnt"
-            reset && rev_dict(MaxEntSolver(), _PMaxEnt)
             rev_dict(MaxEntSolver(), S)
             break
 
         @case "StochAC"
-            reset && rev_dict(StochACSolver(), _PStochAC)
             rev_dict(StochACSolver(), S)
             break
 
         @case "StochOM"
-            reset && rev_dict(StochOMSolver(), _PStochOM)
             rev_dict(StochOMSolver(), S)
             break
 
