@@ -10,6 +10,7 @@
 * **A03**
     * Fermionic + Matsubara
     * MaxEnt solver
+    * StochOM solver
     * Script mode
 
 * **A04**
