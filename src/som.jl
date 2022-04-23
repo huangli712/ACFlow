@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/08
+# Last modified: 2022/04/23
 #
 
 #=
@@ -237,18 +237,23 @@ function average(SC::StochOMContext)
 end
 
 """
-    postprocess(SC::StochOMContext, Aout::Vector{F64})
+    last(SC::StochOMContext, Aout::Vector{F64})
 
 It will process and write the calculated results by the StochOM solver,
 including final spectral function and reproduced correlator.
 """
-function postprocess(SC::StochOMContext, Aout::Vector{F64})
+function last(SC::StochOMContext, Aout::Vector{F64})
     write_spectrum(SC.mesh, Aout)
 
     # Reproduce input data
     kernel = make_kernel(SC.mesh, SC.grid)
-    Gₙ = reprod(kernel, SC.mesh, Aout)
-    write_reproduce(SC.grid, Gₙ)
+    G = reprod(kernel, SC.mesh, Aout)
+    write_backward(SC.grid, G)
+
+    _G = kramers(SC.mesh, Aout)
+    write_complete(SC.mesh, _G)
+
+    return _G
 end
 
 #=

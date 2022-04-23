@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/21
+# Last modified: 2022/04/23
 #
 
 """
@@ -600,7 +600,7 @@ solve          -> Wrapper function for the StochOM solver.
 init           -> Initialize stochastic optimization simulation.
 run (prun)     -> Perform stochastic optimization simulation.
 average        -> Evaluate the averaged results.
-postprocess    -> Postprocess the calculated results and write them.
+last           -> Postprocess the calculated results and write them.
 #
 update         -> Sample field configurations via metropolis algorithm.
 #
@@ -634,7 +634,7 @@ export init
 export run
 export prun
 export average
-export postprocess
+export last
 #
 export update
 #
