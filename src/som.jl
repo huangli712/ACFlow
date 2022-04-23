@@ -505,6 +505,15 @@ function calc_lambda(r::Box, grid::FermionicMatsubaraGrid)
     return vcat(real(Λ), imag(Λ))
 end
 
+function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
+end
+
+function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid)
+end
+
+function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid)
+end
+
 """
     calc_error(Λ::Array{F64,2}, Gᵥ::Vector{F64}, σ²::Vector{F64}, nk::I64)
 
