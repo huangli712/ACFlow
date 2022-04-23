@@ -213,7 +213,7 @@ function average(SC::StochOMContext)
     Aom = zeros(F64, nmesh)
 
     for l = 1:ntry
-        if dev_ave / 1.2 - SC.Δᵥ[l] > 0
+        if dev_ave / 1.0 - SC.Δᵥ[l] > 0
             Lgood = Lgood + 1
             for w = 1:nmesh
                 _omega = SC.mesh[w]
