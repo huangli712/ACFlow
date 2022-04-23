@@ -84,8 +84,6 @@ Solve the analytical continuation problem by the stochastic optimization
 method.
 """
 function solve(S::StochOMSolver, rd::RawData)
-    nmesh = get_c("nmesh")
-
     println("[ StochOM ]")
     MC, SC = init(S, rd)
 
@@ -98,16 +96,18 @@ function solve(S::StochOMSolver, rd::RawData)
         sol = pmap((x) -> prun(S, p1, p2, MC, SC), 1:nworkers())
         @assert length(sol) == nworkers()
         #
-        Aout = zeros(F64, nmesh)
+        Aout = similar(sol[end])
+        fill!(Aout, 0.0)
         for i in eachindex(sol)
             @. Aout = Aout + sol[i] / nworkers()
         end
         #
-        postprocess(SC, Aout)
+        Gout = last(SC, Aout)
     else
         Aout = run(S, MC, SC)
-        postprocess(SC, Aout)
+        Gout = last(SC, Aout)
     end
+    return Aout, Gout
 end
 
 """
