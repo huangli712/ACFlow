@@ -483,11 +483,18 @@ Preprocess the input data (`rd`).
 See also: [`RawData`](@ref).
 """
 function init_iodata(S::StochOMSolver, rd::RawData)
+    grid = get_c("grid")
+
     val = rd.value
     err = 1.0 ./ rd.error
 
-    Gᵥ = vcat(real(val), imag(val))
-    σ² = vcat(real(err), imag(err)) .^ 2.0
+    if grid == "ffreq"
+        Gᵥ = vcat(real(val), imag(val))
+        σ² = vcat(real(err), imag(err)) .^ 2.0
+    else
+        Gᵥ = real(val)
+        σ² = real(err) .^ 2.0
+    end
 
     return Gᵥ, σ²
 end
@@ -506,6 +513,13 @@ function calc_lambda(r::Box, grid::FermionicMatsubaraGrid)
 end
 
 function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
+    ktype = get_c("ktype")
+    if ktype == "bsymm"
+        Λ = @. atan( (r.c - 0.5 * r.w) / grid.ω ) - atan( (r.c + 0.5 * r.w) / grid.ω )
+        Λ = 2.0 * r.h / π * (r.w .+ grid.ω .* Λ)
+        return Λ
+    else
+    end
 end
 
 function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid)
