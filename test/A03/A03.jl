@@ -20,3 +20,20 @@ S = Dict{String,Any}(
 welcome()
 setup_param(C, S)
 Aout, Gout = solve(read_data())
+
+cp("Aout.data", "Aout.data.mem", force = true)
+cp("Gout.data", "Gout.data.mem", force = true)
+cp("repr.data", "repr.data.mem", force = true)
+
+C = Dict{String,Any}(
+    "solver" => "StochOM"
+)
+
+S = Dict{String,Any}(
+)
+
+setup_param(C, S, false)
+Aout, Gout = solve(read_data())
+cp("Aout.data", "Aout.data.som", force = true)
+cp("Gout.data", "Gout.data.som", force = true)
+cp("repr.data", "repr.data.som", force = true)
