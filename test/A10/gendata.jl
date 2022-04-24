@@ -23,6 +23,7 @@ function trapz(x, y, linear::Bool = false)
     return value
 end
 
+# Setup parameters
 wmin = +0.0  # Left boundary
 wmax = +15.  # Right boundary
 nmesh = 1001 # Number of real-frequency points
