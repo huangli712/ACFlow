@@ -6,8 +6,9 @@
     * Linear mesh
 
 * **A02**
-    * Bosonic + Matsubara
+    * Bosonic (symm) + Matsubara
     * MaxEnt solver (chi2kink algorithm)
+    * StochOM solver
     * Flat model
     * Linear mesh
 
