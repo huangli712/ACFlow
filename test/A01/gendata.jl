@@ -23,6 +23,7 @@ function trapz(x, y, linear::Bool = false)
     return value
 end
 
+# Setup parameters
 wmin = -5.0  # Left boundary
 wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
@@ -66,13 +67,13 @@ err = ones(Float64, niw) * noise_amplitude
 open("green.data", "w") do fout
     for i in eachindex(gf_mats)
         z = gf_mats[i]
-        @printf(fout, "%16.12f %16.12f %16.12f %16.12f\n", iw[i], real(z), imag(z), err[i])
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err[i])
     end
 end
 
 # Write spectral function
 open("exact.data", "w") do fout
     for i in eachindex(spec_real)
-        @printf(fout, "%16.12f %16.12f\n", w_real[i], spec_real[i])
+        @printf(fout, "%20.16f %20.16f\n", w_real[i], spec_real[i])
     end
 end
