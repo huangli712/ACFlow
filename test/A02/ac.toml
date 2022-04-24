@@ -1,6 +1,6 @@
 [COMM]
 finput = "green.data"
-solver = "MaxEnt"
+solver = "StochOM"
 ktype  = "bsymm"
 mtype  = "flat"
 grid   = "bfreq"
@@ -20,7 +20,7 @@ ratio  = 10.0
 blur   = -1.0
 
 [StochOM]
-ntry  = 200
+ntry  = 2000
 nstep = 1000
 nbox  = 100
 sbox  = 0.005
