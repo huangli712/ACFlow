@@ -23,6 +23,7 @@ function trapz(x, y, linear::Bool = false)
     return value
 end
 
+# Setup parameters
 wmin = -5.0  # Left boundary
 wmax = +5.0  # Right boundary
 nmesh = 5001 # Number of real-frequency points
@@ -32,29 +33,37 @@ beta = 40.0  # Inverse temperature
 # Real frequency mesh
 w_real = collect(LinRange(wmin, wmax, nmesh))
 
-# Spectral function
+# Initial spectral function
 spec_real1 = similar(w_real)
 @. spec_real1  = 0.5 * exp(-(w_real - 1.0) ^ 2.0 / (2.0 * 0.2 ^ 2.0)) / (0.2 * sqrt(2.0 * π))
 @. spec_real1 += 0.5 * exp(-(w_real - 2.0) ^ 2.0 / (2.0 * 0.7 ^ 2.0)) / (0.7 * sqrt(2.0 * π))
+#
 spec_real2 = similar(w_real)
 @. spec_real2  = 0.5 * exp(-(w_real + 1.0) ^ 2.0 / (2.0 * 0.25^ 2.0)) / (0.25* sqrt(2.0 * π))
 @. spec_real2 += 0.5 * exp(-(w_real + 2.1) ^ 2.0 / (2.0 * 0.6 ^ 2.0)) / (0.6 * sqrt(2.0 * π))
-
+#
 spec_matrix = zeros(Float64, (2,2,nmesh))
 spec_matrix[1,1,:] .= spec_real1
 spec_matrix[2,2,:] .= spec_real2
 
-# Rotation matrix
+# Rotate spectral function to generate non-diagonal element
+#
+# Rotation angle
 rot_ang = 0.1
+#
+# Rotation matrix
 rot_mat = [cos(rot_ang) sin(rot_ang); -sin(rot_ang) cos(rot_ang)]
 T_rot_mat = rot_mat'
+#
+# Get final spectral function
 true_spec = zeros(Float64, (2,2,nmesh))
 for i = 1:2
     for l = 1:2
         for w = 1:nmesh
             for j = 1:2
                 for k = 1:2
-                    true_spec[i,l,w] = true_spec[i,l,w] + rot_mat[i,j] * spec_matrix[j,k,w] * T_rot_mat[k,l]
+                    true_spec[i,l,w] = true_spec[i,l,w] + 
+                        rot_mat[i,j] * spec_matrix[j,k,w] * T_rot_mat[k,l]
                 end
             end
         end
@@ -82,19 +91,19 @@ end
 err = 1e-5
 
 # Write green's function
-open("green.data00", "w") do fout
+open("green11.data", "w") do fout
     for i = 1:niw
         z = giw[1,1,i]
         @printf(fout, "%16.12f %16.12f %16.12f %16.12f\n", iw[i], real(z), imag(z), err)
     end
 end
-open("green.data01", "w") do fout
+open("green12.data", "w") do fout
     for i = 1:niw
         z = giw[1,2,i]
         @printf(fout, "%16.12f %16.12f %16.12f %16.12f\n", iw[i], real(z), imag(z), err)
     end
 end
-open("green.data11", "w") do fout
+open("green22.data", "w") do fout
     for i = 1:niw
         z = giw[2,2,i]
         @printf(fout, "%16.12f %16.12f %16.12f %16.12f\n", iw[i], real(z), imag(z), err)
@@ -102,8 +111,18 @@ open("green.data11", "w") do fout
 end
 
 # Write spectral function
-open("exact.data01", "w") do fout
+open("exact11.data", "w") do fout
+    for i in eachindex(w_real)
+        @printf(fout, "%16.12f %16.12f\n", w_real[i], true_spec[1,1,i])
+    end
+end
+open("exact12.data", "w") do fout
     for i in eachindex(w_real)
         @printf(fout, "%16.12f %16.12f\n", w_real[i], true_spec[1,2,i])
+    end
+end
+open("exact22.data", "w") do fout
+    for i in eachindex(w_real)
+        @printf(fout, "%16.12f %16.12f\n", w_real[i], true_spec[2,2,i])
     end
 end
