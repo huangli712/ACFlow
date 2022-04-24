@@ -58,7 +58,7 @@ Mutable struct. It is used within the StochOM solver only.
 ### Members
 
 * Gᵥ    -> Input data for correlator.
-* σ²    -> Actually 1.0 / σ².
+* σ¹    -> Actually 1.0 / σ¹.
 * grid  -> Grid for input data.
 * mesh  -> Mesh for output spectrum.
 * Cᵥ    -> It is used to record the field configurations for all attempts.
@@ -66,7 +66,7 @@ Mutable struct. It is used within the StochOM solver only.
 """
 mutable struct StochOMContext
     Gᵥ   :: Vector{F64}
-    σ²   :: Vector{F64}
+    σ¹   :: Vector{F64}
     grid :: AbstractGrid
     mesh :: AbstractMesh
     Cᵥ   :: Vector{Vector{Box}}
@@ -120,8 +120,8 @@ function init(S::StochOMSolver, rd::RawData)
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
-    Gᵥ, σ² = init_iodata(S, rd)
-    println("Postprocess input data: ", length(σ²), " points")
+    Gᵥ, σ¹ = init_iodata(S, rd)
+    println("Postprocess input data: ", length(σ¹), " points")
 
     grid = make_grid(rd)
     println("Build grid for input data: ", length(grid), " points")
@@ -130,7 +130,7 @@ function init(S::StochOMSolver, rd::RawData)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
     Cᵥ, Δᵥ = init_context(S)
-    SC = StochOMContext(Gᵥ, σ², grid, mesh, Cᵥ, Δᵥ)
+    SC = StochOMContext(Gᵥ, σ¹, grid, mesh, Cᵥ, Δᵥ)
 
     return MC, SC
 end
@@ -445,7 +445,7 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
         Λ[:,k] .= calc_lambda(R, SC.grid)
     end
     G = calc_green(Λ, _Know)
-    Δ = calc_error(G, SC.Gᵥ, SC.σ²)
+    Δ = calc_error(G, SC.Gᵥ, SC.σ¹)
 
     return StochOMElement(C, Λ, G, Δ)
 end
@@ -490,13 +490,13 @@ function init_iodata(S::StochOMSolver, rd::RawData)
 
     if grid == "ffreq"
         Gᵥ = vcat(real(val), imag(val))
-        σ² = vcat(real(err), imag(err)) .^ 2.0
+        σ¹ = vcat(real(err), imag(err))
     else
         Gᵥ = real(val)
-        σ² = real(err) .^ 2.0
+        σ¹ = real(err)
     end
 
-    return Gᵥ, σ²
+    return Gᵥ, σ¹
 end
 
 """
@@ -512,6 +512,14 @@ function calc_lambda(r::Box, grid::FermionicMatsubaraGrid)
     return vcat(real(Λ), imag(Λ))
 end
 
+"""
+    calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
+
+Try to calculate the kernel-related function Λ. This function works for
+BosonicMatsubaraGrid only.
+
+See also: [`BosonicMatsubaraGrid`](@ref).
+"""
 function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
     ktype = get_c("ktype")
     if ktype == "bsymm"
@@ -519,17 +527,18 @@ function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
         Λ = r.h * (r.w .+ grid.ω .* Λ)
         return Λ
     else
+
     end
 end
 
 """
-    calc_error(G::Vector{F64}, Gᵥ::Vector{F64}, σ²::Vector{F64})
+    calc_error(G::Vector{F64}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
 
-Try to calculate χ². Here `Gᵥ` and `σ²` denote the raw correlator and
+Try to calculate χ². Here `Gᵥ` and `σ¹` denote the raw correlator and
 related standard deviation. `G` means the reproduced correlator.
 """
-function calc_error(G::Vector{F64}, Gᵥ::Vector{F64}, σ²::Vector{F64})
-    return sum( (G .- Gᵥ) .^ 2.0 .* σ² )
+function calc_error(G::Vector{F64}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
+    return sum( abs.((G .- Gᵥ) .* σ¹) )
 end
 
 """
@@ -600,7 +609,7 @@ function try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
     G2 = calc_lambda(Rnew, SC.grid)
     G3 = calc_lambda(Radd, SC.grid)
 
-    Δ = calc_error(SE.G - G1 + G2 + G3, SC.Gᵥ, SC.σ²)
+    Δ = calc_error(SE.G - G1 + G2 + G3, SC.Gᵥ, SC.σ¹)
 
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
         SE.C[t] = Rnew
@@ -645,7 +654,7 @@ function try_remove(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
     R2n = Box(R2.h + dx / R2.w, R2.w, R2.c)
     G2n = calc_lambda(R2n, SC.grid)
 
-    Δ = calc_error(SE.G - G1 - G2 + G2n, SC.Gᵥ, SC.σ²)
+    Δ = calc_error(SE.G - G1 - G2 + G2n, SC.Gᵥ, SC.σ¹)
 
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
         SE.C[t2] = R2n
@@ -690,7 +699,7 @@ function try_shift(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     G1 = SE.Λ[:,t]
     G2 = calc_lambda(Rn, SC.grid)
 
-    Δ = calc_error(SE.G - G1 + G2, SC.Gᵥ, SC.σ²)
+    Δ = calc_error(SE.G - G1 + G2, SC.Gᵥ, SC.σ¹)
 
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
         SE.C[t] = Rn
@@ -733,7 +742,7 @@ function try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     G1 = SE.Λ[:,t]
     G2 = calc_lambda(Rn, SC.grid)
 
-    Δ = calc_error(SE.G - G1 + G2, SC.Gᵥ, SC.σ²)
+    Δ = calc_error(SE.G - G1 + G2, SC.Gᵥ, SC.σ¹)
 
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
         SE.C[t] = Rn
@@ -782,7 +791,7 @@ function try_height(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
     G2A = SE.Λ[:,t2]
     G2B = calc_lambda(R2n, SC.grid)
 
-    Δ = calc_error(SE.G - G1A + G1B - G2A + G2B, SC.Gᵥ, SC.σ²)
+    Δ = calc_error(SE.G - G1A + G1B - G2A + G2B, SC.Gᵥ, SC.σ¹)
 
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
         SE.C[t1] = R1n
@@ -845,7 +854,7 @@ function try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
 
         R3 = Box(h, w2, c2 + dc2)
         G3 = calc_lambda(R3, SC.grid)
-        Δ = calc_error(SE.G - G1 + G2 + G3, SC.Gᵥ, SC.σ²)
+        Δ = calc_error(SE.G - G1 + G2 + G3, SC.Gᵥ, SC.σ¹)
 
         if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
             SE.C[t] = SE.C[end]
@@ -906,7 +915,7 @@ function try_merge(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     Rn = Box(h_new, w_new, c_new + dc)
     Gn = calc_lambda(Rn, SC.grid)
 
-    Δ = calc_error(SE.G - G1 - G2 + Gn, SC.Gᵥ, SC.σ²)
+    Δ = calc_error(SE.G - G1 - G2 + Gn, SC.Gᵥ, SC.σ¹)
 
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
         SE.C[t1] = Rn
