@@ -4,6 +4,11 @@ push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
 
 using ACFlow
 
+welcome()
+
+# For MaxEnt solver
+
+# Setup parameters
 C = Dict{String,Any}(
     "finput" => "green.inp",
     "ngrid"  => 100,
@@ -11,12 +16,13 @@ C = Dict{String,Any}(
     "wmin"   => -12.0,
     "beta"   => 5.0,
 )
-
+#
 S = Dict{String,Any}(
     "nalph"  => 15,
     "alpha"  => 1e11,
 )
-
-welcome()
+#
 setup_param(C, S)
+
+# Call the solver
 Aout, Gout = solve(read_data())
