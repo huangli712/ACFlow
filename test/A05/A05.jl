@@ -4,6 +4,11 @@ push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
 
 using ACFlow
 
+welcome()
+
+
+
+# Setup parameters
 C = Dict{String,Any}(
     "finput" => "sigma.inp",
     "mtype"  => "gauss",
@@ -13,13 +18,14 @@ C = Dict{String,Any}(
     "wmin"   => -30.0,
     "beta"   => 38.0,
 )
-
+#
 S = Dict{String,Any}(
     "nalph"  => 13,
     "alpha"  => 1e12,
     "blur"   => 0.3,
 )
-
-welcome()
+#
 setup_param(C, S)
+
+# Call the solver
 Aout, Gout = solve(read_data())
