@@ -39,6 +39,11 @@
     * MaxEnt solver
     * preblur
 
+* **A08**
+    * Fermionic + Matsubara 
+    * MaxEnt solver
+    * non-diagonal element
+
 * **A09**
     * Fermionic + Imaginary time
     * MaxEnt solver + StochAC solver
