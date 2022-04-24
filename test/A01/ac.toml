@@ -1,6 +1,6 @@
 [COMM]
 finput = "green.data"
-solver = "MaxEnt"
+solver = "StochOM"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
