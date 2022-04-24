@@ -2,6 +2,7 @@
 
 push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
 
+using Printf
 using ACFlow
 
 C = Dict{String,Any}(
@@ -41,12 +42,12 @@ cp("Aout.data", "Aout.22.data", force = true)
 cp("Gout.data", "Gout.22.data", force = true)
 cp("repr.data", "repr.22.data", force = true)
 
-wmin = -5.0  # Left boundary
-wmax = +5.0  # Right boundary
-nmesh = 5001 # Number of real-frequency points
+wmin = -4.0 # Left boundary
+wmax = +4.0 # Right boundary
+nmesh = 400 # Number of real-frequency points
 model_offdiag = sqrt.(Aout11 .* Aout22)
 w_real = collect(LinRange(wmin, wmax, nmesh))
-open("model.data") do fout
+open("model.data", "w") do fout
     for i in eachindex(w_real)
         @printf(fout, "%20.16f %20.16f\n", w_real[i], model_offdiag[i])
     end
