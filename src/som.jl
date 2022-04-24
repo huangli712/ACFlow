@@ -444,8 +444,8 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
         push!(C, R)
         Λ[:,k] .= calc_lambda(R, SC.grid)
     end
-    Δ = calc_error(Λ, SC.Gᵥ, SC.σ², _Know)
     G = calc_green(Λ, _Know)
+    Δ = calc_error(G, SC.Gᵥ, SC.σ²)
 
     return StochOMElement(C, Λ, G, Δ)
 end
@@ -520,27 +520,6 @@ function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
         return Λ
     else
     end
-end
-
-"""
-    calc_error(Λ::Array{F64,2}, Gᵥ::Vector{F64}, σ²::Vector{F64}, nk::I64)
-
-Try to calculate χ². Here `Gᵥ` and `σ²` denote the raw correlator and
-related standard deviation. `Λ` and `nk` are used to construct a new
-correlator. The χ² is used to measure the distance between old and new
-correlators.
-"""
-function calc_error(Λ::Array{F64,2}, Gᵥ::Vector{F64}, σ²::Vector{F64}, nk::I64)
-    ngrid, nbox = size(Λ)
-    @assert nk ≤ nbox
-
-    res = 0.0
-    for w = 1:ngrid
-        g = sum( Λ[w,1:nk] )
-        res = res + (g - Gᵥ[w]) ^ 2.0 * σ²[w]
-    end
-
-    return res
 end
 
 """
