@@ -25,31 +25,34 @@
     * Script mode
     * Tangent mesh
     * Gauss model
-    * preblur
+    * Preblur
 
 * **A06**
     * Fermionic + Matsubara
     * MaxEnt solver
     * Tangent mesh
     * Gauss model
-    * preblur
+    * Preblur
 
 * **A07**
     * Bosonic + Matsubara
     * MaxEnt solver
-    * preblur
+    * Preblur
 
 * **A08**
     * Fermionic + Matsubara 
     * MaxEnt solver
-    * non-diagonal element
+    * Script mode
+    * Non-diagonal element
 
 * **A09**
     * Fermionic + Imaginary time
-    * MaxEnt solver + StochAC solver
-    * bryan algorithm
+    * MaxEnt solver
+    * StochAC solver
+    * Bryan algorithm
 
 * **A10**
     * Bosonic + Imaginary time
-    * MaxEnt solver + StochAC solver
-    * chi2kink algorithm
+    * MaxEnt solver
+    * StochAC solver
+    * Chi2kink algorithm
