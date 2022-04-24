@@ -91,38 +91,38 @@ end
 err = 1e-5
 
 # Write green's function
-open("green11.data", "w") do fout
+open("green.11.data", "w") do fout
     for i = 1:niw
         z = giw[1,1,i]
-        @printf(fout, "%16.12f %16.12f %16.12f %16.12f\n", iw[i], real(z), imag(z), err)
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
     end
 end
-open("green12.data", "w") do fout
+open("green.12.data", "w") do fout
     for i = 1:niw
         z = giw[1,2,i]
-        @printf(fout, "%16.12f %16.12f %16.12f %16.12f\n", iw[i], real(z), imag(z), err)
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
     end
 end
-open("green22.data", "w") do fout
+open("green.22.data", "w") do fout
     for i = 1:niw
         z = giw[2,2,i]
-        @printf(fout, "%16.12f %16.12f %16.12f %16.12f\n", iw[i], real(z), imag(z), err)
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
     end
 end
 
 # Write spectral function
-open("exact11.data", "w") do fout
+open("exact.11.data", "w") do fout
     for i in eachindex(w_real)
-        @printf(fout, "%16.12f %16.12f\n", w_real[i], true_spec[1,1,i])
+        @printf(fout, "%20.16f %20.16f\n", w_real[i], true_spec[1,1,i])
     end
 end
-open("exact12.data", "w") do fout
+open("exact.12.data", "w") do fout
     for i in eachindex(w_real)
-        @printf(fout, "%16.12f %16.12f\n", w_real[i], true_spec[1,2,i])
+        @printf(fout, "%20.16f %20.16f\n", w_real[i], true_spec[1,2,i])
     end
 end
-open("exact22.data", "w") do fout
+open("exact.22.data", "w") do fout
     for i in eachindex(w_real)
-        @printf(fout, "%16.12f %16.12f\n", w_real[i], true_spec[2,2,i])
+        @printf(fout, "%20.16f %20.16f\n", w_real[i], true_spec[2,2,i])
     end
 end
