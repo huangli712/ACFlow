@@ -480,21 +480,12 @@ end
 
 Preprocess the input data (`rd`).
 
-See also: [`RawData`](@ref).
+See also: [`RawData`](@ref), [`GreenData`](@ref).
 """
 function init_iodata(S::StochOMSolver, rd::RawData)
-    grid = get_c("grid")
-
-    val = rd.value
-    err = 1.0 ./ rd.error
-
-    if grid == "ffreq"
-        Gᵥ = vcat(real(val), imag(val))
-        σ¹ = vcat(real(err), imag(err))
-    else
-        Gᵥ = real(val)
-        σ¹ = real(err)
-    end
+    G = make_data(rd)
+    Gᵥ = G.value
+    σ¹ = 1.0 ./ G.error
 
     return Gᵥ, σ¹
 end
@@ -508,7 +499,10 @@ FermionicMatsubaraGrid only.
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::FermionicMatsubaraGrid)
-    Λ = @. r.h * log((im * grid.ω - r.c + 0.5 * r.w) / (im * grid.ω - r.c - 0.5 * r.w))
+    e₁ = r.c - 0.5 * r.w
+    e₂ = r.c + 0.5 * r.w
+    iw = im * grid.ω
+    Λ = @. r.h * log((iw - e₁) / (iw - e₂))
     return vcat(real(Λ), imag(Λ))
 end
 
