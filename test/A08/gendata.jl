@@ -62,7 +62,7 @@ for i = 1:2
         for w = 1:nmesh
             for j = 1:2
                 for k = 1:2
-                    true_spec[i,l,w] = true_spec[i,l,w] + 
+                    true_spec[i,l,w] = true_spec[i,l,w] +
                         rot_mat[i,j] * spec_matrix[j,k,w] * T_rot_mat[k,l]
                 end
             end

@@ -49,7 +49,7 @@ noise_amplitude = 1.0e-4
 noise = randn(rng, Float64, niw) * noise_amplitude
 
 # Kernel function
-kernel = reshape(w_real .^ 2.0, (1,nmesh)) ./ 
+kernel = reshape(w_real .^ 2.0, (1,nmesh)) ./
          (reshape(iw .^ 2.0, (niw,1)) .+ reshape(w_real .^ 2.0, (1,nmesh)))
 kernel[1,1] = 1.0
 
