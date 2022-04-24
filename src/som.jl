@@ -522,12 +522,6 @@ function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
     end
 end
 
-function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid)
-end
-
-function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid)
-end
-
 """
     calc_error(Λ::Array{F64,2}, Gᵥ::Vector{F64}, σ²::Vector{F64}, nk::I64)
 
