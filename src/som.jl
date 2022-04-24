@@ -516,8 +516,12 @@ See also: [`BosonicMatsubaraGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
     ktype = get_c("ktype")
+
+    e₁ = r.c - 0.5 * r.w
+    e₂ = r.c + 0.5 * r.w
+
     if ktype == "bsymm"
-        Λ = @. atan( (r.c - 0.5 * r.w) / grid.ω ) - atan( (r.c + 0.5 * r.w) / grid.ω )
+        Λ = @. atan( e₁ / grid.ω ) - atan( e₂ / grid.ω )
         Λ = r.h * (r.w .+ grid.ω .* Λ)
         return Λ
     else
