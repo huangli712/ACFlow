@@ -23,19 +23,27 @@ function trapz(x, y, linear::Bool = false)
     return value
 end
 
-wmin = -10.0 # Left boundary
-wmax = +10.0 # Right boundary
-nmesh = 2001 # Number of real-frequency points
-niw  = 50    # Number of Matsubara frequencies
-beta = 20.0  # Inverse temperature
+wmin = -5.0  # Left boundary
+wmax = +5.0  # Right boundary
+nmesh = 5001 # Number of real-frequency points
+niw  = 20    # Number of Matsubara frequencies
+beta = 40.0  # Inverse temperature
 
 # Real frequency mesh
 w_real = collect(LinRange(wmin, wmax, nmesh))
 
 # Spectral function
-spec_real = similar(w_real)
-@. spec_real = exp(-(w_real - 0.5) ^ 2.0 / (2.0 * 1.0 ^ 2.0))
-spec_real = spec_real ./ trapz(w_real, spec_real)
+spec_real1 = similar(w_real)
+@. spec_real1  = 0.5 * exp(-(w_real - 1.0) ^ 2.0 / (2.0 * 0.2 ^ 2.0)) / (0.2 * sqrt(2.0 * π))
+@. spec_real1 += 0.5 * exp(-(w_real - 2.0) ^ 2.0 / (2.0 * 0.7 ^ 2.0)) / (0.7 * sqrt(2.0 * π))
+spec_real2 = similar(w_real)
+@. spec_real2  = 0.5 * exp(-(w_real + 1.0) ^ 2.0 / (2.0 * 0.25^ 2.0)) / (0.25* sqrt(2.0 * π))
+@. spec_real2 += 0.5 * exp(-(w_real + 2.1) ^ 2.0 / (2.0 * 0.6 ^ 2.0)) / (0.6 * sqrt(2.0 * π))
+
+spec_matrix = zeros(Float64, (2,2,nmesh))
+spec_matrix[1,1,:] .= spec_real1
+spec_matrix[2,2,:] .= spec_real2
+error()
 
 # Matsubara frequency mesh
 iw = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
