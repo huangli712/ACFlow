@@ -43,42 +43,67 @@ spec_real2 = similar(w_real)
 spec_matrix = zeros(Float64, (2,2,nmesh))
 spec_matrix[1,1,:] .= spec_real1
 spec_matrix[2,2,:] .= spec_real2
-error()
+
+# Rotation matrix
+rot_ang = 0.1
+rot_mat = [cos(rot_ang) sin(rot_ang); -sin(rot_ang) cos(rot_ang)]
+T_rot_mat = rot_mat'
+true_spec = zeros(Float64, (2,2,nmesh))
+for i = 1:2
+    for l = 1:2
+        for w = 1:nmesh
+            for j = 1:2
+                for k = 1:2
+                    true_spec[i,l,w] = true_spec[i,l,w] + rot_mat[i,j] * spec_matrix[j,k,w] * T_rot_mat[k,l]
+                end
+            end
+        end
+    end
+end
 
 # Matsubara frequency mesh
 iw = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
-
-# Noise
-seed = rand(1:100000000)
-rng = MersenneTwister(seed)
-noise_amplitude = 0.005
-noise = randn(rng, Float64, niw) + im * randn(rng, Float64, niw)
-noise = noise_amplitude * noise / sqrt(2.0)
 
 # Kernel function
 kernel = 1.0 ./ (im * reshape(iw, (niw,1)) .- reshape(w_real, (1,nmesh)))
 
 # Build green's function
-KA = kernel .* reshape(spec_real, (1,nmesh))
-gf_mats = zeros(ComplexF64, niw)
-for i in eachindex(gf_mats)
-    gf_mats[i] = trapz(w_real, KA[i,:]) + noise[i]
+KA = reshape(kernel, (1,1,niw,nmesh)) .* reshape(true_spec, (2,2,1,nmesh))
+giw = zeros(ComplexF64, (2,2,niw))
+for i = 1:2
+    for j = 1:2
+        for w = 1:niw
+            giw[i,j,w] = trapz(w_real, KA[i,j,w,:])
+        end
+    end
 end
 
 # Build error
-err = ones(Float64, niw) * noise_amplitude
+err = 1e-5
 
 # Write green's function
-open("green.data", "w") do fout
-    for i in eachindex(gf_mats)
-        z = gf_mats[i]
-        @printf(fout, "%16.12f %16.12f %16.12f %16.12f\n", iw[i], real(z), imag(z), err[i])
+open("green.data00", "w") do fout
+    for i = 1:niw
+        z = giw[1,1,i]
+        @printf(fout, "%16.12f %16.12f %16.12f %16.12f\n", iw[i], real(z), imag(z), err)
+    end
+end
+open("green.data01", "w") do fout
+    for i = 1:niw
+        z = giw[1,2,i]
+        @printf(fout, "%16.12f %16.12f %16.12f %16.12f\n", iw[i], real(z), imag(z), err)
+    end
+end
+open("green.data11", "w") do fout
+    for i = 1:niw
+        z = giw[2,2,i]
+        @printf(fout, "%16.12f %16.12f %16.12f %16.12f\n", iw[i], real(z), imag(z), err)
     end
 end
 
 # Write spectral function
-open("exact.data", "w") do fout
-    for i in eachindex(spec_real)
-        @printf(fout, "%16.12f %16.12f\n", w_real[i], spec_real[i])
+open("exact.data01", "w") do fout
+    for i in eachindex(w_real)
+        @printf(fout, "%16.12f %16.12f\n", w_real[i], true_spec[1,2,i])
     end
 end

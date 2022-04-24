@@ -34,6 +34,8 @@ true_spec_rot = np.einsum('ij,jkw,kl', rot_mat, spec_matrix, rot_mat.transpose()
 
 kernel = 1./(1j*iw[:,None] - true_w[None,:])
 giw = np.trapz(kernel[None,None,:,:]*true_spec_rot[:,:,None,:], true_w, axis=3)
+#print((kernel[None,None,:,:]*true_spec_rot[:,:,None,:]).shape)
+#sys.exit(-1)
 #plt.plot(iw, giw[1,1].real, ls='--')
 #plt.plot(iw, giw[1,1].imag)
 #plt.show()
