@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/23
+# Last modified: 2022/04/25
 #
 
 """
@@ -527,7 +527,7 @@ solve          -> Wrapper function for the StochAC solver.
 init           -> Initialize stochastic analytical continuation simulation.
 run (prun)     -> Perform stochastic analytical continuation simulation.
 average        -> Evaluate the averaged results.
-postprocess    -> Postprocess the calculated results and write them.
+last           -> Postprocess the calculated results and write them.
 #
 warmup         -> Warmup monte carlo engine.
 sample         -> Sample field configurations via metropolis algorithm.
@@ -560,7 +560,7 @@ export init
 export run
 export prun
 export average
-export postprocess
+export last
 #
 export warmup
 export sample

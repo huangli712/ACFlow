@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/08
+# Last modified: 2022/04/25
 #
 
 #=
@@ -96,11 +96,12 @@ function solve(S::StochACSolver, rd::RawData)
             @. Uα = Uα + b / nworkers()
         end
         #
-        postprocess(SC, Aout, Uα)
+        Gout = last(SC, Aout, Uα)
     else
         Aout, Uα = run(S, MC, SE, SC)
-        postprocess(SC, Aout, Uα)
+        Gout = last(SC, Aout, Uα)
     end
+    return Aout, Gout
 end
 
 """
@@ -250,13 +251,13 @@ function average(step::F64, SC::StochACContext)
 end
 
 """
-    postprocess(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
+    last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
 
 It will process and write the calculated results by the StochAC solver,
 including effective hamiltonian, final spectral function, reproduced
 correlator.
 """
-function postprocess(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
+function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     function fitfun(x, p)
         return @. p[1] * x + p[2]
     end
@@ -286,8 +287,14 @@ function postprocess(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
 
     # Reproduce input data
     kernel = make_kernel(SC.mesh, SC.grid)
-    Gₙ = reprod(kernel, SC.mesh, Asum)
-    write_reproduce(SC.grid, Gₙ)
+    G = reprod(kernel, SC.mesh, Asum)
+    write_backward(SC.grid, G)
+
+    # Calculate full green's function at real frequency
+    _G = kramers(SC.mesh, Asum)
+    write_complete(SC.mesh, _G)
+
+    return _G
 end
 
 #=
