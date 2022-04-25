@@ -2,6 +2,8 @@
 
 push!(LOAD_PATH, "/Users/lihuang/Working/devel/acflow/src")
 
+using DelimitedFiles
+using Printf
 using ACFlow
 
 welcome()
@@ -13,9 +15,9 @@ C = Dict{String,Any}(
     "finput" => "sigma.inp",
     "mtype"  => "gauss",
     "mesh"   => "tangent",
-    "ngrid"  => 50,
-    "wmax"   => 15.0,
-    "wmin"   => -15.0,
+    "ngrid"  => 300,
+    "wmax"   => 20.0,
+    "wmin"   => -20.0,
     "beta"   => 38.0,
 )
 #
@@ -31,18 +33,68 @@ setup_param(C, S)
 Aout, Gout = solve(read_data())
 
 # Backup calculated results
-cp("Aout.data", "Aout.mem.data", force = true)
-cp("Gout.data", "Gout.mem.data", force = true)
-cp("repr.data", "repr.mem.data", force = true)
+cp("Aout.data", "Aout.mem1.data", force = true)
+cp("Gout.data", "Gout.mem1.data", force = true)
+cp("repr.data", "repr.mem1.data", force = true)
+
+# For MaxEnt solver
+
+# Calculate auxiliary green's function
+#
+# Read self-energy function
+dlm = readdlm("sigma.inp")
+#
+# Get grid
+grid = dlm[:,1]
+#
+# Get self-energy function
+Σ = dlm[:,2] + im * dlm[:,3]
+#
+# Calculate auxiliary green's function
+Gaux = 1.0 ./ (im * grid - Σ)
+#
+# Generate error bar
+Gerr = fill(1e-4 + im * 1e-4, length(grid))
+
+# Call the solver
+Aout, Gout = solve(grid, Gaux, Gerr)
+
+# Backup calculated results
+cp("Aout.data", "Aout.mem2.data", force = true)
+cp("Gout.data", "Gout.mem2.data", force = true)
+cp("repr.data", "repr.mem2.data", force = true)
+
+# Calculate final self-energy function on real axis
+#
+# Build real mesh
+wmin = -20.0
+wmax = +20.0
+nmesh = length(Gout)
+mesh = collect(LinRange(wmin, wmax, nmesh))
+#
+# Construct final self-energy function
+Σ = mesh - 1.0 ./ Gout
+#
+# Write self-energy function
+open("Sig.out", "w") do fout
+    for i = 1:nmesh
+        z = Σ[i]
+        @printf(fout, "%16.12f %16.12f %16.12f\n", mesh[i], real(z), imag(z))
+    end
+end
+
+error()
 
 # For StochOM solver
 
 # Setup parameters
 C = Dict{String,Any}(
-    "solver" => "StochOM"
+    "solver" => "StochOM",
+    "mesh"   => "linear",
 )
 #
 S = Dict{String,Any}(
+    "ntry"   => 200
 )
 #
 setup_param(C, S, false)
