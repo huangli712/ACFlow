@@ -30,7 +30,7 @@ S = Dict{String,Any}(
 setup_param(C, S)
 
 # Call the solver
-Aout11, Gout11 = solve(read_data())
+mesh, Aout11, Gout11 = solve(read_data())
 
 # Backup calculated results
 cp("Aout.data", "Aout.11.data", force = true)
@@ -50,7 +50,7 @@ S = Dict{String,Any}(
 setup_param(C, S, false)
 
 # Call the solver
-Aout22, Gout22 = solve(read_data())
+mesh, Aout22, Gout22 = solve(read_data())
 
 # Backup calculated results
 cp("Aout.data", "Aout.22.data", force = true)
@@ -89,7 +89,7 @@ S = Dict{String,Any}(
 setup_param(C, S, false)
 
 # Call the solver
-Aout12, Gout12 = solve(read_data())
+mesh, Aout12, Gout12 = solve(read_data())
 
 # Backup calculated results
 cp("Aout.data", "Aout.12.data", force = true)

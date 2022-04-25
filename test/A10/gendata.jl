@@ -25,8 +25,8 @@ end
 
 # Setup parameters
 wmin = +0.0  # Left boundary
-wmax = +15.  # Right boundary
-nmesh = 1001 # Number of real-frequency points
+wmax = +8.0  # Right boundary
+nmesh = 801  # Number of real-frequency points
 ntau = 501   # Number of imaginary time points
 beta = 5.0   # Inverse temperature
 

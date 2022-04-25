@@ -1,6 +1,6 @@
 [COMM]
 finput = "green.data"
-solver = "MaxEnt"
+solver = "StochAC"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ftime"
@@ -23,7 +23,7 @@ blur   = -1.0
 nfine = 10000
 ngamm = 512
 nwarm = 4000
-nstep = 4000000
+nstep = 400000
 ndump = 40000
 nalph = 40
 alpha = 1.00
