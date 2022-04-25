@@ -14,8 +14,8 @@ C = Dict{String,Any}(
     "mtype"  => "gauss",
     "mesh"   => "tangent",
     "ngrid"  => 300,
-    "wmax"   => 30.0,
-    "wmin"   => -30.0,
+    "wmax"   => 15.0,
+    "wmin"   => -5.0,
     "beta"   => 38.0,
 )
 #
