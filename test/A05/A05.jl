@@ -36,6 +36,7 @@ mesh, Aout, Gout = solve(read_data())
 cp("Aout.data", "Aout.mem1.data", force = true)
 cp("Gout.data", "Gout.mem1.data", force = true)
 cp("repr.data", "repr.mem1.data", force = true)
+cp("Gout.data", "sigma.mem1.data", force = true)
 
 # For MaxEnt solver
 
@@ -67,24 +68,21 @@ cp("repr.data", "repr.mem2.data", force = true)
 # Calculate final self-energy function on real axis
 #
 # Construct final self-energy function
-Σout = mesh.ω - 1.0 ./ Gout
+Σout = mesh.mesh - 1.0 ./ Gout
 #
 # Write self-energy function
-open("Sig.out", "w") do fout
+open("sigma.mem2.data", "w") do fout
     for i in eachindex(mesh)
         z = Σout[i]
         @printf(fout, "%16.12f %16.12f %16.12f\n", mesh[i], real(z), imag(z))
     end
 end
 
-error()
-
 # For StochOM solver
 
 # Setup parameters
 C = Dict{String,Any}(
     "solver" => "StochOM",
-    "mesh"   => "linear",
 )
 #
 S = Dict{String,Any}(
@@ -94,9 +92,22 @@ S = Dict{String,Any}(
 setup_param(C, S, false)
 
 # Call the solver
-Aout, Gout = solve(read_data())
+mesh, Aout, Gout = solve(grid, Gaux, Gerr)
 
 # Backup calculated results
 cp("Aout.data", "Aout.som.data", force = true)
 cp("Gout.data", "Gout.som.data", force = true)
 cp("repr.data", "repr.som.data", force = true)
+
+# Calculate final self-energy function on real axis
+#
+# Construct final self-energy function
+Σout = mesh.mesh - 1.0 ./ Gout
+#
+# Write self-energy function
+open("sigma.som.data", "w") do fout
+    for i in eachindex(mesh)
+        z = Σout[i]
+        @printf(fout, "%16.12f %16.12f %16.12f\n", mesh[i], real(z), imag(z))
+    end
+end
