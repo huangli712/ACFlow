@@ -207,14 +207,20 @@ function average(SC::StochOMContext)
     nmesh = get_c("nmesh")
     ntry  = get_s("ntry")
 
+    # Calculate the median of SC.Δᵥ
     dev_ave = median(SC.Δᵥ)
 
-    Lgood = 0
-    Aom = zeros(F64, nmesh)
+    # Determine the αgood parameter, which is used to filter the
+    # calculated spectra.
+    αgood = 1.2
+    if count(x -> x < dev_ave / αgood, SC.Δᵥ) == 0
+        αgood = 1.0
+    end
 
+    # Accumulate the final spectrum
+    Aom = zeros(F64, nmesh)
     for l = 1:ntry
-        if dev_ave / 1.2 - SC.Δᵥ[l] > 0
-            Lgood = Lgood + 1
+        if SC.Δᵥ[l] < dev_ave / αgood
             for w = 1:nmesh
                 _omega = SC.mesh[w]
                 for r = 1:length(SC.Cᵥ[l])
@@ -227,9 +233,9 @@ function average(SC::StochOMContext)
         end
     end
 
-    if Lgood > 0
-        @. Aom = Aom / Lgood
-    end
+    # Normalize the spectrum
+    Lgood = count(x -> x < dev_ave / αgood, SC.Δᵥ)
+    @. Aom = Aom / Lgood
 
     @printf("Median χ² : %16.12e Accepted configurations : %5i \n", dev_ave, Lgood)
 
