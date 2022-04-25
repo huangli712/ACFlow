@@ -13,9 +13,9 @@ C = Dict{String,Any}(
     "finput" => "sigma.inp",
     "mtype"  => "gauss",
     "mesh"   => "tangent",
-    "ngrid"  => 300,
+    "ngrid"  => 50,
     "wmax"   => 15.0,
-    "wmin"   => -5.0,
+    "wmin"   => -15.0,
     "beta"   => 38.0,
 )
 #

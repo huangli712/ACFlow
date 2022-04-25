@@ -4,6 +4,7 @@
     * StochOM solver
     * Flat model
     * Linear mesh
+    * Fixed error bar
 
 * **A02**
     * Bosonic (symm) + Matsubara
@@ -11,6 +12,7 @@
     * StochOM solver
     * Flat model
     * Linear mesh
+    * Fixed error bar
 
 * **A03**
     * Fermionic + Matsubara
@@ -23,6 +25,7 @@
 * **A04**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
+    * StochOM solver
     * Flat model
     * Linear mesh
     * Script mode
@@ -31,6 +34,7 @@
 * **A05**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm + preblur)
+    * StochOM solver
     * Gauss model
     * Tangent mesh
     * Script mode
@@ -38,14 +42,18 @@
 * **A06**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm + preblur)
+    * StochOM solver
     * Gauss model
     * Tangent mesh
+    * Fixed error bar
 
 * **A07**
-    * Bosonic + Matsubara
+    * Bosonic (symm) + Matsubara
     * MaxEnt solver (chi2kink algorithm + preblur)
+    * StochOM solver
     * Flat model
     * Linear mesh
+    * Fixed error bar
 
 * **A08**
     * Fermionic + Matsubara 
@@ -54,6 +62,7 @@
     * Linear mesh
     * Script mode
     * Non-diagonal elements
+    * Fixed error bar
 
 * **A09**
     * Fermionic + Imaginary time
@@ -61,6 +70,7 @@
     * StochAC solver
     * Flat model
     * Linear mesh
+    * Fixed error bar
 
 * **A10**
     * Bosonic + Imaginary time
@@ -68,3 +78,4 @@
     * StochAC solver
     * Flat model
     * Linear mesh
+    * Fixed error bar
