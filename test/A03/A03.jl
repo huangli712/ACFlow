@@ -28,9 +28,9 @@ setup_param(C, S)
 Aout, Gout = solve(read_data())
 
 # Backup calculated results
-cp("Aout.data", "Aout.data.mem", force = true)
-cp("Gout.data", "Gout.data.mem", force = true)
-cp("repr.data", "repr.data.mem", force = true)
+cp("Aout.data", "Aout.mem.data", force = true)
+cp("Gout.data", "Gout.mem.data", force = true)
+cp("repr.data", "repr.mem.data", force = true)
 
 # For StochOM solver
 
@@ -48,6 +48,6 @@ setup_param(C, S, false)
 Aout, Gout = solve(read_data())
 
 # Backup calculated results
-cp("Aout.data", "Aout.data.som", force = true)
-cp("Gout.data", "Gout.data.som", force = true)
-cp("repr.data", "repr.data.som", force = true)
+cp("Aout.data", "Aout.som.data", force = true)
+cp("Gout.data", "Gout.som.data", force = true)
+cp("repr.data", "repr.som.data", force = true)
