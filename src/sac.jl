@@ -20,7 +20,7 @@ be sampled within monte carlo procedure.
 ### Members
 
 * Γₐ -> It means the positions of the δ functions.
-* Γᵣ -> It means the weights of the δ functions.
+* Γᵣ -> It means the weights / amplitudes of the δ functions.
 """
 mutable struct StochACElement
     Γₐ :: Array{I64,2}
@@ -573,6 +573,14 @@ function calc_alpha()
     return αₗ
 end
 
+function constraints(i::I64)
+    if 2500 ≤ i ≤ 7500
+        return true
+    else
+        return false
+    end
+end
+
 """
     try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
@@ -665,7 +673,13 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Choose new positions for the two δ functions (i1 and i2).
     # Note that their old positions are SE.Γₐ[γ1,i] and SE.Γₐ[γ2,i].
     i1 = rand(MC.rng, 1:nfine)
+    #while !constraints(i1)
+    #    i1 = rand(MC.rng, 1:nfine)
+    #end
     i2 = rand(MC.rng, 1:nfine)
+    #while !constraints(i2)
+    #    i2 = rand(MC.rng, 1:nfine)
+    #end
 
     # Try to calculate the change of Hc using Eq.~(42).
     hc = view(SC.hτ, :, i)
