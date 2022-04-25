@@ -1,6 +1,6 @@
 [COMM]
 finput = "green.data"
-solver = "MaxEnt"
+solver = "StochOM"
 ktype  = "fermi"
 mtype  = "gauss"
 grid   = "ffreq"
@@ -18,3 +18,11 @@ nalph  = 12
 alpha  = 1e9
 ratio  = 10.0
 blur   = 0.45
+
+[StochOM]
+ntry  = 2000
+nstep = 1000
+nbox  = 100
+sbox  = 0.005
+wbox  = 0.02
+norm  = -1.0
