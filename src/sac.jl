@@ -527,10 +527,9 @@ function calc_hamil(Γₐ::Array{I64,2}, Γᵣ::Array{F64,2},
     Hα = zeros(F64, nalph)
     Uα = zeros(F64, nalph)
 
-    δt = grid[2] - grid[1]
     for i = 1:nalph
         hτ[:,i] = calc_htau(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ¹)
-        Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
+        Hα[i] = dot(hτ[:,i], hτ[:,i])
     end
 
     return hτ, Hα, Uα
@@ -615,9 +614,8 @@ function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     K1 = view(SC.kernel, :, SE.Γₐ[γ1,i])
     K2 = view(SC.kernel, :, SE.Γₐ[γ2,i])
     #
-    δt = SC.grid[2] - SC.grid[1]
     δhc = δr * (K1 - K2) .* SC.σ¹
-    δH = dot(δhc, 2.0 * hc + δhc) * δt
+    δH = dot(δhc, 2.0 * hc + δhc)
 
     # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1.0
@@ -676,9 +674,8 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     K3 = view(SC.kernel, :, SE.Γₐ[γ1,i])
     K4 = view(SC.kernel, :, SE.Γₐ[γ2,i])
     #
-    δt = SC.grid[2] - SC.grid[1]
     δhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) .* SC.σ¹
-    δH = dot(δhc, 2.0 * hc + δhc) * δt
+    δH = dot(δhc, 2.0 * hc + δhc)
 
     # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1.0
