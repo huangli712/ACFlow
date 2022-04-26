@@ -120,6 +120,44 @@ function LorentzMesh(nmesh::I64, wmin::F64, wmax::F64, cut::F64 = 0.01)
 end
 
 #=
+### *Struct : HalfLorentzMesh*
+=#
+
+"""
+    HalfLorentzMesh(nmesh::I64, wmax::F64, cut::F64 = 0.01)
+
+A constructor for the HalfLorentzMesh struct.
+
+See also: [`HalfLorentzMesh`](@ref).
+"""
+function HalfLorentzMesh(nmesh::I64, wmax::F64, cut::F64 = 0.01)
+    @assert nmesh ≥ 1
+    @assert wmax > 0.0
+    @assert 1.0 > cut > 0.0
+
+    wmin = 0.0
+    temp = zeros(F64, nmesh)
+    mesh = zeros(F64, nmesh)
+
+    for i in eachindex(temp)
+        f = (i - 2 + nmesh) / ( 2 * nmesh - 3 ) * (1.0 - 2.0 * cut) + cut - 0.5
+        temp[i] = tan(π * f)
+    end
+
+    for i in eachindex(mesh)
+        mesh[i] = (temp[i] - temp[1]) / (temp[end] - temp[1])
+        mesh[i] = mesh[i] * wmax
+    end
+
+    weight = (mesh[2:end] + mesh[1:end-1]) / 2.0
+    pushfirst!(weight, mesh[1])
+    push!(weight, mesh[end])
+    weight = diff(weight)
+
+    return HalfLorentzMesh(nmesh, wmax, wmin, mesh, weight)
+end
+
+#=
 ### *Common Interface*
 =#
 
