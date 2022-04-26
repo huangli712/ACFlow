@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/18
+# Last modified: 2022/04/27
 #
 
 #=
@@ -22,7 +22,47 @@ Gaussian model:
 
 ```math
 \begin{equation}
-m(\omega) = \frac{1}{\Gamma \sqrt{\pi}} \exp\left[-(\omega/\Gamma)^2\right]
+m(\omega) = \frac{1}{\Gamma \sqrt{\pi}}
+\exp\left[-\left(\frac{\omega}{\Gamma}\right)^2\right]
+\end{equation}
+```
+
+Two Gaussians model:
+
+```math
+\begin{equation}
+m(\omega) = 
+\frac{1}{\Gamma \sqrt{\pi}}
+\exp\left[-\left(\frac{\omega - \omega_0}{\Gamma}\right)^2\right]
++
+\frac{1}{\Gamma \sqrt{\pi}}
+\exp\left[-\left(\frac{\omega + \omega_0}{\Gamma}\right)^2\right]
+\end{equation}
+```
+
+Lorentzian model:
+
+```math
+\begin{equation}
+m(\omega)=\frac{\Gamma}{\pi(\Gamma^2+\omega^2)}
+\end{equation}
+```
+
+Two Lorentzians model:
+
+```math
+\begin{equation}
+m(\omega)=
+\frac{\Gamma}{\pi[\Gamma^2+(\omega-\omega_0)^2]} +
+\frac{\Gamma}{\pi[\Gamma^2+(\omega+\omega_0)^2]}
+\end{equation}
+```
+
+Rise-And-Decay model:
+
+```math
+\begin{equation}
+m(ω) = Γ\omega^2 \exp{(-\Gamma\omega)},\quad \omega \ge 0
 \end{equation}
 ```
 =#
