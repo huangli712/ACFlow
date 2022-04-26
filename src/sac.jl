@@ -401,7 +401,7 @@ function init_element(S::StochACSolver, rng::AbstractRNG)
     ngamm = get_a("ngamm")
 
     Γᵣ = rand(rng, F64, (ngamm, nalph))
-    Γₐ = rand(rng, 1:nfine, (ngamm, nalph))
+    Γₐ = rand(rng, nfine, (ngamm, nalph))
 
     for j = 1:nalph
         Γⱼ = view(Γᵣ, :, j)
@@ -527,9 +527,10 @@ function calc_hamil(Γₐ::Array{I64,2}, Γᵣ::Array{F64,2},
     Hα = zeros(F64, nalph)
     Uα = zeros(F64, nalph)
 
+    δt = grid[2] - grid[1]
     for i = 1:nalph
         hτ[:,i] = calc_htau(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ¹)
-        Hα[i] = dot(hτ[:,i], hτ[:,i])
+        Hα[i] = dot(hτ[:,i], hτ[:,i]) * δt
     end
 
     return hτ, Hα, Uα
@@ -574,7 +575,7 @@ function calc_alpha()
 end
 
 function constraints(i::I64)
-    if 2500 ≤ i ≤ 7500
+    if i ≤ 4000 #2500 ≤ i ≤ 7500
         return true
     else
         return false
@@ -622,8 +623,9 @@ function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     K1 = view(SC.kernel, :, SE.Γₐ[γ1,i])
     K2 = view(SC.kernel, :, SE.Γₐ[γ2,i])
     #
+    δt = SC.grid[2] - SC.grid[1]
     δhc = δr * (K1 - K2) .* SC.σ¹
-    δH = dot(δhc, 2.0 * hc + δhc)
+    δH = dot(δhc, 2.0 * hc + δhc) * δt
 
     # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1.0
@@ -688,8 +690,9 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     K3 = view(SC.kernel, :, SE.Γₐ[γ1,i])
     K4 = view(SC.kernel, :, SE.Γₐ[γ2,i])
     #
+    δt = SC.grid[2] - SC.grid[1]
     δhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) .* SC.σ¹
-    δH = dot(δhc, 2.0 * hc + δhc)
+    δH = dot(δhc, 2.0 * hc + δhc) * δt
 
     # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1.0
