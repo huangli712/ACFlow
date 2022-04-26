@@ -155,6 +155,7 @@ Try to build a Rise-And-Decay model, which is then normalized.
 See also: [`AbstractMesh`](@ref).
 """
 function build_risedecay_model(am::AbstractMesh, Γ::F64 = 2.0)
+    @assert am[1] ≥ 0.0
     model = Γ * (am.mesh .^ 2.0) .* exp.(-Γ * am.mesh)
     norm = dot(am.weight, model)
     model = model ./ norm
