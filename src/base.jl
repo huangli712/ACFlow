@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/26
+# Last modified: 2022/04/27
 #
 
 """
@@ -363,15 +363,16 @@ function make_mesh(f1::F64 = 2.1, cut::F64 = 0.01)
 end
 
 """
-    make_model(am::AbstractMesh, Γ::F64 = 2.0, fn::String = "model.data")
+    make_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0, fn::String = "model.data")
 
 Try to generate default model function through various schemes. Note that
 the argument `Γ` is for the gauss-like model function, while the argument
-`fn` is for the user-supplied model function.
+`fn` is for the user-supplied model function. The argument `s` is used to
+shift the peaks.
 
-See also: [`AbstractMesh`]
+See also: [`AbstractMesh`].
 """
-function make_model(am::AbstractMesh, Γ::F64 = 2.0, fn::String = "model.data")
+function make_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0, fn::String = "model.data")
     mtype = get_c("mtype")
 
     @cswitch mtype begin
@@ -381,6 +382,22 @@ function make_model(am::AbstractMesh, Γ::F64 = 2.0, fn::String = "model.data")
 
         @case "gauss"
             return build_gaussian_model(am, Γ)
+            break
+        
+        @case "2gauss"
+            return build_2gaussians_model(am, Γ, s)
+            break
+
+        @case "lorentz"
+            return build_lorentzian_model(am, Γ)
+            break
+        
+        @case "2lorentz"
+            return build_2lorentzians_model(am, Γ, s)
+            break
+        
+        @case "risedecay"
+            return build_risedecay_model(am, Γ)
             break
 
         @case "file"
