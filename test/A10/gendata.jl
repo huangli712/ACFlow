@@ -39,7 +39,8 @@ spec_real = similar(w_real)
 @. spec_real -= exp(-0.5 * (w_real + 1.0) ^ 2.0 / (1.0 ^ 2.0)) / (sqrt(2.0 * π) * 0.5)
 @. spec_real += exp(-0.5 * (w_real - 6.0) ^ 2.0 / (0.5 ^ 2.0)) / (sqrt(2.0 * π) * 0.5) * 0.2
 @. spec_real -= exp(-0.5 * (w_real + 6.0) ^ 2.0 / (0.5 ^ 2.0)) / (sqrt(2.0 * π) * 0.5) * 0.2
-spec_real = spec_real ./ trapz(w_real[2:end], spec_real[2:end]./ w_real[2:end])
+#spec_real = spec_real ./ trapz(w_real[2:end], spec_real[2:end]./ w_real[2:end])
+spec_real = spec_real ./ trapz(w_real, spec_real)
 
 # Imaginary time mesh
 t_mesh = collect(LinRange(0, beta, ntau))
@@ -57,9 +58,12 @@ for i = 1:ntau
     bw = exp.(-beta * w_real)
     btw = exp.(-(beta - t_mesh[i]) * w_real)
     integrand = 0.5 * spec_real .* (tw .+ btw) ./ (1.0 .- bw)
-    integrand[1] = 0.0
+    integrand[1] = 1.0
     gtau[i] = trapz(w_real, integrand) #+ noise[i]
 end
+norm = gtau[1] * 2.0
+gtau = gtau ./ norm
+@show norm
 
 # Build error
 err = ones(Float64, ntau) * noise_amplitude

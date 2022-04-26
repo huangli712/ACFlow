@@ -1,13 +1,13 @@
 [COMM]
 finput = "green.data"
-solver = "MaxEnt"
+solver = "StochAC"
 ktype  = "bsymm"
 mtype  = "flat"
 grid   = "btime"
 mesh   = "linear"
 ngrid  = 501
 nmesh  = 801
-wmax   = 8.0
+wmax   =16.0
 wmin   = 0.0
 beta   = 5.0
 offdiag = false
