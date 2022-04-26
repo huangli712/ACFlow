@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/25
+# Last modified: 2022/04/26
 #
 
 """
@@ -134,6 +134,8 @@ BosonicMatsubaraGrid -> Grid in bosonic Matsubara frequency axis.
 AbstractMesh    -> Abstract grid for calculated spectral function.
 LinearMesh      -> Linear mesh.
 TangentMesh     -> Tangent mesh.
+LorentzMesh     -> Lorentzian mesh.
+HalfLorentzMesh -> Lorentzian mesh at half-positive axis.
 #
 AbstractMC      -> Abstract monte carlo engine.
 StochACMC       -> Monte carlo engine used in the StochAC solver.
@@ -169,6 +171,8 @@ export BosonicMatsubaraGrid
 export AbstractMesh
 export LinearMesh
 export TangentMesh
+export LorentzMesh
+export HalfLorentzMesh
 #
 export AbstractMC
 export StochACMC
