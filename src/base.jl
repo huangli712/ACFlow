@@ -1,10 +1,10 @@
 #
 # Project : Gardenia
-# Source  : flow.jl
+# Source  : base.jl
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/24
+# Last modified: 2022/04/26
 #
 
 """
@@ -325,15 +325,15 @@ function make_grid(rd::RawData)
 end
 
 """
-    make_mesh(f1::F64 = 2.1)
+    make_mesh(f1::F64 = 2.1, cut::F64 = 0.01)
 
 Try to generate an uniform (linear) or non-uniform (non-linear) mesh for
-the calculated spectrum. Note that the argument `f1` is only for the
-generation of the non-uniform mesh.
+the calculated spectrum. Note that the arguments `f1` and `cut` are only
+for the generation of the non-uniform mesh.
 
-See also: [`LinearMesh`](@ref), [`TangentMesh`](@ref).
+See also: [`LinearMesh`](@ref), [`TangentMesh`](@ref), [`LorentzMesh`](@ref).
 """
-function make_mesh(f1::F64 = 2.1)
+function make_mesh(f1::F64 = 2.1, cut::F64 = 0.01)
     nmesh = get_c("nmesh")
     mesh = get_c("mesh")
     wmax = get_c("wmax")
@@ -346,6 +346,14 @@ function make_mesh(f1::F64 = 2.1)
 
         @case "tangent"
             return TangentMesh(nmesh, wmin, wmax, f1)
+            break
+
+        @case "lorentz"
+            return LorentzMesh(nmesh, wmin, wmax, cut)
+            break
+        
+        @case "halflorentz"
+            return HalfLorentzMesh(nmesh, wmax, cut)
             break
 
         @default
