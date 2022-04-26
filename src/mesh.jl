@@ -86,13 +86,37 @@ end
 =#
 
 """
-    LorentzMesh(nmesh::I64, wmin::F64, wmax::F64, f1::F64 = 2.1)
+    LorentzMesh(nmesh::I64, wmin::F64, wmax::F64, cut::F64 = 0.01)
 
 A constructor for the LorentzMesh struct.
 
 See also: [`LorentzMesh`](@ref).
 """
-function LorentzMesh()
+function LorentzMesh(nmesh::I64, wmin::F64, wmax::F64, cut::F64 = 0.01)
+    @assert nmesh ≥ 1
+    @assert wmax > 0.0 > wmin
+    @assert wmax == abs(wmin)
+    @assert 1.0 > cut > 0.0
+
+    temp = zeros(F64, nmesh)
+    mesh = zeros(F64, nmesh)
+
+    for i in eachindex(temp)
+        f = ( (i - 1) / (nmesh - 1) * (1.0 - 2.0 * cut) + cut - 0.5 )
+        temp[i] = tan(π * f)
+    end
+
+    for i in eachindex(mesh)
+        mesh[i] = (temp[i] - temp[1]) / (temp[end] - temp[1])
+        mesh[i] = mesh[i] * 2.0 * wmax - wmax
+    end
+
+    weight = (mesh[2:end] + mesh[1:end-1]) / 2.0
+    pushfirst!(weight, mesh[1])
+    push!(weight, mesh[end])
+    weight = diff(weight)
+
+    return LorentzMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
 #=
