@@ -97,14 +97,15 @@ function build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
 end
 
 """
-    build_2gaussian_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
+    build_2gaussians_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
 
-Try to build a Gaussian model, which is then normalized. The argument
-`Γ` is used to control the width of the Gaussian peak.
+Try to build Two-Gaussians model, which is then normalized. The argument
+`Γ` is used to control the width of the Gaussian peak, and `±s` denote
+the centers of the two peaks.
 
 See also: [`AbstractMesh`](@ref).
 """
-function build_2gaussian_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
+function build_2gaussians_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
     model = similar(am.mesh)
     @. model = exp(-((am.mesh - s) / Γ) ^ 2.0) / (Γ * sqrt(π))
     @. model += exp(-((am.mesh + s) / Γ) ^ 2.0) / (Γ * sqrt(π))
@@ -123,6 +124,24 @@ See also: [`AbstractMesh`](@ref).
 """
 function build_lorentzian_model(am::AbstractMesh, Γ::F64 = 2.0)
     model = (Γ / π) ./ ( Γ ^ 2.0 .+ (am.mesh) .^ 2.0 )
+    norm = dot(am.weight, model)
+    model = model ./ norm
+    return model
+end
+
+"""
+    build_2lorentzians_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
+
+Try to build a Two-Lorentzians model, which is then normalized. The argument
+`Γ` is used to control the width of the Lorentzian peak, and `±s` denote
+the centers of the two peaks.
+
+See also: [`AbstractMesh`](@ref).
+"""
+function build_2lorentzians_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
+    model = similar(am.mesh)
+    @. model = (Γ / π) / ( Γ ^ 2.0 + (am.mesh - s) ^ 2.0 )
+    @. model += (Γ / π) / ( Γ ^ 2.0 + (am.mesh + s) ^ 2.0 )
     norm = dot(am.weight, model)
     model = model ./ norm
     return model
