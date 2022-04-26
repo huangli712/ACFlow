@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/21
+# Last modified: 2022/04/26
 #
 
 #=
@@ -368,9 +368,55 @@ Mutable struct. A non-linear and non-uniform mesh.
 * mesh   -> Mesh itself.
 * weight -> Precomputed integration weights (composite trapezoidal rule).
 
-See also: [`TangentMesh`](@ref).
+See also: [`LinearMesh`](@ref).
 """
 mutable struct TangentMesh <: AbstractMesh
+    nmesh :: I64
+    wmax :: F64
+    wmin :: F64
+    mesh :: Vector{F64}
+    weight :: Vector{F64}
+end
+
+"""
+    LorentzMesh
+
+Mutable struct. A non-linear and non-uniform mesh.
+
+### Members
+
+* nmesh  -> Number of mesh points
+* wmax   -> Right boundary (maximum value).
+* wmin   -> Left boundary (minimum value).
+* mesh   -> Mesh itself.
+* weight -> Precomputed integration weights (composite trapezoidal rule).
+
+See also: [`HalfLorentzMesh`](@ref).
+"""
+mutable struct LorentzMesh <: AbstractMesh
+    nmesh :: I64
+    wmax :: F64
+    wmin :: F64
+    mesh :: Vector{F64}
+    weight :: Vector{F64}
+end
+
+"""
+    HalfLorentzMesh
+
+Mutable struct. A non-linear and non-uniform mesh.
+
+### Members
+
+* nmesh  -> Number of mesh points
+* wmax   -> Right boundary (maximum value).
+* wmin   -> Left boundary (minimum value). It must be 0.0.
+* mesh   -> Mesh itself.
+* weight -> Precomputed integration weights (composite trapezoidal rule).
+
+See also: [`LorentzMesh`](@ref).
+"""
+mutable struct HalfLorentzMesh <: AbstractMesh
     nmesh :: I64
     wmax :: F64
     wmin :: F64
