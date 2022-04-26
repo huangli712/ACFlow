@@ -54,103 +54,6 @@ function LinearMesh(mesh::Vector{F64})
     return LinearMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
-"""
-    Base.length(lm::LinearMesh)
-
-Return number of mesh points in a LinearMesh struct.
-
-See also: [`LinearMesh`](@ref).
-"""
-function Base.length(lm::LinearMesh)
-    lm.nmesh
-end
-
-"""
-    Base.iterate(lm::LinearMesh)
-
-Advance the iterator of a LinearMesh struct to obtain the next mesh point.
-
-See also: [`LinearMesh`](@ref).
-"""
-function Base.iterate(lm::LinearMesh)
-    iterate(lm.mesh)
-end
-
-"""
-    Base.iterate(lm::LinearMesh, i::I64)
-
-This is the key method that allows a LinearMesh struct to be iterated,
-yielding a sequences of mesh points.
-
-See also: [`LinearMesh`](@ref).
-"""
-function Base.iterate(lm::LinearMesh, i::I64)
-    iterate(lm.mesh, i::I64)
-end
-
-"""
-    Base.eachindex(lm::LinearMesh)
-
-Create an iterable object for visiting each index of a LinearMesh struct.
-
-See also: [`LinearMesh`](@ref).
-"""
-function Base.eachindex(lm::LinearMesh)
-    eachindex(lm.mesh)
-end
-
-"""
-    Base.firstindex(lm::LinearMesh)
-
-Return the first index of a LinearMesh struct.
-
-See also: [`LinearMesh`](@ref).
-"""
-function Base.firstindex(lm::LinearMesh)
-    firstindex(lm.mesh)
-end
-
-"""
-    Base.lastindex(lm::LinearMesh)
-
-Return the last index of a LinearMesh struct.
-
-See also: [`LinearMesh`](@ref).
-"""
-function Base.lastindex(lm::LinearMesh)
-    lastindex(lm.mesh)
-end
-
-"""
-    Base.getindex(lm::LinearMesh, ind::I64)
-
-Retrieve the value(s) stored at the given key or index within a
-LinearMesh struct.
-
-See also: [`LinearMesh`](@ref).
-"""
-function Base.getindex(lm::LinearMesh, ind::I64)
-    @assert 1 ≤ ind ≤ lm.nmesh
-    return lm.mesh[ind]
-end
-
-"""
-    Base.getindex(lm::LinearMesh, I::UnitRange{I64})
-
-Return a subset of a LinearMesh struct as specified by `I`.
-
-See also: [`LinearMesh`](@ref).
-"""
-function Base.getindex(lm::LinearMesh, I::UnitRange{I64})
-    @assert checkbounds(Bool, lm.mesh, I)
-    lI = length(I)
-    X = similar(lm.mesh, lI)
-    if lI > 0
-        unsafe_copyto!(X, 1, lm.mesh, first(I), lI)
-    end
-    return X
-end
-
 #=
 ### *Struct : TangentMesh*
 =#
@@ -178,99 +81,102 @@ function TangentMesh(nmesh::I64, wmin::F64, wmax::F64, f1::F64 = 2.1)
     return TangentMesh(nmesh, wmax, wmin, mesh, weight)
 end
 
-"""
-    Base.length(tm::TangentMesh)
+#=
+### *Common Interface*
+=#
 
-Return number of mesh points in a TangentMesh struct.
+#=
+*Remarks* :
 
-See also: [`TangentMesh`](@ref).
+Here we overload some essential functions in the Base module to support
+the basic operations for the following meshes:
+
+* LinearMesh
+* TangentMesh
+* LorentzMesh
+* HalfLorentzMesh
+
+With the help of these functions, you can easily visit the elements in
+the mesh objective.
+=#
+
 """
-function Base.length(tm::TangentMesh)
-    tm.nmesh
+    Base.length(am::AbstractMesh)
+
+Return number of mesh points in a Mesh-like struct.
+"""
+function Base.length(am::AbstractMesh)
+    am.nmesh
 end
 
 """
-    Base.iterate(tm::TangentMesh)
+    Base.iterate(am::AbstractMesh)
 
-Advance the iterator of a TangentMesh struct to obtain the next mesh point.
-
-See also: [`TangentMesh`](@ref).
+Advance the iterator of a Mesh-like struct to obtain the next mesh point.
 """
-function Base.iterate(tm::TangentMesh)
-    iterate(tm.mesh)
+function Base.iterate(am::AbstractMesh)
+    iterate(am.mesh)
 end
 
 """
-    Base.iterate(tm::TangentMesh, i::I64)
+    Base.iterate(am::AbstractMesh, i::I64)
 
-This is the key method that allows a TangentMesh struct to be iterated,
+This is the key method that allows a Mesh-like struct to be iterated,
 yielding a sequences of mesh points.
-
-See also: [`TangentMesh`](@ref).
 """
-function Base.iterate(tm::TangentMesh, i::I64)
-    iterate(tm.mesh, i)
+function Base.iterate(am::AbstractMesh, i::I64)
+    iterate(am.mesh, i::I64)
 end
 
 """
-    Base.eachindex(tm::TangentMesh)
+    Base.eachindex(am::AbstractMesh)
 
-Create an iterable object for visiting each index of a TangentMesh struct.
-
-See also: [`TangentMesh`](@ref).
+Create an iterable object for visiting each index of a Mesh-like struct.
 """
-function Base.eachindex(tm::TangentMesh)
-    eachindex(tm.mesh)
+function Base.eachindex(am::AbstractMesh)
+    eachindex(am.mesh)
 end
 
 """
-    Base.firstindex(tm::TangentMesh)
+    Base.firstindex(am::AbstractMesh)
 
-Return the first index of a TangentMesh struct.
-
-See also: [`TangentMesh`](@ref).
+Return the first index of a Mesh-like struct.
 """
-function Base.firstindex(tm::TangentMesh)
-    firstindex(tm.mesh)
+function Base.firstindex(am::AbstractMesh)
+    firstindex(am.mesh)
 end
 
 """
-    Base.lastindex(tm::TangentMesh)
+    Base.lastindex(am::AbstractMesh)
 
-Return the last index of a TangentMesh struct.
-
-See also: [`TangentMesh`](@ref).
+Return the last index of a Mesh-like struct.
 """
-function Base.lastindex(tm::TangentMesh)
-    lastindex(tm.mesh)
+function Base.lastindex(am::AbstractMesh)
+    lastindex(am.mesh)
 end
 
 """
-    Base.getindex(tm::TangentMesh, ind::I64)
+    Base.getindex(am::AbstractMesh, ind::I64)
 
 Retrieve the value(s) stored at the given key or index within a
-TangentMesh struct.
-
-See also: [`TangentMesh`](@ref).
+Mesh-like struct.
 """
-function Base.getindex(tm::TangentMesh, ind::I64)
-    @assert 1 ≤ ind ≤ tm.nmesh
-    return tm.mesh[ind]
+function Base.getindex(am::AbstractMesh, ind::I64)
+    @assert 1 ≤ ind ≤ am.nmesh
+    return am.mesh[ind]
 end
 
 """
-    Base.getindex(tm::TangentMesh, I::UnitRange{I64})
+    Base.getindex(am::AbstractMesh, I::UnitRange{I64})
 
-Return a subset of a TangentMesh struct as specified by `I`.
-
-See also: [`TangentMesh`](@ref).
+Return a subset of a Mesh-like struct as specified by `I`.
 """
-function Base.getindex(tm::TangentMesh, I::UnitRange{I64})
-    @assert checkbounds(Bool, tm.mesh, I)
+function Base.getindex(am::AbstractMesh, I::UnitRange{I64})
+    @assert checkbounds(Bool, am.mesh, I)
     lI = length(I)
-    X = similar(tm.mesh, lI)
+    X = similar(am.mesh, lI)
     if lI > 0
-        unsafe_copyto!(X, 1, tm.mesh, first(I), lI)
+        unsafe_copyto!(X, 1, am.mesh, first(I), lI)
     end
     return X
 end
