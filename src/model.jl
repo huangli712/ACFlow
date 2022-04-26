@@ -97,6 +97,23 @@ function build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
 end
 
 """
+    build_2gaussian_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
+
+Try to build a Gaussian model, which is then normalized. The argument
+`Γ` is used to control the width of the Gaussian peak.
+
+See also: [`AbstractMesh`](@ref).
+"""
+function build_2gaussian_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
+    model = similar(am.mesh)
+    @. model = exp(-((am.mesh - s) / Γ) ^ 2.0) / (Γ * sqrt(π))
+    @. model += exp(-((am.mesh + s) / Γ) ^ 2.0) / (Γ * sqrt(π))
+    norm = dot(am.weight, model)
+    model = model ./ norm
+    return model
+end
+
+"""
     build_lorentzian_model(am::AbstractMesh, Γ::F64 = 2.0)
 
 Try to build a Lorentzian model, which is then normalized. The argument
