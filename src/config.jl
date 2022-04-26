@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/06
+# Last modified: 2022/04/26
 #
 
 """
@@ -259,7 +259,7 @@ function chk_dict()
     @assert get_c("ktype") in ("fermi", "boson", "bsymm")
     @assert get_c("mtype") in ("flat", "gauss", "file")
     @assert get_c("grid") in ("ftime", "btime", "ffreq", "bfreq")
-    @assert get_c("mesh") in ("linear", "tangent")
+    @assert get_c("mesh") in ("linear", "tangent", "lorentz", "halflorentz")
     @assert get_c("ngrid") ≥ 1
     @assert get_c("nmesh") ≥ 1
     @assert get_c("wmax") > get_c("wmin")
