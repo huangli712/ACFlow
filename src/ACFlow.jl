@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/26
+# Last modified: 2022/04/27
 #
 
 """
@@ -403,10 +403,14 @@ To define default model functions.
 *Members* :
 
 ```text
-build_flat_model     -> Construct a flat model.
-build_gaussian_model -> Construct a gaussian model.
-build_file_model     -> Construct a model from file.
-build_func_model     -> Construct a model by user-defined function.
+build_flat_model         -> Construct a flat model.
+build_gaussian_model     -> Construct a gaussian model.
+build_2gaussians_model   -> Construct a two-gaussians model.
+build_lorentzian_model   -> Construct a lorentzian model.
+build_2lorentzians_model -> Construct a two-lorentzians model.
+build_risedecay_model    -> Construct a rise-and-decay model.
+build_file_model         -> Construct a model from file.
+build_func_model         -> Construct a model by user-defined function.
 ```
 =#
 
@@ -415,6 +419,10 @@ include("model.jl")
 #
 export build_flat_model
 export build_gaussian_model
+export build_2gaussians_model
+export build_lorentzian_model
+export build_2lorentzians_model
+export build_risedecay_model
 export build_file_model
 export build_func_model
 
