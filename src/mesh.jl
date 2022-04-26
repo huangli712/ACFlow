@@ -82,6 +82,20 @@ function TangentMesh(nmesh::I64, wmin::F64, wmax::F64, f1::F64 = 2.1)
 end
 
 #=
+### *Struct : LorentzMesh*
+=#
+
+"""
+    LorentzMesh(nmesh::I64, wmin::F64, wmax::F64, f1::F64 = 2.1)
+
+A constructor for the LorentzMesh struct.
+
+See also: [`LorentzMesh`](@ref).
+"""
+function LorentzMesh()
+end
+
+#=
 ### *Common Interface*
 =#
 
