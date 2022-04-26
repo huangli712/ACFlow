@@ -15,8 +15,8 @@
     Box
 
 Rectangle. The field configuration consists of many boxes. They exhibit
-various areas (width × height ). We used the Metropolis algorithm to
-sample them and evaluate their contributions to the spectrum.
+various areas (width × height). We used the Metropolis important sampling
+algorithm to sample them and evaluate their contributions to the spectrum.
 
 ### Members
 
