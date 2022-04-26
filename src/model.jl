@@ -148,6 +148,20 @@ function build_2lorentzians_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
 end
 
 """
+    build_risedecay_model(am::AbstractMesh, Γ::F64 = 2.0)
+
+Try to build a Rise-And-Decay model, which is then normalized.
+
+See also: [`AbstractMesh`](@ref).
+"""
+function build_risedecay_model(am::AbstractMesh, Γ::F64 = 2.0)
+    model = Γ * (am.mesh .^ 2.0) .* exp.(-Γ * am.mesh)
+    norm = dot(am.weight, model)
+    model = model ./ norm
+    return model
+end
+
+"""
     build_file_model(am::AbstractMesh, fn::String = "model.data")
 
 Try to read a model function from external file (specified by `fn`). Note
