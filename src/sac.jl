@@ -401,7 +401,7 @@ function init_element(S::StochACSolver, rng::AbstractRNG)
     ngamm = get_a("ngamm")
 
     Γᵣ = rand(rng, F64, (ngamm, nalph))
-    Γₐ = rand(rng, nfine, (ngamm, nalph))
+    Γₐ = rand(rng, 1:nfine, (ngamm, nalph))
 
     for j = 1:nalph
         Γⱼ = view(Γᵣ, :, j)
