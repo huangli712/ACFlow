@@ -37,7 +37,7 @@ w_real = collect(LinRange(wmin, wmax, nmesh))
 spec_real = similar(w_real)
 @. spec_real = exp(-(w_real - 2.0) ^ 2.0 / 2.0) +
                exp(-(w_real + 2.0) ^ 2.0 / 2.0)
-spec_real = spec_real ./ (2.0 * trapz(w_real, spec_real))
+spec_real = spec_real ./ trapz(w_real, spec_real)
 
 # Matsubara frequency mesh
 iw = 2.0 * π / beta * collect(0:niw-1)
@@ -45,7 +45,7 @@ iw = 2.0 * π / beta * collect(0:niw-1)
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
-noise_amplitude = 1.0e-3
+noise_amplitude = 1.0e-4
 noise = randn(rng, Float64, niw) * noise_amplitude
 
 # Kernel function
@@ -59,6 +59,8 @@ gf_mats = zeros(Float64, niw)
 for i in eachindex(gf_mats)
     gf_mats[i] = trapz(w_real, KA[i,:]) + noise[i]
 end
+norm = gf_mats[1]
+gf_mats = gf_mats / norm
 
 # Build error
 err = ones(Float64, niw) * noise_amplitude
