@@ -35,7 +35,7 @@
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm + preblur)
     * StochOM solver
-    * Gauss model
+    * Gaussian model
     * Tangent mesh
     * Script mode
 
