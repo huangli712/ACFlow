@@ -1,10 +1,10 @@
 [COMM]
 finput = "chi.data"
-solver = "StochOM"
+solver = "MaxEnt"
 ktype  = "bsymm"
-mtype  = "flat"
+mtype  = "risedecay"
 grid   = "bfreq"
-mesh   = "linear"
+mesh   = "halflorentz"
 ngrid  = 20
 nmesh  = 801
 wmax   = 8.0
