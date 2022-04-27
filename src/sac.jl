@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/26
+# Last modified: 2022/04/27
 #
 
 #=
@@ -284,6 +284,7 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     @. Asum = Asum / (Uα[close] - Uα[end])
     write_spectrum(SC.mesh, Asum)
     write_spectrum(SC.mesh, SC.αₗ, Aout)
+    write_model(SC.mesh, SC.model)
 
     # Reproduce input data
     kernel = make_kernel(SC.mesh, SC.grid)

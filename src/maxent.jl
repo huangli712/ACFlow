@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/26
+# Last modified: 2022/04/27
 #
 
 #=
@@ -127,6 +127,7 @@ dictionary actually).
 """
 function last(mec::MaxEntContext, svec::Vector, sol::Dict)
     write_spectrum(mec.mesh, sol[:A])
+    write_model(mec.mesh, mec.model)
 
     α_vec = map(x -> x[:α], svec)
     χ_vec = map(x -> x[:χ²], svec)
