@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/27
+# Last modified: 2022/04/28
 #
 
 """
@@ -389,16 +389,24 @@ function make_model(am::AbstractMesh)
             return build_gaussian_model(am, Γ)
             break
         
+        @case "1gauss"
+            return build_1gaussian_model(am, Γ, s)
+            break
+        
         @case "2gauss"
-            return build_2gaussians_model(am, Γ, s)
+            return build_2gaussians_model(am, Γ, s₁, s₂)
             break
 
         @case "lorentz"
             return build_lorentzian_model(am, Γ)
             break
         
+        @case "1lorentz"
+            return build_1lorentzian_model(am, Γ, s)
+            break
+
         @case "2lorentz"
-            return build_2lorentzians_model(am, Γ, s)
+            return build_2lorentzians_model(am, Γ, s₁, s₂)
             break
         
         @case "risedecay"
