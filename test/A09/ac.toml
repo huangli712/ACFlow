@@ -1,8 +1,8 @@
 [COMM]
 finput = "green.data"
-solver = "StochAC"
+solver = "MaxEnt"
 ktype  = "fermi"
-mtype  = "flat"
+mtype  = "2gauss"
 grid   = "ftime"
 mesh   = "linear"
 ngrid  = 1000
