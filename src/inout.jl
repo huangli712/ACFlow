@@ -166,6 +166,21 @@ function write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2}
 end
 
 """
+    write_model(am::AbstractMesh, D::Vector{F64})
+
+Write the default model function to `model.data`.
+"""
+function write_model(am::AbstractMesh, D::Vector{F64})
+    @assert length(am) == length(D)
+
+    open("model.data", "w") do fout
+        for i in eachindex(am)
+            @printf(fout, "%16.12f %16.12f\n", am[i], D[i])
+        end
+    end
+end
+
+"""
     write_misfit(α_vec::Vector{F64}, χ²_vec::Vector{F64})
 
 Write `log10(α)-log10(χ²)` data to `chi2.data`, which could be used to

@@ -10,7 +10,7 @@
 #=
 *Remarks* : Default Models
 
-Flat model:
+Flat model (`flat`):
 
 ```math
 \begin{equation}
@@ -18,7 +18,7 @@ m(\omega) = const.
 \end{equation}
 ```
 
-Gaussian model:
+Gaussian model (`gauss`):
 
 ```math
 \begin{equation}
@@ -27,20 +27,20 @@ m(\omega) = \frac{1}{\Gamma \sqrt{\pi}}
 \end{equation}
 ```
 
-Two Gaussians model:
+Two Gaussians model (`2gauss`):
 
 ```math
 \begin{equation}
 m(\omega) = 
 \frac{1}{\Gamma \sqrt{\pi}}
-\exp\left[-\left(\frac{\omega - \omega_0}{\Gamma}\right)^2\right]
+\exp\left[-\left(\frac{\omega + \omega_1}{\Gamma}\right)^2\right]
 +
 \frac{1}{\Gamma \sqrt{\pi}}
-\exp\left[-\left(\frac{\omega + \omega_0}{\Gamma}\right)^2\right]
+\exp\left[-\left(\frac{\omega - \omega_2}{\Gamma}\right)^2\right]
 \end{equation}
 ```
 
-Lorentzian model:
+Lorentzian model (`lorentz`):
 
 ```math
 \begin{equation}
@@ -48,17 +48,17 @@ m(\omega)=\frac{\Gamma}{\pi(\Gamma^2+\omega^2)}
 \end{equation}
 ```
 
-Two Lorentzians model:
+Two Lorentzians model (`2lorentz`):
 
 ```math
 \begin{equation}
 m(\omega)=
-\frac{\Gamma}{\pi[\Gamma^2+(\omega-\omega_0)^2]} +
-\frac{\Gamma}{\pi[\Gamma^2+(\omega+\omega_0)^2]}
+\frac{\Gamma}{\pi[\Gamma^2+(\omega+\omega_1)^2]} +
+\frac{\Gamma}{\pi[\Gamma^2+(\omega-\omega_2)^2]}
 \end{equation}
 ```
 
-Rise-And-Decay model:
+Rise-And-Decay model (`risedecay`):
 
 ```math
 \begin{equation}
