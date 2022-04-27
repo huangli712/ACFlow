@@ -86,11 +86,11 @@ function reprod(am::AbstractMesh, kernel::Matrix{F64}, A::Vector{F64})
     ndim, nmesh = size(kernel)
     @assert nmesh == length(am) == length(A)
 
-    @einsum K[i,j] := kernel[i,j] * A[j]
+    @einsum KA[i,j] := kernel[i,j] * A[j]
 
     G = zeros(F64, ndim)
     for i = 1:ndim
-        G[i] = trapz(am, view(K, i, :))
+        G[i] = trapz(am, view(KA, i, :))
     end
 
     return G
@@ -98,6 +98,9 @@ end
 
 #=
 *Remarks* : Kramers-Kronig Transformation
+
+The real and imaginary parts of green's functions obey the following
+Kramers-Kronig relation.
 
 ```math
 \begin{equation}
@@ -108,16 +111,16 @@ A(\omega) = -\frac{1}{\pi} \mathrm{Im} G(\omega)
 ```math
 \begin{equation}
 \mathrm{Re} G(\omega) = \frac{1}{\pi} \mathcal{P}
-\int_{-\infty}^{\infty} d\omega'~
-\frac{\mathrm{Im} G(\omega')}{\omega'-\omega}
+  \int_{-\infty}^{\infty} d\omega'~
+  \frac{\mathrm{Im} G(\omega')}{\omega'-\omega}
 \end{equation}
 ```
 
 ```math
 \begin{equation}
 \mathrm{Re} G(\omega) = \frac{2}{\pi} \mathcal{P}
-\int_{0}^{\infty} d\omega'~
-\frac{\omega'\mathrm{Im} G(\omega')}{\omega'^2 - \omega^2}
+  \int_{0}^{\infty} d\omega'~
+  \frac{\omega'\mathrm{Im} G(\omega')}{\omega'^2 - \omega^2}
 \end{equation}
 ```
 =#
@@ -326,15 +329,34 @@ function make_grid(rd::RawData)
 end
 
 """
-    make_mesh(f1::F64 = 2.1, cut::F64 = 0.01)
+    make_mesh()
 
 Try to generate an uniform (linear) or non-uniform (non-linear) mesh for
-the calculated spectrum. Note that the arguments `f1` and `cut` are only
-for the generation of the non-uniform mesh.
+the calculated spectrum.
 
 See also: [`LinearMesh`](@ref), [`TangentMesh`](@ref), [`LorentzMesh`](@ref).
 """
-function make_mesh(f1::F64 = 2.1, cut::F64 = 0.01)
+function make_mesh()
+    # Predefined parameters for mesh generation
+    #
+    # Note that the parameters `f1` and `cut` are only for the generation
+    # of the non-uniform mesh.
+    #
+    f1 = 2.1
+    cut = 0.01
+
+    # Setup parameters according to case.toml
+    pmesh = get_c("pmesh")
+    if !isa(pmesh, Missing)
+        (length(pmesh) == 1) && begin
+            Γ, = pmesh
+            f1 = Γ
+            cut = Γ
+        end
+    end
+    @show f1, cut
+    sorry()
+
     nmesh = get_c("nmesh")
     mesh = get_c("mesh")
     wmax = get_c("wmax")
