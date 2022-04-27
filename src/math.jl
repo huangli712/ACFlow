@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/18
+# Last modified: 2022/04/27
 #
 
 #=
@@ -308,7 +308,8 @@ end
 """
     munge_data(u::AbstractVector{<:Real}, t::AbstractVector{<:Real})
 
-Preprocess the input data.
+Preprocess the input data. Note that `u` and `t` denote `f(x)` and `x`,
+respectively.
 """
 function munge_data(u::AbstractVector{<:Real}, t::AbstractVector{<:Real})
     return u, t
@@ -317,13 +318,16 @@ end
 """
     munge_data(u::AbstractVector, t::AbstractVector)
 
-Preprocess the input data.
+Preprocess the input data. Note that `u` and `t` denote `f(x)` and `x`,
+respectively.
 """
 function munge_data(u::AbstractVector, t::AbstractVector)
     Tu = Base.nonmissingtype(eltype(u))
     Tt = Base.nonmissingtype(eltype(t))
     @assert length(t) == length(u)
-    non_missing_indices = collect(i for i in 1:length(t) if !ismissing(u[i]) && !ismissing(t[i]))
+    non_missing_indices = collect(
+        i for i in 1:length(t) if !ismissing(u[i]) && !ismissing(t[i])
+    )
     newu = Tu.([u[i] for i in non_missing_indices])
     newt = Tt.([t[i] for i in non_missing_indices])
     return newu, newt
@@ -333,7 +337,8 @@ end
     (interp::AbstractInterpolation)(t::Number)
 
 Support `interp(t)`-like function call, where `interp` is the instance of
-any AbstractInterpolation struct.
+any AbstractInterpolation struct and `t` means the point that we want to
+get the interpolated value.
 """
 (interp::AbstractInterpolation)(t::Number) = _interp(interp, t)
 
@@ -388,19 +393,22 @@ end
 #=
 *Remarks* :
 
-The following codes export a single macro `@einsum`, which implements
+The following codes realize a single macro `@einsum`, which implements
 *similar* notation to the Einstein summation convention to flexibly
 specify operations on Julia `Array`s, similar to numpy's `einsum`
 function (but more flexible!).
+
+This implementation was borrowed from the following github repository:
+
+* https://github.com/ahwillia/Einsum.jl
+
+Of course, small modifications are made.
 =#
 
 """
     @einsum(ex)
 
 Perform Einstein summation like operations on Julia `Array`s.
-This implementation was borrowed from the following github repository:
-
-* https://github.com/ahwillia/Einsum.jl
 
 ### Examples
 
@@ -413,7 +421,7 @@ Basic matrix multiplication can be implemented as:
 If the destination array is preallocated, then use `=`:
 
 ```julia
-A = ones(5, 6, 7) # preallocated space
+A = ones(5, 6, 7) # Preallocated space
 X = randn(5, 2)
 Y = randn(6, 2)
 Z = randn(7, 2)
@@ -437,6 +445,7 @@ macro einsum(ex)
     _einsum(ex)
 end
 
+# Core function
 function _einsum(expr::Expr, inbounds = true)
     # Get left hand side (lhs) and right hand side (rhs) of equation
     lhs = expr.args[1]
@@ -579,6 +588,7 @@ function _einsum(expr::Expr, inbounds = true)
     return esc(full_expression)
 end
 
+# Check validity
 function check_index_occurrence(lhs_indices, rhs_indices)
     if !issubset(lhs_indices, rhs_indices)
         missing_indices = setdiff(lhs_indices, rhs_indices)
@@ -596,6 +606,7 @@ function check_index_occurrence(lhs_indices, rhs_indices)
     end
 end
 
+# Expand loops
 function nest_loops(expr::Expr, index_names::Vector{Symbol}, axis_expressions::Vector{Expr})
     isempty(index_names) && return expr
 
@@ -607,6 +618,7 @@ function nest_loops(expr::Expr, index_names::Vector{Symbol}, axis_expressions::V
     return expr
 end
 
+# Expand loops
 function nest_loop(expr::Expr, index_name::Symbol, axis_expression::Expr)
     loop = :(for $index_name = 1:$axis_expression
                  $expr
@@ -657,19 +669,31 @@ function extractindices!(expr::Expr,
     return return array_names, index_names, axis_expressions
 end
 
-function pushindex!(expr::Symbol, array_name::Symbol, dimension::Int,
-                    array_names, index_names, axis_expressions)
+function pushindex!(expr::Symbol,
+                    array_name::Symbol,
+                    dimension::Int,
+                    array_names,
+                    index_names,
+                    axis_expressions)
     push!(index_names, expr)
     push!(axis_expressions, :(size($array_name, $dimension)))
 end
 
-function pushindex!(expr::Number, array_name::Symbol, dimension::Int,
-                    array_names, index_names, axis_expressions)
+function pushindex!(expr::Number,
+                    array_name::Symbol,
+                    dimension::Int,
+                    array_names,
+                    index_names,
+                    axis_expressions)
     return nothing
 end
 
-function pushindex!(expr::Expr, array_name::Symbol, dimension::Int,
-                    array_names, index_names, axis_expressions)
+function pushindex!(expr::Expr,
+                    array_name::Symbol,
+                    dimension::Int,
+                    array_names,
+                    index_names,
+                    axis_expressions)
     if Meta.isexpr(expr, :call) && length(expr.args) == 3
         op = expr.args[1]
 
@@ -747,7 +771,7 @@ as implemented in the `LsqFit.jl` package.
 """
     OnceDifferentiable
 
-This mutable struct is used for objectives and solvers where the gradient
+Mutable struct. It is used for objectives and solvers where the gradient
 is available/exists.
 
 ### Members
@@ -865,12 +889,12 @@ algorithm.
 * gconv      -> If the convergence criterion 2 is satisfied.
 """
 struct OptimizationResults{T,N}
-    x₀::Array{T,N}
-    minimizer::Array{T,N}
-    minimum::T
-    iterations::Int
-    xconv::Bool
-    gconv::Bool
+    x₀ :: Array{T,N}
+    minimizer :: Array{T,N}
+    minimum :: T
+    iterations :: Int
+    xconv :: Bool
+    gconv :: Bool
 end
 
 """
