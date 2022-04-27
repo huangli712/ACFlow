@@ -1,10 +1,10 @@
 [COMM]
 finput = "green.data"
-solver = "StochOM"
+solver = "MaxEnt"
 ktype  = "fermi"
 mtype  = "gauss"
 grid   = "ffreq"
-mesh   = "tangent"
+mesh   = "lorentz"
 ngrid  = 50
 nmesh  = 301
 wmax   = 10.0
