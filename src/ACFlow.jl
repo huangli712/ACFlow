@@ -369,6 +369,7 @@ To read the input data or write the calculated results.
 read_real_data    -> Read data in imaginary time axis.
 read_cmplx_data   -> Read data in Matsubara frequency axis.
 write_spectrum    -> Write spectral functions.
+write_model       -> Write default model function.
 write_misfit      -> Write χ².
 write_hamiltonian -> Write effective hamiltonian for StochAC solver.
 write_probability -> Write Bayesian a-posteriori probability.
@@ -384,6 +385,7 @@ include("inout.jl")
 export read_real_data
 export read_cmplx_data
 export write_spectrum
+export write_model
 export write_misfit
 export write_hamiltonian
 export write_probability
