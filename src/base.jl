@@ -378,8 +378,15 @@ function make_model(am::AbstractMesh)
     s₂ = +2.0
     fn = "model.inp"
 
-    mtype = get_c("mtype")
+    # Setup parameters according to case.toml
+    pmodel = get_c("pmodel")
+    if !isa(pmodel, Missing)
+        (length(pmodel) == 1) && begin Γ, = pmodel end
+        (length(pmodel) == 2) && begin Γ, s = pmodel end
+        (length(pmodel) == 3) && begin Γ, s₁, s₂ = pmodel end
+    end
 
+    mtype = get_c("mtype")
     @cswitch mtype begin
         @case "flat"
             return build_flat_model(am)
