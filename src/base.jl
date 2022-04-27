@@ -363,16 +363,14 @@ function make_mesh(f1::F64 = 2.1, cut::F64 = 0.01)
 end
 
 """
-    make_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0, fn::String = "model.data")
+    make_model(am::AbstractMesh)
 
-Try to generate default model function through various schemes. Note that
-the argument `Γ` is for the gauss-like model function, while the argument
-`fn` is for the user-supplied model function. The argument `s` is used to
-shift the peaks.
+Try to generate a default model function at given mesh `am` through
+various schemes.
 
 See also: [`AbstractMesh`].
 """
-function make_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0, fn::String = "model.data")
+function make_model(am::AbstractMesh)
     mtype = get_c("mtype")
 
     @cswitch mtype begin
