@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/21
+# Last modified: 2022/04/27
 #
 
 #=
@@ -238,7 +238,7 @@ function write_backward(ag::AbstractGrid, G::Vector{F64})
                 @printf(fout, "%16.12f %16.12f\n", ag[i], G[i])
             end
         end
-    # The reproduced data are defined in imaginary frequency axis.
+    # The reproduced data are defined in Matsubara frequency axis.
     else
         open("repr.data", "w") do fout
             for i in eachindex(ag)
