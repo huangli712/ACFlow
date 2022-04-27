@@ -105,14 +105,14 @@ function build_flat_model(am::AbstractMesh)
 end
 
 """
-    build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
+    build_gaussian_model(am::AbstractMesh, Γ::F64)
 
 Try to build a Gaussian model, which is then normalized. The argument
 `Γ` is used to control the width of the Gaussian peak.
 
 See also: [`AbstractMesh`](@ref).
 """
-function build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
+function build_gaussian_model(am::AbstractMesh, Γ::F64)
     model = exp.(-(am.mesh / Γ) .^ 2.0) / (Γ * sqrt(π))
     norm = dot(am.weight, model)
     model = model ./ norm
@@ -120,7 +120,7 @@ function build_gaussian_model(am::AbstractMesh, Γ::F64 = 2.0)
 end
 
 """
-    build_1gaussian_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
+    build_1gaussian_model(am::AbstractMesh, Γ::F64, s::F64)
 
 Try to build a shifted Gaussian model, which is then normalized. The
 argument `Γ` is used to control the width of the Gaussian peak, and `s`
@@ -128,7 +128,7 @@ means the shift of the central peak.
 
 See also: [`AbstractMesh`](@ref).
 """
-function build_1gaussian_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
+function build_1gaussian_model(am::AbstractMesh, Γ::F64, s::F64)
     model = exp.(-((am.mesh - s) / Γ) .^ 2.0) / (Γ * sqrt(π))
     norm = dot(am.weight, model)
     model = model ./ norm
@@ -136,7 +136,7 @@ function build_1gaussian_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
 end
 
 """
-    build_2gaussians_model(am::AbstractMesh, Γ::F64 = 2.0, s1::F64 = -2.0, s2::F64 = 2.0)
+    build_2gaussians_model(am::AbstractMesh, Γ::F64, s1::F64, s2::F64)
 
 Try to build a Two-Gaussians model, which is then normalized. The
 argument `Γ` is used to control the width of the Gaussian peak, and
@@ -144,7 +144,7 @@ argument `Γ` is used to control the width of the Gaussian peak, and
 
 See also: [`AbstractMesh`](@ref).
 """
-function build_2gaussians_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
+function build_2gaussians_model(am::AbstractMesh, Γ::F64, s1::F64, s2::F64)
     model = similar(am.mesh)
     @. model = exp(-((am.mesh - s1) / Γ) ^ 2.0) / (Γ * sqrt(π))
     @. model += exp(-((am.mesh - s2) / Γ) ^ 2.0) / (Γ * sqrt(π))
@@ -154,14 +154,14 @@ function build_2gaussians_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
 end
 
 """
-    build_lorentzian_model(am::AbstractMesh, Γ::F64 = 2.0)
+    build_lorentzian_model(am::AbstractMesh, Γ::F64)
 
 Try to build a Lorentzian model, which is then normalized. The argument
 `Γ` is used to control the width of the Lorentzian peak.
 
 See also: [`AbstractMesh`](@ref).
 """
-function build_lorentzian_model(am::AbstractMesh, Γ::F64 = 2.0)
+function build_lorentzian_model(am::AbstractMesh, Γ::F64)
     model = (Γ / π) ./ ( Γ ^ 2.0 .+ (am.mesh) .^ 2.0 )
     norm = dot(am.weight, model)
     model = model ./ norm
@@ -169,7 +169,7 @@ function build_lorentzian_model(am::AbstractMesh, Γ::F64 = 2.0)
 end
 
 """
-    build_1lorentzian_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
+    build_1lorentzian_model(am::AbstractMesh, Γ::F64, s::F64)
 
 Try to build a shifted Lorentzian model, which is then normalized. The
 argument `Γ` is used to control the width of the Lorentzian peak, and `s`
@@ -177,7 +177,7 @@ means the shift of the central peak.
 
 See also: [`AbstractMesh`](@ref).
 """
-function build_1lorentzian_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
+function build_1lorentzian_model(am::AbstractMesh, Γ::F64, s::F64)
     model = (Γ / π) ./ ( Γ ^ 2.0 .+ (am.mesh - s) .^ 2.0 )
     norm = dot(am.weight, model)
     model = model ./ norm
@@ -185,7 +185,7 @@ function build_1lorentzian_model(am::AbstractMesh, Γ::F64 = 2.0, s::F64 = 2.0)
 end
 
 """
-    build_2lorentzians_model(am::AbstractMesh, Γ::F64 = 2.0, s1::F64 = -2.0, s2::F64 = 2.0)
+    build_2lorentzians_model(am::AbstractMesh, Γ::F64, s1::F64, s2::F64)
 
 Try to build a Two-Lorentzians model, which is then normalized. The
 argument `Γ` is used to control the width of the Lorentzian peak, and
@@ -193,7 +193,7 @@ argument `Γ` is used to control the width of the Lorentzian peak, and
 
 See also: [`AbstractMesh`](@ref).
 """
-function build_2lorentzians_model(am::AbstractMesh, Γ::F64 = 2.0, s1::F64 = -2.0, s2::F64 = 2.0)
+function build_2lorentzians_model(am::AbstractMesh, Γ::F64, s1::F64, s2::F64)
     model = similar(am.mesh)
     @. model = (Γ / π) / ( Γ ^ 2.0 + (am.mesh - s1) ^ 2.0 )
     @. model += (Γ / π) / ( Γ ^ 2.0 + (am.mesh - s2) ^ 2.0 )
@@ -203,13 +203,13 @@ function build_2lorentzians_model(am::AbstractMesh, Γ::F64 = 2.0, s1::F64 = -2.
 end
 
 """
-    build_risedecay_model(am::AbstractMesh, Γ::F64 = 2.0)
+    build_risedecay_model(am::AbstractMesh, Γ::F64)
 
 Try to build a Rise-And-Decay model, which is then normalized.
 
 See also: [`AbstractMesh`](@ref).
 """
-function build_risedecay_model(am::AbstractMesh, Γ::F64 = 2.0)
+function build_risedecay_model(am::AbstractMesh, Γ::F64)
     @assert am[1] ≥ 0.0
     model = Γ * (am.mesh .^ 2.0) .* exp.(-Γ * am.mesh)
     norm = dot(am.weight, model)
@@ -218,7 +218,7 @@ function build_risedecay_model(am::AbstractMesh, Γ::F64 = 2.0)
 end
 
 """
-    build_file_model(am::AbstractMesh, fn::String = "model.data")
+    build_file_model(am::AbstractMesh, fn::String)
 
 Try to read a model function from external file (specified by `fn`). Note
 that the mesh used to generate the model function must be compatible with
@@ -226,7 +226,7 @@ that the mesh used to generate the model function must be compatible with
 
 See also: [`AbstractMesh`](@ref).
 """
-function build_file_model(am::AbstractMesh, fn::String = "model.data")
+function build_file_model(am::AbstractMesh, fn::String)
     model = zeros(F64, length(am))
     open(fn, "r") do fin
         for i in eachindex(model)

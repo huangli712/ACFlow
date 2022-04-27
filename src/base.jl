@@ -371,6 +371,13 @@ various schemes.
 See also: [`AbstractMesh`].
 """
 function make_model(am::AbstractMesh)
+    # Predefined parameters for model generation
+    Γ = 2.0
+    s = 2.0
+    s₁ = -2.0
+    s₂ = +2.0
+    fn = "model.inp"
+
     mtype = get_c("mtype")
 
     @cswitch mtype begin
