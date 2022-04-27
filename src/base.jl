@@ -354,14 +354,14 @@ function make_mesh()
             cut = Γ
         end
     end
-    @show f1, cut
-    sorry()
 
+    # Get essential parameters
     nmesh = get_c("nmesh")
     mesh = get_c("mesh")
     wmax = get_c("wmax")
     wmin = get_c("wmin")
 
+    # Try to generate the required mesh
     @cswitch mesh begin
         @case "linear"
             return LinearMesh(nmesh, wmin, wmax)
@@ -391,7 +391,7 @@ end
 Try to generate a default model function at given mesh `am` through
 various schemes.
 
-See also: [`AbstractMesh`].
+See also: [`AbstractMesh`](@ref).
 """
 function make_model(am::AbstractMesh)
     # Predefined parameters for model generation
@@ -409,6 +409,7 @@ function make_model(am::AbstractMesh)
         (length(pmodel) == 3) && begin Γ, s₁, s₂ = pmodel end
     end
 
+    # Try to generate the required model
     mtype = get_c("mtype")
     @cswitch mtype begin
         @case "flat"
