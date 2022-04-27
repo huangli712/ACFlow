@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/27
+# Last modified: 2022/04/28
 #
 
 #=
@@ -288,7 +288,7 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
 
     # Reproduce input data
     kernel = make_kernel(SC.mesh, SC.grid)
-    G = reprod(kernel, SC.mesh, Asum)
+    G = reprod(SC.mesh, kernel, Asum)
     write_backward(SC.grid, G)
 
     # Calculate full green's function at real frequency

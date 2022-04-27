@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/27
+# Last modified: 2022/04/28
 #
 
 #=
@@ -138,7 +138,7 @@ function last(mec::MaxEntContext, svec::Vector, sol::Dict)
         write_probability(α_vec, p_vec)
     end
 
-    G = reprod(mec.kernel, mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
+    G = reprod(mec.mesh, mec.kernel, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
     write_backward(mec.grid, G)
 
     _G = kramers(mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
@@ -683,7 +683,7 @@ end
 It computes the chi-squared-deviation of the spectral function `A`.
 """
 function calc_chi2(mec::MaxEntContext, A::Vector{F64})
-    Gₙ = reprod(mec.kernel, mec.mesh, A)
+    Gₙ = reprod(mec.mesh, mec.kernel, A)
     χ² = sum(mec.σ² .* ((mec.Gᵥ - Gₙ) .^ 2.0))
     return χ²
 end

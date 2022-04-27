@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/26
+# Last modified: 2022/04/28
 #
 
 #=
@@ -253,7 +253,7 @@ function last(SC::StochOMContext, Aout::Vector{F64})
 
     # Reproduce input data
     kernel = make_kernel(SC.mesh, SC.grid)
-    G = reprod(kernel, SC.mesh, Aout)
+    G = reprod(SC.mesh, kernel, Aout)
     write_backward(SC.grid, G)
 
     _G = kramers(SC.mesh, Aout)

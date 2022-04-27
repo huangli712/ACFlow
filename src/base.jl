@@ -53,6 +53,7 @@ See also: [`RawData`](@ref).
 function solve(rd::RawData)
     solver = get_c("solver")
 
+    # Choose suitable solver
     @cswitch solver begin
         @case "MaxEnt"
             return solve(MaxEntSolver(), rd)
@@ -73,7 +74,7 @@ function solve(rd::RawData)
 end
 
 """
-    reprod(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
+    reprod(am::AbstractMesh, kernel::Matrix{F64}, A::Vector{F64})
 
 Try to reproduce the input data using the calculated spectrum function
 `A`. `kernel` is the kernel function, and `am` is the mesh in which the
@@ -81,7 +82,7 @@ spectrum is defined.
 
 See also: [`AbstractMesh`](@ref).
 """
-function reprod(kernel::Matrix{F64}, am::AbstractMesh, A::Vector{F64})
+function reprod(am::AbstractMesh, kernel::Matrix{F64}, A::Vector{F64})
     ndim, nmesh = size(kernel)
     @assert nmesh == length(am) == length(A)
 
