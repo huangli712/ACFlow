@@ -106,7 +106,7 @@ A(\omega) = -\frac{1}{\pi} \mathrm{Im} G(\omega)
 
 ```math
 \begin{equation}
-\mathrm{Re} G(\omega) = \frac{1}{\pi} \mathcal{P} 
+\mathrm{Re} G(\omega) = \frac{1}{\pi} \mathcal{P}
 \int_{-\infty}^{\infty} d\omega'~
 \frac{\mathrm{Im} G(\omega')}{\omega'-\omega}
 \end{equation}
@@ -351,7 +351,7 @@ function make_mesh(f1::F64 = 2.1, cut::F64 = 0.01)
         @case "lorentz"
             return LorentzMesh(nmesh, wmin, wmax, cut)
             break
-        
+
         @case "halflorentz"
             return HalfLorentzMesh(nmesh, wmax, cut)
             break
@@ -388,11 +388,11 @@ function make_model(am::AbstractMesh)
         @case "gauss"
             return build_gaussian_model(am, Γ)
             break
-        
+
         @case "1gauss"
             return build_1gaussian_model(am, Γ, s)
             break
-        
+
         @case "2gauss"
             return build_2gaussians_model(am, Γ, s₁, s₂)
             break
@@ -400,7 +400,7 @@ function make_model(am::AbstractMesh)
         @case "lorentz"
             return build_lorentzian_model(am, Γ)
             break
-        
+
         @case "1lorentz"
             return build_1lorentzian_model(am, Γ, s)
             break
@@ -408,7 +408,7 @@ function make_model(am::AbstractMesh)
         @case "2lorentz"
             return build_2lorentzians_model(am, Γ, s₁, s₂)
             break
-        
+
         @case "risedecay"
             return build_risedecay_model(am, Γ)
             break
