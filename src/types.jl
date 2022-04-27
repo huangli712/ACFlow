@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/26
+# Last modified: 2022/04/27
 #
 
 #=
@@ -53,6 +53,8 @@ const PCOMM    = Dict{String,ADT}(
     "wmin"    => [missing, 1, :F64   , "Left boundary (minimum value) of mesh"],
     "beta"    => [missing, 1, :F64   , "Inverse temperature"],
     "offdiag" => [missing, 1, :Bool  , "Is it the offdiagonal part in matrix-valued function"],
+    "pmodel"  => [missing, 0, :Array , "Additional parameters for customizing the model"],
+    "pmesh"   => [missing, 0, :Array , "Additional parameters for customizing the mesh"],
 )
 
 # Default parameters for PCOMM
@@ -90,7 +92,7 @@ const _PMaxEnt = Dict{String,Any}(
     "nalph"   => 12,
     "alpha"   => 1e9,
     "ratio"   => 10.0,
-    "blur"    => -1.0,
+    "blur"    => -1.0, # Negative value means off.
 )
 
 """
@@ -114,7 +116,7 @@ const _PStochAC= Dict{String,Any}(
     "nfine"   => 10000,
     "ngamm"   => 512,
     "nwarm"   => 4000,
-    "nstep"   => 800000,
+    "nstep"   => 4000000,
     "ndump"   => 40000,
     "nalph"   => 20,
     "alpha"   => 1.00,
@@ -129,9 +131,9 @@ Dictionary for configuration parameters: the stochastic optimization method.
 const PStochOM = Dict{String,ADT}(
     "ntry"    => [missing, 1, :I64   , "Number of attempts to figure out the solution"],
     "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo steps per try"],
-    "nbox"    => [missing, 1, :I64   , "Number of boxes in the Monte Carlo sampling"],
-    "sbox"    => [missing, 1, :F64   , "Maximum area of generated boxes"],
-    "wbox"    => [missing, 1, :F64   , "Maximum width of generated boxes"],
+    "nbox"    => [missing, 1, :I64   , "Number of boxes to construct the spectrum"],
+    "sbox"    => [missing, 1, :F64   , "Maximum area of the randomly generated boxes"],
+    "wbox"    => [missing, 1, :F64   , "Maximum width of the randomly generated boxes"],
     "norm"    => [missing, 1, :F64   , "Is the norm calculated"],
 )
 
@@ -142,7 +144,7 @@ const _PStochOM = Dict{String,Any}(
     "nbox"    => 100,
     "sbox"    => 0.005,
     "wbox"    => 0.02,
-    "norm"    => -1.0,
+    "norm"    => -1.0, # Negative value means off.
 )
 
 #=
@@ -358,7 +360,8 @@ end
 """
     TangentMesh
 
-Mutable struct. A non-linear and non-uniform mesh.
+Mutable struct. A non-linear and non-uniform mesh. Note that it should
+be defined on both negative and positive half-axis.
 
 ### Members
 
@@ -381,7 +384,8 @@ end
 """
     LorentzMesh
 
-Mutable struct. A non-linear and non-uniform mesh.
+Mutable struct. A non-linear and non-uniform mesh. Note that it should
+be defined on both negative and positive half-axis.
 
 ### Members
 
@@ -404,7 +408,8 @@ end
 """
     HalfLorentzMesh
 
-Mutable struct. A non-linear and non-uniform mesh.
+Mutable struct. A non-linear and non-uniform mesh. Note that it should
+be defined on positive half-axis only.
 
 ### Members
 
