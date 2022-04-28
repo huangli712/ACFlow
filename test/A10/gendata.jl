@@ -39,7 +39,6 @@ spec_real = similar(w_real)
 @. spec_real -= exp(-0.5 * (w_real + 1.0) ^ 2.0 / (1.0 ^ 2.0)) / (sqrt(2.0 * π) * 0.5)
 @. spec_real += exp(-0.5 * (w_real - 6.0) ^ 2.0 / (0.5 ^ 2.0)) / (sqrt(2.0 * π) * 0.5) * 0.2
 @. spec_real -= exp(-0.5 * (w_real + 6.0) ^ 2.0 / (0.5 ^ 2.0)) / (sqrt(2.0 * π) * 0.5) * 0.2
-#spec_real = spec_real ./ trapz(w_real[2:end], spec_real[2:end]./ w_real[2:end])
 spec_real = spec_real ./ trapz(w_real, spec_real)
 
 # Imaginary time mesh
@@ -57,13 +56,11 @@ for i = 1:ntau
     tw = exp.(-t_mesh[i] * w_real)
     bw = exp.(-beta * w_real)
     btw = exp.(-(beta - t_mesh[i]) * w_real)
-    integrand = 0.5 * spec_real .* (tw .+ btw) ./ (1.0 .- bw)
-    integrand[1] = 1.0
-    gtau[i] = trapz(w_real, integrand) #+ noise[i]
+    K = 0.5 * w_real .* (tw .+ btw) ./ (1.0 .- bw)
+    K[1] = 1.0 / beta
+    KA = K .* spec_real
+    gtau[i] = trapz(w_real, KA)
 end
-norm = gtau[1] * 2.0
-gtau = gtau ./ norm
-@show norm
 
 # Build error
 err = ones(Float64, ntau) * noise_amplitude
@@ -78,6 +75,7 @@ end
 # Write spectral function
 open("exact.data", "w") do fout
     for i in eachindex(spec_real)
-        @printf(fout, "%16.12f %16.12f\n", w_real[i], spec_real[i])
+        @printf(fout, "%16.12f %16.12f %16.12f\n",
+            w_real[i], spec_real[i], w_real[i] * spec_real[i])
     end
 end
