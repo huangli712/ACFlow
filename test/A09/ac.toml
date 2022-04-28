@@ -2,7 +2,7 @@
 finput = "green.data"
 solver = "StochAC"
 ktype  = "fermi"
-mtype  = "2gauss"
+mtype  = "flat"
 grid   = "ftime"
 mesh   = "linear"
 ngrid  = 1000
