@@ -82,13 +82,22 @@ In imaginary-time axis, we have
 ```math
 \begin{equation}
 G_{B}(\tau) = \int^{+\infty}_{-\infty} d\omega
-          \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}} A(\omega),
+          \frac{\omega e^{-\tau\omega}}{1 - e^{-\beta\omega}}
+          \frac{A(\omega)}{\omega},
 \end{equation}
 ```
 
 ```math
 \begin{equation}
-K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}.
+K(\tau,\omega) = \frac{\omega e^{-\tau\omega}}{1 - e^{-\beta\omega}}.
+\end{equation}
+```
+
+if ``\omega = 0``,
+
+```math
+\begin{equation}
+K(\tau,0) = \frac{1}{\beta}.
 \end{equation}
 ```
 
@@ -97,19 +106,28 @@ In Matsubara frequency axis, we have
 ```math
 \begin{equation}
 G_{B}(i\omega_n) = \int^{+\infty}_{-\infty} d\omega
-               \frac{1}{i\omega_n - \omega} A(\omega),
+               \frac{\omega}{i\omega_n - \omega}
+               \frac{A(\omega)}{\omega},
 \end{equation}
 ```
 
 ```math
 \begin{equation}
-K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega}.
+K(\omega_n,\omega) = \frac{\omega}{i\omega_n - \omega},
 \end{equation}
 ```
 
 where ``\omega_n`` is a Matsubara frequencies equal to ``2n\pi/\beta``.
 ``G_{B}(\tau)`` is related to ``G_{B}(i\omega_n)`` via the Fourier
 transform as mentioned above.
+
+Especially, if ``\omega_n = 0`` and ``\omega = 0``,
+
+```math
+\begin{equation}
+K(0,0) = -1.
+\end{equation}
+```
 
 These kernel functions are for finite temperature correlation function of
 boson-like operators ``B`` and ``B^{\dagger}``,
@@ -142,15 +160,30 @@ In imaginary-time axis, we have
 
 ```math
 \begin{equation}
-K(\tau,\omega) = \frac{e^{-\tau\omega} + e^{-(\beta - \tau)\omega}}
+K(\tau,\omega) = \frac{\omega [e^{-\tau\omega} + e^{-(\beta - \tau)\omega}]}
                       {2(1 - e^{-\beta\omega})}.
 \end{equation}
 ```
+
+if ``\omega = 0``,
+
+```math
+K(\tau,0) = \frac{1}{\beta}.
+```
+
 In Matsubara frequency axis, we have
 
 ```math
 \begin{equation}
-K(\omega_n, \epsilon) = \frac{\epsilon^2}{\omega_n^2 + \epsilon^2}.
+K(\omega_n, \omega) = \frac{\omega^2}{\omega_n^2 + \omega^2}.
+\end{equation}
+```
+
+Especially, if ``\omega_n = 0`` and ``\omega = 0``,
+
+```math
+\begin{equation}
+K(0,0) = 1.
 \end{equation}
 ```
 
