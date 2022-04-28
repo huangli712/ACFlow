@@ -2,7 +2,7 @@
 finput = "green.data"
 solver = "StochAC"
 ktype  = "bsymm"
-mtype  = "risedecay"
+mtype  = "flat"
 grid   = "btime"
 mesh   = "halflorentz"
 ngrid  = 501
