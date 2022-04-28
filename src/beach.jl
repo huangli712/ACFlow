@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/26
+# Last modified: 2022/04/28
 #
 
 #=
@@ -13,9 +13,12 @@
 
 """
     StochACElement
+
 Mutable struct. It is used to record the field configurations, which will
 be sampled within monte carlo procedure.
+
 ### Members
+
 * Γₐ -> It means the positions of the δ functions.
 * Γᵣ -> It means the weights / amplitudes of the δ functions.
 """
@@ -26,8 +29,11 @@ end
 
 """
     StochACContext
+
 Mutable struct. It is used within the StochAC solver only.
+
 ### Members
+
 * Gᵥ     -> Input data for correlator.
 * σ¹     -> Actually 1.0 / σ¹.
 * grid   -> Grid for input data.
@@ -62,6 +68,7 @@ end
 
 """
     solve(S::StochACSolver, rd::RawData)
+
 Solve the analytical continuation problem by the stochastic analytical
 continuation algorithm.
 """
@@ -99,6 +106,7 @@ end
 
 """
     init(S::StochACSolver, rd::RawData)
+
 Initialize the StochAC solver and return the StochACMC, StochACElement,
 and StochACContext structs.
 """
@@ -143,6 +151,7 @@ end
 
 """
     run(S::StochACSolver, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+
 Perform stochastic analytical continuation simulation, sequential version.
 """
 function run(S::StochACSolver, MC::StochACMC, SE::StochACElement, SC::StochACContext)
@@ -177,6 +186,7 @@ end
          p1::Dict{String,Vector{Any}},
          p2::Dict{String,Vector{Any}},
          MC::StochACMC, SE::StochACElement, SC::StochACContext)
+
 Perform stochastic analytical continuation simulation, parallel version.
 The arguments `p1` and `p2` are copies of PCOMM and PStochAC, respectively.
 """
@@ -216,6 +226,7 @@ end
 
 """
     average(step::F64, SC::StochACContext)
+
 Postprocess the results generated during the stochastic analytical
 continuation simulations. It will calculate real spectral functions, and
 internal energies.
@@ -241,6 +252,7 @@ end
 
 """
     last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
+
 It will process and write the calculated results by the StochAC solver,
 including effective hamiltonian, final spectral function, reproduced
 correlator.
@@ -272,10 +284,11 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     @. Asum = Asum / (Uα[close] - Uα[end])
     write_spectrum(SC.mesh, Asum)
     write_spectrum(SC.mesh, SC.αₗ, Aout)
+    write_model(SC.mesh, SC.model)
 
     # Reproduce input data
     kernel = make_kernel(SC.mesh, SC.grid)
-    G = reprod(kernel, SC.mesh, Asum)
+    G = reprod(SC.mesh, kernel, Asum)
     write_backward(SC.grid, G)
 
     # Calculate full green's function at real frequency
@@ -291,6 +304,7 @@ end
 
 """
     warmup(MC::StochACMC, SE::StochACElement, SC::StochACContext)
+
 Warmup the monte carlo engine to acheieve thermalized equilibrium.
 """
 function warmup(MC::StochACMC, SE::StochACElement, SC::StochACContext)
@@ -309,6 +323,7 @@ end
 
 """
     sample(MC::StochACMC, SE::StochACElement, SC::StochACContext)
+
 Perform monte carlo sweeps and sample the field configurations.
 """
 function sample(MC::StochACMC, SE::StochACElement, SC::StochACContext)
@@ -333,6 +348,7 @@ end
 
 """
     measure(SE::StochACElement, SC::StochACContext)
+
 Measure the spectral functions and internal energies.
 """
 function measure(SE::StochACElement, SC::StochACContext)
@@ -352,7 +368,9 @@ end
 
 """
     init_mc(S::StochACSolver)
+
 Try to create a StochACMC struct.
+
 See also: [`StochAC`](@ref).
 """
 function init_mc(S::StochACSolver)
@@ -372,8 +390,10 @@ end
 
 """
     init_element(S::StochACSolver, rng::AbstractRNG)
+
 Randomize the configurations for future monte carlo sampling. It will
 return a StochACElement object.
+
 See also: [`StochACElement`](@ref).
 """
 function init_element(S::StochACSolver, rng::AbstractRNG)
@@ -397,8 +417,10 @@ end
 
 """
     init_iodata(S::StochACSolver, rd::RawData)
+
 Preprocess the input data (`rd`), then allocate memory for the α-resolved
 spectral functions.
+
 See also: [`RawData`](@ref).
 """
 function init_iodata(S::StochACSolver, rd::RawData)
@@ -416,8 +438,10 @@ end
 
 """
     calc_fmesh()
+
 Try to calculate very fine (dense) linear mesh in [wmin, wmax], which
 is used internally to build the kernel function.
+
 See also: [`LinearMesh`](@ref).
 """
 function calc_fmesh()
@@ -432,8 +456,10 @@ end
 
 """
     calc_xmesh()
+
 Try to calculate very fine (dense) linear mesh in [0, 1], which is used
 internally to build the δ functions.
+
 See also: [`calc_delta`](@ref).
 """
 function calc_xmesh()
@@ -447,8 +473,10 @@ end
 
 """
     calc_phi(am::AbstractMesh, model::Vector{F64})
+
 Try to calculate ϕ(ω) function. `am` is the mesh for calculated spectrum,
 and `model` means the default model function.
+
 See also: [`AbstractMesh`](@ref), [`calc_delta`](@ref).
 """
 function calc_phi(am::AbstractMesh, model::Vector{F64})
@@ -458,8 +486,10 @@ end
 
 """
     calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
+
 Precompute the δ functions. `xmesh` is a very dense linear mesh in [0,1]
 and `ϕ` is the ϕ function.
+
 See also: [`calc_xmesh`](@ref), [`calc_phi`](@ref).å
 """
 function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
@@ -481,6 +511,7 @@ end
 
 """
     calc_hamil(Γₐ, Γᵣ, grid, kernel, Gᵥ, σ¹)
+
 Initialize h(τ) and H(α) using Eq.(35) and Eq.(36), respectively. `Γₐ`
 and `Γᵣ` represent n(x), `grid` is the grid for the input data, `kernel`
 means the kernel function, `Gᵥ` is the correlator, and `σ¹` is equal to
@@ -508,9 +539,11 @@ end
 
 """
     calc_htau(Γₐ, Γᵣ, kernel, Gᵥ, σ¹)
+
 Try to calculate α-dependent h(τ) via Eq.(36). `Γₐ` and `Γᵣ` represent
 n(x), `kernel` means the kernel function, `Gᵥ` is the correlator, and
 `σ¹` is equal to 1.0 / σ.
+
 See also: [`calc_hamil`](@ref).
 """
 function calc_htau(Γₐ::Vector{I64}, Γᵣ::Vector{F64},
@@ -529,6 +562,7 @@ end
 
 """
     calc_alpha()
+
 Generate a list for the α parameters
 """
 function calc_alpha()
@@ -551,8 +585,10 @@ end
 
 """
     try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+
 Select two δ functions and then change their weights. Here `i` means the
 index for α parameters.
+
 See also: [`try_mov2`](@ref).
 """
 function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
@@ -612,8 +648,10 @@ end
 
 """
     try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+
 Select two δ functions and then change their positions. Here `i` means the
 index for α parameters.
+
 See also: [`try_mov1`](@ref).
 """
 function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
@@ -677,6 +715,7 @@ end
 
 """
     try_swap(MC::StochACMC, SE::StochACElement, SC::StochACContext)
+
 Try to exchange field configurations between two adjacent layers.
 """
 function try_swap(MC::StochACMC, SE::StochACElement, SC::StochACContext)

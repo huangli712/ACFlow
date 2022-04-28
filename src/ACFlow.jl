@@ -368,6 +368,7 @@ To read the input data or write the calculated results.
 ```text
 read_real_data    -> Read data in imaginary time axis.
 read_cmplx_data   -> Read data in Matsubara frequency axis.
+#
 write_spectrum    -> Write spectral functions.
 write_model       -> Write default model function.
 write_misfit      -> Write χ².
@@ -384,6 +385,7 @@ include("inout.jl")
 #
 export read_real_data
 export read_cmplx_data
+#
 export write_spectrum
 export write_model
 export write_misfit
@@ -400,7 +402,7 @@ export write_statistics
 #=
 *Summary* :
 
-To define default model functions.
+To define some default model functions.
 
 *Members* :
 
@@ -446,6 +448,7 @@ To define various kernel functions.
 ```text
 build_kernel        -> Build kernel function.
 build_kernel_symm   -> Build kernel function for symmetric case.
+#
 make_blur           -> Add preblur effect to the spectral functions.
 make_singular_space -> Perform singular value decomposition for kernel.
 make_gauss_peaks    -> Generate a series gaussian peaks in a linear mesh.
@@ -457,6 +460,7 @@ include("kernel.jl")
 #
 export build_kernel
 export build_kernel_symm
+#
 export make_blur
 export make_singular_space
 export make_gauss_peaks
@@ -554,6 +558,7 @@ measure        -> Measure spectral functions and internal energies.
 init_mc        -> Create a StochACMC struct.
 init_element   -> Create a StochACElement struct.
 init_iodata    -> Preprocess the input data.
+#
 calc_fmesh     -> Build dense linear mesh in [wmin,wmax].
 calc_xmesh     -> Build dense linear mesh in [0,1].
 calc_phi       -> Calculate ϕ function.
@@ -561,6 +566,7 @@ calc_delta     -> Precompute δ functions.
 calc_hamil     -> Calculate α-resolved Hc.
 calc_htau      -> Calculate α-resolved h(τ).
 calc_alpha     -> Calculate α parameters.
+#
 try_mov1       -> Try to change the weights of δ functions.
 try_mov2       -> Try to shift the positions of δ functions.
 try_swap       -> Try to exchange configurations between two adjacent layers.
@@ -587,6 +593,7 @@ export measure
 export init_mc
 export init_element
 export init_iodata
+#
 export calc_fmesh
 export calc_xmesh
 export calc_phi
@@ -594,6 +601,7 @@ export calc_delta
 export calc_hamil
 export calc_htau
 export calc_alpha
+#
 export try_mov1
 export try_mov2
 export try_swap
@@ -626,10 +634,12 @@ init_mc        -> Create a StochOMMC struct.
 init_element   -> Create a StochOMElement struct.
 init_context   -> Prepare data for a StochOMContext struct.
 init_iodata    -> Preprocess the input data.
+#
 calc_lambda    -> Build kernel function.
 calc_error     -> Calculate χ².
 calc_green     -> Reproduce green's function via the field configurations.
 calc_norm      -> Calculate norm of the field configurations.
+#
 try_insert     -> Try to insert a new box in the configuration.
 try_remove     -> Try to remove a box.
 try_shift      -> Try to shift a box.
@@ -660,10 +670,12 @@ export init_mc
 export init_element
 export init_context
 export init_iodata
+#
 export calc_lambda
 export calc_error
 export calc_green
 export calc_norm
+#
 export try_insert
 export try_remove
 export try_shift
@@ -685,10 +697,14 @@ To provide the basic workflow for end user of the ACFlow package.
 
 ```text
 solve       -> Select solver to solve the analytical continuation problem.
+#
 reprod      -> Try to generate the input data via calculated spectrum.
+kramers     -> Calculate real part of response function.
+#
 setup_param -> Setup parameters.
 read_param  -> Read parameters from case.toml.
 read_data   -> Read the input data.
+#
 make_data   -> Preprocess the input data.
 make_grid   -> Generate grid for the input data.
 make_mesh   -> Generate mesh for the calculated spectrum.
@@ -701,10 +717,14 @@ make_kernel -> Generate kernel function.
 include("base.jl")
 #
 export solve
+#
 export reprod
+export kramers
+#
 export setup_param
 export read_param
 export read_data
+#
 export make_data
 export make_grid
 export make_mesh
