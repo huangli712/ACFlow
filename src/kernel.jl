@@ -10,9 +10,19 @@
 #=
 *Remarks* :
 
-In `ACFlow`, the following kernel functions are supported.
+The purpose of `ACFlow` is to solve the following equation:
 
-* `For Fermionic Green's Functions`
+```math
+\begin{equation}
+\mathbf{G} = \mathbf{KA}.
+\end{equation}
+```
+
+Here, ``\mathbf{G}``, ``\mathbf{K}``, and ``\mathbf{A}`` are input
+green's function, kernel function, and spectral density, respectively.
+`ACFlow` supports various kernel functions. They are summaried as follows.
+
+**For Fermionic Green's Functions**
 
 In imaginary-time axis, we have
 
@@ -75,7 +85,7 @@ with these kernel functions. For the self-energies, it is addtionally
 required that the constant contribution ``\Sigma(i\infty)`` is
 subtracted from ``\Sigma(i\omega_n)``.
 
-* `For Bosonic Green's Functions`
+**For Bosonic Green's Functions**
 
 In imaginary-time axis, we have
 
@@ -154,7 +164,7 @@ and the transverse spin susceptibility
 \chi_{+-}(\tau) = \langle \mathcal{T} S_{+}(\tau) S_{-}(0) \rangle.
 ```
 
-* `For Correlator of Hermitian Operator`
+**For Correlator of Hermitian Operator**
 
 In imaginary-time axis, we have
 
