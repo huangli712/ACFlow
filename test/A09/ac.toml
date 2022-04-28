@@ -1,6 +1,6 @@
 [COMM]
 finput = "green.data"
-solver = "MaxEnt"
+solver = "StochAC"
 ktype  = "fermi"
 mtype  = "2gauss"
 grid   = "ftime"

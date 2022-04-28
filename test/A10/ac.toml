@@ -1,6 +1,6 @@
 [COMM]
 finput = "green.data"
-solver = "MaxEnt"
+solver = "StochAC"
 ktype  = "bsymm"
 mtype  = "risedecay"
 grid   = "btime"

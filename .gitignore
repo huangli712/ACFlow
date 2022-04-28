@@ -2,5 +2,6 @@
 *.swp
 .DS_Store
 *.data
+Aout.*
 test.jl
 test.toml
