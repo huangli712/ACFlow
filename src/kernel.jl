@@ -279,12 +279,14 @@ function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     β = bg.β
 
     kernel = zeros(F64, ntime, nmesh)
+    #
     for i = 1:nmesh
         for j = 1:ntime
-            kernel[j,i] = exp(-bg[j] * am[i]) / (1.0 - exp(-β * am[i]))
+            kernel[j,i] = am[i] * exp(-bg[j] * am[i]) / (1.0 - exp(-β * am[i]))
         end
     end
-    @. kernel[:,1] = 1.0
+    #
+    @. kernel[:,1] = 1.0 / β
 
     return kernel
 end
@@ -304,12 +306,12 @@ function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 
     for i = 1:nmesh
         for j = 1:nfreq
-            _kernel[j,i] = 1.0 / (im * bg[j] - am[i])
+            _kernel[j,i] = am[i] / (im * bg[j] - am[i])
         end
     end
 
     if am[1] == 0.0 && bg[1] == 0.0
-        _kernel[1,1] = 1.0
+        _kernel[1,1] = -1.0
     end
 
     kernel = vcat(real(_kernel), imag(_kernel))
