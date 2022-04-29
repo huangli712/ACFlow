@@ -756,7 +756,7 @@ function try_shift(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
         # Update box t
         SE.C[t] = Rn
 
-        # Update Δ, G, and Λ
+        # Update Δ, G, and Λ.
         SE.Δ = Δ
         @. SE.G = SE.G - G1 + G2
         @. SE.Λ[:,t] = G2
@@ -814,7 +814,7 @@ function try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
         # Update box t
         SE.C[t] = Rn
 
-        # Update Δ, G, and Λ
+        # Update Δ, G, and Λ.
         SE.Δ = Δ
         @. SE.G = SE.G - G1 + G2
         @. SE.Λ[:,t] = G2
@@ -878,7 +878,7 @@ function try_height(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
         SE.C[t1] = R1n
         SE.C[t2] = R2n
 
-        # Update Δ, G, and Λ
+        # Update Δ, G, and Λ.
         SE.Δ = Δ
         @. SE.G = SE.G - G1A + G1B - G2A + G2B
         @. SE.Λ[:,t1] = G1B
@@ -898,25 +898,32 @@ end
 Split a given box into two boxes in the field configuration.
 """
 function try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
-    wbox  = get_s("wbox")
-    sbox  = get_s("sbox")
+    wbox = get_s("wbox")
+    sbox = get_s("sbox")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
     csize = length(SE.C)
 
+    # Choose a box randomly
     t = rand(MC.rng, 1:csize)
 
+    # Retreive the box t
     R1 = SE.C[t]
     if R1.w ≤ 2 * wbox || R1.w * R1.h ≤ 2.0 * sbox
         return
     end
 
+    # Determine height for new boxes (h and h)
     h = R1.h
+
+    # Determine width for new boxes (w1 and w2)
     w1 = wbox + (R1.w - 2.0 * wbox) * rand(MC.rng, F64)
     w2 = R1.w - w1
     if w1 > w2
         w1, w2 = w2, w1
     end
+
+    # Determine center for new boxes (c1 + dc1 and c2 + dc2)
     c1 = R1.c - R1.w / 2.0 + w1 / 2.0
     c2 = R1.c + R1.w / 2.0 - w2 / 2.0
     dx_min = wmin + w1 / 2.0 - c1
@@ -932,21 +939,28 @@ function try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
        (c2 + dc2 ≥ wmin + w2 / 2.0) &&
        (c2 + dc2 ≤ wmax - w2 / 2.0)
 
+        # Generate two new boxes
+        R2 = Box(h, w1, c1 + dc1)
+        R3 = Box(h, w2, c2 + dc2)
+    
+        # Calculate update for Λ
         G1 = SE.Λ[:,t]
         Ge = SE.Λ[:,csize]
-
-        R2 = Box(h, w1, c1 + dc1)
         G2 = calc_lambda(R2, SC.grid)
-
-        R3 = Box(h, w2, c2 + dc2)
         G3 = calc_lambda(R3, SC.grid)
+
+        # Calculate new Δ function, it is actually the error function.
         Δ = calc_error(SE.G - G1 + G2 + G3, SC.Gᵥ, SC.σ¹)
 
+        # Apply the Metropolis algorithm
         if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+            # Remove old box t and insert two new boxes
             SE.C[t] = SE.C[end]
             pop!(SE.C)
             push!(SE.C, R2)
             push!(SE.C, R3)
+
+            # Update Δ, G, and Λ.
             SE.Δ = Δ
             @. SE.G = SE.G - G1 + G2 + G3
             if t < csize
@@ -954,10 +968,13 @@ function try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
             end
             @. SE.Λ[:,csize] = G2
             @. SE.Λ[:,csize+1] = G3
+
+            # Update the counter
             MC.Macc[6] = MC.Macc[6] + 1
         end
     end
 
+    # Update the counter
     MC.Mtry[6] = MC.Mtry[6] + 1
 end
 
