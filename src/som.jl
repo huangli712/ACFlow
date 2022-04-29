@@ -830,21 +830,24 @@ end
 """
     try_height(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
 
-Change the height of given box in the field configuration.
+Change the heights of two given boxes in the field configuration.
 """
 function try_height(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     sbox  = get_s("sbox")
     csize = length(SE.C)
 
+    # Choose two boxes randomly
     t1 = rand(MC.rng, 1:csize)
     t2 = rand(MC.rng, 1:csize)
     while t1 == t2
         t2 = rand(MC.rng, 1:csize)
     end
 
+    # Get box t1 and box t2
     R1 = SE.C[t1]
     R2 = SE.C[t2]
 
+    # Determine left and right boundaries for the height of the box t1
     w1 = R1.w
     w2 = R2.w
     h1 = R1.h
@@ -854,27 +857,38 @@ function try_height(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
     if dx_max ≤ dx_min
         return
     end
-    dh = Pdx(dx_min, dx_max, MC.rng)
 
+    # Calculate δh and generate new box t1 and box t2
+    dh = Pdx(dx_min, dx_max, MC.rng)
     R1n = Box(R1.h + dh, R1.w, R1.c)
+    R2n = Box(R2.h - dh * w1 / w2, R2.w, R2.c)
+
+    # Calculate update for Λ
     G1A = SE.Λ[:,t1]
     G1B = calc_lambda(R1n, SC.grid)
-    R2n = Box(R2.h - dh * w1 / w2, R2.w, R2.c)
     G2A = SE.Λ[:,t2]
     G2B = calc_lambda(R2n, SC.grid)
 
+    # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G1A + G1B - G2A + G2B, SC.Gᵥ, SC.σ¹)
 
+    # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+        # Update box t1 and box t2
         SE.C[t1] = R1n
         SE.C[t2] = R2n
+
+        # Update Δ, G, and Λ
         SE.Δ = Δ
         @. SE.G = SE.G - G1A + G1B - G2A + G2B
         @. SE.Λ[:,t1] = G1B
         @. SE.Λ[:,t2] = G2B
+
+        # Update the counter
         MC.Macc[5] = MC.Macc[5] + 1
     end
 
+    # Update the counter
     MC.Mtry[5] = MC.Mtry[5] + 1
 end
 
