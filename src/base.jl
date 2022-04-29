@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/28
+# Last modified: 2022/04/29
 #
 
 """
@@ -123,6 +123,9 @@ A(\omega) = -\frac{1}{\pi} \mathrm{Im} G(\omega)
   \frac{\omega'\mathrm{Im} G(\omega')}{\omega'^2 - \omega^2}
 \end{equation}
 ```
+
+So that we can calculate the real parts from the imaginary parts of the
+response function, and vice versa.
 =#
 
 """
