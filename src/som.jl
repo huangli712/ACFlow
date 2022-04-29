@@ -943,8 +943,8 @@ function try_merge(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     MC.Mtry[7] = MC.Mtry[7] + 1
 end
 
-"""
-    Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
+#=
+*Remarks* : *Probability Density Function*
 
 Every Every proposed elementary update is parametrized by a real number
 ``\delta\xi \in [\delta\xi_{min}:\delta\xi_{max}]``. A concrete meaning
@@ -954,7 +954,7 @@ rectangle, or the weight of a rectangle to be added. In general, ``\delta
 \xi`` are defined so that larger ``|\delta\xi|`` correspond to more
 prominent changes in the configuration. `StochOM` randomly generates
 values of ``\delta\xi`` according to the following probability density
-function,
+function:
 
 ```math
 \begin{equation}
@@ -978,6 +978,12 @@ N = \frac{\gamma}{X}
 \right]^{-1}
 \end{equation}
 ```
+=#
+
+"""
+    Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
+
+Try to calculate the probability density function.
 """
 function Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
     γ = 2.0
