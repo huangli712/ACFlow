@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/28
+# Last modified: 2022/04/29
 #
 
 #=
@@ -138,7 +138,7 @@ function init(S::StochACSolver, rd::RawData)
     Δ = calc_delta(xmesh, ϕ)
     println("Precompute δ functions")
 
-    hτ, Hα, Uα = calc_hamil(SE.Γₐ, SE.Γᵣ, grid, kernel, Gᵥ, σ¹)
+    hτ, Hα, Uα = calc_hamil(SE.Γₐ, SE.Γᵣ, kernel, Gᵥ, σ¹)
     println("Precompute hamiltonian")
 
     αₗ = calc_alpha()
@@ -291,7 +291,7 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     G = reprod(SC.mesh, kernel, Asum)
     write_backward(SC.grid, G)
 
-    # Calculate full green's function at real frequency
+    # Calculate full response function at real frequency
     _G = kramers(SC.mesh, Asum)
     write_complete(SC.mesh, _G)
 
@@ -490,7 +490,7 @@ end
 Precompute the δ functions. `xmesh` is a very dense linear mesh in [0,1]
 and `ϕ` is the ϕ function.
 
-See also: [`calc_xmesh`](@ref), [`calc_phi`](@ref).å
+See also: [`calc_xmesh`](@ref), [`calc_phi`](@ref).
 """
 function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
     nmesh = length(ϕ)
@@ -510,15 +510,15 @@ function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
 end
 
 """
-    calc_hamil(Γₐ, Γᵣ, grid, kernel, Gᵥ, σ¹)
+    calc_hamil(Γₐ, Γᵣ, kernel, Gᵥ, σ¹)
 
 Initialize h(τ) and H(α) using Eq.(35) and Eq.(36), respectively. `Γₐ`
-and `Γᵣ` represent n(x), `grid` is the grid for the input data, `kernel`
-means the kernel function, `Gᵥ` is the correlator, and `σ¹` is equal to
-1.0 / σ.
+and `Γᵣ` represent n(x), `kernel` means the kernel function, `Gᵥ` is the
+correlator, and `σ¹` is equal to 1.0 / σ.
+
+See also: [`calc_htau`](@ref).
 """
 function calc_hamil(Γₐ::Array{I64,2}, Γᵣ::Array{F64,2},
-                    grid::AbstractGrid,
                     kernel::Matrix{F64},
                     Gᵥ::Vector{F64}, σ¹::Vector{F64})
     nalph = get_a("nalph")
@@ -528,10 +528,9 @@ function calc_hamil(Γₐ::Array{I64,2}, Γᵣ::Array{F64,2},
     Hα = zeros(F64, nalph)
     Uα = zeros(F64, nalph)
 
-    #δt = grid[2] - grid[1]
     for i = 1:nalph
         hτ[:,i] = calc_htau(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ¹)
-        Hα[i] = dot(hτ[:,i], hτ[:,i])# * δt
+        Hα[i] = dot(hτ[:,i], hτ[:,i])
     end
 
     return hτ, Hα, Uα
@@ -576,11 +575,7 @@ function calc_alpha()
 end
 
 function constraints(i::I64)
-    if i ≤ 4000 #2500 ≤ i ≤ 7500
-        return true
-    else
-        return false
-    end
+    true
 end
 
 """
@@ -624,9 +619,8 @@ function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     K1 = view(SC.kernel, :, SE.Γₐ[γ1,i])
     K2 = view(SC.kernel, :, SE.Γₐ[γ2,i])
     #
-    #δt = SC.grid[2] - SC.grid[1]
     δhc = δr * (K1 - K2) .* SC.σ¹
-    δH = dot(δhc, 2.0 * hc + δhc)# * δt
+    δH = dot(δhc, 2.0 * hc + δhc)
 
     # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1.0
@@ -691,9 +685,8 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     K3 = view(SC.kernel, :, SE.Γₐ[γ1,i])
     K4 = view(SC.kernel, :, SE.Γₐ[γ2,i])
     #
-    #δt = SC.grid[2] - SC.grid[1]
     δhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) .* SC.σ¹
-    δH = dot(δhc, 2.0 * hc + δhc)# * δt
+    δH = dot(δhc, 2.0 * hc + δhc)
 
     # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1.0
