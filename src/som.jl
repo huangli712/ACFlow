@@ -584,8 +584,8 @@ end
 Insert a new box into the field configuration.
 """
 function try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
-    sbox  = get_s("sbox")
-    wbox  = get_s("wbox")
+    sbox = get_s("sbox")
+    wbox = get_s("wbox")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
     csize = length(SE.C)
@@ -772,43 +772,58 @@ end
 """
     try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
 
-Change the width of given box in the field configuration.
+Change the width and height of given box in the field configuration. Note
+that the box's area is kept.
 """
 function try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
-    wbox  = get_s("wbox")
+    wbox = get_s("wbox")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
     csize = length(SE.C)
 
+    # Choose a box randomly
     t = rand(MC.rng, 1:csize)
 
+    # Retreive the box t
     R = SE.C[t]
 
+    # Determine left and right boundaries for the width of the box
     weight = R.h * R.w
     dx_min = wbox - R.w
     dx_max = min(2.0 * (R.c - wmin), 2.0 * (wmax - R.c)) - R.w
     if dx_max ≤ dx_min
         return
     end
+
+    # Calculate δw and generate new box
     dw = Pdx(dx_min, dx_max, MC.rng)
     w = R.w + dw
     h = weight / w
     c = R.c
-
     Rn = Box(h, w, c)
+
+    # Calculate update for Λ
     G1 = SE.Λ[:,t]
     G2 = calc_lambda(Rn, SC.grid)
 
+    # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G1 + G2, SC.Gᵥ, SC.σ¹)
 
+    # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+        # Update box t
         SE.C[t] = Rn
+
+        # Update Δ, G, and Λ
         SE.Δ = Δ
         @. SE.G = SE.G - G1 + G2
         @. SE.Λ[:,t] = G2
+
+        # Update the counter
         MC.Macc[4] = MC.Macc[4] + 1
     end
 
+    # Update the counter
     MC.Mtry[4] = MC.Mtry[4] + 1
 end
 
