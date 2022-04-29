@@ -657,45 +657,63 @@ Remove an old box from the field configuration.
 function try_remove(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     csize = length(SE.C)
 
+    # Choose two boxes randomly
+    # Box t1 will be removed, while box t2 will be modified.
     t1 = rand(MC.rng, 1:csize)
     t2 = rand(MC.rng, 1:csize)
+    #
     while t1 == t2
         t2 = rand(MC.rng, 1:csize)
     end
+    #
     if t1 < t2
         t1, t2 = t2, t1
     end
 
+    # Get box t1 and box t2
     R1 = SE.C[t1]
     R2 = SE.C[t2]
     Re = SE.C[end]
 
+    # Generate new box t2
     dx = R1.h * R1.w
+    R2n = Box(R2.h + dx / R2.w, R2.w, R2.c)
 
+    # Calculate update for Λ
     G1 = SE.Λ[:,t1]
     G2 = SE.Λ[:,t2]
     Ge = SE.Λ[:,csize]
-
-    R2n = Box(R2.h + dx / R2.w, R2.w, R2.c)
     G2n = calc_lambda(R2n, SC.grid)
 
+    # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G1 - G2 + G2n, SC.Gᵥ, SC.σ¹)
 
+    # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+        # Update box t2
         SE.C[t2] = R2n
+
+        # Backup the last box in box t1
         if t1 < csize
             SE.C[t1] = Re
         end
+
+        # Delete the last box, since its value has been stored in t1.
         pop!(SE.C)
+
+        # Update Δ, G, and Λ.
         SE.Δ = Δ
         @. SE.G = SE.G - G1 - G2 + G2n
         @. SE.Λ[:,t2] = G2n
         if t1 < csize
             @. SE.Λ[:,t1] = Ge
         end
+
+        # Update the counter
         MC.Macc[2] = MC.Macc[2] + 1
     end
 
+    # Update the counter
     MC.Mtry[2] = MC.Mtry[2] + 1
 end
 
