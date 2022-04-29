@@ -727,31 +727,45 @@ function try_shift(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     wmax = get_c("wmax")
     csize = length(SE.C)
 
+    # Choose a box randomly
     t = rand(MC.rng, 1:csize)
 
+    # Retreive the box t
     R = SE.C[t]
 
+    # Determine left and right boundaries for the center of the box
     dx_min = wmin + R.w / 2.0 - R.c
     dx_max = wmax - R.w / 2.0 - R.c
     if dx_max ≤ dx_min
         return
     end
-    dc = Pdx(dx_min, dx_max, MC.rng)
 
+    # Calculate δc and generate shifted box
+    dc = Pdx(dx_min, dx_max, MC.rng)
     Rn = Box(R.h, R.w, R.c + dc)
+
+    # Calculate update for Λ
     G1 = SE.Λ[:,t]
     G2 = calc_lambda(Rn, SC.grid)
 
+    # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G1 + G2, SC.Gᵥ, SC.σ¹)
 
+    # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+        # Update box t
         SE.C[t] = Rn
+
+        # Update Δ, G, and Λ
         SE.Δ = Δ
         @. SE.G = SE.G - G1 + G2
         @. SE.Λ[:,t] = G2
+
+        # Update the counter
         MC.Macc[3] = MC.Macc[3] + 1
     end
 
+    # Update the counter
     MC.Mtry[3] = MC.Mtry[3] + 1
 end
 
