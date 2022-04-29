@@ -943,6 +943,42 @@ function try_merge(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     MC.Mtry[7] = MC.Mtry[7] + 1
 end
 
+"""
+    Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
+
+Every Every proposed elementary update is parametrized by a real number
+``\delta\xi \in [\delta\xi_{min}:\delta\xi_{max}]``. A concrete meaning
+of ``\delta\xi`` depends on the elementary update in question. For
+instance, ``\delta\xi`` can be a shift of the centre of an existing
+rectangle, or the weight of a rectangle to be added. In general, ``\delta
+\xi`` are defined so that larger ``|\delta\xi|`` correspond to more
+prominent changes in the configuration. `StochOM` randomly generates
+values of ``\delta\xi`` according to the following probability density
+function,
+
+```math
+\begin{equation}
+\mathcal{P}(\delta\xi) = N
+\exp\left(-\gamma \frac{|\delta\xi|}{X}\right),
+\end{equation}
+```
+
+```math
+\begin{equation}
+X \equiv \max(|\delta\xi_{min}|, |\delta\xi_{max}|),
+\end{equation}
+```
+
+```math
+\begin{equation}
+N = \frac{\gamma}{X}
+\left[
+\text{sign}(\delta\xi_{min})\left(e^{-\gamma|\delta\xi_{min}|/X}-1\right) +
+\text{sign}(\delta\xi_{max})\left(1-e^{-\gamma|\delta\xi_{max}|/X}\right)
+\right]^{-1}
+\end{equation}
+```
+"""
 function Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
     γ = 2.0
     y = rand(rng, F64)
