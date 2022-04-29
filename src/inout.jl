@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/27
+# Last modified: 2022/04/29
 #
 
 #=
@@ -26,9 +26,10 @@ function read_real_data(finput::AbstractString, ngrid::I64)
     value = zeros(F64, ngrid)
     error = zeros(F64, ngrid)
 
-    # We have to determine the number of columns at first.
+    # We have to determine the number of columns and rows at first.
     dlm = readdlm(finput)
-    _, ncols = size(dlm)
+    nrows, ncols = size(dlm)
+    @assert nrows == ngrid
     @assert ncols == 3
 
     open(finput, "r") do fin
@@ -61,9 +62,10 @@ function read_cmplx_data(finput::AbstractString, ngrid::I64)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)
 
-    # We have to determine the number of columns at first.
+    # We have to determine the number of columns and rows at first.
     dlm = readdlm(finput)
-    _, ncols = size(dlm)
+    nrows, ncols = size(dlm)
+    @assert nrows == ngrid
     @assert ncols in (4, 5)
 
     open(finput, "r") do fin
@@ -101,9 +103,10 @@ function read_cmplx_data(finput::AbstractString, ngrid::I64, only_real_part::Boo
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)
 
-    # We have to determine the number of columns at first.
+    # We have to determine the number of columns and rows at first.
     dlm = readdlm(finput)
-    _, ncols = size(dlm)
+    nrows, ncols = size(dlm)
+    @assert nrows == ngrid
     @assert ncols == 3
 
     open(finput, "r") do fin
@@ -240,6 +243,8 @@ We can use the calculated spectrum in real axis to reproduce the input
 data in imaginary axis. This function will write the reproduced data to
 `repr.data`, which can be compared with the original data. Here, `G` is
 the reproduced data.
+
+See also: [`reprod`](@ref).
 """
 function write_backward(ag::AbstractGrid, G::Vector{F64})
     ngrid = length(ag)
