@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/28
+# Last modified: 2022/04/29
 #
 
 #=
@@ -211,6 +211,13 @@ and the charge susceptibility,
 ```math
 \chi(\tau) = \langle N(\tau) N(0) \rangle.
 ```
+
+**Cautions:**
+
+For bosonic-like system, the calculated spectral density might be not
+``A(\omega)``. It could be ``A(\omega)/\omega`` or any others. It in
+fact depends on the type of the correlation function and how the kernel
+function is defined.
 =#
 
 """
