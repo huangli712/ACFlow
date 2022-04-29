@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/27
+# Last modified: 2022/04/29
 #
 
 #=
@@ -132,7 +132,7 @@ const PStochOM = Dict{String,ADT}(
     "ntry"    => [missing, 1, :I64   , "Number of attempts to figure out the solution"],
     "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo steps per try"],
     "nbox"    => [missing, 1, :I64   , "Number of boxes to construct the spectrum"],
-    "sbox"    => [missing, 1, :F64   , "Maximum area of the randomly generated boxes"],
+    "sbox"    => [missing, 1, :F64   , "Minimum area of the randomly generated boxes"],
     "wbox"    => [missing, 1, :F64   , "Maximum width of the randomly generated boxes"],
     "norm"    => [missing, 1, :F64   , "Is the norm calculated"],
 )

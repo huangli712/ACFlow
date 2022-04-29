@@ -590,18 +590,23 @@ function try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
     wmax = get_c("wmax")
     csize = length(SE.C)
 
+    # Choose a box randomly
     t = rand(MC.rng, 1:csize)
 
+    # Check area of this box
     R = SE.C[t]
     if R.h * R.w ≤ 2.0 * sbox
         return
     end
 
+    # Determine minimum and maximum areas of the new box
     dx_min = sbox
     dx_max = R.h * R.w - sbox
     if dx_max ≤ dx_min
         return
     end
+
+    # Determine parameters for the new box
     r1 = rand(MC.rng, F64)
     r2 = rand(MC.rng, F64)
     c = (wmin + wbox / 2.0) + (wmax - wmin - wbox) * r1
@@ -610,25 +615,37 @@ function try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
     h = dx / w_new_max + (dx / wbox - dx / w_new_max) * r2
     w = dx / h
 
+    # Rnew will be used to update Box t, while Radd is the new box.
     Rnew = Box(R.h - dx / R.w, R.w, R.c)
     Radd = Box(h, w, c)
 
+    # Calculate update for Λ
     G1 = SE.Λ[:,t]
     G2 = calc_lambda(Rnew, SC.grid)
     G3 = calc_lambda(Radd, SC.grid)
 
+    # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G1 + G2 + G3, SC.Gᵥ, SC.σ¹)
 
+    # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+        # Update box t
         SE.C[t] = Rnew
+
+        # Add new Box
         push!(SE.C, Radd)
+
+        # Update Δ, G, and Λ.
         SE.Δ = Δ
         @. SE.G = SE.G - G1 + G2 + G3
         @. SE.Λ[:,t] = G2
         @. SE.Λ[:,csize+1] = G3
+
+        # Update the counter
         MC.Macc[1] = MC.Macc[1] + 1
     end
 
+    # Update the counter
     MC.Mtry[1] = MC.Mtry[1] + 1
 end
 
