@@ -126,21 +126,28 @@ while `svec` contains all the intermediate results (it is a vector of
 dictionary actually).
 """
 function last(mec::MaxEntContext, svec::Vector, sol::Dict)
+    # Write the spectral function
     write_spectrum(mec.mesh, sol[:A])
+
+    # Write the model function
     write_model(mec.mesh, mec.model)
 
+    # Write α-χ² data
     α_vec = map(x -> x[:α], svec)
     χ_vec = map(x -> x[:χ²], svec)
     write_misfit(α_vec, χ_vec)
 
+    # Write P[α|A] for bryan algorithm
     if haskey(svec[end], :prob)
         p_vec = map(x -> x[:prob], svec)
         write_probability(α_vec, p_vec)
     end
 
+    # Regenerate the input data and write them
     G = reprod(mec.mesh, mec.kernel, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
     write_backward(mec.grid, G)
 
+    # Calculate full response function on real axis and write them
     _G = kramers(mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
     write_complete(mec.mesh, _G)
 
