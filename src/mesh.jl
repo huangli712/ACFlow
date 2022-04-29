@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/27
+# Last modified: 2022/04/29
 #
 
 #=
@@ -90,7 +90,8 @@ end
 """
     LorentzMesh(nmesh::I64, wmin::F64, wmax::F64, 𝑝::F64 = 0.01)
 
-A constructor for the LorentzMesh struct.
+A constructor for the LorentzMesh struct. The algorithm for generating a
+lorentzian mesh is taken from: https://github.com/CQMP/Maxent.
 
 See also: [`LorentzMesh`](@ref).
 """
@@ -131,7 +132,8 @@ end
 """
     HalfLorentzMesh(nmesh::I64, wmax::F64, 𝑝::F64 = 0.01)
 
-A constructor for the HalfLorentzMesh struct.
+A constructor for the HalfLorentzMesh struct. The algorithm for generating
+a half-lorentzian mesh is taken from: https://github.com/CQMP/Maxent.
 
 See also: [`HalfLorentzMesh`](@ref).
 """
