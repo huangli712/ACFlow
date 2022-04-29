@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/28
+# Last modified: 2022/04/29
 #
 
 #=
@@ -249,13 +249,15 @@ It will process and write the calculated results by the StochOM solver,
 including final spectral function and reproduced correlator.
 """
 function last(SC::StochOMContext, Aout::Vector{F64})
+    # Write the spectral function
     write_spectrum(SC.mesh, Aout)
 
-    # Reproduce input data
+    # Reproduce input data and write them
     kernel = make_kernel(SC.mesh, SC.grid)
     G = reprod(SC.mesh, kernel, Aout)
     write_backward(SC.grid, G)
 
+    # Calculate full response function on real axis and write them
     _G = kramers(SC.mesh, Aout)
     write_complete(SC.mesh, _G)
 
@@ -273,7 +275,7 @@ Using the Metropolis algorithm to update the field configuration, i.e, a
 collection of hundreds of boxes.
 """
 function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
-    Tmax = 100
+    Tmax = 100 # Length of the Markov chain
     nbox = get_s("nbox")
 
     T1 = rand(MC.rng, 1:Tmax)
@@ -287,7 +289,7 @@ function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
 
         @cswitch update_type begin
             @case 1
-                if length(ST.C) < nbox - 1
+                if length(ST.C) < nbox
                     try_insert(MC, ST, SC, d1)
                 end
                 break
@@ -313,7 +315,7 @@ function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
                 break
 
             @case 6
-                if length(ST.C) < nbox - 1
+                if length(ST.C) < nbox
                     try_split(MC, ST, SC, d1)
                 end
                 break
@@ -332,7 +334,7 @@ function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
 
         @cswitch update_type begin
             @case 1
-                if length(ST.C) < nbox - 1
+                if length(ST.C) < nbox
                     try_insert(MC, ST, SC, d2)
                 end
                 break
@@ -358,7 +360,7 @@ function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
                 break
 
             @case 6
-                if length(ST.C) < nbox - 1
+                if length(ST.C) < nbox
                     try_split(MC, ST, SC, d2)
                 end
                 break
