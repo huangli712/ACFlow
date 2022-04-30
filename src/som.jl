@@ -533,6 +533,8 @@ function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
         Λ = r.h * (r.w .+ grid.ω .* Λ)
         return Λ
     else
+        # NEED TO BE FIXED TO BE CONSISTENT WITH NEW KERNEL
+        sorry()
         iw = im * grid.ω
         Λ = @. r.h * log((iw - e₁) / (iw - e₂))
         return vcat(real(Λ), imag(Λ))
