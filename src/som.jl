@@ -629,8 +629,8 @@ We have implemented the above formulas in `calc_lambda()`.
 """
     calc_lambda(r::Box, grid::FermionicMatsubaraGrid)
 
-Try to calculate the kernel-related function Λ. This function works for
-FermionicMatsubaraGrid only.
+Try to calculate the contribution of a given box `r` to the Λ function.
+This function works for FermionicMatsubaraGrid only.
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
