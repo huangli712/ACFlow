@@ -612,9 +612,12 @@ function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
     e₂ = r.c + 0.5 * r.w
 
     if ktype == "bsymm"
-        Λ = @. atan( e₁ / grid.ω ) - atan( e₂ / grid.ω )
-        Λ = 2.0 * r.h / π * (r.w .+ grid.ω .* Λ)
-        return Λ
+        #Λ = @. atan( e₁ / grid.ω ) - atan( e₂ / grid.ω )
+        #Λ = r.h * (r.w .+ grid.ω .* Λ)
+        #return Λ
+        Λ = @. r.h * log( ( (c + w/2) ^ 2.0 + grid.ω ^ 2.0 ) /
+                          ( (c - w/2) ^ 2.0 + grid.ω ^ 2.0 )
+                        ) / 2.0
     else
         iw = im * grid.ω
         Λ = @. r.h * (-r.w + iw * log((iw - e₁) / (iw - e₂)))
