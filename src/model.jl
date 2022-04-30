@@ -38,9 +38,9 @@ Shifted Gaussian model (`1gauss`):
 
 ```math
 \begin{equation}
-m(\omega) = 
-\frac{1}{\Gamma \sqrt{\pi}}
-\exp\left[-\left(\frac{\omega - \omega_1}{\Gamma}\right)^2\right]
+m(\omega) =
+    \frac{1}{\Gamma \sqrt{\pi}}
+    \exp\left[-\left(\frac{\omega - \omega_1}{\Gamma}\right)^2\right]
 \end{equation}
 ```
 
@@ -48,12 +48,12 @@ Two Gaussians model (`2gauss`):
 
 ```math
 \begin{equation}
-m(\omega) = 
-\frac{1}{\Gamma \sqrt{\pi}}
-\exp\left[-\left(\frac{\omega - \omega_1}{\Gamma}\right)^2\right]
-+
-\frac{1}{\Gamma \sqrt{\pi}}
-\exp\left[-\left(\frac{\omega - \omega_2}{\Gamma}\right)^2\right]
+m(\omega) =
+    \frac{1}{\Gamma \sqrt{\pi}}
+    \exp\left[-\left(\frac{\omega - \omega_1}{\Gamma}\right)^2\right]
+    +
+    \frac{1}{\Gamma \sqrt{\pi}}
+    \exp\left[-\left(\frac{\omega - \omega_2}{\Gamma}\right)^2\right]
 \end{equation}
 ```
 
@@ -69,8 +69,8 @@ Shifted Lorentzian model (`1lorentz`):
 
 ```math
 \begin{equation}
-m(\omega)=
-\frac{\Gamma}{\pi[\Gamma^2+(\omega - \omega_1)^2]}
+m(\omega) =
+    \frac{\Gamma}{\pi[\Gamma^2+(\omega - \omega_1)^2]}
 \end{equation}
 ```
 
@@ -78,9 +78,9 @@ Two Lorentzians model (`2lorentz`):
 
 ```math
 \begin{equation}
-m(\omega)=
-\frac{\Gamma}{\pi[\Gamma^2+(\omega - \omega_1)^2]} +
-\frac{\Gamma}{\pi[\Gamma^2+(\omega - \omega_2)^2]}
+m(\omega) =
+    \frac{\Gamma}{\pi[\Gamma^2+(\omega - \omega_1)^2]} +
+    \frac{\Gamma}{\pi[\Gamma^2+(\omega - \omega_2)^2]}
 \end{equation}
 ```
 

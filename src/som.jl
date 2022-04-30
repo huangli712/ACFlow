@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/29
+# Last modified: 2022/04/30
 #
 
 #=
@@ -942,7 +942,7 @@ function try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
         # Generate two new boxes
         R2 = Box(h, w1, c1 + dc1)
         R3 = Box(h, w2, c2 + dc2)
-    
+
         # Calculate update for Λ
         G1 = SE.Λ[:,t]
         Ge = SE.Λ[:,csize]
