@@ -579,6 +579,51 @@ So, we have
 \end{equation}
 ```
 
+**C** For bosonic Matsubara frequency system (symmetric version).
+
+```math
+\begin{equation}
+Λ_{R}(\omega_n) = h \int^{c+w/2}_{c-w/2}
+    d\omega~\frac{\omega^2}{\omega_n^2 + \omega^2}.
+\end{equation}
+```
+
+We can utilize the following formula:
+
+```math
+\begin{equation}
+\int \frac{x^2}{a^2 + x^2} dx =
+    x - a~\tan^{-1}\left(\frac{x}{a}\right) 
+\end{equation}
+```
+
+Thus,
+
+```math
+\begin{equation}
+Λ_{R}(\omega_n) = h
+    \left[
+        \omega - \omega_n \tan^{-1} \left(\frac{\omega}{\omega_n}\right)
+    \right]
+    \bigg|^{c+w/2}_{c-w/2}
+\end{equation}
+```
+
+Finally, we have
+
+```math
+\begin{equation}
+Λ_{R}(\omega_n) = h
+    \left[
+        w +
+        \omega_n \tan^{-1} \left(\frac{c - w/2}{\omega_n}\right)
+        -
+        \omega_n \tan^{-1} \left(\frac{c + w/2}{\omega_n}\right)
+    \right]
+\end{equation}
+```
+
+We have implemented the above formulas in `calc_lambda()`.
 =#
 
 """
@@ -612,12 +657,9 @@ function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
     e₂ = r.c + 0.5 * r.w
 
     if ktype == "bsymm"
-        #Λ = @. atan( e₁ / grid.ω ) - atan( e₂ / grid.ω )
-        #Λ = r.h * (r.w .+ grid.ω .* Λ)
-        #return Λ
-        Λ = @. r.h * log( ( (r.c + r.w/2) ^ 2.0 + grid.ω ^ 2.0 ) /
-                          ( (r.c - r.w/2) ^ 2.0 + grid.ω ^ 2.0 )
-                        ) / 2.0
+        Λ = @. atan( e₁ / grid.ω ) - atan( e₂ / grid.ω )
+        Λ = r.h * (r.w .+ grid.ω .* Λ)
+        return Λ
     else
         iw = im * grid.ω
         Λ = @. r.h * (-r.w + iw * log((iw - e₁) / (iw - e₂)))
