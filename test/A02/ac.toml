@@ -1,10 +1,10 @@
 [COMM]
 finput = "green.data"
-solver = "StochOM"
+solver = "MaxEnt"
 ktype  = "bsymm"
 mtype  = "flat"
 grid   = "bfreq"
-mesh   = "linear"
+mesh   = "halflorentz"
 ngrid  = 10
 nmesh  = 501
 wmax   = 5.0

@@ -11,7 +11,7 @@
     * MaxEnt solver (chi2kink algorithm)
     * StochOM solver
     * Flat model
-    * Linear mesh
+    * Half-Lorentzian mesh
     * Fixed error bar
 
 * **A03**
