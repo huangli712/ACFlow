@@ -521,17 +521,18 @@ For a given box ``R``, its contribution to the ``\Lambda`` function is
 
 where ``h``, ``w``, and ``c`` denote the height, width, and center of the
 box ``R``. Next, we will show you how to calculate ``\Lambda_R(\omega_n)``.
+We can use `sympy` to derive the integral formula.
 
-(1) For fermionic Matsubara frequency system.
+**A** For fermionic Matsubara frequency system.
 
 ```math
 \begin{equation}
 Λ_{R}(\omega_n) = h \int^{c+w/2}_{c-w/2}
-    d\omega~\frac{1}{i\omega_n - \omega},
+    d\omega~\frac{1}{i\omega_n - \omega}.
 \end{equation}
 ```
 
-We can use `sympy` to derive the integral formula. The codes are as follows:
+The python codes are as follows:
 
 ```python
 >>> from sympy import *
@@ -544,7 +545,37 @@ So, we have
 
 ```math
 \begin{equation}
-Λ_{R}(\omega_n) = h \log\left(\frac{i\omega_n - c + w/2}{i\omega_n - c - w/2}\right),
+Λ_{R}(\omega_n) = h \log
+    \left(\frac{i\omega_n - c + w/2}{i\omega_n - c - w/2}\right).
+\end{equation}
+```
+
+**B** For bosonic Matsubara frequency system.
+
+```math
+\begin{equation}
+Λ_{R}(\omega_n) = h \int^{c+w/2}_{c-w/2}
+    d\omega~\frac{\omega}{i\omega_n - \omega}.
+\end{equation}
+```
+
+The python codes are as follows:
+
+```python
+>>> from sympy import *
+>>> w, x, a, b, h = symbols("w x a b h")
+>>> f = integrate(h*x/(w - x), (x, a, b))
+>>> simplify(f)
+h*(a - b + w*log(a - w) - w*log(b - w))
+```
+
+So, we have
+
+```math
+\begin{equation}
+Λ_{R}(\omega_n) = h * \left[-w + i\omega_n * \log
+    \left(\frac{i\omega_n - c + w/2}{i\omega_n - c - w/2}\right)
+\right].
 \end{equation}
 ```
 
@@ -585,10 +616,8 @@ function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
         Λ = 2.0 * r.h / π * (r.w .+ grid.ω .* Λ)
         return Λ
     else
-        # NEED TO BE FIXED TO BE CONSISTENT WITH NEW KERNEL
-        sorry()
         iw = im * grid.ω
-        Λ = @. r.h * log((iw - e₁) / (iw - e₂))
+        Λ = @. r.h * (-r.w + iw * log((iw - e₁) / (iw - e₂)))
         return vcat(real(Λ), imag(Λ))
     end
 end
