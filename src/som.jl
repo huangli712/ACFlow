@@ -988,6 +988,7 @@ function try_merge(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     wmax = get_c("wmax")
     csize = length(SE.C)
 
+    # Choose two boxes randomly
     t1 = rand(MC.rng, 1:csize)
     t2 = rand(MC.rng, 1:csize)
     while t1 == t2
@@ -997,44 +998,60 @@ function try_merge(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
         t1, t2 = t2, t1
     end
 
+    # Get box t1 and box t2
     R1 = SE.C[t1]
     R2 = SE.C[t2]
 
+    # Determine h, w, and c for new box
     weight = R1.h * R1.w + R2.h * R2.w
     w_new = 0.5 * (R1.w + R2.w)
     h_new = weight / w_new
     c_new = R1.c + (R2.c - R1.c) * R2.h * R2.w / weight
+
+    # Determine left and right boundaries for the center of the new box
     dx_min = wmin + w_new / 2.0 - c_new
     dx_max = wmax - w_new / 2.0 - c_new
     if dx_max ≤ dx_min
         return
     end
-    dc = Pdx(dx_min, dx_max, MC.rng)
 
+    # Calculate δc and generate new box
+    dc = Pdx(dx_min, dx_max, MC.rng)
+    Rn = Box(h_new, w_new, c_new + dc)
+
+    # Calculate update for Λ
     G1 = SE.Λ[:,t1]
     G2 = SE.Λ[:,t2]
     Ge = SE.Λ[:,csize]
-
-    Rn = Box(h_new, w_new, c_new + dc)
     Gn = calc_lambda(Rn, SC.grid)
 
+    # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G1 - G2 + Gn, SC.Gᵥ, SC.σ¹)
 
+    # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
+        # Update box t1 with new box
         SE.C[t1] = Rn
+
+        # Delete box t2
         if t2 < csize
             SE.C[t2] = SE.C[end]
         end
         pop!(SE.C)
+
+        # Update Δ, G, and Λ.
         SE.Δ = Δ
         @. SE.G = SE.G - G1 - G2 + Gn
         @. SE.Λ[:,t1] = Gn
         if t2 < csize
             @. SE.Λ[:,t2] = Ge
         end
+
+        # Update the counter
         MC.Macc[7] = MC.Macc[7] + 1
     end
 
+    # Update the counter
     MC.Mtry[7] = MC.Mtry[7] + 1
 end
 
