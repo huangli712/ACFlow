@@ -645,8 +645,8 @@ end
 """
     calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
 
-Try to calculate the kernel-related function Λ. This function works for
-BosonicMatsubaraGrid only.
+Try to calculate the contribution of a given box `r` to the Λ function.
+This function works for BosonicMatsubaraGrid only.
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
