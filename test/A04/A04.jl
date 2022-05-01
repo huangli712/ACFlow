@@ -11,6 +11,8 @@ welcome()
 # Setup parameters
 C = Dict{String,Any}(
     "finput" => "green.inp",
+    "mtype"  => "gauss",
+    "mesh"   => "lorentz",
     "ngrid"  => 100,
     "wmax"   => 12.0,
     "wmin"   => -12.0,
@@ -40,6 +42,7 @@ C = Dict{String,Any}(
 )
 #
 S = Dict{String,Any}(
+    "ntry"   => 20000
 )
 #
 setup_param(C, S, false)
