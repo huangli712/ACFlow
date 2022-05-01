@@ -113,6 +113,7 @@ Initialize the StochAC solver and return the StochACMC, StochACElement,
 and StochACContext structs.
 """
 function init(S::StochACSolver, rd::RawData)
+
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
@@ -578,11 +579,13 @@ function calc_alpha()
 end
 
 """
-    constraints(i::I64)
+    constraints()
 
-Check whether the given index is invalid.
+Try to implement the constrained stochastic analytical continuation
+method. This function will return a collection. It contains the indices
+which are allowable.
 """
-function constraints(i::I64)
+function constraints()
     nfine = get_a("nfine")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
