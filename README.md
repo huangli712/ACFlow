@@ -6,7 +6,7 @@ This package is currently under developement. **PLEASE USE IT AT YOUR OWN RISK!*
 
 ## Version
 
-v0.6.2-devel.220429
+v0.6.3-devel.220502
 
 ## License
 
