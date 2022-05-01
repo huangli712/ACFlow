@@ -68,7 +68,7 @@
     * Fermionic + Imaginary time
     * MaxEnt solver (bryan algorithm)
     * StochAC solver
-    * Two-Gaussians model
+    * Two-Gaussians model + Flat model
     * Linear mesh
     * Fixed error bar
 
@@ -76,6 +76,6 @@
     * Bosonic + Imaginary time
     * MaxEnt solver (chi2kink algorithm)
     * StochAC solver
-    * Rise-And-Decay model
+    * Rise-And-Decay model + Flat model
     * Half-Lorentzian mesh
     * Fixed error bar
