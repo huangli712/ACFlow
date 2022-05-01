@@ -62,7 +62,7 @@ cp("repr.data", "repr.22.data", force = true)
 # Generate model function at first
 model_offdiag = sqrt.(Aout11 .* Aout22)
 #
-open("model.data", "w") do fout
+open("model.inp", "w") do fout
     for i in eachindex(mesh)
         @printf(fout, "%20.16f %20.16f\n", mesh[i], model_offdiag[i])
     end
