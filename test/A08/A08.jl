@@ -60,17 +60,11 @@ cp("repr.data", "repr.22.data", force = true)
 # For non-diagonal elements: green.12.data
 
 # Generate model function at first
-wmin = -4.0 # Left boundary
-wmax = +4.0 # Right boundary
-nmesh = 400 # Number of real-frequency points
-#
 model_offdiag = sqrt.(Aout11 .* Aout22)
 #
-w_real = collect(LinRange(wmin, wmax, nmesh))
-#
 open("model.data", "w") do fout
-    for i in eachindex(w_real)
-        @printf(fout, "%20.16f %20.16f\n", w_real[i], model_offdiag[i])
+    for i in eachindex(mesh)
+        @printf(fout, "%20.16f %20.16f\n", mesh[i], model_offdiag[i])
     end
 end
 
