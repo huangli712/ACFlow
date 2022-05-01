@@ -577,6 +577,11 @@ function calc_alpha()
     return αₗ
 end
 
+"""
+    constraints(i::I64)
+
+Check whether the given index is invalid.
+"""
 function constraints(i::I64)
     nfine = get_a("nfine")
     wmin = get_c("wmin")
