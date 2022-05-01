@@ -11,6 +11,8 @@
 ### *Customized Structs* : *StochAC Solver*
 =#
 
+const LCONSTRAINTS = true
+
 """
     StochACElement
 
@@ -681,13 +683,17 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Choose new positions for the two δ functions (i1 and i2).
     # Note that their old positions are SE.Γₐ[γ1,i] and SE.Γₐ[γ2,i].
     i1 = rand(MC.rng, 1:nfine)
-    while !constraints(i1)
-        i1 = rand(MC.rng, 1:nfine)
+    if LCONSTRAINTS
+        while !constraints(i1)
+            i1 = rand(MC.rng, 1:nfine)
+        end
     end
     #
     i2 = rand(MC.rng, 1:nfine)
-    while !constraints(i2)
-        i2 = rand(MC.rng, 1:nfine)
+    if LCONSTRAINTS
+        while !constraints(i2)
+            i2 = rand(MC.rng, 1:nfine)
+        end
     end
 
     # Try to calculate the change of Hc using Eq.~(42).
