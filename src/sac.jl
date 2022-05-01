@@ -38,6 +38,7 @@ Mutable struct. It is used within the StochAC solver only.
 
 * Gᵥ     -> Input data for correlator.
 * σ¹     -> Actually 1.0 / σ¹.
+* allow  -> Allowable indices.
 * grid   -> Grid for input data.
 * mesh   -> Mesh for output spectrum.
 * model  -> Default model function.
@@ -52,6 +53,7 @@ Mutable struct. It is used within the StochAC solver only.
 mutable struct StochACContext
     Gᵥ     :: Vector{F64}
     σ¹     :: Vector{F64}
+    allow  :: Vector{I64}
     grid   :: AbstractGrid
     mesh   :: AbstractMesh
     model  :: Vector{F64}
@@ -149,7 +151,7 @@ function init(S::StochACSolver, rd::RawData)
     αₗ = calc_alpha()
     println("Precompute α parameters")
 
-    SC = StochACContext(Gᵥ, σ¹, grid, mesh, model, kernel, Aout, Δ, hτ, Hα, Uα, αₗ)
+    SC = StochACContext(Gᵥ, σ¹, allow, grid, mesh, model, kernel, Aout, Δ, hτ, Hα, Uα, αₗ)
 
     return MC, SE, SC
 end
@@ -679,9 +681,6 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Get current number of δ functions
     ngamm = get_a("ngamm")
 
-    # Get total number of δ functions
-    nfine = get_a("nfine")
-
     # Choose two δ functions, they are labelled as γ1 and γ2, respectively.
     γ1 = 1
     γ2 = 1
@@ -696,19 +695,8 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
     # Choose new positions for the two δ functions (i1 and i2).
     # Note that their old positions are SE.Γₐ[γ1,i] and SE.Γₐ[γ2,i].
-    i1 = rand(MC.rng, 1:nfine)
-    if LCONSTRAINTS
-        while !constraints(i1)
-            i1 = rand(MC.rng, 1:nfine)
-        end
-    end
-    #
-    i2 = rand(MC.rng, 1:nfine)
-    if LCONSTRAINTS
-        while !constraints(i2)
-            i2 = rand(MC.rng, 1:nfine)
-        end
-    end
+    i1 = rand(MC.rng, SC.allow)
+    i2 = rand(MC.rng, SC.allow)
 
     # Try to calculate the change of Hc using Eq.~(42).
     hc = view(SC.hτ, :, i)
