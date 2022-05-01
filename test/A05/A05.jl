@@ -86,7 +86,7 @@ C = Dict{String,Any}(
 )
 #
 S = Dict{String,Any}(
-    "ntry"   => 200
+    "ntry"   => 20000
 )
 #
 setup_param(C, S, false)
