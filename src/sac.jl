@@ -114,13 +114,11 @@ and StochACContext structs.
 """
 function init(S::StochACSolver, rd::RawData)
     allow = constraints()
-    @show allow
-    error()
 
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
-    SE = init_element(S, MC.rng)
+    SE = init_element(S, MC.rng, allow)
     println("Randomize Monte Carlo configurations")
 
     Gᵥ, σ¹, Aout = init_iodata(S, rd)
@@ -396,20 +394,19 @@ function init_mc(S::StochACSolver)
 end
 
 """
-    init_element(S::StochACSolver, rng::AbstractRNG)
+    init_element(S::StochACSolver, rng::AbstractRNG, allow::Vector{I64})
 
 Randomize the configurations for future monte carlo sampling. It will
 return a StochACElement object.
 
 See also: [`StochACElement`](@ref).
 """
-function init_element(S::StochACSolver, rng::AbstractRNG)
+function init_element(S::StochACSolver, rng::AbstractRNG, allow::Vector{I64})
     nalph = get_a("nalph")
-    nfine = get_a("nfine")
     ngamm = get_a("ngamm")
 
     Γᵣ = rand(rng, F64, (ngamm, nalph))
-    Γₐ = rand(rng, 1:nfine, (ngamm, nalph))
+    Γₐ = rand(rng, allow, (ngamm, nalph))
 
     for j = 1:nalph
         Γⱼ = view(Γᵣ, :, j)
