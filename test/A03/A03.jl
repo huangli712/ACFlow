@@ -11,10 +11,12 @@ welcome()
 # Setup parameters
 C = Dict{String,Any}(
     "finput" => "sigma.inp",
+    "mtype"  => "2lorentz",
     "ngrid"  => 100,
     "wmax"   => 20.0,
     "wmin"   => -20.0,
     "beta"   => 5.0,
+    "pmodel" => [2.0, -5.0, 5.0],
 )
 #
 S = Dict{String,Any}(
@@ -40,6 +42,7 @@ C = Dict{String,Any}(
 )
 #
 S = Dict{String,Any}(
+    "ntry"   => 20000
 )
 #
 setup_param(C, S, false)

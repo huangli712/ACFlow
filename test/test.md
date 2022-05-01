@@ -18,7 +18,7 @@
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochOM solver
-    * Flat model
+    * Two-Lorentzians model
     * Linear mesh
     * Script mode
 
