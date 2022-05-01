@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/29
+# Last modified: 2022/05/01
 #
 
 #=
@@ -126,6 +126,7 @@ function init(S::StochACSolver, rd::RawData)
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
+    # Only flat model is valid for the StochAC solver.
     model = make_model(mesh)
     println("Build default model: ", get_c("mtype"))
 
@@ -575,7 +576,17 @@ function calc_alpha()
 end
 
 function constraints(i::I64)
-    true
+    nfine = get_a("nfine")
+    wmin = get_c("wmin")
+    wmax = get_c("wmax")
+
+    e = (wmax - wmin) * i / nfine + wmin
+
+    if e < -4.0 || e > 4.0
+        return false
+    else
+        return true
+    end
 end
 
 """
@@ -670,13 +681,14 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Choose new positions for the two δ functions (i1 and i2).
     # Note that their old positions are SE.Γₐ[γ1,i] and SE.Γₐ[γ2,i].
     i1 = rand(MC.rng, 1:nfine)
-    #while !constraints(i1)
-    #    i1 = rand(MC.rng, 1:nfine)
-    #end
+    while !constraints(i1)
+        i1 = rand(MC.rng, 1:nfine)
+    end
+    #
     i2 = rand(MC.rng, 1:nfine)
-    #while !constraints(i2)
-    #    i2 = rand(MC.rng, 1:nfine)
-    #end
+    while !constraints(i2)
+        i2 = rand(MC.rng, 1:nfine)
+    end
 
     # Try to calculate the change of Hc using Eq.~(42).
     hc = view(SC.hτ, :, i)
