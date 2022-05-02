@@ -1,0 +1,28 @@
+[COMM]
+finput = "green.data"
+solver = "MaxEnt"
+ktype  = "fermi"
+mtype  = "flat"
+grid   = "ffreq"
+mesh   = "linear"
+ngrid  = 100
+nmesh  = 501
+wmax   = 5.0
+wmin   = -5.0
+beta   = 8.0
+offdiag = false
+
+[MaxEnt]
+method = "chi2kink"
+nalph  = 12
+alpha  = 1e9
+ratio  = 10.0
+blur   = -1.0
+
+[StochOM]
+ntry  = 20000
+nstep = 1000
+nbox  = 100
+sbox  = 0.005
+wbox  = 0.02
+norm  = -1.0
