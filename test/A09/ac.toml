@@ -1,8 +1,8 @@
 [COMM]
 finput = "green.data"
-solver = "MaxEnt"
+solver = "StochAC"
 ktype  = "fermi"
-mtype  = "2gauss"
+mtype  = "flat"
 grid   = "ftime"
 mesh   = "linear"
 ngrid  = 1000
@@ -28,3 +28,4 @@ ndump = 40000
 nalph = 40
 alpha = 1.00
 ratio = 1.20
+exclude = [[-8.0,-4.0],[4.0,8.0]]
