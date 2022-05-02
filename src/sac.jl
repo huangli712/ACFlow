@@ -114,8 +114,6 @@ and StochACContext structs.
 """
 function init(S::StochACSolver, rd::RawData)
     allow = constraints()
-    @show allow
-    sorry()
 
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
