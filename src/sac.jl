@@ -4,14 +4,12 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/01
+# Last modified: 2022/05/02
 #
 
 #=
 ### *Customized Structs* : *StochAC Solver*
 =#
-
-const LCONSTRAINTS = true
 
 """
     StochACElement
@@ -116,6 +114,8 @@ and StochACContext structs.
 """
 function init(S::StochACSolver, rd::RawData)
     allow = constraints()
+    @show allow
+    sorry()
 
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
@@ -588,20 +588,29 @@ method. This function will return a collection. It contains all the
 allowable indices.
 """
 function constraints()
-    nfine = get_a("nfine")
     wmin = get_c("wmin")
     wmax = get_c("wmax")
+    nfine = get_a("nfine")
+    exclude = get_a("exclude")
 
     allow = I64[]
 
     for i = 1:nfine
         e = (wmax - wmin) * i / nfine + wmin
-        # Please implement your own constraints here.
-        if LCONSTRAINTS
-            e ≤ -4.0 && continue
-            e ≥ +4.0 && continue
+        is_excluded = false
+        #
+        if !isa(exclude, Missing)
+            for i in eachindex(exclude)
+                if exclude[i][1] ≤ e ≤ exclude[i][2]
+                    is_excluded = true
+                    continue
+                end
+            end
         end
-        push!(allow, i)
+        #
+        if !is_excluded
+            push!(allow, i)
+        end
     end
 
     return allow
