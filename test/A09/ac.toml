@@ -11,6 +11,7 @@ wmax   = 8.0
 wmin   = -8.0
 beta   = 5.0
 offdiag = false
+exclude = [[-8.0,-4.0],[4.0,8.0]]
 
 [MaxEnt]
 method = "bryan"
@@ -28,4 +29,3 @@ ndump = 40000
 nalph = 40
 alpha = 1.00
 ratio = 1.20
-exclude = [[-8.0,-4.0],[4.0,8.0]]
