@@ -708,6 +708,20 @@ function calc_norm(C::Vector{Box})
     return norm
 end
 
+function constraints(e::F64)
+    exclude = get_c("exclude")
+
+    if !isa(exclude, Missing)
+        for i in eachindex(exclude)
+            if exclude[i][1] ≤ e ≤ exclude[i][2]
+                return false
+            end
+        end
+    end
+
+    return true
+end
+
 """
     try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
 

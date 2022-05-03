@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/02
+# Last modified: 2022/05/03
 #
 
 #=
@@ -55,6 +55,7 @@ const PCOMM    = Dict{String,ADT}(
     "offdiag" => [missing, 1, :Bool  , "Is it the offdiagonal part in matrix-valued function"],
     "pmodel"  => [missing, 0, :Array , "Additional parameters for customizing the model"],
     "pmesh"   => [missing, 0, :Array , "Additional parameters for customizing the mesh"],
+    "exclude" => [missing, 0, :Array , "Restriction of the energy range of the spectrum"],
 )
 
 # Default parameters for PCOMM
@@ -109,7 +110,6 @@ const PStochAC = Dict{String,ADT}(
     "nalph"   => [missing, 1, :I64   , "Total number of the chosen α parameters"],
     "alpha"   => [missing, 1, :F64   , "Starting value for the α parameter"],
     "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
-    "exclude" => [missing, 0, :Array , "Restriction of the energy range of the spectrum"],
 )
 
 # Default parameters for PStochAC
