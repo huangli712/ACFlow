@@ -694,6 +694,15 @@ This function works for BosonicImaginaryTimeGrid only.
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid)
+    ktype = get_c("ktype")
+
+    if ktype == "bsymm"
+        Λ = @. r.h * exp(-1 * grid.τ * r.c) * sinh(0.5 * grid.τ * r.w)
+        Λ = Λ .* π ./ grid.τ
+        return Λ
+    else
+        sorry()
+    end
 end
 
 """
