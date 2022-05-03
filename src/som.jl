@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/03
+# Last modified: 2022/05/04
 #
 
 #=
@@ -649,6 +649,18 @@ function calc_lambda(r::Box, grid::FermionicMatsubaraGrid)
 end
 
 """
+    calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid)
+
+Try to calculate the contribution of a given box `r` to the Λ function.
+This function works for FermionicImaginaryTimeGrid only.
+
+See also: [`FermionicImaginaryTimeGrid`](@ref).
+"""
+function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid)
+    sorry()
+end
+
+"""
     calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
 
 Try to calculate the contribution of a given box `r` to the Λ function.
@@ -671,6 +683,17 @@ function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
         Λ = @. r.h * (-r.w + iw * log((iw - e₁) / (iw - e₂)))
         return vcat(real(Λ), imag(Λ))
     end
+end
+
+"""
+    calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid)
+
+Try to calculate the contribution of a given box `r` to the Λ function.
+This function works for BosonicImaginaryTimeGrid only.
+
+See also: [`BosonicImaginaryTimeGrid`](@ref).
+"""
+function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid)
 end
 
 """
