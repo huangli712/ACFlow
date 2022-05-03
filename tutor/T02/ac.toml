@@ -11,6 +11,7 @@ wmax   = 5.0
 wmin   = -5.0
 beta   = 10.0
 offdiag = false
+exclude = [[-5.0,-3.0], [-0.5,0.5], [3.0,5.0]]
 
 [MaxEnt]
 method = "chi2kink"
@@ -20,7 +21,7 @@ ratio  = 10.0
 blur   = -1.0
 
 [StochOM]
-ntry  = 20000
+ntry  = 200
 nstep = 1000
 nbox  = 100
 sbox  = 0.005

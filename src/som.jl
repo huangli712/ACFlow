@@ -449,6 +449,10 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
     for k = 1:_Know
         c = wmin + wbox / 2.0 + (wmax - wmin - wbox) * rand(MC.rng, F64)
         w = wbox + (min(2.0 * (c - wmin), 2.0 * (wmax - c)) - wbox) * rand(MC.rng, F64)
+        while !constraints(c - w/2, c + w/2)
+            c = wmin + wbox / 2.0 + (wmax - wmin - wbox) * rand(MC.rng, F64)
+            w = wbox + (min(2.0 * (c - wmin), 2.0 * (wmax - c)) - wbox) * rand(MC.rng, F64)
+        end
         h = weight[k] / w
         R = Box(h, w, c)
         push!(C, R)
@@ -708,12 +712,22 @@ function calc_norm(C::Vector{Box})
     return norm
 end
 
-function constraints(e::F64)
+"""
+    constraints(e₁::F64, e₂::F64)
+"""
+function constraints(e₁::F64, e₂::F64)
     exclude = get_c("exclude")
+    @assert e₁ ≤ e₂
 
     if !isa(exclude, Missing)
         for i in eachindex(exclude)
-            if exclude[i][1] ≤ e ≤ exclude[i][2]
+            if e₁ ≤ exclude[i][1] ≤ e₂ ≤ exclude[i][2]
+                return false
+            end
+            if exclude[i][1] ≤ e₁ ≤ e₂ ≤ exclude[i][2]
+                return false
+            end
+            if exclude[i][1] ≤ e₁ ≤ exclude[i][2] ≤ e₂
                 return false
             end
         end
@@ -760,6 +774,9 @@ function try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
     w = dx / h
 
     # Rnew will be used to update Box t, while Radd is the new box.
+    if !constraints(c - w/2, c + w/2)
+        return
+    end
     Rnew = Box(R.h - dx / R.w, R.w, R.c)
     Radd = Box(h, w, c)
 
@@ -886,6 +903,9 @@ function try_shift(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
 
     # Calculate δc and generate shifted box
     dc = Pdx(dx_min, dx_max, MC.rng)
+    if !constraints(R.c + dc - R.w/2, R.c + dc + R.w/2)
+        return
+    end
     Rn = Box(R.h, R.w, R.c + dc)
 
     # Calculate update for Λ
@@ -944,6 +964,9 @@ function try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     w = R.w + dw
     h = weight / w
     c = R.c
+    if !constraints(c - w/2, c + w/2)
+        return
+    end
     Rn = Box(h, w, c)
 
     # Calculate update for Λ
@@ -1077,6 +1100,10 @@ function try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
     end
     dc1 = Pdx(dx_min, dx_max, MC.rng)
     dc2 = -1.0 * w1 * dc1 / w2
+    if !constraints(c1 + dc1 - w1/2, c1 + dc1 + w1/2) ||
+       !constraints(c2 + dc2 - w2/2, c2 + dc2 + w2/2)
+        return
+    end
 
     if (c1 + dc1 ≥ wmin + w1 / 2.0) &&
        (c1 + dc1 ≤ wmax - w1 / 2.0) &&
@@ -1161,6 +1188,9 @@ function try_merge(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
 
     # Calculate δc and generate new box
     dc = Pdx(dx_min, dx_max, MC.rng)
+    if !constraints(c_new + dc - w_new/2, c_new + dc + w_new/2)
+        return
+    end
     Rn = Box(h_new, w_new, c_new + dc)
 
     # Calculate update for Λ
