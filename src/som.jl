@@ -227,9 +227,6 @@ function average(SC::StochOMContext)
                 _omega = SC.mesh[w]
                 for r = 1:length(SC.Cᵥ[l])
                     R = SC.Cᵥ[l][r]
-                    if -0.5 ≤ R.c ≤ 0.5
-                        @show R
-                    end
                     if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
                         Aom[w] = Aom[w] + R.h
                     end
