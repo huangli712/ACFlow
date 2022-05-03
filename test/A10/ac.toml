@@ -1,6 +1,6 @@
 [COMM]
 finput = "green.data"
-solver = "StochOM"
+solver = "MaxEnt"
 ktype  = "bsymm"
 mtype  = "risedecay"
 grid   = "btime"
@@ -29,11 +29,3 @@ ndump = 40000
 nalph = 20
 alpha = 1.00
 ratio = 1.20
-
-[StochOM]
-ntry  = 200
-nstep = 1000
-nbox  = 100
-sbox  = 0.005
-wbox  = 0.02
-norm  = -1.0
