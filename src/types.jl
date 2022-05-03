@@ -134,7 +134,7 @@ const PStochOM = Dict{String,ADT}(
     "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo steps per try"],
     "nbox"    => [missing, 1, :I64   , "Number of boxes to construct the spectrum"],
     "sbox"    => [missing, 1, :F64   , "Minimum area of the randomly generated boxes"],
-    "wbox"    => [missing, 1, :F64   , "Maximum width of the randomly generated boxes"],
+    "wbox"    => [missing, 1, :F64   , "Minimum width of the randomly generated boxes"],
     "norm"    => [missing, 1, :F64   , "Is the norm calculated"],
 )
 
