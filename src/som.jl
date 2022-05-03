@@ -227,6 +227,9 @@ function average(SC::StochOMContext)
                 _omega = SC.mesh[w]
                 for r = 1:length(SC.Cᵥ[l])
                     R = SC.Cᵥ[l][r]
+                    if -0.5 ≤ R.c ≤ 0.5
+                        @show R
+                    end
                     if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
                         Aom[w] = Aom[w] + R.h
                     end
@@ -724,10 +727,13 @@ function constraints(e₁::F64, e₂::F64)
             if e₁ ≤ exclude[i][1] ≤ e₂ ≤ exclude[i][2]
                 return false
             end
+            if exclude[i][1] ≤ e₁ ≤ exclude[i][2] ≤ e₂
+                return false
+            end
             if exclude[i][1] ≤ e₁ ≤ e₂ ≤ exclude[i][2]
                 return false
             end
-            if exclude[i][1] ≤ e₁ ≤ exclude[i][2] ≤ e₂
+            if e₁ ≤ exclude[i][1] ≤ exclude[i][2] ≤ e₂
                 return false
             end
         end
