@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/29
+# Last modified: 2022/05/03
 #
 
 """
@@ -301,25 +301,25 @@ function make_grid(rd::RawData)
     @cswitch grid begin
         @case "ftime"
             β = v[end]
-            @assert abs(β - get_c("beta")) ≤ 1e-10
+            @assert abs(β - get_c("beta")) ≤ 1e-6
             _grid = FermionicImaginaryTimeGrid(ngrid, β, v)
             break
 
         @case "btime"
             β = v[end]
-            @assert abs(β - get_c("beta")) ≤ 1e-10
+            @assert abs(β - get_c("beta")) ≤ 1e-6
             _grid = BosonicImaginaryTimeGrid(ngrid, β, v)
             break
 
         @case "ffreq"
             β = 2.0 * π / (v[2] - v[1])
-            @assert abs(β - get_c("beta")) ≤ 1e-10
+            @assert abs(β - get_c("beta")) ≤ 1e-6
             _grid = FermionicMatsubaraGrid(ngrid, β, v)
             break
 
         @case "bfreq"
             β = 2.0 * π / (v[2] - v[1])
-            @assert abs(β - get_c("beta")) ≤ 1e-10
+            @assert abs(β - get_c("beta")) ≤ 1e-6
             _grid = BosonicMatsubaraGrid(ngrid, β, v)
             break
 
