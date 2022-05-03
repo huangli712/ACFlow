@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/29
+# Last modified: 2022/05/03
 #
 
 #=
@@ -464,6 +464,41 @@ function make_singular_space(kernel::Matrix{F64})
 
     return U_svd, V_svd, S_svd
 end
+
+#=
+*Remarks* : About Preblur
+
+The Gaussian is
+
+```math
+\begin{equation}
+g(x) = \frac{1}{b \sqrt{2 \pi}}
+       \exp\left(-\frac{x^2}{2b^2}\right).
+\end{equation}
+```
+
+Here `b` is the blur parameter. In the fermionic case, the convolution
+can be written as:
+
+```math
+\begin{equation}
+K_{preblur}(i\nu_n,\omega) = \int_{-5b}^{5b} dx~
+    \frac{g(x)}{i\nu_n - x - \omega}.
+\end{equation}
+```
+
+In the bosonic case, the convolution can be written as
+
+```math
+K_{preblur}(i\omega_n,\nu) = \frac{1}{2} \int_{-5b}^{5b} dx~g(x)
+    \left[
+        \frac{(x+\nu)^2 }{(x+\nu)^2 + \omega_n^2} +
+        \frac{(x-\nu)^2 }{(x-\nu)^2 + \omega_n^2}
+    \right].
+```
+
+Integration over the Gaussian from \(-5b\) to \(5b\) is certainly sufficient.
+=#
 
 """
     make_gauss_peaks(blur::F64)
