@@ -28,15 +28,25 @@ wmin = +0.0 # Left boundary
 wmax = +8.0 # Right boundary
 nmesh = 801 # Number of real-frequency points
 niw  = 20   # Number of Matsubara frequencies
-beta = 20.0 # Inverse temperature
+beta = 15.0 # Inverse temperature
+W₁   = 0.30
+W₂   = 0.20
+Γ₁   = 0.30
+Γ₂   = 1.20
+Γ₃   = 4.00
+ϵ    = 3.00
 
 # Real frequency mesh
 w_real = collect(LinRange(wmin, wmax, nmesh))
 
 # Spectral function
 spec_real = similar(w_real)
-@. spec_real = exp(-(w_real - 2.0) ^ 2.0 / 2.0) +
-               exp(-(w_real + 2.0) ^ 2.0 / 2.0)
+for i in eachindex(w_real)
+    A = W₁ / (1.0 + (w_real[i] / Γ₁) ^ 2.0) +
+        W₂ / (1.0 + ((w_real[i] - ϵ) / Γ₂) ^ 2.0) +
+        W₂ / (1.0 + ((w_real[i] + ϵ) / Γ₂) ^ 2.0)
+    spec_real[i] = A / (1.0 + (w_real[i] / Γ₃) ^ 6.0)
+end
 spec_real = spec_real ./ trapz(w_real, spec_real)
 
 # Matsubara frequency mesh
