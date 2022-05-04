@@ -28,8 +28,9 @@ wmin = +0.0 # Left boundary
 wmax = +8.0 # Right boundary
 nmesh = 801 # Number of real-frequency points
 niw  = 20   # Number of Matsubara frequencies
+ntau = 1000 # Number of imaginary time points
 beta = 20.0 # Inverse temperature
-W₁   = 0.30
+W₁   = 0.30 # Parameters for gaussian peaks
 W₂   = 0.20
 Γ₁   = 0.30
 Γ₂   = 1.20
@@ -93,11 +94,44 @@ gf_mats = gf_mats / norm
 err = ones(Float64, niw) * noise_amplitude
 
 # Write green's function
-open("chi.data", "w") do fout
+open("chiw.data", "w") do fout
     for i in eachindex(gf_mats)
         z = gf_mats[i]
         @printf(fout, "%20.16f %20.16f %20.16f\n", iw[i], z, err[i])
     end
 end
 
+#
+# For imaginary time data
+#
 
+# Imaginary time mesh
+t_mesh = collect(LinRange(0, beta, ntau))
+
+# Noise
+seed = rand(1:100000000)
+rng = MersenneTwister(seed)
+noise_amplitude = 1.0e-4
+noise = randn(rng, Float64, ntau) * noise_amplitude
+
+# Build green's function
+gtau = zeros(Float64, ntau)
+for i = 1:ntau
+    tw = exp.(-t_mesh[i] * w_real)
+    bw = exp.(-beta * w_real)
+    btw = exp.(-(beta - t_mesh[i]) * w_real)
+    K = 0.5 * w_real .* (tw .+ btw) ./ (1.0 .- bw)
+    K[1] = 1.0 / beta
+    KA = K .* spec_real
+    gtau[i] = trapz(w_real, KA)
+end
+
+# Build error
+err = ones(Float64, ntau) * noise_amplitude
+
+# Write green's function
+open("chit.data", "w") do fout
+    for i in eachindex(gtau)
+        @printf(fout, "%16.12f %16.12f %16.12f\n", t_mesh[i], gtau[i], err[i])
+    end
+end
