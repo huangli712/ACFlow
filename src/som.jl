@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/04
+# Last modified: 2022/05/05
 #
 
 #=
@@ -107,7 +107,8 @@ function solve(S::StochOMSolver, rd::RawData)
         Aout = run(S, MC, SC)
         Gout = last(SC, Aout)
     end
-    return SC.mesh, Aout, Gout
+
+    return SC.mesh.mesh, Aout, Gout
 end
 
 """

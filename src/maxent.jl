@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/29
+# Last modified: 2022/05/05
 #
 
 #=
@@ -57,7 +57,7 @@ function solve(S::MaxEntSolver, rd::RawData)
     mec = init(S, rd)
     darr, sol = run(S, mec)
     gout = last(mec, darr, sol)
-    return mec.mesh, sol[:A], gout
+    return mec.mesh.mesh, sol[:A], gout
 end
 
 """
