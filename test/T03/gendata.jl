@@ -36,18 +36,35 @@ W₂   = 0.20
 Γ₃   = 4.00
 ϵ    = 3.00
 
+#
+# For true spectrum
+#
+
 # Real frequency mesh
 w_real = collect(LinRange(wmin, wmax, nmesh))
 
 # Spectral function
 spec_real = similar(w_real)
+#
 for i in eachindex(w_real)
     A = W₁ / (1.0 + (w_real[i] / Γ₁) ^ 2.0) +
         W₂ / (1.0 + ((w_real[i] - ϵ) / Γ₂) ^ 2.0) +
         W₂ / (1.0 + ((w_real[i] + ϵ) / Γ₂) ^ 2.0)
     spec_real[i] = A / (1.0 + (w_real[i] / Γ₃) ^ 6.0)
 end
+#
 spec_real = spec_real ./ trapz(w_real, spec_real)
+
+# Write spectral function
+open("exact.data", "w") do fout
+    for i in eachindex(spec_real)
+        @printf(fout, "%20.16f %20.16f\n", w_real[i], spec_real[i])
+    end
+end
+
+#
+# For Matsubara frequency data
+#
 
 # Matsubara frequency mesh
 iw = 2.0 * π / beta * collect(0:niw-1)
@@ -83,9 +100,4 @@ open("chi.data", "w") do fout
     end
 end
 
-# Write spectral function
-open("exact.data", "w") do fout
-    for i in eachindex(spec_real)
-        @printf(fout, "%20.16f %20.16f\n", w_real[i], spec_real[i])
-    end
-end
+
