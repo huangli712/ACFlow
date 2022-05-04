@@ -35,9 +35,11 @@ w_real = collect(LinRange(wmin, wmax, nmesh))
 
 # Spectral function
 spec_real = similar(w_real)
+#
 @. spec_real = exp(-w_real ^ 2.0 / (2.0 * 0.2 ^ 2.0))
 @. spec_real += 0.3 * exp(-(w_real - 1.5) ^ 2.0 / (2.0 * 0.8 ^ 2.0))
 @. spec_real += 0.3 * exp(-(w_real + 1.5) ^ 2.0 / (2.0 * 0.8 ^ 2.0))
+#
 spec_real = spec_real ./ trapz(w_real, spec_real)
 
 # Matsubara frequency mesh

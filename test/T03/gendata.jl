@@ -24,13 +24,13 @@ function trapz(x, y, linear::Bool = false)
 end
 
 # Setup parameters
-wmin = +0.0 # Left boundary
-wmax = +8.0 # Right boundary
-nmesh = 801 # Number of real-frequency points
-niw  = 20   # Number of Matsubara frequencies
-ntau = 1000 # Number of imaginary time points
-beta = 20.0 # Inverse temperature
-W₁   = 0.30 # Parameters for gaussian peaks
+wmin = +0.0  # Left boundary
+wmax = +8.0  # Right boundary
+nmesh = 2001 # Number of real-frequency points
+niw  = 10    # Number of Matsubara frequencies
+ntau = 1000  # Number of imaginary time points
+beta = 20.0  # Inverse temperature
+W₁   = 0.30  # Parameters for gaussian peaks
 W₂   = 0.20
 Γ₁   = 0.30
 Γ₂   = 1.20
@@ -91,7 +91,7 @@ norm = gf_mats[1]
 gf_mats = gf_mats / norm
 
 # Build error
-err = ones(Float64, niw) * noise_amplitude
+err = ones(Float64, niw) * noise_amplitude / norm
 
 # Write green's function
 open("chiw.data", "w") do fout

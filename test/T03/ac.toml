@@ -1,11 +1,11 @@
 [COMM]
-finput = "chit.data"
-solver = "StochAC"
+finput = "chiw.data"
+solver = "StochOM"
 ktype  = "bsymm"
 mtype  = "flat"
-grid   = "btime"
+grid   = "bfreq"
 mesh   = "halflorentz"
-ngrid  = 1000
+ngrid  = 10
 nmesh  = 801
 wmax   = 8.0
 wmin   = 0.0
@@ -17,7 +17,7 @@ method = "chi2kink"
 nalph  = 14
 alpha  = 1e12
 ratio  = 10.0
-blur   =-0.20
+blur   = -1.0
 
 [StochOM]
 ntry  = 200
