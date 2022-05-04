@@ -1,11 +1,11 @@
 [COMM]
-finput = "green.data"
-solver = "StochAC"
+finput = "giw.data"
+solver = "MaxEnt"
 ktype  = "fermi"
 mtype  = "flat"
-grid   = "ftime"
+grid   = "ffreq"
 mesh   = "linear"
-ngrid  = 1000
+ngrid  = 10
 nmesh  = 501
 wmax   = 5.0
 wmin   = -5.0
