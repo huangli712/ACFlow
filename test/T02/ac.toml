@@ -1,11 +1,11 @@
 [COMM]
 finput = "green.data"
-solver = "StochOM"
+solver = "StochAC"
 ktype  = "fermi"
 mtype  = "flat"
-grid   = "ffreq"
+grid   = "ftime"
 mesh   = "linear"
-ngrid  = 10
+ngrid  = 1000
 nmesh  = 501
 wmax   = 5.0
 wmin   = -5.0
@@ -27,3 +27,13 @@ nbox  = 100
 sbox  = 0.005
 wbox  = 0.02
 norm  = -1.0
+
+[StochAC]
+nfine = 10000
+ngamm = 512
+nwarm = 4000
+nstep = 4000000
+ndump = 40000
+nalph = 40
+alpha = 1.00
+ratio = 1.20
