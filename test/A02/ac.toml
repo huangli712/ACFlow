@@ -1,5 +1,5 @@
 [COMM]
-finput = "green.data"
+finput = "chiw.data"
 solver = "MaxEnt"
 ktype  = "bsymm"
 mtype  = "flat"
@@ -20,7 +20,7 @@ ratio  = 10.0
 blur   = -1.0
 
 [StochOM]
-ntry  = 20000
+ntry  = 100000
 nstep = 1000
 nbox  = 100
 sbox  = 0.005
