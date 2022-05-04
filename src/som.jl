@@ -419,6 +419,7 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
     sbox = get_s("sbox")
     wbox = get_s("wbox")
 
+    # Generate weights randomly
     _Know = rand(MC.rng, 2:nbox)
     _weight = zeros(F64, _Know)
     for i = 1:_Know
@@ -426,11 +427,13 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
     end
     _weight[end] = 1.0
 
+    # Sort weights, make sure the sum of weights is always 1.0.
     sort!(_weight)
     weight = diff(_weight)
     insert!(weight, 1, _weight[1])
     sort!(weight)
 
+    # Make sure that each weight is larger than sbox.
     plus_count = 1
     minus_count = _Know
     while weight[plus_count] < sbox
@@ -442,10 +445,11 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
         plus_count = plus_count + 1
     end
 
+    # Create some boxes with random c, w, and h.
     C = Box[]
     Λ = zeros(F64, length(SC.Gᵥ), nbox)
     Δ = 0.0
-
+    #
     for k = 1:_Know
         c = wmin + wbox / 2.0 + (wmax - wmin - wbox) * rand(MC.rng, F64)
         w = wbox + (min(2.0 * (c - wmin), 2.0 * (wmax - c)) - wbox) * rand(MC.rng, F64)
@@ -458,6 +462,8 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
         push!(C, R)
         Λ[:,k] .= calc_lambda(R, SC.grid)
     end
+    #
+    # Calculate green's function and relative error using boxes
     G = calc_green(Λ, _Know)
     Δ = calc_error(G, SC.Gᵥ, SC.σ¹)
 
