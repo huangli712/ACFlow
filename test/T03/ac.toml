@@ -1,11 +1,11 @@
 [COMM]
-finput = "chi.data"
-solver = "MaxEnt"
+finput = "chit.data"
+solver = "StochAC"
 ktype  = "bsymm"
-mtype  = "risedecay"
-grid   = "bfreq"
+mtype  = "flat"
+grid   = "btime"
 mesh   = "halflorentz"
-ngrid  = 20
+ngrid  = 1000
 nmesh  = 801
 wmax   = 8.0
 wmin   = 0.0
@@ -20,9 +20,19 @@ ratio  = 10.0
 blur   =-0.20
 
 [StochOM]
-ntry  = 1000
+ntry  = 200
 nstep = 1000
 nbox  = 100
 sbox  = 0.005
 wbox  = 0.02
 norm  = -1.0
+
+[StochAC]
+nfine = 10000
+ngamm = 512
+nwarm = 4000
+nstep = 400000
+ndump = 40000
+nalph = 40
+alpha = 1.00
+ratio = 1.20

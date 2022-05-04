@@ -122,7 +122,7 @@ for i = 1:ntau
     btw = exp.(-(beta - t_mesh[i]) * w_real)
     K = 0.5 * w_real .* (tw .+ btw) ./ (1.0 .- bw)
     K[1] = 1.0 / beta
-    KA = K .* spec_real
+    global KA = K .* spec_real
     gtau[i] = trapz(w_real, KA)
 end
 
