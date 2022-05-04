@@ -28,9 +28,14 @@ wmin = -5.0  # Left boundary
 wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 10    # Number of Matsubara frequencies
+ntau = 1000  # Number of imaginary time points
 beta = 10.0  # Inverse temperature
 Δ    = 0.5   # 2Δ is the size of the gap
 W    = 6.0   # Bandwidth of the spectrum
+
+#
+# For true spectrum
+#
 
 # Real frequency mesh
 w_real = collect(LinRange(wmin, wmax, nmesh))
@@ -44,6 +49,17 @@ for i in eachindex(w_real)
     end
 end
 spec_real = spec_real ./ trapz(w_real, spec_real)
+
+# Write spectral function
+open("exact.data", "w") do fout
+    for i in eachindex(spec_real)
+        @printf(fout, "%20.16f %20.16f\n", w_real[i], spec_real[i])
+    end
+end
+
+#
+# For Matsubara frequency data
+#
 
 # Matsubara frequency mesh
 iw = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
@@ -70,16 +86,9 @@ end
 err = ones(Float64, niw) * noise_amplitude
 
 # Write green's function
-open("green.data", "w") do fout
+open("giw.data", "w") do fout
     for i in eachindex(gf_mats)
         z = gf_mats[i]
         @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err[i])
-    end
-end
-
-# Write spectral function
-open("exact.data", "w") do fout
-    for i in eachindex(spec_real)
-        @printf(fout, "%20.16f %20.16f\n", w_real[i], spec_real[i])
     end
 end
