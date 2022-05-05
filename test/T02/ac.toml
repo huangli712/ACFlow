@@ -21,7 +21,7 @@ ratio  = 10.0
 blur   = -1.0
 
 [StochOM]
-ntry  = 2000
+ntry  = 100000
 nstep = 1000
 nbox  = 100
 sbox  = 0.005
@@ -32,7 +32,7 @@ norm  = -1.0
 nfine = 10000
 ngamm = 512
 nwarm = 4000
-nstep = 4000000
+nstep = 10000000
 ndump = 40000
 nalph = 40
 alpha = 1.00
