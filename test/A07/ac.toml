@@ -1,4 +1,4 @@
-[COMM]
+[BASE]
 finput = "chiw.data"
 solver = "MaxEnt"
 ktype  = "bsymm"

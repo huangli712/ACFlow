@@ -1,4 +1,4 @@
-[COMM]
+[BASE]
 finput = "chit.data"
 solver = "MaxEnt"
 ktype  = "bsymm"

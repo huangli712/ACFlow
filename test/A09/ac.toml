@@ -1,4 +1,4 @@
-[COMM]
+[BASE]
 finput = "gtau.data"
 solver = "MaxEnt"
 ktype  = "fermi"

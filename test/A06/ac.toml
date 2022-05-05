@@ -1,4 +1,4 @@
-[COMM]
+[BASE]
 finput = "giw.data"
 solver = "MaxEnt"
 ktype  = "fermi"
