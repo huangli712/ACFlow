@@ -25,7 +25,7 @@ rmesh = collect(LinRange(wmin, wmax, nmesh))
 # Spectral function
 image = similar(rmesh)
 #
-@. image =  A₁ * exp(-(rmesh - ϵ₁) ^ 2.0 / (2.0 * Γ₁ ^ 2.0))
+@. image  = A₁ * exp(-(rmesh - ϵ₁) ^ 2.0 / (2.0 * Γ₁ ^ 2.0))
 @. image += A₂ * exp(-(rmesh - ϵ₂) ^ 2.0 / (2.0 * Γ₂ ^ 2.0))
 #
 image = image ./ trapz(rmesh, image)

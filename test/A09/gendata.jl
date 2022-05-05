@@ -1,74 +1,63 @@
 #!/usr/bin/env julia
 
+push!(LOAD_PATH, ENV["ACFLOW_HOME"])
+
 using Random
 using Printf
-
-# Numerical integration by the composite trapezoidal rule
-function trapz(x, y, linear::Bool = false)
-    # For linear mesh
-    if linear
-        h = x[2] - x[1]
-        value = y[1] + y[end] + 2.0 * sum(y[2:end-1])
-        value = h * value / 2.0
-    # For non-equidistant mesh
-    else
-        len = length(x)
-        value = 0.0
-        for i = 1:len-1
-            value = value + (y[i] + y[i+1]) * (x[i+1] - x[i])
-        end
-        value = value / 2.0
-    end
-
-    return value
-end
+using ACFlow
 
 # Setup parameters
 wmin = -5.0  # Left boundary
 wmax = +5.0  # Right boundary
-nmesh = 1001 # Number of real-frequency points
+nmesh = 2001 # Number of real-frequency points
 ntau = 1000  # Number of imaginary time points
 beta = 5.0   # Inverse temperature
+ϵ₁   = 2.00  # Parameters for gaussian peaks
+ϵ₂   = -2.0
+Γ₁   = 0.50
+Γ₂   = 0.50
 
 # Real frequency mesh
-w_real = collect(LinRange(wmin, wmax, nmesh))
+rmesh = collect(LinRange(wmin, wmax, nmesh))
 
 # Spectral function
-spec_real = similar(w_real)
-@. spec_real  = exp(-0.5 * (w_real - 2.0) ^ 2.0 / (0.5 ^ 2.0)) / (sqrt(2.0 * π) * 0.5)
-@. spec_real += exp(-0.5 * (w_real + 2.0) ^ 2.0 / (0.5 ^ 2.0)) / (sqrt(2.0 * π) * 0.5)
-spec_real = spec_real ./ trapz(w_real, spec_real)
+image = similar(rmesh)
+#
+@. image  = exp(-(rmesh - ϵ₁) ^ 2.0 / (2.0 * Γ₁ ^ 2.0)) / (sqrt(2.0 * π) * Γ₁)
+@. image += exp(-(rmesh - ϵ₂) ^ 2.0 / (2.0 * Γ₂ ^ 2.0)) / (sqrt(2.0 * π) * Γ₂)
+#
+image = image ./ trapz(rmesh, image)
 
 # Imaginary time mesh
-t_mesh = collect(LinRange(0, beta, ntau))
+tmesh = collect(LinRange(0, beta, ntau))
 
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
-noise_amplitude = 1.0e-4
-noise = randn(rng, Float64, ntau) * noise_amplitude
+noise_ampl = 1.0e-4
+noise = randn(rng, F64, ntau) * noise_ampl
 
 # Build green's function
-gtau = zeros(Float64, ntau)
+gtau = zeros(F64, ntau)
 for i = 1:ntau
-    tw = exp.(-t_mesh[i] * w_real)
-    bw = exp.(-beta * w_real)
-    gtau[i] = trapz(w_real, spec_real .* tw ./ (1.0 .+ bw)) + noise[i]
+    tw = exp.(-tmesh[i] * rmesh)
+    bw = exp.(-beta * rmesh)
+    gtau[i] = trapz(rmesh, image .* tw ./ (1.0 .+ bw)) + noise[i]
 end
 
 # Build error
-err = ones(Float64, ntau) * noise_amplitude * 10.0
+err = ones(F64, ntau) * noise_ampl * 10.0
 
 # Write green's function
-open("green.data", "w") do fout
+open("gtau.data", "w") do fout
     for i in eachindex(gtau)
-        @printf(fout, "%16.12f %16.12f %16.12f\n", t_mesh[i], gtau[i], err[i])
+        @printf(fout, "%20.16f %20.16f %20.16f\n", tmesh[i], gtau[i], err[i])
     end
 end
 
 # Write spectral function
-open("exact.data", "w") do fout
-    for i in eachindex(spec_real)
-        @printf(fout, "%16.12f %16.12f\n", w_real[i], spec_real[i])
+open("image.data", "w") do fout
+    for i in eachindex(image)
+        @printf(fout, "%20.16f %20.16f\n", rmesh[i], image[i])
     end
 end
