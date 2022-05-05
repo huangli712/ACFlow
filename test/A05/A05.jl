@@ -74,7 +74,7 @@ cp("repr.data", "repr.mem2.data", force = true)
 open("sigma.mem2.data", "w") do fout
     for i in eachindex(mesh)
         z = Σout[i]
-        @printf(fout, "%16.12f %16.12f %16.12f\n", mesh[i], real(z), imag(z))
+        @printf(fout, "%20.16f %20.16f %20.16f\n", mesh[i], real(z), imag(z))
     end
 end
 
@@ -108,6 +108,6 @@ cp("repr.data", "repr.som.data", force = true)
 open("sigma.som.data", "w") do fout
     for i in eachindex(mesh)
         z = Σout[i]
-        @printf(fout, "%16.12f %16.12f %16.12f\n", mesh[i], real(z), imag(z))
+        @printf(fout, "%20.16f %20.16f %20.16f\n", mesh[i], real(z), imag(z))
     end
 end
