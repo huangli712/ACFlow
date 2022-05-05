@@ -1,11 +1,11 @@
 [COMM]
-finput = "green.data"
+finput = "chit.data"
 solver = "MaxEnt"
 ktype  = "bsymm"
 mtype  = "risedecay"
 grid   = "btime"
 mesh   = "halflorentz"
-ngrid  = 501
+ngrid  = 1000
 nmesh  = 801
 wmax   =16.0
 wmin   = 0.0
@@ -24,8 +24,8 @@ blur   = -1.0
 nfine = 10000
 ngamm = 512
 nwarm = 4000
-nstep = 4000000
+nstep = 10000000
 ndump = 40000
-nalph = 20
+nalph = 40
 alpha = 1.00
 ratio = 1.20
