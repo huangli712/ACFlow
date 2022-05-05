@@ -3,15 +3,15 @@
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
 using DelimitedFiles
-using ACFlow
 using Printf
+using ACFlow
 
 welcome()
 
 # Deal with self-energy function
 #
 # Read self-energy function
-dlm = readdlm("sigma.data")
+dlm = readdlm("siw.inp")
 #
 # Get grid
 grid = dlm[:,1]
@@ -31,8 +31,9 @@ C = Dict{String,Any}(
     "mtype"  => "gauss",
     "mesh"   => "tangent",
     "ngrid"  => 100,
-    "wmax"   => 10.0,
-    "wmin"   => -10.0,
+    "nmesh"  => 801,
+    "wmax"   => 8.0,
+    "wmin"   => -8.0,
     "beta"   => 10.0,
 )
 #
@@ -45,17 +46,17 @@ S = Dict{String,Any}(
 setup_param(C, S)
 
 # Call the solver
-mesh, Aout, Gout = solve(grid, Σinp, Σerr)
+mesh, Aout, Σout = solve(grid, Σinp, Σerr)
 
 # Calculate final self-energy function on real axis
 #
 # Construct final self-energy function
-Σout = @. Gout + Σ∞
+@. Σout = Σout + Σ∞
 #
 # Write self-energy function
-open("sigma.real", "w") do fout
+open("sigma.data", "w") do fout
     for i in eachindex(mesh)
         z = Σout[i]
-        @printf(fout, "%16.12f %16.12f %16.12f\n", mesh[i], real(z), imag(z))
+        @printf(fout, "%20.16f %20.16f %20.16f\n", mesh[i], real(z), imag(z))
     end
 end

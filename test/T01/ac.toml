@@ -1,5 +1,5 @@
 [COMM]
-finput = "green.data"
+finput = "giw.inp"
 solver = "MaxEnt"
 ktype  = "fermi"
 mtype  = "flat"
