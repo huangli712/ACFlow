@@ -1,27 +1,10 @@
 #!/usr/bin/env julia
 
+push!(LOAD_PATH, ENV["ACFLOW_HOME"])
+
 using Random
 using Printf
-
-# Numerical integration by the composite trapezoidal rule
-function trapz(x, y, linear::Bool = false)
-    # For linear mesh
-    if linear
-        h = x[2] - x[1]
-        value = y[1] + y[end] + 2.0 * sum(y[2:end-1])
-        value = h * value / 2.0
-    # For non-equidistant mesh
-    else
-        len = length(x)
-        value = 0.0
-        for i = 1:len-1
-            value = value + (y[i] + y[i+1]) * (x[i+1] - x[i])
-        end
-        value = value / 2.0
-    end
-
-    return value
-end
+using ACFlow
 
 # Setup parameters
 wmin = +0.0  # Left boundary
@@ -42,24 +25,24 @@ W₂   = 0.20
 #
 
 # Real frequency mesh
-w_real = collect(LinRange(wmin, wmax, nmesh))
+rmesh = collect(LinRange(wmin, wmax, nmesh))
 
 # Spectral function
-spec_real = similar(w_real)
+image = similar(rmesh)
 #
-for i in eachindex(w_real)
-    A = W₁ / (1.0 + (w_real[i] / Γ₁) ^ 2.0) +
-        W₂ / (1.0 + ((w_real[i] - ϵ) / Γ₂) ^ 2.0) +
-        W₂ / (1.0 + ((w_real[i] + ϵ) / Γ₂) ^ 2.0)
-    spec_real[i] = A / (1.0 + (w_real[i] / Γ₃) ^ 6.0)
+for i in eachindex(rmesh)
+    A = W₁ / (1.0 + ((rmesh[i] - 0) / Γ₁) ^ 2.0) +
+        W₂ / (1.0 + ((rmesh[i] - ϵ) / Γ₂) ^ 2.0) +
+        W₂ / (1.0 + ((rmesh[i] + ϵ) / Γ₂) ^ 2.0)
+    image[i] = A / (1.0 + (rmesh[i] / Γ₃) ^ 6.0)
 end
 #
-spec_real = spec_real ./ trapz(w_real, spec_real)
+image = image ./ trapz(rmesh, image)
 
 # Write spectral function
-open("exact.data", "w") do fout
-    for i in eachindex(spec_real)
-        @printf(fout, "%20.16f %20.16f\n", w_real[i], spec_real[i])
+open("image.data", "w") do fout
+    for i in eachindex(image)
+        @printf(fout, "%20.16f %20.16f\n", rmesh[i], image[i])
     end
 end
 
@@ -68,35 +51,35 @@ end
 #
 
 # Matsubara frequency mesh
-iw = 2.0 * π / beta * collect(0:niw-1)
+iw = π / beta * (2.0 * collect(0:niw-1) .+ 0.0)
 
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
-noise_amplitude = 1.0e-4
-noise = randn(rng, Float64, niw) * noise_amplitude
+noise_ampl = 1.0e-4
+noise = randn(rng, F64, niw) * noise_ampl
 
 # Kernel function
-kernel = reshape(w_real .^ 2.0, (1,nmesh)) ./
-         (reshape(iw .^ 2.0, (niw,1)) .+ reshape(w_real .^ 2.0, (1,nmesh)))
+kernel = reshape(rmesh .^ 2.0, (1,nmesh)) ./
+         (reshape(iw .^ 2.0, (niw,1)) .+ reshape(rmesh .^ 2.0, (1,nmesh)))
 kernel[1,1] = 1.0
 
 # Build green's function
-KA = kernel .* reshape(spec_real, (1,nmesh))
-gf_mats = zeros(Float64, niw)
+KA = kernel .* reshape(image, (1,nmesh))
+chiw = zeros(F64, niw)
 for i in eachindex(gf_mats)
-    gf_mats[i] = trapz(w_real, KA[i,:]) + noise[i]
+    chiw[i] = trapz(rmesh, KA[i,:]) + noise[i]
 end
-norm = gf_mats[1]
-gf_mats = gf_mats / norm
+norm = chiw[1]
+gf_mats = chiw / norm
 
 # Build error
-err = ones(Float64, niw) * noise_amplitude / norm
+err = ones(F64, niw) * noise_ampl / norm
 
 # Write green's function
 open("chiw.data", "w") do fout
-    for i in eachindex(gf_mats)
-        z = gf_mats[i]
+    for i in eachindex(chiw)
+        z = chiw[i]
         @printf(fout, "%20.16f %20.16f %20.16f\n", iw[i], z, err[i])
     end
 end
@@ -106,32 +89,32 @@ end
 #
 
 # Imaginary time mesh
-t_mesh = collect(LinRange(0, beta, ntau))
+tmesh = collect(LinRange(0, beta, ntau))
 
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
-noise_amplitude = 1.0e-4
-noise = randn(rng, Float64, ntau) * noise_amplitude
+noise_ampl = 1.0e-4
+noise = randn(rng, F64, ntau) * noise_ampl
 
 # Build green's function
-gtau = zeros(Float64, ntau)
+chit = zeros(F64, ntau)
 for i = 1:ntau
-    tw = exp.(-t_mesh[i] * w_real)
-    bw = exp.(-beta * w_real)
-    btw = exp.(-(beta - t_mesh[i]) * w_real)
-    K = 0.5 * w_real .* (tw .+ btw) ./ (1.0 .- bw)
+    tw = exp.(-tmesh[i] * rmesh)
+    bw = exp.(-beta * rmesh)
+    btw = exp.(-(beta - tmesh[i]) * rmesh)
+    K = 0.5 * rmesh .* (tw .+ btw) ./ (1.0 .- bw)
     K[1] = 1.0 / beta
-    global KA = K .* spec_real
-    gtau[i] = trapz(w_real, KA)
+    global KA = K .* image
+    chit[i] = trapz(rmesh, KA)
 end
 
 # Build error
-err = ones(Float64, ntau) * noise_amplitude
+err = ones(F64, ntau) * noise_ampl
 
 # Write green's function
 open("chit.data", "w") do fout
-    for i in eachindex(gtau)
-        @printf(fout, "%16.12f %16.12f %16.12f\n", t_mesh[i], gtau[i], err[i])
+    for i in eachindex(chit)
+        @printf(fout, "%16.12f %16.12f %16.12f\n", tmesh[i], chit[i], err[i])
     end
 end
