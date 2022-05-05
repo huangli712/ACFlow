@@ -67,11 +67,11 @@ kernel[1,1] = 1.0
 # Build green's function
 KA = kernel .* reshape(image, (1,nmesh))
 chiw = zeros(F64, niw)
-for i in eachindex(gf_mats)
+for i in eachindex(chiw)
     chiw[i] = trapz(rmesh, KA[i,:]) + noise[i]
 end
 norm = chiw[1]
-gf_mats = chiw / norm
+chiw = chiw / norm
 
 # Build error
 err = ones(F64, niw) * noise_ampl / norm
