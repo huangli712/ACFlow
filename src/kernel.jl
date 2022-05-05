@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/03
+# Last modified: 2022/05/05
 #
 
 #=
@@ -423,7 +423,7 @@ Try to blur the given spectrum `A`, which is defined in `am`. And `blur`
 is the blur parameter.
 """
 function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
-    ktype = get_c("ktype")
+    ktype = get_b("ktype")
 
     spl = nothing
     if ktype == "fermi" || ktype == "boson"

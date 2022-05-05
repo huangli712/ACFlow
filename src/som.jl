@@ -90,7 +90,7 @@ function solve(S::StochOMSolver, rd::RawData)
     if nworkers() > 1
         println("Using $(nworkers()) workers")
         #
-        p1 = deepcopy(PCOMM)
+        p1 = deepcopy(PBASE)
         p2 = deepcopy(PStochOM)
         #
         sol = pmap((x) -> prun(S, p1, p2, MC, SC), 1:nworkers())
@@ -169,7 +169,7 @@ end
          MC::StochOMMC, SC::StochOMContext)
 
 Perform stochastic optimization simulation, parallel version.
-The arguments `p1` and `p2` are copies of PCOMM and PStochOM, respectively.
+The arguments `p1` and `p2` are copies of PBASE and PStochOM, respectively.
 """
 function prun(S::StochOMSolver,
               p1::Dict{String,Vector{Any}},
@@ -207,7 +207,7 @@ Postprocess the collected results after the stochastic optimization
 simulations. It will calculate real spectral functions.
 """
 function average(SC::StochOMContext)
-    nmesh = get_c("nmesh")
+    nmesh = get_b("nmesh")
     ntry  = get_s("ntry")
 
     # Calculate the median of SC.Δᵥ
@@ -414,8 +414,8 @@ Try to initialize a StochOMElement struct.
 See also: [`StochOMElement`](@ref).
 """
 function init_element(MC::StochOMMC, SC::StochOMContext)
-    wmin = get_c("wmin")
-    wmax = get_c("wmax")
+    wmin = get_b("wmin")
+    wmax = get_b("wmax")
     nbox = get_s("nbox")
     sbox = get_s("sbox")
     wbox = get_s("wbox")
@@ -676,7 +676,7 @@ This function works for BosonicMatsubaraGrid only.
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
-    ktype = get_c("ktype")
+    ktype = get_b("ktype")
 
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
@@ -701,7 +701,7 @@ This function works for BosonicImaginaryTimeGrid only.
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid)
-    ktype = get_c("ktype")
+    ktype = get_b("ktype")
 
     if ktype == "bsymm"
         Λ = @. r.h * exp(-1 * grid.τ * r.c) * sinh(0.5 * grid.τ * r.w)
@@ -755,7 +755,7 @@ end
     constraints(e₁::F64, e₂::F64)
 """
 function constraints(e₁::F64, e₂::F64)
-    exclude = get_c("exclude")
+    exclude = get_b("exclude")
     @assert e₁ ≤ e₂
 
     if !isa(exclude, Missing)
@@ -786,8 +786,8 @@ Insert a new box into the field configuration.
 function try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     sbox = get_s("sbox")
     wbox = get_s("wbox")
-    wmin = get_c("wmin")
-    wmax = get_c("wmax")
+    wmin = get_b("wmin")
+    wmax = get_b("wmax")
     csize = length(SE.C)
 
     # Choose a box randomly
@@ -926,8 +926,8 @@ end
 Change the position of given box in the field configuration.
 """
 function try_shift(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
-    wmin = get_c("wmin")
-    wmax = get_c("wmax")
+    wmin = get_b("wmin")
+    wmax = get_b("wmax")
     csize = length(SE.C)
 
     # Choose a box randomly
@@ -983,8 +983,8 @@ that the box's area is kept.
 """
 function try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     wbox = get_s("wbox")
-    wmin = get_c("wmin")
-    wmax = get_c("wmax")
+    wmin = get_b("wmin")
+    wmax = get_b("wmax")
     csize = length(SE.C)
 
     # Choose a box randomly
@@ -1109,8 +1109,8 @@ Split a given box into two boxes in the field configuration.
 function try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
     wbox = get_s("wbox")
     sbox = get_s("sbox")
-    wmin = get_c("wmin")
-    wmax = get_c("wmax")
+    wmin = get_b("wmin")
+    wmax = get_b("wmax")
     csize = length(SE.C)
 
     # Choose a box randomly
@@ -1197,8 +1197,8 @@ end
 Merge two given boxes into one box in the field configuration.
 """
 function try_merge(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
-    wmin = get_c("wmin")
-    wmax = get_c("wmax")
+    wmin = get_b("wmin")
+    wmax = get_b("wmax")
     csize = length(SE.C)
 
     # Choose two boxes randomly

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/28
+# Last modified: 2022/05/05
 #
 
 """
@@ -111,7 +111,7 @@ parameters or represent some essential data structures.
 ```text
 DType           -> Customized type.
 ADT             -> Customized type.
-PCOMM           -> Dict for general setup.
+PBASE           -> Dict for general setup.
 PMaxEnt         -> Dict for MaxEnt solver.
 PStochAC        -> Dict for StochAC solver.
 PStochOM        -> Dict for StochOM solver.
@@ -148,7 +148,7 @@ include("types.jl")
 #
 export DType
 export ADT
-export PCOMM
+export PBASE
 export PMaxEnt
 export PStochAC
 export PStochOM
@@ -334,7 +334,7 @@ fil_dict -> Fill dicts for configuration parameters.
 rev_dict -> Update dicts for configuration parameters.
 chk_dict -> Check dicts for configuration parameters.
 _v       -> Verify dict's values.
-get_c    -> Extract value from dict (PCOMM dict), return raw value.
+get_b    -> Extract value from dict (PBASE dict), return raw value.
 get_m    -> Extract value from dict (PMaxEnt dict), return raw value.
 get_a    -> Extract value from dict (PStochAC dict), return raw value.
 get_s    -> Extract value from dict (PStochOM dict), return raw value.
@@ -349,7 +349,7 @@ export fil_dict
 export rev_dict
 export chk_dict
 export _v
-export get_c
+export get_b
 export get_m
 export get_a
 export get_s

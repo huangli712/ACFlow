@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/03
+# Last modified: 2022/05/05
 #
 
 """
@@ -51,7 +51,7 @@ in a `Rawdata` struct.
 See also: [`RawData`](@ref).
 """
 function solve(rd::RawData)
-    solver = get_c("solver")
+    solver = get_b("solver")
 
     # Choose suitable solver
     @cswitch solver begin
@@ -172,11 +172,11 @@ dictionaries will be reset to their default values at first. Later, `C`
 See also: [`read_param`](@ref), [`rev_dict`](@ref).
 """
 function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = true)
-    # _PCOMM, _PMaxEnt, _PStochAC, and _PStochOM contain the default
+    # _PBASE, _PMaxEnt, _PStochAC, and _PStochOM contain the default
     # parameters. If reset is true, they will be used to update the
-    # PCOMM, PMaxEnt, PStochAC, and PStochOM dictionaries, respectively.
+    # PBASE, PMaxEnt, PStochAC, and PStochOM dictionaries, respectively.
     reset && begin
-        rev_dict(_PCOMM)
+        rev_dict(_PBASE)
         rev_dict(MaxEntSolver(), _PMaxEnt)
         rev_dict(StochACSolver(), _PStochAC)
         rev_dict(StochOMSolver(), _PStochOM)
@@ -184,7 +184,7 @@ function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = tru
 
     rev_dict(C)
     #
-    solver = get_c("solver")
+    solver = get_b("solver")
     @cswitch solver begin
         @case "MaxEnt"
             rev_dict(MaxEntSolver(), S)
@@ -226,10 +226,10 @@ Read data in imaginary axis and return a `RawData` struct.
 See also: [`RawData`](@ref).
 """
 function read_data(only_real_part::Bool = true)
-    finput = get_c("finput")
-    ngrid = get_c("ngrid")
+    finput = get_b("finput")
+    ngrid = get_b("ngrid")
 
-    @cswitch get_c("grid") begin
+    @cswitch get_b("grid") begin
         @case "ftime"
             return read_real_data(finput, ngrid)
             break
@@ -264,7 +264,7 @@ while the `RawData` struct is exposed to the users.
 See also: [`RawData`](@ref), [`GreenData`](@ref).
 """
 function make_data(rd::RawData)
-    grid = get_c("grid")
+    grid = get_b("grid")
     val = rd.value
     err = rd.error
 
@@ -292,8 +292,8 @@ sub-type of the AbstractGrid struct.
 See also: [`RawData`](@ref), [`AbstractGrid`](@ref).
 """
 function make_grid(rd::RawData)
-    grid = get_c("grid")
-    ngrid = get_c("ngrid")
+    grid = get_b("grid")
+    ngrid = get_b("ngrid")
     v = rd._grid
     @assert ngrid == length(v)
 
@@ -301,25 +301,25 @@ function make_grid(rd::RawData)
     @cswitch grid begin
         @case "ftime"
             β = v[end]
-            @assert abs(β - get_c("beta")) ≤ 1e-6
+            @assert abs(β - get_b("beta")) ≤ 1e-6
             _grid = FermionicImaginaryTimeGrid(ngrid, β, v)
             break
 
         @case "btime"
             β = v[end]
-            @assert abs(β - get_c("beta")) ≤ 1e-6
+            @assert abs(β - get_b("beta")) ≤ 1e-6
             _grid = BosonicImaginaryTimeGrid(ngrid, β, v)
             break
 
         @case "ffreq"
             β = 2.0 * π / (v[2] - v[1])
-            @assert abs(β - get_c("beta")) ≤ 1e-6
+            @assert abs(β - get_b("beta")) ≤ 1e-6
             _grid = FermionicMatsubaraGrid(ngrid, β, v)
             break
 
         @case "bfreq"
             β = 2.0 * π / (v[2] - v[1])
-            @assert abs(β - get_c("beta")) ≤ 1e-6
+            @assert abs(β - get_b("beta")) ≤ 1e-6
             _grid = BosonicMatsubaraGrid(ngrid, β, v)
             break
 
@@ -349,7 +349,7 @@ function make_mesh()
     cut = 0.01
 
     # Setup parameters according to case.toml
-    pmesh = get_c("pmesh")
+    pmesh = get_b("pmesh")
     if !isa(pmesh, Missing)
         (length(pmesh) == 1) && begin
             Γ, = pmesh
@@ -359,10 +359,10 @@ function make_mesh()
     end
 
     # Get essential parameters
-    nmesh = get_c("nmesh")
-    mesh = get_c("mesh")
-    wmax = get_c("wmax")
-    wmin = get_c("wmin")
+    nmesh = get_b("nmesh")
+    mesh = get_b("mesh")
+    wmax = get_b("wmax")
+    wmin = get_b("wmin")
 
     # Try to generate the required mesh
     @cswitch mesh begin
@@ -405,7 +405,7 @@ function make_model(am::AbstractMesh)
     fn = "model.inp"
 
     # Setup parameters according to case.toml
-    pmodel = get_c("pmodel")
+    pmodel = get_b("pmodel")
     if !isa(pmodel, Missing)
         (length(pmodel) == 1) && begin Γ, = pmodel end
         (length(pmodel) == 2) && begin Γ, s = pmodel end
@@ -413,7 +413,7 @@ function make_model(am::AbstractMesh)
     end
 
     # Try to generate the required model
-    mtype = get_c("mtype")
+    mtype = get_b("mtype")
     @cswitch mtype begin
         @case "flat"
             return build_flat_model(am)
@@ -469,8 +469,8 @@ Try to generate various kernel functions.
 See also: [`AbstractMesh`](@ref), [`AbstractGrid`](@ref).
 """
 function make_kernel(am::AbstractMesh, ag::AbstractGrid)
-    ktype = get_c("ktype")
-    grid = get_c("grid")
+    ktype = get_b("ktype")
+    grid = get_b("grid")
 
     @cswitch ktype begin
         @case "fermi"

@@ -75,7 +75,7 @@ Solve the analytical continuation problem by the stochastic analytical
 continuation algorithm.
 """
 function solve(S::StochACSolver, rd::RawData)
-    nmesh = get_c("nmesh")
+    nmesh = get_b("nmesh")
     nalph = get_a("nalph")
 
     println("[ StochAC ]")
@@ -84,7 +84,7 @@ function solve(S::StochACSolver, rd::RawData)
     if nworkers() > 1
         println("Using $(nworkers()) workers")
         #
-        p1 = deepcopy(PCOMM)
+        p1 = deepcopy(PBASE)
         p2 = deepcopy(PStochAC)
         #
         sol = pmap((x) -> prun(S, p1, p2, MC, SE, SC), 1:nworkers())
@@ -133,11 +133,11 @@ function init(S::StochACSolver, rd::RawData)
 
     # Only flat model is valid for the StochAC solver.
     model = make_model(mesh)
-    println("Build default model: ", get_c("mtype"))
+    println("Build default model: ", get_b("mtype"))
 
     fmesh = calc_fmesh()
     kernel = make_kernel(fmesh, grid)
-    println("Build default kernel: ", get_c("ktype"))
+    println("Build default kernel: ", get_b("ktype"))
 
     xmesh = calc_xmesh()
     ϕ = calc_phi(mesh, model)
@@ -195,7 +195,7 @@ end
          MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Perform stochastic analytical continuation simulation, parallel version.
-The arguments `p1` and `p2` are copies of PCOMM and PStochAC, respectively.
+The arguments `p1` and `p2` are copies of PBASE and PStochAC, respectively.
 """
 function prun(S::StochACSolver,
               p1::Dict{String,Vector{Any}}, p2::Dict{String,Vector{Any}},
@@ -432,7 +432,7 @@ See also: [`RawData`](@ref).
 """
 function init_iodata(S::StochACSolver, rd::RawData)
     nalph = get_a("nalph")
-    nmesh = get_c("nmesh")
+    nmesh = get_b("nmesh")
 
     Aout = zeros(F64, nmesh, nalph)
 
@@ -453,8 +453,8 @@ See also: [`LinearMesh`](@ref).
 """
 function calc_fmesh()
     nfine = get_a("nfine")
-    wmin = get_c("wmin")
-    wmax = get_c("wmax")
+    wmin = get_b("wmin")
+    wmax = get_b("wmax")
 
     fmesh = LinearMesh(nfine, wmin, wmax)
 
@@ -589,9 +589,9 @@ method. This function will return a collection. It contains all the
 allowable indices.
 """
 function constraints(S::StochACSolver)
-    exclude = get_c("exclude")
-    wmin = get_c("wmin")
-    wmax = get_c("wmax")
+    exclude = get_b("exclude")
+    wmin = get_b("wmin")
+    wmax = get_b("wmax")
     nfine = get_a("nfine")
 
     allow = I64[]

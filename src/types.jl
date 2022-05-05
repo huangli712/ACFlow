@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/03
+# Last modified: 2022/05/05
 #
 
 #=
@@ -36,11 +36,11 @@ The following dictionaries are used as global variables.
 =#
 
 """
-    PCOMM
+    PBASE
 
 Dictionary for configuration parameters: general setup.
 """
-const PCOMM    = Dict{String,ADT}(
+const PBASE    = Dict{String,ADT}(
     "finput"  => [missing, 1, :String, "Filename for input data"],
     "solver"  => [missing, 1, :String, "Solver for the analytical continuation problem"],
     "ktype"   => [missing, 1, :String, "Type of kernel function"],
@@ -58,8 +58,8 @@ const PCOMM    = Dict{String,ADT}(
     "exclude" => [missing, 0, :Array , "Restriction of the energy range of the spectrum"],
 )
 
-# Default parameters for PCOMM
-const _PCOMM   = Dict{String,Any}(
+# Default parameters for PBASE
+const _PBASE   = Dict{String,Any}(
     "finput"  => "green.data",
     "solver"  => "MaxEnt",
     "ktype"   => "fermi",

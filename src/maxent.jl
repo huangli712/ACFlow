@@ -78,10 +78,10 @@ function init(S::MaxEntSolver, rd::RawData)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
     model = make_model(mesh)
-    println("Build default model: ", get_c("mtype"))
+    println("Build default model: ", get_b("mtype"))
 
     kernel = make_kernel(mesh, grid)
-    println("Build default kernel: ", get_c("ktype"))
+    println("Build default kernel: ", get_b("ktype"))
 
     Vₛ, W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel)
     println("Precompute key coefficients")
@@ -409,7 +409,7 @@ the optimization, e.g. spectral function, χ² deviation.
 """
 function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool)
     blur = get_m("blur")
-    offdiag = get_c("offdiag")
+    offdiag = get_b("offdiag")
 
     if offdiag
         solution, call = newton(f_and_J_offdiag, us, mec, α)
@@ -474,7 +474,7 @@ is the mesh for spectrum, `D` is the default model, and `K` is the kernel
 function.
 """
 function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, am::AbstractMesh, D::Vector{F64}, K::Matrix{F64})
-    offdiag = get_c("offdiag")
+    offdiag = get_b("offdiag")
 
     U, V, S = make_singular_space(K)
 

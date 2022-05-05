@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/28
+# Last modified: 2022/05/05
 #
 
 """
@@ -53,14 +53,14 @@ end
     fil_dict(cfg::Dict{String,Any})
 
 Transfer configurations from dict `cfg` to internal dicts (including
-`PCOMM`, `PMaxEnt`, `PStochAC`, and `PStochOM` etc).
+`PBASE`, `PMaxEnt`, `PStochAC`, and `PStochOM` etc).
 """
 function fil_dict(cfg::Dict{String,Any})
-    # For COMM block
-    COMM = cfg["COMM"]
-    for key in keys(COMM)
-        if haskey(PCOMM, key)
-            PCOMM[key][1] = COMM[key]
+    # For BASE block
+    BASE = cfg["BASE"]
+    for key in keys(BASE)
+        if haskey(PBASE, key)
+            PBASE[key][1] = BASE[key]
         else
             error("Sorry, $key is not supported currently")
         end
@@ -104,39 +104,39 @@ function fil_dict(cfg::Dict{String,Any})
 end
 
 """
-    rev_dict(COMM::Dict{String,Any})
+    rev_dict(BASE::Dict{String,Any})
 
-Setup the configuration dictionary: `PCOMM`.
+Setup the configuration dictionary: `PBASE`.
 
-See also: [`PCOMM`](@ref).
+See also: [`PBASE`](@ref).
 """
-function rev_dict(COMM::Dict{String,Any})
-    for key in keys(COMM)
-        if haskey(PCOMM, key)
-            PCOMM[key][1] = COMM[key]
+function rev_dict(BASE::Dict{String,Any})
+    for key in keys(BASE)
+        if haskey(PBASE, key)
+            PBASE[key][1] = BASE[key]
         else
             error("Sorry, $key is not supported currently")
         end
     end
-    foreach(x -> _v(x.first, x.second), PCOMM)
+    foreach(x -> _v(x.first, x.second), PBASE)
 end
 
 """
-    rev_dict(COMM::Dict{String,Vector{Any}})
+    rev_dict(BASE::Dict{String,Vector{Any}})
 
-Setup the configuration dictionary: `PCOMM`.
+Setup the configuration dictionary: `PBASE`.
 
-See also: [`PCOMM`](@ref).
+See also: [`PBASE`](@ref).
 """
-function rev_dict(COMM::Dict{String,Vector{Any}})
-    for key in keys(COMM)
-        if haskey(PCOMM, key)
-            PCOMM[key][1] = COMM[key][1]
+function rev_dict(BASE::Dict{String,Vector{Any}})
+    for key in keys(BASE)
+        if haskey(PBASE, key)
+            PBASE[key][1] = BASE[key][1]
         else
             error("Sorry, $key is not supported currently")
         end
     end
-    foreach(x -> _v(x.first, x.second), PCOMM)
+    foreach(x -> _v(x.first, x.second), PBASE)
 end
 
 """
@@ -255,18 +255,18 @@ Validate the correctness and consistency of configurations.
 See also: [`fil_dict`](@ref), [`_v`](@ref).
 """
 function chk_dict()
-    @assert get_c("solver") in ("MaxEnt", "StochAC", "StochOM")
-    @assert get_c("ktype") in ("fermi", "boson", "bsymm")
-    @assert get_c("mtype") in ("flat", "gauss", "1gauss", "2gauss", "lorentz", "1lorentz", "2lorentz", "risedecay", "file")
-    @assert get_c("grid") in ("ftime", "btime", "ffreq", "bfreq")
-    @assert get_c("mesh") in ("linear", "tangent", "lorentz", "halflorentz")
-    @assert get_c("ngrid") ≥ 1
-    @assert get_c("nmesh") ≥ 1
-    @assert get_c("wmax") > get_c("wmin")
-    @assert get_c("beta") ≥ 0.0
+    @assert get_b("solver") in ("MaxEnt", "StochAC", "StochOM")
+    @assert get_b("ktype") in ("fermi", "boson", "bsymm")
+    @assert get_b("mtype") in ("flat", "gauss", "1gauss", "2gauss", "lorentz", "1lorentz", "2lorentz", "risedecay", "file")
+    @assert get_b("grid") in ("ftime", "btime", "ffreq", "bfreq")
+    @assert get_b("mesh") in ("linear", "tangent", "lorentz", "halflorentz")
+    @assert get_b("ngrid") ≥ 1
+    @assert get_b("nmesh") ≥ 1
+    @assert get_b("wmax") > get_b("wmin")
+    @assert get_b("beta") ≥ 0.0
 
-    PA = [PCOMM]
-    @cswitch get_c("solver") begin
+    PA = [PBASE]
+    @cswitch get_b("solver") begin
         @case "MaxEnt"
             push!(PA, PMaxEnt)
             @assert get_m("method") in ("historic", "classic", "bryan", "chi2kink")
@@ -277,6 +277,8 @@ function chk_dict()
 
         @case "StochAC"
             push!(PA, PStochAC)
+            @assert get_b("mtype") == "flat"
+            @assert get_b("grid") in ("ftime", "btime")
             @assert get_a("nfine") ≥ 1000
             @assert get_a("ngamm") ≥ 100
             @assert get_a("nwarm") ≥ 100
@@ -322,15 +324,15 @@ See also: [`chk_dict`](@ref).
 end
 
 """
-    get_c(key::String)
+    get_b(key::String)
 
-Extract configurations from dict: PCOMM.
+Extract configurations from dict: PBASE.
 """
-@inline function get_c(key::String)
-    if haskey(PCOMM, key)
-        PCOMM[key][1]
+@inline function get_b(key::String)
+    if haskey(PBASE, key)
+        PBASE[key][1]
     else
-        error("Sorry, PCOMM does not contain key: $key")
+        error("Sorry, PBASE does not contain key: $key")
     end
 end
 
