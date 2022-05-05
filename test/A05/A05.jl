@@ -12,7 +12,7 @@ welcome()
 
 # Setup parameters
 C = Dict{String,Any}(
-    "finput" => "sigma.inp",
+    "finput" => "siw.inp",
     "mtype"  => "gauss",
     "mesh"   => "tangent",
     "ngrid"  => 300,

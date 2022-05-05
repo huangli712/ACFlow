@@ -10,7 +10,7 @@ welcome()
 
 # Setup parameters
 C = Dict{String,Any}(
-    "finput" => "green.inp",
+    "finput" => "giw.inp",
     "mtype"  => "gauss",
     "mesh"   => "lorentz",
     "ngrid"  => 100,

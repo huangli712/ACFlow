@@ -66,7 +66,7 @@ gf_mats = gf_mats / norm
 err = ones(Float64, niw) * noise_amplitude
 
 # Write green's function
-open("chi.data", "w") do fout
+open("chiw.data", "w") do fout
     for i in eachindex(gf_mats)
         z = gf_mats[i]
         @printf(fout, "%20.16f %20.16f %20.16f\n", iw[i], z, err[i])
@@ -74,7 +74,7 @@ open("chi.data", "w") do fout
 end
 
 # Write spectral function
-open("exact.data", "w") do fout
+open("image.data", "w") do fout
     for i in eachindex(spec_real)
         @printf(fout, "%20.16f %20.16f\n", w_real[i], spec_real[i])
     end

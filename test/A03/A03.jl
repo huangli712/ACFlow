@@ -10,7 +10,7 @@ welcome()
 
 # Setup parameters
 C = Dict{String,Any}(
-    "finput" => "sigma.inp",
+    "finput" => "siw.inp",
     "mtype"  => "2lorentz",
     "ngrid"  => 100,
     "wmax"   => 20.0,
