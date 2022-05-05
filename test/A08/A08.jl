@@ -13,7 +13,7 @@ welcome()
 
 # Setup parameters
 C = Dict{String,Any}(
-    "finput" => "green.11.data",
+    "finput" => "giw.11.data",
     "mtype"  => "gauss",
     "ngrid"  => 20,
     "nmesh"  => 400,
@@ -41,7 +41,7 @@ cp("repr.data", "repr.11.data", force = true)
 
 # Setup parameters
 C = Dict{String,Any}(
-    "finput" => "green.22.data",
+    "finput" => "giw.22.data",
 )
 #
 S = Dict{String,Any}(
@@ -70,7 +70,7 @@ end
 
 # Setup parameters
 C = Dict{String,Any}(
-    "finput" => "green.12.data",
+    "finput" => "giw.12.data",
     "mtype"  => "file",
     "offdiag"=> true,
 )

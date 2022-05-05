@@ -56,12 +56,11 @@
     * Fixed error bar
 
 * **A08**
-    * Fermionic + Matsubara 
+    * Fermionic + Matsubara (Matrix-valued functions)
     * MaxEnt solver (chi2kink algorithm)
     * Gaussian model + File model
     * Linear mesh
     * Script mode
-    * Non-diagonal elements
     * Fixed error bar
 
 * **A09**
