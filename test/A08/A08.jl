@@ -12,7 +12,7 @@ welcome()
 # For diagonal elements: green.11.data
 
 # Setup parameters
-C = Dict{String,Any}(
+B = Dict{String,Any}(
     "finput" => "giw.11.data",
     "mtype"  => "gauss",
     "ngrid"  => 20,
@@ -27,7 +27,7 @@ S = Dict{String,Any}(
     "alpha"  => 1e18,
 )
 #
-setup_param(C, S)
+setup_param(B, S)
 
 # Call the solver
 mesh, Aout11, Gout11 = solve(read_data())
@@ -40,14 +40,14 @@ cp("repr.data", "repr.11.data", force = true)
 # For diagonal elements: green.22.data
 
 # Setup parameters
-C = Dict{String,Any}(
+B = Dict{String,Any}(
     "finput" => "giw.22.data",
 )
 #
 S = Dict{String,Any}(
 )
 #
-setup_param(C, S, false)
+setup_param(B, S, false)
 
 # Call the solver
 mesh, Aout22, Gout22 = solve(read_data())
@@ -69,7 +69,7 @@ open("model.inp", "w") do fout
 end
 
 # Setup parameters
-C = Dict{String,Any}(
+B = Dict{String,Any}(
     "finput" => "giw.12.data",
     "mtype"  => "file",
     "offdiag"=> true,
@@ -80,7 +80,7 @@ S = Dict{String,Any}(
     "alpha"  => 1e15,
 )
 #
-setup_param(C, S, false)
+setup_param(B, S, false)
 
 # Call the solver
 mesh, Aout12, Gout12 = solve(read_data())

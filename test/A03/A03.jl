@@ -9,7 +9,7 @@ welcome()
 # For MaxEnt solver
 
 # Setup parameters
-C = Dict{String,Any}(
+B = Dict{String,Any}(
     "finput" => "siw.inp",
     "mtype"  => "2lorentz",
     "ngrid"  => 100,
@@ -24,7 +24,7 @@ S = Dict{String,Any}(
     "alpha"  => 1e12,
 )
 #
-setup_param(C, S)
+setup_param(B, S)
 
 # Call the solver
 mesh, Aout, Gout = solve(read_data())
@@ -37,7 +37,7 @@ cp("repr.data", "repr.mem.data", force = true)
 # For StochOM solver
 
 # Setup parameters
-C = Dict{String,Any}(
+B = Dict{String,Any}(
     "solver" => "StochOM"
 )
 #
@@ -45,7 +45,7 @@ S = Dict{String,Any}(
     "ntry"   => 100000
 )
 #
-setup_param(C, S, false)
+setup_param(B, S, false)
 
 # Call the solver
 mesh, Aout, Gout = solve(read_data())

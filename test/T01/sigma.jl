@@ -27,7 +27,7 @@ grid = dlm[:,1]
 # For MaxEnt solver
 
 # Setup parameters
-C = Dict{String,Any}(
+B = Dict{String,Any}(
     "mtype"  => "gauss",
     "mesh"   => "tangent",
     "ngrid"  => 20,
@@ -43,7 +43,7 @@ S = Dict{String,Any}(
     "blur"   => -1.0,
 )
 #
-setup_param(C, S)
+setup_param(B, S)
 
 # Call the solver
 mesh, Aout, Σout = solve(grid, Σinp, Σerr)

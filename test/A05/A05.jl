@@ -11,7 +11,7 @@ welcome()
 # For MaxEnt solver
 
 # Setup parameters
-C = Dict{String,Any}(
+B = Dict{String,Any}(
     "finput" => "siw.inp",
     "mtype"  => "gauss",
     "mesh"   => "tangent",
@@ -27,7 +27,7 @@ S = Dict{String,Any}(
     "blur"   => 0.3,
 )
 #
-setup_param(C, S)
+setup_param(B, S)
 
 # Call the solver
 mesh, Aout, Gout = solve(read_data())
@@ -81,7 +81,7 @@ end
 # For StochOM solver
 
 # Setup parameters
-C = Dict{String,Any}(
+B = Dict{String,Any}(
     "solver" => "StochOM",
 )
 #
@@ -89,7 +89,7 @@ S = Dict{String,Any}(
     "ntry"   => 100000
 )
 #
-setup_param(C, S, false)
+setup_param(B, S, false)
 
 # Call the solver
 mesh, Aout, Gout = solve(grid, Gaux, Gerr)
