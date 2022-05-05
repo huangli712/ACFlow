@@ -4,7 +4,8 @@ using DelimitedFiles
 using Printf
 
 # Number of grid points for input data
-ngrid = 100
+# The first twenty points are enough
+ngrid = 20
 
 # Read Matsubara green's function from solver.grn.dat
 dlm = readdlm("solver.grn.dat")
