@@ -1,81 +1,68 @@
 #!/usr/bin/env julia
 
+push!(LOAD_PATH, ENV["ACFLOW_HOME"])
+
 using Random
 using Printf
-
-# Numerical integration by the composite trapezoidal rule
-function trapz(x, y, linear::Bool = false)
-    # For linear mesh
-    if linear
-        h = x[2] - x[1]
-        value = y[1] + y[end] + 2.0 * sum(y[2:end-1])
-        value = h * value / 2.0
-    # For non-equidistant mesh
-    else
-        len = length(x)
-        value = 0.0
-        for i = 1:len-1
-            value = value + (y[i] + y[i+1]) * (x[i+1] - x[i])
-        end
-        value = value / 2.0
-    end
-
-    return value
-end
+using ACFlow
 
 # Setup parameters
-wmin = +0.0 # Left boundary
-wmax = +8.0 # Right boundary
-nmesh = 801 # Number of real-frequency points
-niw  = 20   # Number of Matsubara frequencies
-beta = 20.0 # Inverse temperature
+wmin = +0.0  # Left boundary
+wmax = +8.0  # Right boundary
+nmesh = 2001 # Number of real-frequency points
+niw  = 20    # Number of Matsubara frequencies
+beta = 20.0  # Inverse temperature
+ϵ₁   = 2.00  # Parameters for gaussian peaks
+ϵ₂   = -2.0
 
 # Real frequency mesh
-w_real = collect(LinRange(wmin, wmax, nmesh))
+rmesh = collect(LinRange(wmin, wmax, nmesh))
 
 # Spectral function
-spec_real = similar(w_real)
-@. spec_real = exp(-(w_real - 2.0) ^ 2.0 / 2.0) +
-               exp(-(w_real + 2.0) ^ 2.0 / 2.0)
-spec_real = spec_real ./ trapz(w_real, spec_real)
+image = similar(rmesh)
+#
+@. image =  exp(-(rmesh - ϵ₁) ^ 2.0 / 2.0)
+@. image += exp(-(rmesh - ϵ₂) ^ 2.0 / 2.0)
+#
+image = image ./ trapz(rmesh, image)
 
 # Matsubara frequency mesh
-iw = 2.0 * π / beta * collect(0:niw-1)
+iw = π / beta * (2.0 * collect(0:niw-1) .+ 0.0)
 
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
-noise_amplitude = 1.0e-4
-noise = randn(rng, Float64, niw) * noise_amplitude
+noise_ampl = 1.0e-4
+noise = randn(rng, F64, niw) * noise_ampl
 
 # Kernel function
-kernel = reshape(w_real .^ 2.0, (1,nmesh)) ./
-         (reshape(iw .^ 2.0, (niw,1)) .+ reshape(w_real .^ 2.0, (1,nmesh)))
+kernel = reshape(rmesh .^ 2.0, (1,nmesh)) ./
+         (reshape(iw .^ 2.0, (niw,1)) .+ reshape(rmesh .^ 2.0, (1,nmesh)))
 kernel[1,1] = 1.0
 
 # Build green's function
-KA = kernel .* reshape(spec_real, (1,nmesh))
-gf_mats = zeros(Float64, niw)
-for i in eachindex(gf_mats)
-    gf_mats[i] = trapz(w_real, KA[i,:]) + noise[i]
+KA = kernel .* reshape(image, (1,nmesh))
+chiw = zeros(F64, niw)
+for i in eachindex(chiw)
+    chiw[i] = trapz(rmesh, KA[i,:]) + noise[i]
 end
-norm = gf_mats[1]
-gf_mats = gf_mats / norm
+norm = chiw[1]
+chiw = chiw / norm
 
 # Build error
-err = ones(Float64, niw) * noise_amplitude
+err = ones(F64, niw) * noise_ampl / norm
 
 # Write green's function
 open("chiw.data", "w") do fout
-    for i in eachindex(gf_mats)
-        z = gf_mats[i]
+    for i in eachindex(chiw)
+        z = chiw[i]
         @printf(fout, "%20.16f %20.16f %20.16f\n", iw[i], z, err[i])
     end
 end
 
 # Write spectral function
 open("image.data", "w") do fout
-    for i in eachindex(spec_real)
-        @printf(fout, "%20.16f %20.16f\n", w_real[i], spec_real[i])
+    for i in eachindex(image)
+        @printf(fout, "%20.16f %20.16f\n", rmesh[i], image[i])
     end
 end
