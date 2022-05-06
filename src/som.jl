@@ -90,18 +90,35 @@ function solve(S::StochOMSolver, rd::RawData)
     if nworkers() > 1
         println("Using $(nworkers()) workers")
         #
+        # Copy configuration dicts
         p1 = deepcopy(PBASE)
         p2 = deepcopy(PStochOM)
         #
-        sol = pmap((x) -> prun(S, p1, p2, MC, SC), 1:nworkers())
-        @assert length(sol) == nworkers()
+        #sol = pmap((x) -> prun(S, p1, p2, MC, SC), 1:nworkers())
+        #@assert length(sol) == nworkers()
         #
+        #  Launch the task
+        𝐹 = Future[]
+        for i = 1:nworkers()
+            𝑓 = @spawnat i + 1 prun(S, p1, p2, MC, SC)
+            push!(𝐹, 𝑓)
+        end
+        #
+        # Wait and collect the solutions
+        sol = []
+        for i = 1:nworkers()
+            wait(𝐹[i])
+            push!(sol, fetch(𝐹[i]))
+        end
+        #
+        # Average the solutions
         Aout = similar(sol[end])
         fill!(Aout, 0.0)
         for i in eachindex(sol)
             @. Aout = Aout + sol[i] / nworkers()
         end
         #
+        # Postprocess the solutions
         Gout = last(SC, Aout)
     else
         Aout = run(S, MC, SC)
