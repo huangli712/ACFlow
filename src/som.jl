@@ -94,8 +94,8 @@ function solve(S::StochOMSolver, rd::RawData)
         p1 = deepcopy(PBASE)
         p2 = deepcopy(PStochOM)
         #
-        #sol = pmap((x) -> prun(S, p1, p2, MC, SC), 1:nworkers())
-        #@assert length(sol) == nworkers()
+            #sol = pmap((x) -> prun(S, p1, p2, MC, SC), 1:nworkers())
+            #@assert length(sol) == nworkers()
         #
         #  Launch the task
         𝐹 = Future[]
