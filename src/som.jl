@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/05
+# Last modified: 2022/05/06
 #
 
 #=
@@ -753,6 +753,10 @@ end
 
 """
     constraints(e₁::F64, e₂::F64)
+
+This function is used to judege whether a given box overlapes with the
+forbidden zone. Here `e₁` and `e₂` denote the left and right boundaries
+of the box.
 """
 function constraints(e₁::F64, e₂::F64)
     exclude = get_b("exclude")
