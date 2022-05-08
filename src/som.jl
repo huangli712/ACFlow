@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/06
+# Last modified: 2022/05/08
 #
 
 #=
@@ -1327,6 +1327,8 @@ N = \frac{\gamma}{X}
 \right]^{-1}
 \end{equation}
 ```
+
+User can change parameter ``\gamma`` to control non-uniformity of the PDF.
 =#
 
 """
@@ -1334,6 +1336,22 @@ N = \frac{\gamma}{X}
 
 Try to calculate the probability density function.
 """
+function Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
+    xmin_abs = abs(xmin)
+    xmax_abs = abs(xmax)
+    X = max(xmin_abs, xmax_abs)
+
+    γ = 2.0
+    γ_X = γ / X
+
+    η = rand(rng, F64)
+    𝑁  = (1 - η) * copysign(expm1(-γ_X * xmin_abs), xmin)
+    𝑁 +=      η  * copysign(expm1(-γ_X * xmax_abs), xmax)
+
+    return copysign( log1p(-abs(𝑁)) / γ_X, 𝑁)
+end
+
+#=
 function Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
     γ = 2.0
     y = rand(rng, F64)
@@ -1358,3 +1376,4 @@ function Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
         end
     end
 end
+=#
