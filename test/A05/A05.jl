@@ -43,7 +43,7 @@ cp("Gout.data", "sigma.mem1.data", force = true)
 # Calculate auxiliary green's function
 #
 # Read self-energy function
-dlm = readdlm("sigma.inp")
+dlm = readdlm("siw.inp")
 #
 # Get grid
 grid = dlm[:,1]
