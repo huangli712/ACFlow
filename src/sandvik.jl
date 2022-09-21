@@ -7,18 +7,7 @@
 # Last modified: 2022/09/22
 #
 
-const P_SAC = Dict{String,Any}(
-    "ommax" => 10.0,
-    "ommin" => -10.0,
-    "grid_interval" => 1.0e-5,
-    "spec_interval" => 1.0e-2,
-    "ndelta" => 1000,
-    "beta" => 4.0,
-    "anneal_length" => 5000,
-    "starting_theta" => 1e+8,
-    "mc_bin_num" => 5,
-    "mc_bin_size" => 4000
-)
+
 
 struct GreenData
     value :: Vector{N64}
