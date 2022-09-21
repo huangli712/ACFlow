@@ -4,23 +4,33 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/01/08
+# Last modified: 2022/09/22
 #
 
-abstract type AbstractData end
-abstract type AbstractGrid end
+const P_SAC = Dict{String,Any}(
+    "ommax" => 10.0,
+    "ommin" => -10.0,
+    "grid_interval" => 1.0e-5,
+    "spec_interval" => 1.0e-2,
+    "ndelta" => 1000,
+    "beta" => 4.0,
+    "anneal_length" => 5000,
+    "starting_theta" => 1e+8,
+    "mc_bin_num" => 5,
+    "mc_bin_size" => 4000
+)
 
-struct GreenData <: AbstractData
+struct GreenData
     value :: Vector{N64}
     error :: Vector{N64}
     covar :: Vector{N64}
 end
 
-struct ImaginaryTimeGrid <: AbstractGrid
+struct ImaginaryTimeGrid
     grid :: Vector{F64}
 end
 
-struct FermionicMatsubaraGrid <: AbstractGrid
+struct FermionicMatsubaraGrid
     grid :: Vector{F64}
 end
 
@@ -53,20 +63,7 @@ function read_data!(::Type{FermionicMatsubaraGrid})
     return FermionicMatsubaraGrid(grid), GreenData(value, error, covar)
 end
 
-const P_SAC = Dict{String,Any}(
-    "ommax" => 10.0,
-    "ommin" => -10.0,
-    "grid_interval" => 1.0e-5,
-    "spec_interval" => 1.0e-2,
-    "ndelta" => 1000,
-    "beta" => 4.0,
-    "anneal_length" => 5000,
-    "starting_theta" => 1e+8,
-    "mc_bin_num" => 5,
-    "mc_bin_size" => 4000
-)
-
-mutable struct SACMonteCarlo <: AbstractMonteCarlo
+mutable struct SACMonteCarlo
     rng :: AbstractRNG
     acc :: F64
     sample_acc  :: Vector{F64}
@@ -469,4 +466,3 @@ function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement
         end
     end
 end
-
