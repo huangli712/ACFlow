@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/09/22
+# Last modified: 2022/09/23
 #
 
 struct GreenData
