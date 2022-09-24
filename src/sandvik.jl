@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/09/23
+# Last modified: 2022/09/24
 #
 
 struct GreenData
@@ -51,16 +51,6 @@ struct SACAnnealing
     Conf  :: Vector{SACElement}
     Theta :: Vector{F64}
     chi2  :: Vector{F64}
-end
-
-function GridIndex2Freq(grid_index::I64, SG::SACGrid)
-    @assert 1 ≤ grid_index ≤ SG.num_grid_index
-    return SG.ommin + (grid_index - 1) * SG.grid_interval
-end
-
-function SpecIndex2Freq(spec_index::I64, SG::SACGrid)
-    @assert 1 ≤ spec_index ≤ SG.num_spec_index
-    return SG.ommin + (spec_index - 1) * SG.spec_interval
 end
 
 function Freq2GridIndex(freq::F64, SG::SACGrid)
@@ -158,34 +148,6 @@ function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::Imag
     #@show window_width
 
     return SACElement(position, amplitude, window_width)
-end
-
-function init_kernel(τ::ImaginaryTimeGrid, SG::SACGrid, Mrot::AbstractMatrix)
-    #@show size(τ.grid)
-    #@show SG.num_grid_index
-    beta = P_SAC["beta"]
-
-    ntau = length(τ.grid)
-    nfreq = SG.num_grid_index
-    kernel = zeros(F64, ntau, nfreq)
-
-    for f = 1:nfreq
-        ω = GridIndex2Freq(f, SG)
-        de = 1.0 + exp(-beta * ω)
-        #for t = 1:ntau
-        #    kernel[t,f] = exp(-ω * τ.grid[t]) / de
-        #end
-        kernel[:,f] = exp.(-ω * τ.grid) / de
-    end
-
-    kernel = Mrot * kernel
-
-    #for t = 1:ntau
-    #    @show t, kernel[t,3]
-    #end
-    #error()
-
-    return kernel
 end
 
 function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACContext)
