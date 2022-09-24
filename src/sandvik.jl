@@ -47,30 +47,10 @@ mutable struct SACContext
     spectrum :: Vector{F64}
 end
 
-struct SACGrid
-    ommax :: F64
-    ommin :: F64
-    grid_interval :: F64
-    spec_interval :: F64
-    num_grid_index :: I64
-    num_spec_index :: I64
-end
-
 struct SACAnnealing
     Conf  :: Vector{SACElement}
     Theta :: Vector{F64}
     chi2  :: Vector{F64}
-end
-
-function calc_grid()
-    ommax = P_SAC["ommax"]
-    ommin = P_SAC["ommin"]
-    grid_interval = P_SAC["grid_interval"]
-    spec_interval = P_SAC["spec_interval"]
-    num_grid_index = ceil(I64, (ommax - ommin) / grid_interval)
-    num_spec_index = ceil(I64, (ommax - ommin) / spec_interval)
-    #@show num_grid_index, num_spec_index
-    return SACGrid(ommax, ommin, grid_interval, spec_interval, num_grid_index, num_spec_index)
 end
 
 function GridIndex2Freq(grid_index::I64, SG::SACGrid)
