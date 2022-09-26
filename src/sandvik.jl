@@ -21,15 +21,6 @@ struct FermionicMatsubaraGrid
     grid :: Vector{F64}
 end
 
-mutable struct SACMonteCarlo
-    rng :: AbstractRNG
-    acc :: F64
-    sample_acc  :: Vector{F64}
-    sample_chi2 :: Vector{F64}
-    bin_acc :: Vector{F64}
-    bin_chi2 :: Vector{F64}
-end
-
 mutable struct SACElement
     C :: Vector{I64}
     A :: F64
@@ -84,16 +75,6 @@ function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mro
     freq = zeros(F64, SG.num_spec_index)
     spectrum = zeros(F64, SG.num_spec_index)
     SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, freq, spectrum)
-
-    seed = rand(1:1000000)#;  seed = 840443
-    rng = MersenneTwister(seed)
-    @show "seed: ", seed
-    acc = 0.0
-    sample_acc = zeros(F64, sbin)
-    sample_chi2 = zeros(F64, sbin)
-    bin_acc = zeros(F64, nbin)
-    bin_chi2 = zeros(F64, nbin)
-    MC = SACMonteCarlo(rng, acc, sample_acc, sample_chi2, bin_acc, bin_chi2)
 
     SE = init_spectrum(scale_factor, SG, 𝐺, τ)
     #@show SE
