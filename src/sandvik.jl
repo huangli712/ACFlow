@@ -1,12 +1,3 @@
-#
-# Project : Gardenia
-# Source  : sandvik.jl
-# Author  : Li Huang (huangli@caep.cn)
-# Status  : Unstable
-#
-# Last modified: 2022/09/24
-#
-
 struct GreenData
     value :: Vector{N64}
     error :: Vector{N64}
@@ -21,12 +12,6 @@ struct FermionicMatsubaraGrid
     grid :: Vector{F64}
 end
 
-mutable struct SACElement
-    C :: Vector{I64}
-    A :: F64
-    W :: I64
-end
-
 mutable struct SACContext
     Gr :: Vector{F64}
     G1 :: Vector{F64}
@@ -36,12 +21,6 @@ mutable struct SACContext
     Θ :: F64
     freq :: Vector{F64}
     spectrum :: Vector{F64}
-end
-
-struct SACAnnealing
-    Conf  :: Vector{SACElement}
-    Theta :: Vector{F64}
-    chi2  :: Vector{F64}
 end
 
 function Freq2GridIndex(freq::F64, SG::SACGrid)
@@ -58,9 +37,6 @@ function Grid2Spec(grid_index::I64, SG::SACGrid)
 end
 
 function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mrot::AbstractMatrix)
-    nbin = P_SAC["mc_bin_num"]
-    sbin = P_SAC["mc_bin_size"]
-
     SG = calc_grid()
 
     ntau = length(τ.grid)
