@@ -8,21 +8,6 @@ struct ImaginaryTimeGrid
     grid :: Vector{F64}
 end
 
-struct FermionicMatsubaraGrid
-    grid :: Vector{F64}
-end
-
-mutable struct SACContext
-    Gr :: Vector{F64}
-    G1 :: Vector{F64}
-    G2 :: Vector{F64}
-    χ2 :: F64
-    χ2min :: F64
-    Θ :: F64
-    freq :: Vector{F64}
-    spectrum :: Vector{F64}
-end
-
 function Freq2GridIndex(freq::F64, SG::SACGrid)
     @assert SG.ommin ≤ freq ≤ SG.ommax
     grid = ceil(I64, (freq - SG.ommin) / SG.grid_interval) + 1
@@ -34,40 +19,6 @@ function Grid2Spec(grid_index::I64, SG::SACGrid)
     @assert 1 ≤ grid_index ≤ SG.num_grid_index
     #@show (grid_index - 1) * SG.grid_interval / SG.spec_interval
     return ceil(I64, grid_index * SG.grid_interval / SG.spec_interval)
-end
-
-function init_sac(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mrot::AbstractMatrix)
-    SG = calc_grid()
-
-    ntau = length(τ.grid)
-    Gr = Mrot * 𝐺.value
-    #@show Gr
-    #error()
-    G1 = zeros(F64, ntau)
-    G2 = zeros(F64, ntau)
-    χ2 = 0.0
-    χ2min = 0.0
-    Θ = P_SAC["starting_theta"]
-    freq = zeros(F64, SG.num_spec_index)
-    spectrum = zeros(F64, SG.num_spec_index)
-    SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, freq, spectrum)
-
-    SE = init_spectrum(scale_factor, SG, 𝐺, τ)
-    #@show SE
-    #error()
-
-    kernel = init_kernel(τ, SG, Mrot)
-
-    compute_corr_from_spec(kernel, SE, SC)
-
-    χ = compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
-    SC.χ2 = χ
-    SC.χ2min = χ
-    #@show χ
-    #error()
-    #@show SG.num_spec_index
-
-    return SG, SE, SC, MC, kernel
 end
 
 function sac_run(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mrot::AbstractMatrix)
