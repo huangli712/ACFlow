@@ -77,36 +77,6 @@ function sac_run(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mrot
     sample_and_collect(scale_factor, MC, SE, SC, SG, kernel, 𝐺)
 end
 
-function init_spectrum(scale_factor::F64, SG::SACGrid, 𝐺::GreenData, τ::ImaginaryTimeGrid)
-    ndelta = P_SAC["ndelta"]
-
-    left_edge = -2.0
-    right_edge = 2.0
-    left_edge_index = Freq2GridIndex(left_edge, SG)
-    right_edge_index = Freq2GridIndex(right_edge, SG)
-    rectangle_len = right_edge_index - left_edge_index + 1
-    #@show left_edge_index, right_edge_index, rectangle_len
-
-    position = I64[]
-    for i = 1:ndelta
-        push!(position, left_edge_index + (i - 1) % rectangle_len)
-    end
-    #@show position
-
-    amplitude = 1.0 / (scale_factor * ndelta)
-    #@show amplitude
-
-    average_freq = abs(log(1.0/𝐺.value[end]) / τ.grid[end])
-    #@show 𝐺.value[end]
-    #@show τ.grid[end]
-    #@show average_freq
-
-    window_width = ceil(I64, 0.1 * average_freq / SG.grid_interval)
-    #@show window_width
-
-    return SACElement(position, amplitude, window_width)
-end
-
 function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACContext)
     ndelta = P_SAC["ndelta"]
     #@show size(kernel)
