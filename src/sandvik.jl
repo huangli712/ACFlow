@@ -1,13 +1,3 @@
-struct GreenData
-    value :: Vector{N64}
-    error :: Vector{N64}
-    covar :: Vector{N64}
-end
-
-struct ImaginaryTimeGrid
-    grid :: Vector{F64}
-end
-
 function Freq2GridIndex(freq::F64, SG::SACGrid)
     @assert SG.ommin ≤ freq ≤ SG.ommax
     grid = ceil(I64, (freq - SG.ommin) / SG.grid_interval) + 1
