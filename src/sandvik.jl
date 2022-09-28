@@ -28,25 +28,6 @@ function sac_run(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mrot
     sample_and_collect(scale_factor, MC, SE, SC, SG, kernel, 𝐺)
 end
 
-function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACContext)
-    ndelta = P_SAC["ndelta"]
-    #@show size(kernel)
-    tmp_kernel = kernel[:, SE.C]
-    #@show size(tmp_kernel), typeof(tmp_kernel)
-    amplitude = fill(SE.A, ndelta)
-    SC.G1 = tmp_kernel * amplitude
-    #@show amplitude
-    #@show SC.G1
-    #error()
-end
-
-function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{N64})
-    #@show size(G), size(Gr), size(Sigma)
-    χ = sum(((G .- Gr) .* Sigma) .^ 2.0)
-    #@show χ
-    return χ
-end
-
 function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, 𝐺::GreenData)
     anneal_length = P_SAC["anneal_length"]
     #@show anneal_length
