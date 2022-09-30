@@ -165,6 +165,23 @@ function discard_poor_quality_data(tmesh, gerr, gtau, bootstrap_samples)
     return tmesh, gerr, gtau, bootstrap_samples
 end
 
+function scale_data(factor, gtau, gerr, bootstrape)
+    gtau = gtau ./ factor
+    gerr = gerr ./ factor
+    bootstrape = bootstrape ./ factor
+
+    return gtau, gerr, bootstrape
+end
+
+function calc_covar(vals)
+    nbootstrap = P_SAC["nbootstrap"]
+    covar = zeros(F64, length(vals))
+    for i in eachindex(vals)
+        covar[i] = sqrt(nbootstrap) / sqrt(vals[i])
+    end
+    return covar
+end
+
 function compute_cov_matrix(gtau, bootstrap_samples)
     ncov = length(gtau)
     cov_mat = zeros(F64, ncov, ncov)
@@ -175,7 +192,10 @@ function compute_cov_matrix(gtau, bootstrap_samples)
         end
     end
 
-    return cov_mat
+    F = eigen(cov_mat)
+    vals, vecs = F
+
+    return vals, vecs, cov_mat
 end
 
 function init_kernel(tmesh, SG::SACGrid, Mrot::AbstractMatrix)
@@ -193,9 +213,6 @@ function init_kernel(tmesh, SG::SACGrid, Mrot::AbstractMatrix)
 
     kernel = Mrot * kernel
 
-    #@show kernel[:,1]
-    #@show kernel[:,end]
-
     return kernel
 end
 
@@ -205,7 +222,6 @@ function init_mc()
 
     seed = rand(1:1000000)#;  seed = 840443
     rng = MersenneTwister(seed)
-    #@show "seed: ", seed
     acc = 0.0
     sample_acc = zeros(F64, sbin)
     sample_chi2 = zeros(F64, sbin)
