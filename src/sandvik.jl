@@ -1,3 +1,435 @@
+using Random
+using Statistics
+using LinearAlgebra
+
+include("global.jl")
+include("util.jl")
+
+const P_SAC = Dict{String,Any}(
+    "beta" => 8.0,
+    "ntime" => 160,
+    "nbins" => 1000,
+    "nbootstrap" => 1000,
+    "freq_interval" => 1.0e-5,
+    "spec_interval" => 1.0e-2,
+    "ommax" => 10.0,
+    "ommin" => -10.0,
+    "sac_bin_num" => 2,
+    "sac_bin_size" => 1000,
+    "annealling_steps" => 1000,
+    "ndelta" => 1000,
+    "collecting_steps" => 1000,
+    "stabilization_pace" => 10,
+    "theta" => 1e+6,
+    "annealing_rate" => 0.9
+)
+
+mutable struct SACContext
+    Gr :: Vector{F64}
+    G1 :: Vector{F64}
+    G2 :: Vector{F64}
+    χ2 :: F64
+    χ2min :: F64
+    Θ :: F64
+    freq :: Vector{F64}
+    spectrum :: Vector{F64}
+end
+
+struct SACGrid
+    ommax :: F64
+    ommin :: F64
+    freq_interval :: F64
+    spec_interval :: F64
+    num_freq_index :: I64
+    num_spec_index :: I64
+end
+
+mutable struct SACElement
+    C :: Vector{I64}
+    A :: F64
+    W :: I64
+end
+
+struct SACAnnealing
+    Conf  :: Vector{SACElement}
+    Theta :: Vector{F64}
+    chi2  :: Vector{F64}
+end
+
+mutable struct SACMonteCarlo
+    rng :: AbstractRNG
+    acc :: F64
+    sample_acc  :: Vector{F64}
+    sample_chi2 :: Vector{F64}
+    bin_acc :: Vector{F64}
+    bin_chi2 :: Vector{F64}
+end
+
+function FreqIndex2Freq(freq_index::I64, SG::SACGrid)
+    @assert 1 ≤ freq_index ≤ SG.num_freq_index
+    return SG.ommin + (freq_index - 1) * SG.freq_interval
+end
+
+function SpecIndex2Freq(spec_index::I64, SG::SACGrid)
+    @assert 1 ≤ spec_index ≤ SG.num_spec_index
+    return SG.ommin + (spec_index - 1) * SG.spec_interval
+end
+
+function calc_grid()
+    ommax = P_SAC["ommax"]
+    ommin = P_SAC["ommin"]
+    freq_interval = P_SAC["freq_interval"]
+    spec_interval = P_SAC["spec_interval"]
+    num_freq_index = ceil(I64, (ommax - ommin) / freq_interval)
+    num_spec_index = ceil(I64, (ommax - ommin) / spec_interval)
+
+    return SACGrid(ommax, ommin, freq_interval, spec_interval, num_freq_index, num_spec_index)
+end
+
+function read_data()
+    nbins = P_SAC["nbins"]
+    ntime = P_SAC["ntime"]
+
+    tgrid = zeros(F64, ntime)
+    open("tgrids.in", "r") do fin
+        readline(fin)
+        for i = 1:ntime
+            arr = line_to_array(fin)
+            tgrid[i] = parse(F64, arr[2])
+        end
+    end
+
+    gbin = zeros(F64, nbins, ntime)
+    open("corr.in", "r") do fin
+        readline(fin)
+        for i = 1:nbins
+            for j = 1:ntime
+                arr = line_to_array(fin)
+                gbin[i,j] = parse(F64, arr[3])
+            end
+        end
+    end
+
+    return tgrid, gbin
+end
+
+function compute_corr_means(gbin)
+    A = vec(mean(gbin, dims = 1))
+    factor = A[1]
+    return factor, A
+end
+
+function compute_corr_errs(gbin, gtau)
+    nbins = P_SAC["nbins"]
+    ntime = P_SAC["ntime"]
+    nbootstrap = P_SAC["nbootstrap"]
+
+    gerr = zeros(F64, ntime)
+    bootstrap_samples = zeros(F64, nbootstrap, ntime)
+
+    rng = MersenneTwister(rand(1:10000) + 1981)
+    for i = 1:nbootstrap
+        v = zeros(F64, ntime)
+        for _ = 1:nbins
+            k = rand(rng, 1:nbins)
+            v = v + gbin[k,:]
+        end
+        bootstrap_samples[i,:] = v[:]
+    end
+    bootstrap_samples = bootstrap_samples ./ nbins
+
+    for i = 1:ntime
+        for j = 1:nbootstrap
+            gerr[i] = gerr[i] + (bootstrap_samples[j,i] - gtau[i]) ^ 2.0
+        end
+        gerr[i] = sqrt(gerr[i] / nbootstrap)
+    end
+
+    return gerr, bootstrap_samples
+end
+
+function discard_poor_quality_data(tmesh, gerr, gtau, bootstrap_samples)
+    ntime = P_SAC["ntime"]
+    good_tgrids = I64[]
+    for i = 2:ntime
+        if abs(gerr[i] / gtau[i]) < 0.1
+            push!(good_tgrids, i)
+        end
+    end
+
+    tmesh = tmesh[good_tgrids]
+    gtau = gtau[good_tgrids]
+    gerr = gerr[good_tgrids]
+    bootstrap_samples = bootstrap_samples[:, good_tgrids]
+
+    return tmesh, gerr, gtau, bootstrap_samples
+end
+
+function compute_cov_matrix(gtau, bootstrap_samples)
+    ncov = length(gtau)
+    cov_mat = zeros(F64, ncov, ncov)
+
+    for i = 1:ncov
+        for j = 1:ncov
+            cov_mat[i,j] = sum((bootstrap_samples[:,i] .- gtau[i]) .* (bootstrap_samples[:,j] .- gtau[j]))
+        end
+    end
+
+    return cov_mat
+end
+
+function init_kernel(tmesh, SG::SACGrid, Mrot::AbstractMatrix)
+    beta = P_SAC["beta"]
+
+    ntau = length(tmesh)
+    nfreq = SG.num_freq_index
+    kernel = zeros(F64, ntau, nfreq)
+
+    for f = 1:nfreq
+        ω = FreqIndex2Freq(f, SG)
+        de = 1.0 + exp(-beta * ω)
+        kernel[:,f] = exp.(-ω * tmesh) / de
+    end
+
+    kernel = Mrot * kernel
+
+    #@show kernel[:,1]
+    #@show kernel[:,end]
+
+    return kernel
+end
+
+function init_mc()
+    sbin = P_SAC["sac_bin_size"]
+    nbin = P_SAC["sac_bin_num"]
+
+    seed = rand(1:1000000)#;  seed = 840443
+    rng = MersenneTwister(seed)
+    #@show "seed: ", seed
+    acc = 0.0
+    sample_acc = zeros(F64, sbin)
+    sample_chi2 = zeros(F64, sbin)
+    bin_acc = zeros(F64, nbin)
+    bin_chi2 = zeros(F64, nbin)
+    MC = SACMonteCarlo(rng, acc, sample_acc, sample_chi2, bin_acc, bin_chi2)
+
+    return MC
+end
+
+function init_spectrum(scale_factor::F64, SG::SACGrid, Gdata, tau)
+    ndelta = P_SAC["ndelta"]
+
+    rng = MersenneTwister(rand(1:10000) + 1981)
+    position = zeros(I64, ndelta)
+    rand!(rng, position, 1:SG.num_freq_index)
+    #@show position
+    for i = 1:ndelta
+        position[i] = i # comment out it
+    end
+
+    amplitude = 1.0 / (scale_factor * ndelta)
+    #@show amplitude
+
+    average_freq = abs(log(1.0/Gdata[end]) / tau[end])
+    #@show 𝐺.value[end]
+    #@show τ.grid[end]
+    #@show average_freq
+
+    window_width = ceil(I64, 0.1 * average_freq / SG.freq_interval)
+    #@show window_width
+
+    return SACElement(position, amplitude, window_width)
+end
+
+function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACContext)
+    ndelta = P_SAC["ndelta"]
+    #@show size(kernel)
+    tmp_kernel = kernel[:, SE.C]
+    #@show size(tmp_kernel), typeof(tmp_kernel)
+    amplitude = fill(SE.A, ndelta)
+    SC.G1 = tmp_kernel * amplitude
+    #@show amplitude
+    #@show SC.G1
+    #error()
+end
+
+function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{F64})
+    #@show size(G), size(Gr), size(Sigma)
+    #@show G
+    #@show Gr
+    #@show Sigma
+    χ = sum(((G .- Gr) .* Sigma) .^ 2.0)
+    #@show χ
+    return χ
+end
+
+function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
+    anneal_length = P_SAC["annealling_steps"]
+    #@show anneal_length
+    #exit()
+
+    #update_deltas_1step_single(MC, SE, SC, SG, kernel, 𝐺)
+
+    Conf = SACElement[]
+    Theta = F64[]
+    Chi2 = F64[]
+
+    for _ = 1:10
+    #for _ = 1:anneal_length
+        update_fixed_theta(MC, SE, SC, SG, kernel, covar)
+        #exit()
+
+        SC.χ2 = mean(MC.bin_chi2)
+
+        push!(Conf, SE)
+        push!(Theta, SC.Θ)
+        push!(Chi2, SC.χ2)
+
+        @show SC.χ2, SC.χ2min, SC.χ2 - SC.χ2min
+        if SC.χ2 - SC.χ2min < 1e-3
+            break
+        end
+
+        SC.Θ = SC.Θ * P_SAC["annealing_rate"]
+    end
+
+    return SACAnnealing(Conf, Theta, Chi2)
+end
+
+function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
+    ndelta = P_SAC["ndelta"]
+    accept_count = 0.0
+
+    #@show SE
+    #@show SC.Θ
+    #@show SG
+    #@show SC.Gr
+
+    #error()
+
+    #@show SC.χ2
+#    error()
+
+    for i = 1:ndelta
+        select_delta = rand(MC.rng, 1:ndelta)
+        #select_delta = 384 # debug
+        location_current = SE.C[select_delta]
+        #@show location_current
+        #exit()
+        #error()
+
+        #@show i
+        if 1 < SE.W < SG.num_freq_index
+            while true
+            move_width = rand(MC.rng, 1:SE.W)
+#            move_width = 5897
+
+            if rand(MC.rng) > 0.5
+                location_updated = location_current + move_width
+            else
+                location_updated = location_current - move_width
+            end
+
+            if location_updated < 1 || location_updated > SG.num_freq_index
+                #println("here")
+                #i = i - 1
+                continue
+            else
+                break
+            end
+            end
+
+        elseif SE.W == SG.num_freq_index
+            location_updated = rand(MC.rng, 1:SG.num_freq_index)
+        else
+            error("BIG PROBLEM")
+        end
+
+        #location_updated = 5
+        SC.G2 = SC.G1 + SE.A .* (kernel[:,location_updated] .- kernel[:,location_current])
+        #@show SC.G1
+        #@show SC.G2
+        #exit()
+
+        chi2_updated = compute_goodness(SC.G2, SC.Gr, covar)
+
+        p = exp( (SC.χ2 - chi2_updated) / (2.0 * SC.Θ) )
+        #@show chi2_updated, p
+        #exit()
+        #error()
+
+        if rand(MC.rng) < min(p, 1.0)
+            SE.C[select_delta] = location_updated
+            SC.G1 = deepcopy(SC.G2)
+            SC.χ2 = chi2_updated
+            if SC.χ2 < SC.χ2min
+                SC.χ2min = SC.χ2
+            end
+
+            accept_count = accept_count + 1.0
+        end
+        #@show i, SC.χ2, SC.χ2min
+    end
+
+    MC.acc = accept_count / ndelta
+    #@show MC.acc
+    #error()
+end
+
+function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
+    nbin = P_SAC["sac_bin_num"]
+    sbin = P_SAC["sac_bin_size"]
+    ntau = length(covar)
+    #@show nbin, sbin
+    #exit()
+
+    for n = 1:nbin
+        for s = 1:sbin
+        #for s = 1:10
+
+            if (s - 1) % P_SAC["stabilization_pace"] == 1
+                SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
+            end
+            #@show SC.χ2
+            #exit()
+
+            update_deltas_1step_single(MC, SE, SC, SG, kernel, covar)
+            #@show n, s, SC.χ2, SC.χ2min
+            #exit()
+
+            MC.sample_chi2[s] = SC.χ2
+            MC.sample_acc[s] = MC.acc
+            #@show n, s
+
+            @show s, SC.χ2
+            #exit()
+        end
+        #error()
+
+        MC.bin_chi2[n] = sum(MC.sample_chi2) / sbin
+        MC.bin_acc[n] = sum(MC.sample_acc) / sbin
+
+        # write log
+        @show n, SC.Θ, SC.χ2min / ntau, MC.bin_chi2[n] / ntau,  MC.bin_chi2[n] - SC.χ2min, MC.bin_acc[n], SE.W * SG.freq_interval
+        #exit()
+
+        if MC.bin_acc[n] > 0.5
+            r = SE.W * 1.5
+            if ceil(I64, r) < SG.num_freq_index
+                SE.W = ceil(I64, r)
+            else
+                SE.W = SG.num_freq_index
+            end
+        end
+
+        if MC.bin_acc[n] < 0.4
+            SE.W = ceil(I64, SE.W / 1.5)
+        end
+    end
+    #exit()
+    #error()
+end
+
 function Freq2GridIndex(freq::F64, SG::SACGrid)
     @assert SG.ommin ≤ freq ≤ SG.ommax
     grid = ceil(I64, (freq - SG.ommin) / SG.grid_interval) + 1
