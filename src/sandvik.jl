@@ -384,14 +384,10 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
 
     for i = 1:ndelta
         select_delta = rand(MC.rng, 1:ndelta)
-        #select_delta = 384 # debug
         location_current = SE.C[select_delta]
-        #@show location_current
-        #exit()
-        #error()
 
-        #@show i
         if 1 < SE.W < SG.num_freq_index
+            #=
             while true
                 move_width = rand(MC.rng, 1:SE.W)
 
@@ -406,6 +402,23 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
                 else
                     break
                 end
+            end
+            =#
+
+            move_width = rand(MC.rng, 1:SE.W)
+
+            if rand(MC.rng) > 0.5
+                location_updated = location_current + move_width
+            else
+                location_updated = location_current - move_width
+            end
+
+            if location_updated < 1 
+                location_updated = location_updated + SG.num_freq_index
+            end
+
+            if location_updated > SG.num_freq_index
+                location_updated = location_updated - SG.num_freq_index
             end
 
         elseif SE.W == SG.num_freq_index
