@@ -212,8 +212,6 @@ function init_kernel(tmesh, SG::SACGrid, Mrot::AbstractMatrix)
     end
 
     kernel = Mrot * kernel
-    #@show kernel[:,1]
-    #@show kernel[:,end]
 
     return kernel
 end
@@ -237,65 +235,40 @@ end
 function init_spectrum(rng, scale_factor::F64, SG::SACGrid, Gdata, tau)
     ndelta = P_SAC["ndelta"]
 
-    #rng = MersenneTwister(rand(1:10000) + 1981)
     position = zeros(I64, ndelta)
     rand!(rng, position, 1:SG.num_freq_index)
-    #@show position
     for i = 1:ndelta
         position[i] = i # comment out it
     end
 
     amplitude = 1.0 / (scale_factor * ndelta)
-    #@show amplitude
-
     average_freq = abs(log(1.0/Gdata[end]) / tau[end])
-    #@show 𝐺.value[end]
-    #@show τ.grid[end]
-    #@show average_freq
-
     window_width = ceil(I64, 0.1 * average_freq / SG.freq_interval)
-    #@show window_width
 
     return SACElement(position, amplitude, window_width)
 end
 
 function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACContext)
     ndelta = P_SAC["ndelta"]
-    #@show size(kernel)
     tmp_kernel = kernel[:, SE.C]
-    #@show size(tmp_kernel), typeof(tmp_kernel)
     amplitude = fill(SE.A, ndelta)
     SC.G1 = tmp_kernel * amplitude
-    #@show amplitude
-    #@show SC.G1
-    #error()
 end
 
 function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{F64})
-    #@show size(G), size(Gr), size(Sigma)
-    #@show G
-    #@show Gr
-    #@show Sigma
     χ = sum(((G .- Gr) .* Sigma) .^ 2.0)
-    #@show χ
     return χ
 end
 
 function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
     anneal_length = P_SAC["annealling_steps"]
-    #@show anneal_length
-    #exit()
-
-    #update_deltas_1step_single(MC, SE, SC, SG, kernel, 𝐺)
 
     Conf = SACElement[]
     Theta = F64[]
     Chi2 = F64[]
 
-    #for _ = 1:10
     for i = 1:anneal_length
         update_fixed_theta(MC, SE, SC, SG, kernel, covar)
-        #exit()
 
         SC.χ2 = mean(MC.bin_chi2)
 
@@ -318,38 +291,24 @@ function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, S
     nbin = P_SAC["sac_bin_num"]
     sbin = P_SAC["sac_bin_size"]
     ntau = length(covar)
-    #@show nbin, sbin
-    #exit()
 
     for n = 1:nbin
         for s = 1:sbin
-        #for s = 1:10
 
             if (s - 1) % P_SAC["stabilization_pace"] == 1
                 SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
             end
-            #@show SC.χ2
-            #exit()
 
             update_deltas_1step_single(MC, SE, SC, SG, kernel, covar)
-            #@show n, s, SC.χ2, SC.χ2min
-            #exit()
 
             MC.sample_chi2[s] = SC.χ2
             MC.sample_acc[s] = MC.acc
-            #@show n, s
-
-            #@show s, SC.χ2
-            #exit()
         end
-        #error()
 
         MC.bin_chi2[n] = sum(MC.sample_chi2) / sbin
         MC.bin_acc[n] = sum(MC.sample_acc) / sbin
 
-        # write log
         @show n, SC.Θ, SC.χ2min / ntau, MC.bin_chi2[n] / ntau,  MC.bin_chi2[n] - SC.χ2min, MC.bin_acc[n], SE.W * SG.freq_interval
-        #exit()
 
         if MC.bin_acc[n] > 0.5
             r = SE.W * 1.5
@@ -364,8 +323,6 @@ function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, S
             SE.W = ceil(I64, SE.W / 1.5)
         end
     end
-    #exit()
-    #error()
 end
 
 function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
