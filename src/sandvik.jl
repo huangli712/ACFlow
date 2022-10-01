@@ -418,16 +418,10 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
         end
 
         SC.G2 = SC.G1 + SE.A .* (kernel[:,location_updated] .- kernel[:,location_current])
-        #@show SC.G1
-        #@show SC.G2
-        #exit()
 
         chi2_updated = compute_goodness(SC.G2, SC.Gr, covar)
 
         p = exp( (SC.χ2 - chi2_updated) / (2.0 * SC.Θ) )
-        #@show chi2_updated, p
-        #exit()
-        #error()
 
         if rand(MC.rng) < min(p, 1.0)
             SE.C[select_delta] = location_updated
@@ -439,12 +433,9 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
 
             accept_count = accept_count + 1.0
         end
-        #@show i, SC.χ2, SC.χ2min
     end
 
     MC.acc = accept_count / ndelta
-    #@show MC.acc
-    #error()
 end
 
 #=
