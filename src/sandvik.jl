@@ -14,7 +14,7 @@ const P_SAC = Dict{String,Any}(
     "spec_interval" => 1.0e-2,
     "ommax" => 10.0,
     "ommin" => -10.0,
-    "sac_bin_num" => 2,
+    "sac_bin_num" => 1,
     "sac_bin_size" => 1000,
     "annealling_steps" => 1000,
     "ndelta" => 1000,
@@ -267,7 +267,7 @@ function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACC
     amplitude = fill(SE.A, ndelta)
     SC.G1 = tmp_kernel * amplitude
     #@show amplitude
-    @show SC.G1
+    #@show SC.G1
     #error()
 end
 
@@ -292,8 +292,8 @@ function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG
     Theta = F64[]
     Chi2 = F64[]
 
-    for _ = 1:10
-    #for _ = 1:anneal_length
+    #for _ = 1:10
+    for i = 1:anneal_length
         update_fixed_theta(MC, SE, SC, SG, kernel, covar)
         #exit()
 
@@ -303,7 +303,7 @@ function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG
         push!(Theta, SC.Θ)
         push!(Chi2, SC.χ2)
 
-        @show SC.χ2, SC.χ2min, SC.χ2 - SC.χ2min
+        @show i, SC.χ2, SC.χ2min, SC.χ2 - SC.χ2min
         if SC.χ2 - SC.χ2min < 1e-3
             break
         end
@@ -312,6 +312,60 @@ function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG
     end
 
     return SACAnnealing(Conf, Theta, Chi2)
+end
+
+function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
+    nbin = P_SAC["sac_bin_num"]
+    sbin = P_SAC["sac_bin_size"]
+    ntau = length(covar)
+    #@show nbin, sbin
+    #exit()
+
+    for n = 1:nbin
+        for s = 1:sbin
+        #for s = 1:10
+
+            if (s - 1) % P_SAC["stabilization_pace"] == 1
+                SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
+            end
+            #@show SC.χ2
+            #exit()
+
+            update_deltas_1step_single(MC, SE, SC, SG, kernel, covar)
+            #@show n, s, SC.χ2, SC.χ2min
+            #exit()
+
+            MC.sample_chi2[s] = SC.χ2
+            MC.sample_acc[s] = MC.acc
+            #@show n, s
+
+            #@show s, SC.χ2
+            #exit()
+        end
+        #error()
+
+        MC.bin_chi2[n] = sum(MC.sample_chi2) / sbin
+        MC.bin_acc[n] = sum(MC.sample_acc) / sbin
+
+        # write log
+        @show n, SC.Θ, SC.χ2min / ntau, MC.bin_chi2[n] / ntau,  MC.bin_chi2[n] - SC.χ2min, MC.bin_acc[n], SE.W * SG.freq_interval
+        #exit()
+
+        if MC.bin_acc[n] > 0.5
+            r = SE.W * 1.5
+            if ceil(I64, r) < SG.num_freq_index
+                SE.W = ceil(I64, r)
+            else
+                SE.W = SG.num_freq_index
+            end
+        end
+
+        if MC.bin_acc[n] < 0.4
+            SE.W = ceil(I64, SE.W / 1.5)
+        end
+    end
+    #exit()
+    #error()
 end
 
 function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
@@ -339,22 +393,19 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
         #@show i
         if 1 < SE.W < SG.num_freq_index
             while true
-            move_width = rand(MC.rng, 1:SE.W)
-#            move_width = 5897
+                move_width = rand(MC.rng, 1:SE.W)
 
-            if rand(MC.rng) > 0.5
-                location_updated = location_current + move_width
-            else
-                location_updated = location_current - move_width
-            end
+                if rand(MC.rng) > 0.5
+                    location_updated = location_current + move_width
+                else
+                    location_updated = location_current - move_width
+                end
 
-            if location_updated < 1 || location_updated > SG.num_freq_index
-                #println("here")
-                #i = i - 1
-                continue
-            else
-                break
-            end
+                if location_updated < 1 || location_updated > SG.num_freq_index
+                    continue
+                else
+                    break
+                end
             end
 
         elseif SE.W == SG.num_freq_index
@@ -391,60 +442,6 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
 
     MC.acc = accept_count / ndelta
     #@show MC.acc
-    #error()
-end
-
-function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
-    nbin = P_SAC["sac_bin_num"]
-    sbin = P_SAC["sac_bin_size"]
-    ntau = length(covar)
-    #@show nbin, sbin
-    #exit()
-
-    for n = 1:nbin
-        for s = 1:sbin
-        #for s = 1:10
-
-            if (s - 1) % P_SAC["stabilization_pace"] == 1
-                SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
-            end
-            #@show SC.χ2
-            #exit()
-
-            update_deltas_1step_single(MC, SE, SC, SG, kernel, covar)
-            #@show n, s, SC.χ2, SC.χ2min
-            #exit()
-
-            MC.sample_chi2[s] = SC.χ2
-            MC.sample_acc[s] = MC.acc
-            #@show n, s
-
-            @show s, SC.χ2
-            #exit()
-        end
-        #error()
-
-        MC.bin_chi2[n] = sum(MC.sample_chi2) / sbin
-        MC.bin_acc[n] = sum(MC.sample_acc) / sbin
-
-        # write log
-        @show n, SC.Θ, SC.χ2min / ntau, MC.bin_chi2[n] / ntau,  MC.bin_chi2[n] - SC.χ2min, MC.bin_acc[n], SE.W * SG.freq_interval
-        #exit()
-
-        if MC.bin_acc[n] > 0.5
-            r = SE.W * 1.5
-            if ceil(I64, r) < SG.num_freq_index
-                SE.W = ceil(I64, r)
-            else
-                SE.W = SG.num_freq_index
-            end
-        end
-
-        if MC.bin_acc[n] < 0.4
-            SE.W = ceil(I64, SE.W / 1.5)
-        end
-    end
-    #exit()
     #error()
 end
 
