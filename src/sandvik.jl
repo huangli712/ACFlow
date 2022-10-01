@@ -212,6 +212,8 @@ function init_kernel(tmesh, SG::SACGrid, Mrot::AbstractMatrix)
     end
 
     kernel = Mrot * kernel
+    #@show kernel[:,1]
+    #@show kernel[:,end]
 
     return kernel
 end
@@ -232,10 +234,10 @@ function init_mc()
     return MC
 end
 
-function init_spectrum(scale_factor::F64, SG::SACGrid, Gdata, tau)
+function init_spectrum(rng, scale_factor::F64, SG::SACGrid, Gdata, tau)
     ndelta = P_SAC["ndelta"]
 
-    rng = MersenneTwister(rand(1:10000) + 1981)
+    #rng = MersenneTwister(rand(1:10000) + 1981)
     position = zeros(I64, ndelta)
     rand!(rng, position, 1:SG.num_freq_index)
     #@show position
@@ -265,7 +267,7 @@ function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACC
     amplitude = fill(SE.A, ndelta)
     SC.G1 = tmp_kernel * amplitude
     #@show amplitude
-    #@show SC.G1
+    @show SC.G1
     #error()
 end
 
@@ -446,6 +448,7 @@ function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, S
     #error()
 end
 
+#=
 function Freq2GridIndex(freq::F64, SG::SACGrid)
     @assert SG.ommin ≤ freq ≤ SG.ommax
     grid = ceil(I64, (freq - SG.ommin) / SG.grid_interval) + 1
@@ -520,3 +523,4 @@ function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement
         end
     end
 end
+=#
