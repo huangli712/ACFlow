@@ -10,7 +10,7 @@ const P_SAC = Dict{String,Any}(
     "ntime" => 160,
     "nbins" => 1000,
     "nbootstrap" => 1000,
-    "freq_interval" => 1.0e-5,
+    "freq_interval" => 2.0e-5,
     "spec_interval" => 1.0e-2,
     "ommax" => 10.0,
     "ommin" => -10.0,
@@ -237,9 +237,9 @@ function init_spectrum(rng, scale_factor::F64, SG::SACGrid, Gdata, tau)
 
     position = zeros(I64, ndelta)
     rand!(rng, position, 1:SG.num_freq_index)
-    for i = 1:ndelta
-        position[i] = i # comment out it
-    end
+    #for i = 1:ndelta
+    #    position[i] = i # comment out it
+    #end
 
     amplitude = 1.0 / (scale_factor * ndelta)
     average_freq = abs(log(1.0/Gdata[end]) / tau[end])
