@@ -372,16 +372,6 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
     ndelta = P_SAC["ndelta"]
     accept_count = 0.0
 
-    #@show SE
-    #@show SC.Θ
-    #@show SG
-    #@show SC.Gr
-
-    #error()
-
-    #@show SC.χ2
-#    error()
-
     for i = 1:ndelta
         select_delta = rand(MC.rng, 1:ndelta)
         location_current = SE.C[select_delta]
@@ -427,7 +417,6 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
             error("BIG PROBLEM")
         end
 
-        #location_updated = 5
         SC.G2 = SC.G1 + SE.A .* (kernel[:,location_updated] .- kernel[:,location_current])
         #@show SC.G1
         #@show SC.G2
