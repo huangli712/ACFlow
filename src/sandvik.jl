@@ -272,7 +272,7 @@ function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG
 
         SC.χ2 = mean(MC.bin_chi2)
 
-        push!(Conf, SE)
+        push!(Conf, deepcopy(SE))
         push!(Theta, SC.Θ)
         push!(Chi2, SC.χ2)
 
@@ -287,7 +287,7 @@ function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG
     return SACAnnealing(Conf, Theta, Chi2)
 end
 
-function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, SE::SACElement, kernel::AbstractMatrix, covar)
+function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, kernel::AbstractMatrix, covar)
     num_anneal = length(anneal.chi2)
 
     c = num_anneal
@@ -300,9 +300,13 @@ function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, SE::SACElem
     @assert 1 ≤ c ≤ num_anneal
 
     SE = deepcopy(anneal.Conf[c])
+    #@show anneal.Conf
     SC.Θ = anneal.Theta[c]
     compute_corr_from_spec(kernel, SE, SC)
     SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
+    @show SC.Θ, SC.χ2
+
+    return SE
 end
 
 function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
@@ -407,7 +411,7 @@ function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement
     for i = 1:collecting_steps
         if (i - 1) % P_SAC["stabilization_pace"] == 1
             SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
-            #@show i, SC.χ2, SC.χ2min
+            @show i, SC.χ2
         end
 
         # update
@@ -434,6 +438,5 @@ end
 
 function Grid2Spec(grid_index::I64, SG::SACGrid)
     @assert 1 ≤ grid_index ≤ SG.num_freq_index
-    #@show (grid_index - 1) * SG.grid_interval / SG.spec_interval
     return ceil(I64, grid_index * SG.freq_interval / SG.spec_interval)
 end
