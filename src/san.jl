@@ -213,7 +213,7 @@ function init_mc()
     sbin = P_SAC["sac_bin_size"]
     nbin = P_SAC["sac_bin_num"]
 
-    seed = rand(1:1000000)#;  seed = 840443
+    seed = rand(1:1000000); seed = 840443
     rng = MersenneTwister(seed)
     acc = 0.0
     sample_acc = zeros(F64, sbin)
@@ -230,9 +230,6 @@ function init_spectrum(rng, scale_factor::F64, SG::SACGrid, Gdata, tau)
 
     position = zeros(I64, ndelta)
     rand!(rng, position, 1:SG.num_freq_index)
-    #for i = 1:ndelta
-    #    position[i] = i # comment out it
-    #end
 
     amplitude = 1.0 / (scale_factor * ndelta)
     average_freq = abs(log(1.0/Gdata[end]) / tau[end])
@@ -293,7 +290,6 @@ function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, kernel::Abs
     @assert 1 ≤ c ≤ num_anneal
 
     SE = deepcopy(anneal.Conf[c])
-    #@show anneal.Conf
     SC.Θ = anneal.Theta[c]
     compute_corr_from_spec(kernel, SE, SC)
     SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
@@ -407,10 +403,8 @@ function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement
             @show i, SC.χ2
         end
 
-        # update
         update_deltas_1step_single(MC, SE, SC, SG, kernel, covar)
 
-        # collecting
         for j = 1:ndelta
             d_pos = SE.C[j]
             s_pos = Grid2Spec(d_pos, SG)
@@ -422,7 +416,7 @@ function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement
     factor = scale_factor / (collecting_steps * SG.spec_interval)
     SC.spectrum = SC.spectrum * factor
 
-    open("SAC.spectrum", "w") do fout
+    open("Aout.data", "w") do fout
         for i = 1:SG.num_spec_index
             println(fout, SC.freq[i], " ", SC.spectrum[i])
         end
