@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/05
+# Last modified: 2022/10/03
 #
 
 """
@@ -18,10 +18,10 @@ package is under heavy development. **PLEASE USE IT AT YOUR OWN RISK**.
 Nowadays the ACFlow package supports the following algorithms:
 
 * Maximum Entropy Method (`MaxEnt` solver)
-* Stochastic Analytical Continuation (`StochAC` solver)
+* Stochastic Analytical Continuation (`StochAC` and `StochSK` solvers)
 * Stochastic Optimization Method (`StochOM` solver)
 
-More algorithms will be implemented soon.
+More algorithms will be implemented in the future.
 
 Note that ACFlow package has been designed to be integrated into the
 `Zen` package. Actually, it is also compatible with the `iQIST` package.
