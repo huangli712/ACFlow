@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/05
+# Last modified: 2022/10/03
 #
 
 #=
@@ -77,7 +77,8 @@ const _PBASE   = Dict{String,Any}(
 """
     PMaxEnt
 
-Dictionary for configuration parameters: the maximum entropy method.
+Dictionary for configuration parameters:
+the maximum entropy method.
 """
 const PMaxEnt  = Dict{String,ADT}(
     "method"  => [missing, 1, :String, "How to determine the optimized α parameter"],
@@ -99,7 +100,8 @@ const _PMaxEnt = Dict{String,Any}(
 """
     PStochAC
 
-Dictionary for configuration parameters: the stochastic analytical continuation method.
+Dictionary for configuration parameters:
+the stochastic analytical continuation method (K. S. D. Beach's version).
 """
 const PStochAC = Dict{String,ADT}(
     "nfine"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
@@ -125,9 +127,25 @@ const _PStochAC= Dict{String,Any}(
 )
 
 """
+    PStochSK
+
+Dictionary for configuration parameters:
+the stochastic analytical continuation method (A. W. Sandvik's version).
+"""
+const PStochSK = Dict{String,ADT}(
+    "ngamm"   => [missing, 1, :I64   , "Number of δ functions"],
+)
+
+# Default parameters for PStochSK
+const _PStochSK= Dict{String,Any}(
+    "ngamm"   => 1000,
+)
+
+"""
     PStochOM
 
-Dictionary for configuration parameters: the stochastic optimization method.
+Dictionary for configuration parameters:
+the stochastic optimization method.
 """
 const PStochOM = Dict{String,ADT}(
     "ntry"    => [missing, 1, :I64   , "Number of attempts to figure out the solution"],
@@ -172,9 +190,17 @@ struct MaxEntSolver <: AbstractSolver end
     StochACSolver
 
 It represents the analytical continuation solver that implements the
-stochastic analytical continuation method.
+stochastic analytical continuation method (K. S. D. Beach's version).
 """
 struct StochACSolver <: AbstractSolver end
+
+"""
+    StochSKSolver
+
+It represents the analytical continuation solver that implements the
+stochastic analytical continuation method (A. W. Sandvik's version).
+"""
+struct StochSKSolver <: AbstractSolver end
 
 """
     StochOMSolver
@@ -464,6 +490,27 @@ mutable struct StochACMC <: AbstractMC
     Mtry :: Vector{I64}
     Sacc :: Vector{I64}
     Stry :: Vector{I64}
+end
+
+"""
+    StochSKMC
+
+Mutable struct. It is used within the StochSK solver. It includes random
+number generator and some counters.
+
+### Members
+
+* rng  -> Random number generator.
+
+See also: [`StochSKSolver`](@ref).
+"""
+mutable struct StochSKMC
+    rng :: AbstractRNG
+    acc :: F64
+    sample_acc  :: Vector{F64}
+    sample_chi2 :: Vector{F64}
+    bin_acc :: Vector{F64}
+    bin_chi2 :: Vector{F64}
 end
 
 """

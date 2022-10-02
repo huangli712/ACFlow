@@ -49,15 +49,6 @@ struct SACAnnealing
     chi2  :: Vector{F64}
 end
 
-mutable struct SACMonteCarlo
-    rng :: AbstractRNG
-    acc :: F64
-    sample_acc  :: Vector{F64}
-    sample_chi2 :: Vector{F64}
-    bin_acc :: Vector{F64}
-    bin_chi2 :: Vector{F64}
-end
-
 function FreqIndex2Freq(freq_index::I64, SG::SACGrid)
     @assert 1 ≤ freq_index ≤ SG.num_freq_index
     return SG.ommin + (freq_index - 1) * SG.freq_interval

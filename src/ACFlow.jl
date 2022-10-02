@@ -114,11 +114,13 @@ ADT             -> Customized type.
 PBASE           -> Dict for general setup.
 PMaxEnt         -> Dict for MaxEnt solver.
 PStochAC        -> Dict for StochAC solver.
+PStochSK        -> Dict for StochSK solver.
 PStochOM        -> Dict for StochOM solver.
 #
 AbstractSolver  -> Abstract AC solver.
 MaxEntSolver    -> It represents the MaxEnt solver.
 StochACSolver   -> It represents the StochAC solver.
+StochSKSolver   -> It represents the StochSK solver.
 StochOMSolver   -> It represents the StochOM solver.
 #
 AbstractData    -> Abstract input data in imaginary axis.
@@ -139,6 +141,7 @@ HalfLorentzMesh -> Lorentzian mesh at half-positive axis.
 #
 AbstractMC      -> Abstract monte carlo engine.
 StochACMC       -> Monte carlo engine used in the StochAC solver.
+StochSKMC       -> Monte carlo engine used in the StochSK solver.
 StochOMMC       -> Monte Carlo engine used in the StochOM solver.
 ```
 =#
@@ -151,11 +154,13 @@ export ADT
 export PBASE
 export PMaxEnt
 export PStochAC
+export PStochSK
 export PStochOM
 #
 export AbstractSolver
 export MaxEntSolver
 export StochACSolver
+export StochSKSolver
 export StochOMSolver
 #
 export AbstractData
@@ -176,6 +181,7 @@ export HalfLorentzMesh
 #
 export AbstractMC
 export StochACMC
+export StochSKMC
 export StochOMMC
 
 #=
