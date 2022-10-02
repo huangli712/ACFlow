@@ -343,6 +343,7 @@ _v       -> Verify dict's values.
 get_b    -> Extract value from dict (PBASE dict), return raw value.
 get_m    -> Extract value from dict (PMaxEnt dict), return raw value.
 get_a    -> Extract value from dict (PStochAC dict), return raw value.
+get_k    -> Extract value from dict (PStochSK dict), return raw value.
 get_s    -> Extract value from dict (PStochOM dict), return raw value.
 ```
 =#
@@ -358,6 +359,7 @@ export _v
 export get_b
 export get_m
 export get_a
+export get_k
 export get_s
 
 #=

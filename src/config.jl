@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/05
+# Last modified: 2022/10/03
 #
 
 """
@@ -53,7 +53,7 @@ end
     fil_dict(cfg::Dict{String,Any})
 
 Transfer configurations from dict `cfg` to internal dicts (including
-`PBASE`, `PMaxEnt`, `PStochAC`, and `PStochOM` etc).
+`PBASE`, `PMaxEnt`, `PStochAC`, `PStochSK`, and `PStochOM` etc).
 """
 function fil_dict(cfg::Dict{String,Any})
     # For BASE block
@@ -84,6 +84,18 @@ function fil_dict(cfg::Dict{String,Any})
         for key in keys(StochAC)
             if haskey(PStochAC, key)
                 PStochAC[key][1] = StochAC[key]
+            else
+                error("Sorry, $key is not supported currently")
+            end
+        end
+    end
+
+    # For StochSK block
+    if haskey(cfg, "StochSK")
+        StochSK = cfg["StochSK"]
+        for key in keys(StochSK)
+            if haskey(PStochSK, key)
+                PStochSK[key][1] = StochSK[key]
             else
                 error("Sorry, $key is not supported currently")
             end
@@ -212,6 +224,42 @@ function rev_dict(S::StochACSolver, StochAC::Dict{String,Vector{Any}})
 end
 
 """
+    rev_dict(S::StochSKSolver, StochSK::Dict{String,Any})
+
+Setup the configuration dictionary: `PStochSK`.
+
+See also: [`PStochSK`](@ref).
+"""
+function rev_dict(S::StochSKSolver, StochSK::Dict{String,Any})
+    for key in keys(StochSK)
+        if haskey(PStochSK, key)
+            PStochSK[key][1] = StochSK[key]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+    foreach(x -> _v(x.first, x.second), PStochSK)
+end
+
+"""
+    rev_dict(S::StochSKSolver, StochSK::Dict{String,Vector{Any}})
+
+Setup the configuration dictionary: `PStochSK`.
+
+See also: [`PStochSK`](@ref).
+"""
+function rev_dict(S::StochSKSolver, StochSK::Dict{String,Vector{Any}})
+    for key in keys(StochSK)
+        if haskey(PStochSK, key)
+            PStochSK[key][1] = StochSK[key][1]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+    foreach(x -> _v(x.first, x.second), PStochSK)
+end
+
+"""
     rev_dict(S::StochOMSolver, StochOM::Dict{String,Any})
 
 Setup the configuration dictionary: `PStochOM`.
@@ -255,7 +303,7 @@ Validate the correctness and consistency of configurations.
 See also: [`fil_dict`](@ref), [`_v`](@ref).
 """
 function chk_dict()
-    @assert get_b("solver") in ("MaxEnt", "StochAC", "StochOM")
+    @assert get_b("solver") in ("MaxEnt", "StochAC", "StochSK", "StochOM")
     @assert get_b("ktype") in ("fermi", "boson", "bsymm")
     @assert get_b("mtype") in ("flat", "gauss", "1gauss", "2gauss", "lorentz", "1lorentz", "2lorentz", "risedecay", "file")
     @assert get_b("grid") in ("ftime", "btime", "ffreq", "bfreq")
@@ -287,6 +335,11 @@ function chk_dict()
             @assert get_a("nalph") ≥ 1
             @assert get_a("alpha") > 0.0
             @assert get_a("ratio") > 0.0
+            break
+        
+        @case "StochSK"
+            push!(PA, PStochSK)
+            @assert get_k("ngamm") ≥ 1000
             break
 
         @case "StochOM"
@@ -359,6 +412,19 @@ Extract configurations from dict: PStochAC.
         PStochAC[key][1]
     else
         error("Sorry, PStochAC does not contain key: $key")
+    end
+end
+
+"""
+    get_k(key::String)
+
+Extract configurations from dict: PStochSK.
+"""
+@inline function get_k(key::String)
+    if haskey(PStochSK, key)
+        PStochSK[key][1]
+    else
+        error("Sorry, PStochSK does not contain key: $key")
     end
 end
 
