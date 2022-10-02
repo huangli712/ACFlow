@@ -211,7 +211,7 @@ function init_mc()
     sample_chi2 = zeros(F64, sbin)
     bin_acc = zeros(F64, nbin)
     bin_chi2 = zeros(F64, nbin)
-    MC = SACMonteCarlo(rng, acc, sample_acc, sample_chi2, bin_acc, bin_chi2)
+    MC = StochSKMC(rng, acc, sample_acc, sample_chi2, bin_acc, bin_chi2)
 
     return MC
 end
@@ -241,7 +241,7 @@ function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{F64})
     return χ
 end
 
-function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
+function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
     anneal_length = P_SAC["annealling_steps"]
 
     Conf = SACElement[]
@@ -289,7 +289,7 @@ function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, kernel::Abs
     return SE
 end
 
-function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
+function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
     nbin = P_SAC["sac_bin_num"]
     sbin = P_SAC["sac_bin_size"]
     ntau = length(covar)
@@ -327,7 +327,7 @@ function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, S
     end
 end
 
-function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
+function update_deltas_1step_single(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
     ndelta = P_SAC["ndelta"]
     accept_count = 0.0
 
@@ -379,7 +379,7 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
     MC.acc = accept_count / ndelta
 end
 
-function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::AbstractMatrix, covar)
+function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::AbstractMatrix, covar)
     ndelta = P_SAC["ndelta"]
     update_fixed_theta(MC, SE, SC, SG, kernel, covar)
 
