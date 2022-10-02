@@ -79,7 +79,7 @@ function calc_grid()
     return SACGrid(ommax, ommin, freq_interval, spec_interval, num_freq_index, num_spec_index)
 end
 
-function read_data()
+function read_gtau()
     nbins = P_SAC["nbins"]
     ntime = P_SAC["ntime"]
 
@@ -428,8 +428,8 @@ function Grid2Spec(grid_index::I64, SG::SACGrid)
     return ceil(I64, grid_index * SG.freq_interval / SG.spec_interval)
 end
 
-function sac_run()
-    tmesh, gbin = read_data()
+function san_run()
+    tmesh, gbin = read_gtau()
     factor, gtau = compute_corr_means(gbin)
     gerr, bootstrape = compute_corr_errs(gbin, gtau)
     tmesh, gerr, gtau, bootstrape = discard_poor_quality_data(tmesh, gerr, gtau, bootstrape)
