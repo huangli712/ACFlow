@@ -15,7 +15,7 @@ const P_SAC = Dict{String,Any}(
     "ommax" => 10.0,
     "ommin" => -10.0,
     "sac_bin_num" => 1,
-    "sac_bin_size" => 1000,
+    "sac_bin_size" => 100,
     "annealling_steps" => 1000,
     "ndelta" => 1000,
     "collecting_steps" => 1000,
@@ -287,6 +287,24 @@ function perform_annealing(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG
     return SACAnnealing(Conf, Theta, Chi2)
 end
 
+function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, SE::SACElement, kernel::AbstractMatrix, covar)
+    num_anneal = length(anneal.chi2)
+
+    c = num_anneal
+    while c ≥ 1
+        if anneal.chi2[c] > SC.χ2min + 2.0 * sqrt(SC.χ2min)
+            break
+        end
+        c = c - 1
+    end
+    @assert 1 ≤ c ≤ num_anneal
+
+    SE = deepcopy(anneal.Conf[c])
+    SC.Θ = anneal.Theta[c]
+    compute_corr_from_spec(kernel, SE, SC)
+    SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
+end
+
 function update_fixed_theta(MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
     nbin = P_SAC["sac_bin_num"]
     sbin = P_SAC["sac_bin_size"]
@@ -377,62 +395,23 @@ function update_deltas_1step_single(MC::SACMonteCarlo, SE::SACElement, SC::SACCo
     MC.acc = accept_count / ndelta
 end
 
-#=
-function Freq2GridIndex(freq::F64, SG::SACGrid)
-    @assert SG.ommin ≤ freq ≤ SG.ommax
-    grid = ceil(I64, (freq - SG.ommin) / SG.grid_interval) + 1
-    @assert 1 ≤ grid ≤ SG.num_grid_index
-    return grid
-end
-
-function Grid2Spec(grid_index::I64, SG::SACGrid)
-    @assert 1 ≤ grid_index ≤ SG.num_grid_index
-    #@show (grid_index - 1) * SG.grid_interval / SG.spec_interval
-    return ceil(I64, grid_index * SG.grid_interval / SG.spec_interval)
-end
-
-function sac_run(scale_factor::F64, 𝐺::GreenData, τ::ImaginaryTimeGrid, Mrot::AbstractMatrix)
-    SG, SE, SC, MC, kernel = init_sac(scale_factor, 𝐺, τ, Mrot)
-    anneal = perform_annealing(MC, SE, SC, SG, kernel, 𝐺)
-    decide_sampling_theta(anneal, SC, SE, kernel, 𝐺)
-    sample_and_collect(scale_factor, MC, SE, SC, SG, kernel, 𝐺)
-end
-
-function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, SE::SACElement, kernel::AbstractMatrix, 𝐺::GreenData)
-    num_anneal = length(anneal.chi2)
-
-    c = num_anneal
-    while c ≥ 1
-        if anneal.chi2[c] > SC.χ2min + 2.0 * sqrt(SC.χ2min)
-            break
-        end
-        c = c - 1
-    end
-    @assert 1 ≤ c ≤ num_anneal
-
-    SE = deepcopy(anneal.Conf[c])
-    SC.Θ = anneal.Theta[c]
-    compute_corr_from_spec(kernel, SE, SC)
-    SC.χ2 = compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
-end
-
-function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::AbstractMatrix, 𝐺::GreenData)
+function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::AbstractMatrix, covar)
     ndelta = P_SAC["ndelta"]
-    update_fixed_theta(MC, SE, SC, SG, kernel, 𝐺)
+    update_fixed_theta(MC, SE, SC, SG, kernel, covar)
 
     for n = 1:SG.num_spec_index
         SC.freq[n] = SpecIndex2Freq(n, SG)
     end
 
-    collecting_steps = 100000
+    collecting_steps = P_SAC["collecting_steps"]
     for i = 1:collecting_steps
-        if i % 10 == 1
-            SC.χ2 = compute_goodness(SC.G1, SC.Gr, 𝐺.covar)
-            @show i, SC.χ2, SC.χ2min
+        if (i - 1) % P_SAC["stabilization_pace"] == 1
+            SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
+            #@show i, SC.χ2, SC.χ2min
         end
 
         # update
-        update_deltas_1step_single(MC, SE, SC, SG, kernel, 𝐺)
+        update_deltas_1step_single(MC, SE, SC, SG, kernel, covar)
 
         # collecting
         for j = 1:ndelta
@@ -452,4 +431,9 @@ function sample_and_collect(scale_factor::F64, MC::SACMonteCarlo, SE::SACElement
         end
     end
 end
-=#
+
+function Grid2Spec(grid_index::I64, SG::SACGrid)
+    @assert 1 ≤ grid_index ≤ SG.num_freq_index
+    #@show (grid_index - 1) * SG.grid_interval / SG.spec_interval
+    return ceil(I64, grid_index * SG.freq_interval / SG.spec_interval)
+end
