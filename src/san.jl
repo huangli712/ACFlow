@@ -1,10 +1,3 @@
-using Random
-using Statistics
-using LinearAlgebra
-
-include("global.jl")
-include("util.jl")
-
 const P_SAC = Dict{String,Any}(
     "beta" => 8.0,
     "ntime" => 160,
@@ -473,5 +466,3 @@ function sac_run()
     SE = decide_sampling_theta(anneal, SC, kernel, covar)
     sample_and_collect(factor, mc, SE, SC, grid, kernel, covar)
 end
-
-sac_run()
