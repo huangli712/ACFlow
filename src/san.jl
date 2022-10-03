@@ -245,11 +245,11 @@ function init_mc()
     seed = rand(1:1000000); seed = 840443
     rng = MersenneTwister(seed)
     acc = 0.0
-    sample_acc = zeros(F64, sbin)
-    sample_chi2 = zeros(F64, sbin)
+    #sample_acc = zeros(F64, sbin)
+    #sample_chi2 = zeros(F64, sbin)
     bin_acc = zeros(F64, nbin)
     bin_chi2 = zeros(F64, nbin)
-    MC = StochSKMC(rng, acc, sample_acc, sample_chi2, bin_acc, bin_chi2)
+    MC = StochSKMC(rng, acc, bin_acc, bin_chi2)
 
     return MC
 end
@@ -366,6 +366,9 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::S
     sbin = P_SAC["sac_bin_size"]
     ntau = length(covar)
 
+    sample_chi2 = zeros(F64, sbin)
+    sample_acc = zeros(F64, sbin)
+
     for n = 1:nbin
         for s = 1:sbin
 
@@ -375,12 +378,12 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::S
 
             update_deltas_1step_single(MC, SE, SC, SG, kernel, covar)
 
-            MC.sample_chi2[s] = SC.χ2
-            MC.sample_acc[s] = MC.acc
+            sample_chi2[s] = SC.χ2
+            sample_acc[s] = MC.acc
         end
 
-        MC.bin_chi2[n] = sum(MC.sample_chi2) / sbin
-        MC.bin_acc[n] = sum(MC.sample_acc) / sbin
+        MC.bin_chi2[n] = sum(sample_chi2) / sbin
+        MC.bin_acc[n] = sum(sample_acc) / sbin
 
         @show n, SC.Θ, SC.χ2min / ntau, MC.bin_chi2[n] / ntau,  MC.bin_chi2[n] - SC.χ2min, MC.bin_acc[n], SE.W * SG.freq_interval
 
