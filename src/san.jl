@@ -23,7 +23,6 @@ struct SACGrid
     freq_interval :: F64
     spec_interval :: F64
     num_freq_index :: I64
-    num_spec_index :: I64
 end
 
 mutable struct SACElement
@@ -42,13 +41,6 @@ function FreqIndex2Freq(freq_index::I64, SG::SACGrid)
     @assert 1 ≤ freq_index ≤ SG.num_freq_index
     return SG.ommin + (freq_index - 1) * SG.freq_interval
 end
-
-#=
-function SpecIndex2Freq(spec_index::I64, SG::SACGrid)
-    @assert 1 ≤ spec_index ≤ SG.num_spec_index
-    return SG.ommin + (spec_index - 1) * SG.spec_interval
-end
-=#
 
 function Grid2Spec(grid_index::I64, SG::SACGrid)
     @assert 1 ≤ grid_index ≤ SG.num_freq_index
@@ -188,9 +180,8 @@ function san_run()
     χ2 = 0.0
     χ2min = 0.0
     Θ = get_k("theta")
-    #freq = zeros(F64, grid.num_spec_index)
     mesh = LinearMesh(get_b("nmesh"), get_b("wmin"), get_b("wmax"))
-    spectrum = zeros(F64, grid.num_spec_index)
+    spectrum = zeros(F64, get_b("nmesh"))
     SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, mesh, spectrum)
     compute_corr_from_spec(kernel, SE, SC)
     χ = compute_goodness(SC.G1, SC.Gr, covar)
@@ -207,9 +198,8 @@ function init_grid()
     freq_interval = P_SAC["freq_interval"]
     spec_interval = P_SAC["spec_interval"]
     num_freq_index = ceil(I64, (ommax - ommin) / freq_interval)
-    num_spec_index = ceil(I64, (ommax - ommin) / spec_interval)
 
-    return SACGrid(ommax, ommin, freq_interval, spec_interval, num_freq_index, num_spec_index)
+    return SACGrid(ommax, ommin, freq_interval, spec_interval, num_freq_index)
 end
 
 function init_kernel(tmesh, SG::SACGrid, Mrot::AbstractMatrix)
@@ -301,10 +291,6 @@ end
 function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::AbstractMatrix, covar)
     ngamm = get_k("ngamm")
     update_fixed_theta(MC, SE, SC, SG, kernel, covar)
-
-    #for n = 1:SG.num_spec_index
-    #    SC.freq[n] = SpecIndex2Freq(n, SG)
-    #end
 
     nstep = get_k("nstep")
     for i = 1:nstep
