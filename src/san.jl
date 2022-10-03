@@ -16,10 +16,10 @@ mutable struct StochSKContext
     σ¹ :: Vector{F64}
     mesh :: AbstractMesh
     kernel :: Array{F64,2}
+    Aout :: Vector{F64}
     χ2 :: F64
     χ2min :: F64
     Θ :: F64
-    Aout :: Vector{F64}
 end
 
 struct SACAnnealing
@@ -162,7 +162,7 @@ function san_run()
     Θ = get_k("theta")
     mesh = LinearMesh(get_b("nmesh"), get_b("wmin"), get_b("wmax"))
     Aout = zeros(F64, get_b("nmesh"))
-    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, mesh, kernel, χ2, χ2min, Θ, Aout)
+    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, mesh, kernel, Aout, χ2, χ2min, Θ)
     compute_corr_from_spec(SE, SC)
     χ = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
     SC.χ2 = χ
