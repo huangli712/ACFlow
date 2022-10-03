@@ -7,8 +7,6 @@ const P_SAC = Dict{String,Any}(
     "spec_interval" => 1.0e-2,
     "ommax" => 10.0,
     "ommin" => -10.0,
-    "sac_bin_num" => 1,
-    "sac_bin_size" => 100,
     "nwarm" => 1000,
     "ngamm" => 1000,
     "nstep" => 1000,
@@ -353,8 +351,8 @@ function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{F64})
 end
 
 function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
-    nbin = P_SAC["sac_bin_num"]
-    sbin = P_SAC["sac_bin_size"]
+    nbin = 1
+    sbin = 100
     ntau = length(covar)
 
     sample_chi2 = zeros(F64, sbin)
