@@ -136,6 +136,7 @@ const PStochSK = Dict{String,ADT}(
     "ngamm"   => [missing, 1, :I64   , "Number of δ functions"],
     "nwarm"   => [missing, 1, :I64   , "Number of Monte Carlo warmup steps"],
     "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo sweeping steps"],
+    "retry"   => [missing, 1, :I64   , "How often to recalculate the goodness function"],
     "theta"   => [missing, 1, :F64   , "Starting value for the Θ parameter"],
     "ratio"   => [missing, 1, :F64   , "Scaling factor for the Θ parameter"],
 )
@@ -145,6 +146,7 @@ const _PStochSK= Dict{String,Any}(
     "ngamm"   => 1000,
     "nwarm"   => 1000,
     "nstep"   => 1000,
+    "retry"   => 10,
     "theta"   => 1e+6,
     "ratio"   => 0.90,
 )

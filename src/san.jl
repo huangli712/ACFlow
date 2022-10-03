@@ -8,7 +8,6 @@ const P_SAC = Dict{String,Any}(
     "ommax" => 10.0,
     "ommin" => -10.0,
     "ngamm" => 1000,
-    "retry" => 10,
     "theta" => 1e+6,
 )
 
@@ -311,7 +310,7 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
 
     nstep = get_k("nstep")
     for i = 1:nstep
-        if (i - 1) % P_SAC["retry"] == 1
+        if (i - 1) % get_k("retry") == 1
             SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
             @show i, SC.χ2
         end
@@ -360,7 +359,7 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::S
     for n = 1:nbin
         for s = 1:sbin
 
-            if (s - 1) % P_SAC["retry"] == 1
+            if (s - 1) % get_k("retry") == 1
                 SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
             end
 
