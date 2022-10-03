@@ -8,7 +8,6 @@ const P_SAC = Dict{String,Any}(
     "ommax" => 10.0,
     "ommin" => -10.0,
     "ngamm" => 1000,
-    "theta" => 1e+6,
 )
 
 mutable struct SACContext
@@ -190,7 +189,7 @@ function san_run()
     G2 = zeros(F64, ntau)
     χ2 = 0.0
     χ2min = 0.0
-    Θ = P_SAC["theta"]
+    Θ = get_k("theta")
     freq = zeros(F64, grid.num_spec_index)
     spectrum = zeros(F64, grid.num_spec_index)
     SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, freq, spectrum)
