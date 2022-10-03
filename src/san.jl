@@ -189,7 +189,7 @@ function san_run()
     χ2min = 0.0
     Θ = get_k("theta")
     #freq = zeros(F64, grid.num_spec_index)
-    mesh = LinearMesh(get_b("nmesh"), get_b("wmax"), get_b("wmin"))
+    mesh = LinearMesh(get_b("nmesh"), get_b("wmin"), get_b("wmax"))
     spectrum = zeros(F64, grid.num_spec_index)
     SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, mesh, spectrum)
     compute_corr_from_spec(kernel, SE, SC)
