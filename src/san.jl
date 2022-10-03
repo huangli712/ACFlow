@@ -11,21 +11,21 @@ mutable struct StochSKElement
 end
 
 mutable struct StochSKContext
-    Gᵥ :: Vector{F64}
-    Gᵧ :: Vector{F64}
-    σ¹ :: Vector{F64}
-    mesh :: AbstractMesh
+    Gᵥ     :: Vector{F64}
+    Gᵧ     :: Vector{F64}
+    σ¹     :: Vector{F64}
+    mesh   :: AbstractMesh
     kernel :: Array{F64,2}
-    Aout :: Vector{F64}
-    χ2 :: F64
-    χ2min :: F64
-    Θ :: F64
-    Θvec :: Vector{F64}
+    Aout   :: Vector{F64}
+    χ²     :: F64
+    χ²min  :: F64
+    χ²vec  :: Vector{F64}
+    Θ      :: F64
+    Θvec   :: Vector{F64}
 end
 
 struct SACAnnealing
     Conf  :: Vector{StochSKElement}
-    chi2  :: Vector{F64}
 end
 
 function read_gtau()
@@ -157,17 +157,18 @@ function san_run()
     ntau = length(tmesh)
     Gᵥ = vecs * gtau
     Gᵧ = zeros(F64, ntau)
-    χ2 = 0.0
-    χ2min = 0.0
+    χ² = 0.0
+    χ²min = 0.0
+    χ²vec = zeros(F64, get_k("nwarm"))
     Θ = get_k("theta")
     Θvec = zeros(F64, get_k("nwarm"))
     mesh = LinearMesh(get_b("nmesh"), get_b("wmin"), get_b("wmax"))
     Aout = zeros(F64, get_b("nmesh"))
-    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, mesh, kernel, Aout, χ2, χ2min, Θ, Θvec)
+    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, mesh, kernel, Aout, χ², χ²min, χ²vec, Θ, Θvec)
     compute_corr_from_spec(SE, SC)
     χ = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-    SC.χ2 = χ
-    SC.χ2min = χ
+    SC.χ² = χ
+    SC.χ²min = χ
     anneal = warmup(mc, SE, SC, fmesh)
     SE = decide_sampling_theta(anneal, SC)
     measure(factor, mc, SE, SC, fmesh)
@@ -217,33 +218,32 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::Ab
     anneal_length = get_k("nwarm")
 
     Conf = StochSKElement[]
-    Chi2 = F64[]
 
     for i = 1:anneal_length
-        SC.χ2 = update_fixed_theta(MC, SE, SC, fmesh)
+        SC.χ² = update_fixed_theta(MC, SE, SC, fmesh)
 
         push!(Conf, deepcopy(SE))
+        SC.χ²vec[i] = SC.χ²
         SC.Θvec[i] = SC.Θ
-        push!(Chi2, SC.χ2)
 
-        @show i, SC.χ2, SC.χ2min, SC.χ2 - SC.χ2min
-        if SC.χ2 - SC.χ2min < 1e-3
+        @show i, SC.χ², SC.χ²min, SC.χ² - SC.χ²min
+        if SC.χ² - SC.χ²min < 1e-3
             break
         end
 
         SC.Θ = SC.Θ * get_k("ratio")
     end
 
-    return SACAnnealing(Conf, Chi2)
+    return SACAnnealing(Conf)
 end
 
 function decide_sampling_theta(anneal::SACAnnealing, SC::StochSKContext)
-    num_anneal = length(anneal.chi2)
+    num_anneal = length(anneal.Conf)
     @assert num_anneal ≤ get_k("nwarm")
 
     c = num_anneal
     while c ≥ 1
-        if anneal.chi2[c] > SC.χ2min + 2.0 * sqrt(SC.χ2min)
+        if SC.χ²vec[c] > SC.χ²min + 2.0 * sqrt(SC.χ²min)
             break
         end
         c = c - 1
@@ -253,8 +253,8 @@ function decide_sampling_theta(anneal::SACAnnealing, SC::StochSKContext)
     SE = deepcopy(anneal.Conf[c])
     SC.Θ = SC.Θvec[c]
     compute_corr_from_spec(SE, SC)
-    SC.χ2 = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-    @show SC.Θ, SC.χ2
+    SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+    @show SC.Θ, SC.χ²
 
     return SE
 end
@@ -266,8 +266,8 @@ function measure(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::Stoch
     nstep = get_k("nstep")
     for i = 1:nstep
         if (i - 1) % get_k("retry") == 1
-            SC.χ2 = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-            @show i, SC.χ2
+            SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+            @show i, SC.χ²
         end
 
         update_deltas_1step_single(MC, SE, SC, fmesh)
@@ -315,19 +315,19 @@ function update_fixed_theta(MC::StochSKMC, SE::StochSKElement, SC::StochSKContex
         for s = 1:sbin
 
             if (s - 1) % get_k("retry") == 1
-                SC.χ2 = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+                SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
             end
 
             update_deltas_1step_single(MC, SE, SC, fmesh)
 
-            sample_chi2[s] = SC.χ2
+            sample_chi2[s] = SC.χ²
             sample_acc[s] = MC.acc
         end
 
         bin_chi2[n] = sum(sample_chi2) / sbin
         bin_acc[n] = sum(sample_acc) / sbin
 
-        @show n, SC.Θ, SC.χ2min / ntau, bin_chi2[n] / ntau,  bin_chi2[n] - SC.χ2min, bin_acc[n], SE.W * (fmesh[2] - fmesh[1])
+        @show n, SC.Θ, SC.χ²min / ntau, bin_chi2[n] / ntau,  bin_chi2[n] - SC.χ²min, bin_acc[n], SE.W * (fmesh[2] - fmesh[1])
 
         if bin_acc[n] > 0.5
             r = SE.W * 1.5
@@ -381,14 +381,14 @@ function update_deltas_1step_single(MC::StochSKMC, SE::StochSKElement, SC::Stoch
 
         chi2_updated = compute_goodness(Gₙ, SC.Gᵥ, SC.σ¹)
 
-        p = exp( (SC.χ2 - chi2_updated) / (2.0 * SC.Θ) )
+        p = exp( (SC.χ² - chi2_updated) / (2.0 * SC.Θ) )
 
         if rand(MC.rng) < min(p, 1.0)
             SE.C[select_delta] = location_updated
             SC.Gᵧ = deepcopy(Gₙ)
-            SC.χ2 = chi2_updated
-            if SC.χ2 < SC.χ2min
-                SC.χ2min = SC.χ2
+            SC.χ² = chi2_updated
+            if SC.χ² < SC.χ²min
+                SC.χ²min = SC.χ²
             end
 
             accept_count = accept_count + 1.0
