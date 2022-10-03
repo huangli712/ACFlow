@@ -20,11 +20,11 @@ mutable struct StochSKContext
     χ2 :: F64
     χ2min :: F64
     Θ :: F64
+    Θvec :: Vector{F64}
 end
 
 struct SACAnnealing
     Conf  :: Vector{StochSKElement}
-    Theta :: Vector{F64}
     chi2  :: Vector{F64}
 end
 
@@ -160,9 +160,10 @@ function san_run()
     χ2 = 0.0
     χ2min = 0.0
     Θ = get_k("theta")
+    Θvec = zeros(F64, get_k("nwarm"))
     mesh = LinearMesh(get_b("nmesh"), get_b("wmin"), get_b("wmax"))
     Aout = zeros(F64, get_b("nmesh"))
-    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, mesh, kernel, Aout, χ2, χ2min, Θ)
+    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, mesh, kernel, Aout, χ2, χ2min, Θ, Θvec)
     compute_corr_from_spec(SE, SC)
     χ = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
     SC.χ2 = χ
@@ -216,14 +217,13 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::Ab
     anneal_length = get_k("nwarm")
 
     Conf = StochSKElement[]
-    Theta = F64[]
     Chi2 = F64[]
 
     for i = 1:anneal_length
         SC.χ2 = update_fixed_theta(MC, SE, SC, fmesh)
 
         push!(Conf, deepcopy(SE))
-        push!(Theta, SC.Θ)
+        SC.Θvec[i] = SC.Θ
         push!(Chi2, SC.χ2)
 
         @show i, SC.χ2, SC.χ2min, SC.χ2 - SC.χ2min
@@ -234,11 +234,12 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::Ab
         SC.Θ = SC.Θ * get_k("ratio")
     end
 
-    return SACAnnealing(Conf, Theta, Chi2)
+    return SACAnnealing(Conf, Chi2)
 end
 
 function decide_sampling_theta(anneal::SACAnnealing, SC::StochSKContext)
     num_anneal = length(anneal.chi2)
+    @assert num_anneal ≤ get_k("nwarm")
 
     c = num_anneal
     while c ≥ 1
@@ -250,7 +251,7 @@ function decide_sampling_theta(anneal::SACAnnealing, SC::StochSKContext)
     @assert 1 ≤ c ≤ num_anneal
 
     SE = deepcopy(anneal.Conf[c])
-    SC.Θ = anneal.Theta[c]
+    SC.Θ = SC.Θvec[c]
     compute_corr_from_spec(SE, SC)
     SC.χ2 = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
     @show SC.Θ, SC.χ2
