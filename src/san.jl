@@ -7,7 +7,6 @@ const P_SAC = Dict{String,Any}(
     "spec_interval" => 1.0e-2,
     "ommax" => 10.0,
     "ommin" => -10.0,
-    "ngamm" => 1000,
 )
 
 mutable struct SACContext
@@ -241,7 +240,7 @@ function init_mc()
 end
 
 function init_spectrum(rng, scale_factor::F64, SG::SACGrid, Gdata, tau)
-    ngamm = P_SAC["ngamm"]
+    ngamm = get_k("ngamm")
 
     position = zeros(I64, ngamm)
     rand!(rng, position, 1:SG.num_freq_index)
@@ -300,7 +299,7 @@ function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, kernel::Abs
 end
 
 function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::AbstractMatrix, covar)
-    ngamm = P_SAC["ngamm"]
+    ngamm = get_k("ngamm")
     update_fixed_theta(MC, SE, SC, SG, kernel, covar)
 
     for n = 1:SG.num_spec_index
@@ -334,7 +333,7 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
 end
 
 function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACContext)
-    ngamm = P_SAC["ngamm"]
+    ngamm = get_k("ngamm")
     tmp_kernel = kernel[:, SE.C]
     amplitude = fill(SE.A, ngamm)
     SC.G1 = tmp_kernel * amplitude
@@ -391,7 +390,7 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::S
 end
 
 function update_deltas_1step_single(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
-    ngamm = P_SAC["ngamm"]
+    ngamm = get_k("ngamm")
     accept_count = 0.0
 
     for i = 1:ngamm
