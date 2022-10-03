@@ -4,8 +4,6 @@ const P_SAC = Dict{String,Any}(
     "nbootstrap" => 1000,
     "freq_interval" => 2.0e-5,
     "spec_interval" => 1.0e-2,
-    "ommax" => 10.0,
-    "ommin" => -10.0,
 )
 
 mutable struct SACContext
@@ -15,7 +13,7 @@ mutable struct SACContext
     χ2 :: F64
     χ2min :: F64
     Θ :: F64
-    freq :: Vector{F64}
+    mesh :: AbstractMesh
     spectrum :: Vector{F64}
 end
 
@@ -45,10 +43,12 @@ function FreqIndex2Freq(freq_index::I64, SG::SACGrid)
     return SG.ommin + (freq_index - 1) * SG.freq_interval
 end
 
+#=
 function SpecIndex2Freq(spec_index::I64, SG::SACGrid)
     @assert 1 ≤ spec_index ≤ SG.num_spec_index
     return SG.ommin + (spec_index - 1) * SG.spec_interval
 end
+=#
 
 function Grid2Spec(grid_index::I64, SG::SACGrid)
     @assert 1 ≤ grid_index ≤ SG.num_freq_index
@@ -188,9 +188,10 @@ function san_run()
     χ2 = 0.0
     χ2min = 0.0
     Θ = get_k("theta")
-    freq = zeros(F64, grid.num_spec_index)
+    #freq = zeros(F64, grid.num_spec_index)
+    mesh = LinearMesh(get_b("nmesh"), get_b("wmax"), get_b("wmin"))
     spectrum = zeros(F64, grid.num_spec_index)
-    SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, freq, spectrum)
+    SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, mesh, spectrum)
     compute_corr_from_spec(kernel, SE, SC)
     χ = compute_goodness(SC.G1, SC.Gr, covar)
     SC.χ2 = χ
@@ -201,8 +202,8 @@ function san_run()
 end
 
 function init_grid()
-    ommax = P_SAC["ommax"]
-    ommin = P_SAC["ommin"]
+    ommax = get_b("wmax")
+    ommin = get_b("wmin")
     freq_interval = P_SAC["freq_interval"]
     spec_interval = P_SAC["spec_interval"]
     num_freq_index = ceil(I64, (ommax - ommin) / freq_interval)
@@ -301,9 +302,9 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
     ngamm = get_k("ngamm")
     update_fixed_theta(MC, SE, SC, SG, kernel, covar)
 
-    for n = 1:SG.num_spec_index
-        SC.freq[n] = SpecIndex2Freq(n, SG)
-    end
+    #for n = 1:SG.num_spec_index
+    #    SC.freq[n] = SpecIndex2Freq(n, SG)
+    #end
 
     nstep = get_k("nstep")
     for i = 1:nstep
@@ -325,8 +326,8 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
     SC.spectrum = SC.spectrum * factor
 
     open("Aout.data", "w") do fout
-        for i = 1:SG.num_spec_index
-            println(fout, SC.freq[i], " ", SC.spectrum[i])
+        for i in eachindex(SC.mesh)
+            println(fout, SC.mesh[i], " ", SC.spectrum[i])
         end
     end
 end
