@@ -14,10 +14,10 @@ mutable struct StochSKContext
     Gᵥ :: Vector{F64}
     Gᵧ :: Vector{F64}
     σ¹ :: Vector{F64}
+    mesh :: AbstractMesh
     χ2 :: F64
     χ2min :: F64
     Θ :: F64
-    mesh :: AbstractMesh
     Aout :: Vector{F64}
 end
 
@@ -146,7 +146,7 @@ function san_run()
     tmesh, gerr, gtau, bootstrape = discard_poor_quality_data(tmesh, gerr, gtau, bootstrape)
     gtau, gerr, bootstrape = scale_data(factor, gtau, gerr, bootstrape)
     vals, vecs, cov_mat = compute_cov_matrix(gtau, bootstrape)
-    covar = calc_covar(vals)
+    σ¹ = calc_covar(vals)
 
     fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
     kernel = init_kernel(tmesh, fmesh, vecs)
@@ -161,7 +161,7 @@ function san_run()
     Θ = get_k("theta")
     mesh = LinearMesh(get_b("nmesh"), get_b("wmin"), get_b("wmax"))
     Aout = zeros(F64, get_b("nmesh"))
-    SC = StochSKContext(Gᵥ, Gᵧ, covar, χ2, χ2min, Θ, mesh, Aout)
+    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, mesh, χ2, χ2min, Θ, Aout)
     compute_corr_from_spec(kernel, SE, SC)
     χ = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
     SC.χ2 = χ
