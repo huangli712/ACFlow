@@ -4,9 +4,16 @@ const P_SAC = Dict{String,Any}(
     "nbootstrap" => 1000,
 )
 
-mutable struct SACContext
+mutable struct StochSKElement
+    C :: Vector{I64}
+    A :: F64
+    W :: I64
+end
+
+mutable struct StochSKContext
     Gᵥ :: Vector{F64}
     Gᵧ :: Vector{F64}
+    σ¹ :: Vector{F64}
     χ2 :: F64
     χ2min :: F64
     Θ :: F64
@@ -14,14 +21,8 @@ mutable struct SACContext
     Aout :: Vector{F64}
 end
 
-mutable struct SACElement
-    C :: Vector{I64}
-    A :: F64
-    W :: I64
-end
-
 struct SACAnnealing
-    Conf  :: Vector{SACElement}
+    Conf  :: Vector{StochSKElement}
     Theta :: Vector{F64}
     chi2  :: Vector{F64}
 end
@@ -160,14 +161,14 @@ function san_run()
     Θ = get_k("theta")
     mesh = LinearMesh(get_b("nmesh"), get_b("wmin"), get_b("wmax"))
     Aout = zeros(F64, get_b("nmesh"))
-    SC = SACContext(Gᵥ, Gᵧ, χ2, χ2min, Θ, mesh, Aout)
+    SC = StochSKContext(Gᵥ, Gᵧ, covar, χ2, χ2min, Θ, mesh, Aout)
     compute_corr_from_spec(kernel, SE, SC)
-    χ = compute_goodness(SC.Gᵧ, SC.Gᵥ, covar)
+    χ = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
     SC.χ2 = χ
     SC.χ2min = χ
-    anneal = perform_annealing(mc, SE, SC, fmesh, kernel, covar)
-    SE = decide_sampling_theta(anneal, SC, kernel, covar)
-    sample_and_collect(factor, mc, SE, SC, fmesh, kernel, covar)
+    anneal = warmup(mc, SE, SC, fmesh, kernel)
+    SE = decide_sampling_theta(anneal, SC, kernel)
+    measure(factor, mc, SE, SC, fmesh, kernel)
 end
 
 function init_kernel(tmesh, fmesh::AbstractMesh, Mrot::AbstractMatrix)
@@ -207,18 +208,18 @@ function init_delta(rng, scale_factor::F64, fmesh::AbstractMesh, Gdata, tau)
     average_freq = abs(log(1.0/Gdata[end]) / tau[end])
     window_width = ceil(I64, 0.1 * average_freq / (fmesh[2] - fmesh[1]))
 
-    return SACElement(position, amplitude, window_width)
+    return StochSKElement(position, amplitude, window_width)
 end
 
-function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, fmesh::AbstractMesh, kernel::Matrix{F64}, covar)
+function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh, kernel::Matrix{F64})
     anneal_length = get_k("nwarm")
 
-    Conf = SACElement[]
+    Conf = StochSKElement[]
     Theta = F64[]
     Chi2 = F64[]
 
     for i = 1:anneal_length
-        SC.χ2 = update_fixed_theta(MC, SE, SC, fmesh, kernel, covar)
+        SC.χ2 = update_fixed_theta(MC, SE, SC, fmesh, kernel)
 
         push!(Conf, deepcopy(SE))
         push!(Theta, SC.Θ)
@@ -235,7 +236,7 @@ function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, fmesh:
     return SACAnnealing(Conf, Theta, Chi2)
 end
 
-function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, kernel::AbstractMatrix, covar)
+function decide_sampling_theta(anneal::SACAnnealing, SC::StochSKContext, kernel::AbstractMatrix)
     num_anneal = length(anneal.chi2)
 
     c = num_anneal
@@ -250,24 +251,24 @@ function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, kernel::Abs
     SE = deepcopy(anneal.Conf[c])
     SC.Θ = anneal.Theta[c]
     compute_corr_from_spec(kernel, SE, SC)
-    SC.χ2 = compute_goodness(SC.Gᵧ, SC.Gᵥ, covar)
+    SC.χ2 = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
     @show SC.Θ, SC.χ2
 
     return SE
 end
 
-function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC::SACContext, fmesh::AbstractMesh, kernel::AbstractMatrix, covar)
+function measure(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh, kernel::AbstractMatrix)
     ngamm = get_k("ngamm")
-    update_fixed_theta(MC, SE, SC, fmesh, kernel, covar)
+    update_fixed_theta(MC, SE, SC, fmesh, kernel)
 
     nstep = get_k("nstep")
     for i = 1:nstep
         if (i - 1) % get_k("retry") == 1
-            SC.χ2 = compute_goodness(SC.Gᵧ, SC.Gᵥ, covar)
+            SC.χ2 = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
             @show i, SC.χ2
         end
 
-        update_deltas_1step_single(MC, SE, SC, fmesh, kernel, covar)
+        update_deltas_1step_single(MC, SE, SC, fmesh, kernel)
 
         for j = 1:ngamm
             d_pos = SE.C[j]
@@ -286,7 +287,7 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
     end
 end
 
-function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACContext)
+function compute_corr_from_spec(kernel::AbstractMatrix, SE::StochSKElement, SC::StochSKContext)
     ngamm = get_k("ngamm")
     tmp_kernel = kernel[:, SE.C]
     amplitude = fill(SE.A, ngamm)
@@ -298,10 +299,10 @@ function compute_goodness(G::Vector{F64,}, Gᵥ::Vector{F64}, Sigma::Vector{F64}
     return χ
 end
 
-function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, fmesh::AbstractMesh, kernel::Matrix{F64}, covar)
+function update_fixed_theta(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh, kernel::Matrix{F64})
     nbin = 1
     sbin = 100
-    ntau = length(covar)
+    ntau = length(SC.σ¹)
 
     sample_chi2 = zeros(F64, sbin)
     bin_chi2 = zeros(F64, nbin)
@@ -312,10 +313,10 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, fmesh
         for s = 1:sbin
 
             if (s - 1) % get_k("retry") == 1
-                SC.χ2 = compute_goodness(SC.Gᵧ, SC.Gᵥ, covar)
+                SC.χ2 = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
             end
 
-            update_deltas_1step_single(MC, SE, SC, fmesh, kernel, covar)
+            update_deltas_1step_single(MC, SE, SC, fmesh, kernel)
 
             sample_chi2[s] = SC.χ2
             sample_acc[s] = MC.acc
@@ -343,7 +344,7 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, fmesh
     return mean(bin_chi2)
 end
 
-function update_deltas_1step_single(MC::StochSKMC, SE::SACElement, SC::SACContext, fmesh::AbstractMesh, kernel::Matrix{F64}, covar)
+function update_deltas_1step_single(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh, kernel::Matrix{F64})
     ngamm = get_k("ngamm")
     accept_count = 0.0
 
@@ -376,7 +377,7 @@ function update_deltas_1step_single(MC::StochSKMC, SE::SACElement, SC::SACContex
 
         Gₙ = SC.Gᵧ + SE.A .* (kernel[:,location_updated] .- kernel[:,location_current])
 
-        chi2_updated = compute_goodness(Gₙ, SC.Gᵥ, covar)
+        chi2_updated = compute_goodness(Gₙ, SC.Gᵥ, SC.σ¹)
 
         p = exp( (SC.χ2 - chi2_updated) / (2.0 * SC.Θ) )
 
