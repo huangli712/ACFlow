@@ -257,7 +257,6 @@ end
 
 function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
     anneal_length = get_k("nwarm")
-    @show get_k("nwarm"), get_k("nstep")
 
     Conf = SACElement[]
     Theta = F64[]
