@@ -10,7 +10,7 @@ const P_SAC = Dict{String,Any}(
     "sac_bin_num" => 1,
     "sac_bin_size" => 100,
     "nwarm" => 1000,
-    "ndelta" => 1000,
+    "ngamm" => 1000,
     "nstep" => 1000,
     "stabilization_pace" => 10,
     "theta" => 1e+6,
@@ -248,12 +248,12 @@ function init_mc()
 end
 
 function init_spectrum(rng, scale_factor::F64, SG::SACGrid, Gdata, tau)
-    ndelta = P_SAC["ndelta"]
+    ngamm = P_SAC["ngamm"]
 
-    position = zeros(I64, ndelta)
+    position = zeros(I64, ngamm)
     rand!(rng, position, 1:SG.num_freq_index)
 
-    amplitude = 1.0 / (scale_factor * ndelta)
+    amplitude = 1.0 / (scale_factor * ngamm)
     average_freq = abs(log(1.0/Gdata[end]) / tau[end])
     window_width = ceil(I64, 0.1 * average_freq / SG.freq_interval)
 
@@ -307,7 +307,7 @@ function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, kernel::Abs
 end
 
 function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::AbstractMatrix, covar)
-    ndelta = P_SAC["ndelta"]
+    ngamm = P_SAC["ngamm"]
     update_fixed_theta(MC, SE, SC, SG, kernel, covar)
 
     for n = 1:SG.num_spec_index
@@ -323,7 +323,7 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
 
         update_deltas_1step_single(MC, SE, SC, SG, kernel, covar)
 
-        for j = 1:ndelta
+        for j = 1:ngamm
             d_pos = SE.C[j]
             s_pos = Grid2Spec(d_pos, SG)
             SC.spectrum[s_pos] = SC.spectrum[s_pos] + SE.A
@@ -341,9 +341,9 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
 end
 
 function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACContext)
-    ndelta = P_SAC["ndelta"]
+    ngamm = P_SAC["ngamm"]
     tmp_kernel = kernel[:, SE.C]
-    amplitude = fill(SE.A, ndelta)
+    amplitude = fill(SE.A, ngamm)
     SC.G1 = tmp_kernel * amplitude
 end
 
@@ -398,11 +398,11 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::S
 end
 
 function update_deltas_1step_single(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
-    ndelta = P_SAC["ndelta"]
+    ngamm = P_SAC["ngamm"]
     accept_count = 0.0
 
-    for i = 1:ndelta
-        select_delta = rand(MC.rng, 1:ndelta)
+    for i = 1:ngamm
+        select_delta = rand(MC.rng, 1:ngamm)
         location_current = SE.C[select_delta]
 
         if 1 < SE.W < SG.num_freq_index
@@ -446,5 +446,5 @@ function update_deltas_1step_single(MC::StochSKMC, SE::SACElement, SC::SACContex
         end
     end
 
-    MC.acc = accept_count / ndelta
+    MC.acc = accept_count / ngamm
 end
