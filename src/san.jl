@@ -144,29 +144,31 @@ function san_run()
     tmesh, gerr, gtau, bootstrape = discard_poor_quality_data(tmesh, gerr, gtau, bootstrape)
     gtau, gerr, bootstrape = scale_data(factor, gtau, gerr, bootstrape)
     vals, vecs, cov_mat = compute_cov_matrix(gtau, bootstrape)
-    σ¹ = calc_covar(vals)
 
+    mc = init_mc()
     fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
     kernel = init_kernel(tmesh, fmesh, vecs)
-    mc = init_mc()
     SE = init_delta(mc.rng, factor, fmesh, gtau, tmesh)
 
-    ntau = length(tmesh)
     Gᵥ = vecs * gtau
-    Gᵧ = zeros(F64, ntau)
-    χ² = 0.0
-    χ²min = 0.0
-    χ²vec = zeros(F64, get_k("nwarm"))
-    Θ = get_k("theta")
-    Θvec = zeros(F64, get_k("nwarm"))
+    Gᵧ = compute_corr_from_spec(SE, kernel)
+    σ¹ = calc_covar(vals)
+    #
     mesh = LinearMesh(get_b("nmesh"), get_b("wmin"), get_b("wmax"))
     Aout = zeros(F64, get_b("nmesh"))
+    #
+    χ = compute_goodness(Gᵧ, Gᵥ, σ¹)
+    χ² = χ
+    χ²min = χ
+    χ²vec = zeros(F64, get_k("nwarm"))
+    #
+    Θ = get_k("theta")
+    Θvec = zeros(F64, get_k("nwarm"))
+    #
     𝒞ᵧ = StochSKElement[]
+    #
     SC = StochSKContext(Gᵥ, Gᵧ, σ¹, mesh, kernel, Aout, χ², χ²min, χ²vec, Θ, Θvec, 𝒞ᵧ)
-    compute_corr_from_spec(SE, SC)
-    χ = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-    SC.χ² = χ
-    SC.χ²min = χ
+
     warmup(mc, SE, SC, fmesh)
     SE = decide_sampling_theta(SC)
     measure(factor, mc, SE, SC, fmesh)
@@ -288,11 +290,11 @@ function measure(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::Stoch
     end
 end
 
-function compute_corr_from_spec(SE::StochSKElement, SC::StochSKContext)
+function compute_corr_from_spec(SE::StochSKElement, kernel::Array{F64,2})
     ngamm = get_k("ngamm")
-    tmp_kernel = SC.kernel[:, SE.P]
+    tmp_kernel = kernel[:, SE.P]
     amplitude = fill(SE.A, ngamm)
-    SC.Gᵧ = tmp_kernel * amplitude
+    return tmp_kernel * amplitude
 end
 
 function compute_goodness(G::Vector{F64,}, Gᵥ::Vector{F64}, Sigma::Vector{F64})
