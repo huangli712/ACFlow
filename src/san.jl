@@ -14,7 +14,7 @@ mutable struct SACContext
     χ2min :: F64
     Θ :: F64
     mesh :: AbstractMesh
-    spectrum :: Vector{F64}
+    Aout :: Vector{F64}
 end
 
 mutable struct SACElement
@@ -153,7 +153,7 @@ function san_run()
     fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
     kernel = init_kernel(tmesh, fmesh, vecs)
     mc = init_mc()
-    SE = init_spectrum(mc.rng, factor, fmesh, gtau, tmesh)
+    SE = init_delta(mc.rng, factor, fmesh, gtau, tmesh)
 
     ntau = length(tmesh)
     Gr = vecs * gtau
@@ -163,8 +163,8 @@ function san_run()
     χ2min = 0.0
     Θ = get_k("theta")
     mesh = LinearMesh(get_b("nmesh"), get_b("wmin"), get_b("wmax"))
-    spectrum = zeros(F64, get_b("nmesh"))
-    SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, mesh, spectrum)
+    Aout = zeros(F64, get_b("nmesh"))
+    SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, mesh, Aout)
     compute_corr_from_spec(kernel, SE, SC)
     χ = compute_goodness(SC.G1, SC.Gr, covar)
     SC.χ2 = χ
@@ -201,7 +201,7 @@ function init_mc()
     return MC
 end
 
-function init_spectrum(rng, scale_factor::F64, fmesh::AbstractMesh, Gdata, tau)
+function init_delta(rng, scale_factor::F64, fmesh::AbstractMesh, Gdata, tau)
     ngamm = get_k("ngamm")
 
     position = zeros(I64, ngamm)
@@ -276,16 +276,16 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
         for j = 1:ngamm
             d_pos = SE.C[j]
             s_pos = ceil(I64, d_pos / length(fmesh) * get_b("nmesh"))
-            SC.spectrum[s_pos] = SC.spectrum[s_pos] + SE.A
+            SC.Aout[s_pos] = SC.Aout[s_pos] + SE.A
         end
     end
 
     factor = scale_factor / (nstep * (SC.mesh[2] - SC.mesh[1]))
-    SC.spectrum = SC.spectrum * factor
+    SC.Aout = SC.Aout * factor
 
     open("Aout.data", "w") do fout
         for i in eachindex(SC.mesh)
-            println(fout, SC.mesh[i], " ", SC.spectrum[i])
+            println(fout, SC.mesh[i], " ", SC.Aout[i])
         end
     end
 end
