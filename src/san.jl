@@ -9,10 +9,8 @@ const P_SAC = Dict{String,Any}(
     "ommin" => -10.0,
     "nwarm" => 1000,
     "ngamm" => 1000,
-    "nstep" => 1000,
     "retry" => 10,
     "theta" => 1e+6,
-    "ratio" => 0.9
 )
 
 mutable struct SACContext
@@ -277,7 +275,7 @@ function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SA
             break
         end
 
-        SC.Θ = SC.Θ * P_SAC["ratio"]
+        SC.Θ = SC.Θ * get_k("ratio")
     end
 
     return SACAnnealing(Conf, Theta, Chi2)
@@ -312,7 +310,7 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
         SC.freq[n] = SpecIndex2Freq(n, SG)
     end
 
-    nstep = P_SAC["nstep"]
+    nstep = get_k("nstep")
     for i = 1:nstep
         if (i - 1) % P_SAC["retry"] == 1
             SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
