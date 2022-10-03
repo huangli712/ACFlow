@@ -176,7 +176,40 @@ function compute_cov_matrix(gtau, bootstrap_samples)
     return vals, vecs, cov_mat
 end
 
-function calc_grid()
+function san_run()
+    tmesh, gbin = read_gtau()
+    factor, gtau = compute_corr_means(gbin)
+    gerr, bootstrape = compute_corr_errs(gbin, gtau)
+    tmesh, gerr, gtau, bootstrape = discard_poor_quality_data(tmesh, gerr, gtau, bootstrape)
+    gtau, gerr, bootstrape = scale_data(factor, gtau, gerr, bootstrape)
+    vals, vecs, cov_mat = compute_cov_matrix(gtau, bootstrape)
+    covar = calc_covar(vals)
+
+    grid = init_grid()
+    kernel = init_kernel(tmesh, grid, vecs)
+    mc = init_mc()
+    SE = init_spectrum(mc.rng, factor, grid, gtau, tmesh)
+
+    ntau = length(tmesh)
+    Gr = vecs * gtau
+    G1 = zeros(F64, ntau)
+    G2 = zeros(F64, ntau)
+    χ2 = 0.0
+    χ2min = 0.0
+    Θ = P_SAC["theta"]
+    freq = zeros(F64, grid.num_spec_index)
+    spectrum = zeros(F64, grid.num_spec_index)
+    SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, freq, spectrum)
+    compute_corr_from_spec(kernel, SE, SC)
+    χ = compute_goodness(SC.G1, SC.Gr, covar)
+    SC.χ2 = χ
+    SC.χ2min = χ
+    anneal = perform_annealing(mc, SE, SC, grid, kernel, covar)
+    SE = decide_sampling_theta(anneal, SC, kernel, covar)
+    sample_and_collect(factor, mc, SE, SC, grid, kernel, covar)
+end
+
+function init_grid()
     ommax = P_SAC["ommax"]
     ommin = P_SAC["ommin"]
     freq_interval = P_SAC["freq_interval"]
@@ -234,18 +267,6 @@ function init_spectrum(rng, scale_factor::F64, SG::SACGrid, Gdata, tau)
     return SACElement(position, amplitude, window_width)
 end
 
-function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACContext)
-    ndelta = P_SAC["ndelta"]
-    tmp_kernel = kernel[:, SE.C]
-    amplitude = fill(SE.A, ndelta)
-    SC.G1 = tmp_kernel * amplitude
-end
-
-function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{F64})
-    χ = sum(((G .- Gr) .* Sigma) .^ 2.0)
-    return χ
-end
-
 function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
     anneal_length = P_SAC["annealling_steps"]
 
@@ -292,6 +313,52 @@ function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, kernel::Abs
     @show SC.Θ, SC.χ2
 
     return SE
+end
+
+function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::AbstractMatrix, covar)
+    ndelta = P_SAC["ndelta"]
+    update_fixed_theta(MC, SE, SC, SG, kernel, covar)
+
+    for n = 1:SG.num_spec_index
+        SC.freq[n] = SpecIndex2Freq(n, SG)
+    end
+
+    collecting_steps = P_SAC["collecting_steps"]
+    for i = 1:collecting_steps
+        if (i - 1) % P_SAC["stabilization_pace"] == 1
+            SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
+            @show i, SC.χ2
+        end
+
+        update_deltas_1step_single(MC, SE, SC, SG, kernel, covar)
+
+        for j = 1:ndelta
+            d_pos = SE.C[j]
+            s_pos = Grid2Spec(d_pos, SG)
+            SC.spectrum[s_pos] = SC.spectrum[s_pos] + SE.A
+        end
+    end
+
+    factor = scale_factor / (collecting_steps * SG.spec_interval)
+    SC.spectrum = SC.spectrum * factor
+
+    open("Aout.data", "w") do fout
+        for i = 1:SG.num_spec_index
+            println(fout, SC.freq[i], " ", SC.spectrum[i])
+        end
+    end
+end
+
+function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACContext)
+    ndelta = P_SAC["ndelta"]
+    tmp_kernel = kernel[:, SE.C]
+    amplitude = fill(SE.A, ndelta)
+    SC.G1 = tmp_kernel * amplitude
+end
+
+function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{F64})
+    χ = sum(((G .- Gr) .* Sigma) .^ 2.0)
+    return χ
 end
 
 function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
@@ -382,71 +449,4 @@ function update_deltas_1step_single(MC::StochSKMC, SE::SACElement, SC::SACContex
     end
 
     MC.acc = accept_count / ndelta
-end
-
-function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::AbstractMatrix, covar)
-    ndelta = P_SAC["ndelta"]
-    update_fixed_theta(MC, SE, SC, SG, kernel, covar)
-
-    for n = 1:SG.num_spec_index
-        SC.freq[n] = SpecIndex2Freq(n, SG)
-    end
-
-    collecting_steps = P_SAC["collecting_steps"]
-    for i = 1:collecting_steps
-        if (i - 1) % P_SAC["stabilization_pace"] == 1
-            SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
-            @show i, SC.χ2
-        end
-
-        update_deltas_1step_single(MC, SE, SC, SG, kernel, covar)
-
-        for j = 1:ndelta
-            d_pos = SE.C[j]
-            s_pos = Grid2Spec(d_pos, SG)
-            SC.spectrum[s_pos] = SC.spectrum[s_pos] + SE.A
-        end
-    end
-
-    factor = scale_factor / (collecting_steps * SG.spec_interval)
-    SC.spectrum = SC.spectrum * factor
-
-    open("Aout.data", "w") do fout
-        for i = 1:SG.num_spec_index
-            println(fout, SC.freq[i], " ", SC.spectrum[i])
-        end
-    end
-end
-
-function san_run()
-    tmesh, gbin = read_gtau()
-    factor, gtau = compute_corr_means(gbin)
-    gerr, bootstrape = compute_corr_errs(gbin, gtau)
-    tmesh, gerr, gtau, bootstrape = discard_poor_quality_data(tmesh, gerr, gtau, bootstrape)
-    gtau, gerr, bootstrape = scale_data(factor, gtau, gerr, bootstrape)
-    vals, vecs, cov_mat = compute_cov_matrix(gtau, bootstrape)
-    covar = calc_covar(vals)
-
-    grid = calc_grid()
-    kernel = init_kernel(tmesh, grid, vecs)
-    mc = init_mc()
-    SE = init_spectrum(mc.rng, factor, grid, gtau, tmesh)
-
-    ntau = length(tmesh)
-    Gr = vecs * gtau
-    G1 = zeros(F64, ntau)
-    G2 = zeros(F64, ntau)
-    χ2 = 0.0
-    χ2min = 0.0
-    Θ = P_SAC["theta"]
-    freq = zeros(F64, grid.num_spec_index)
-    spectrum = zeros(F64, grid.num_spec_index)
-    SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, freq, spectrum)
-    compute_corr_from_spec(kernel, SE, SC)
-    χ = compute_goodness(SC.G1, SC.Gr, covar)
-    SC.χ2 = χ
-    SC.χ2min = χ
-    anneal = perform_annealing(mc, SE, SC, grid, kernel, covar)
-    SE = decide_sampling_theta(anneal, SC, kernel, covar)
-    sample_and_collect(factor, mc, SE, SC, grid, kernel, covar)
 end
