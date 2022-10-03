@@ -174,12 +174,12 @@ end
 
 function init_kernel(tmesh, fmesh::AbstractMesh, Mrot::AbstractMatrix)
     beta = get_b("beta")
+    nfine = get_k("nfine")
 
     ntau = length(tmesh)
-    nfreq = length(fmesh)
-    kernel = zeros(F64, ntau, nfreq)
+    kernel = zeros(F64, ntau, nfine)
 
-    for f = 1:nfreq
+    for f = 1:nfine
         ω = fmesh[f]
         de = 1.0 + exp(-beta * ω)
         kernel[:,f] = exp.(-ω * tmesh) / de
@@ -200,10 +200,11 @@ function init_mc()
 end
 
 function init_delta(rng, scale_factor::F64, fmesh::AbstractMesh, Gdata, tau)
+    nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
     position = zeros(I64, ngamm)
-    rand!(rng, position, 1:length(fmesh))
+    rand!(rng, position, 1:nfine)
 
     amplitude = 1.0 / (scale_factor * ngamm)
     average_freq = abs(log(1.0/Gdata[end]) / tau[end])
@@ -257,12 +258,13 @@ function measure(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::Stoch
     nmesh = get_b("nmesh")
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
+    nstep = get_k("nstep")
+    retry = get_k("retry")
 
     update_fixed_theta(MC, SE, SC, fmesh)
 
-    nstep = get_k("nstep")
     for i = 1:nstep
-        if (i - 1) % get_k("retry") == 1
+        if (i - 1) % retry == 1
             SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
             @show i, SC.χ²
         end
@@ -301,6 +303,8 @@ end
 function update_fixed_theta(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh)
     nbin = 1
     sbin = 100
+    nfine = get_k("nfine")
+    retry = get_k("retry")
     ntau = length(SC.σ¹)
 
     sample_chi2 = zeros(F64, sbin)
@@ -311,7 +315,7 @@ function update_fixed_theta(MC::StochSKMC, SE::StochSKElement, SC::StochSKContex
     for n = 1:nbin
         for s = 1:sbin
 
-            if (s - 1) % get_k("retry") == 1
+            if (s - 1) % retry == 1
                 SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
             end
 
@@ -328,10 +332,10 @@ function update_fixed_theta(MC::StochSKMC, SE::StochSKElement, SC::StochSKContex
 
         if bin_acc[n] > 0.5
             r = SE.W * 1.5
-            if ceil(I64, r) < length(fmesh)
+            if ceil(I64, r) < nfine
                 SE.W = ceil(I64, r)
             else
-                SE.W = length(fmesh)
+                SE.W = nfine
             end
         end
 
