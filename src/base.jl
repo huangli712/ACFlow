@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/05
+# Last modified: 2022/10/03
 #
 
 """
@@ -61,6 +61,10 @@ function solve(rd::RawData)
 
         @case "StochAC"
             return solve(StochACSolver(), rd)
+            break
+        
+        @case "StochSK"
+            return solve(StochSKSolver(), rd)
             break
 
         @case "StochOM"
@@ -172,13 +176,15 @@ dictionaries will be reset to their default values at first. Later, `C`
 See also: [`read_param`](@ref), [`rev_dict`](@ref).
 """
 function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = true)
-    # _PBASE, _PMaxEnt, _PStochAC, and _PStochOM contain the default
-    # parameters. If reset is true, they will be used to update the
-    # PBASE, PMaxEnt, PStochAC, and PStochOM dictionaries, respectively.
+    # _PBASE, _PMaxEnt, _PStochAC, _PStochSK, and _PStochOM contain the
+    # default parameters. If reset is true, they will be used to update
+    # the PBASE, PMaxEnt, PStochAC, PStochSK, and PStochOM dictionaries,
+    # respectively.
     reset && begin
         rev_dict(_PBASE)
         rev_dict(MaxEntSolver(), _PMaxEnt)
         rev_dict(StochACSolver(), _PStochAC)
+        rev_dict(StochSKSolver(), _PStochSK)
         rev_dict(StochOMSolver(), _PStochOM)
     end
 
@@ -192,6 +198,10 @@ function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = tru
 
         @case "StochAC"
             rev_dict(StochACSolver(), S)
+            break
+
+        @case "StochSK"
+            rev_dict(StochSKSolver(), S)
             break
 
         @case "StochOM"

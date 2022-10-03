@@ -7,7 +7,6 @@ const P_SAC = Dict{String,Any}(
     "spec_interval" => 1.0e-2,
     "ommax" => 10.0,
     "ommin" => -10.0,
-    "nwarm" => 1000,
     "ngamm" => 1000,
     "retry" => 10,
     "theta" => 1e+6,
@@ -257,7 +256,8 @@ function init_spectrum(rng, scale_factor::F64, SG::SACGrid, Gdata, tau)
 end
 
 function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
-    anneal_length = P_SAC["nwarm"]
+    anneal_length = get_k("nwarm")
+    @show get_k("nwarm"), get_k("nstep")
 
     Conf = SACElement[]
     Theta = F64[]
