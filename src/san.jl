@@ -2,14 +2,11 @@ const P_SAC = Dict{String,Any}(
     "ntime" => 160,
     "nbins" => 1000,
     "nbootstrap" => 1000,
-    "freq_interval" => 2.0e-5,
-    "spec_interval" => 1.0e-2,
 )
 
 mutable struct SACContext
-    Gr :: Vector{F64}
-    G1 :: Vector{F64}
-    G2 :: Vector{F64}
+    Gᵥ :: Vector{F64}
+    Gᵧ :: Vector{F64}
     χ2 :: F64
     χ2min :: F64
     Θ :: F64
@@ -156,17 +153,16 @@ function san_run()
     SE = init_delta(mc.rng, factor, fmesh, gtau, tmesh)
 
     ntau = length(tmesh)
-    Gr = vecs * gtau
-    G1 = zeros(F64, ntau)
-    G2 = zeros(F64, ntau)
+    Gᵥ = vecs * gtau
+    Gᵧ = zeros(F64, ntau)
     χ2 = 0.0
     χ2min = 0.0
     Θ = get_k("theta")
     mesh = LinearMesh(get_b("nmesh"), get_b("wmin"), get_b("wmax"))
     Aout = zeros(F64, get_b("nmesh"))
-    SC = SACContext(Gr, G1, G2, χ2, χ2min, Θ, mesh, Aout)
+    SC = SACContext(Gᵥ, Gᵧ, χ2, χ2min, Θ, mesh, Aout)
     compute_corr_from_spec(kernel, SE, SC)
-    χ = compute_goodness(SC.G1, SC.Gr, covar)
+    χ = compute_goodness(SC.Gᵧ, SC.Gᵥ, covar)
     SC.χ2 = χ
     SC.χ2min = χ
     anneal = perform_annealing(mc, SE, SC, fmesh, kernel, covar)
@@ -254,7 +250,7 @@ function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, kernel::Abs
     SE = deepcopy(anneal.Conf[c])
     SC.Θ = anneal.Theta[c]
     compute_corr_from_spec(kernel, SE, SC)
-    SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
+    SC.χ2 = compute_goodness(SC.Gᵧ, SC.Gᵥ, covar)
     @show SC.Θ, SC.χ2
 
     return SE
@@ -267,7 +263,7 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
     nstep = get_k("nstep")
     for i = 1:nstep
         if (i - 1) % get_k("retry") == 1
-            SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
+            SC.χ2 = compute_goodness(SC.Gᵧ, SC.Gᵥ, covar)
             @show i, SC.χ2
         end
 
@@ -294,11 +290,11 @@ function compute_corr_from_spec(kernel::AbstractMatrix, SE::SACElement, SC::SACC
     ngamm = get_k("ngamm")
     tmp_kernel = kernel[:, SE.C]
     amplitude = fill(SE.A, ngamm)
-    SC.G1 = tmp_kernel * amplitude
+    SC.Gᵧ = tmp_kernel * amplitude
 end
 
-function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{F64})
-    χ = sum(((G .- Gr) .* Sigma) .^ 2.0)
+function compute_goodness(G::Vector{F64,}, Gᵥ::Vector{F64}, Sigma::Vector{F64})
+    χ = sum(((G .- Gᵥ) .* Sigma) .^ 2.0)
     return χ
 end
 
@@ -316,7 +312,7 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, fmesh
         for s = 1:sbin
 
             if (s - 1) % get_k("retry") == 1
-                SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
+                SC.χ2 = compute_goodness(SC.Gᵧ, SC.Gᵥ, covar)
             end
 
             update_deltas_1step_single(MC, SE, SC, fmesh, kernel, covar)
@@ -378,15 +374,15 @@ function update_deltas_1step_single(MC::StochSKMC, SE::SACElement, SC::SACContex
             error("BIG PROBLEM")
         end
 
-        SC.G2 = SC.G1 + SE.A .* (kernel[:,location_updated] .- kernel[:,location_current])
+        Gₙ = SC.Gᵧ + SE.A .* (kernel[:,location_updated] .- kernel[:,location_current])
 
-        chi2_updated = compute_goodness(SC.G2, SC.Gr, covar)
+        chi2_updated = compute_goodness(Gₙ, SC.Gᵥ, covar)
 
         p = exp( (SC.χ2 - chi2_updated) / (2.0 * SC.Θ) )
 
         if rand(MC.rng) < min(p, 1.0)
             SE.C[select_delta] = location_updated
-            SC.G1 = deepcopy(SC.G2)
+            SC.Gᵧ = deepcopy(Gₙ)
             SC.χ2 = chi2_updated
             if SC.χ2 < SC.χ2min
                 SC.χ2min = SC.χ2
