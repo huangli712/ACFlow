@@ -239,13 +239,9 @@ function init_kernel(tmesh, SG::SACGrid, Mrot::AbstractMatrix)
 end
 
 function init_mc()
-    #nbin = P_SAC["sac_bin_num"]
-
     seed = rand(1:1000000); seed = 840443
     rng = MersenneTwister(seed)
     acc = 0.0
-    #bin_acc = zeros(F64, nbin)
-    #bin_chi2 = zeros(F64, nbin)
     MC = StochSKMC(rng, acc)
 
     return MC
@@ -273,8 +269,6 @@ function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SA
 
     for i = 1:anneal_length
         SC.χ2 = update_fixed_theta(MC, SE, SC, SG, kernel, covar)
-
-        #SC.χ2 = mean(MC.bin_chi2)
 
         push!(Conf, deepcopy(SE))
         push!(Theta, SC.Θ)

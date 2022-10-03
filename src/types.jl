@@ -507,8 +507,6 @@ See also: [`StochSKSolver`](@ref).
 mutable struct StochSKMC
     rng :: AbstractRNG
     acc :: F64
-    #bin_acc :: Vector{F64}
-    #bin_chi2 :: Vector{F64}
 end
 
 """
