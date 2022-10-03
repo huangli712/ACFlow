@@ -5,7 +5,7 @@ const P_SAC = Dict{String,Any}(
 )
 
 mutable struct StochSKElement
-    C :: Vector{I64}
+    P :: Vector{I64}
     A :: F64
     W :: I64
 end
@@ -244,7 +244,7 @@ function decide_sampling_theta(SC::StochSKContext)
     end
     @assert 1 ≤ c ≤ num_anneal
 
-    SE = deepcopy(anneal.Conf[c])
+    SE = deepcopy(SC.𝒞ᵧ[c])
     SC.Θ = SC.Θvec[c]
     compute_corr_from_spec(SE, SC)
     SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
@@ -267,7 +267,7 @@ function measure(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::Stoch
         update_deltas_1step_single(MC, SE, SC, fmesh)
 
         for j = 1:ngamm
-            d_pos = SE.C[j]
+            d_pos = SE.P[j]
             s_pos = ceil(I64, d_pos / length(fmesh) * get_b("nmesh"))
             SC.Aout[s_pos] = SC.Aout[s_pos] + SE.A
         end
@@ -285,7 +285,7 @@ end
 
 function compute_corr_from_spec(SE::StochSKElement, SC::StochSKContext)
     ngamm = get_k("ngamm")
-    tmp_kernel = SC.kernel[:, SE.C]
+    tmp_kernel = SC.kernel[:, SE.P]
     amplitude = fill(SE.A, ngamm)
     SC.Gᵧ = tmp_kernel * amplitude
 end
@@ -346,7 +346,7 @@ function update_deltas_1step_single(MC::StochSKMC, SE::StochSKElement, SC::Stoch
 
     for i = 1:ngamm
         select_delta = rand(MC.rng, 1:ngamm)
-        location_current = SE.C[select_delta]
+        location_current = SE.P[select_delta]
 
         if 1 < SE.W < length(fmesh)
             move_width = rand(MC.rng, 1:SE.W)
@@ -378,7 +378,7 @@ function update_deltas_1step_single(MC::StochSKMC, SE::StochSKElement, SC::Stoch
         p = exp( (SC.χ² - chi2_updated) / (2.0 * SC.Θ) )
 
         if rand(MC.rng) < min(p, 1.0)
-            SE.C[select_delta] = location_updated
+            SE.P[select_delta] = location_updated
             SC.Gᵧ = deepcopy(Gₙ)
             SC.χ² = chi2_updated
             if SC.χ² < SC.χ²min
