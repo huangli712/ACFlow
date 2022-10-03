@@ -1,5 +1,4 @@
 const P_SAC = Dict{String,Any}(
-    "beta" => 8.0,
     "ntime" => 160,
     "nbins" => 1000,
     "nbootstrap" => 1000,
@@ -213,7 +212,7 @@ function init_grid()
 end
 
 function init_kernel(tmesh, SG::SACGrid, Mrot::AbstractMatrix)
-    beta = P_SAC["beta"]
+    beta = get_b("beta")
 
     ntau = length(tmesh)
     nfreq = SG.num_freq_index
