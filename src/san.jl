@@ -9,12 +9,12 @@ const P_SAC = Dict{String,Any}(
     "ommin" => -10.0,
     "sac_bin_num" => 1,
     "sac_bin_size" => 100,
-    "annealling_steps" => 1000,
+    "nwarm" => 1000,
     "ndelta" => 1000,
-    "collecting_steps" => 1000,
+    "nstep" => 1000,
     "stabilization_pace" => 10,
     "theta" => 1e+6,
-    "annealing_rate" => 0.9
+    "ratio" => 0.9
 )
 
 mutable struct SACContext
@@ -261,7 +261,7 @@ function init_spectrum(rng, scale_factor::F64, SG::SACGrid, Gdata, tau)
 end
 
 function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
-    anneal_length = P_SAC["annealling_steps"]
+    anneal_length = P_SAC["nwarm"]
 
     Conf = SACElement[]
     Theta = F64[]
@@ -279,7 +279,7 @@ function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SA
             break
         end
 
-        SC.Θ = SC.Θ * P_SAC["annealing_rate"]
+        SC.Θ = SC.Θ * P_SAC["ratio"]
     end
 
     return SACAnnealing(Conf, Theta, Chi2)
@@ -314,8 +314,8 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
         SC.freq[n] = SpecIndex2Freq(n, SG)
     end
 
-    collecting_steps = P_SAC["collecting_steps"]
-    for i = 1:collecting_steps
+    nstep = P_SAC["nstep"]
+    for i = 1:nstep
         if (i - 1) % P_SAC["stabilization_pace"] == 1
             SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
             @show i, SC.χ2
@@ -330,7 +330,7 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
         end
     end
 
-    factor = scale_factor / (collecting_steps * SG.spec_interval)
+    factor = scale_factor / (nstep * SG.spec_interval)
     SC.spectrum = SC.spectrum * factor
 
     open("Aout.data", "w") do fout
