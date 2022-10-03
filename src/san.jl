@@ -59,15 +59,9 @@ function SpecIndex2Freq(spec_index::I64, SG::SACGrid)
     return SG.ommin + (spec_index - 1) * SG.spec_interval
 end
 
-function calc_grid()
-    ommax = P_SAC["ommax"]
-    ommin = P_SAC["ommin"]
-    freq_interval = P_SAC["freq_interval"]
-    spec_interval = P_SAC["spec_interval"]
-    num_freq_index = ceil(I64, (ommax - ommin) / freq_interval)
-    num_spec_index = ceil(I64, (ommax - ommin) / spec_interval)
-
-    return SACGrid(ommax, ommin, freq_interval, spec_interval, num_freq_index, num_spec_index)
+function Grid2Spec(grid_index::I64, SG::SACGrid)
+    @assert 1 ≤ grid_index ≤ SG.num_freq_index
+    return ceil(I64, grid_index * SG.freq_interval / SG.spec_interval)
 end
 
 function read_gtau()
@@ -180,6 +174,17 @@ function compute_cov_matrix(gtau, bootstrap_samples)
     vals, vecs = F
 
     return vals, vecs, cov_mat
+end
+
+function calc_grid()
+    ommax = P_SAC["ommax"]
+    ommin = P_SAC["ommin"]
+    freq_interval = P_SAC["freq_interval"]
+    spec_interval = P_SAC["spec_interval"]
+    num_freq_index = ceil(I64, (ommax - ommin) / freq_interval)
+    num_spec_index = ceil(I64, (ommax - ommin) / spec_interval)
+
+    return SACGrid(ommax, ommin, freq_interval, spec_interval, num_freq_index, num_spec_index)
 end
 
 function init_kernel(tmesh, SG::SACGrid, Mrot::AbstractMatrix)
@@ -411,11 +416,6 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
             println(fout, SC.freq[i], " ", SC.spectrum[i])
         end
     end
-end
-
-function Grid2Spec(grid_index::I64, SG::SACGrid)
-    @assert 1 ≤ grid_index ≤ SG.num_freq_index
-    return ceil(I64, grid_index * SG.freq_interval / SG.spec_interval)
 end
 
 function san_run()
