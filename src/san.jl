@@ -254,7 +254,10 @@ function decide_sampling_theta(SC::StochSKContext)
 end
 
 function measure(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh)
+    nmesh = get_b("nmesh")
+    nfine = get_k("nfine")
     ngamm = get_k("ngamm")
+
     update_fixed_theta(MC, SE, SC, fmesh)
 
     nstep = get_k("nstep")
@@ -264,11 +267,11 @@ function measure(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::Stoch
             @show i, SC.χ²
         end
 
-        update_deltas_1step_single(MC, SE, SC, fmesh)
+        update_deltas_1step_single(MC, SE, SC)
 
         for j = 1:ngamm
             d_pos = SE.P[j]
-            s_pos = ceil(I64, d_pos / length(fmesh) * get_b("nmesh"))
+            s_pos = ceil(I64, d_pos / nfine * nmesh)
             SC.Aout[s_pos] = SC.Aout[s_pos] + SE.A
         end
     end
@@ -312,7 +315,7 @@ function update_fixed_theta(MC::StochSKMC, SE::StochSKElement, SC::StochSKContex
                 SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
             end
 
-            update_deltas_1step_single(MC, SE, SC, fmesh)
+            update_deltas_1step_single(MC, SE, SC)
 
             sample_chi2[s] = SC.χ²
             sample_acc[s] = MC.acc
@@ -340,7 +343,8 @@ function update_fixed_theta(MC::StochSKMC, SE::StochSKElement, SC::StochSKContex
     return mean(bin_chi2)
 end
 
-function update_deltas_1step_single(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh)
+function update_deltas_1step_single(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    nfine = get_k("nfine")
     ngamm = get_k("ngamm")
     accept_count = 0.0
 
@@ -348,7 +352,7 @@ function update_deltas_1step_single(MC::StochSKMC, SE::StochSKElement, SC::Stoch
         select_delta = rand(MC.rng, 1:ngamm)
         location_current = SE.P[select_delta]
 
-        if 1 < SE.W < length(fmesh)
+        if 1 < SE.W < nfine
             move_width = rand(MC.rng, 1:SE.W)
 
             if rand(MC.rng) > 0.5
@@ -358,15 +362,15 @@ function update_deltas_1step_single(MC::StochSKMC, SE::StochSKElement, SC::Stoch
             end
 
             if location_updated < 1 
-                location_updated = location_updated + length(fmesh)
+                location_updated = location_updated + nfine
             end
 
-            if location_updated > length(fmesh)
-                location_updated = location_updated - length(fmesh)
+            if location_updated > nfine
+                location_updated = location_updated - nfine
             end
 
-        elseif SE.W == length(fmesh)
-            location_updated = rand(MC.rng, 1:length(fmesh))
+        elseif SE.W == nfine
+            location_updated = rand(MC.rng, 1:nfine)
         else
             error("BIG PROBLEM")
         end
