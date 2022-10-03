@@ -239,17 +239,14 @@ function init_kernel(tmesh, SG::SACGrid, Mrot::AbstractMatrix)
 end
 
 function init_mc()
-    sbin = P_SAC["sac_bin_size"]
-    nbin = P_SAC["sac_bin_num"]
+    #nbin = P_SAC["sac_bin_num"]
 
     seed = rand(1:1000000); seed = 840443
     rng = MersenneTwister(seed)
     acc = 0.0
-    #sample_acc = zeros(F64, sbin)
-    #sample_chi2 = zeros(F64, sbin)
-    bin_acc = zeros(F64, nbin)
-    bin_chi2 = zeros(F64, nbin)
-    MC = StochSKMC(rng, acc, bin_acc, bin_chi2)
+    #bin_acc = zeros(F64, nbin)
+    #bin_chi2 = zeros(F64, nbin)
+    MC = StochSKMC(rng, acc)
 
     return MC
 end
@@ -275,9 +272,9 @@ function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SA
     Chi2 = F64[]
 
     for i = 1:anneal_length
-        update_fixed_theta(MC, SE, SC, SG, kernel, covar)
+        SC.χ2 = update_fixed_theta(MC, SE, SC, SG, kernel, covar)
 
-        SC.χ2 = mean(MC.bin_chi2)
+        #SC.χ2 = mean(MC.bin_chi2)
 
         push!(Conf, deepcopy(SE))
         push!(Theta, SC.Θ)
@@ -367,7 +364,9 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::S
     ntau = length(covar)
 
     sample_chi2 = zeros(F64, sbin)
+    bin_chi2 = zeros(F64, nbin)
     sample_acc = zeros(F64, sbin)
+    bin_acc = zeros(F64, nbin)
 
     for n = 1:nbin
         for s = 1:sbin
@@ -382,12 +381,12 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::S
             sample_acc[s] = MC.acc
         end
 
-        MC.bin_chi2[n] = sum(sample_chi2) / sbin
-        MC.bin_acc[n] = sum(sample_acc) / sbin
+        bin_chi2[n] = sum(sample_chi2) / sbin
+        bin_acc[n] = sum(sample_acc) / sbin
 
-        @show n, SC.Θ, SC.χ2min / ntau, MC.bin_chi2[n] / ntau,  MC.bin_chi2[n] - SC.χ2min, MC.bin_acc[n], SE.W * SG.freq_interval
+        @show n, SC.Θ, SC.χ2min / ntau, bin_chi2[n] / ntau,  bin_chi2[n] - SC.χ2min, bin_acc[n], SE.W * SG.freq_interval
 
-        if MC.bin_acc[n] > 0.5
+        if bin_acc[n] > 0.5
             r = SE.W * 1.5
             if ceil(I64, r) < SG.num_freq_index
                 SE.W = ceil(I64, r)
@@ -396,10 +395,12 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::S
             end
         end
 
-        if MC.bin_acc[n] < 0.4
+        if bin_acc[n] < 0.4
             SE.W = ceil(I64, SE.W / 1.5)
         end
     end
+
+    return mean(bin_chi2)
 end
 
 function update_deltas_1step_single(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
