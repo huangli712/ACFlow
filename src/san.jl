@@ -249,7 +249,7 @@ function decide_sampling_theta(SC::StochSKContext)
 
     SE = deepcopy(SC.𝒞ᵧ[c])
     SC.Θ = SC.Θvec[c]
-    compute_corr_from_spec(SE, SC)
+    SC.Gᵧ = compute_corr_from_spec(SE, SC.kernel)
     SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
     @show SC.Θ, SC.χ²
 
