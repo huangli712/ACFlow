@@ -17,14 +17,6 @@ mutable struct SACContext
     spectrum :: Vector{F64}
 end
 
-struct SACGrid
-    ommax :: F64
-    ommin :: F64
-    freq_interval :: F64
-    spec_interval :: F64
-    num_freq_index :: I64
-end
-
 mutable struct SACElement
     C :: Vector{I64}
     A :: F64
@@ -35,16 +27,6 @@ struct SACAnnealing
     Conf  :: Vector{SACElement}
     Theta :: Vector{F64}
     chi2  :: Vector{F64}
-end
-
-function FreqIndex2Freq(freq_index::I64, SG::SACGrid)
-    @assert 1 ≤ freq_index ≤ SG.num_freq_index
-    return SG.ommin + (freq_index - 1) * SG.freq_interval
-end
-
-function Grid2Spec(grid_index::I64, SG::SACGrid)
-    @assert 1 ≤ grid_index ≤ SG.num_freq_index
-    return ceil(I64, grid_index * SG.freq_interval / SG.spec_interval)
 end
 
 function read_gtau()
@@ -168,10 +150,10 @@ function san_run()
     vals, vecs, cov_mat = compute_cov_matrix(gtau, bootstrape)
     covar = calc_covar(vals)
 
-    grid = init_grid()
-    kernel = init_kernel(tmesh, grid, vecs)
+    fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
+    kernel = init_kernel(tmesh, fmesh, vecs)
     mc = init_mc()
-    SE = init_spectrum(mc.rng, factor, grid, gtau, tmesh)
+    SE = init_spectrum(mc.rng, factor, fmesh, gtau, tmesh)
 
     ntau = length(tmesh)
     Gr = vecs * gtau
@@ -187,30 +169,20 @@ function san_run()
     χ = compute_goodness(SC.G1, SC.Gr, covar)
     SC.χ2 = χ
     SC.χ2min = χ
-    anneal = perform_annealing(mc, SE, SC, grid, kernel, covar)
+    anneal = perform_annealing(mc, SE, SC, fmesh, kernel, covar)
     SE = decide_sampling_theta(anneal, SC, kernel, covar)
-    sample_and_collect(factor, mc, SE, SC, grid, kernel, covar)
+    sample_and_collect(factor, mc, SE, SC, fmesh, kernel, covar)
 end
 
-function init_grid()
-    ommax = get_b("wmax")
-    ommin = get_b("wmin")
-    freq_interval = P_SAC["freq_interval"]
-    spec_interval = P_SAC["spec_interval"]
-    num_freq_index = ceil(I64, (ommax - ommin) / freq_interval)
-
-    return SACGrid(ommax, ommin, freq_interval, spec_interval, num_freq_index)
-end
-
-function init_kernel(tmesh, SG::SACGrid, Mrot::AbstractMatrix)
+function init_kernel(tmesh, fmesh::AbstractMesh, Mrot::AbstractMatrix)
     beta = get_b("beta")
 
     ntau = length(tmesh)
-    nfreq = SG.num_freq_index
+    nfreq = length(fmesh)
     kernel = zeros(F64, ntau, nfreq)
 
     for f = 1:nfreq
-        ω = FreqIndex2Freq(f, SG)
+        ω = fmesh[f]
         de = 1.0 + exp(-beta * ω)
         kernel[:,f] = exp.(-ω * tmesh) / de
     end
@@ -229,20 +201,20 @@ function init_mc()
     return MC
 end
 
-function init_spectrum(rng, scale_factor::F64, SG::SACGrid, Gdata, tau)
+function init_spectrum(rng, scale_factor::F64, fmesh::AbstractMesh, Gdata, tau)
     ngamm = get_k("ngamm")
 
     position = zeros(I64, ngamm)
-    rand!(rng, position, 1:SG.num_freq_index)
+    rand!(rng, position, 1:length(fmesh))
 
     amplitude = 1.0 / (scale_factor * ngamm)
     average_freq = abs(log(1.0/Gdata[end]) / tau[end])
-    window_width = ceil(I64, 0.1 * average_freq / SG.freq_interval)
+    window_width = ceil(I64, 0.1 * average_freq / (fmesh[2] - fmesh[1]))
 
     return SACElement(position, amplitude, window_width)
 end
 
-function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
+function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, fmesh::AbstractMesh, kernel::Matrix{F64}, covar)
     anneal_length = get_k("nwarm")
 
     Conf = SACElement[]
@@ -250,7 +222,7 @@ function perform_annealing(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SA
     Chi2 = F64[]
 
     for i = 1:anneal_length
-        SC.χ2 = update_fixed_theta(MC, SE, SC, SG, kernel, covar)
+        SC.χ2 = update_fixed_theta(MC, SE, SC, fmesh, kernel, covar)
 
         push!(Conf, deepcopy(SE))
         push!(Theta, SC.Θ)
@@ -288,9 +260,9 @@ function decide_sampling_theta(anneal::SACAnnealing, SC::SACContext, kernel::Abs
     return SE
 end
 
-function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::AbstractMatrix, covar)
+function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC::SACContext, fmesh::AbstractMesh, kernel::AbstractMatrix, covar)
     ngamm = get_k("ngamm")
-    update_fixed_theta(MC, SE, SC, SG, kernel, covar)
+    update_fixed_theta(MC, SE, SC, fmesh, kernel, covar)
 
     nstep = get_k("nstep")
     for i = 1:nstep
@@ -299,16 +271,16 @@ function sample_and_collect(scale_factor::F64, MC::StochSKMC, SE::SACElement, SC
             @show i, SC.χ2
         end
 
-        update_deltas_1step_single(MC, SE, SC, SG, kernel, covar)
+        update_deltas_1step_single(MC, SE, SC, fmesh, kernel, covar)
 
         for j = 1:ngamm
             d_pos = SE.C[j]
-            s_pos = Grid2Spec(d_pos, SG)
+            s_pos = ceil(I64, d_pos / length(fmesh) * get_b("nmesh"))
             SC.spectrum[s_pos] = SC.spectrum[s_pos] + SE.A
         end
     end
 
-    factor = scale_factor / (nstep * SG.spec_interval)
+    factor = scale_factor / (nstep * (SC.mesh[2] - SC.mesh[1]))
     SC.spectrum = SC.spectrum * factor
 
     open("Aout.data", "w") do fout
@@ -330,7 +302,7 @@ function compute_goodness(G::Vector{F64,}, Gr::Vector{F64}, Sigma::Vector{F64})
     return χ
 end
 
-function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
+function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, fmesh::AbstractMesh, kernel::Matrix{F64}, covar)
     nbin = 1
     sbin = 100
     ntau = length(covar)
@@ -347,7 +319,7 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::S
                 SC.χ2 = compute_goodness(SC.G1, SC.Gr, covar)
             end
 
-            update_deltas_1step_single(MC, SE, SC, SG, kernel, covar)
+            update_deltas_1step_single(MC, SE, SC, fmesh, kernel, covar)
 
             sample_chi2[s] = SC.χ2
             sample_acc[s] = MC.acc
@@ -356,14 +328,14 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::S
         bin_chi2[n] = sum(sample_chi2) / sbin
         bin_acc[n] = sum(sample_acc) / sbin
 
-        @show n, SC.Θ, SC.χ2min / ntau, bin_chi2[n] / ntau,  bin_chi2[n] - SC.χ2min, bin_acc[n], SE.W * SG.freq_interval
+        @show n, SC.Θ, SC.χ2min / ntau, bin_chi2[n] / ntau,  bin_chi2[n] - SC.χ2min, bin_acc[n], SE.W * (fmesh[2] - fmesh[1])
 
         if bin_acc[n] > 0.5
             r = SE.W * 1.5
-            if ceil(I64, r) < SG.num_freq_index
+            if ceil(I64, r) < length(fmesh)
                 SE.W = ceil(I64, r)
             else
-                SE.W = SG.num_freq_index
+                SE.W = length(fmesh)
             end
         end
 
@@ -375,7 +347,7 @@ function update_fixed_theta(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::S
     return mean(bin_chi2)
 end
 
-function update_deltas_1step_single(MC::StochSKMC, SE::SACElement, SC::SACContext, SG::SACGrid, kernel::Matrix{F64}, covar)
+function update_deltas_1step_single(MC::StochSKMC, SE::SACElement, SC::SACContext, fmesh::AbstractMesh, kernel::Matrix{F64}, covar)
     ngamm = get_k("ngamm")
     accept_count = 0.0
 
@@ -383,7 +355,7 @@ function update_deltas_1step_single(MC::StochSKMC, SE::SACElement, SC::SACContex
         select_delta = rand(MC.rng, 1:ngamm)
         location_current = SE.C[select_delta]
 
-        if 1 < SE.W < SG.num_freq_index
+        if 1 < SE.W < length(fmesh)
             move_width = rand(MC.rng, 1:SE.W)
 
             if rand(MC.rng) > 0.5
@@ -393,15 +365,15 @@ function update_deltas_1step_single(MC::StochSKMC, SE::SACElement, SC::SACContex
             end
 
             if location_updated < 1 
-                location_updated = location_updated + SG.num_freq_index
+                location_updated = location_updated + length(fmesh)
             end
 
-            if location_updated > SG.num_freq_index
-                location_updated = location_updated - SG.num_freq_index
+            if location_updated > length(fmesh)
+                location_updated = location_updated - length(fmesh)
             end
 
-        elseif SE.W == SG.num_freq_index
-            location_updated = rand(MC.rng, 1:SG.num_freq_index)
+        elseif SE.W == length(fmesh)
+            location_updated = rand(MC.rng, 1:length(fmesh))
         else
             error("BIG PROBLEM")
         end

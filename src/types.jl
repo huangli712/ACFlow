@@ -133,6 +133,7 @@ Dictionary for configuration parameters:
 the stochastic analytical continuation method (A. W. Sandvik's version).
 """
 const PStochSK = Dict{String,ADT}(
+    "nfine"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
     "ngamm"   => [missing, 1, :I64   , "Number of δ functions"],
     "nwarm"   => [missing, 1, :I64   , "Number of Monte Carlo warmup steps"],
     "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo sweeping steps"],
@@ -143,6 +144,7 @@ const PStochSK = Dict{String,ADT}(
 
 # Default parameters for PStochSK
 const _PStochSK= Dict{String,Any}(
+    "nfine"   => 1000000,
     "ngamm"   => 1000,
     "nwarm"   => 1000,
     "nstep"   => 1000,
