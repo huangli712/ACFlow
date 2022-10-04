@@ -398,27 +398,23 @@ function try_update_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
                 pnext = pcurr - move_width
             end
 
-            if pnext < 1 
-                pnext = pnext + nfine
-            end
-
-            if pnext > nfine
-                pnext = pnext - nfine
-            end
+            pnext < 1     && (pnext = pnext + nfine)
+            pnext > nfine && (pnext = pnext - nfine)
         else
             pnext = rand(MC.rng, 1:nfine)
         end
 
         Gₙ = SC.Gᵧ + SE.A .* (SC.kernel[:,pnext] .- SC.kernel[:,pcurr])
-        chi2_updated = compute_goodness(Gₙ, SC.Gᵥ, SC.σ¹)
-        prob = exp( (SC.χ² - chi2_updated) / (2.0 * SC.Θ) )
+        χ²new = compute_goodness(Gₙ, SC.Gᵥ, SC.σ¹)
+        prob = exp( 0.5 * (SC.χ² - χ²new) / SC.Θ )
 
         if rand(MC.rng) < min(prob, 1.0)
             SE.P[s] = pnext
             SC.Gᵧ = deepcopy(Gₙ)
-            SC.χ² = chi2_updated
-            if SC.χ² < SC.χ²min
-                SC.χ²min = SC.χ²
+
+            SC.χ² = χ²new
+            if χ²new < SC.χ²min
+                SC.χ²min = χ²new
             end
 
             MC.Sacc = MC.Sacc + 1
