@@ -25,6 +25,114 @@ mutable struct StochSKContext
     𝒞ᵧ     :: Vector{StochSKElement}
 end
 
+function solve()
+end
+
+function init()
+end
+
+function run()
+end
+
+function prun()
+end
+
+function average()
+end
+
+function last()
+end
+
+function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh)
+    anneal_length = get_k("nwarm")
+
+    for i = 1:anneal_length
+        SC.χ² = update_fixed_theta(MC, SE, SC, fmesh)
+
+        push!(SC.𝒞ᵧ, deepcopy(SE))
+        SC.χ²vec[i] = SC.χ²
+        SC.Θvec[i] = SC.Θ
+
+        @show i, SC.χ², SC.χ²min, SC.χ² - SC.χ²min
+        if SC.χ² - SC.χ²min < 1e-3
+            break
+        end
+
+        SC.Θ = SC.Θ * get_k("ratio")
+    end
+end
+
+function analyze(SC::StochSKContext)
+    num_anneal = length(SC.𝒞ᵧ)
+    @assert num_anneal ≤ get_k("nwarm")
+
+    c = num_anneal
+    while c ≥ 1
+        if SC.χ²vec[c] > SC.χ²min + 2.0 * sqrt(SC.χ²min)
+            break
+        end
+        c = c - 1
+    end
+    @assert 1 ≤ c ≤ num_anneal
+
+    SE = deepcopy(SC.𝒞ᵧ[c])
+    SC.Θ = SC.Θvec[c]
+    SC.Gᵧ = compute_corr_from_spec(SE, SC.kernel)
+    SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+    @show SC.Θ, SC.χ²
+
+    return SE
+end
+
+function sample(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh)
+    nmesh = get_b("nmesh")
+    nfine = get_k("nfine")
+    ngamm = get_k("ngamm")
+    nstep = get_k("nstep")
+    retry = get_k("retry")
+
+    update_fixed_theta(MC, SE, SC, fmesh)
+
+    for i = 1:nstep
+        if (i - 1) % retry == 1
+            SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+            @show i, SC.χ²
+        end
+
+        update_deltas_1step_single(MC, SE, SC)
+
+        for j = 1:ngamm
+            d_pos = SE.P[j]
+            s_pos = ceil(I64, d_pos / nfine * nmesh)
+            SC.Aout[s_pos] = SC.Aout[s_pos] + SE.A
+        end
+    end
+
+    factor = scale_factor / (nstep * (SC.mesh[2] - SC.mesh[1]))
+    SC.Aout = SC.Aout * factor
+
+    open("Aout.data", "w") do fout
+        for i in eachindex(SC.mesh)
+            println(fout, SC.mesh[i], " ", SC.Aout[i])
+        end
+    end
+end
+
+function init_mc()
+    seed = rand(1:1000000); seed = 840443
+    rng = MersenneTwister(seed)
+    acc = 0.0
+    MC = StochSKMC(rng, acc)
+
+    return MC
+end
+
+function init_element()
+end
+
+function init_iodata()
+end
+
 function read_gtau()
     nbins = P_SAC["nbins"]
     ntime = P_SAC["ntime"]
@@ -170,8 +278,8 @@ function san_run()
     SC = StochSKContext(Gᵥ, Gᵧ, σ¹, mesh, kernel, Aout, χ², χ²min, χ²vec, Θ, Θvec, 𝒞ᵧ)
 
     warmup(mc, SE, SC, fmesh)
-    SE = decide_sampling_theta(SC)
-    measure(factor, mc, SE, SC, fmesh)
+    SE = analyze(SC)
+    sample(factor, mc, SE, SC, fmesh)
 end
 
 function init_kernel(tmesh, fmesh::AbstractMesh, Mrot::AbstractMatrix)
@@ -192,15 +300,6 @@ function init_kernel(tmesh, fmesh::AbstractMesh, Mrot::AbstractMatrix)
     return kernel
 end
 
-function init_mc()
-    seed = rand(1:1000000); seed = 840443
-    rng = MersenneTwister(seed)
-    acc = 0.0
-    MC = StochSKMC(rng, acc)
-
-    return MC
-end
-
 function init_delta(rng, scale_factor::F64, fmesh::AbstractMesh, Gdata, tau)
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
@@ -213,81 +312,6 @@ function init_delta(rng, scale_factor::F64, fmesh::AbstractMesh, Gdata, tau)
     window_width = ceil(I64, 0.1 * average_freq / (fmesh[2] - fmesh[1]))
 
     return StochSKElement(position, amplitude, window_width)
-end
-
-function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh)
-    anneal_length = get_k("nwarm")
-
-    for i = 1:anneal_length
-        SC.χ² = update_fixed_theta(MC, SE, SC, fmesh)
-
-        push!(SC.𝒞ᵧ, deepcopy(SE))
-        SC.χ²vec[i] = SC.χ²
-        SC.Θvec[i] = SC.Θ
-
-        @show i, SC.χ², SC.χ²min, SC.χ² - SC.χ²min
-        if SC.χ² - SC.χ²min < 1e-3
-            break
-        end
-
-        SC.Θ = SC.Θ * get_k("ratio")
-    end
-end
-
-function decide_sampling_theta(SC::StochSKContext)
-    num_anneal = length(SC.𝒞ᵧ)
-    @assert num_anneal ≤ get_k("nwarm")
-
-    c = num_anneal
-    while c ≥ 1
-        if SC.χ²vec[c] > SC.χ²min + 2.0 * sqrt(SC.χ²min)
-            break
-        end
-        c = c - 1
-    end
-    @assert 1 ≤ c ≤ num_anneal
-
-    SE = deepcopy(SC.𝒞ᵧ[c])
-    SC.Θ = SC.Θvec[c]
-    SC.Gᵧ = compute_corr_from_spec(SE, SC.kernel)
-    SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-    @show SC.Θ, SC.χ²
-
-    return SE
-end
-
-function measure(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh)
-    nmesh = get_b("nmesh")
-    nfine = get_k("nfine")
-    ngamm = get_k("ngamm")
-    nstep = get_k("nstep")
-    retry = get_k("retry")
-
-    update_fixed_theta(MC, SE, SC, fmesh)
-
-    for i = 1:nstep
-        if (i - 1) % retry == 1
-            SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-            @show i, SC.χ²
-        end
-
-        update_deltas_1step_single(MC, SE, SC)
-
-        for j = 1:ngamm
-            d_pos = SE.P[j]
-            s_pos = ceil(I64, d_pos / nfine * nmesh)
-            SC.Aout[s_pos] = SC.Aout[s_pos] + SE.A
-        end
-    end
-
-    factor = scale_factor / (nstep * (SC.mesh[2] - SC.mesh[1]))
-    SC.Aout = SC.Aout * factor
-
-    open("Aout.data", "w") do fout
-        for i in eachindex(SC.mesh)
-            println(fout, SC.mesh[i], " ", SC.Aout[i])
-        end
-    end
 end
 
 function compute_corr_from_spec(SE::StochSKElement, kernel::Array{F64,2})
