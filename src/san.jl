@@ -84,7 +84,7 @@ function analyze(SC::StochSKContext)
     return SE
 end
 
-function sample(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nmesh = get_b("nmesh")
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
@@ -108,8 +108,7 @@ function sample(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::StochS
         end
     end
 
-    factor = scale_factor / (nstep * (SC.mesh[2] - SC.mesh[1]))
-    SC.Aout = SC.Aout * factor
+    SC.Aout = SC.Aout / (nstep * (SC.mesh[2] - SC.mesh[1]))
 
     open("Aout.data", "w") do fout
         for i in eachindex(SC.mesh)
@@ -163,8 +162,7 @@ end
 
 function compute_corr_means(gbin)
     A = vec(mean(gbin, dims = 1))
-    factor = A[1]
-    return factor, A
+    return A
 end
 
 function compute_corr_errs(gbin, gtau)
@@ -213,14 +211,6 @@ function discard_poor_quality_data(tmesh, gerr, gtau, bootstrap_samples)
     return tmesh, gerr, gtau, bootstrap_samples
 end
 
-function scale_data(factor, gtau, gerr, bootstrape)
-    gtau = gtau ./ factor
-    gerr = gerr ./ factor
-    bootstrape = bootstrape ./ factor
-
-    return gtau, gerr, bootstrape
-end
-
 function calc_covar(vals)
     nbootstrap = P_SAC["nbootstrap"]
     covar = zeros(F64, length(vals))
@@ -248,16 +238,15 @@ end
 
 function san_run()
     tmesh, gbin = read_gtau()
-    factor, gtau = compute_corr_means(gbin)
+    gtau = compute_corr_means(gbin)
     gerr, bootstrape = compute_corr_errs(gbin, gtau)
     tmesh, gerr, gtau, bootstrape = discard_poor_quality_data(tmesh, gerr, gtau, bootstrape)
-    gtau, gerr, bootstrape = scale_data(factor, gtau, gerr, bootstrape)
     vals, vecs, cov_mat = compute_cov_matrix(gtau, bootstrape)
 
     mc = init_mc()
     fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
     kernel = init_kernel(tmesh, fmesh)
-    SE = init_element(mc.rng, factor, gtau, tmesh)
+    SE = init_element(mc.rng, gtau, tmesh)
 
     Gᵥ = gtau
     Gᵧ = calc_correlator(SE, kernel)
@@ -280,7 +269,7 @@ function san_run()
 
     warmup(mc, SE, SC)
     SE = analyze(SC)
-    sample(factor, mc, SE, SC)
+    sample(mc, SE, SC)
 end
 
 function init_kernel(tmesh, fmesh::AbstractMesh)
@@ -299,7 +288,7 @@ function init_kernel(tmesh, fmesh::AbstractMesh)
     return kernel
 end
 
-function init_element(rng, scale_factor::F64, Gdata, tau)
+function init_element(rng, Gdata, tau)
     wmax = get_b("wmax")
     wmin = get_b("wmin")
     nfine = get_k("nfine")
@@ -308,7 +297,7 @@ function init_element(rng, scale_factor::F64, Gdata, tau)
     position = zeros(I64, ngamm)
     rand!(rng, position, 1:nfine)
     #
-    amplitude = 1.0 / (scale_factor * ngamm)
+    amplitude = 1.0 / ngamm
     #
     δf = (wmax - wmin) / (nfine - 1)
     average_freq = abs(log(1.0/Gdata[end]) / tau[end])
