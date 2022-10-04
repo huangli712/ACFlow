@@ -131,9 +131,6 @@ function init_mc()
     return MC
 end
 
-function init_element()
-end
-
 function init_iodata()
 end
 
@@ -260,7 +257,7 @@ function san_run()
     mc = init_mc()
     fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
     kernel = init_kernel(tmesh, fmesh, vecs)
-    SE = init_delta(mc.rng, factor, fmesh, gtau, tmesh)
+    SE = init_element(mc.rng, factor, fmesh, gtau, tmesh)
 
     Gᵥ = vecs * gtau
     Gᵧ = calc_correlator(SE, kernel)
@@ -304,7 +301,7 @@ function init_kernel(tmesh, fmesh::AbstractMesh, Mrot::AbstractMatrix)
     return kernel
 end
 
-function init_delta(rng, scale_factor::F64, fmesh::AbstractMesh, Gdata, tau)
+function init_element(rng, scale_factor::F64, fmesh::AbstractMesh, Gdata, tau)
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
