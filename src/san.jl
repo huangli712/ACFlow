@@ -43,11 +43,11 @@ end
 function last()
 end
 
-function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh)
+function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     anneal_length = get_k("nwarm")
 
     for i = 1:anneal_length
-        SC.χ² = try_update(MC, SE, SC, fmesh)
+        try_update(MC, SE, SC)
 
         push!(SC.𝒞ᵧ, deepcopy(SE))
         SC.χ²vec[i] = SC.χ²
@@ -84,14 +84,14 @@ function analyze(SC::StochSKContext)
     return SE
 end
 
-function sample(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh)
+function sample(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nmesh = get_b("nmesh")
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
     nstep = get_k("nstep")
     retry = get_k("retry")
 
-    try_update(MC, SE, SC, fmesh)
+    try_update(MC, SE, SC)
 
     for i = 1:nstep
         if (i - 1) % retry == 1
@@ -281,9 +281,9 @@ function san_run()
     #
     SC = StochSKContext(Gᵥ, Gᵧ, σ¹, mesh, kernel, Aout, χ², χ²min, χ²vec, Θ, Θvec, 𝒞ᵧ)
 
-    warmup(mc, SE, SC, fmesh)
+    warmup(mc, SE, SC)
     SE = analyze(SC)
-    sample(factor, mc, SE, SC, fmesh)
+    sample(factor, mc, SE, SC)
 end
 
 function init_kernel(tmesh, fmesh::AbstractMesh, Mrot::AbstractMatrix)
@@ -330,13 +330,10 @@ function compute_goodness(G::Vector{F64,}, Gᵥ::Vector{F64}, Sigma::Vector{F64}
     return χ
 end
 
-function try_update(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh)
+function try_update(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nfine = get_k("nfine")
     retry = get_k("retry")
-
     sbin = 100
-
-    ntau = length(SC.σ¹)
 
     sample_chi2 = zeros(F64, sbin)
     sample_acc = zeros(F64, sbin)
@@ -355,8 +352,6 @@ function try_update(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh
     bin_chi2 = mean(sample_chi2)
     bin_acc = mean(sample_acc)
 
-    @show SC.Θ, SC.χ²min / ntau, bin_chi2 / ntau,  bin_chi2 - SC.χ²min, bin_acc, SE.W * (fmesh[2] - fmesh[1])
-
     if bin_acc > 0.5
         r = SE.W * 1.5
         if ceil(I64, r) < nfine
@@ -370,7 +365,7 @@ function try_update(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh
         SE.W = ceil(I64, SE.W / 1.5)
     end
 
-    return bin_chi2
+    SC.χ² = bin_chi2
 end
 
 function try_update_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
