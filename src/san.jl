@@ -256,10 +256,10 @@ function san_run()
 
     mc = init_mc()
     fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
-    kernel = init_kernel(tmesh, fmesh, vecs)
+    kernel = init_kernel(tmesh, fmesh)
     SE = init_element(mc.rng, factor, gtau, tmesh)
 
-    Gᵥ = vecs * gtau
+    Gᵥ = gtau
     Gᵧ = calc_correlator(SE, kernel)
     σ¹ = calc_covar(vals)
     #
@@ -283,7 +283,7 @@ function san_run()
     sample(factor, mc, SE, SC)
 end
 
-function init_kernel(tmesh, fmesh::AbstractMesh, Mrot::AbstractMatrix)
+function init_kernel(tmesh, fmesh::AbstractMesh)
     beta = get_b("beta")
     nfine = get_k("nfine")
 
@@ -295,8 +295,6 @@ function init_kernel(tmesh, fmesh::AbstractMesh, Mrot::AbstractMatrix)
         de = 1.0 + exp(-beta * ω)
         kernel[:,f] = exp.(-ω * tmesh) / de
     end
-
-    kernel = Mrot * kernel
 
     return kernel
 end
