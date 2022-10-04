@@ -335,11 +335,9 @@ function try_update(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     retry = get_k("retry")
     max_bin_size = 100
 
-    bin_χ²   = zeros(F64, max_bin_size)
-    bin_Sacc = zeros(F64, max_bin_size)
-    bin_Stry = zeros(F64, max_bin_size)
-    bin_Pacc = zeros(F64, max_bin_size)
-    bin_Ptry = zeros(F64, max_bin_size)
+    bin_χ²  = zeros(F64, max_bin_size)
+    bin_acc = zeros(I64, max_bin_size)
+    bin_try = zeros(I64, max_bin_size)
 
     for s = 1:max_bin_size
         if s % retry == 0
@@ -348,16 +346,14 @@ function try_update(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
         try_update_s(MC, SE, SC)
 
-        bin_χ²[s] = SC.χ²
-        bin_Sacc[s] = MC.Sacc
-        bin_Stry[s] = MC.Stry
-        bin_Pacc[s] = MC.Pacc
-        bin_Ptry[s] = MC.Ptry
+        bin_χ²[s]  = SC.χ²
+        bin_acc[s] = MC.Sacc + MC.Pacc
+        bin_try[s] = MC.Stry + MC.Ptry
     end
 
-    bin_acc = mean(sample_acc)
-
-    if bin_acc > 0.5
+    𝑝 = sum(bin_acc) / sum(bin_try)
+    #
+    if 𝑝 > 0.5
         r = SE.W * 1.5
         if ceil(I64, r) < nfine
             SE.W = ceil(I64, r)
@@ -365,8 +361,8 @@ function try_update(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             SE.W = nfine
         end
     end
-
-    if bin_acc < 0.4
+    #
+    if 𝑝 < 0.4
         SE.W = ceil(I64, SE.W / 1.5)
     end
 
