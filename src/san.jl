@@ -78,7 +78,7 @@ function analyze(SC::StochSKContext)
     SE = deepcopy(SC.𝒞ᵧ[c])
     SC.Θ = SC.Θvec[c]
     SC.Gᵧ = compute_corr_from_spec(SE, SC.kernel)
-    SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+    SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
     @show SC.Θ, SC.χ²
 
     return SE
@@ -95,7 +95,7 @@ function sample(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::StochS
 
     for i = 1:nstep
         if (i - 1) % retry == 1
-            SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+            SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
             @show i, SC.χ²
         end
 
@@ -269,7 +269,7 @@ function san_run()
     mesh = LinearMesh(get_b("nmesh"), get_b("wmin"), get_b("wmax"))
     Aout = zeros(F64, get_b("nmesh"))
     #
-    χ = compute_goodness(Gᵧ, Gᵥ, σ¹)
+    χ = calc_goodness(Gᵧ, Gᵥ, σ¹)
     χ² = χ
     χ²min = χ
     χ²vec = zeros(F64, get_k("nwarm"))
@@ -325,8 +325,8 @@ function compute_corr_from_spec(SE::StochSKElement, kernel::Array{F64,2})
     return tmp_kernel * amplitude
 end
 
-function compute_goodness(G::Vector{F64,}, Gᵥ::Vector{F64}, Sigma::Vector{F64})
-    χ = sum(((G .- Gᵥ) .* Sigma) .^ 2.0)
+function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
+    χ = sum( ( (Gₙ .- Gᵥ) .* σ¹ ) .^ 2.0 )
     return χ
 end
 
@@ -341,7 +341,7 @@ function try_update(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
     for s = 1:max_bin_size
         if s % retry == 0
-            SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+            SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
         end
 
         try_update_s(MC, SE, SC)
@@ -399,7 +399,7 @@ function try_update_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         Knext = view(SC.kernel, :, pnext)
         Kcurr = view(SC.kernel, :, pcurr)
         Gₙ = SC.Gᵧ + SE.A * (Knext - Kcurr)
-        χ²new = compute_goodness(Gₙ, SC.Gᵥ, SC.σ¹)
+        χ²new = calc_goodness(Gₙ, SC.Gᵥ, SC.σ¹)
         prob = exp( 0.5 * (SC.χ² - χ²new) / SC.Θ )
 
         if rand(MC.rng) < min(prob, 1.0)
