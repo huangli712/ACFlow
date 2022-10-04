@@ -263,7 +263,7 @@ function san_run()
     Gᵧ = calc_correlator(SE, kernel)
     σ¹ = calc_covar(vals)
     #
-    mesh = LinearMesh(get_b("nmesh"), get_b("wmin"), get_b("wmax"))
+    mesh = make_mesh()
     Aout = zeros(F64, get_b("nmesh"))
     #
     χ = calc_goodness(Gᵧ, Gᵥ, σ¹)
