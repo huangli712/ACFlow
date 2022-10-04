@@ -77,7 +77,7 @@ function analyze(SC::StochSKContext)
 
     SE = deepcopy(SC.𝒞ᵧ[c])
     SC.Θ = SC.Θvec[c]
-    SC.Gᵧ = compute_corr_from_spec(SE, SC.kernel)
+    SC.Gᵧ = calc_correlator(SE, SC.kernel)
     SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
     @show SC.Θ, SC.χ²
 
@@ -263,7 +263,7 @@ function san_run()
     SE = init_delta(mc.rng, factor, fmesh, gtau, tmesh)
 
     Gᵥ = vecs * gtau
-    Gᵧ = compute_corr_from_spec(SE, kernel)
+    Gᵧ = calc_correlator(SE, kernel)
     σ¹ = calc_covar(vals)
     #
     mesh = LinearMesh(get_b("nmesh"), get_b("wmin"), get_b("wmax"))
@@ -318,11 +318,11 @@ function init_delta(rng, scale_factor::F64, fmesh::AbstractMesh, Gdata, tau)
     return StochSKElement(position, amplitude, window_width)
 end
 
-function compute_corr_from_spec(SE::StochSKElement, kernel::Array{F64,2})
-    ngamm = get_k("ngamm")
-    tmp_kernel = kernel[:, SE.P]
-    amplitude = fill(SE.A, ngamm)
-    return tmp_kernel * amplitude
+function calc_correlator(SE::StochSKElement, kernel::Array{F64,2})
+    ngamm = length(SE.P)
+    𝐴 = fill(SE.A, ngamm)
+    𝐾 = kernel[:, SE.P]
+    return 𝐾 * 𝐴
 end
 
 function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
