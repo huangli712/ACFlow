@@ -307,12 +307,12 @@ function init_element(rng, scale_factor::F64, Gdata, tau)
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
-    δf = (wmax - wmin) / (nfine - 1)
-
     position = zeros(I64, ngamm)
     rand!(rng, position, 1:nfine)
-
+    #
     amplitude = 1.0 / (scale_factor * ngamm)
+    #
+    δf = (wmax - wmin) / (nfine - 1)
     average_freq = abs(log(1.0/Gdata[end]) / tau[end])
     window_width = ceil(I64, 0.1 * average_freq / δf)
 
