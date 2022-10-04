@@ -47,7 +47,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::Ab
     anneal_length = get_k("nwarm")
 
     for i = 1:anneal_length
-        SC.χ² = update_fixed_theta(MC, SE, SC, fmesh)
+        SC.χ² = try_update(MC, SE, SC, fmesh)
 
         push!(SC.𝒞ᵧ, deepcopy(SE))
         SC.χ²vec[i] = SC.χ²
@@ -91,7 +91,7 @@ function sample(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::StochS
     nstep = get_k("nstep")
     retry = get_k("retry")
 
-    update_fixed_theta(MC, SE, SC, fmesh)
+    try_update(MC, SE, SC, fmesh)
 
     for i = 1:nstep
         if (i - 1) % retry == 1
@@ -330,51 +330,47 @@ function compute_goodness(G::Vector{F64,}, Gᵥ::Vector{F64}, Sigma::Vector{F64}
     return χ
 end
 
-function update_fixed_theta(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh)
-    nbin = 1
-    sbin = 100
+function try_update(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext, fmesh::AbstractMesh)
     nfine = get_k("nfine")
     retry = get_k("retry")
+
+    sbin = 100
+
     ntau = length(SC.σ¹)
 
     sample_chi2 = zeros(F64, sbin)
-    bin_chi2 = zeros(F64, nbin)
     sample_acc = zeros(F64, sbin)
-    bin_acc = zeros(F64, nbin)
 
-    for n = 1:nbin
-        for s = 1:sbin
-
-            if (s - 1) % retry == 1
-                SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-            end
-
-            try_update_s(MC, SE, SC)
-
-            sample_chi2[s] = SC.χ²
-            sample_acc[s] = MC.Sacc / MC.Stry
+    for s = 1:sbin
+        if s % retry == 0
+            SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
         end
 
-        bin_chi2[n] = sum(sample_chi2) / sbin
-        bin_acc[n] = sum(sample_acc) / sbin
+        try_update_s(MC, SE, SC)
 
-        @show n, SC.Θ, SC.χ²min / ntau, bin_chi2[n] / ntau,  bin_chi2[n] - SC.χ²min, bin_acc[n], SE.W * (fmesh[2] - fmesh[1])
+        sample_chi2[s] = SC.χ²
+        sample_acc[s] = MC.Sacc / MC.Stry
+    end
 
-        if bin_acc[n] > 0.5
-            r = SE.W * 1.5
-            if ceil(I64, r) < nfine
-                SE.W = ceil(I64, r)
-            else
-                SE.W = nfine
-            end
-        end
+    bin_chi2 = mean(sample_chi2)
+    bin_acc = mean(sample_acc)
 
-        if bin_acc[n] < 0.4
-            SE.W = ceil(I64, SE.W / 1.5)
+    @show SC.Θ, SC.χ²min / ntau, bin_chi2 / ntau,  bin_chi2 - SC.χ²min, bin_acc, SE.W * (fmesh[2] - fmesh[1])
+
+    if bin_acc > 0.5
+        r = SE.W * 1.5
+        if ceil(I64, r) < nfine
+            SE.W = ceil(I64, r)
+        else
+            SE.W = nfine
         end
     end
 
-    return mean(bin_chi2)
+    if bin_acc < 0.4
+        SE.W = ceil(I64, SE.W / 1.5)
+    end
+
+    return bin_chi2
 end
 
 function try_update_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
