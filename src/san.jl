@@ -99,7 +99,7 @@ function sample(scale_factor::F64, MC::StochSKMC, SE::StochSKElement, SC::StochS
             @show i, SC.χ²
         end
 
-        update_deltas_1step_single(MC, SE, SC)
+        try_update_s(MC, SE, SC)
 
         for j = 1:ngamm
             d_pos = SE.P[j]
@@ -349,10 +349,10 @@ function update_fixed_theta(MC::StochSKMC, SE::StochSKElement, SC::StochSKContex
                 SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
             end
 
-            update_deltas_1step_single(MC, SE, SC)
+            try_update_s(MC, SE, SC)
 
             sample_chi2[s] = SC.χ²
-            sample_acc[s] = MC.acc
+            sample_acc[s] = MC.Sacc / MC.Stry
         end
 
         bin_chi2[n] = sum(sample_chi2) / sbin
@@ -377,10 +377,12 @@ function update_fixed_theta(MC::StochSKMC, SE::StochSKElement, SC::StochSKContex
     return mean(bin_chi2)
 end
 
-function update_deltas_1step_single(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+function try_update_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
-    accept_count = 0.0
+
+    MC.Sacc = 0
+    MC.Stry = ngamm
 
     for i = 1:ngamm
         select_delta = rand(MC.rng, 1:ngamm)
@@ -423,9 +425,10 @@ function update_deltas_1step_single(MC::StochSKMC, SE::StochSKElement, SC::Stoch
                 SC.χ²min = SC.χ²
             end
 
-            accept_count = accept_count + 1.0
+            MC.Sacc = MC.Sacc + 1
         end
     end
+end
 
-    MC.acc = accept_count / ngamm
+function try_update_p()
 end
