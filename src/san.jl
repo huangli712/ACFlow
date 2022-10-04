@@ -231,9 +231,9 @@ function compute_cov_matrix(gtau, bootstrap_samples)
     end
 
     F = eigen(cov_mat)
-    vals, vecs = F
+    vals, _ = F
 
-    return vals, vecs, cov_mat
+    return vals
 end
 
 function san_run()
@@ -241,7 +241,7 @@ function san_run()
     gtau = compute_corr_means(gbin)
     gerr, bootstrape = compute_corr_errs(gbin, gtau)
     tmesh, gerr, gtau, bootstrape = discard_poor_quality_data(tmesh, gerr, gtau, bootstrape)
-    vals, vecs, cov_mat = compute_cov_matrix(gtau, bootstrape)
+    vals = compute_cov_matrix(gtau, bootstrape)
 
     mc = init_mc()
     fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
