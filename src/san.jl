@@ -94,7 +94,7 @@ function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     try_update(MC, SE, SC)
 
     for i = 1:nstep
-        if (i - 1) % retry == 1
+        if i % retry == 0
             SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
             @show i, SC.χ²
         end
@@ -169,11 +169,9 @@ function compute_corr_errs(gbin, gtau)
     nbins = P_SAC["nbins"]
     ntime = P_SAC["ntime"]
     nbootstrap = P_SAC["nbootstrap"]
-
-    gerr = zeros(F64, ntime)
-    bootstrap_samples = zeros(F64, nbootstrap, ntime)
-
     rng = MersenneTwister(rand(1:10000) + 1981)
+
+    bootstrap_samples = zeros(F64, nbootstrap, ntime)
     for i = 1:nbootstrap
         v = zeros(F64, ntime)
         for _ = 1:nbins
@@ -184,31 +182,7 @@ function compute_corr_errs(gbin, gtau)
     end
     bootstrap_samples = bootstrap_samples ./ nbins
 
-    for i = 1:ntime
-        for j = 1:nbootstrap
-            gerr[i] = gerr[i] + (bootstrap_samples[j,i] - gtau[i]) ^ 2.0
-        end
-        gerr[i] = sqrt(gerr[i] / nbootstrap)
-    end
-
-    return gerr, bootstrap_samples
-end
-
-function discard_poor_quality_data(tmesh, gerr, gtau, bootstrap_samples)
-    ntime = P_SAC["ntime"]
-    good_tgrids = I64[]
-    for i = 2:ntime
-        if abs(gerr[i] / gtau[i]) < 0.1
-            push!(good_tgrids, i)
-        end
-    end
-
-    tmesh = tmesh[good_tgrids]
-    gtau = gtau[good_tgrids]
-    gerr = gerr[good_tgrids]
-    bootstrap_samples = bootstrap_samples[:, good_tgrids]
-
-    return tmesh, gerr, gtau, bootstrap_samples
+    return bootstrap_samples
 end
 
 function calc_covar(vals)
@@ -239,14 +213,13 @@ end
 function san_run()
     tmesh, gbin = read_gtau()
     gtau = compute_corr_means(gbin)
-    gerr, bootstrape = compute_corr_errs(gbin, gtau)
-    tmesh, gerr, gtau, bootstrape = discard_poor_quality_data(tmesh, gerr, gtau, bootstrape)
+    bootstrape = compute_corr_errs(gbin, gtau)
     vals = compute_cov_matrix(gtau, bootstrape)
 
     mc = init_mc()
     fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
     kernel = init_kernel(tmesh, fmesh)
-    SE = init_element(mc.rng, gtau, tmesh)
+    SE = init_element(mc.rng)
 
     Gᵥ = gtau
     Gᵧ = calc_correlator(SE, kernel)
@@ -288,7 +261,8 @@ function init_kernel(tmesh, fmesh::AbstractMesh)
     return kernel
 end
 
-function init_element(rng, Gdata, tau)
+function init_element(rng)
+    β = get_b("beta")
     wmax = get_b("wmax")
     wmin = get_b("wmin")
     nfine = get_k("nfine")
@@ -300,7 +274,7 @@ function init_element(rng, Gdata, tau)
     amplitude = 1.0 / ngamm
     #
     δf = (wmax - wmin) / (nfine - 1)
-    average_freq = abs(log(1.0/Gdata[end]) / tau[end])
+    average_freq = abs(log(2.0) / β)
     window_width = ceil(I64, 0.1 * average_freq / δf)
 
     return StochSKElement(position, amplitude, window_width)
