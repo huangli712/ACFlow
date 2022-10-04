@@ -121,8 +121,12 @@ end
 function init_mc()
     seed = rand(1:1000000); seed = 840443
     rng = MersenneTwister(seed)
-    acc = 0.0
-    MC = StochSKMC(rng, acc)
+
+    Sacc = 0
+    Stry = 0
+    Pacc = 0
+    Ptry = 0
+    MC = StochSKMC(rng, Sacc, Stry, Pacc, Ptry)
 
     return MC
 end
