@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/03
+# Last modified: 2022/10/04
 #
 
 #=
@@ -513,12 +513,19 @@ number generator and some counters.
 ### Members
 
 * rng  -> Random number generator.
+* Pacc -> Counter for pair-updated operation (accepted).
+* Ptry -> Counter for pair-updated operation (tried).
+* Sacc -> Counter for single-updated operation (accepted).
+* Stry -> Counter for single-updated operation (tried).
 
 See also: [`StochSKSolver`](@ref).
 """
 mutable struct StochSKMC
     rng :: AbstractRNG
-    acc :: F64
+    Pacc :: I64
+    Ptry :: I64
+    Sacc :: I64
+    Stry :: I64
 end
 
 """
