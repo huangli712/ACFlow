@@ -257,7 +257,7 @@ function san_run()
     mc = init_mc()
     fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
     kernel = init_kernel(tmesh, fmesh, vecs)
-    SE = init_element(mc.rng, factor, fmesh, gtau, tmesh)
+    SE = init_element(mc.rng, factor, gtau, tmesh)
 
     Gᵥ = vecs * gtau
     Gᵧ = calc_correlator(SE, kernel)
@@ -301,18 +301,20 @@ function init_kernel(tmesh, fmesh::AbstractMesh, Mrot::AbstractMatrix)
     return kernel
 end
 
-function init_element(rng, scale_factor::F64, fmesh::AbstractMesh, Gdata, tau)
+function init_element(rng, scale_factor::F64, Gdata, tau)
+    wmax = get_b("wmax")
+    wmin = get_b("wmin")
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
-    #@show tau[end], get_b("beta")
+    δf = (wmax - wmin) / (nfine - 1)
 
     position = zeros(I64, ngamm)
     rand!(rng, position, 1:nfine)
 
     amplitude = 1.0 / (scale_factor * ngamm)
     average_freq = abs(log(1.0/Gdata[end]) / tau[end])
-    window_width = ceil(I64, 0.1 * average_freq / (fmesh[2] - fmesh[1]))
+    window_width = ceil(I64, 0.1 * average_freq / δf)
 
     return StochSKElement(position, amplitude, window_width)
 end
