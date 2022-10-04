@@ -333,23 +333,28 @@ end
 function try_update(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nfine = get_k("nfine")
     retry = get_k("retry")
-    sbin = 100
+    max_bin_size = 100
 
-    sample_chi2 = zeros(F64, sbin)
-    sample_acc = zeros(F64, sbin)
+    bin_χ²   = zeros(F64, max_bin_size)
+    bin_Sacc = zeros(F64, max_bin_size)
+    bin_Stry = zeros(F64, max_bin_size)
+    bin_Pacc = zeros(F64, max_bin_size)
+    bin_Ptry = zeros(F64, max_bin_size)
 
-    for s = 1:sbin
+    for s = 1:max_bin_size
         if s % retry == 0
             SC.χ² = compute_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
         end
 
         try_update_s(MC, SE, SC)
 
-        sample_chi2[s] = SC.χ²
-        sample_acc[s] = MC.Sacc / MC.Stry
+        bin_χ²[s] = SC.χ²
+        bin_Sacc[s] = MC.Sacc
+        bin_Stry[s] = MC.Stry
+        bin_Pacc[s] = MC.Pacc
+        bin_Ptry[s] = MC.Ptry
     end
 
-    bin_chi2 = mean(sample_chi2)
     bin_acc = mean(sample_acc)
 
     if bin_acc > 0.5
@@ -365,7 +370,7 @@ function try_update(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         SE.W = ceil(I64, SE.W / 1.5)
     end
 
-    SC.χ² = bin_chi2
+    SC.χ² = mean(bin_χ²)
 end
 
 function try_update_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
