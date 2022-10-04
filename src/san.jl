@@ -383,42 +383,38 @@ function try_update_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
     MC.Sacc = 0
     MC.Stry = ngamm
+    @assert 1 < SE.W ≤ nfine 
 
     for i = 1:ngamm
-        select_delta = rand(MC.rng, 1:ngamm)
-        location_current = SE.P[select_delta]
+        s = rand(MC.rng, 1:ngamm)
+        pcurr = SE.P[s]
 
         if 1 < SE.W < nfine
             move_width = rand(MC.rng, 1:SE.W)
 
             if rand(MC.rng) > 0.5
-                location_updated = location_current + move_width
+                pnext = pcurr + move_width
             else
-                location_updated = location_current - move_width
+                pnext = pcurr - move_width
             end
 
-            if location_updated < 1 
-                location_updated = location_updated + nfine
+            if pnext < 1 
+                pnext = pnext + nfine
             end
 
-            if location_updated > nfine
-                location_updated = location_updated - nfine
+            if pnext > nfine
+                pnext = pnext - nfine
             end
-
-        elseif SE.W == nfine
-            location_updated = rand(MC.rng, 1:nfine)
         else
-            error("BIG PROBLEM")
+            pnext = rand(MC.rng, 1:nfine)
         end
 
-        Gₙ = SC.Gᵧ + SE.A .* (SC.kernel[:,location_updated] .- SC.kernel[:,location_current])
-
+        Gₙ = SC.Gᵧ + SE.A .* (SC.kernel[:,pnext] .- SC.kernel[:,pcurr])
         chi2_updated = compute_goodness(Gₙ, SC.Gᵥ, SC.σ¹)
+        prob = exp( (SC.χ² - chi2_updated) / (2.0 * SC.Θ) )
 
-        p = exp( (SC.χ² - chi2_updated) / (2.0 * SC.Θ) )
-
-        if rand(MC.rng) < min(p, 1.0)
-            SE.P[select_delta] = location_updated
+        if rand(MC.rng) < min(prob, 1.0)
+            SE.P[s] = pnext
             SC.Gᵧ = deepcopy(Gₙ)
             SC.χ² = chi2_updated
             if SC.χ² < SC.χ²min
