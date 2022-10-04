@@ -383,7 +383,7 @@ function try_update_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
     MC.Sacc = 0
     MC.Stry = ngamm
-    @assert 1 < SE.W ≤ nfine 
+    @assert 1 < SE.W ≤ nfine
 
     for i = 1:ngamm
         s = rand(MC.rng, 1:ngamm)
@@ -404,7 +404,9 @@ function try_update_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext = rand(MC.rng, 1:nfine)
         end
 
-        Gₙ = SC.Gᵧ + SE.A .* (SC.kernel[:,pnext] .- SC.kernel[:,pcurr])
+        Knext = view(SC.kernel, :, pnext)
+        Kcurr = view(SC.kernel, :, pcurr)
+        Gₙ = SC.Gᵧ + SE.A * (Knext - Kcurr)
         χ²new = compute_goodness(Gₙ, SC.Gᵥ, SC.σ¹)
         prob = exp( 0.5 * (SC.χ² - χ²new) / SC.Θ )
 
