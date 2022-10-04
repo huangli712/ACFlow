@@ -305,6 +305,8 @@ function init_element(rng, scale_factor::F64, fmesh::AbstractMesh, Gdata, tau)
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
+    #@show tau[end], get_b("beta")
+
     position = zeros(I64, ngamm)
     rand!(rng, position, 1:nfine)
 
