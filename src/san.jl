@@ -410,7 +410,7 @@ function try_update_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
         if rand(MC.rng) < min(prob, 1.0)
             SE.P[s] = pnext
-            SC.Gᵧ = deepcopy(Gₙ)
+            SC.Gᵧ = Gₙ
 
             SC.χ² = χ²new
             if χ²new < SC.χ²min
