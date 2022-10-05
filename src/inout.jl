@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/29
+# Last modified: 2022/10/05
 #
 
 #=
@@ -309,6 +309,28 @@ function write_statistics(MC::StochACMC)
         for i = 1:nalph
             @printf(fout, "α %3i -> %16.12f\n", i, MC.Sacc[i] / MC.Stry[i])
         end
+    end
+end
+
+"""
+    write_statistics(MC::StochSKMC)
+
+Write Monte Carlo statistical information for the `StochSK` solver. Note
+that the `StochSK` solver is based on a stochastic approach.
+
+See also: [`PStochSK`](@ref), [`StochSKMC`](@ref).
+"""
+function write_statistics(MC::StochSKMC)
+    open("stat.data", "w") do fout
+        println(fout, "# Move S statistics:")
+        @printf(fout, "accept -> %10i     \n", MC.Sacc)
+        @printf(fout, "try    -> %10i     \n", MC.Stry)
+        @printf(fout, "prob   -> %16.12fi \n", MC.Sacc / MC.Stry)
+        println(fout)
+        println(fout, "# Swap P statistics:")
+        @printf(fout, "accept -> %10i     \n", MC.Pacc)
+        @printf(fout, "try    -> %10i     \n", MC.Ptry)
+        @printf(fout, "prob   -> %16.12fi \n", MC.Pacc / MC.Ptry)
     end
 end
 
