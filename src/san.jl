@@ -31,6 +31,24 @@ end
 
 """
     StochSKContext
+
+Mutable struct. It is used within the StochAC solver only.
+
+### Members
+
+* Gᵥ     -> Input data for correlator.
+* σ¹     -> Actually 1.0 / σ¹.
+* allow  -> Allowable indices.
+* grid   -> Grid for input data.
+* mesh   -> Mesh for output spectrum.
+* model  -> Default model function.
+* kernel -> Default kernel function.
+* Aout   -> Calculate spectrum, it is actually ⟨n(x)⟩.
+* Δ      -> Precomputed δ functions.
+* hτ     -> α-resolved h(τ).
+* Hα     -> α-resolved Hc.
+* Uα     -> α-resolved internal energy, it is actually ⟨Hα⟩.
+* αₗ     -> Vector of the α parameters.
 """
 mutable struct StochSKContext
     Gᵥ     :: Vector{F64}
@@ -65,6 +83,9 @@ end
 
 """
     init(S::StochSKSolver, rd::RawData)
+
+Initialize the StochAC solver and return the StochACMC, StochACElement,
+and StochACContext structs.
 """
 function init(S::StochSKSolver, rd::RawData)
     MC = init_mc(S)
@@ -110,6 +131,8 @@ Perform stochastic analytical continuation simulation, sequential version.
 function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nstep = get_k("nstep")
     retry = get_k("retry")
+    output_per_steps = get_k("ndump")
+    measure_per_steps = 10
 
     println("Start thermalization...")
     SE = warmup(MC, SE, SC)
@@ -120,16 +143,24 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     for iter = 1:nstep
         if iter % retry == 0
             SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-            @show iter, SC.χ²
         end
 
         sample(MC, SE, SC)
 
-        step = step + 1.0
-        measure(SE, SC)
+        if iter % measure_per_steps == 0
+            step = step + 1.0
+            measure(SE, SC)
+        end
+
+        if iter % output_per_steps == 0
+            prog = round(I64, iter / nstep * 100)
+            println("Start stochastic sampling (prog: $prog)")
+            flush(stdout)
+            write_statistics(MC)
+        end
     end
 
-    average(step, SC)
+    return average(step, SC)
 end
 
 function prun()
