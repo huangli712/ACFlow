@@ -173,11 +173,11 @@ function init(S::StochACSolver, rd::RawData)
 end
 
 """
-    run(S::StochACSolver, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+    run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Perform stochastic analytical continuation simulation, sequential version.
 """
-function run(S::StochACSolver, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+function run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     nstep = get_a("nstep")
     output_per_steps = get_a("ndump")
     measure_per_steps = 100
@@ -206,16 +206,15 @@ function run(S::StochACSolver, MC::StochACMC, SE::StochACElement, SC::StochACCon
 end
 
 """
-    prun(S::StochACSolver,
-         p1::Dict{String,Vector{Any}},
+    prun(p1::Dict{String,Vector{Any}},
          p2::Dict{String,Vector{Any}},
          MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Perform stochastic analytical continuation simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochAC, respectively.
 """
-function prun(S::StochACSolver,
-              p1::Dict{String,Vector{Any}}, p2::Dict{String,Vector{Any}},
+function prun(p1::Dict{String,Vector{Any}},
+              p2::Dict{String,Vector{Any}},
               MC::StochACMC, SE::StochACElement, SC::StochACContext)
     rev_dict(p1)
     rev_dict(S, p2)

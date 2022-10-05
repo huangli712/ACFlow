@@ -110,7 +110,36 @@ function run(S::StochSKSolver, MC::StochSKMC, SE::StochSKElement, SC::StochSKCon
     println("Start thermalization...")
     SE = warmup(MC, SE, SC)
 
-    measure(MC, SE, SC)
+    nmesh = get_b("nmesh")
+    nfine = get_k("nfine")
+    ngamm = get_k("ngamm")
+    nstep = get_k("nstep")
+    retry = get_k("retry")
+
+    sample(MC, SE, SC)
+
+    for i = 1:nstep
+        if i % retry == 0
+            SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+            @show i, SC.χ²
+        end
+
+        try_update_s(MC, SE, SC)
+
+        for j = 1:ngamm
+            d_pos = SE.P[j]
+            s_pos = ceil(I64, d_pos / nfine * nmesh)
+            SC.Aout[s_pos] = SC.Aout[s_pos] + SE.A
+        end
+    end
+
+    SC.Aout = SC.Aout / (nstep * (SC.mesh[2] - SC.mesh[1]))
+
+    open("Aout.data", "w") do fout
+        for i in eachindex(SC.mesh)
+            println(fout, SC.mesh[i], " ", SC.Aout[i])
+        end
+    end
 end
 
 function prun()
@@ -201,37 +230,7 @@ function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     SC.χ² = mean(bin_χ²)
 end
 
-function measure(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
-    nmesh = get_b("nmesh")
-    nfine = get_k("nfine")
-    ngamm = get_k("ngamm")
-    nstep = get_k("nstep")
-    retry = get_k("retry")
-
-    sample(MC, SE, SC)
-
-    for i = 1:nstep
-        if i % retry == 0
-            SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-            @show i, SC.χ²
-        end
-
-        try_update_s(MC, SE, SC)
-
-        for j = 1:ngamm
-            d_pos = SE.P[j]
-            s_pos = ceil(I64, d_pos / nfine * nmesh)
-            SC.Aout[s_pos] = SC.Aout[s_pos] + SE.A
-        end
-    end
-
-    SC.Aout = SC.Aout / (nstep * (SC.mesh[2] - SC.mesh[1]))
-
-    open("Aout.data", "w") do fout
-        for i in eachindex(SC.mesh)
-            println(fout, SC.mesh[i], " ", SC.Aout[i])
-        end
-    end
+function measure(SE::StochSKElement, SC::StochSKContext)
 end
 
 #=
