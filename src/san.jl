@@ -84,19 +84,18 @@ function init(S::StochSKSolver, rd::RawData)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
     fmesh = calc_fmesh(S)
-    kernel = make_kernel(fmesh, grid) #init_kernel(grid.τ, fmesh)
+    kernel = make_kernel(fmesh, grid)
     println("Build default kernel: ", get_b("ktype"))
 
     Gᵧ = calc_correlator(SE, kernel)
-    #
+
     χ = calc_goodness(Gᵧ, Gᵥ, σ¹)
-    χ² = χ
-    χ²min = χ
+    χ², χ²min = χ, χ
     χ²vec = zeros(F64, get_k("nwarm"))
-    #
+
     Θ = get_k("theta")
     Θvec = zeros(F64, get_k("nwarm"))
-    #
+
     𝒞ᵧ = StochSKElement[]
     #
     SC = StochSKContext(Gᵥ, Gᵧ, σ¹, grid, mesh, kernel, Aout, χ², χ²min, χ²vec, Θ, Θvec, 𝒞ᵧ)
