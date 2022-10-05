@@ -32,7 +32,7 @@ end
 """
     StochSKContext
 
-Mutable struct. It is used within the StochAC solver only.
+Mutable struct. It is used within the StochSK solver only.
 
 ### Members
 
@@ -74,11 +74,48 @@ end
     solve(S::StochSKSolver, rd::RawData)
 """
 function solve(S::StochSKSolver, rd::RawData)
+    nmesh = get_b("nmesh")
+
     println("[ StochSK ]")
     MC, SE, SC = init(S, rd)
 
-    Aout = run(MC, SE, SC)
-    Gout = last(SC)
+    if nworkers() > 1
+        println("Using $(nworkers()) workers")
+        #
+        # Copy configuration dicts
+        p1 = deepcopy(PBASE)
+        p2 = deepcopy(PStochSK)
+        #
+            #sol = pmap((x) -> prun(p1, p2, MC, SE, SC), 1:nworkers())
+            #@assert length(sol) == nworkers()
+        #
+        # Launch the task
+        𝐹 = Future[]
+        for i = 1:nworkers()
+            𝑓 = @spawnat i + 1 prun(p1, p2, MC, SE, SC)
+            push!(𝐹, 𝑓)
+        end
+        #
+        # Wait and collect the solutions
+        sol = []
+        for i = 1:nworkers()
+            wait(𝐹[i])
+            push!(sol, fetch(𝐹[i]))
+        end
+        #
+        # Average the solutions
+        Aout = zeros(F64, nmesh)
+        for i in eachindex(sol)
+            a = sol[i]
+            @. Aout = Aout + a / nworkers()
+        end
+        #
+        # Postprocess the solutions
+        Gout = last(SC, Aout)
+    else
+        Aout = run(MC, SE, SC)
+        Gout = last(SC, Aout)    
+    end
 
     return SC.mesh.mesh, Aout, Gout
 end
@@ -86,8 +123,8 @@ end
 """
     init(S::StochSKSolver, rd::RawData)
 
-Initialize the StochAC solver and return the StochACMC, StochACElement,
-and StochACContext structs.
+Initialize the StochSK solver and return the StochSKMC, StochSKElement,
+and StochSKContext structs.
 """
 function init(S::StochSKSolver, rd::RawData)
     MC = init_mc(S)
@@ -168,10 +205,10 @@ end
 """
     prun(p1::Dict{String,Vector{Any}},
          p2::Dict{String,Vector{Any}},
-         MC::StochACMC, SE::StochACElement, SC::StochACContext)
+         MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
 Perform stochastic analytical continuation simulation, parallel version.
-The arguments `p1` and `p2` are copies of PBASE and PStochAC, respectively.
+The arguments `p1` and `p2` are copies of PBASE and PStochSK, respectively.
 """
 function prun(p1::Dict{String,Vector{Any}},
               p2::Dict{String,Vector{Any}},
@@ -216,7 +253,7 @@ function prun(p1::Dict{String,Vector{Any}},
 end
 
 """
-    average(step::F64, SC::StochACContext)
+    average(step::F64, SC::StochSKContext)
 
 Postprocess the results generated during the stochastic analytical
 continuation simulations. It will generate real spectral functions.
@@ -230,7 +267,7 @@ end
 """
     last(SC::StochSKContext, Asum::Vector{F64})
 
-It will process and write the calculated results by the StochAC solver,
+It will process and write the calculated results by the StochSK solver,
 including effective hamiltonian, final spectral function, reproduced
 correlator.
 """
