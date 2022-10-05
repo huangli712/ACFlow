@@ -13,6 +13,15 @@
 
 """
     StochSKElement
+
+Mutable struct. It is used to record the field configurations, which will
+be sampled within monte carlo procedure.
+
+### Members
+
+* P -> It means the positions of the δ functions.
+* A -> It means the weights / amplitudes of the δ functions.
+* W -> It denotes the window that is used to restrict the δ functions.
 """
 mutable struct StochSKElement
     P :: Vector{I64}
