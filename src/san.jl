@@ -60,6 +60,7 @@ function solve(S::StochSKSolver, rd::RawData)
     MC, SE, SC = init(S, rd)
 
     run(MC, SE, SC)
+    last(SC)
 end
 
 """
@@ -107,9 +108,6 @@ end
 Perform stochastic analytical continuation simulation, sequential version.
 """
 function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
-    nmesh = get_b("nmesh")
-    nfine = get_k("nfine")
-    ngamm = get_k("ngamm")
     nstep = get_k("nstep")
     retry = get_k("retry")
 
@@ -118,37 +116,35 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
     shuffle(MC, SE, SC)
 
-    for i = 1:nstep
+    step = 0.0
+    for iter = 1:nstep
         if i % retry == 0
             SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-            @show i, SC.χ²
+            @show iter, SC.χ²
         end
 
         sample(MC, SE, SC)
 
-        for j = 1:ngamm
-            d_pos = SE.P[j]
-            s_pos = ceil(I64, d_pos / nfine * nmesh)
-            SC.Aout[s_pos] = SC.Aout[s_pos] + SE.A
-        end
+        step = step + 1.0
+        measure(SE, SC)
     end
 
-    SC.Aout = SC.Aout / (nstep * (SC.mesh[2] - SC.mesh[1]))
-
-    open("Aout.data", "w") do fout
-        for i in eachindex(SC.mesh)
-            println(fout, SC.mesh[i], " ", SC.Aout[i])
-        end
-    end
+    average(step, SC)
 end
 
 function prun()
 end
 
-function average()
+function average(step::F64, SC::StochSKContext)
+    SC.Aout = SC.Aout / (step * (SC.mesh[2] - SC.mesh[1]))
 end
 
-function last()
+function last(SC::StochSKContext)
+    open("Aout.data", "w") do fout
+        for i in eachindex(SC.mesh)
+            println(fout, SC.mesh[i], " ", SC.Aout[i])
+        end
+    end
 end
 
 function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
@@ -200,6 +196,15 @@ function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 end
 
 function measure(SE::StochSKElement, SC::StochSKContext)
+    nmesh = get_b("nmesh")
+    nfine = get_k("nfine")
+    ngamm = get_k("ngamm")
+
+    for j = 1:ngamm
+        d_pos = SE.P[j]
+        s_pos = ceil(I64, d_pos / nfine * nmesh)
+        SC.Aout[s_pos] = SC.Aout[s_pos] + SE.A
+    end
 end
 
 function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
