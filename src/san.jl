@@ -77,8 +77,10 @@ function solve(S::StochSKSolver, rd::RawData)
     println("[ StochSK ]")
     MC, SE, SC = init(S, rd)
 
-    run(MC, SE, SC)
-    last(SC)
+    Aout = run(MC, SE, SC)
+    Gout = last(SC)
+
+    return SC.mesh.mesh, Aout, Gout
 end
 
 """
@@ -213,8 +215,16 @@ function prun(p1::Dict{String,Vector{Any}},
     return average(step, SC)
 end
 
+"""
+    average(step::F64, SC::StochACContext)
+
+Postprocess the results generated during the stochastic analytical
+continuation simulations. It will generate real spectral functions.
+"""
 function average(step::F64, SC::StochSKContext)
     SC.Aout = SC.Aout / (step * (SC.mesh[2] - SC.mesh[1]))
+
+    return SC.Aout
 end
 
 function last(SC::StochSKContext)
