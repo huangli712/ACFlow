@@ -179,8 +179,8 @@ Perform stochastic analytical continuation simulation, sequential version.
 """
 function run(S::StochACSolver, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     nstep = get_a("nstep")
-    measure_per_steps = 100
     output_per_steps = get_a("ndump")
+    measure_per_steps = 100
 
     println("Start thermalization...")
     warmup(MC, SE, SC)
@@ -223,8 +223,8 @@ function prun(S::StochACSolver,
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
 
     nstep = get_a("nstep")
-    measure_per_steps = 100
     output_per_steps = get_a("ndump")
+    measure_per_steps = 100
 
     println("Start thermalization...")
     warmup(MC, SE, SC)
