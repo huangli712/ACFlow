@@ -30,7 +30,7 @@ mutable struct StochSKElement
 end
 
 """
-    StochACContext
+    StochSKContext
 """
 mutable struct StochSKContext
     Gᵥ     :: Vector{F64}
@@ -71,6 +71,9 @@ function init(S::StochSKSolver, rd::RawData)
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
+    SE = init_element(S, MC.rng)
+    println("Randomize Monte Carlo configurations")
+
     G = make_data(rd)
     Gᵥ = abs.(G.value)
     σ¹ = 1.0 ./ sqrt.(G.covar)
@@ -78,8 +81,6 @@ function init(S::StochSKSolver, rd::RawData)
     fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
     grid = make_grid(rd)
     kernel = init_kernel(grid.τ, fmesh)
-    SE = init_element(MC.rng)
-
     Gᵧ = calc_correlator(SE, kernel)
 
     #
@@ -214,7 +215,15 @@ function init_mc(S::StochSKSolver)
     return MC
 end
 
-function init_element(rng)
+"""
+    init_element(S::StochSKSolver, rng::AbstractRNG)
+
+Randomize the configurations for future monte carlo sampling. It will
+return a StochSKElement object.
+
+See also: [`StochSKElement`](@ref).
+"""
+function init_element(S::StochSKSolver, rng::AbstractRNG)
     β = get_b("beta")
     wmax = get_b("wmax")
     wmin = get_b("wmin")
