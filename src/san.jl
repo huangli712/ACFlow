@@ -116,10 +116,10 @@ function last()
 end
 
 function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
-    anneal_length = get_k("nwarm")
+    nwarm = get_k("nwarm")
 
-    for i = 1:anneal_length
-        try_update(MC, SE, SC)
+    for i = 1:nwarm
+        sample(MC, SE, SC)
 
         push!(SC.𝒞ᵧ, deepcopy(SE))
         SC.χ²vec[i] = SC.χ²
@@ -132,6 +132,45 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
         SC.Θ = SC.Θ * get_k("ratio")
     end
+end
+
+function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    nfine = get_k("nfine")
+    retry = get_k("retry")
+    max_bin_size = 100
+
+    bin_χ²  = zeros(F64, max_bin_size)
+    bin_acc = zeros(I64, max_bin_size)
+    bin_try = zeros(I64, max_bin_size)
+
+    for s = 1:max_bin_size
+        if s % retry == 0
+            SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+        end
+
+        try_update_s(MC, SE, SC)
+
+        bin_χ²[s]  = SC.χ²
+        bin_acc[s] = MC.Sacc + MC.Pacc
+        bin_try[s] = MC.Stry + MC.Ptry
+    end
+
+    𝑝 = sum(bin_acc) / sum(bin_try)
+    #
+    if 𝑝 > 0.5
+        r = SE.W * 1.5
+        if ceil(I64, r) < nfine
+            SE.W = ceil(I64, r)
+        else
+            SE.W = nfine
+        end
+    end
+    #
+    if 𝑝 < 0.4
+        SE.W = ceil(I64, SE.W / 1.5)
+    end
+
+    SC.χ² = mean(bin_χ²)
 end
 
 function analyze(SC::StochSKContext)
@@ -156,8 +195,7 @@ function analyze(SC::StochSKContext)
     return SE
 end
 
-function sample()
-end
+
 
 function measure(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nmesh = get_b("nmesh")
@@ -166,7 +204,7 @@ function measure(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nstep = get_k("nstep")
     retry = get_k("retry")
 
-    try_update(MC, SE, SC)
+    sample(MC, SE, SC)
 
     for i = 1:nstep
         if i % retry == 0
@@ -291,45 +329,6 @@ end
 function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
     χ = sum( ( (Gₙ .- Gᵥ) .* σ¹ ) .^ 2.0 )
     return χ
-end
-
-function try_update(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
-    nfine = get_k("nfine")
-    retry = get_k("retry")
-    max_bin_size = 100
-
-    bin_χ²  = zeros(F64, max_bin_size)
-    bin_acc = zeros(I64, max_bin_size)
-    bin_try = zeros(I64, max_bin_size)
-
-    for s = 1:max_bin_size
-        if s % retry == 0
-            SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-        end
-
-        try_update_s(MC, SE, SC)
-
-        bin_χ²[s]  = SC.χ²
-        bin_acc[s] = MC.Sacc + MC.Pacc
-        bin_try[s] = MC.Stry + MC.Ptry
-    end
-
-    𝑝 = sum(bin_acc) / sum(bin_try)
-    #
-    if 𝑝 > 0.5
-        r = SE.W * 1.5
-        if ceil(I64, r) < nfine
-            SE.W = ceil(I64, r)
-        else
-            SE.W = nfine
-        end
-    end
-    #
-    if 𝑝 < 0.4
-        SE.W = ceil(I64, SE.W / 1.5)
-    end
-
-    SC.χ² = mean(bin_χ²)
 end
 
 function try_update_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
