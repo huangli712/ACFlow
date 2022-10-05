@@ -107,7 +107,9 @@ end
 Perform stochastic analytical continuation simulation, sequential version.
 """
 function run(S::StochSKSolver, MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    println("Start thermalization...")
     SE = warmup(MC, SE, SC)
+
     measure(MC, SE, SC)
 end
 
