@@ -56,15 +56,29 @@ end
     solve(S::StochSKSolver, rd::RawData)
 """
 function solve(S::StochSKSolver, rd::RawData)
+    println("[ StochSK ]")
+    MC, SE, SC = init(S, rd)
+
+    warmup(MC, SE, SC)
+    SE = analyze(SC)
+    measure(MC, SE, SC)
+end
+
+"""
+    init(S::StochSKSolver, rd::RawData)
+"""
+function init(S::StochSKSolver, rd::RawData)
+    MC = init_mc(S)
+    println("Create infrastructure for Monte Carlo sampling")
+
     G = make_data(rd)
     Gᵥ = abs.(G.value)
     σ¹ = 1.0 ./ sqrt.(G.covar)
 
-    mc = init_mc()
     fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
     grid = make_grid(rd)
     kernel = init_kernel(grid.τ, fmesh)
-    SE = init_element(mc.rng)
+    SE = init_element(MC.rng)
 
     Gᵧ = calc_correlator(SE, kernel)
 
@@ -84,12 +98,7 @@ function solve(S::StochSKSolver, rd::RawData)
     #
     SC = StochSKContext(Gᵥ, Gᵧ, σ¹, grid, mesh, kernel, Aout, χ², χ²min, χ²vec, Θ, Θvec, 𝒞ᵧ)
 
-    warmup(mc, SE, SC)
-    SE = analyze(SC)
-    measure(mc, SE, SC)
-end
-
-function init()
+    return MC, SE, SC
 end
 
 function run()
@@ -181,14 +190,25 @@ function measure(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     end
 end
 
-function init_mc()
+#=
+### *Service Functions*
+=#
+
+"""
+    init_mc(S::StochSKSolver)
+
+Try to create a StochSKMC struct.
+
+See also: [`StochSK`](@ref).
+"""
+function init_mc(S::StochSKSolver)
     seed = rand(1:1000000); seed = 840443
     rng = MersenneTwister(seed)
-
     Sacc = 0
     Stry = 0
     Pacc = 0
     Ptry = 0
+
     MC = StochSKMC(rng, Sacc, Stry, Pacc, Ptry)
 
     return MC
