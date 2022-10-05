@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/03
+# Last modified: 2022/10/06
 #
 
 """
@@ -626,13 +626,61 @@ To implement the StochSK solver for analytically continuation problem.
 *Members* :
 
 ```text
+StochSKElement -> A struct that contains monte carlo field configurations.
+StochSKContext -> Essential struct for the StochSK solver.
+#
+solve          -> Wrapper function for the StochSK solver.
+init           -> Initialize stochastic analytical continuation simulation.
+run (prun)     -> Perform stochastic analytical continuation simulation.
+average        -> Evaluate the averaged results.
+last           -> Postprocess the calculated results and write them.
+#
+warmup         -> Warmup monte carlo engine.
+sample         -> Sample field configurations via metropolis algorithm.
+measure        -> Measure spectral functions.
+shuffle        -> Shuffle field configurations.
+#
+init_mc        -> Create a StochSKMC struct.
+init_element   -> Create a StochSKElement struct.
+init_iodata    -> Preprocess the input data.
+#
+calc_fmesh     -> Build dense linear mesh in [wmin,wmax].
+calc_correlator-> Calculate correlator function from field configuration.
+calc_goodness  -> Calculate χ² function.
+#
+try_move_s     -> Try to shift the position of one δ function.
+try_move_p     -> Try to shift the positions of two δ functions.
 ```
 =#
 
 #
 include("san.jl")
 #
-export san_run
+export StochSKElement
+export StochSKContext
+#
+export solve
+export init
+export run
+export prun
+export average
+export last
+#
+export warmup
+export sample
+export measure
+export shuffle
+#
+export init_mc
+export init_element
+export init_iodata
+#
+export calc_fmesh
+export calc_correlator
+export calc_goodness
+#
+export try_move_s
+export try_move_p
 
 #=
 ### *Includes And Exports* : *som.jl*
