@@ -118,7 +118,7 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
     step = 0.0
     for iter = 1:nstep
-        if i % retry == 0
+        if iter % retry == 0
             SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
             @show iter, SC.χ²
         end
