@@ -43,7 +43,41 @@ end
 ### *Global Drivers*
 =#
 
-function solve()
+"""
+    solve(S::StochSKSolver, rd::RawData)
+"""
+function solve(S::StochSKSolver, rd::RawData)
+    G = make_data(rd)
+    Gᵥ = abs.(G.value)
+    σ¹ = 1.0 ./ sqrt.(G.covar)
+
+    mc = init_mc()
+    fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
+    grid = make_grid(rd)
+    kernel = init_kernel(grid.τ, fmesh)
+    SE = init_element(mc.rng)
+
+    Gᵧ = calc_correlator(SE, kernel)
+
+    #
+    mesh = make_mesh()
+    Aout = zeros(F64, get_b("nmesh"))
+    #
+    χ = calc_goodness(Gᵧ, Gᵥ, σ¹)
+    χ² = χ
+    χ²min = χ
+    χ²vec = zeros(F64, get_k("nwarm"))
+    #
+    Θ = get_k("theta")
+    Θvec = zeros(F64, get_k("nwarm"))
+    #
+    𝒞ᵧ = StochSKElement[]
+    #
+    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, grid, mesh, kernel, Aout, χ², χ²min, χ²vec, Θ, Θvec, 𝒞ᵧ)
+
+    warmup(mc, SE, SC)
+    SE = analyze(SC)
+    sample(mc, SE, SC)
 end
 
 function init()
@@ -149,41 +183,6 @@ function init_mc()
 end
 
 function init_iodata()
-end
-
-function san_run()
-    rd = read_data()
-    G = make_data(rd)
-    Gᵥ = abs.(G.value)
-    σ¹ = 1.0 ./ sqrt.(G.covar)
-
-    mc = init_mc()
-    fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
-    grid = make_grid(rd)
-    kernel = init_kernel(grid.τ, fmesh)
-    SE = init_element(mc.rng)
-
-    Gᵧ = calc_correlator(SE, kernel)
-
-    #
-    mesh = make_mesh()
-    Aout = zeros(F64, get_b("nmesh"))
-    #
-    χ = calc_goodness(Gᵧ, Gᵥ, σ¹)
-    χ² = χ
-    χ²min = χ
-    χ²vec = zeros(F64, get_k("nwarm"))
-    #
-    Θ = get_k("theta")
-    Θvec = zeros(F64, get_k("nwarm"))
-    #
-    𝒞ᵧ = StochSKElement[]
-    #
-    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, grid, mesh, kernel, Aout, χ², χ²min, χ²vec, Θ, Θvec, 𝒞ᵧ)
-
-    warmup(mc, SE, SC)
-    SE = analyze(SC)
-    sample(mc, SE, SC)
 end
 
 function init_kernel(tmesh, fmesh::AbstractMesh)
