@@ -334,11 +334,11 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 end
 
 function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
-    #if rand(MC.rng) > 0.0
+    if rand(MC.rng) > 0.95
         try_move_s(MC, SE, SC)
-    #else
-    #    try_move_p(MC, SE, SC)
-    #end
+    else
+        try_move_p(MC, SE, SC)
+    end
 end
 
 function measure(SE::StochSKElement, SC::StochSKContext)
@@ -547,4 +547,57 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     MC.Pacc = 0
     MC.Ptry = ngamm
     @assert 1 < SE.W ≤ nfine
+
+    for i = 1:ngamm
+        s₁ = rand(MC.rng, 1:ngamm)
+        s₂ = s₁
+        while s₁ == s₂
+            s₂ = rand(MC.rng, 1:ngamm)
+        end
+
+        pcurr₁ = SE.P[s₁]
+        pcurr₂ = SE.P[s₂]
+
+        if 1 < SE.W < nfine
+            move_width_1 = rand(MC.rng, 1:SE.W)
+            move_width_2 = rand(MC.rng, 1:SE.W)
+
+            if rand(MC.rng) > 0.5
+                pnext₁ = pcurr₁ + move_width_1
+                pnext₂ = pcurr₂ - move_width_2
+            else
+                pnext₁ = pcurr₁ - move_width_1
+                pnext₂ = pcurr₂ - move_width_2
+            end
+
+            pnext₁ < 1     && (pnext₁ = pnext₁ + nfine)
+            pnext₁ > nfine && (pnext₁ = pnext₁ - nfine)
+            pnext₂ < 1     && (pnext₂ = pnext₂ + nfine)
+            pnext₂ > nfine && (pnext₂ = pnext₂ - nfine)
+        else
+            pnext₁ = rand(MC.rng, 1:nfine)
+            pnext₂ = rand(MC.rng, 1:nfine)
+        end
+
+        Knext₁ = view(SC.kernel, :, pnext₁)
+        Kcurr₁ = view(SC.kernel, :, pcurr₁)
+        Knext₂ = view(SC.kernel, :, pnext₂)
+        Kcurr₂ = view(SC.kernel, :, pcurr₂)
+        Gₙ = SC.Gᵧ + SE.A * (Knext₁ - Kcurr₁ + Knext₂ - Kcurr₂)
+        χ²new = calc_goodness(Gₙ, SC.Gᵥ, SC.σ¹)
+        prob = exp( 0.5 * (SC.χ² - χ²new) / SC.Θ )
+
+        if rand(MC.rng) < min(prob, 1.0)
+            SE.P[s₁] = pnext₁
+            SE.P[s₂] = pnext₂
+            SC.Gᵧ = Gₙ
+
+            SC.χ² = χ²new
+            if χ²new < SC.χ²min
+                SC.χ²min = χ²new
+            end
+
+            MC.Pacc = MC.Pacc + 1
+        end
+    end
 end
