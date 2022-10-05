@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/03
+# Last modified: 2022/10/05
 #
 
 """
@@ -336,7 +336,7 @@ function chk_dict()
             @assert get_a("alpha") > 0.0
             @assert get_a("ratio") > 0.0
             break
-        
+
         @case "StochSK"
             push!(PA, PStochSK)
             @assert get_k("ngamm") ≥ 1000

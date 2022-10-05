@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/08
+# Last modified: 2022/10/05
 #
 
 #=
@@ -623,7 +623,7 @@ We can utilize the following formula:
 ```math
 \begin{equation}
 \int \frac{x^2}{a^2 + x^2} dx =
-    x - a~\tan^{-1}\left(\frac{x}{a}\right) 
+    x - a~\tan^{-1}\left(\frac{x}{a}\right)
 \end{equation}
 ```
 

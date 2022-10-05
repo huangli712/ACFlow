@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/03
+# Last modified: 2022/10/05
 #
 
 """
@@ -62,7 +62,7 @@ function solve(rd::RawData)
         @case "StochAC"
             return solve(StochACSolver(), rd)
             break
-        
+
         @case "StochSK"
             return solve(StochSKSolver(), rd)
             break
