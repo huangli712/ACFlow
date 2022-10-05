@@ -59,8 +59,7 @@ function solve(S::StochSKSolver, rd::RawData)
     println("[ StochSK ]")
     MC, SE, SC = init(S, rd)
 
-    warmup(MC, SE, SC)
-    SE = analyze(SC)
+    SE = warmup(MC, SE, SC)
     measure(MC, SE, SC)
 end
 
@@ -117,6 +116,7 @@ end
 
 function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nwarm = get_k("nwarm")
+    ratio = get_k("ratio")
 
     for i = 1:nwarm
         sample(MC, SE, SC)
@@ -130,8 +130,28 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             break
         end
 
-        SC.Θ = SC.Θ * get_k("ratio")
+        SC.Θ = SC.Θ * ratio
     end
+
+    num_anneal = length(SC.𝒞ᵧ)
+    @assert num_anneal ≤ nwarm
+
+    c = num_anneal
+    while c ≥ 1
+        if SC.χ²vec[c] > SC.χ²min + 2.0 * sqrt(SC.χ²min)
+            break
+        end
+        c = c - 1
+    end
+    @assert 1 ≤ c ≤ num_anneal
+
+    SE = deepcopy(SC.𝒞ᵧ[c])
+    SC.Θ = SC.Θvec[c]
+    SC.Gᵧ = calc_correlator(SE, SC.kernel)
+    SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+    @show SC.Θ, SC.χ²
+
+    return SE
 end
 
 function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
@@ -172,30 +192,6 @@ function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
     SC.χ² = mean(bin_χ²)
 end
-
-function analyze(SC::StochSKContext)
-    num_anneal = length(SC.𝒞ᵧ)
-    @assert num_anneal ≤ get_k("nwarm")
-
-    c = num_anneal
-    while c ≥ 1
-        if SC.χ²vec[c] > SC.χ²min + 2.0 * sqrt(SC.χ²min)
-            break
-        end
-        c = c - 1
-    end
-    @assert 1 ≤ c ≤ num_anneal
-
-    SE = deepcopy(SC.𝒞ᵧ[c])
-    SC.Θ = SC.Θvec[c]
-    SC.Gᵧ = calc_correlator(SE, SC.kernel)
-    SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-    @show SC.Θ, SC.χ²
-
-    return SE
-end
-
-
 
 function measure(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nmesh = get_b("nmesh")
