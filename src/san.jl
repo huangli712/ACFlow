@@ -1,10 +1,11 @@
-#=
-const P_SAC = Dict{String,Any}(
-    "ntime" => 160,
-    "nbins" => 1000,
-    "nbootstrap" => 1000,
-)
-=#
+#
+# Project : Gardenia
+# Source  : san.jl
+# Author  : Li Huang (huangli@caep.cn)
+# Status  : Unstable
+#
+# Last modified: 2022/10/05
+#
 
 mutable struct StochSKElement
     P :: Vector{I64}
@@ -135,100 +136,7 @@ end
 function init_iodata()
 end
 
-#=
-function read_gtau()
-    nbins = P_SAC["nbins"]
-    ntime = P_SAC["ntime"]
-
-    tgrid = zeros(F64, ntime)
-    open("tgrids.in", "r") do fin
-        readline(fin)
-        for i = 1:ntime
-            arr = line_to_array(fin)
-            tgrid[i] = parse(F64, arr[2])
-        end
-    end
-
-    gbin = zeros(F64, nbins, ntime)
-    open("corr.in", "r") do fin
-        readline(fin)
-        for i = 1:nbins
-            for j = 1:ntime
-                arr = line_to_array(fin)
-                gbin[i,j] = parse(F64, arr[3])
-            end
-        end
-    end
-
-    return tgrid, gbin
-end
-
-function compute_corr_means(gbin)
-    A = vec(mean(gbin, dims = 1))
-    return A
-end
-
-function compute_corr_errs(gbin, gtau)
-    nbins = P_SAC["nbins"]
-    ntime = P_SAC["ntime"]
-    nbootstrap = P_SAC["nbootstrap"]
-    rng = MersenneTwister(rand(1:10000) + 1981)
-
-    bootstrap_samples = zeros(F64, nbootstrap, ntime)
-    for i = 1:nbootstrap
-        v = zeros(F64, ntime)
-        for _ = 1:nbins
-            k = rand(rng, 1:nbins)
-            v = v + gbin[k,:]
-        end
-        bootstrap_samples[i,:] = v[:]
-    end
-    bootstrap_samples = bootstrap_samples ./ nbins
-
-    return bootstrap_samples
-end
-
-function calc_covar(vals)
-    nbootstrap = P_SAC["nbootstrap"]
-    covar = zeros(F64, length(vals))
-    for i in eachindex(vals)
-        covar[i] = sqrt(nbootstrap) / sqrt(vals[i])
-    end
-    return covar
-end
-
-function compute_cov_matrix(gtau, bootstrap_samples)
-    ncov = length(gtau)
-    cov_mat = zeros(F64, ncov, ncov)
-
-    for i = 1:ncov
-        for j = 1:ncov
-            cov_mat[i,j] = sum((bootstrap_samples[:,i] .- gtau[i]) .* (bootstrap_samples[:,j] .- gtau[j]))
-        end
-    end
-
-    F = eigen(cov_mat)
-    vals, _ = F
-
-    return vals
-end
-=#
-
 function san_run()
-    #tmesh, gbin = read_gtau()
-    #gtau = compute_corr_means(gbin)
-    #bootstrape = compute_corr_errs(gbin, gtau)
-    #vals = compute_cov_matrix(gtau, bootstrape)
-
-    #mc = init_mc()
-    #fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
-    #kernel = init_kernel(tmesh, fmesh)
-    #SE = init_element(mc.rng)
-
-    #Gᵥ = gtau
-    #Gᵧ = calc_correlator(SE, kernel)
-    #σ¹ = calc_covar(vals)
-
     rd = read_data()
     G = make_data(rd)
     Gᵥ = abs.(G.value)
