@@ -29,3 +29,12 @@ ndump = 40000
 nalph = 40
 alpha = 1.00
 ratio = 1.20
+
+[StochSK]
+nfine = 10000
+ngamm = 1000
+nwarm = 1000
+nstep = 20000
+retry = 10
+theta = 1e+6
+ratio = 0.90
