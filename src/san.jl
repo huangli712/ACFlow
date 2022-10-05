@@ -227,12 +227,36 @@ function average(step::F64, SC::StochSKContext)
     return SC.Aout
 end
 
+"""
+    last(SC::StochSKContext)
+
+It will process and write the calculated results by the StochAC solver,
+including effective hamiltonian, final spectral function, reproduced
+correlator.
+"""
 function last(SC::StochSKContext)
+    #=
     open("Aout.data", "w") do fout
         for i in eachindex(SC.mesh)
             println(fout, SC.mesh[i], " ", SC.Aout[i])
         end
     end
+    =#
+
+    # Calculate final spectral function
+    Asum = SC.Aout
+    write_spectrum(SC.mesh, Asum)
+
+    # Reproduce input data
+    kernel = make_kernel(SC.mesh, SC.grid)
+    G = reprod(SC.mesh, kernel, Asum)
+    write_backward(SC.grid, G)
+
+    # Calculate full response function at real frequency
+    _G = kramers(SC.mesh, Asum)
+    write_complete(SC.mesh, _G)
+
+    return _G
 end
 
 function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
