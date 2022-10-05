@@ -154,11 +154,11 @@ function init(S::StochOMSolver, rd::RawData)
 end
 
 """
-    run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
+    run(MC::StochOMMC, SC::StochOMContext)
 
 Perform stochastic optimization simulation, sequential version.
 """
-function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
+function run(MC::StochOMMC, SC::StochOMContext)
     ntry = get_s("ntry")
     nstep = get_s("nstep")
 
@@ -180,16 +180,14 @@ function run(S::StochOMSolver, MC::StochOMMC, SC::StochOMContext)
 end
 
 """
-    prun(S::StochOMSolver,
-         p1::Dict{String,Vector{Any}},
+    prun(p1::Dict{String,Vector{Any}},
          p2::Dict{String,Vector{Any}},
          MC::StochOMMC, SC::StochOMContext)
 
 Perform stochastic optimization simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochOM, respectively.
 """
-function prun(S::StochOMSolver,
-              p1::Dict{String,Vector{Any}},
+function prun(p1::Dict{String,Vector{Any}},
               p2::Dict{String,Vector{Any}},
               MC::StochOMMC, SC::StochOMContext)
     rev_dict(p1)
