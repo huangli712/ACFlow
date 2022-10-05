@@ -86,13 +86,13 @@ function solve(S::StochSKSolver, rd::RawData)
         p1 = deepcopy(PBASE)
         p2 = deepcopy(PStochSK)
         #
-            #sol = pmap((x) -> prun(p1, p2, MC, SE, SC), 1:nworkers())
+            #sol = pmap((x) -> prun(S, p1, p2, MC, SE, SC), 1:nworkers())
             #@assert length(sol) == nworkers()
         #
         # Launch the task
         𝐹 = Future[]
         for i = 1:nworkers()
-            𝑓 = @spawnat i + 1 prun(p1, p2, MC, SE, SC)
+            𝑓 = @spawnat i + 1 prun(S, p1, p2, MC, SE, SC)
             push!(𝐹, 𝑓)
         end
         #
@@ -203,14 +203,16 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 end
 
 """
-    prun(p1::Dict{String,Vector{Any}},
+    prun(S::StochSKSolver,
+         p1::Dict{String,Vector{Any}},
          p2::Dict{String,Vector{Any}},
          MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
 Perform stochastic analytical continuation simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochSK, respectively.
 """
-function prun(p1::Dict{String,Vector{Any}},
+function prun(S::StochSKSolver,
+              p1::Dict{String,Vector{Any}},
               p2::Dict{String,Vector{Any}},
               MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     rev_dict(p1)
