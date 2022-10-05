@@ -7,16 +7,27 @@
 # Last modified: 2022/10/05
 #
 
+#=
+### *Customized Structs* : *StochSK Solver*
+=#
+
+"""
+    StochSKElement
+"""
 mutable struct StochSKElement
     P :: Vector{I64}
     A :: F64
     W :: I64
 end
 
+"""
+    StochACContext
+"""
 mutable struct StochSKContext
     Gᵥ     :: Vector{F64}
     Gᵧ     :: Vector{F64}
     σ¹     :: Vector{F64}
+    grid   :: AbstractGrid
     mesh   :: AbstractMesh
     kernel :: Array{F64,2}
     Aout   :: Vector{F64}
@@ -27,6 +38,10 @@ mutable struct StochSKContext
     Θvec   :: Vector{F64}
     𝒞ᵧ     :: Vector{StochSKElement}
 end
+
+#=
+### *Global Drivers*
+=#
 
 function solve()
 end
@@ -164,7 +179,7 @@ function san_run()
     #
     𝒞ᵧ = StochSKElement[]
     #
-    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, mesh, kernel, Aout, χ², χ²min, χ²vec, Θ, Θvec, 𝒞ᵧ)
+    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, grid, mesh, kernel, Aout, χ², χ²min, χ²vec, Θ, Θvec, 𝒞ᵧ)
 
     warmup(mc, SE, SC)
     SE = analyze(SC)
