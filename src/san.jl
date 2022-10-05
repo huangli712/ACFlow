@@ -59,8 +59,7 @@ function solve(S::StochSKSolver, rd::RawData)
     println("[ StochSK ]")
     MC, SE, SC = init(S, rd)
 
-    SE = warmup(MC, SE, SC)
-    measure(MC, SE, SC)
+    run(S, MC, SE, SC)
 end
 
 """
@@ -102,7 +101,14 @@ function init(S::StochSKSolver, rd::RawData)
     return MC, SE, SC
 end
 
-function run()
+"""
+    run(S::StochSKSolver, MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+
+Perform stochastic analytical continuation simulation, sequential version.
+"""
+function run(S::StochSKSolver, MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    SE = warmup(MC, SE, SC)
+    measure(MC, SE, SC)
 end
 
 function prun()
