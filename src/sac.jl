@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/06
+# Last modified: 2022/10/05
 #
 
 #=
@@ -152,7 +152,7 @@ function init(S::StochACSolver, rd::RawData)
     model = make_model(mesh)
     println("Build default model: ", get_b("mtype"))
 
-    fmesh = calc_fmesh()
+    fmesh = calc_fmesh(S)
     kernel = make_kernel(fmesh, grid)
     println("Build default kernel: ", get_b("ktype"))
 
@@ -461,14 +461,14 @@ function init_iodata(S::StochACSolver, rd::RawData)
 end
 
 """
-    calc_fmesh()
+    calc_fmesh(S::StochACSolver)
 
 Try to calculate very fine (dense) linear mesh in [wmin, wmax], which
 is used internally to build the kernel function.
 
 See also: [`LinearMesh`](@ref).
 """
-function calc_fmesh()
+function calc_fmesh(S::StochACSolver)
     nfine = get_a("nfine")
     wmin = get_b("wmin")
     wmax = get_b("wmax")

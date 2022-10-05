@@ -74,19 +74,21 @@ function init(S::StochSKSolver, rd::RawData)
     SE = init_element(S, MC.rng)
     println("Randomize Monte Carlo configurations")
 
-    G = make_data(rd)
-    Gᵥ = abs.(G.value)
-    σ¹ = 1.0 ./ sqrt.(G.covar)
+    Gᵥ, σ¹, Aout = init_iodata(S, rd)
+    println("Postprocess input data: ", length(σ¹), " points")
 
-    fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
     grid = make_grid(rd)
+    println("Build grid for input data: ", length(grid), " points")
+
+    mesh = make_mesh()
+    println("Build mesh for spectrum: ", length(mesh), " points")
+
+
+    fmesh = calc_fmesh(S)
+    #LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
     kernel = init_kernel(grid.τ, fmesh)
     Gᵧ = calc_correlator(SE, kernel)
 
-    #
-    mesh = make_mesh()
-    Aout = zeros(F64, get_b("nmesh"))
-    #
     χ = calc_goodness(Gᵧ, Gᵥ, σ¹)
     χ² = χ
     χ²min = χ
@@ -242,7 +244,24 @@ function init_element(S::StochSKSolver, rng::AbstractRNG)
     return StochSKElement(position, amplitude, window_width)
 end
 
-function init_iodata()
+"""
+    init_iodata(S::StochSKSolver, rd::RawData)
+
+Preprocess the input data (`rd`), then allocate memory for the calculated
+spectral functions.
+
+See also: [`RawData`](@ref).
+"""
+function init_iodata(S::StochSKSolver, rd::RawData)
+    nmesh = get_b("nmesh")
+
+    Aout = zeros(F64, nmesh)
+
+    G = make_data(rd)
+    Gᵥ = abs.(G.value)
+    σ¹ = 1.0 ./ sqrt.(G.covar)
+
+    return Gᵥ, σ¹, Aout
 end
 
 function init_kernel(tmesh, fmesh::AbstractMesh)
@@ -259,6 +278,24 @@ function init_kernel(tmesh, fmesh::AbstractMesh)
     end
 
     return kernel
+end
+
+"""
+    calc_fmesh(S::StochSKSolver)
+
+Try to calculate very fine (dense) linear mesh in [wmin, wmax], which
+is used internally to build the kernel function.
+
+See also: [`LinearMesh`](@ref).
+"""
+function calc_fmesh(S::StochSKSolver)
+    nfine = get_k("nfine")
+    wmin = get_b("wmin")
+    wmax = get_b("wmax")
+
+    fmesh = LinearMesh(nfine, wmin, wmax)
+
+    return fmesh
 end
 
 function calc_correlator(SE::StochSKElement, kernel::Array{F64,2})
