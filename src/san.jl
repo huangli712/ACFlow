@@ -259,6 +259,10 @@ function last(SC::StochSKContext)
     return _G
 end
 
+#=
+### *Core Algorithms*
+=#
+
 function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nwarm = get_k("nwarm")
     ratio = get_k("ratio")
@@ -507,4 +511,10 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 end
 
 function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    nfine = get_k("nfine")
+    ngamm = get_k("ngamm")
+
+    MC.Pacc = 0
+    MC.Ptry = ngamm
+    @assert 1 < SE.W ≤ nfine
 end
