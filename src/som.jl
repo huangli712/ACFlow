@@ -94,13 +94,13 @@ function solve(S::StochOMSolver, rd::RawData)
         p1 = deepcopy(PBASE)
         p2 = deepcopy(PStochOM)
         #
-            #sol = pmap((x) -> prun(S, p1, p2, MC, SC), 1:nworkers())
+            #sol = pmap((x) -> prun(p1, p2, MC, SC), 1:nworkers())
             #@assert length(sol) == nworkers()
         #
         #  Launch the task
         𝐹 = Future[]
         for i = 1:nworkers()
-            𝑓 = @spawnat i + 1 prun(S, p1, p2, MC, SC)
+            𝑓 = @spawnat i + 1 prun(p1, p2, MC, SC)
             push!(𝐹, 𝑓)
         end
         #
@@ -121,7 +121,7 @@ function solve(S::StochOMSolver, rd::RawData)
         # Postprocess the solutions
         Gout = last(SC, Aout)
     else
-        Aout = run(S, MC, SC)
+        Aout = run(MC, SC)
         Gout = last(SC, Aout)
     end
 
