@@ -59,7 +59,7 @@ function solve(S::StochSKSolver, rd::RawData)
     println("[ StochSK ]")
     MC, SE, SC = init(S, rd)
 
-    run(S, MC, SE, SC)
+    run(MC, SE, SC)
 end
 
 """
@@ -107,16 +107,16 @@ end
 Perform stochastic analytical continuation simulation, sequential version.
 """
 function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
-    println("Start thermalization...")
-    SE = warmup(MC, SE, SC)
-
     nmesh = get_b("nmesh")
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
     nstep = get_k("nstep")
     retry = get_k("retry")
 
-    sample(MC, SE, SC)
+    println("Start thermalization...")
+    SE = warmup(MC, SE, SC)
+
+    shuffle(MC, SE, SC)
 
     for i = 1:nstep
         if i % retry == 0
@@ -124,7 +124,7 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             @show i, SC.χ²
         end
 
-        try_update_s(MC, SE, SC)
+        sample(MC, SE, SC)
 
         for j = 1:ngamm
             d_pos = SE.P[j]
@@ -156,7 +156,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     ratio = get_k("ratio")
 
     for i = 1:nwarm
-        sample(MC, SE, SC)
+        shuffle(MC, SE, SC)
 
         push!(SC.𝒞ᵧ, deepcopy(SE))
         SC.χ²vec[i] = SC.χ²
@@ -192,6 +192,17 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 end
 
 function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    if rand(MC.rng) > 0.0
+        try_move_s(MC, SE, SC)
+    else
+        try_move_p(MC, SE, SC)
+    end
+end
+
+function measure(SE::StochSKElement, SC::StochSKContext)
+end
+
+function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nfine = get_k("nfine")
     retry = get_k("retry")
     max_bin_size = 100
@@ -205,7 +216,7 @@ function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
         end
 
-        try_update_s(MC, SE, SC)
+        sample(MC, SE, SC)
 
         bin_χ²[s]  = SC.χ²
         bin_acc[s] = MC.Sacc + MC.Pacc
@@ -228,9 +239,6 @@ function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     end
 
     SC.χ² = mean(bin_χ²)
-end
-
-function measure(SE::StochSKElement, SC::StochSKContext)
 end
 
 #=
@@ -334,7 +342,7 @@ function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
     return χ
 end
 
-function try_update_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
@@ -381,5 +389,5 @@ function try_update_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     end
 end
 
-function try_update_p()
+function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 end
