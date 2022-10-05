@@ -1,8 +1,10 @@
+#=
 const P_SAC = Dict{String,Any}(
     "ntime" => 160,
     "nbins" => 1000,
     "nbootstrap" => 1000,
 )
+=#
 
 mutable struct StochSKElement
     P :: Vector{I64}
@@ -133,6 +135,7 @@ end
 function init_iodata()
 end
 
+#=
 function read_gtau()
     nbins = P_SAC["nbins"]
     ntime = P_SAC["ntime"]
@@ -209,6 +212,7 @@ function compute_cov_matrix(gtau, bootstrap_samples)
 
     return vals
 end
+=#
 
 function san_run()
     #tmesh, gbin = read_gtau()
