@@ -1,6 +1,6 @@
 [BASE]
 finput = "gtau.data"
-solver = "MaxEnt"
+solver = "StochSK"
 ktype  = "fermi"
 mtype  = "2gauss"
 grid   = "ftime"
@@ -35,6 +35,7 @@ nfine = 10000
 ngamm = 1000
 nwarm = 1000
 nstep = 20000
+ndump = 100
 retry = 10
 theta = 1e+6
 ratio = 0.90
