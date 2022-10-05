@@ -264,22 +264,6 @@ function init_iodata(S::StochSKSolver, rd::RawData)
     return Gᵥ, σ¹, Aout
 end
 
-function init_kernel(tmesh, fmesh::AbstractMesh)
-    beta = get_b("beta")
-    nfine = get_k("nfine")
-
-    ntau = length(tmesh)
-    kernel = zeros(F64, ntau, nfine)
-
-    for f = 1:nfine
-        ω = fmesh[f]
-        de = 1.0 + exp(-beta * ω)
-        kernel[:,f] = exp.(-ω * tmesh) / de
-    end
-
-    return kernel
-end
-
 """
     calc_fmesh(S::StochSKSolver)
 
