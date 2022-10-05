@@ -86,7 +86,7 @@ function solve(S::StochSKSolver, rd::RawData)
 
     warmup(mc, SE, SC)
     SE = analyze(SC)
-    sample(mc, SE, SC)
+    measure(mc, SE, SC)
 end
 
 function init()
@@ -145,7 +145,10 @@ function analyze(SC::StochSKContext)
     return SE
 end
 
-function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+function sample()
+end
+
+function measure(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nmesh = get_b("nmesh")
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
@@ -191,25 +194,6 @@ function init_mc()
     return MC
 end
 
-function init_iodata()
-end
-
-function init_kernel(tmesh, fmesh::AbstractMesh)
-    beta = get_b("beta")
-    nfine = get_k("nfine")
-
-    ntau = length(tmesh)
-    kernel = zeros(F64, ntau, nfine)
-
-    for f = 1:nfine
-        ω = fmesh[f]
-        de = 1.0 + exp(-beta * ω)
-        kernel[:,f] = exp.(-ω * tmesh) / de
-    end
-
-    return kernel
-end
-
 function init_element(rng)
     β = get_b("beta")
     wmax = get_b("wmax")
@@ -227,6 +211,25 @@ function init_element(rng)
     window_width = ceil(I64, 0.1 * average_freq / δf)
 
     return StochSKElement(position, amplitude, window_width)
+end
+
+function init_iodata()
+end
+
+function init_kernel(tmesh, fmesh::AbstractMesh)
+    beta = get_b("beta")
+    nfine = get_k("nfine")
+
+    ntau = length(tmesh)
+    kernel = zeros(F64, ntau, nfine)
+
+    for f = 1:nfine
+        ω = fmesh[f]
+        de = 1.0 + exp(-beta * ω)
+        kernel[:,f] = exp.(-ω * tmesh) / de
+    end
+
+    return kernel
 end
 
 function calc_correlator(SE::StochSKElement, kernel::Array{F64,2})
