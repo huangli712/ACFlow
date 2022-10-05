@@ -1,4 +1,4 @@
-#!/usr/bin/env julia -p 8
+#!/usr/bin/env julia -p 4
 
 @everywhere push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
