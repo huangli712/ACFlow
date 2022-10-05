@@ -55,7 +55,7 @@ Solve the analytical continuation problem by the maximum entropy method.
 function solve(S::MaxEntSolver, rd::RawData)
     println("[ MaxEnt ]")
     mec = init(S, rd)
-    darr, sol = run(S, mec)
+    darr, sol = run(mec)
     gout = last(mec, darr, sol)
     return mec.mesh.mesh, sol[:A], gout
 end
@@ -90,12 +90,12 @@ function init(S::MaxEntSolver, rd::RawData)
 end
 
 """
-    run(S::MaxEntSolver, mec::MaxEntContext)
+    run(mec::MaxEntContext)
 
 Perform maximum entropy simulation with different algorithms. Now it
 supports the `historic`, `classic`, `bryan`, and `chi2kink` algorithms.
 """
-function run(S::MaxEntSolver, mec::MaxEntContext)
+function run(mec::MaxEntContext)
     method = get_m("method")
 
     @cswitch method begin
