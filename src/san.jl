@@ -211,19 +211,33 @@ function compute_cov_matrix(gtau, bootstrap_samples)
 end
 
 function san_run()
-    tmesh, gbin = read_gtau()
-    gtau = compute_corr_means(gbin)
-    bootstrape = compute_corr_errs(gbin, gtau)
-    vals = compute_cov_matrix(gtau, bootstrape)
+    #tmesh, gbin = read_gtau()
+    #gtau = compute_corr_means(gbin)
+    #bootstrape = compute_corr_errs(gbin, gtau)
+    #vals = compute_cov_matrix(gtau, bootstrape)
+
+    #mc = init_mc()
+    #fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
+    #kernel = init_kernel(tmesh, fmesh)
+    #SE = init_element(mc.rng)
+
+    #Gᵥ = gtau
+    #Gᵧ = calc_correlator(SE, kernel)
+    #σ¹ = calc_covar(vals)
+
+    rd = read_data()
+    G = make_data(rd)
+    Gᵥ = abs.(G.value)
+    σ¹ = 1.0 ./ sqrt.(G.covar)
 
     mc = init_mc()
     fmesh = LinearMesh(get_k("nfine"), get_b("wmin"), get_b("wmax"))
-    kernel = init_kernel(tmesh, fmesh)
+    grid = make_grid(rd)
+    kernel = init_kernel(grid.τ, fmesh)
     SE = init_element(mc.rng)
 
-    Gᵥ = gtau
     Gᵧ = calc_correlator(SE, kernel)
-    σ¹ = calc_covar(vals)
+
     #
     mesh = make_mesh()
     Aout = zeros(F64, get_b("nmesh"))
