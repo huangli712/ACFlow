@@ -228,23 +228,14 @@ function average(step::F64, SC::StochSKContext)
 end
 
 """
-    last(SC::StochSKContext)
+    last(SC::StochSKContext, Asum::Vector{F64})
 
 It will process and write the calculated results by the StochAC solver,
 including effective hamiltonian, final spectral function, reproduced
 correlator.
 """
-function last(SC::StochSKContext)
-    #=
-    open("Aout.data", "w") do fout
-        for i in eachindex(SC.mesh)
-            println(fout, SC.mesh[i], " ", SC.Aout[i])
-        end
-    end
-    =#
-
+function last(SC::StochSKContext, Asum::Vector{F64})
     # Calculate final spectral function
-    Asum = SC.Aout
     write_spectrum(SC.mesh, Asum)
 
     # Reproduce input data

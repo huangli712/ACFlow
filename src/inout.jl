@@ -323,14 +323,14 @@ See also: [`PStochSK`](@ref), [`StochSKMC`](@ref).
 function write_statistics(MC::StochSKMC)
     open("stat.data", "w") do fout
         println(fout, "# Move S statistics:")
-        @printf(fout, "accept -> %10i     \n", MC.Sacc)
-        @printf(fout, "try    -> %10i     \n", MC.Stry)
-        @printf(fout, "prob   -> %16.12fi \n", MC.Sacc / MC.Stry)
+        @printf(fout, "accept -> %16i    \n", MC.Sacc)
+        @printf(fout, "try    -> %16i    \n", MC.Stry)
+        @printf(fout, "prob   -> %16.12f \n", MC.Sacc / MC.Stry)
         println(fout)
-        println(fout, "# Swap P statistics:")
-        @printf(fout, "accept -> %10i     \n", MC.Pacc)
-        @printf(fout, "try    -> %10i     \n", MC.Ptry)
-        @printf(fout, "prob   -> %16.12fi \n", MC.Pacc / MC.Ptry)
+        println(fout, "# Move P statistics:")
+        @printf(fout, "accept -> %16i    \n", MC.Pacc)
+        @printf(fout, "try    -> %16i    \n", MC.Ptry)
+        @printf(fout, "prob   -> %16.12f \n", MC.Pacc / MC.Ptry)
     end
 end
 
