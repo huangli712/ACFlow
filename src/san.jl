@@ -163,7 +163,54 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     return average(step, SC)
 end
 
-function prun()
+"""
+    prun(p1::Dict{String,Vector{Any}},
+         p2::Dict{String,Vector{Any}},
+         MC::StochACMC, SE::StochACElement, SC::StochACContext)
+
+Perform stochastic analytical continuation simulation, parallel version.
+The arguments `p1` and `p2` are copies of PBASE and PStochAC, respectively.
+"""
+function prun(p1::Dict{String,Vector{Any}},
+              p2::Dict{String,Vector{Any}},
+              MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    rev_dict(p1)
+    rev_dict(S, p2)
+
+    MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
+
+    nstep = get_k("nstep")
+    retry = get_k("retry")
+    output_per_steps = get_k("ndump")
+    measure_per_steps = 10
+
+    println("Start thermalization...")
+    SE = warmup(MC, SE, SC)
+
+    shuffle(MC, SE, SC)
+
+    step = 0.0
+    for iter = 1:nstep
+        if iter % retry == 0
+            SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+        end
+
+        sample(MC, SE, SC)
+
+        if iter % measure_per_steps == 0
+            step = step + 1.0
+            measure(SE, SC)
+        end
+
+        if iter % output_per_steps == 0
+            prog = round(I64, iter / nstep * 100)
+            println("Start stochastic sampling (prog: $prog)")
+            flush(stdout)
+            myid() == 2 && write_statistics(MC)
+        end
+    end
+
+    return average(step, SC)
 end
 
 function average(step::F64, SC::StochSKContext)
