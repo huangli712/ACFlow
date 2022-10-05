@@ -102,11 +102,11 @@ function init(S::StochSKSolver, rd::RawData)
 end
 
 """
-    run(S::StochSKSolver, MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
 Perform stochastic analytical continuation simulation, sequential version.
 """
-function run(S::StochSKSolver, MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     println("Start thermalization...")
     SE = warmup(MC, SE, SC)
 
