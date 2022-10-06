@@ -643,20 +643,24 @@ algorithm. In each update, only a pair of δ functions is shifted.
 See also: [`try_move_s`](@ref).
 """
 function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    # Get parameters
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
+    # Reset counters
     MC.Pacc = 0
     MC.Ptry = ngamm
     @assert 1 < SE.W ≤ nfine
 
     for i = 1:ngamm
+        # Choose a pair of δ functions
         s₁ = rand(MC.rng, 1:ngamm)
         s₂ = s₁
         while s₁ == s₂
             s₂ = rand(MC.rng, 1:ngamm)
         end
 
+        # Evaluate new positions for the two δ functions
         pcurr₁ = SE.P[s₁]
         pcurr₂ = SE.P[s₂]
 
@@ -681,6 +685,7 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext₂ = rand(MC.rng, 1:nfine)
         end
 
+        # Calculate the transition probability
         Knext₁ = view(SC.kernel, :, pnext₁)
         Kcurr₁ = view(SC.kernel, :, pcurr₁)
         Knext₂ = view(SC.kernel, :, pnext₂)
@@ -689,16 +694,18 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         χ²new = calc_goodness(Gₙ, SC.Gᵥ, SC.σ¹)
         prob = exp( 0.5 * (SC.χ² - χ²new) / SC.Θ )
 
+        # Important sampling, if true, the δ function is shifted and the
+        # corresponding objects are updated.
         if rand(MC.rng) < min(prob, 1.0)
             SE.P[s₁] = pnext₁
             SE.P[s₂] = pnext₂
             SC.Gᵧ = Gₙ
-
+            #
             SC.χ² = χ²new
             if χ²new < SC.χ²min
                 SC.χ²min = χ²new
             end
-
+            #
             MC.Pacc = MC.Pacc + 1
         end
     end
