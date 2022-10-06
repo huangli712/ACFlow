@@ -193,6 +193,7 @@ function run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
     # Sample and collect data
     step = 0.0
+    println("Start stochastic sampling...")
     for iter = 1:nstep
         sample(MC, SE, SC)
 
@@ -203,7 +204,7 @@ function run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
-            println("Start stochastic sampling (prog: $prog)")
+            println("step : $iter  (progress : $prog)")
             flush(stdout)
             write_statistics(MC)
         end
@@ -243,6 +244,7 @@ function prun(S::StochACSolver,
 
     # Sample and collect data
     step = 0.0
+    println("Start stochastic sampling...")
     for iter = 1:nstep
         sample(MC, SE, SC)
 
@@ -253,7 +255,7 @@ function prun(S::StochACSolver,
 
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
-            println("Start stochastic sampling (prog: $prog)")
+            println("step : $iter  (progress : $prog)")
             flush(stdout)
             myid() == 2 && write_statistics(MC)
         end
