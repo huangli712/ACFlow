@@ -365,7 +365,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     SC.Θ = SC.Θvec[c]
     SC.Gᵧ = calc_correlator(SE, SC.kernel)
     SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-    @show SC.Θ, SC.χ²
+    println("Θ = ", SC.Θ, " χ² = ", SC.χ²)
 
     return SE
 end
