@@ -194,6 +194,7 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
     # Sample and collect data
     step = 0.0
+    println("Start stochastic sampling...")
     for iter = 1:nstep
         if iter % retry == 0
             SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
@@ -208,7 +209,7 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
-            println("Start stochastic sampling (prog: $prog)")
+            println("step : $iter  (progress : $prog)")
             flush(stdout)
             write_statistics(MC)
         end
@@ -252,6 +253,7 @@ function prun(S::StochSKSolver,
 
     # Sample and collect data
     step = 0.0
+    println("Start stochastic sampling...")
     for iter = 1:nstep
         if iter % retry == 0
             SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
@@ -266,7 +268,7 @@ function prun(S::StochSKSolver,
 
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
-            println("Start stochastic sampling (prog: $prog)")
+            println("step : $iter  (progress : $prog)")
             flush(stdout)
             myid() == 2 && write_statistics(MC)
         end
