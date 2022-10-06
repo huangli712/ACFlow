@@ -319,21 +319,29 @@ end
 Warmup the monte carlo engine to acheieve thermalized equilibrium.
 """
 function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    # Get essential parameters
     nwarm = get_k("nwarm")
     ratio = get_k("ratio")
 
+    # Change the Θ parameter and figure out the equilibrium state
     for i = 1:nwarm
+        # Shuffle the Monte Carlo configurations
         shuffle(MC, SE, SC)
 
-        push!(SC.𝒞ᵧ, deepcopy(SE))
+        # Backup key parameters and field configurations
         SC.χ²vec[i] = SC.χ²
         SC.Θvec[i] = SC.Θ
+        push!(SC.𝒞ᵧ, deepcopy(SE))
 
-        @show i, SC.χ², SC.χ²min, SC.χ² - SC.χ²min
-        if SC.χ² - SC.χ²min < 1e-3
+        # Check whether the equilibrium state is reached 
+        δχ² = SC.χ² - SC.χ²min
+        println("step : $i χ² - χ²min -> $(δχ²)")
+        if δχ² < 1e-3
+            println("Reach equilibrium state")
             break
         end
 
+        # Adjust the Θ parameter
         SC.Θ = SC.Θ * ratio
     end
 
