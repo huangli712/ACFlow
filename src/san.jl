@@ -90,10 +90,7 @@ function solve(S::StochSKSolver, rd::RawData)
         p1 = deepcopy(PBASE)
         p2 = deepcopy(PStochSK)
         #
-            #sol = pmap((x) -> prun(S, p1, p2, MC, SE, SC), 1:nworkers())
-            #@assert length(sol) == nworkers()
-        #
-        # Launch the task
+        # Launch the tasks one by one
         𝐹 = Future[]
         for i = 1:nworkers()
             𝑓 = @spawnat i + 1 prun(S, p1, p2, MC, SE, SC)
@@ -269,7 +266,8 @@ function prun(S::StochSKSolver,
 
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
-            println("step : $iter  (progress : $prog)")
+            @printf("step = %6i ", iter)
+            @printf("(progress = %3i)\n", prog)
             flush(stdout)
             myid() == 2 && write_statistics(MC)
         end
@@ -319,19 +317,21 @@ end
 """
     warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
-Warmup the Monte Carlo engine to acheieve thermalized equilibrium.
+Warmup the Monte Carlo engine to acheieve thermalized equilibrium. Then
+it will try to figure out the optimized Θ and the corresponding Monte
+Carlo field configuration.
 """
 function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Get essential parameters
     nwarm = get_k("nwarm")
     ratio = get_k("ratio")
 
-    # Change the Θ parameter and figure out the equilibrium state
+    # Change the Θ parameter and approch the equilibrium state
     for i = 1:nwarm
         # Shuffle the Monte Carlo configurations
         shuffle(MC, SE, SC)
 
-        # Backup key parameters and field configurations
+        # Backup key parameters and Monte Carlo field configurations
         SC.χ²vec[i] = SC.χ²
         SC.Θvec[i] = SC.Θ
         push!(SC.𝒞ᵧ, deepcopy(SE))
@@ -349,20 +349,25 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         SC.Θ = SC.Θ * ratio
     end
 
-    num_anneal = length(SC.𝒞ᵧ)
-    @assert num_anneal ≤ nwarm
-
-    c = num_anneal
+    # Well, we have vectors for Θ and χ². We have to figure out the
+    # optimized Θ and χ², and then retrieve the corresponding Monte
+    # Carlo field configuration.
+    c = length(SC.𝒞ᵧ)
     while c ≥ 1
         if SC.χ²vec[c] > SC.χ²min + 2.0 * sqrt(SC.χ²min)
             break
         end
         c = c - 1
     end
-    @assert 1 ≤ c ≤ num_anneal
+    @assert 1 ≤ c ≤ length(SC.𝒞ᵧ)
 
+    # Retrieve the Monte Carlo field configuration
     SE = deepcopy(SC.𝒞ᵧ[c])
+
+    # Reset Θ
     SC.Θ = SC.Θvec[c]
+
+    # Update Gᵧ and χ²
     SC.Gᵧ = calc_correlator(SE, SC.kernel)
     SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
     println("Θ = ", SC.Θ, " χ² = ", SC.χ²)
