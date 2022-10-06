@@ -209,7 +209,8 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
-            println("step : $iter  (progress : $prog)")
+            @printf("step = %6i ", iter)
+            @printf("(progress = %3i %)\n", prog)
             flush(stdout)
             write_statistics(MC)
         end
@@ -337,7 +338,8 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
         # Check whether the equilibrium state is reached 
         δχ² = SC.χ² - SC.χ²min
-        println("step : $i χ² - χ²min -> $(δχ²)")
+        @printf("step : %5i ", i)
+        println("χ² - χ²min -> $(δχ²)")
         if δχ² < 1e-3
             println("Reach equilibrium state")
             break
@@ -416,7 +418,6 @@ function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     end
 
     𝑝 = sum(bin_acc) / sum(bin_try)
-    @show 𝑝
     #
     if 𝑝 > 0.5
         r = SE.W * 1.5
