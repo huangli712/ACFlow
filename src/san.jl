@@ -370,12 +370,15 @@ end
 
 function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     #if rand(MC.rng) > 0.95
-        try_move_s(MC, SE, SC)
+    #    try_move_s(MC, SE, SC)
     #else
-    #    try_move_p(MC, SE, SC)
+        try_move_p(MC, SE, SC)
     #end
 end
 
+"""
+    measure
+"""
 function measure(SE::StochSKElement, SC::StochSKContext)
     nmesh = get_b("nmesh")
     nfine = get_k("nfine")
@@ -388,6 +391,9 @@ function measure(SE::StochSKElement, SC::StochSKContext)
     end
 end
 
+"""
+    shuffle
+"""
 function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nfine = get_k("nfine")
     retry = get_k("retry")
@@ -410,6 +416,7 @@ function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     end
 
     𝑝 = sum(bin_acc) / sum(bin_try)
+    @show 𝑝
     #
     if 𝑝 > 0.5
         r = SE.W * 1.5
@@ -541,12 +548,12 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         pcurr = SE.P[s]
 
         if 1 < SE.W < nfine
-            move_width = rand(MC.rng, 1:SE.W)
+            δW = rand(MC.rng, 1:SE.W)
 
             if rand(MC.rng) > 0.5
-                pnext = pcurr + move_width
+                pnext = pcurr + δW
             else
-                pnext = pcurr - move_width
+                pnext = pcurr - δW
             end
 
             pnext < 1     && (pnext = pnext + nfine)
@@ -580,10 +587,10 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     ngamm = get_k("ngamm")
 
     MC.Pacc = 0
-    MC.Ptry = ngamm
+    MC.Ptry = ngamm / 2
     @assert 1 < SE.W ≤ nfine
 
-    for i = 1:ngamm
+    for i = 1:ngamm / 2
         s₁ = rand(MC.rng, 1:ngamm)
         s₂ = s₁
         while s₁ == s₂
@@ -594,15 +601,15 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         pcurr₂ = SE.P[s₂]
 
         if 1 < SE.W < nfine
-            move_width_1 = rand(MC.rng, 1:SE.W)
-            move_width_2 = rand(MC.rng, 1:SE.W)
+            δW₁ = rand(MC.rng, 1:SE.W)
+            δW₂ = rand(MC.rng, 1:SE.W)
 
             if rand(MC.rng) > 0.5
-                pnext₁ = pcurr₁ + move_width_1
-                pnext₂ = pcurr₂ - move_width_2
+                pnext₁ = pcurr₁ + δW₁
+                pnext₂ = pcurr₂ - δW₂
             else
-                pnext₁ = pcurr₁ - move_width_1
-                pnext₂ = pcurr₂ - move_width_2
+                pnext₁ = pcurr₁ - δW₁
+                pnext₂ = pcurr₂ + δW₂
             end
 
             pnext₁ < 1     && (pnext₁ = pnext₁ + nfine)
