@@ -433,6 +433,8 @@ function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         bin_try[s] = MC.Stry + MC.Ptry
     end
 
+    # Calculate the transition probability, and then adjust the window,
+    # which restricts the movement of the δ functions.
     𝑝 = sum(bin_acc) / sum(bin_try)
     #
     if 𝑝 > 0.5
@@ -448,6 +450,7 @@ function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         SE.W = ceil(I64, SE.W / 1.5)
     end
 
+    # Update χ² with averaged χ² 
     SC.χ² = mean(bin_χ²)
 end
 
@@ -463,7 +466,7 @@ Try to create a StochSKMC struct.
 See also: [`StochSK`](@ref).
 """
 function init_mc(S::StochSKSolver)
-    seed = rand(1:1000000); seed = 840443
+    seed = rand(1:100000000)
     rng = MersenneTwister(seed)
     Sacc = 0
     Stry = 0
@@ -540,6 +543,15 @@ function calc_fmesh(S::StochSKSolver)
     return fmesh
 end
 
+"""
+    calc_correlator(SE::StochSKElement, kernel::Array{F64,2})
+
+Try to calculate correlator with the kernel function and the Monte Carlo
+field configuration. This correlator will then be used to evaluate the
+goodness function.
+
+See also: [`calc_goodness`](@ref).
+"""
 function calc_correlator(SE::StochSKElement, kernel::Array{F64,2})
     ngamm = length(SE.P)
     𝐴 = fill(SE.A, ngamm)
@@ -547,6 +559,14 @@ function calc_correlator(SE::StochSKElement, kernel::Array{F64,2})
     return 𝐾 * 𝐴
 end
 
+"""
+    calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
+
+Try to calculate the goodness function (i.e, χ²), which measures the
+distance between input and regenerated correlators.
+
+See also: [`calc_correlator`](@ref).
+"""
 function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
     χ = sum( ( (Gₙ .- Gᵥ) .* σ¹ ) .^ 2.0 )
     return χ
