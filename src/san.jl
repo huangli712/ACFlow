@@ -210,7 +210,7 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
             @printf("step = %6i ", iter)
-            @printf("(progress = %3i %)\n", prog)
+            @printf("(progress = %3i)\n", prog)
             flush(stdout)
             write_statistics(MC)
         end
