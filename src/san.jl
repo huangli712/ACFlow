@@ -179,16 +179,20 @@ end
 Perform stochastic analytical continuation simulation, sequential version.
 """
 function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    # Setup essential parameters
     nstep = get_k("nstep")
     retry = get_k("retry")
     output_per_steps = get_k("ndump")
     measure_per_steps = 10
 
+    # Warmup the Monte Carlo engine 
     println("Start thermalization...")
     SE = warmup(MC, SE, SC)
 
+    # Shuffle the Monte Carlo configuration again
     shuffle(MC, SE, SC)
 
+    # Sample and collect data
     step = 0.0
     for iter = 1:nstep
         if iter % retry == 0
@@ -226,21 +230,27 @@ function prun(S::StochSKSolver,
               p1::Dict{String,Vector{Any}},
               p2::Dict{String,Vector{Any}},
               MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    # Revise parameteric dicts
     rev_dict(p1)
     rev_dict(S, p2)
 
+    # Initialize random number generator again
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
 
+    # Setup essential parameters
     nstep = get_k("nstep")
     retry = get_k("retry")
     output_per_steps = get_k("ndump")
     measure_per_steps = 10
 
+    # Warmup the Monte Carlo engine 
     println("Start thermalization...")
     SE = warmup(MC, SE, SC)
 
+    # Shuffle the Monte Carlo configuration again
     shuffle(MC, SE, SC)
 
+    # Sample and collect data
     step = 0.0
     for iter = 1:nstep
         if iter % retry == 0
