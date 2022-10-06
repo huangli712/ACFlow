@@ -572,6 +572,14 @@ function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
     return χ
 end
 
+"""
+    try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+
+Try to update the Monte Carlo field configurations via the Metropolis
+algorithm. In each update, only single δ function is shifted.
+
+See also: [`try_move_p`](@ref).
+"""
 function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
@@ -619,6 +627,14 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     end
 end
 
+"""
+    try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+
+Try to update the Monte Carlo field configurations via the Metropolis
+algorithm. In each update, only a pair of δ functions is shifted.
+
+See also: [`try_move_s`](@ref).
+"""
 function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
