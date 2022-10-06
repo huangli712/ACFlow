@@ -376,7 +376,9 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 end
 
 """
-    sample
+    sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+
+Perform Monte Carlo sweeps and sample the field configurations.
 """
 function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     if rand(MC.rng) > 0.95
@@ -387,13 +389,16 @@ function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 end
 
 """
-    measure
+    measure(SE::StochSKElement, SC::StochSKContext)
+
+Measure the final spectral functions.
 """
 function measure(SE::StochSKElement, SC::StochSKContext)
     nmesh = get_b("nmesh")
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
+    # Here we just assume that the mesh is linear
     for j = 1:ngamm
         d_pos = SE.P[j]
         s_pos = ceil(I64, d_pos / nfine * nmesh)
@@ -402,7 +407,10 @@ function measure(SE::StochSKElement, SC::StochSKContext)
 end
 
 """
-    shuffle
+    shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+
+Try to shuffle the Monte Carlo field configuration via the Metropolis
+algorithm. Then the window for shifting the δ functions is adjusted.
 """
 function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nfine = get_k("nfine")
