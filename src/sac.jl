@@ -15,7 +15,7 @@
     StochACElement
 
 Mutable struct. It is used to record the field configurations, which will
-be sampled within monte carlo procedure.
+be sampled within Monte Carlo procedure.
 
 ### Members
 
@@ -345,7 +345,7 @@ end
 """
     warmup(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
-Warmup the monte carlo engine to acheieve thermalized equilibrium.
+Warmup the Monte Carlo engine to acheieve thermalized equilibrium.
 """
 function warmup(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     nwarm = get_a("nwarm")
@@ -364,7 +364,7 @@ end
 """
     sample(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
-Perform monte carlo sweeps and sample the field configurations.
+Perform Monte Carlo sweeps and sample the field configurations.
 """
 function sample(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     nalph = get_a("nalph")
@@ -431,7 +431,7 @@ end
 """
     init_element(S::StochACSolver, rng::AbstractRNG, allow::Vector{I64})
 
-Randomize the configurations for future monte carlo sampling. It will
+Randomize the configurations for future Monte Carlo sampling. It will
 return a StochACElement object.
 
 See also: [`StochACElement`](@ref).
@@ -696,7 +696,7 @@ function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1.0
     if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
-        # Update monte carlo configurations
+        # Update Monte Carlo configurations
         SE.Γᵣ[γ1,i] = r1
         SE.Γᵣ[γ2,i] = r2
 
@@ -706,7 +706,7 @@ function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
         # Update Hc
         SC.Hα[i] = SC.Hα[i] + δH
 
-        # Update monte carlo counter
+        # Update Monte Carlo counter
         MC.Macc[i] = MC.Macc[i] + 1.0
     end
 end
@@ -753,7 +753,7 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1.0
     if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
-        # Update monte carlo configurations
+        # Update Monte Carlo configurations
         SE.Γₐ[γ1,i] = i1
         SE.Γₐ[γ2,i] = i2
 
@@ -763,7 +763,7 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
         # Update Hc
         SC.Hα[i] = SC.Hα[i] + δH
 
-        # Update monte carlo counter
+        # Update Monte Carlo counter
         MC.Macc[i] = MC.Macc[i] + 1.0
     end
 end
@@ -791,7 +791,7 @@ function try_swap(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     MC.Stry[i] = MC.Stry[i] + 1.0
     MC.Stry[j] = MC.Stry[j] + 1.0
     if exp(δα * δH) > rand(MC.rng)
-        # Update monte carlo configurations
+        # Update Monte Carlo configurations
         SE.Γₐ[:,i], SE.Γₐ[:,j] = SE.Γₐ[:,j], SE.Γₐ[:,i]
         SE.Γᵣ[:,i], SE.Γᵣ[:,j] = SE.Γᵣ[:,j], SE.Γᵣ[:,i]
 
@@ -799,7 +799,7 @@ function try_swap(MC::StochACMC, SE::StochACElement, SC::StochACContext)
         SC.hτ[:,i], SC.hτ[:,j] = SC.hτ[:,j], SC.hτ[:,i]
         SC.Hα[i], SC.Hα[j] = SC.Hα[j], SC.Hα[i]
 
-        # Update monte carlo counter
+        # Update Monte Carlo counter
         MC.Sacc[i] = MC.Sacc[i] + 1.0
         MC.Sacc[j] = MC.Sacc[j] + 1.0
     end

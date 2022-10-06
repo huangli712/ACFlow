@@ -15,7 +15,7 @@
     StochSKElement
 
 Mutable struct. It is used to record the field configurations, which will
-be sampled within monte carlo procedure.
+be sampled within Monte Carlo procedure.
 
 ### Members
 
@@ -319,7 +319,7 @@ end
 """
     warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
-Warmup the monte carlo engine to acheieve thermalized equilibrium.
+Warmup the Monte Carlo engine to acheieve thermalized equilibrium.
 """
 function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Get essential parameters
@@ -465,7 +465,7 @@ end
 """
     init_element(S::StochSKSolver, rng::AbstractRNG)
 
-Randomize the configurations for future monte carlo sampling. It will
+Randomize the configurations for future Monte Carlo sampling. It will
 return a StochSKElement object.
 
 See also: [`StochSKElement`](@ref).

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/05
+# Last modified: 2022/10/06
 #
 
 #=
@@ -34,7 +34,7 @@ end
     StochOMElement
 
 Mutable struct. It is used to record the field configurations, which will
-be sampled by monte carlo procedure.
+be sampled by Monte Carlo procedure.
 
 ### Members
 

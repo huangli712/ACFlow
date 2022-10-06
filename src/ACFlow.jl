@@ -139,9 +139,9 @@ TangentMesh     -> Tangent mesh.
 LorentzMesh     -> Lorentzian mesh.
 HalfLorentzMesh -> Lorentzian mesh at half-positive axis.
 #
-AbstractMC      -> Abstract monte carlo engine.
-StochACMC       -> Monte carlo engine used in the StochAC solver.
-StochSKMC       -> Monte carlo engine used in the StochSK solver.
+AbstractMC      -> Abstract Monte Carlo engine.
+StochACMC       -> Monte Carlo engine used in the StochAC solver.
+StochSKMC       -> Monte Carlo engine used in the StochSK solver.
 StochOMMC       -> Monte Carlo engine used in the StochOM solver.
 ```
 =#
@@ -550,7 +550,7 @@ To implement the StochAC solver for analytically continuation problem.
 *Members* :
 
 ```text
-StochACElement -> A struct that contains monte carlo field configurations.
+StochACElement -> A struct that contains Monte Carlo field configurations.
 StochACContext -> Essential struct for the StochAC solver.
 #
 solve          -> Wrapper function for the StochAC solver.
@@ -559,7 +559,7 @@ run (prun)     -> Perform stochastic analytical continuation simulation.
 average        -> Evaluate the averaged results.
 last           -> Postprocess the calculated results and write them.
 #
-warmup         -> Warmup monte carlo engine.
+warmup         -> Warmup Monte Carlo engine.
 sample         -> Sample field configurations via metropolis algorithm.
 measure        -> Measure spectral functions and internal energies.
 #
@@ -626,7 +626,7 @@ To implement the StochSK solver for analytically continuation problem.
 *Members* :
 
 ```text
-StochSKElement -> A struct that contains monte carlo field configurations.
+StochSKElement -> A struct that contains Monte Carlo field configurations.
 StochSKContext -> Essential struct for the StochSK solver.
 #
 solve          -> Wrapper function for the StochSK solver.
@@ -635,7 +635,7 @@ run (prun)     -> Perform stochastic analytical continuation simulation.
 average        -> Evaluate the averaged results.
 last           -> Postprocess the calculated results and write them.
 #
-warmup         -> Warmup monte carlo engine.
+warmup         -> Warmup Monte Carlo engine.
 sample         -> Sample field configurations via metropolis algorithm.
 measure        -> Measure spectral functions.
 shuffle        -> Shuffle field configurations.
@@ -695,7 +695,7 @@ To implement the StochOM solver for analytically continuation problem.
 
 ```text
 Box            -> A struct for describing the field configuration.
-StochOMElement -> A struct that contains monte carlo field configurations.
+StochOMElement -> A struct that contains Monte Carlo field configurations.
 StochOMContext -> Essential struct for the StochOM solver.
 #
 solve          -> Wrapper function for the StochOM solver.

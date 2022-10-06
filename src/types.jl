@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/05
+# Last modified: 2022/10/06
 #
 
 #=
@@ -477,7 +477,7 @@ end
 """
     AbstractMC
 
-An abstract type representing the monte carlo engine. It is used to build
+An abstract type representing the Monte Carlo engine. It is used to build
 the internal type system.
 """
 abstract type AbstractMC end
