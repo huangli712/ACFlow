@@ -346,9 +346,9 @@ end
 
 function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     #if rand(MC.rng) > 0.95
-    #    try_move_s(MC, SE, SC)
+        try_move_s(MC, SE, SC)
     #else
-        try_move_p(MC, SE, SC)
+    #    try_move_p(MC, SE, SC)
     #end
 end
 
