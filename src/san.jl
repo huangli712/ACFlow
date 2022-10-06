@@ -154,16 +154,20 @@ function init(S::StochSKSolver, rd::RawData)
     println("Build default kernel: ", get_b("ktype"))
 
     Gᵧ = calc_correlator(SE, kernel)
+    println("Precompute correlator")
 
     χ = calc_goodness(Gᵧ, Gᵥ, σ¹)
     χ², χ²min = χ, χ
     χ²vec = zeros(F64, get_k("nwarm"))
+    println("Precompute goodness function")
 
     Θ = get_k("theta")
     Θvec = zeros(F64, get_k("nwarm"))
+    println("Setup Θ parameter")
 
     𝒞ᵧ = StochSKElement[]
-    #
+    println("Setup historical Monte Carlo configurations")
+
     SC = StochSKContext(Gᵥ, Gᵧ, σ¹, grid, mesh, kernel, Aout, χ², χ²min, χ²vec, Θ, Θvec, 𝒞ᵧ)
 
     return MC, SE, SC
