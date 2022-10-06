@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/05
+# Last modified: 2022/10/06
 #
 
 #=
@@ -21,7 +21,7 @@ be sampled within monte carlo procedure.
 
 * P -> It means the positions of the δ functions.
 * A -> It means the weights / amplitudes of the δ functions.
-* W -> It denotes the window that is used to restrict the δ functions.
+* W -> It denotes the window that is used to shift the δ functions.
 """
 mutable struct StochSKElement
     P :: Vector{I64}
@@ -37,18 +37,18 @@ Mutable struct. It is used within the StochSK solver only.
 ### Members
 
 * Gᵥ     -> Input data for correlator.
+* Gᵧ     -> Generated correlator.
 * σ¹     -> Actually 1.0 / σ¹.
-* allow  -> Allowable indices.
 * grid   -> Grid for input data.
 * mesh   -> Mesh for output spectrum.
-* model  -> Default model function.
 * kernel -> Default kernel function.
-* Aout   -> Calculate spectrum, it is actually ⟨n(x)⟩.
-* Δ      -> Precomputed δ functions.
-* hτ     -> α-resolved h(τ).
-* Hα     -> α-resolved Hc.
-* Uα     -> α-resolved internal energy, it is actually ⟨Hα⟩.
-* αₗ     -> Vector of the α parameters.
+* Aout   -> Calculated spectrum.
+* χ²     -> Current goodness function.
+* χ²min  -> Mininum goodness function.
+* χ²vec  -> Vector of goodness function.
+* Θ      -> Current Θ parameter.
+* Θvec   -> Vector of Θ parameter.
+* 𝒞ᵧ     -> Historical field configuration.
 """
 mutable struct StochSKContext
     Gᵥ     :: Vector{F64}
@@ -72,6 +72,9 @@ end
 
 """
     solve(S::StochSKSolver, rd::RawData)
+
+Solve the analytical continuation problem by the stochastic analytical
+continuation algorithm (A. W. Sandvik's version).
 """
 function solve(S::StochSKSolver, rd::RawData)
     nmesh = get_b("nmesh")
@@ -79,6 +82,7 @@ function solve(S::StochSKSolver, rd::RawData)
     println("[ StochSK ]")
     MC, SE, SC = init(S, rd)
 
+    # Parallel version
     if nworkers() > 1
         println("Using $(nworkers()) workers")
         #
@@ -112,9 +116,12 @@ function solve(S::StochSKSolver, rd::RawData)
         #
         # Postprocess the solutions
         Gout = last(SC, Aout)
+
+    # Sequential version
     else
         Aout = run(MC, SE, SC)
-        Gout = last(SC, Aout)    
+        Gout = last(SC, Aout)
+
     end
 
     return SC.mesh.mesh, Aout, Gout
@@ -334,11 +341,11 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 end
 
 function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
-    if rand(MC.rng) > 0.95
-        try_move_s(MC, SE, SC)
-    else
+    #if rand(MC.rng) > 0.95
+    #    try_move_s(MC, SE, SC)
+    #else
         try_move_p(MC, SE, SC)
-    end
+    #end
 end
 
 function measure(SE::StochSKElement, SC::StochSKContext)

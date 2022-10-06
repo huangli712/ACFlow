@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/05
+# Last modified: 2022/10/06
 #
 
 #=
@@ -41,7 +41,7 @@ Mutable struct. It is used within the StochAC solver only.
 * mesh   -> Mesh for output spectrum.
 * model  -> Default model function.
 * kernel -> Default kernel function.
-* Aout   -> Calculate spectrum, it is actually ⟨n(x)⟩.
+* Aout   -> Calculated spectrum, it is actually ⟨n(x)⟩.
 * Δ      -> Precomputed δ functions.
 * hτ     -> α-resolved h(τ).
 * Hα     -> α-resolved Hc.
@@ -72,7 +72,7 @@ end
     solve(S::StochACSolver, rd::RawData)
 
 Solve the analytical continuation problem by the stochastic analytical
-continuation algorithm.
+continuation algorithm (K. S. D. Beach's version).
 """
 function solve(S::StochACSolver, rd::RawData)
     nmesh = get_b("nmesh")
@@ -81,6 +81,7 @@ function solve(S::StochACSolver, rd::RawData)
     println("[ StochAC ]")
     MC, SE, SC = init(S, rd)
 
+    # Parallel version
     if nworkers() > 1
         println("Using $(nworkers()) workers")
         #
@@ -116,9 +117,12 @@ function solve(S::StochACSolver, rd::RawData)
         #
         # Postprocess the solutions
         Gout = last(SC, Aout, Uα)
+
+    # Sequential version
     else
         Aout, Uα = run(MC, SE, SC)
         Gout = last(SC, Aout, Uα)
+
     end
 
     return SC.mesh.mesh, Aout, Gout
