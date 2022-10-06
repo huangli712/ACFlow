@@ -279,7 +279,7 @@ end
     average(step::F64, SC::StochSKContext)
 
 Postprocess the results generated during the stochastic analytical
-continuation simulations. It will generate real spectral functions.
+continuation simulations. It will generate the spectral functions.
 """
 function average(step::F64, SC::StochSKContext)
     SC.Aout = SC.Aout / (step * (SC.mesh[2] - SC.mesh[1]))
@@ -291,11 +291,10 @@ end
     last(SC::StochSKContext, Asum::Vector{F64})
 
 It will process and write the calculated results by the StochSK solver,
-including effective hamiltonian, final spectral function, reproduced
-correlator.
+including final spectral function and reproduced correlator.
 """
 function last(SC::StochSKContext, Asum::Vector{F64})
-    # Calculate final spectral function
+    # Write final spectral function
     write_spectrum(SC.mesh, Asum)
 
     # Reproduce input data
@@ -314,6 +313,11 @@ end
 ### *Core Algorithms*
 =#
 
+"""
+    warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+
+Warmup the monte carlo engine to acheieve thermalized equilibrium.
+"""
 function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nwarm = get_k("nwarm")
     ratio = get_k("ratio")

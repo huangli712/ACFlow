@@ -266,7 +266,7 @@ end
     average(step::F64, SC::StochACContext)
 
 Postprocess the results generated during the stochastic analytical
-continuation simulations. It will calculate real spectral functions, and
+continuation simulations. It will calculate the spectral functions, and
 internal energies.
 """
 function average(step::F64, SC::StochACContext)
