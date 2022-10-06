@@ -581,17 +581,21 @@ algorithm. In each update, only single δ function is shifted.
 See also: [`try_move_p`](@ref).
 """
 function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    # Get parameters
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
+    # Reset counters
     MC.Sacc = 0
     MC.Stry = ngamm
     @assert 1 < SE.W ≤ nfine
 
     for i = 1:ngamm
+        # Choose single δ function
         s = rand(MC.rng, 1:ngamm)
         pcurr = SE.P[s]
 
+        # Evaluate new position for the δ function
         if 1 < SE.W < nfine
             δW = rand(MC.rng, 1:SE.W)
 
@@ -607,21 +611,24 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext = rand(MC.rng, 1:nfine)
         end
 
+        # Calculate the transition probability
         Knext = view(SC.kernel, :, pnext)
         Kcurr = view(SC.kernel, :, pcurr)
         Gₙ = SC.Gᵧ + SE.A * (Knext - Kcurr)
         χ²new = calc_goodness(Gₙ, SC.Gᵥ, SC.σ¹)
         prob = exp( 0.5 * (SC.χ² - χ²new) / SC.Θ )
 
+        # Important sampling, if true, the δ function is shifted and the
+        # corresponding objects are updated.
         if rand(MC.rng) < min(prob, 1.0)
             SE.P[s] = pnext
             SC.Gᵧ = Gₙ
-
+            #
             SC.χ² = χ²new
             if χ²new < SC.χ²min
                 SC.χ²min = χ²new
             end
-
+            #
             MC.Sacc = MC.Sacc + 1
         end
     end
