@@ -591,10 +591,10 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     ngamm = get_k("ngamm")
 
     MC.Pacc = 0
-    MC.Ptry = ngamm / 2
+    MC.Ptry = ngamm
     @assert 1 < SE.W ≤ nfine
 
-    for i = 1:ngamm / 2
+    for i = 1:ngamm
         s₁ = rand(MC.rng, 1:ngamm)
         s₂ = s₁
         while s₁ == s₂
