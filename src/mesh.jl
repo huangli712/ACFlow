@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/29
+# Last modified: 2022/10/07
 #
 
 #=
@@ -14,7 +14,7 @@
 """
     LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
 
-A constructor for the LinearMesh struct.
+A constructor for the LinearMesh struct, which is announced in types.jl.
 
 See also: [`LinearMesh`](@ref).
 """
@@ -62,7 +62,7 @@ end
 """
     TangentMesh(nmesh::I64, wmin::F64, wmax::F64, 𝑝::F64 = 2.1)
 
-A constructor for the TangentMesh struct.
+A constructor for the TangentMesh struct, which is announced in types.jl.
 
 See also: [`TangentMesh`](@ref).
 """
@@ -90,8 +90,10 @@ end
 """
     LorentzMesh(nmesh::I64, wmin::F64, wmax::F64, 𝑝::F64 = 0.01)
 
-A constructor for the LorentzMesh struct. The algorithm for generating a
-lorentzian mesh is taken from: https://github.com/CQMP/Maxent.
+A constructor for the LorentzMesh struct, which is announced in types.jl. 
+The algorithm for generating a lorentzian mesh is taken from:
+
+* https://github.com/CQMP/Maxent.
 
 See also: [`LorentzMesh`](@ref).
 """
@@ -132,8 +134,10 @@ end
 """
     HalfLorentzMesh(nmesh::I64, wmax::F64, 𝑝::F64 = 0.01)
 
-A constructor for the HalfLorentzMesh struct. The algorithm for generating
-a half-lorentzian mesh is taken from: https://github.com/CQMP/Maxent.
+A constructor for the HalfLorentzMesh struct, which is announced in types.jl.
+The algorithm for generating a half-lorentzian mesh is taken from:
+
+* https://github.com/CQMP/Maxent.
 
 See also: [`HalfLorentzMesh`](@ref).
 """
@@ -175,15 +179,14 @@ end
 *Remarks* :
 
 Here we overload some essential functions in the Base module to support
-the basic operations for the following meshes:
+the basic operations for the following types of mesh:
 
 * LinearMesh
 * TangentMesh
 * LorentzMesh
 * HalfLorentzMesh
 
-With the help of these functions, we can easily visit the elements in
-the mesh objective.
+With the help of these functions, we can easily visit the mesh's elements.
 =#
 
 """
