@@ -403,7 +403,8 @@ function measure(SE::StochSKElement, SC::StochSKContext)
     # Here we just assume that the mesh is linear
     for j = 1:ngamm
         d_pos = SE.P[j]
-        s_pos = ceil(I64, d_pos / nfine * nmesh)
+        s_pos = nearest(SC.mesh, d_pos / nfine)
+        # ceil(I64, d_pos / nfine * nmesh)
         SC.Aout[s_pos] = SC.Aout[s_pos] + SE.A
     end
 end
