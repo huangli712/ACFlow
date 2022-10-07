@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/27
+# Last modified: 2022/10/07
 #
 
 #=
@@ -72,7 +72,8 @@ function secant(func, x0, args...; maxiter::I64 = 50, tol::F64 = 1.48e-8)
 end
 
 """
-    newton(fun::Function, guess, kwargs...)
+    newton(fun::Function, guess, kwargs...;
+           maxiter::I64 = 20000, mixing::F64 = 0.5)
 
 It implements the well-known newton algorithm to locate root of a given
 polynomial function. Here, `fun` means the function, `guess` is the initial
@@ -82,7 +83,8 @@ the value, but also the jacobian matrix of the function.
 
 See also: [`secant`](@ref).
 """
-function newton(fun::Function, guess, kwargs...; maxiter::I64 = 20000, mixing::F64 = 0.5)
+function newton(fun::Function, guess, kwargs...;
+                maxiter::I64 = 20000, mixing::F64 = 0.5)
     function _apply(feed::Vector{T}, f::Vector{T}, J::Matrix{T}) where {T}
         resid = nothing
         step = 1.0
@@ -180,7 +182,7 @@ Perform numerical integration by using the simpson rule. Note that the
 length of `x` and `y` must be odd numbers. And `x` must be a linear and
 uniform mesh.
 
-See also: [`simpson`](@ref).
+See also: [`trapz`](@ref).
 """
 function simpson(x::AbstractVector{F64}, y::AbstractVector{T} where T)
     h = (x[2] - x[1]) / 3.0
@@ -212,7 +214,7 @@ directly from
 
 * https://github.com/PumasAI/DataInterpolations.jl
 
-Of cource, small modifications are made.
+Of cource, small modifications and simplifications are made.
 =#
 
 """
@@ -430,7 +432,8 @@ Z = randn(7, 2)
 @einsum A[i, j, k] = X[i, r] * Y[j, r] * Z[k, r]
 ```
 
-If destination is not preallocated, then use `:=` to automatically create a new array for the result:
+If destination is not preallocated, then use `:=` to automatically create
+a new array for the result:
 
 ```julia
 X = randn(5, 2)
@@ -1042,6 +1045,8 @@ end
 
 Fit data to a non-linear `model`. `p0` is an initial model parameter guess.
 The return object is a composite type (`LsqFitResult`).
+
+See also: [`LsqFitResult`](@ref).
 """
 function curve_fit(model, x::AbstractArray, y::AbstractArray, p0::AbstractArray)
     f = (p) -> model(x, p) - y
