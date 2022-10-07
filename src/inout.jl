@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/05
+# Last modified: 2022/10/07
 #
 
 #=
@@ -22,6 +22,7 @@ deviation σ. Here, `ngrid` specifies the number of grid points.
 See also: [`read_cmplx_data`](@ref).
 """
 function read_real_data(finput::AbstractString, ngrid::I64)
+    # Allocate memory
     _grid = zeros(F64, ngrid)
     value = zeros(F64, ngrid)
     error = zeros(F64, ngrid)
@@ -32,6 +33,7 @@ function read_real_data(finput::AbstractString, ngrid::I64)
     @assert nrows == ngrid
     @assert ncols == 3
 
+    # Read and parse the data
     open(finput, "r") do fin
         for i = 1:ngrid
             arr = parse.(F64, line_to_array(fin)[1:3])
@@ -58,6 +60,7 @@ same standard deviations.
 See also: [`read_time_data`](@ref).
 """
 function read_cmplx_data(finput::AbstractString, ngrid::I64)
+    # Allocate memory
     _grid = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)
@@ -68,6 +71,7 @@ function read_cmplx_data(finput::AbstractString, ngrid::I64)
     @assert nrows == ngrid
     @assert ncols in (4, 5)
 
+    # Read and parse the data
     open(finput, "r") do fin
         for i = 1:ngrid
             if ncols == 4
@@ -94,11 +98,13 @@ Read input data. This function is used for Matsubara frequency data. The
 input file only contains three columns. The first column is the Matsubara
 frequency grid, the second column is the real part or imaginary part of
 the data (which is specified by the argument `only_real_part`), and the
-third column is the standard deviation σ.
+third column is the standard deviation σ. This function is for bosonic
+correlation function.
 
 See also: [`read_time_data`](@ref).
 """
 function read_cmplx_data(finput::AbstractString, ngrid::I64, only_real_part::Bool)
+    # Allocate memory
     _grid = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
     error = zeros(C64, ngrid)
@@ -109,6 +115,7 @@ function read_cmplx_data(finput::AbstractString, ngrid::I64, only_real_part::Boo
     @assert nrows == ngrid
     @assert ncols == 3
 
+    # Read and parse the data
     open(finput, "r") do fin
         for i = 1:ngrid
             arr = parse.(F64, line_to_array(fin)[1:3])
