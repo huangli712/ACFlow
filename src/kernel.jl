@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/05
+# Last modified: 2022/10/07
 #
 
 #=
@@ -18,9 +18,11 @@ The purpose of `ACFlow` is to solve the following equation:
 \end{equation}
 ```
 
-Here, ``\mathbf{G}``, ``\mathbf{K}``, and ``\mathbf{A}`` are input
+Here, ``\mathbf{G}``, ``\mathbf{K}``, and ``\mathbf{A}`` are the input
 green's function, kernel function, and spectral density, respectively.
 `ACFlow` supports various kernel functions. They are summaried as follows.
+
+---
 
 **For Fermionic Green's Functions**
 
@@ -84,6 +86,8 @@ functions, such as fermionic self-energy function ``\Sigma``,
 with these kernel functions. For the self-energies, it is addtionally
 required that the constant contribution ``\Sigma(i\infty)`` is
 subtracted from ``\Sigma(i\omega_n)``.
+
+---
 
 **For Bosonic Green's Functions**
 
@@ -164,6 +168,8 @@ and the transverse spin susceptibility
 \chi_{+-}(\tau) = \langle \mathcal{T} S_{+}(\tau) S_{-}(0) \rangle.
 ```
 
+---
+
 **For Correlator of Hermitian Operator**
 
 In imaginary-time axis, we have
@@ -218,6 +224,8 @@ For bosonic-like system, the calculated spectral density might be not
 ``A(\omega)``. It could be ``A(\omega)/\omega`` or any others. It in
 fact depends on the type of the correlation function and how the kernel
 function is defined.
+
+---
 =#
 
 """

@@ -97,6 +97,8 @@ m(ω) = Γ\omega^2 \exp{(-\Gamma\omega)},\quad \omega \ge 0
 Be careful, ``\Gamma``, ``\omega_1``, and ``\omega_2`` are all parameters.
 Their default values are defined in `make_model()`, but you can modified
 them according to `pmodel`.
+
+---
 =#
 
 """
