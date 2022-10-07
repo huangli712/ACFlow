@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/05
+# Last modified: 2022/10/07
 #
 
 """
@@ -23,7 +23,7 @@ end
 Solve the analytical continuation problem. The arguments `grid`, `Gval`,
 and `err` are the grid, value, and error bar, respectively.
 """
-function solve(grid::Vector, Gval::Vector{T}, err::T) where {T}
+function solve(grid::Vector{F64}, Gval::Vector{T}, err::T) where {T}
     Gerr = similar(Gval)
     fill!(Gerr, err)
     return solve(RawData(grid, Gval, Gerr))
@@ -56,7 +56,7 @@ function solve(rd::RawData)
     # Choose suitable solver
     @cswitch solver begin
         @case "MaxEnt"
-            return solve(MaxEntSolver(), rd)
+            return solve(MaxEntSolver(),  rd)
             break
 
         @case "StochAC"

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/07
+# Last modified: 2022/10/08
 #
 
 #=
@@ -257,7 +257,7 @@ function write_goodness(Θ_vec::Vector{F64}, χ²_vec::Vector{F64})
         _Θ = log10.(Θ_vec)
         _χ² = log10.(χ²_vec)
         for i in eachindex(Θ_vec)
-            if !isinf(_Θ) && !isinf(_χ²)
+            if !isinf(_Θ[i]) && !isinf(_χ²[i])
                 @printf(fout, "%16.12f %16.12f\n", _Θ[i], _χ²[i])
             end
         end
