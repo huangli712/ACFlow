@@ -188,7 +188,8 @@ const _PStochOM = Dict{String,Any}(
     AbstractSolver
 
 An abstract type representing the solver for analytical continuation
-problem. It is used to build the internal type system.
+problem. It is used to build the internal type system. All the other
+solvers are its sub-types.
 """
 abstract type AbstractSolver end
 
