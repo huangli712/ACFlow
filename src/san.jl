@@ -339,7 +339,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         # Check whether the equilibrium state is reached 
         δχ² = SC.χ² - SC.χ²min
         @printf("step : %5i ", i)
-        println("χ² - χ²min -> $(δχ²)")
+        @printf("χ² - χ²min -> %12.6e", δχ²)
         if δχ² < 1e-3
             println("Reach equilibrium state")
             break
@@ -362,7 +362,6 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     @assert 1 ≤ c ≤ length(SC.𝒞ᵧ)
 
     # Retrieve the Monte Carlo field configuration
-    #SE = deepcopy(SC.𝒞ᵧ[c])
     @. SE.P = SC.𝒞ᵧ[c].P
     SE.A = SC.𝒞ᵧ[c].A
     SE.W = SC.𝒞ᵧ[c].W
