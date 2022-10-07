@@ -307,8 +307,9 @@ function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     kernel = zeros(F64, ntime, nmesh)
     #
     for i = 1:nmesh
+        de = 1.0 - exp(-β * am[i])
         for j = 1:ntime
-            kernel[j,i] = am[i] * exp(-bg[j] * am[i]) / (1.0 - exp(-β * am[i]))
+            kernel[j,i] = am[i] * exp(-bg[j] * am[i]) / de
         end
     end
     #
