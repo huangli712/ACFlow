@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/05/05
+# Last modified: 2022/10/08
 #
 
 #=
@@ -467,13 +467,19 @@ end
 =#
 
 """
-    precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, am::AbstractMesh, D::Vector{F64}, K::Matrix{F64})
+    precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
+               am::AbstractMesh,
+               D::Vector{F64},
+               K::Matrix{F64})
 
 Precompute some key coefficients. Here `Gᵥ` and `σ²` are input data, `am`
 is the mesh for spectrum, `D` is the default model, and `K` is the kernel
 function.
 """
-function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, am::AbstractMesh, D::Vector{F64}, K::Matrix{F64})
+function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
+                    am::AbstractMesh,
+                    D::Vector{F64},
+                    K::Matrix{F64})
     offdiag = get_b("offdiag")
 
     U, V, S = make_singular_space(K)
@@ -625,7 +631,9 @@ function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64})
 end
 
 """
-    calc_bayes(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
+    calc_bayes(mec::MaxEntContext,
+               A::Vector{F64},
+               S::F64, χ²::F64, α::F64)
 
 It calculates Bayesian convergence criterion (`ng`, `tr`, and `conv`) for
 classic maxent (maximum of probablility distribution) and then Bayesian
@@ -636,7 +644,9 @@ and `α` weight factor of the entropy.
 
 See also: [`calc_bayes_offdiag`](@ref).
 """
-function calc_bayes(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
+function calc_bayes(mec::MaxEntContext,
+                    A::Vector{F64},
+                    S::F64, χ²::F64, α::F64)
     mesh = mec.mesh
 
     T = sqrt.(A ./ mesh.weight)
@@ -654,7 +664,9 @@ function calc_bayes(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F
 end
 
 """
-    calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
+    calc_bayes_offdiag(mec::MaxEntContext,
+                       A::Vector{F64},
+                       S::F64, χ²::F64, α::F64)
 
 It calculates Bayesian convergence criterion (`ng`, `tr`, and `conv`) for
 classic maxent (maximum of probablility distribution) and then Bayesian
@@ -667,7 +679,9 @@ It is just a offdiagonal version of `calc_bayes()`.
 
 See also: [`calc_bayes`](@ref).
 """
-function calc_bayes_offdiag(mec::MaxEntContext, A::Vector{F64}, S::F64, χ²::F64, α::F64)
+function calc_bayes_offdiag(mec::MaxEntContext,
+                            A::Vector{F64},
+                            S::F64, χ²::F64, α::F64)
     mesh = mec.mesh
 
     T = (( A .^ 2.0 + 4.0 * mec.model .* mec.model ) / (mesh.weight .^ 2.0)) .^ 0.25
@@ -687,7 +701,7 @@ end
 """
     calc_chi2(mec::MaxEntContext, A::Vector{F64})
 
-It computes the chi-squared-deviation of the spectral function `A`.
+It computes the χ²-deviation of the spectral function `A`.
 """
 function calc_chi2(mec::MaxEntContext, A::Vector{F64})
     Gₙ = reprod(mec.mesh, mec.kernel, A)
