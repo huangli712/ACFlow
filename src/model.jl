@@ -11,13 +11,15 @@
 *Remarks* : Default Models
 
 Now `ACFlow` supports various default model functions `m(ω)`. Note that
-the `StochOM` solver (stochastic optimization method) does not need the
-default model functions, and the `StochAC` solver (stochastic analytical
-continuation method) only need the `flat` default model function.
+the `StochOM` solver (based on the stochastic optimization method) and
+the `StochSK` solver (based on the stochastic analytical continuation
+method) do not need the default model functions. However, the `StochAC`
+solver (based on the stochastic analytical continuation method as well)
+only supports the `flat` default model function.
 
 These default model functions are summaried as follows.
 
-Flat model (`flat`):
+* Flat model (keyword : `flat`):
 
 ```math
 \begin{equation}
@@ -25,7 +27,7 @@ m(\omega) = const.
 \end{equation}
 ```
 
-Gaussian model (`gauss`):
+* Gaussian model (keyword : `gauss`):
 
 ```math
 \begin{equation}
@@ -34,7 +36,7 @@ m(\omega) = \frac{1}{\Gamma \sqrt{\pi}}
 \end{equation}
 ```
 
-Shifted Gaussian model (`1gauss`):
+* Shifted Gaussian model (keyword : `1gauss`):
 
 ```math
 \begin{equation}
@@ -44,7 +46,7 @@ m(\omega) =
 \end{equation}
 ```
 
-Two Gaussians model (`2gauss`):
+* Two Gaussians model (keyword : `2gauss`):
 
 ```math
 \begin{equation}
@@ -57,7 +59,7 @@ m(\omega) =
 \end{equation}
 ```
 
-Lorentzian model (`lorentz`):
+* Lorentzian model (keyword : `lorentz`):
 
 ```math
 \begin{equation}
@@ -65,7 +67,7 @@ m(\omega)=\frac{\Gamma}{\pi(\Gamma^2+\omega^2)}
 \end{equation}
 ```
 
-Shifted Lorentzian model (`1lorentz`):
+* Shifted Lorentzian model (keyword : `1lorentz`):
 
 ```math
 \begin{equation}
@@ -74,7 +76,7 @@ m(\omega) =
 \end{equation}
 ```
 
-Two Lorentzians model (`2lorentz`):
+* Two Lorentzians model (keyword : `2lorentz`):
 
 ```math
 \begin{equation}
@@ -84,7 +86,7 @@ m(\omega) =
 \end{equation}
 ```
 
-Rise-And-Decay model (`risedecay`):
+* Rise-And-Decay model (keyword : `risedecay`):
 
 ```math
 \begin{equation}

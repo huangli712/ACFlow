@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/02/17
+# Last modified: 2022/10/07
 #
 
 #=
@@ -14,7 +14,8 @@
 """
     FermionicImaginaryTimeGrid(ntime::I64, β::F64)
 
-A constructor for the FermionicImaginaryTimeGrid struct.
+A constructor for the FermionicImaginaryTimeGrid struct, which is defined
+in types.jl.
 
 See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
@@ -127,7 +128,8 @@ end
 """
     rebuild(fg::FermionicImaginaryTimeGrid, ntime::I64, β::F64)
 
-Rebuild the FermionicImaginaryTimeGrid struct via new `ntime` and `β` parameters.
+Rebuild the FermionicImaginaryTimeGrid struct via new `ntime` and `β`
+parameters.
 
 See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
@@ -146,7 +148,8 @@ end
 """
     FermionicMatsubaraGrid(nfreq::I64, β::F64)
 
-A constructor for the FermionicMatsubaraGrid struct. ωₙ = (2n - 1) * π / β.
+A constructor for the FermionicMatsubaraGrid struct, which is defined in
+types.jl. The Matsubara grid is evaluated as ωₙ = (2n - 1) * π / β.
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
@@ -261,7 +264,8 @@ end
 """
     rebuild(fg::FermionicMatsubaraGrid, nfreq::I64, β::F64)
 
-Rebuild the FermionicMatsubaraGrid struct via new `nfreq` and `β` parameters.
+Rebuild the FermionicMatsubaraGrid struct via new `nfreq` and `β`
+parameters.
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
@@ -283,7 +287,8 @@ end
 """
     BosonicImaginaryTimeGrid(ntime::I64, β::F64)
 
-A constructor for the BosonicImaginaryTimeGrid struct.
+A constructor for the BosonicImaginaryTimeGrid struct, which is defined
+in types.jl.
 
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
@@ -396,7 +401,8 @@ end
 """
     rebuild(bg::BosonicImaginaryTimeGrid, ntime::I64, β::F64)
 
-Rebuild the BosonicImaginaryTimeGrid struct via new `ntime` and `β` parameters.
+Rebuild the BosonicImaginaryTimeGrid struct via new `ntime` and `β`
+parameters.
 
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
@@ -415,7 +421,8 @@ end
 """
     BosonicMatsubaraGrid(nfreq::I64, β::F64)
 
-A constructor for the BosonicMatsubaraGrid struct. ωₙ = (2n - 2) * π / β.
+A constructor for the BosonicMatsubaraGrid struct, which is defined in
+types.jl. The Matsubara grid is evaluated as ωₙ = (2n - 2) * π / β.
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
@@ -530,7 +537,8 @@ end
 """
     rebuild(bg::BosonicMatsubaraGrid, nfreq::I64, β::F64)
 
-Rebuild the BosonicMatsubaraGrid struct via new `nfreq` and `β` parameters.
+Rebuild the BosonicMatsubaraGrid struct via new `nfreq` and `β`
+parameters.
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
