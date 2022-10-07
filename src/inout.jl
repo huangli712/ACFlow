@@ -257,7 +257,9 @@ function write_goodness(Θ_vec::Vector{F64}, χ²_vec::Vector{F64})
         _Θ = log10.(Θ_vec)
         _χ² = log10.(χ²_vec)
         for i in eachindex(Θ_vec)
-            @printf(fout, "%16.12f %16.12f\n", _Θ[i], _χ²[i])
+            if !isinf(_Θ) && !isinf(_χ²)
+                @printf(fout, "%16.12f %16.12f\n", _Θ[i], _χ²[i])
+            end
         end
     end
 end
