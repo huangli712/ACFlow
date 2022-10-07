@@ -339,7 +339,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         # Check whether the equilibrium state is reached 
         δχ² = SC.χ² - SC.χ²min
         @printf("step : %5i ", i)
-        @printf("χ² - χ²min -> %12.6e", δχ²)
+        @printf("χ² - χ²min -> %12.6e\n", δχ²)
         if δχ² < 1e-3
             println("Reach equilibrium state")
             break
