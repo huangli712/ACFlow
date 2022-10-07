@@ -298,6 +298,9 @@ function last(SC::StochSKContext, Asum::Vector{F64})
     # Write final spectral function
     write_spectrum(SC.mesh, Asum)
 
+    # Write Θ-dependent goodness function
+    write_goodness(SC.Θvec, SC.χ²vec)
+
     # Reproduce input data
     kernel = make_kernel(SC.mesh, SC.grid)
     G = reprod(SC.mesh, kernel, Asum)
