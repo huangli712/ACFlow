@@ -147,18 +147,18 @@ function build_1gaussian_model(am::AbstractMesh, Γ::F64, s::F64)
 end
 
 """
-    build_2gaussians_model(am::AbstractMesh, Γ::F64, s1::F64, s2::F64)
+    build_2gaussians_model(am::AbstractMesh, Γ::F64, s₁::F64, s₂::F64)
 
 Try to build a Two Gaussians model, which is then normalized. The
 argument `Γ` is used to control the width of the Gaussian peak, and
-`s1` and `s2` denote the centers of the two peaks.
+`s₁` and `s₂` denote the centers of the two peaks.
 
 See also: [`AbstractMesh`](@ref).
 """
-function build_2gaussians_model(am::AbstractMesh, Γ::F64, s1::F64, s2::F64)
+function build_2gaussians_model(am::AbstractMesh, Γ::F64, s₁::F64, s₂::F64)
     model = similar(am.mesh)
-    @. model = exp(-((am.mesh - s1) / Γ) ^ 2.0) / (Γ * sqrt(π))
-    @. model += exp(-((am.mesh - s2) / Γ) ^ 2.0) / (Γ * sqrt(π))
+    @. model = exp(-((am.mesh - s₁) / Γ) ^ 2.0) / (Γ * sqrt(π))
+    @. model += exp(-((am.mesh - s₂) / Γ) ^ 2.0) / (Γ * sqrt(π))
     norm = dot(am.weight, model)
     model = model ./ norm
     return model
