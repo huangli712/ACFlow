@@ -283,7 +283,6 @@ Postprocess the results generated during the stochastic analytical
 continuation simulations. It will generate the spectral functions.
 """
 function average(step::F64, SC::StochSKContext)
-    #SC.Aout = SC.Aout / (step * (SC.mesh[2] - SC.mesh[1]))
     SC.Aout = SC.Aout ./ (step * SC.mesh.weight)
 
     return SC.Aout
