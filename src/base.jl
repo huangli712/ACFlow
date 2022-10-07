@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/07
+# Last modified: 2022/10/08
 #
 
 """
@@ -182,7 +182,7 @@ function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = tru
     # respectively.
     reset && begin
         rev_dict(_PBASE)
-        rev_dict(MaxEntSolver(), _PMaxEnt)
+        rev_dict(MaxEntSolver(),   _PMaxEnt)
         rev_dict(StochACSolver(), _PStochAC)
         rev_dict(StochSKSolver(), _PStochSK)
         rev_dict(StochOMSolver(), _PStochOM)
@@ -193,7 +193,7 @@ function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = tru
     solver = get_b("solver")
     @cswitch solver begin
         @case "MaxEnt"
-            rev_dict(MaxEntSolver(), S)
+            rev_dict(MaxEntSolver(),  S)
             break
 
         @case "StochAC"
@@ -217,8 +217,8 @@ end
 """
     read_param()
 
-Setup the configuration dictionaries via a external file. The valid format
-of a configuration file is `toml`.
+Setup the configuration dictionaries via an external file. The valid
+format of a configuration file is `toml`.
 
 See also: [`read_param`](@ref).
 """
@@ -345,7 +345,7 @@ end
     make_mesh()
 
 Try to generate an uniform (linear) or non-uniform (non-linear) mesh for
-the calculated spectrum.
+the spectrum function in real axis.
 
 See also: [`LinearMesh`](@ref), [`TangentMesh`](@ref), [`LorentzMesh`](@ref).
 """
