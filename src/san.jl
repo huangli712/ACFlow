@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/06
+# Last modified: 2022/10/07
 #
 
 #=
@@ -184,7 +184,7 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
     # Warmup the Monte Carlo engine 
     println("Start thermalization...")
-    SE = warmup(MC, SE, SC)
+    warmup(MC, SE, SC)
 
     # Shuffle the Monte Carlo configuration again
     shuffle(MC, SE, SC)
@@ -362,7 +362,10 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     @assert 1 ≤ c ≤ length(SC.𝒞ᵧ)
 
     # Retrieve the Monte Carlo field configuration
-    SE = deepcopy(SC.𝒞ᵧ[c])
+    #SE = deepcopy(SC.𝒞ᵧ[c])
+    @. SE.P = SC.𝒞ᵧ[c].P
+    SE.A = SC.𝒞ᵧ[c].A
+    SE.W = SC.𝒞ᵧ[c].W
 
     # Reset Θ
     SC.Θ = SC.Θvec[c]
@@ -372,7 +375,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
     println("Θ = ", SC.Θ, " χ² = ", SC.χ²)
 
-    return SE
+    #return SE
 end
 
 """
