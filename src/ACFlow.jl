@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/06
+# Last modified: 2022/10/07
 #
 
 """
@@ -321,6 +321,7 @@ N/A
 #
 include("mesh.jl")
 #
+export nearest
 
 #=
 ### *Includes And Exports* : *config.jl*

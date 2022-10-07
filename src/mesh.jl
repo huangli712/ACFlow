@@ -269,3 +269,39 @@ function Base.getindex(am::AbstractMesh, I::UnitRange{I64})
     end
     return X
 end
+
+"""
+    nearest(am::AbstractMesh, r::F64)
+
+Given a position (0.0 ≤ r ≤ 1.0), and return the index of the nearest
+point in the mesh `am`.
+
+See also: [`AbstractMesh`](@ref).
+"""
+function nearest(am::AbstractMesh, r::F64)
+    # Check r and evaluate the corresponding value
+    @assert 0.0 ≤ r ≤ 1.0
+    val = am.wmin + (am.wmax - am.wmin) * r
+
+    # Try to locate val in the mesh by using the bisection algorithm
+    left = 1
+    right = length(am)
+    @assert am[left] ≤ val ≤ am[right]
+    
+    while right - left ≥ 2
+        mid = round(I64, (left + right) / 2)
+        if val < am[mid]
+            right = mid
+        else
+            left = mid
+        end
+    end
+
+    # Well, now we have the left and right boundaries. We should return
+    # the closer one.
+    if am[right] - val > val - am[left]
+        return left
+    else
+        return right
+    end
+end
