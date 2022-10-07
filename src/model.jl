@@ -197,18 +197,18 @@ function build_1lorentzian_model(am::AbstractMesh, Γ::F64, s::F64)
 end
 
 """
-    build_2lorentzians_model(am::AbstractMesh, Γ::F64, s1::F64, s2::F64)
+    build_2lorentzians_model(am::AbstractMesh, Γ::F64, s₁::F64, s₂::F64)
 
 Try to build a Two-Lorentzians model, which is then normalized. The
 argument `Γ` is used to control the width of the Lorentzian peak, and
-`s1` and `s2` denote the centers of the two peaks.
+`s₁` and `s₂` denote the centers of the two peaks.
 
 See also: [`AbstractMesh`](@ref).
 """
-function build_2lorentzians_model(am::AbstractMesh, Γ::F64, s1::F64, s2::F64)
+function build_2lorentzians_model(am::AbstractMesh, Γ::F64, s₁::F64, s₂::F64)
     model = similar(am.mesh)
-    @. model = (Γ / π) / ( Γ ^ 2.0 + (am.mesh - s1) ^ 2.0 )
-    @. model += (Γ / π) / ( Γ ^ 2.0 + (am.mesh - s2) ^ 2.0 )
+    @. model = (Γ / π) / ( Γ ^ 2.0 + (am.mesh - s₁) ^ 2.0 )
+    @. model += (Γ / π) / ( Γ ^ 2.0 + (am.mesh - s₂) ^ 2.0 )
     norm = dot(am.weight, model)
     model = model ./ norm
     return model
