@@ -111,6 +111,7 @@ parameters or represent some essential data structures.
 ```text
 DType           -> Customized type.
 ADT             -> Customized type.
+#
 PBASE           -> Dict for general setup.
 PMaxEnt         -> Dict for MaxEnt solver.
 PStochAC        -> Dict for StochAC solver.
@@ -151,6 +152,7 @@ include("types.jl")
 #
 export DType
 export ADT
+#
 export PBASE
 export PMaxEnt
 export PStochAC
@@ -314,7 +316,7 @@ To implement various mesh for the calculated spectral functions.
 *Members* :
 
 ```text
-N/A
+nearest -> Return index of the nearest point to a given number.
 ```
 =#
 
@@ -380,13 +382,13 @@ read_cmplx_data   -> Read data in Matsubara frequency axis.
 #
 write_spectrum    -> Write spectral functions.
 write_model       -> Write default model function.
-write_misfit      -> Write χ².
+write_misfit      -> Write α-dependent χ².
 write_probability -> Write Bayesian a-posteriori probability.
 write_hamiltonian -> Write effective hamiltonian for StochAC solver.
-write_goodness    -> .
+write_goodness    -> Write Θ-dependent χ².
 write_backward    -> Write reproduced input data in imaginary axis.
 write_complete    -> Write full data in real axis.
-write_statistics  -> Write statistical information for StochAC/StochOM solver.
+write_statistics  -> Write statistics info. for StochAC/StochSK/StochOM solver.
 ```
 =#
 
@@ -510,7 +512,7 @@ calc_entropy  -> Calculate entropy.
 calc_entropy_offdiag -> Calculate entropy (offdiag version).
 calc_bayes    -> Calculate Bayesian probability.
 calc_bayes_offdiag -> Calculate Bayesian probability (offdiag version).
-calc_chi2     -> Calculate χ².
+calc_chi2     -> Calculate χ² function.
 ```
 =#
 
@@ -715,7 +717,7 @@ init_context   -> Prepare data for a StochOMContext struct.
 init_iodata    -> Preprocess the input data.
 #
 calc_lambda    -> Build kernel function.
-calc_error     -> Calculate χ².
+calc_error     -> Calculate χ² function.
 calc_green     -> Reproduce green's function via the field configurations.
 calc_norm      -> Calculate norm of the field configurations.
 #
