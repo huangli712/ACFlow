@@ -209,23 +209,6 @@ function write_misfit(α_vec::Vector{F64}, χ²_vec::Vector{F64})
 end
 
 """
-    write_hamiltonian(α_vec::Vector{F64}, Uα::Vector{F64})
-
-Write `α-U(α)` data to `hamil.data`, which could be used to judge whether
-the obtained optimal α parameter is reasonable. This function is only
-useful for the `StochAC` solver.
-"""
-function write_hamiltonian(α_vec::Vector{F64}, Uα::Vector{F64})
-    @assert length(α_vec) == length(Uα)
-
-    open("hamil.data", "w") do fout
-        for i in eachindex(α_vec)
-            @printf(fout, "%16.8f %16.12f\n", α_vec[i], Uα[i])
-        end
-    end
-end
-
-"""
     write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
 
 Write `p(α)` data to `prob.data`. This function is only useful for the
@@ -239,6 +222,23 @@ function write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
         _α = log10.(α_vec)
         for i in eachindex(α_vec)
             @printf(fout, "%16.12f %16.12f\n", _α[i], _p[i])
+        end
+    end
+end
+
+"""
+    write_hamiltonian(α_vec::Vector{F64}, Uα::Vector{F64})
+
+Write `α-U(α)` data to `hamil.data`, which could be used to judge whether
+the obtained optimal α parameter is reasonable. This function is only
+useful for the `StochAC` solver.
+"""
+function write_hamiltonian(α_vec::Vector{F64}, Uα::Vector{F64})
+    @assert length(α_vec) == length(Uα)
+
+    open("hamil.data", "w") do fout
+        for i in eachindex(α_vec)
+            @printf(fout, "%16.8f %16.12f\n", α_vec[i], Uα[i])
         end
     end
 end
