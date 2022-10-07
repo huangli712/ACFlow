@@ -283,7 +283,8 @@ Postprocess the results generated during the stochastic analytical
 continuation simulations. It will generate the spectral functions.
 """
 function average(step::F64, SC::StochSKContext)
-    SC.Aout = SC.Aout / (step * (SC.mesh[2] - SC.mesh[1]))
+    #SC.Aout = SC.Aout / (step * (SC.mesh[2] - SC.mesh[1]))
+    SC.Aout = SC.Aout ./ (step * SC.mesh.weight)
 
     return SC.Aout
 end
@@ -399,7 +400,6 @@ end
 Measure the final spectral functions.
 """
 function measure(SE::StochSKElement, SC::StochSKContext)
-    nmesh = get_b("nmesh")
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
@@ -407,7 +407,6 @@ function measure(SE::StochSKElement, SC::StochSKContext)
     for j = 1:ngamm
         d_pos = SE.P[j]
         s_pos = nearest(SC.mesh, d_pos / nfine)
-        # ceil(I64, d_pos / nfine * nmesh)
         SC.Aout[s_pos] = SC.Aout[s_pos] + SE.A
     end
 end

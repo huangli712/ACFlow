@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/05
+# Last modified: 2022/10/07
 #
 
 """
@@ -339,7 +339,16 @@ function chk_dict()
 
         @case "StochSK"
             push!(PA, PStochSK)
+            @assert get_b("mtype") == "flat"
+            @assert get_b("grid") in ("ftime", "btime")
+            @assert get_k("nfine") ≥ 10000
             @assert get_k("ngamm") ≥ 1000
+            @assert get_k("nwarm") ≥ 1000
+            @assert get_k("nstep") ≥ 10000
+            @assert get_k("ndump") ≥ 100
+            @assert get_k("retry") ≥ 10
+            @assert get_k("theta") > 1e+4
+            @assert get_k("ratio") > 0.0
             break
 
         @case "StochOM"
@@ -380,6 +389,8 @@ end
     get_b(key::String)
 
 Extract configurations from dict: PBASE.
+
+See also: [`PBASE`](@ref).
 """
 @inline function get_b(key::String)
     if haskey(PBASE, key)
@@ -393,6 +404,8 @@ end
     get_m(key::String)
 
 Extract configurations from dict: PMaxEnt.
+
+See also: [`PMaxEnt`](@ref).
 """
 @inline function get_m(key::String)
     if haskey(PMaxEnt, key)
@@ -406,6 +419,8 @@ end
     get_a(key::String)
 
 Extract configurations from dict: PStochAC.
+
+See also: [`PStochAC`](@ref).
 """
 @inline function get_a(key::String)
     if haskey(PStochAC, key)
@@ -419,6 +434,8 @@ end
     get_k(key::String)
 
 Extract configurations from dict: PStochSK.
+
+See also: [`PStochSK`](@ref).
 """
 @inline function get_k(key::String)
     if haskey(PStochSK, key)
@@ -432,6 +449,8 @@ end
     get_s(key::String)
 
 Extract configurations from dict: PStochOM.
+
+See also: [`PStochOM`](@ref).
 """
 @inline function get_s(key::String)
     if haskey(PStochOM, key)
