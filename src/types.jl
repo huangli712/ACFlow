@@ -145,11 +145,11 @@ const PStochSK = Dict{String,ADT}(
 
 # Default parameters for PStochSK
 const _PStochSK= Dict{String,Any}(
-    "nfine"   => 1000000,
+    "nfine"   => 100000,
     "ngamm"   => 1000,
     "nwarm"   => 1000,
-    "nstep"   => 1000,
-    "ndump"   => 100,
+    "nstep"   => 20000,
+    "ndump"   => 200,
     "retry"   => 10,
     "theta"   => 1e+6,
     "ratio"   => 0.90,
