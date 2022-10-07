@@ -242,8 +242,9 @@ function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
 
     kernel = zeros(F64, ntime, nmesh)
     for i = 1:nmesh
+        de = 1.0 + exp(-β * am[i])
         for j = 1:ntime
-            kernel[j,i] = exp(-fg[j] * am[i]) / (1.0 + exp(-β * am[i]))
+            kernel[j,i] = exp(-fg[j] * am[i]) / de
         end
     end
 
