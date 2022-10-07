@@ -244,6 +244,25 @@ function write_hamiltonian(α_vec::Vector{F64}, Uα::Vector{F64})
 end
 
 """
+    write_goodness(Θ_vec::Vector{F64}, χ²_vec::Vector{F64})
+
+Write `log10(Θ)-log10(χ²)` data to `goodness.data`, which could be used
+to judge whether the obtained optimal Θ parameter is reasonable. This
+function is only useful for the `StochSK` solver.
+"""
+function write_goodness(Θ_vec::Vector{F64}, χ²_vec::Vector{F64})
+    @assert length(Θ_vec) == length(χ²_vec)
+
+    open("goodness.data", "w") do fout
+        _Θ = log10.(Θ_vec)
+        _χ² = log10.(χ²_vec)
+        for i in eachindex(Θ_vec)
+            @printf(fout, "%16.12f %16.12f\n", _Θ[i], _χ²[i])
+        end
+    end
+end
+
+"""
     write_backward(ag::AbstractGrid, G::Vector{F64})
 
 We can use the calculated spectrum in real axis to reproduce the input
