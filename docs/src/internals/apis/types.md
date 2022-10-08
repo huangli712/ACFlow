@@ -31,6 +31,8 @@ PMaxEnt
 PStochAC
 PStochSK
 PStochOM
+AbstractGrid
+AbstractMesh
 StochACMC
 StochSKMC
 StochOMMC
