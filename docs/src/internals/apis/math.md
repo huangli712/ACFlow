@@ -41,4 +41,6 @@ value
 value!
 jacobian
 jacobian!
+munge_data
+_interp
 ```
