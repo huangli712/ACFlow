@@ -484,7 +484,7 @@ end
 
 Try to create a StochSKMC struct.
 
-See also: [`StochSK`](@ref).
+See also: [`StochSKMC`](@ref).
 """
 function init_mc(S::StochSKSolver)
     seed = rand(1:100000000)

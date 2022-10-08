@@ -414,7 +414,7 @@ end
 
 Try to create a StochACMC struct.
 
-See also: [`StochAC`](@ref).
+See also: [`StochACMC`](@ref).
 """
 function init_mc(S::StochACSolver)
     nalph = get_a("nalph")
