@@ -426,21 +426,26 @@ Try to shuffle the Monte Carlo field configuration via the Metropolis
 algorithm. Then the window for shifting the δ functions is adjusted.
 """
 function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    # Get/set essential parameters
     nfine = get_k("nfine")
     retry = get_k("retry")
-    max_bin_size = 100
+    max_bin_size = 100 # You can increase it to improve the accuracy
 
+    # Allocate memory
     bin_χ²  = zeros(F64, max_bin_size)
     bin_acc = zeros(I64, max_bin_size)
     bin_try = zeros(I64, max_bin_size)
 
+    # Perform Monte Carlo sweeping
     for s = 1:max_bin_size
+        # Recalculate the goodness function
         if s % retry == 0
             SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
         end
 
         sample(MC, SE, SC)
 
+        # Update the counters
         bin_χ²[s]  = SC.χ²
         bin_acc[s] = MC.Sacc + MC.Pacc
         bin_try[s] = MC.Stry + MC.Ptry
@@ -448,6 +453,8 @@ function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
     # Calculate the transition probability, and then adjust the window,
     # which restricts the movement of the δ functions.
+    #
+    # The transition probability will be kept around 0.5.
     𝑝 = sum(bin_acc) / sum(bin_try)
     #
     if 𝑝 > 0.5
