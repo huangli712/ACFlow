@@ -38,4 +38,10 @@ init_mc
 init_element
 init_context
 init_iodata
+calc_lambda
+calc_error
+calc_green
+calc_norm
+constraints
+try_insert
 ```
