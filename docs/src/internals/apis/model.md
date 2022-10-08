@@ -25,5 +25,12 @@ Pages = ["model.md"]
 ## Functions
 
 ```@docs
-
+build_risedecay_model
+build_1lorentzian_model
+build_2gaussians_model
+build_lorentzian_model
+build_func_model
+build_2lorentzians_model
+build_flat_model
+build_gaussian_model
 ```
