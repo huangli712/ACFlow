@@ -25,5 +25,9 @@ Pages = ["mesh.md"]
 ## Functions
 
 ```@docs
-
+LinearMesh
+TangentMesh
+LorentzMesh
+HalfLorentzMesh
+nearest
 ```
