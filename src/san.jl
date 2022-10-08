@@ -301,12 +301,12 @@ function last(SC::StochSKContext, Asum::Vector{F64})
     # Write Θ-dependent goodness function
     write_goodness(SC.Θvec, SC.χ²vec)
 
-    # Reproduce input data
+    # Reproduce input data and write them
     kernel = make_kernel(SC.mesh, SC.grid)
     G = reprod(SC.mesh, kernel, Asum)
     write_backward(SC.grid, G)
 
-    # Calculate full response function at real frequency
+    # Calculate full response function on real axis and write them
     _G = kramers(SC.mesh, Asum)
     write_complete(SC.mesh, _G)
 

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/06
+# Last modified: 2022/10/08
 #
 
 #=
@@ -15,7 +15,7 @@
     Box
 
 Rectangle. The field configuration consists of many boxes. They exhibit
-various areas (width × height). We used the Metropolis important sampling
+various areas (width × height). We use the Metropolis important sampling
 algorithm to sample them and evaluate their contributions to the spectrum.
 
 ### Members
@@ -34,7 +34,7 @@ end
     StochOMElement
 
 Mutable struct. It is used to record the field configurations, which will
-be sampled by Monte Carlo procedure.
+be sampled by Monte Carlo sweeping procedure.
 
 ### Members
 
@@ -87,15 +87,13 @@ function solve(S::StochOMSolver, rd::RawData)
     println("[ StochOM ]")
     MC, SC = init(S, rd)
 
+    # Parallel version
     if nworkers() > 1
         println("Using $(nworkers()) workers")
         #
         # Copy configuration dicts
         p1 = deepcopy(PBASE)
         p2 = deepcopy(PStochOM)
-        #
-            #sol = pmap((x) -> prun(S, p1, p2, MC, SC), 1:nworkers())
-            #@assert length(sol) == nworkers()
         #
         #  Launch the task
         𝐹 = Future[]
@@ -120,9 +118,12 @@ function solve(S::StochOMSolver, rd::RawData)
         #
         # Postprocess the solutions
         Gout = last(SC, Aout)
+
+    # Sequential version
     else
         Aout = run(MC, SC)
         Gout = last(SC, Aout)
+
     end
 
     return SC.mesh.mesh, Aout, Gout
@@ -159,9 +160,11 @@ end
 Perform stochastic optimization simulation, sequential version.
 """
 function run(MC::StochOMMC, SC::StochOMContext)
+    # Setup essential parameters
     ntry = get_s("ntry")
     nstep = get_s("nstep")
 
+    # Sample and collect data
     for l = 1:ntry
         SE = init_element(MC, SC)
 
@@ -192,14 +195,18 @@ function prun(S::StochOMSolver,
               p1::Dict{String,Vector{Any}},
               p2::Dict{String,Vector{Any}},
               MC::StochOMMC, SC::StochOMContext)
+    # Revise parameteric dicts
     rev_dict(p1)
     rev_dict(S, p2)
 
+    # Initialize random number generator again
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
 
+    # Setup essential parameters
     ntry = get_s("ntry")
     nstep = get_s("nstep")
 
+    # Sample and collect data
     for l = 1:ntry
         SE = init_element(MC, SC)
 
@@ -221,7 +228,7 @@ end
     average(SC::StochOMContext)
 
 Postprocess the collected results after the stochastic optimization
-simulations. It will calculate real spectral functions.
+simulations. It will generate the spectral functions.
 """
 function average(SC::StochOMContext)
     nmesh = get_b("nmesh")
@@ -257,7 +264,7 @@ function average(SC::StochOMContext)
     Lgood = count(x -> x < dev_ave / αgood, SC.Δᵥ)
     @. Aom = Aom / Lgood
 
-    @printf("Median χ² : %16.12e Accepted configurations : %5i \n", dev_ave, Lgood)
+    @printf("Median χ² : %16.12e Accepted configurations : %5i\n", dev_ave, Lgood)
 
     return Aom
 end
@@ -298,12 +305,14 @@ function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
     Tmax = 100 # Length of the Markov chain
     nbox = get_s("nbox")
 
+    ST = deepcopy(SE)
+
+    # The Markov chain is divided into two stages
     T1 = rand(MC.rng, 1:Tmax)
     d1 = rand(MC.rng, F64)
     d2 = 1.0 + rand(MC.rng, F64)
-
-    ST = deepcopy(SE)
-
+    #
+    # The first stage
     for _ = 1:T1
         update_type = rand(MC.rng, 1:7)
 
@@ -348,7 +357,8 @@ function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
         end
 
     end
-
+    #
+    # The second stage
     for _ = T1+1:Tmax
         update_type = rand(MC.rng, 1:7)
 
@@ -800,11 +810,17 @@ function constraints(e₁::F64, e₂::F64)
 end
 
 """
-    try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+    try_insert(MC::StochOMMC,
+               SE::StochOMElement,
+               SC::StochOMContext,
+               dacc::F64)
 
 Insert a new box into the field configuration.
 """
-function try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_insert(MC::StochOMMC,
+                    SE::StochOMElement,
+                    SC::StochOMContext,
+                    dacc::F64)
     sbox = get_s("sbox")
     wbox = get_s("wbox")
     wmin = get_b("wmin")
@@ -874,11 +890,17 @@ function try_insert(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
 end
 
 """
-    try_remove(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+    try_remove(MC::StochOMMC,
+               SE::StochOMElement,
+               SC::StochOMContext,
+               dacc::F64)
 
 Remove an old box from the field configuration.
 """
-function try_remove(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_remove(MC::StochOMMC,
+                    SE::StochOMElement,
+                    SC::StochOMContext,
+                    dacc::F64)
     csize = length(SE.C)
 
     # Choose two boxes randomly
@@ -942,11 +964,17 @@ function try_remove(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
 end
 
 """
-    try_shift(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+    try_shift(MC::StochOMMC,
+              SE::StochOMElement,
+              SC::StochOMContext,
+              dacc::F64)
 
 Change the position of given box in the field configuration.
 """
-function try_shift(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_shift(MC::StochOMMC,
+                   SE::StochOMElement,
+                   SC::StochOMContext,
+                   dacc::F64)
     wmin = get_b("wmin")
     wmax = get_b("wmax")
     csize = length(SE.C)
@@ -997,12 +1025,18 @@ function try_shift(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
 end
 
 """
-    try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+    try_width(MC::StochOMMC,
+              SE::StochOMElement,
+              SC::StochOMContext,
+              dacc::F64)
 
 Change the width and height of given box in the field configuration. Note
 that the box's area is kept.
 """
-function try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_width(MC::StochOMMC,
+                   SE::StochOMElement,
+                   SC::StochOMContext,
+                   dacc::F64)
     wbox = get_s("wbox")
     wmin = get_b("wmin")
     wmax = get_b("wmax")
@@ -1058,11 +1092,17 @@ function try_width(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
 end
 
 """
-    try_height(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+    try_height(MC::StochOMMC,
+               SE::StochOMElement,
+               SC::StochOMContext,
+               dacc::F64)
 
 Change the heights of two given boxes in the field configuration.
 """
-function try_height(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_height(MC::StochOMMC,
+                    SE::StochOMElement,
+                    SC::StochOMContext,
+                    dacc::F64)
     sbox  = get_s("sbox")
     csize = length(SE.C)
 
@@ -1123,11 +1163,17 @@ function try_height(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc:
 end
 
 """
-    try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+    try_split(MC::StochOMMC,
+              SE::StochOMElement,
+              SC::StochOMContext,
+              dacc::F64)
 
 Split a given box into two boxes in the field configuration.
 """
-function try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_split(MC::StochOMMC,
+                   SE::StochOMElement,
+                   SC::StochOMContext,
+                   dacc::F64)
     wbox = get_s("wbox")
     sbox = get_s("sbox")
     wmin = get_b("wmin")
@@ -1213,11 +1259,17 @@ function try_split(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::
 end
 
 """
-    try_merge(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+    try_merge(MC::StochOMMC,
+              SE::StochOMElement,
+              SC::StochOMContext,
+              dacc::F64)
 
 Merge two given boxes into one box in the field configuration.
 """
-function try_merge(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext, dacc::F64)
+function try_merge(MC::StochOMMC,
+                   SE::StochOMElement,
+                   SC::StochOMContext,
+                   dacc::F64)
     wmin = get_b("wmin")
     wmax = get_b("wmax")
     csize = length(SE.C)
@@ -1350,30 +1402,3 @@ function Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
 
     return copysign( log1p(-abs(𝑁)) / γ_X, 𝑁)
 end
-
-#=
-function Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
-    γ = 2.0
-    y = rand(rng, F64)
-
-    _X = max(abs(xmin), abs(xmax))
-    _λ = γ / _X
-    _elx = exp(-1.0 * _λ * abs(xmin))
-    _N = _λ / ( (xmin / abs(xmin)) * (exp(-1.0 * _λ * abs(xmin)) - 1.0)
-              + (xmax / abs(xmax)) * (1.0 - exp(-1.0 * _λ * abs(xmax))) )
-    _lysn = _λ * y / _N
-
-    if xmin ≥ 0
-        return -1.0 * log(_elx - _lysn) / _λ
-    elseif xmax ≤ 0
-        return log(_lysn + _elx) / _λ
-    else
-        _C1 = _N * (1.0 - _elx) / _λ
-        if y ≤ _C1
-            return log(_lysn + _elx) / _λ
-        else
-            return -1.0 * log(1.0 - _lysn + _λ * _C1 / _N) / _λ
-        end
-    end
-end
-=#
