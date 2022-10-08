@@ -1,4 +1,4 @@
-# Kernel functions
+# Kernels
 
 *Define some kernel functions.*
 
