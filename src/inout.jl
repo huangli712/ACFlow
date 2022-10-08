@@ -57,7 +57,7 @@ deviations σ for the real and imaginary parts, respectively. If there are
 only four columns, it means that the real and imaginary parts share the
 same standard deviations.
 
-See also: [`read_time_data`](@ref).
+See also: [`read_real_data`](@ref).
 """
 function read_cmplx_data(finput::AbstractString, ngrid::I64)
     # Allocate memory
@@ -101,7 +101,7 @@ the data (which is specified by the argument `only_real_part`), and the
 third column is the standard deviation σ. This function is for bosonic
 correlation function.
 
-See also: [`read_time_data`](@ref).
+See also: [`read_real_data`](@ref).
 """
 function read_cmplx_data(finput::AbstractString, ngrid::I64, only_real_part::Bool)
     # Allocate memory
