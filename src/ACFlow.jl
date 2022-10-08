@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/07
+# Last modified: 2022/10/08
 #
 
 """
@@ -733,6 +733,8 @@ try_width      -> Try to change width of a box.
 try_height     -> Try to change height of a box.
 try_split      -> Try to split a box.
 try_merge      -> Try to merge two boxes.
+#
+Pdx            -> Try to calculate the probability density function.
 ```
 =#
 
@@ -770,6 +772,8 @@ export try_width
 export try_height
 export try_split
 export try_merge
+#
+export Pdx
 
 #=
 ### *Includes And Exports* : *base.jl*
