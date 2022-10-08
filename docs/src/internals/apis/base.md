@@ -1,4 +1,4 @@
-# Basic interfaces
+# Core
 
 *Provide basic user's interfaces for the ACFlow package.*
 

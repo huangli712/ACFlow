@@ -1,4 +1,4 @@
-# Fundamental types
+# Types
 
 *Define some fundamental types and structs for the ACFlow package.*
 

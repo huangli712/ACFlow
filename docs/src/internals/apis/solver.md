@@ -1,4 +1,4 @@
-# Solver
+# Solvers
 
 *Define solvers for the ACFlow package.*
 

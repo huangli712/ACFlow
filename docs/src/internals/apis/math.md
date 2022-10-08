@@ -1,4 +1,4 @@
-# Mathematical functions
+# Math
 
 *Define some essential mathematical functions.*
 
@@ -7,12 +7,6 @@
 ## Contents
 
 ```@contents
-Pages = ["math.md"]
-```
-
-## Index
-
-```@index
 Pages = ["math.md"]
 ```
 

@@ -1,4 +1,4 @@
-# Model
+# Model functions
 
 *Define some type aliases and string constants for the ACFlow package.*
 

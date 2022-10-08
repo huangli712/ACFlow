@@ -1,4 +1,4 @@
-# ACFlow
+# ACFlow module
 
 *Declare the module and public members.*
 
