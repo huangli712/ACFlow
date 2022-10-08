@@ -34,5 +34,6 @@ Base.iterate
 Base.getindex
 Base.eachindex
 Base.firstindex
+Base.lastindex
 nearest
 ```
