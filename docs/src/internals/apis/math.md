@@ -24,6 +24,8 @@ LinearInterpolation
 CubicSplineInterpolation
 QuadraticInterpolation
 LsqFitResult
+OptimizationResults
+OnceDifferentiable
 ```
 
 ## Functions

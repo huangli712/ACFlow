@@ -33,5 +33,6 @@ build_lorentzian_model
 build_1lorentzian_model
 build_2lorentzians_model
 build_risedecay_model
+build_file_model
 build_func_model
 ```

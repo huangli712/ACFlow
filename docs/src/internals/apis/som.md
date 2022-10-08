@@ -74,6 +74,7 @@ f_and_J_offdiag
 svd_to_real
 svd_to_real_offdiag
 precompute
+optimizer
 try_move_s
 try_move_p
 try_insert
