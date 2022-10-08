@@ -20,6 +20,7 @@ Pages = ["som.md"]
 
 ```@docs
 Box
+MaxEntContext
 StochACElement
 StochACContext
 StochSKElement
@@ -59,11 +60,15 @@ calc_chi2
 calc_hamil
 calc_phi
 calc_delta
+calc_entropy
+calc_entropy_offdiag
 classic
 historic
 bryan
 chi2kink
 constraints
+f_and_J
+f_and_J_offdiag
 try_move_s
 try_move_p
 try_insert
@@ -73,7 +78,7 @@ try_width
 try_height
 try_split
 try_merge
-try_move1
-try_move2
+try_mov1
+try_mov2
 Pdx
 ```
