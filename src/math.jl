@@ -1062,3 +1062,7 @@ export OnceDifferentiable
 export OptimizationResults
 export LsqFitResult
 export levenberg_marquardt
+export value
+export value!
+export jacobian
+export jacobian!
