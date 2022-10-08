@@ -20,6 +20,10 @@ Pages = ["som.md"]
 
 ```@docs
 Box
+StochACElement
+StochACContext
+StochSKElement
+StochSKContext
 StochOMElement
 StochOMContext
 ```
