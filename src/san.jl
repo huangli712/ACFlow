@@ -399,14 +399,21 @@ end
     measure(SE::StochSKElement, SC::StochSKContext)
 
 Measure the final spectral functions.
+
+See also: [`nearest`](@ref).
 """
 function measure(SE::StochSKElement, SC::StochSKContext)
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
-    # Here we just assume that the mesh is linear
     for j = 1:ngamm
         d_pos = SE.P[j]
+        # d_pos / nfine denotes the position of the selected δ function
+        # in the fine linear mesh.
+        #
+        # The nearest() function is used to extract the approximated
+        # position (index) of the selected δ function in the spectral
+        # mesh, which could be linear or non-linear.
         s_pos = nearest(SC.mesh, d_pos / nfine)
         SC.Aout[s_pos] = SC.Aout[s_pos] + SE.A
     end
