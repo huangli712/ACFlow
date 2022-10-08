@@ -31,6 +31,12 @@ PMaxEnt
 PStochAC
 PStochSK
 PStochOM
+AbstractSolver
+MaxEntSolver
+StochACSolver
+StochSKSolver
+StochOMSolver
+AbstractData
 RawData
 GreenData
 AbstractGrid
