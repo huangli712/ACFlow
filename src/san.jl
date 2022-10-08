@@ -499,22 +499,21 @@ function init_mc(S::StochSKSolver)
 end
 
 """
-    init_element(S::StochSKSolver, rng::AbstractRNG)
+    init_element(S::StochSKSolver, rng::AbstractRNG, allow::Vector{I64})
 
 Randomize the configurations for future Monte Carlo sampling. It will
 return a StochSKElement object.
 
 See also: [`StochSKElement`](@ref).
 """
-function init_element(S::StochSKSolver, rng::AbstractRNG)
+function init_element(S::StochSKSolver, rng::AbstractRNG, allow::Vector{I64})
     β = get_b("beta")
     wmax = get_b("wmax")
     wmin = get_b("wmin")
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
-    position = zeros(I64, ngamm)
-    rand!(rng, position, 1:nfine)
+    position = rand(rng, allow, ngamm)
     #
     amplitude = 1.0 / ngamm
     #
