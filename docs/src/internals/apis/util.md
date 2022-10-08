@@ -26,6 +26,10 @@ MODES
 ## Macros
 
 ```@docs
+@einsum
+@pcs
+@time_call
+@cswitch
 ```
 
 ## Functions
