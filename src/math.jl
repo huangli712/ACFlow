@@ -388,6 +388,9 @@ function _interp(A::CubicSplineInterpolation{<:AbstractVector{<:Number}}, t::Num
     I + C + D
 end
 
+export munge_data
+export _interp
+
 #=
 ### *Math* : *Einstein Summation Convention*
 =#
