@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/07
+# Last modified: 2022/10/08
 #
 
 #=
@@ -1057,3 +1057,8 @@ function curve_fit(model, x::AbstractArray, y::AbstractArray, p0::AbstractArray)
     conv = OR.xconv || OR.gconv
     return LsqFitResult(p, value!(R, p), jacobian!(R, p), conv)
 end
+
+export OnceDifferentiable
+export OptimizationResults
+export LsqFitResult
+export levenberg_marquardt
