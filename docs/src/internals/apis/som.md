@@ -46,6 +46,7 @@ init_element
 init_context
 init_iodata
 calc_fmesh
+calc_xmesh
 calc_correlator
 calc_goodness
 calc_lambda
@@ -56,6 +57,12 @@ calc_alpha
 calc_htau
 calc_chi2
 calc_hamil
+calc_phi
+calc_delta
+classic
+historic
+bryan
+chi2kink
 constraints
 try_move_s
 try_move_p
