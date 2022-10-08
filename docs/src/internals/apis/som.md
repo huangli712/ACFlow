@@ -31,9 +31,8 @@ StochOMContext
 ## Functions
 
 ```@docs
-solve
 init
-run
+ACFlow.run
 prun
 average
 last
