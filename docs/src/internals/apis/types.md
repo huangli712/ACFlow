@@ -19,13 +19,15 @@ Pages = ["types.md"]
 ## Constants
 
 ```@docs
-
+DType
+ADT
 ```
 
 ## Dicts
 
 ```@docs
-
+PBASE
+_PBASE
 ```
 
 ## Structs
