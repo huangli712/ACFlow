@@ -22,6 +22,7 @@ Pages = ["math.md"]
 AbstractInterpolation
 LinearInterpolation
 CubicSplineInterpolation
+QuadraticInterpolation
 LsqFitResult
 ```
 
@@ -33,4 +34,5 @@ newton
 trapz
 simpson
 curve_fit
+levenberg_marquardt
 ```

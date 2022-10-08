@@ -62,6 +62,8 @@ calc_phi
 calc_delta
 calc_entropy
 calc_entropy_offdiag
+calc_bayes
+calc_bayes_offdiag
 classic
 historic
 bryan
