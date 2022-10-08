@@ -671,6 +671,8 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext = rand(MC.rng, 1:nfine)
         end
 
+        !(pnext in SC.allow) && continue
+
         # Calculate the transition probability
         Knext = view(SC.kernel, :, pnext)
         Kcurr = view(SC.kernel, :, pcurr)
@@ -744,6 +746,9 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext₁ = rand(MC.rng, 1:nfine)
             pnext₂ = rand(MC.rng, 1:nfine)
         end
+
+        !(pnext₁ in SC.allow) && continue
+        !(pnext₂ in SC.allow) && continue
 
         # Calculate the transition probability
         Knext₁ = view(SC.kernel, :, pnext₁)
