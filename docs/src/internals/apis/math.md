@@ -37,4 +37,8 @@ trapz
 simpson
 curve_fit
 levenberg_marquardt
+value
+value!
+jacobian
+jacobian!
 ```

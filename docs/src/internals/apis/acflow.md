@@ -26,5 +26,4 @@ ACFlow
 
 ```@docs
 _precompile
-__init__
 ```
