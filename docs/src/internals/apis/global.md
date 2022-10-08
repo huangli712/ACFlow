@@ -4,7 +4,6 @@
 
 *Source: global.jl*
 
-
 ## Contents
 
 ```@contents
