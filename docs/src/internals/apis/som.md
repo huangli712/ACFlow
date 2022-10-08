@@ -52,6 +52,10 @@ calc_lambda
 calc_error
 calc_green
 calc_norm
+calc_alpha
+calc_htau
+calc_chi2
+calc_hamil
 constraints
 try_move_s
 try_move_p
@@ -62,5 +66,7 @@ try_width
 try_height
 try_split
 try_merge
+try_move1
+try_move2
 Pdx
 ```
