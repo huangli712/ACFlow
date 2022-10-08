@@ -27,7 +27,10 @@ ADT
 
 ```@docs
 PBASE
-_PBASE
+PMaxEnt
+PStochAC
+PStochSK
+PStochOM
 ```
 
 ## Structs
