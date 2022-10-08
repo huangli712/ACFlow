@@ -2,7 +2,7 @@
 finput = "chit.data"
 solver = "StochSK"
 ktype  = "bsymm"
-mtype  = "risedecay"
+mtype  = "flat"
 grid   = "btime"
 mesh   = "halflorentz"
 ngrid  = 1000

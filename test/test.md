@@ -69,6 +69,7 @@
     * Fermionic + Imaginary time
     * MaxEnt solver (bryan algorithm)
     * StochAC solver (with constraints)
+    * StochSK solver
     * Two-Gaussians model + Flat model
     * Linear mesh
     * Fixed error bar
