@@ -35,7 +35,7 @@ init
 ACFlow.run
 prun
 average
-last
+ACFlow.last
 update
 warmup
 sample
