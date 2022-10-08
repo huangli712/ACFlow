@@ -31,6 +31,9 @@ PMaxEnt
 PStochAC
 PStochSK
 PStochOM
+StochACMC
+StochSKMC
+StochOMMC
 ```
 
 ## Structs
