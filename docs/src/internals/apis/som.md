@@ -69,6 +69,8 @@ chi2kink
 constraints
 f_and_J
 f_and_J_offdiag
+svd_to_real
+precompute
 try_move_s
 try_move_p
 try_insert

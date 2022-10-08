@@ -20,6 +20,8 @@ Pages = ["math.md"]
 
 ```@docs
 AbstractInterpolation
+LinearInterpolation
+CubicSplineInterpolation
 LsqFitResult
 ```
 
