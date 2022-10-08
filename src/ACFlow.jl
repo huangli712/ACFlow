@@ -579,6 +579,7 @@ calc_delta     -> Precompute δ functions.
 calc_hamil     -> Calculate α-resolved Hc.
 calc_htau      -> Calculate α-resolved h(τ).
 calc_alpha     -> Calculate α parameters.
+constraints    -> Limit the position of δ functions.
 #
 try_mov1       -> Try to change the weights of δ functions.
 try_mov2       -> Try to shift the positions of δ functions.
@@ -614,6 +615,7 @@ export calc_delta
 export calc_hamil
 export calc_htau
 export calc_alpha
+export constraints
 #
 export try_mov1
 export try_mov2
@@ -652,6 +654,7 @@ init_iodata    -> Preprocess the input data.
 calc_fmesh     -> Build dense linear mesh in [wmin,wmax].
 calc_correlator-> Calculate correlator function from field configuration.
 calc_goodness  -> Calculate χ² function.
+constraints    -> Limit the position of δ functions.
 #
 try_move_s     -> Try to shift the position of one δ function.
 try_move_p     -> Try to shift the positions of two δ functions.
@@ -683,6 +686,7 @@ export init_iodata
 export calc_fmesh
 export calc_correlator
 export calc_goodness
+export constraints
 #
 export try_move_s
 export try_move_p
@@ -720,6 +724,7 @@ calc_lambda    -> Build kernel function.
 calc_error     -> Calculate χ² function.
 calc_green     -> Reproduce green's function via the field configurations.
 calc_norm      -> Calculate norm of the field configurations.
+constraints    -> Limit the position of δ functions.
 #
 try_insert     -> Try to insert a new box in the configuration.
 try_remove     -> Try to remove a box.
@@ -756,6 +761,7 @@ export calc_lambda
 export calc_error
 export calc_green
 export calc_norm
+export constraints
 #
 export try_insert
 export try_remove
