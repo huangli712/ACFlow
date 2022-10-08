@@ -13,7 +13,6 @@ Pages = ["som.md"]
 ## Index
 
 ```@index
-Pages = ["som.md"]
 ```
 
 ## Structs
