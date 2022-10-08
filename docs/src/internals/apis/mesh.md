@@ -29,5 +29,8 @@ LinearMesh
 TangentMesh
 LorentzMesh
 HalfLorentzMesh
+Base.iterate
+Base.getindex
+Base.eachindex
 nearest
 ```

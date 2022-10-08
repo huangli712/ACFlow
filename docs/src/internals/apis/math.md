@@ -25,5 +25,9 @@ Pages = ["math.md"]
 ## Functions
 
 ```@docs
-
+secant
+newton
+trapz
+simpson
+curve_fit
 ```
