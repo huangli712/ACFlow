@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/06
+# Last modified: 2022/10/08
 #
 
 #=
@@ -15,7 +15,7 @@
     StochACElement
 
 Mutable struct. It is used to record the field configurations, which will
-be sampled within Monte Carlo procedure.
+be sampled by  Monte Carlo sweeping procedure.
 
 ### Members
 
@@ -88,9 +88,6 @@ function solve(S::StochACSolver, rd::RawData)
         # Copy configuration dicts
         p1 = deepcopy(PBASE)
         p2 = deepcopy(PStochAC)
-        #
-            #sol = pmap((x) -> prun(S, p1, p2, MC, SE, SC), 1:nworkers())
-            #@assert length(sol) == nworkers()
         #
         # Launch the task
         𝐹 = Future[]
@@ -171,7 +168,8 @@ function init(S::StochACSolver, rd::RawData)
     αₗ = calc_alpha()
     println("Precompute α parameters")
 
-    SC = StochACContext(Gᵥ, σ¹, allow, grid, mesh, model, kernel, Aout, Δ, hτ, Hα, Uα, αₗ)
+    SC = StochACContext(Gᵥ, σ¹, allow, grid, mesh, model,
+                        kernel, Aout, Δ, hτ, Hα, Uα, αₗ)
 
     return MC, SE, SC
 end
@@ -204,7 +202,8 @@ function run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
-            println("step : $iter  (progress : $prog)")
+            @printf("step = %6i ", iter)
+            @printf("(progress = %3i)\n", prog)
             flush(stdout)
             write_statistics(MC)
         end
@@ -255,7 +254,8 @@ function prun(S::StochACSolver,
 
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
-            println("step : $iter  (progress : $prog)")
+            @printf("step = %6i ", iter)
+            @printf("(progress = %3i)\n", prog)
             flush(stdout)
             myid() == 2 && write_statistics(MC)
         end
@@ -316,7 +316,7 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     println("Perhaps the optimal α is: ", aopt)
     write_hamiltonian(SC.αₗ, Uα)
 
-    # Calculate final spectral function
+    # Calculate final spectral function and write them
     Asum = zeros(F64, nmesh)
     for i = close : nalph - 1
         @. Asum = Asum + (Uα[i] - Uα[i+1]) * Aout[:,i]
@@ -326,12 +326,12 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     write_spectrum(SC.mesh, SC.αₗ, Aout)
     write_model(SC.mesh, SC.model)
 
-    # Reproduce input data
+    # Reproduce input data and write them
     kernel = make_kernel(SC.mesh, SC.grid)
     G = reprod(SC.mesh, kernel, Asum)
     write_backward(SC.grid, G)
 
-    # Calculate full response function at real frequency
+    # Calculate full response function on real axis and write them
     _G = kramers(SC.mesh, Asum)
     write_complete(SC.mesh, _G)
 
@@ -348,12 +348,15 @@ end
 Warmup the Monte Carlo engine to acheieve thermalized equilibrium.
 """
 function warmup(MC::StochACMC, SE::StochACElement, SC::StochACContext)
+    # Get key parameter
     nwarm = get_a("nwarm")
 
+    # Shuffle the Monte Carlo field configuration
     for _ = 1:nwarm
         sample(MC, SE, SC)
     end
 
+    # Reset the counters
     fill!(MC.Macc, 0.0)
     fill!(MC.Mtry, 0.0)
 
@@ -526,7 +529,7 @@ end
 """
     calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
 
-Precompute the δ functions. `xmesh` is a very dense linear mesh in [0,1]
+Precompute the δ functions. `xmesh` is a very dense linear mesh in [0, 1]
 and `ϕ` is the ϕ function.
 
 See also: [`calc_xmesh`](@ref), [`calc_phi`](@ref).
@@ -799,7 +802,7 @@ function try_swap(MC::StochACMC, SE::StochACElement, SC::StochACContext)
         SC.hτ[:,i], SC.hτ[:,j] = SC.hτ[:,j], SC.hτ[:,i]
         SC.Hα[i], SC.Hα[j] = SC.Hα[j], SC.Hα[i]
 
-        # Update Monte Carlo counter
+        # Update Monte Carlo counters
         MC.Sacc[i] = MC.Sacc[i] + 1.0
         MC.Sacc[j] = MC.Sacc[j] + 1.0
     end
