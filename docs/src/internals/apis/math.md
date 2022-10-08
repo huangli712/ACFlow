@@ -16,10 +16,11 @@ Pages = ["math.md"]
 Pages = ["math.md"]
 ```
 
-## Constants
+## Structs
 
 ```@docs
-
+AbstractInterpolation
+LsqFitResult
 ```
 
 ## Functions
