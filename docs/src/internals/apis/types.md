@@ -31,6 +31,8 @@ PMaxEnt
 PStochAC
 PStochSK
 PStochOM
+RawData
+GreenData
 AbstractGrid
 AbstractMesh
 StochACMC
