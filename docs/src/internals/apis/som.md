@@ -21,10 +21,21 @@ Pages = ["som.md"]
 ```@docs
 Box
 StochOMElement
+StochOMContext
 ```
 
 ## Functions
 
 ```@docs
-
+solve
+init
+run
+prun
+average
+last
+update
+init_mc
+init_element
+init_context
+init_iodata
 ```
