@@ -2,9 +2,9 @@
 finput = "gtau.data"
 solver = "StochSK"
 ktype  = "fermi"
-mtype  = "2gauss"
+mtype  = "flat"
 grid   = "ftime"
-mesh   = "linear"
+mesh   = "lorentz"
 ngrid  = 1000
 nmesh  = 801
 wmax   = 8.0
