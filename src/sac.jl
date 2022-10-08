@@ -622,6 +622,8 @@ end
 Try to implement the constrained stochastic analytical continuation
 method. This function will return a collection. It contains all the
 allowable indices.
+
+See also: [`StochACSolver`](@ref).
 """
 function constraints(S::StochACSolver)
     exclude = get_b("exclude")
@@ -631,6 +633,8 @@ function constraints(S::StochACSolver)
 
     allow = I64[]
 
+    # Go through the fine linear mesh and check each mesh point.
+    # Is is excluded ?
     for i = 1:nfine
         e = (wmax - wmin) * i / nfine + wmin
         is_excluded = false

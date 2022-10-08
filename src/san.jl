@@ -592,6 +592,46 @@ function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
 end
 
 """
+    constraints(S::StochSKSolver)
+
+Try to implement the constrained stochastic analytical continuation
+method. This function will return a collection. It contains all the
+allowable indices.
+
+See also: [`StochSKSolver`](@ref).
+"""
+function constraints(S::StochSKSolver)
+    exclude = get_b("exclude")
+    wmin = get_b("wmin")
+    wmax = get_b("wmax")
+    nfine = get_a("nfine")
+
+    allow = I64[]
+
+    # Go through the fine linear mesh and check each mesh point.
+    # Is is excluded ?
+    for i = 1:nfine
+        e = (wmax - wmin) * i / nfine + wmin
+        is_excluded = false
+        #
+        if !isa(exclude, Missing)
+            for i in eachindex(exclude)
+                if exclude[i][1] ≤ e ≤ exclude[i][2]
+                    is_excluded = true
+                    continue
+                end
+            end
+        end
+        #
+        if !is_excluded
+            push!(allow, i)
+        end
+    end
+
+    return allow
+end
+
+"""
     try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
 Try to update the Monte Carlo field configurations via the Metropolis
