@@ -39,10 +39,11 @@ Mutable struct. It is used within the StochSK solver only.
 * Gᵥ     -> Input data for correlator.
 * Gᵧ     -> Generated correlator.
 * σ¹     -> Actually 1.0 / σ¹.
+* allow  -> Allowable indices.
 * grid   -> Grid for input data.
 * mesh   -> Mesh for output spectrum.
 * kernel -> Default kernel function.
-* Aout   -> Calculated spectrum.
+* Aout   -> Calculated spectral function.
 * χ²     -> Current goodness function.
 * χ²min  -> Mininum goodness function.
 * χ²vec  -> Vector of goodness function.
@@ -131,10 +132,12 @@ Initialize the StochSK solver and return the StochSKMC, StochSKElement,
 and StochSKContext structs.
 """
 function init(S::StochSKSolver, rd::RawData)
+    allow = constraints(S)
+
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
-    SE = init_element(S, MC.rng)
+    SE = init_element(S, MC.rng, allow)
     println("Randomize Monte Carlo configurations")
 
     Gᵥ, σ¹, Aout = init_iodata(S, rd)
@@ -165,7 +168,8 @@ function init(S::StochSKSolver, rd::RawData)
     𝒞ᵧ = StochSKElement[]
     println("Setup historical Monte Carlo configurations")
 
-    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, grid, mesh, kernel, Aout, χ², χ²min, χ²vec, Θ, Θvec, 𝒞ᵧ)
+    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, kernel, Aout,
+                        χ², χ²min, χ²vec, Θ, Θvec, 𝒞ᵧ)
 
     return MC, SE, SC
 end
@@ -244,7 +248,7 @@ function prun(S::StochSKSolver,
 
     # Warmup the Monte Carlo engine 
     println("Start thermalization...")
-    SE = warmup(MC, SE, SC)
+    warmup(MC, SE, SC)
 
     # Shuffle the Monte Carlo configuration again
     shuffle(MC, SE, SC)
@@ -353,7 +357,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     end
 
     # Well, we have vectors for Θ and χ². We have to figure out the
-    # optimized Θ and χ², and then retrieve the corresponding Monte
+    # optimized Θ and χ², and then extract the corresponding Monte
     # Carlo field configuration.
     c = length(SC.𝒞ᵧ)
     while c ≥ 1
@@ -376,8 +380,6 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     SC.Gᵧ = calc_correlator(SE, SC.kernel)
     SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
     println("Θ = ", SC.Θ, " χ² = ", SC.χ²)
-
-    #return SE
 end
 
 """

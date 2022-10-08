@@ -41,7 +41,7 @@ Mutable struct. It is used within the StochAC solver only.
 * mesh   -> Mesh for output spectrum.
 * model  -> Default model function.
 * kernel -> Default kernel function.
-* Aout   -> Calculated spectrum, it is actually ⟨n(x)⟩.
+* Aout   -> Calculated spectral function, it is actually ⟨n(x)⟩.
 * Δ      -> Precomputed δ functions.
 * hτ     -> α-resolved h(τ).
 * Hα     -> α-resolved Hc.
