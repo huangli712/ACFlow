@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/07
+# Last modified: 2022/10/08
 #
 
 #=
@@ -15,7 +15,7 @@
     StochSKElement
 
 Mutable struct. It is used to record the field configurations, which will
-be sampled within Monte Carlo procedure.
+be sampled by Monte Carlo sweeping procedure.
 
 ### Members
 
