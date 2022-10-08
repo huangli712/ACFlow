@@ -55,6 +55,7 @@ mutable struct StochSKContext
     Gᵥ     :: Vector{F64}
     Gᵧ     :: Vector{F64}
     σ¹     :: Vector{F64}
+    allow  :: Vector{I64}
     grid   :: AbstractGrid
     mesh   :: AbstractMesh
     kernel :: Array{F64,2}
