@@ -25,8 +25,8 @@ MaxEntContext
 ```@docs
 solve(S::MaxEntSolver, rd::RawData)
 init(S::MaxEntSolver, rd::RawData)
-run(mec::MaxEntContext)
-last(mec::MaxEntContext, svec::Vector, sol::Dict)
+ACFlow.run(mec::MaxEntContext)
+ACFlow.last(mec::MaxEntContext, svec::Vector, sol::Dict)
 historic
 classic
 bryan
@@ -60,10 +60,10 @@ StochACContext
 ```@docs
 solve(S::StochACSolver, rd::RawData)
 init(S::StochACSolver, rd::RawData)
-run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
+ACFlow.run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 prun(S::StochACSolver, p1::Dict{String,Vector{Any}}, p2::Dict{String,Vector{Any}}, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 average(step::F64, SC::StochACContext)
-last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
+ACFlow.last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
 warmup(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 sample(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 measure(SE::StochACElement, SC::StochACContext)
@@ -71,6 +71,16 @@ init_mc(S::StochACSolver)
 init_element(S::StochACSolver, rng::AbstractRNG, allow::Vector{I64})
 init_iodata(S::StochACSolver, rd::RawData)
 calc_fmesh(S::StochACSolver)
+calc_xmesh
+calc_phi
+calc_delta
+calc_hamil
+calc_htau
+calc_alpha
+constraints(S::StochACSolver)
+try_mov1
+try_mov2
+try_swap
 ```
 
 ## StochSK solver
