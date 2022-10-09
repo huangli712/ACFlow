@@ -2,8 +2,6 @@
 
 *Declare the module and public members.*
 
-*Source: ACFlow.jl*
-
 ## Contents
 
 ```@contents
