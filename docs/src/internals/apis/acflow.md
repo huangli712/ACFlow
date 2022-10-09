@@ -2,16 +2,6 @@
 
 *Declare the module and public members.*
 
-## Contents
-
-```@contents
-```
-
-## Index
-
-```@index
-```
-
 ## Modules
 
 ```@docs
