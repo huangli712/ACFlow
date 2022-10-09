@@ -2,26 +2,6 @@
 
 *Provide basic user's interfaces for the ACFlow package.*
 
-*Source: base.jl*
-
-## Contents
-
-```@contents
-Pages = ["base.md"]
-```
-
-## Index
-
-```@index
-Pages = ["base.md"]
-```
-
-## Constants
-
-```@docs
-
-```
-
 ## Functions
 
 ```@docs
