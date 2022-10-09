@@ -2,7 +2,7 @@
 
 *Provide some utility macros and functions for the ACFlow package.*
 
-## Types
+## Constants
 
 ```@docs
 COLORS
