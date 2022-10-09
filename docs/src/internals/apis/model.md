@@ -26,6 +26,8 @@ build_1lorentzian_model
 build_2lorentzians_model
 ```
 
+### Strangers
+
 ```@docs
 build_risedecay_model
 build_file_model
