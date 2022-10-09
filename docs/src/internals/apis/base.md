@@ -5,7 +5,13 @@
 ## Functions
 
 ```@docs
-solve
+solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T})
+solve(grid::Vector{F64}, Gval::Vector{T}, err::T)
+solve(grid::Vector{F64}, Gval::Vector{T})
+solve(rd::RawData)
+```
+
+```@docs
 reprod
 kramers
 setup_param
