@@ -140,4 +140,9 @@ prun(S::StochOMSolver, p1::Dict{String,Vector{Any}}, p2::Dict{String,Vector{Any}
 average(SC::StochOMContext)
 ACFlow.last(SC::StochOMContext, Aout::Vector{F64})
 update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
+init_mc(S::StochOMSolver)
+init_element(MC::StochOMMC, SC::StochOMContext)
+init_iodata(S::StochACSolver, rd::RawData)
+init_context(S::StochOMSolver)
+calc_lambda
 ```
