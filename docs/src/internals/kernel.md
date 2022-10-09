@@ -2,16 +2,14 @@
 
 *Define some kernel functions.*
 
-## Functions
-
-### Making kernels
+## Making kernels
 
 ```@docs
 build_kernel
 build_kernel_symm
 ```
 
-### Utilities
+## Utilities
 
 ```@docs
 make_blur
