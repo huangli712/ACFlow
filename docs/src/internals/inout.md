@@ -2,16 +2,14 @@
 
 *Define input and output functions for the ACFlow package.*
 
-## Functions
-
-### Input
+## Read data
 
 ```@docs
 read_real_data
 read_cmplx_data
 ```
 
-### Output
+## Write data
 
 ```@docs
 write_spectrum
