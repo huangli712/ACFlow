@@ -2,19 +2,6 @@
 
 *Define solvers for the ACFlow package.*
 
-*Source: som.jl*
-
-## Contents
-
-```@contents
-Pages = ["som.md"]
-```
-
-## Index
-
-```@index
-```
-
 ## Structs
 
 ```@docs
@@ -29,6 +16,14 @@ StochOMContext
 ```
 
 ## Functions
+
+### MaxEntSolver
+
+### StochAC solver
+
+### StochSK solver
+
+### StochOM solver
 
 ```@docs
 init

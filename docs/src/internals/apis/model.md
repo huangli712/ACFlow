@@ -2,11 +2,6 @@
 
 *Define some type aliases and string constants for the ACFlow package.*
 
-## Contents
-
-```@contents
-```
-
 ## Functions
 
 ### Flat model
