@@ -40,7 +40,6 @@ AbstractData
 RawData
 GreenData
 AbstractGrid
-AbstractMesh
 AbstractMC
 StochACMC
 StochSKMC
