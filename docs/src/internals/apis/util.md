@@ -2,21 +2,7 @@
 
 *Provide some utility macros and functions for the ACFlow package.*
 
-*Source: util.jl*
-
-## Contents
-
-```@contents
-Pages = ["util.md"]
-```
-
-## Index
-
-```@index
-Pages = ["util.md"]
-```
-
-## Constants
+## Types
 
 ```@docs
 COLORS
@@ -26,23 +12,39 @@ MODES
 ## Macros
 
 ```@docs
-@einsum
-@pcs
-@time_call
 @cswitch
+@time_call
+@pcs
 ```
 
 ## Functions
+
+### Query runtime environment
 
 ```@docs
 require
 setup_args
 query_args
+```
+
+### Colorful outputs
+
+```@docs
 welcome
 overview
 goodbye
 sorry
 prompt
+```
+
+### I/O operations
+
+```@docs
 line_to_array
+```
+
+### Color tools
+
+```@docs
 colorize
 ```

@@ -13,6 +13,7 @@ Pages = ["math.md"]
 ## Structs
 
 ```@docs
+@einsum
 AbstractInterpolation
 LinearInterpolation
 CubicSplineInterpolation
