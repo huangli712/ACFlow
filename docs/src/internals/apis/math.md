@@ -31,27 +31,53 @@ QuadraticInterpolation
 CubicSplineInterpolation
 ```
 
+### Constructors
+
 ```@docs
 LinearInterpolation(u::AbstractVector, t::AbstractVector)
+QuadraticInterpolation(u::AbstractVector, t::AbstractVector)
+CubicSplineInterpolation(u::AbstractVector, t::AbstractVector)
 ```
 
+### Functions
 
-## Functions
+```@docs
+munge_data
+(interp::AbstractInterpolation)(t::Number)
+_interp
+```
+
+## Einstein summation convention
+
+### Macros
 
 ```@docs
 @einsum
-curve_fit
-levenberg_marquardt
+```
+
+## Curve fitting
+
+### Structs
+
+```@docs
+OnceDifferentiable
+OptimizationResults
+LsqFitResult
+```
+
+### Constructors
+
+```@docs
+OnceDifferentiable(𝑓, p0::AbstractArray, 𝐹::AbstractArray)
+```
+
+### Functions
+
+```@docs
 value
 value!
 jacobian
 jacobian!
-munge_data
-_interp
-```
-
-```@docs
-LsqFitResult
-OptimizationResults
-OnceDifferentiable
+levenberg_marquardt
+curve_fit
 ```
