@@ -2,7 +2,7 @@
 
 *Provide some utility macros and functions for the ACFlow package.*
 
-## Constants
+## Color constants
 
 ```@docs
 COLORS
@@ -17,9 +17,7 @@ MODES
 @pcs
 ```
 
-## Functions
-
-### Query runtime environment
+## Query runtime environment
 
 ```@docs
 require
@@ -27,7 +25,7 @@ setup_args
 query_args
 ```
 
-### Colorful outputs
+## Colorful outputs
 
 ```@docs
 welcome
@@ -37,13 +35,13 @@ sorry
 prompt
 ```
 
-### I/O operations
+## Input/output operations
 
 ```@docs
 line_to_array
 ```
 
-### Color tools
+## Color tools
 
 ```@docs
 colorize
