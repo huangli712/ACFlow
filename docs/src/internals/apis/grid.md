@@ -14,6 +14,12 @@ BosonicMatsubaraGrid
 
 ## Functions
 
+### Constructors
+
+### Base.* functions
+
+### Utilities
+
 ```@docs
 rebuild
 ```
