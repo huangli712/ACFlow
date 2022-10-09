@@ -2,9 +2,7 @@
 
 *Provide basic user's interfaces for the ACFlow package.*
 
-## Functions
-
-### Solve analytical continuation problems
+## Analytical continuation solvers
 
 ```@docs
 solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T}) where {T}
@@ -13,40 +11,40 @@ solve(grid::Vector{F64}, Gval::Vector{T}) where {T}
 solve(rd::RawData)
 ```
 
-### Parameters
+## Parameters
 
 ```@docs
 setup_param
 read_param
 ```
 
-### Data
+## Data
 
 ```@docs
 read_data
 make_data
 ```
 
-### Grid and mesh
+## Grid and mesh
 
 ```@docs
 make_grid
 make_mesh
 ```
 
-### Models
+## Models
 
 ```@docs
 make_model
 ```
 
-### Kernels
+## Kernels
 
 ```@docs
 make_kernel
 ```
 
-### Postprocess
+## Postprocessing
 
 ```@docs
 reprod
