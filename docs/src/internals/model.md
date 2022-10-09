@@ -2,15 +2,13 @@
 
 *Define some type aliases and string constants for the ACFlow package.*
 
-## Functions
-
-### Flat model
+## Flat model
 
 ```@docs
 build_flat_model
 ```
 
-### Gaussian models
+## Gaussian models
 
 ```@docs
 build_gaussian_model
@@ -18,7 +16,7 @@ build_1gaussian_model
 build_2gaussians_model
 ```
 
-### Lorentzian models
+## Lorentzian models
 
 ```@docs
 build_lorentzian_model
@@ -26,7 +24,7 @@ build_1lorentzian_model
 build_2lorentzians_model
 ```
 
-### Strangers
+## Unusual models
 
 ```@docs
 build_risedecay_model
