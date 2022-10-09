@@ -58,6 +58,19 @@ StochACContext
 ### Functions
 
 ```@docs
+solve(S::StochACSolver, rd::RawData)
+init(S::StochACSolver, rd::RawData)
+run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
+prun(S::StochACSolver, p1::Dict{String,Vector{Any}}, p2::Dict{String,Vector{Any}}, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+average(step::F64, SC::StochACContext)
+last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
+warmup(MC::StochACMC, SE::StochACElement, SC::StochACContext)
+sample(MC::StochACMC, SE::StochACElement, SC::StochACContext)
+measure(SE::StochACElement, SC::StochACContext)
+init_mc(S::StochACSolver)
+init_element(S::StochACSolver, rng::AbstractRNG, allow::Vector{I64})
+init_iodata(S::StochACSolver, rd::RawData)
+calc_fmesh(S::StochACSolver)
 ```
 
 ## StochSK solver
