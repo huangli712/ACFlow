@@ -2,14 +2,6 @@
 
 *Define some essential mathematical functions.*
 
-*Source: math.jl*
-
-## Contents
-
-```@contents
-Pages = ["math.md"]
-```
-
 ## Structs
 
 ```@docs

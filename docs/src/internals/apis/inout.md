@@ -2,26 +2,6 @@
 
 *Define input and output functions for the ACFlow package.*
 
-*Source: inout.jl*
-
-## Contents
-
-```@contents
-Pages = ["inout.md"]
-```
-
-## Index
-
-```@index
-Pages = ["inout.md"]
-```
-
-## Constants
-
-```@docs
-
-```
-
 ## Functions
 
 ```@docs

@@ -2,21 +2,9 @@
 
 *Define some type aliases and string constants for the ACFlow package.*
 
-*Source: global.jl*
-
-## Contents
-
-```@contents
-Pages = ["global.md"]
-```
-
-## Index
-
-```@index
-Pages = ["global.md"]
-```
-
 ## Constants
+
+### Numerical types
 
 ```@docs
 I32
@@ -29,6 +17,10 @@ R32
 R64
 N32
 N64
+
+### String constants
+
+```@docs
 __LIBNAME__
 __VERSION__
 __RELEASE__

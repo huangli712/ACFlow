@@ -2,26 +2,6 @@
 
 *Define some kernel functions.*
 
-*Source: kernel.jl*
-
-## Contents
-
-```@contents
-Pages = ["kernel.md"]
-```
-
-## Index
-
-```@index
-Pages = ["kernel.md"]
-```
-
-## Constants
-
-```@docs
-
-```
-
 ## Functions
 
 ```@docs
