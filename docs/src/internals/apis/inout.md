@@ -4,9 +4,16 @@
 
 ## Functions
 
+### Input
+
 ```@docs
 read_real_data
 read_cmplx_data
+```
+
+### Output
+
+```@docs
 write_spectrum
 write_model
 write_misfit
