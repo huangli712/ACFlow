@@ -43,7 +43,6 @@ CubicSplineInterpolation(u::AbstractVector, t::AbstractVector)
 
 ```@docs
 munge_data
-(interp::AbstractInterpolation)(t::Number)
 _interp
 ```
 
