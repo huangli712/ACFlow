@@ -4,16 +4,12 @@
 
 ## Root finding
 
-### Functions
-
 ```@docs
 secant
 newton
 ```
 
 ## Numerical integrations
-
-### Functions
 
 ```@docs
 trapz
@@ -47,8 +43,6 @@ _interp
 ```
 
 ## Einstein summation convention
-
-### Macros
 
 ```@docs
 @einsum
