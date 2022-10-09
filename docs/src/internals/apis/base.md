@@ -7,9 +7,9 @@
 ### Solve analytical continuation problems
 
 ```@docs
-solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T})
-solve(grid::Vector{F64}, Gval::Vector{T}, err::T)
-solve(grid::Vector{F64}, Gval::Vector{T})
+solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T}) where {T}
+solve(grid::Vector{F64}, Gval::Vector{T}, err::T) where {T}
+solve(grid::Vector{F64}, Gval::Vector{T}) where {T}
 solve(rd::RawData)
 ```
 
