@@ -2,32 +2,18 @@
 
 *Define various grids for input data.*
 
-*Source: grid.jl*
-
-## Contents
-
-```@contents
-Pages = ["grid.md"]
-```
-
-## Index
-
-```@index
-Pages = ["grid.md"]
-```
-
-## Constants
+## Types
 
 ```@docs
-
+AbstractGrid
+FermionicImaginaryTimeGrid
+FermionicMatsubaraGrid
+BosonicImaginaryTimeGrid
+BosonicMatsubaraGrid
 ```
 
 ## Functions
 
 ```@docs
-FermionicImaginaryTimeGrid
-FermionicMatsubaraGrid
-BosonicImaginaryTimeGrid
-BosonicMatsubaraGrid
 rebuild
 ```

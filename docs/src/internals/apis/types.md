@@ -39,7 +39,6 @@ StochOMSolver
 AbstractData
 RawData
 GreenData
-AbstractGrid
 AbstractMC
 StochACMC
 StochSKMC
