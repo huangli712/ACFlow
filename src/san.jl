@@ -629,6 +629,8 @@ function constraints(S::StochSKSolver)
         end
     end
 
+    @show allow
+
     return allow
 end
 
@@ -671,7 +673,10 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext = rand(MC.rng, 1:nfine)
         end
 
+        @show pcurr, pnext
         !(pnext in SC.allow) && continue
+        @show "hehe"
+        @show pcurr, pnext
 
         # Calculate the transition probability
         Knext = view(SC.kernel, :, pnext)
@@ -749,6 +754,8 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
         !(pnext₁ in SC.allow) && continue
         !(pnext₂ in SC.allow) && continue
+
+        @show pcurr₁, pcurr₂, pnext₁, pnext₂
 
         # Calculate the transition probability
         Knext₁ = view(SC.kernel, :, pnext₁)

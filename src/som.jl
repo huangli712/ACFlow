@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/08
+# Last modified: 2022/10/09
 #
 
 #=
@@ -499,6 +499,21 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
 end
 
 """
+    init_iodata(S::StochOMSolver, rd::RawData)
+
+Preprocess the input data (`rd`).
+
+See also: [`RawData`](@ref), [`GreenData`](@ref).
+"""
+function init_iodata(S::StochOMSolver, rd::RawData)
+    G = make_data(rd)
+    Gᵥ = G.value
+    σ¹ = 1.0 ./ G.error
+
+    return Gᵥ, σ¹
+end
+
+"""
     init_context(S::StochOMSolver)
 
 Try to initialize the key members of a StochOMContext struct.
@@ -521,21 +536,6 @@ function init_context(S::StochOMSolver)
     end
 
     return Cv, Δv
-end
-
-"""
-    init_iodata(S::StochACSolver, rd::RawData)
-
-Preprocess the input data (`rd`).
-
-See also: [`RawData`](@ref), [`GreenData`](@ref).
-"""
-function init_iodata(S::StochOMSolver, rd::RawData)
-    G = make_data(rd)
-    Gᵥ = G.value
-    σ¹ = 1.0 ./ G.error
-
-    return Gᵥ, σ¹
 end
 
 #=

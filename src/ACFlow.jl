@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/08
+# Last modified: 2022/10/09
 #
 
 """
@@ -717,8 +717,8 @@ update         -> Sample field configurations via metropolis algorithm.
 #
 init_mc        -> Create a StochOMMC struct.
 init_element   -> Create a StochOMElement struct.
-init_context   -> Prepare data for a StochOMContext struct.
 init_iodata    -> Preprocess the input data.
+init_context   -> Prepare data for a StochOMContext struct.
 #
 calc_lambda    -> Build kernel function.
 calc_error     -> Calculate χ² function.
@@ -756,8 +756,8 @@ export update
 #
 export init_mc
 export init_element
-export init_context
 export init_iodata
+export init_context
 #
 export calc_lambda
 export calc_error
