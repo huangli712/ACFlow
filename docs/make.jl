@@ -15,9 +15,16 @@ makedocs(
         "Home" => "index.md",
         "Introduction" => "intro.md",
         "Getting started" => "start.md",
-        "Tutorials" => "tutor.md",
-        "User's guide" => "guide.md",
-        "Theory" => "theory.md",
+        "Tutorials" => Any[
+            "README" => "tutor/README.md",
+        ],
+        "Guide" => Any[
+            "README" => "guide/README.md",
+            "Parameters" => "guide/param.md",
+        ],
+        "Theory" => Any[
+            "README" => "theory/README.md",
+        ],
         "Internals" => Any[
             "README" => "internals/README.md",
             "ACFlow" => "internals/acflow.md",
