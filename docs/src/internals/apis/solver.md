@@ -2,7 +2,49 @@
 
 *Define solvers for the ACFlow package.*
 
-## Structs
+## Common
+
+### Structs
+
+```@docs
+AbstractSolver
+AbstractMC
+```
+
+## MaxEntSolver
+
+### Structs
+
+```@docs
+MaxEntSolver
+```
+
+## StochAC solver
+
+### Structs
+
+```@docs
+StochACSolver
+StochACMC
+```
+
+## StochSK solver
+
+### Structs
+
+```@docs
+StochSKSolver
+StochSKMC
+```
+
+## StochOM solver
+
+### Structs
+
+```@docs
+StochOMSolver
+StochOMMC
+```
 
 ```@docs
 Box
@@ -16,14 +58,6 @@ StochOMContext
 ```
 
 ## Functions
-
-### MaxEntSolver
-
-### StochAC solver
-
-### StochSK solver
-
-### StochOM solver
 
 ```@docs
 init
