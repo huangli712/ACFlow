@@ -27,6 +27,14 @@ solve(S::MaxEntSolver, rd::RawData)
 init(S::MaxEntSolver, rd::RawData)
 run(mec::MaxEntContext)
 last(mec::MaxEntContext, svec::Vector, sol::Dict)
+historic
+classic
+bryan
+chi2kink
+optimizer
+precompute
+f_and_J
+f_and_J_offdiag
 ```
 
 ## StochAC solver
