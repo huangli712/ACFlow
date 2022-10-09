@@ -2,6 +2,11 @@
 
 *Define solvers for the ACFlow package.*
 
+```@contents
+Pages = ["solver.md"]
+Depth = 3
+```
+
 ## Common structs
 
 ```@docs

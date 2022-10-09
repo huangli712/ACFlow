@@ -1,5 +1,10 @@
 # Parameters
 
+```@contents
+Pages = ["param.md"]
+Depth = 2
+```
+
 ## [BASE]
 
 ### finput
