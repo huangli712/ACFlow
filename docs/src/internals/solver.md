@@ -2,9 +2,7 @@
 
 *Define solvers for the ACFlow package.*
 
-## Common
-
-### Structs
+## Common structs
 
 ```@docs
 AbstractSolver
