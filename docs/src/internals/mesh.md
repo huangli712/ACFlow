@@ -12,9 +12,7 @@ LorentzMesh
 HalfLorentzMesh
 ```
 
-## Functions
-
-### Constructors
+## Constructors
 
 ```@docs
 LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
@@ -24,7 +22,7 @@ LorentzMesh(nmesh::I64, wmin::F64, wmax::F64, 𝑝::F64 = 0.01)
 HalfLorentzMesh(nmesh::I64, wmax::F64, 𝑝::F64 = 0.01)
 ```
 
-### Base.* functions
+## Base.* functions
 
 ```@docs
 Base.length(am::AbstractMesh)
@@ -37,7 +35,7 @@ Base.getindex(am::AbstractMesh, ind::I64)
 Base.getindex(am::AbstractMesh, I::UnitRange{I64})
 ```
 
-### Utilities
+## Utilities
 
 ```@docs
 nearest
