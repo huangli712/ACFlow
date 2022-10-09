@@ -133,4 +133,11 @@ StochOMContext
 ### Functions
 
 ```@docs
+solve(S::StochOMSolver, rd::RawData)
+init(S::StochOMSolver, rd::RawData)
+ACFlow.run(MC::StochOMMC, SC::StochOMContext)
+prun(S::StochOMSolver, p1::Dict{String,Vector{Any}}, p2::Dict{String,Vector{Any}}, MC::StochOMMC, SC::StochOMContext)
+average(SC::StochOMContext)
+ACFlow.last(SC::StochOMContext, Aout::Vector{F64})
+update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
 ```
