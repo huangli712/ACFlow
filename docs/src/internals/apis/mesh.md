@@ -2,19 +2,20 @@
 
 *Define various meshes for output data.*
 
-## Constants
+## Types
 
 ```@docs
 AbstractMesh
+LinearMesh
+TangentMesh
+LorentzMesh
+HalfLorentzMesh
 ```
 
 ## Functions
 
 ```@docs
-LinearMesh
-TangentMesh
-LorentzMesh
-HalfLorentzMesh
+LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
 Base.length
 Base.iterate
 Base.getindex
