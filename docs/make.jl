@@ -14,6 +14,10 @@ makedocs(
     pages = [
         "Home" => "index.md",
         "Introduction" => "intro.md",
+        "Features" => Any[],
+        "Usages" => Any[],
+        "Tutorials" => Any[],
+        "Theory" => Any[],
         "Internals" => Any[
             "README" => "internals/README.md",
             "ACFlow APIs" => Any[
@@ -32,6 +36,5 @@ makedocs(
                 "Utilities" => "internals/apis/util.md",
             ],
         ],
-        "Theory" => Any[],
     ],
 )
