@@ -145,4 +145,8 @@ init_element(MC::StochOMMC, SC::StochOMContext)
 init_iodata(S::StochACSolver, rd::RawData)
 init_context(S::StochOMSolver)
 calc_lambda
+calc_error
+calc_green
+calc_norm
+constraints(e₁::F64, e₂::F64)
 ```
