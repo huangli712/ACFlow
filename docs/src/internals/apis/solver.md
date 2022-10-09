@@ -35,6 +35,13 @@ optimizer
 precompute
 f_and_J
 f_and_J_offdiag
+svd_to_real
+svd_to_real_offdiag
+calc_entropy
+calc_entropy_offdiag
+calc_bayes
+calc_bayes_offdiag
+calc_chi2
 ```
 
 ## StochAC solver
