@@ -2,29 +2,22 @@
 
 *Read, parse, and extract the configuration parameters.*
 
-## Functions
-
-### Read parameters
+## Parser
 
 ```@docs
 inp_toml
-```
-
-### Parse parameters
-
-```@docs
 fil_dict
 rev_dict
 ```
 
-### Validate parameters
+## Validation
 
 ```@docs
 chk_dict
 _v
 ```
 
-### Get parameters
+## Extraction
 
 ```@docs
 get_b
