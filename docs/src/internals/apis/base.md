@@ -27,16 +27,28 @@ read_data
 make_data
 ```
 
+### Grid and mesh
+
+```@docs
+make_grid
+make_mesh
+```
+
+### Models
+
+```@docs
+make_model
+```
+
+### Kernels
+
+```@docs
+make_kernel
+```
+
 ### Postprocess
 
 ```@docs
 reprod
 kramers
-```
-
-```@docs
-make_grid
-make_mesh
-make_model
-make_kernel
 ```
