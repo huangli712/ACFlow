@@ -3,19 +3,19 @@
 ## ACFlow APIs
  
 ```@contents
-Pages = ["apis/acflow.md",
-         "apis/global.md",
-         "apis/types.md",
-         "apis/base.md",
-         "apis/solver.md",
-         "apis/grid.md",
-         "apis/mesh.md",
-         "apis/model.md",
-         "apis/kernel.md",
-         "apis/config.md",
-         "apis/inout.md",
-         "apis/math.md",
-         "apis/util.md"
+Pages = ["acflow.md",
+         "global.md",
+         "types.md",
+         "base.md",
+         "solver.md",
+         "grid.md",
+         "mesh.md",
+         "model.md",
+         "kernel.md",
+         "config.md",
+         "inout.md",
+         "math.md",
+         "util.md"
         ]
-Depth = 1
+Depth = 2
 ```
