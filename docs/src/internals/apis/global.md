@@ -1,4 +1,4 @@
-# Global constants
+# Constants
 
 *Define some type aliases and string constants for the ACFlow package.*
 
