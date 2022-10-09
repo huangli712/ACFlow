@@ -2,26 +2,44 @@
 
 *Define some essential mathematical functions.*
 
-## Structs
+## Root finding
 
-```@docs
-@einsum
-AbstractInterpolation
-LinearInterpolation
-CubicSplineInterpolation
-QuadraticInterpolation
-LsqFitResult
-OptimizationResults
-OnceDifferentiable
-```
-
-## Functions
+### Functions
 
 ```@docs
 secant
 newton
+```
+
+## Numerical integrations
+
+### Functions
+
+```@docs
 trapz
 simpson
+```
+
+## Interpolations
+
+### Structs
+
+```@docs
+AbstractInterpolation
+LinearInterpolation
+QuadraticInterpolation
+CubicSplineInterpolation
+```
+
+```@docs
+LinearInterpolation(u::AbstractVector, t::AbstractVector)
+```
+
+
+## Functions
+
+```@docs
+@einsum
 curve_fit
 levenberg_marquardt
 value
@@ -30,4 +48,10 @@ jacobian
 jacobian!
 munge_data
 _interp
+```
+
+```@docs
+LsqFitResult
+OptimizationResults
+OnceDifferentiable
 ```
