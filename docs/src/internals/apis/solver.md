@@ -97,6 +97,13 @@ StochSKContext
 ### Functions
 
 ```@docs
+solve(S::StochSKSolver, rd::RawData)
+init(S::StochSKSolver, rd::RawData)
+ACFlow.run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+prun(S::StochSKSolver, p1::Dict{String,Vector{Any}}, p2::Dict{String,Vector{Any}}, MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+average(step::F64, SC::StochSKContext)
+ACFlow.last(SC::StochSKContext, Asum::Vector{F64})
+warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 ```
 
 ## StochOM solver

@@ -1,6 +1,6 @@
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
-using Documenter, ACFlow
+using Documenter, ACFlow, Random
 
 makedocs(
     sitename = "ACFlow",
