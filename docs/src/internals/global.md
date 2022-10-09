@@ -2,9 +2,7 @@
 
 *Define some type aliases and string constants for the ACFlow package.*
 
-## Constants
-
-### Numerical types
+## Numerical types
 
 ```@docs
 I32
@@ -19,7 +17,7 @@ N32
 N64
 ```
 
-### String constants
+## String constants
 
 ```@docs
 __LIBNAME__
@@ -28,7 +26,7 @@ __RELEASE__
 __AUTHORS__
 ```
 
-## Functions
+## Utilities
 
 ```@docs
 authors
