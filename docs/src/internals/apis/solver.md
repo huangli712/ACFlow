@@ -17,6 +17,12 @@ AbstractMC
 
 ```@docs
 MaxEntSolver
+MaxEntContext
+```
+
+### Functions
+
+```@docs
 ```
 
 ## StochAC solver
@@ -26,6 +32,13 @@ MaxEntSolver
 ```@docs
 StochACSolver
 StochACMC
+StochACElement
+StochACContext
+```
+
+### Functions
+
+```@docs
 ```
 
 ## StochSK solver
@@ -35,6 +48,13 @@ StochACMC
 ```@docs
 StochSKSolver
 StochSKMC
+StochSKElement
+StochSKContext
+```
+
+### Functions
+
+```@docs
 ```
 
 ## StochOM solver
@@ -44,20 +64,15 @@ StochSKMC
 ```@docs
 StochOMSolver
 StochOMMC
-```
-
-```@docs
 Box
-MaxEntContext
-StochACElement
-StochACContext
-StochSKElement
-StochSKContext
 StochOMElement
 StochOMContext
 ```
 
-## Functions
+### Functions
+
+```@docs
+```
 
 ```@docs
 init
