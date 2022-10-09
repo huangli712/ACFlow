@@ -104,6 +104,18 @@ prun(S::StochSKSolver, p1::Dict{String,Vector{Any}}, p2::Dict{String,Vector{Any}
 average(step::F64, SC::StochSKContext)
 ACFlow.last(SC::StochSKContext, Asum::Vector{F64})
 warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+measure(SE::StochSKElement, SC::StochSKContext)
+shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+init_mc(S::StochSKSolver)
+init_element(S::StochSKSolver, rng::AbstractRNG, allow::Vector{I64})
+init_iodata(S::StochSKSolver, rd::RawData)
+calc_fmesh(S::StochSKSolver)
+calc_correlator
+calc_goodness
+constraints(S::StochSKSolver)
+try_move_s
+try_move_p
 ```
 
 ## StochOM solver
