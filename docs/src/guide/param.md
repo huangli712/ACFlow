@@ -98,6 +98,20 @@
 
 **Comment**
 
+### wmax
+
+### wmin
+
+### beta
+
+### offdiag
+
+### pmodel
+
+### pmesh
+
+### exclude
+
 ## MaxEntSolver
 
 ## StochACSolver
