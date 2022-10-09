@@ -19,6 +19,8 @@ BosonicMatsubaraGrid
 ```@docs
 FermionicImaginaryTimeGrid(ntime::I64, β::F64)
 FermionicMatsubaraGrid(nfreq::I64, β::F64)
+BosonicImaginaryTimeGrid(ntime::I64, β::F64)
+BosonicMatsubaraGrid(nfreq::I64, β::F64)
 ```
 
 ### Base.* functions
@@ -26,6 +28,7 @@ FermionicMatsubaraGrid(nfreq::I64, β::F64)
 ```@docs
 Base.length(fg::FermionicImaginaryTimeGrid)
 Base.length(fg::FermionicMatsubaraGrid)
+Base.length(bg::BosonicImaginaryTimeGrid)
 
 Base.iterate(fg::FermionicImaginaryTimeGrid)
 Base.iterate(fg::FermionicImaginaryTimeGrid, i::I64)
@@ -33,21 +36,28 @@ Base.iterate(fg::FermionicImaginaryTimeGrid, i::I64)
 Base.iterate(fg::FermionicMatsubaraGrid, i::I64)
 Base.iterate(fg::FermionicMatsubaraGrid)
 
+Base.iterate(bg::BosonicImaginaryTimeGrid)
+Base.iterate(bg::BosonicImaginaryTimeGrid, i::I64)
 
 Base.eachindex(fg::FermionicImaginaryTimeGrid)
 Base.eachindex(fg::FermionicMatsubaraGrid)
+Base.eachindex(bg::BosonicImaginaryTimeGrid)
 
 Base.firstindex(fg::FermionicImaginaryTimeGrid)
 Base.firstindex(fg::FermionicMatsubaraGrid)
+Base.firstindex(bg::BosonicImaginaryTimeGrid)
 
 Base.lastindex(fg::FermionicImaginaryTimeGrid)
 Base.lastindex(fg::FermionicMatsubaraGrid)
+Base.lastindex(bg::BosonicImaginaryTimeGrid)
 
 Base.getindex(fg::FermionicImaginaryTimeGrid, ind::I64)
 Base.getindex(fg::FermionicMatsubaraGrid, ind::I64)
+Base.getindex(bg::BosonicImaginaryTimeGrid, ind::I64)
 
 Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
 Base.getindex(fg::FermionicMatsubaraGrid, I::UnitRange{I64})
+Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
 ```
 
 ### Utilities
