@@ -12,9 +12,7 @@ BosonicImaginaryTimeGrid
 BosonicMatsubaraGrid
 ```
 
-## Functions
-
-### Constructors
+## Constructors
 
 ```@docs
 FermionicImaginaryTimeGrid(ntime::I64, β::F64)
@@ -23,7 +21,7 @@ BosonicImaginaryTimeGrid(ntime::I64, β::F64)
 BosonicMatsubaraGrid(nfreq::I64, β::F64)
 ```
 
-### Base.* functions
+## Base.* functions
 
 ```@docs
 Base.length(fg::FermionicImaginaryTimeGrid)
@@ -60,7 +58,7 @@ Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
 Base.getindex(bg::BosonicMatsubaraGrid, I::UnitRange{I64})
 ```
 
-### Utilities
+## Utilities
 
 ```@docs
 rebuild
