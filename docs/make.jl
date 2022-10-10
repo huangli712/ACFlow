@@ -14,32 +14,33 @@ makedocs(
     pages = [
         "Home" => "index.md",
         "Introduction" => "intro.md",
-        "Getting started" => "start.md",
-        "Tutorials" => Any[
-            "README" => "tutor/README.md",
-        ],
-        "Guide" => Any[
+        "Manual" => Any[
             "README" => "guide/README.md",
             "Parameters" => "guide/param.md",
+        ],
+        "Examples" => Any[
+            "T01" => "examples/T01.md",
+            "T02" => "examples/T02.md",
+            "T03" => "examples/T03.md",
         ],
         "Theory" => Any[
             "README" => "theory/README.md",
         ],
-        "Internals" => Any[
-            "README" => "internals/README.md",
-            "ACFlow" => "internals/acflow.md",
-            "Constants" => "internals/global.md",
-            "Types" => "internals/types.md",
-            "Core" => "internals/base.md",
-            "Solvers" => "internals/solver.md",
-            "Grid" => "internals/grid.md",
-            "Mesh" => "internals/mesh.md",
-            "Models" => "internals/model.md",
-            "Kernels" => "internals/kernel.md",
-            "Configuration" => "internals/config.md",
-            "Input and output" => "internals/inout.md",
-            "Math" => "internals/math.md",
-            "Utilities" => "internals/util.md",
+        "Library" => Any[
+            "Outline" => "library/outline.md",
+            "ACFlow" => "library/acflow.md",
+            "Constants" => "library/global.md",
+            "Types" => "library/types.md",
+            "Core" => "library/base.md",
+            "Solvers" => "library/solver.md",
+            "Grid" => "library/grid.md",
+            "Mesh" => "library/mesh.md",
+            "Models" => "library/model.md",
+            "Kernels" => "library/kernel.md",
+            "Configuration" => "library/config.md",
+            "Input and output" => "library/inout.md",
+            "Math" => "library/math.md",
+            "Utilities" => "library/util.md",
         ],
     ],
 )
