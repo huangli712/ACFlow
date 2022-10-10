@@ -4,7 +4,7 @@
 
 ```@contents
 Pages = ["util.md"]
-Depth = 3
+Depth = 2
 ```
 
 ## Color constants

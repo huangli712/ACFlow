@@ -4,7 +4,7 @@
 
 ```@contents
 Pages = ["math.md"]
-Depth = 2
+Depth = 3
 ```
 
 ## Root finding

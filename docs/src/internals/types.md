@@ -4,7 +4,7 @@
 
 ```@contents
 Pages = ["types.md"]
-Depth = 3
+Depth = 2
 ```
 
 ## Data types
