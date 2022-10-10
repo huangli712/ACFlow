@@ -11,7 +11,7 @@ Depth = 2
 
 ### finput
 
-**Definition**
+*Definition*
 
 Filename for the input data.
 
@@ -27,9 +27,7 @@ String.
 
 **Type**
 
-**Default value**
-
-**Behavior**
+String.
 
 **Comment**
 
