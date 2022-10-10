@@ -13,7 +13,7 @@ Depth = 2
 Pages = ["param.md"]
 ```
 
-## [BASE]
+## [BASE] block
 
 ### finput
 
@@ -257,7 +257,7 @@ Pages = ["param.md"]
 
 **Comment**
 
-## [StochAC]
+## [StochAC] block
 
 ### nfine
 
@@ -355,7 +355,7 @@ Pages = ["param.md"]
 
 **Comment**
 
-## [StochSK]
+## [StochSK] block
 
 ### nfine
 
@@ -453,7 +453,7 @@ Pages = ["param.md"]
 
 **Comment**
 
-## [StochOM]
+## [StochOM] block
 
 ### ntry
 
