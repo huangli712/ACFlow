@@ -14,12 +14,30 @@
 
 ```@contents
 Pages = [
-
 ]
 Depth = 1
 ```
 
 ## Examples
 
+```@contents
+Pages = [
+]
+Depth = 1
+```
+
+## Theory
+
+```@contents
+Pages = [
+]
+Depth = 1
+```
+
 ## Library
 
+```@contents
+Pages = [
+]
+Depth = 1
+```
