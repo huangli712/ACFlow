@@ -14,6 +14,11 @@
 
 ```@contents
 Pages = [
+    "man/feature.md",
+    "man/install.md",
+    "man/input.md",
+    "man/output.md",
+    "man/param.md",
 ]
 Depth = 1
 ```
@@ -22,6 +27,9 @@ Depth = 1
 
 ```@contents
 Pages = [
+    "examples/T01.md",
+    "examples/T02.md",
+    "examples/T03.md",
 ]
 Depth = 1
 ```
@@ -30,6 +38,9 @@ Depth = 1
 
 ```@contents
 Pages = [
+    "theory/maxent.md",
+    "theory/sac.md",
+    "theory/som.md",
 ]
 Depth = 1
 ```
