@@ -25,7 +25,7 @@ String.
 
 *Definition*
 
-This parameter specifies solver for the analytical continuation problem. Now **ACFlow.jl supports four solvers. They are:
+This parameter specifies solver for the analytical continuation problem. Now **ACFlow.jl** supports four solvers. They are:
 
 * MaxEnt
 * StochAC
@@ -42,11 +42,14 @@ String.
 
 *Definition*
 
+It denotes type of kernel function. Now **ACFlow.jl** supports three types of kernel functions. They are:
+
+* fermi
+* boson
+* bsymm
+
+
 *Type*
-
-
-
-
 
 *Comment*
 
