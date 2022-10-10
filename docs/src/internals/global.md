@@ -2,6 +2,11 @@
 
 *Define some type aliases and string constants for the ACFlow package.*
 
+```@contents
+Pages = ["global.md"]
+Depth = 2
+```
+
 ## Numerical types
 
 ```@docs

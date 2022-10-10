@@ -2,6 +2,11 @@
 
 *Define input and output functions for the ACFlow package.*
 
+```@contents
+Pages = ["inout.md"]
+Depth = 2
+```
+
 ## Read data
 
 ```@docs

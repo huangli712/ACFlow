@@ -2,6 +2,11 @@
 
 *Define some essential mathematical functions.*
 
+```@contents
+Pages = ["math.md"]
+Depth = 2
+```
+
 ## Root finding
 
 ```@docs

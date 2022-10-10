@@ -2,6 +2,11 @@
 
 *Provide basic user's interfaces for the ACFlow package.*
 
+```@contents
+Pages = ["base.md"]
+Depth = 2
+```
+
 ## Analytical continuation solvers
 
 ```@docs

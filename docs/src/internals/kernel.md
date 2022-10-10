@@ -2,6 +2,11 @@
 
 *Define some kernel functions.*
 
+```@contents
+Pages = ["kernel.md"]
+Depth = 2
+```
+
 ## Making kernels
 
 ```@docs

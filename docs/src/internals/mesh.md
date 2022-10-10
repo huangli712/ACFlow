@@ -2,6 +2,11 @@
 
 *Define various meshes for output data.*
 
+```@contents
+Pages = ["mesh.md"]
+Depth = 2
+```
+
 ## Types
 
 ```@docs

@@ -2,6 +2,11 @@
 
 *Define some type aliases and string constants for the ACFlow package.*
 
+```@contents
+Pages = ["model.md"]
+Depth = 2
+```
+
 ## Flat model
 
 ```@docs

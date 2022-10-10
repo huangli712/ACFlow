@@ -2,6 +2,11 @@
 
 *Define various grids for input data.*
 
+```@contents
+Pages = ["grid.md"]
+Depth = 2
+```
+
 ## Types
 
 ```@docs
