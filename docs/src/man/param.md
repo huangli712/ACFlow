@@ -11,7 +11,7 @@ Depth = 2
 
 ### finput
 
-*Definition*
+*Definition:*
 
 Filename for the input data.
 
@@ -23,7 +23,7 @@ String.
 
 ### solver
 
-*Definition*
+*Definition:*
 
 This parameter specifies solver for the analytical continuation problem. Now **ACFlow.jl** supports four solvers. They are:
 
@@ -42,7 +42,7 @@ String.
 
 ### ktype
 
-*Definition*
+*Definition:*
 
 It denotes type of kernel function. Now **ACFlow.jl** supports three types of kernel functions. They are:
 
@@ -57,7 +57,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### mtype
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -69,7 +69,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### grid
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -81,7 +81,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### mesh
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -93,7 +93,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### ngrid
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -105,7 +105,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### nmesh
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -117,7 +117,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### wmax
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -129,7 +129,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### wmin
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -141,7 +141,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### beta
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -153,7 +153,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### offdiag
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -165,7 +165,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### pmodel
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -177,7 +177,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### pmesh
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -189,7 +189,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### exclude
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -203,7 +203,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### method
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -215,7 +215,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### nalph
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -227,7 +227,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### alpha
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -239,7 +239,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### ratio
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -251,7 +251,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### blur
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -265,7 +265,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### nfine
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -277,7 +277,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### ngamm
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -289,7 +289,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### nwarm
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -301,7 +301,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### nstep
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -313,7 +313,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### ndump
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -325,7 +325,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### nalph
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -337,7 +337,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### alpha
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -349,7 +349,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### ratio
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -363,7 +363,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### nfine
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -375,7 +375,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### ngamm
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -387,7 +387,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### nwarm
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -399,7 +399,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### nstep
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -411,7 +411,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### ndump
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -423,7 +423,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### retry
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -435,7 +435,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### theta
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -447,7 +447,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### ratio
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -461,7 +461,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### ntry
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -473,7 +473,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### nstep
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -485,7 +485,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### nbox
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -497,7 +497,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### sbox
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -509,7 +509,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### wbox
 
-*Definition*
+*Definition:*
 
 *Type*
 
@@ -521,7 +521,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 ### norm
 
-*Definition*
+*Definition:*
 
 *Type*
 
