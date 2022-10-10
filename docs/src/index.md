@@ -1,6 +1,6 @@
 # ACFlow.jl
 
-*A analytical continuation package in Julia*
+*A full-fledged analytical continuation package in Julia*
 
 !!! note
 
@@ -9,3 +9,12 @@
 !!! warning
 
     The **ACFlow.jl** package is in heavy development. Please use it at your own risk.
+
+## Contents
+
+```@contents
+Pages = [
+
+]
+Depth = 1
+```
