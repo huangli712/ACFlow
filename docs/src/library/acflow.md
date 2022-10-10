@@ -12,4 +12,5 @@ ACFlow
 
 ```@docs
 _precompile
+ACFlow.__init__
 ```
