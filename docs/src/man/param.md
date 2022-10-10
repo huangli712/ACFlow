@@ -19,8 +19,6 @@ Filename for the input data.
 
 String.
 
-**Behavior**
-
 **Comment**
 
 ### solver
