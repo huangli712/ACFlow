@@ -15,506 +15,506 @@ Depth = 2
 
 Filename for the input data.
 
-**Type**
+*Type*
 
 String.
 
-**Comment**
+*Comment*
 
 ### solver
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
 String.
 
-**Comment**
+*Comment*
 
 ### ktype
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### mtype
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### grid
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### mesh
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### ngrid
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### nmesh
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### wmax
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### wmin
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### beta
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### offdiag
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### pmodel
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### pmesh
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### exclude
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ## [MaxEnt]
 
 ### method
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### nalph
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### alpha
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### ratio
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### blur
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ## [StochAC] block
 
 ### nfine
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### ngamm
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### nwarm
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### nstep
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### ndump
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### nalph
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### alpha
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### ratio
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ## [StochSK] block
 
 ### nfine
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### ngamm
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### nwarm
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### nstep
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### ndump
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### retry
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### theta
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### ratio
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ## [StochOM] block
 
 ### ntry
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### nstep
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### nbox
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### sbox
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### wbox
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
 
 ### norm
 
-**Definition**
+*Definition*
 
-**Type**
+*Type*
 
-**Default value**
 
-**Behavior**
 
-**Comment**
+
+
+*Comment*
