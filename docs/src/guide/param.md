@@ -1,8 +1,16 @@
 # Parameters
 
+## Contents
+
 ```@contents
 Pages = ["param.md"]
 Depth = 2
+```
+
+## Index
+
+```@index
+Pages = ["param.md"]
 ```
 
 ## [BASE]
