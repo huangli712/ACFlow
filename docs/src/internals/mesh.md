@@ -2,6 +2,8 @@
 
 *Define various meshes for output data.*
 
+## Contents
+
 ```@contents
 Pages = ["mesh.md"]
 Depth = 2
@@ -10,7 +12,7 @@ Depth = 2
 ## Index
 
 ```@index
-Pages = ["base.md"]
+Pages = ["mesh.md"]
 ```
 
 ## Types

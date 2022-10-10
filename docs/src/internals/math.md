@@ -2,6 +2,8 @@
 
 *Define some essential mathematical functions.*
 
+## Contents
+
 ```@contents
 Pages = ["math.md"]
 Depth = 3
@@ -10,7 +12,7 @@ Depth = 3
 ## Index
 
 ```@index
-Pages = ["base.md"]
+Pages = ["math.md"]
 ```
 
 ## Root finding

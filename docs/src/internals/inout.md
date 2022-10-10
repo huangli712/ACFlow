@@ -2,6 +2,8 @@
 
 *Define input and output functions for the ACFlow package.*
 
+## Contents
+
 ```@contents
 Pages = ["inout.md"]
 Depth = 2
@@ -10,7 +12,7 @@ Depth = 2
 ## Index
 
 ```@index
-Pages = ["base.md"]
+Pages = ["inout.md"]
 ```
 
 ## Read data

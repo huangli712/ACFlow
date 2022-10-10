@@ -2,6 +2,8 @@
 
 *Define various grids for input data.*
 
+## Contents
+
 ```@contents
 Pages = ["grid.md"]
 Depth = 2
@@ -10,7 +12,7 @@ Depth = 2
 ## Index
 
 ```@index
-Pages = ["base.md"]
+Pages = ["grid.md"]
 ```
 
 ## Types

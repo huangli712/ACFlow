@@ -2,6 +2,8 @@
 
 *Define some kernel functions.*
 
+## Contents
+
 ```@contents
 Pages = ["kernel.md"]
 Depth = 2
@@ -10,7 +12,7 @@ Depth = 2
 ## Index
 
 ```@index
-Pages = ["base.md"]
+Pages = ["kernel.md"]
 ```
 
 ## Making kernels

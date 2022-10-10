@@ -2,6 +2,8 @@
 
 *Read, parse, and extract the configuration parameters.*
 
+## Contents
+
 ```@contents
 Pages = ["config.md"]
 Depth = 2
@@ -10,7 +12,7 @@ Depth = 2
 ## Index
 
 ```@index
-Pages = ["base.md"]
+Pages = ["config.md"]
 ```
 
 ## Parser
