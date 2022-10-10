@@ -13,9 +13,11 @@ Depth = 2
 
 **Definition**
 
+Filename for the input data.
+
 **Type**
 
-**Default value**
+String.
 
 **Behavior**
 
