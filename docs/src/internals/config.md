@@ -7,6 +7,12 @@ Pages = ["config.md"]
 Depth = 2
 ```
 
+## Index
+
+```@index
+Pages = ["base.md"]
+```
+
 ## Parser
 
 ```@docs

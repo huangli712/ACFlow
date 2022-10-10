@@ -7,6 +7,12 @@ Pages = ["global.md"]
 Depth = 2
 ```
 
+## Index
+
+```@index
+Pages = ["base.md"]
+```
+
 ## Numerical types
 
 ```@docs

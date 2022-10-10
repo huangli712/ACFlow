@@ -7,6 +7,12 @@ Pages = ["inout.md"]
 Depth = 2
 ```
 
+## Index
+
+```@index
+Pages = ["base.md"]
+```
+
 ## Read data
 
 ```@docs

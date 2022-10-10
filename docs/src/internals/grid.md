@@ -7,6 +7,12 @@ Pages = ["grid.md"]
 Depth = 2
 ```
 
+## Index
+
+```@index
+Pages = ["base.md"]
+```
+
 ## Types
 
 ```@docs

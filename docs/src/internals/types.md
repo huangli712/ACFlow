@@ -2,9 +2,17 @@
 
 *Define some fundamental types and structs for the ACFlow package.*
 
+## Contents
+
 ```@contents
 Pages = ["types.md"]
 Depth = 2
+```
+
+## Index
+
+```@index
+Pages = ["types.md"]
 ```
 
 ## Data types

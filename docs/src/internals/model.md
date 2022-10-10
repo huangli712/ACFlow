@@ -7,6 +7,12 @@ Pages = ["model.md"]
 Depth = 2
 ```
 
+## Index
+
+```@index
+Pages = ["base.md"]
+```
+
 ## Flat model
 
 ```@docs

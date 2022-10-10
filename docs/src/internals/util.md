@@ -2,9 +2,17 @@
 
 *Provide some utility macros and functions for the ACFlow package.*
 
+## Contents
+
 ```@contents
 Pages = ["util.md"]
 Depth = 2
+```
+
+## Index
+
+```@index
+Pages = ["util.md"]
 ```
 
 ## Color constants

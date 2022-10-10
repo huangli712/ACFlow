@@ -7,6 +7,12 @@ Pages = ["math.md"]
 Depth = 3
 ```
 
+## Index
+
+```@index
+Pages = ["base.md"]
+```
+
 ## Root finding
 
 ```@docs

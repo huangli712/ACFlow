@@ -7,6 +7,12 @@ Pages = ["solver.md"]
 Depth = 3
 ```
 
+## Index
+
+```@index
+Pages = ["base.md"]
+```
+
 ## Common structs
 
 ```@docs

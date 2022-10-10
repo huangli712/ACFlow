@@ -7,6 +7,12 @@ Pages = ["kernel.md"]
 Depth = 2
 ```
 
+## Index
+
+```@index
+Pages = ["base.md"]
+```
+
 ## Making kernels
 
 ```@docs
