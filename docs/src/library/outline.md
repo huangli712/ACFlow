@@ -1,7 +1,7 @@
-## Introduction
+# Outline
 
-## ACFlow APIs
- 
+## Contents
+
 ```@contents
 Pages = ["acflow.md",
          "global.md",
@@ -18,4 +18,9 @@ Pages = ["acflow.md",
          "util.md"
         ]
 Depth = 2
+```
+
+## Index
+
+```@index
 ```
