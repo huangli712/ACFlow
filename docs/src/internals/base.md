@@ -7,6 +7,10 @@ Pages = ["base.md"]
 Depth = 2
 ```
 
+```@index
+Pages = ["base.md"]
+```
+
 ## Analytical continuation solvers
 
 ```@docs
