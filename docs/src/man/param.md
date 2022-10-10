@@ -25,6 +25,13 @@ String.
 
 *Definition*
 
+This parameter specifies solver for the analytical continuation problem. Now **ACFlow.jl supports four solvers. They are:
+
+* MaxEnt
+* StochAC
+* StochSK
+* StochOM
+
 *Type*
 
 String.
