@@ -32,6 +32,8 @@ This parameter specifies solver for the analytical continuation problem. Now **A
 * StochSK
 * StochOM
 
+Here, **MaxEnt** means the maximum entropy method, **StochAC** means the stochastic analytical continuation method (K. S. D. Beach's version), **StochSK** means the stochastic analytical continuation method (A. W. Sandvik's version), and **StochOM** means the stochastic optimization method.
+
 *Type*
 
 String.
