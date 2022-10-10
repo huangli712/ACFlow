@@ -2,10 +2,14 @@
 
 *Provide basic user's interfaces for the ACFlow package.*
 
+## Contents
+
 ```@contents
 Pages = ["base.md"]
 Depth = 2
 ```
+
+## Index
 
 ```@index
 Pages = ["base.md"]
