@@ -23,4 +23,6 @@ Depth = 2
 ## Index
 
 ```@index
+Modules = ACFlow
+Order = [:module, :constant, :type, :macro, :function]
 ```
