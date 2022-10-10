@@ -3,7 +3,7 @@ push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 using Documenter, ACFlow, Random
 
 makedocs(
-    sitename = "ACFlow",
+    sitename = "ACFlow.jl",
     clean = false,
     authors = "Li Huang",
     format = Documenter.HTML(
