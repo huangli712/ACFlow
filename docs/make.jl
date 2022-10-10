@@ -15,8 +15,11 @@ makedocs(
         "Home" => "index.md",
         "Introduction" => "intro.md",
         "Manual" => Any[
-            "README" => "guide/README.md",
-            "Parameters" => "guide/param.md",
+            "Features" => "man/feature.md",
+            "Installation" => "man/install.md",
+            "Input" => "man/input.md",
+            "Output" => "man/output.md",
+            "Parameters" => "man/param.md",
         ],
         "Examples" => Any[
             "T01" => "examples/T01.md",
@@ -24,7 +27,9 @@ makedocs(
             "T03" => "examples/T03.md",
         ],
         "Theory" => Any[
-            "README" => "theory/README.md",
+            "Maximum Entropy Method" => "theory/maxent.md",
+            "Stochastic Analytical Continuation" => "theory/sac.md",
+            "Stochastic Optimization Method" => "theory/som.md",
         ],
         "Library" => Any[
             "Outline" => "library/outline.md",
