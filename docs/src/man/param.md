@@ -61,10 +61,6 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 *Type*
 
-
-
-
-
 *Comment*
 
 ### grid
@@ -73,10 +69,6 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 *Type*
 
-
-
-
-
 *Comment*
 
 ### mesh
@@ -84,10 +76,6 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 *Definition:*
 
 *Type*
-
-
-
-
 
 *Comment*
 
@@ -167,23 +155,15 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### pmesh
 
 *Definition:*
 
 *Type*
-
-
-
-
 
 *Comment*
 
@@ -193,35 +173,27 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 *Type*
 
-
-
-
-
 *Comment*
 
-## [MaxEnt]
+## [MaxEnt] block
 
 ### method
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### nalph
 
 *Definition:*
 
-*Type*
+Total number of the chosen α parameters.
 
+*Type:*
 
-
-
+Integer.
 
 *Comment*
 
@@ -229,13 +201,15 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 *Definition:*
 
-*Type*
+Starting value for the α parameter.
 
+*Type:*
 
+Float.
 
+*Comment:*
 
-
-*Comment*
+It should be a very large number, such as 1e9 - 1e13.
 
 ### ratio
 
