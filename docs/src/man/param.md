@@ -652,27 +652,51 @@ This parameter is mandatory.
 
 *Definition:*
 
+>
+
 *Type:*
+
+>
+
+*Example:*
+
+>
 
 *Comment:*
 
-This parameter is mandatory.
+> This parameter is mandatory.
 
 ### nbox
 
 *Definition:*
 
+>
+
 *Type:*
+
+>
+
+*Example:*
+
+>
 
 *Comment:*
 
-This parameter is mandatory.
+> This parameter is mandatory.
 
 ### sbox
 
 *Definition:*
 
+>
+
 *Type:*
+
+>
+
+*Example:*
+
+>
 
 *Comment:*
 
