@@ -319,6 +319,55 @@ Depth = 2
 
 *Definition:*
 
+> How to determine the optimized α parameter? The `MaxEnt` solver supports four different algorithms. They are
+>
+> * historic
+> * classic
+> * bryan
+> * chi2kink
+
+*Type:*
+
+> String.
+
+*Example:*
+
+> method = "bryan"
+
+*Comment:*
+
+> This parameter is mandatory.
+
+### nalph
+
+*Definition:* Total number of the chosen α parameters.
+
+*Type:* Integer.
+
+*Comment:*
+
+### alpha
+
+*Definition:*
+
+> Starting value for the α parameter.
+
+*Type:*
+
+> Float.
+
+*Example:*
+
+>
+
+*Comment:*
+
+> It should be a very large number, such as 1e9 - 1e13.
+
+### ratio
+
+*Definition:*
+
 >
 
 *Type:*
@@ -333,37 +382,23 @@ Depth = 2
 
 >
 
-### nalph
-
-*Definition:* Total number of the chosen α parameters.
-
-*Type:* Integer.
-
-*Comment:*
-
-### alpha
-
-*Definition:* Starting value for the α parameter.
-
-*Type:* Float.
-
-*Comment:* It should be a very large number, such as 1e9 - 1e13.
-
-### ratio
-
-*Definition:*
-
-*Type:*
-
-*Comment:*
-
 ### blur
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+>
 
 ## [StochAC] block
 
