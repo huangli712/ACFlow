@@ -25,6 +25,8 @@ String.
 
 *Comment:*
 
+This parameter is mandatory.
+
 ### solver
 
 *Definition:*
@@ -45,6 +47,8 @@ String.
 *Comment:*
 
 If solver = "MaxEnt", then the [MaxEnt] block must be available in the configuration file.
+
+This parameter is mandatory.
 
 ### ktype
 
