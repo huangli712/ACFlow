@@ -15,17 +15,11 @@ Depth = 2
 
 ### finput
 
-*Definition:*
+*Definition:* Filename for the input data.
 
-Filename for the input data.
+*Type:* String.
 
-*Type:*
-
-String.
-
-*Comment:*
-
-This parameter is mandatory.
+*Comment:* This parameter is mandatory.
 
 ### solver
 
