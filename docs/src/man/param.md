@@ -227,7 +227,7 @@ Depth = 2
 
 *Definition:*
 
-> Inverse temperature . It is equal to 1/T.
+> Inverse temperature ``\beta``. It is equal to 1/T.
 
 *Type:*
 
@@ -263,11 +263,11 @@ Depth = 2
 
 *Definition:*
 
->
+> Additional parameters for customizing the model.
 
 *Type:*
 
->
+> Array.
 
 *Example:*
 
@@ -275,7 +275,7 @@ Depth = 2
 
 *Comment:*
 
->
+> This parameter is optional.
 
 ### pmesh
 
