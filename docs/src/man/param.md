@@ -245,9 +245,19 @@ Depth = 2
 
 *Definition:*
 
+> Is it the offdiagonal part in matrix-valued function.
+
 *Type:*
 
+> Bool.
+
+*Example:*
+
+> offdiag = false
+
 *Comment:*
+
+> This parameter is useful for the `MaxEnt` solver only.
 
 ### pmodel
 
