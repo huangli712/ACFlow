@@ -263,25 +263,55 @@ Depth = 2
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+>
 
 ### pmesh
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+>
 
 ### exclude
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+>
 
 ## [MaxEnt] block
 
@@ -289,9 +319,19 @@ Depth = 2
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+>
 
 ### nalph
 
