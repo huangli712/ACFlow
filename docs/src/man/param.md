@@ -225,11 +225,21 @@ Depth = 2
 
 ### beta
 
-*Definition:* Inverse temperature. It is equal to 1/T.
+*Definition:*
 
-*Type:* Float.
+> Inverse temperature . It is equal to 1/T.
 
-*Comment:* This parameter must be compatible with the input data and grid.
+*Type:*
+
+> Float.
+
+*Example:*
+
+> beta = 10.0
+
+*Comment:*
+
+> This parameter must be compatible with the input data and grid.
 
 ### offdiag
 
