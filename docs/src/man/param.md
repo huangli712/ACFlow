@@ -15,24 +15,30 @@ Depth = 2
 
 ### finput
 
-*Definition:*
+*Definition:
 
-&nbsp;&nbsp;Filename for the input data.
+> Filename for the input data.
 
-*Type:* String.
+*Type:*
 
-*Comment:* This parameter is mandatory.
+> String.
+
+*Comment:*
+
+> This parameter is mandatory.
 
 ### solver
 
-*Definition:* This parameter specifies solver for the analytical continuation problem. Now **ACFlow.jl** supports four solvers. They are:
+*Definition:*
 
-* MaxEnt
-* StochAC
-* StochSK
-* StochOM
-
-Here, `MaxEnt` means the maximum entropy method, `StochAC` means the stochastic analytical continuation method (K. S. D. Beach's version), `StochSK` means the stochastic analytical continuation method (A. W. Sandvik's version), and `StochOM` means the stochastic optimization method.
+> This parameter specifies solver for the analytical continuation problem. Now **ACFlow.jl** supports four solvers. They are:
+>
+> * MaxEnt
+> * StochAC
+> * StochSK
+> * StochOM
+>
+> Here, `MaxEnt` means the maximum entropy method, `StochAC` means the stochastic analytical continuation method (K. S. D. Beach's version), `StochSK` means the stochastic analytical continuation method (A. W. Sandvik's version), and `StochOM` means the stochastic optimization method.
 
 *Type:* String.
 
