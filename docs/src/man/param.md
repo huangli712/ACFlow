@@ -66,17 +66,27 @@ Depth = 2
 
 ### ktype
 
-*Definition:* It denotes type of kernel function. Now **ACFlow.jl** supports three types of kernel functions. They are:
+*Definition:*
 
-* fermi
-* boson
-* bsymm
+> It denotes type of kernel function. Now **ACFlow.jl** supports three types of kernel functions. They are:
+>
+> * fermi
+> * boson
+> * bsymm
+>
+> Here, `fermi` means fermionic Kernel, `boson` means bosonic kernel, and `bsymm` means symmetric bosonic kernel. 
 
-Here, 
+*Type:*
 
-*Type:* String.
+> String.
+
+*Example:*
+
+> ktype = "fermi"
 
 *Comment:*
+
+> This parameter is mandatory.
 
 ### mtype
 
