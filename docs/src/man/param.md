@@ -652,15 +652,15 @@ Depth = 2
 
 *Definition:*
 
->
+> How often to recalculate the goodness function.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> retry = 10
 
 *Comment:*
 
@@ -670,33 +670,33 @@ Depth = 2
 
 *Definition:*
 
->
+> Starting value for the Θ parameter.
 
 *Type:*
 
->
+> Float.
 
 *Example:*
 
->
+> theta = 1e+6
 
 *Comment:*
 
->
+> This parameter is mandatory.
 
 ### ratio
 
 *Definition:*
 
->
+> Scaling factor for the Θ parameter.
 
 *Type:*
 
->
+> Float.
 
 *Example:*
 
->
+> ratio = 0.9
 
 *Comment:*
 
