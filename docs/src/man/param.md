@@ -42,7 +42,9 @@ Here, **MaxEnt** means the maximum entropy method, **StochAC** means the stochas
 
 String.
 
-*Comment*
+*Comment:*
+
+If solver = "MaxEnt", then the [MaxEnt] block must be available in the configuration file.
 
 ### ktype
 
