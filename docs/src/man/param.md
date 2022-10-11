@@ -54,13 +54,7 @@ Depth = 2
 
 *Comment:*
 
-> If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file.
->
-> If solver = "StochAC", then the [StochAC] block must be available in the configuration file.
->
-> If solver = "StochSK", then the [StochSK] block must be available in the configuration file.
->
-> If solver = "StochOM", then the [StochOM] block must be available in the configuration file.
+> If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file. If `solver = "StochAC"`, then the `[StochAC]` block must be available in the configuration file. If `solver = "StochSK"`, then the `[StochSK]` block must be available in the configuration file. If `solver = "StochOM"`, then the `[StochOM]` block must be available in the configuration file.
 >
 > This parameter is mandatory.
 
