@@ -9,6 +9,10 @@ Depth = 2
 
 ## [BASE] block
 
+!!! note
+
+    The parameters in this block is valid for all the solvers.
+
 ### finput
 
 *Definition:*
