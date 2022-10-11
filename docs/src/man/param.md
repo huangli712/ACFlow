@@ -134,11 +134,22 @@ Depth = 2
 
 ### mesh
 
-*Definition:* This parameter specifies the mesh's type for output data (real axis).
+*Definition:*
 
-*Type:* String.
+> This parameter specifies the mesh's type for output data (real axis). Now **ACFlow.jl** supports the following choices:
+>
+> * linear
+> * tangent
+> * lorentz
+> * halflorentz
+
+*Type:*
+
+> String.
 
 *Comment:*
+
+> This parameter is mandatory.
 
 ### ngrid
 
