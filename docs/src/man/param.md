@@ -506,15 +506,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Total number of the chosen α parameters.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> nalph = 20
 
 *Comment:*
 
@@ -524,15 +524,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Starting value for the α parameter.
 
 *Type:*
 
->
+> Float.
 
 *Example:*
 
->
+> alpha = 1.0
 
 *Comment:*
 
@@ -542,15 +542,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Scaling factor for the α parameter.
 
 *Type:*
 
->
+> Float.
 
 *Example:*
 
->
+> ratio = 1.2
 
 *Comment:*
 
