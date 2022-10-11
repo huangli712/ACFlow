@@ -23,9 +23,7 @@ Depth = 2
 
 ### solver
 
-*Definition:*
-
-This parameter specifies solver for the analytical continuation problem. Now **ACFlow.jl** supports four solvers. They are:
+*Definition:* This parameter specifies solver for the analytical continuation problem. Now **ACFlow.jl** supports four solvers. They are:
 
 * MaxEnt
 * StochAC
@@ -34,13 +32,9 @@ This parameter specifies solver for the analytical continuation problem. Now **A
 
 Here, `MaxEnt` means the maximum entropy method, `StochAC` means the stochastic analytical continuation method (K. S. D. Beach's version), `StochSK` means the stochastic analytical continuation method (A. W. Sandvik's version), and `StochOM` means the stochastic optimization method.
 
-*Type:*
+*Type:* String.
 
-String.
-
-*Comment:*
-
-If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file.
+*Comment:* If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file.
 
 If solver = "StochAC", then the [StochAC] block must be available in the configuration file.
 
@@ -52,9 +46,7 @@ This parameter is mandatory.
 
 ### ktype
 
-*Definition:*
-
-It denotes type of kernel function. Now **ACFlow.jl** supports three types of kernel functions. They are:
+*Definition:* It denotes type of kernel function. Now **ACFlow.jl** supports three types of kernel functions. They are:
 
 * fermi
 * boson
@@ -62,45 +54,31 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 
 Here, 
 
-*Type:*
-
-String.
+*Type:* String.
 
 *Comment:*
 
 ### mtype
 
-*Definition:*
+*Definition:* Type of default model.
 
-Type of default model.
-
-*Type:*
-
-String.
+*Type:* String.
 
 *Comment:*
 
 ### grid
 
-*Definition:*
+*Definition:* This parameter specifies the grid's type for input data (imaginary axis).
 
-This parameter specifies the grid's type for input data (imaginary axis).
-
-*Type:*
-
-String.
+*Type:* String.
 
 *Comment:*
 
 ### mesh
 
-*Definition:*
+*Definition:* This parameter specifies the mesh's type for output data (real axis).
 
-This parameter specifies the mesh's type for output data (real axis).
-
-*Type:*
-
-String.
+*Type:* String.
 
 *Comment:*
 
@@ -446,70 +424,46 @@ Integer.
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### nstep
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### nbox
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### sbox
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### wbox
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### norm
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
