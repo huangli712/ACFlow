@@ -281,11 +281,11 @@ Depth = 2
 
 *Definition:*
 
->
+> Additional parameters for customizing the mesh.
 
 *Type:*
 
->
+> Array.
 
 *Example:*
 
@@ -293,25 +293,25 @@ Depth = 2
 
 *Comment:*
 
->
+> This parameter is optional.
 
 ### exclude
 
 *Definition:*
 
->
+> Restriction of the energy range of the spectrum.
 
 *Type:*
 
->
+> Array.
 
 *Example:*
 
->
+> exclude = [[-8.0,-4.0],[4.0,8.0]]
 
 *Comment:*
 
->
+> This parameter is optional.
 
 ## [MaxEnt] block
 
