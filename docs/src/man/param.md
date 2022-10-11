@@ -488,19 +488,19 @@ Depth = 2
 
 *Definition:*
 
->
+> Intervals for monitoring Monte Carlo sweeps.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> ndump = 40000
 
 *Comment:*
 
->
+> This parameter is mandatory.
 
 ### nalph
 
@@ -518,7 +518,7 @@ Depth = 2
 
 *Comment:*
 
->
+> This parameter is mandatory.
 
 ### alpha
 
@@ -536,15 +536,25 @@ Depth = 2
 
 *Comment:*
 
->
+> This parameter is mandatory.
 
 ### ratio
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+> This parameter is mandatory.
 
 ## [StochSK] block
 
@@ -556,6 +566,8 @@ Depth = 2
 
 *Comment:*
 
+This parameter is mandatory.
+
 ### ngamm
 
 *Definition:*
@@ -563,6 +575,8 @@ Depth = 2
 *Type:*
 
 *Comment:*
+
+This parameter is mandatory.
 
 ### nwarm
 
@@ -572,6 +586,8 @@ Depth = 2
 
 *Comment:*
 
+This parameter is mandatory.
+
 ### nstep
 
 *Definition:*
@@ -579,6 +595,8 @@ Depth = 2
 *Type:*
 
 *Comment:*
+
+This parameter is mandatory.
 
 ### ndump
 
@@ -588,6 +606,8 @@ Depth = 2
 
 *Comment:*
 
+This parameter is mandatory.
+
 ### retry
 
 *Definition:*
@@ -595,6 +615,8 @@ Depth = 2
 *Type:*
 
 *Comment:*
+
+This parameter is mandatory.
 
 ### theta
 
@@ -612,6 +634,8 @@ Depth = 2
 
 *Comment:*
 
+This parameter is mandatory.
+
 ## [StochOM] block
 
 ### ntry
@@ -622,6 +646,8 @@ Depth = 2
 
 *Comment:*
 
+This parameter is mandatory.
+
 ### nstep
 
 *Definition:*
@@ -629,6 +655,8 @@ Depth = 2
 *Type:*
 
 *Comment:*
+
+This parameter is mandatory.
 
 ### nbox
 
@@ -638,6 +666,8 @@ Depth = 2
 
 *Comment:*
 
+This parameter is mandatory.
+
 ### sbox
 
 *Definition:*
@@ -646,18 +676,40 @@ Depth = 2
 
 *Comment:*
 
+> This parameter is mandatory.
+
 ### wbox
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+> This parameter is mandatory.
 
 ### norm
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+> This parameter is mandatory.
