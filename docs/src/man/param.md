@@ -70,13 +70,19 @@ Here,
 
 *Type:*
 
+String.
+
 *Comment:*
 
 ### mtype
 
 *Definition:*
 
+Type of default model.
+
 *Type:*
+
+String.
 
 *Comment:*
 
@@ -84,9 +90,11 @@ Here,
 
 *Definition:*
 
-This parameter specifies the grid's type for input data (imaginary axis)
+This parameter specifies the grid's type for input data (imaginary axis).
 
 *Type:*
+
+String.
 
 *Comment:*
 
@@ -94,7 +102,11 @@ This parameter specifies the grid's type for input data (imaginary axis)
 
 *Definition:*
 
+This parameter specifies the mesh's type for output data (real axis).
+
 *Type:*
+
+String.
 
 *Comment:*
 
@@ -128,7 +140,11 @@ Integer.
 
 *Definition:*
 
+Right boundary (maximum value) of mesh.
+
 *Type:*
+
+Float.
 
 *Comment:*
 
@@ -136,7 +152,11 @@ Integer.
 
 *Definition:*
 
+Left boundary (minimum value) of mesh.
+
 *Type:*
+
+Float.
 
 *Comment:*
 
