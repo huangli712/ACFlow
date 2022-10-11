@@ -40,13 +40,13 @@ This parameter specifies solver for the analytical continuation problem. Now **A
 
 Here, **MaxEnt** means the maximum entropy method, **StochAC** means the stochastic analytical continuation method (K. S. D. Beach's version), **StochSK** means the stochastic analytical continuation method (A. W. Sandvik's version), and **StochOM** means the stochastic optimization method.
 
-*Type*
+*Type:*
 
 String.
 
 *Comment:*
 
-If solver = "MaxEnt", then the [MaxEnt] block must be available in the configuration file.
+If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file.
 
 If solver = "StochAC", then the [StochAC] block must be available in the configuration file.
 
@@ -66,6 +66,7 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 * boson
 * bsymm
 
+Here, 
 
 *Type:*
 
