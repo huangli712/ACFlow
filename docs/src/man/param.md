@@ -378,37 +378,37 @@ Depth = 2
 
 *Definition:*
 
->
+> Scaling factor for the α parameter.
 
 *Type:*
 
->
+> Float.
 
 *Example:*
 
->
+>ratio = 10.0
 
 *Comment:*
 
->
+> This parameter is mandatory.
 
 ### blur
 
 *Definition:*
 
->
+> Shall we preblur the kernel and spectrum?
 
 *Type:*
 
->
+> Float.
 
 *Example:*
 
->
+> blur = -1.0
 
 *Comment:*
 
->
+> This parameter is mandatory.
 
 ## [StochAC] block
 
