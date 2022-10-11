@@ -416,19 +416,20 @@ Depth = 2
 
 *Definition:*
 
->
+> Number of points of a very fine linear mesh.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> nfine = 10000
 
 *Comment:*
 
 > This parameter is mandatory.
+
 ### ngamm
 
 *Definition:* 
@@ -441,47 +442,47 @@ Depth = 2
 
 *Example:*
 
->
+> ngamm = 512
 
 *Comment:*
 
->
+> This parameter is mandatory.
 
 ### nwarm
 
 *Definition:*
 
->
+> Number of Monte Carlo warmup steps.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> nwarm = 4000
 
 *Comment:*
 
->
+> This parameter is mandatory.
 
 ### nstep
 
 *Definition:*
 
->
+> Number of Monte Carlo sweeping steps.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> nstep = 4000000
 
 *Comment:*
 
->
+> This parameter is mandatory.
 
 ### ndump
 
