@@ -15,11 +15,11 @@ Depth = 2
 
 Filename for the input data.
 
-*Type*
+*Type:*
 
 String.
 
-*Comment*
+*Comment:*
 
 ### solver
 
@@ -51,9 +51,9 @@ It denotes type of kernel function. Now **ACFlow.jl** supports three types of ke
 * bsymm
 
 
-*Type*
+*Type:*
 
-*Comment*
+*Comment:*
 
 ### mtype
 
@@ -217,23 +217,15 @@ It should be a very large number, such as 1e9 - 1e13.
 
 *Type*
 
-
-
-
-
 *Comment*
 
 ### blur
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ## [StochAC] block
 
@@ -243,35 +235,27 @@ It should be a very large number, such as 1e9 - 1e13.
 
 *Type*
 
-
-
-
-
 *Comment*
 
 ### ngamm
 
 *Definition:*
 
-*Type*
+Number of δ functions, which is used to mimic the spectral functions.
 
+*Type:*
 
+Integer.
 
-
-
-*Comment*
+*Comment:*
 
 ### nwarm
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### nstep
 
