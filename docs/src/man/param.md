@@ -340,11 +340,21 @@ Depth = 2
 
 ### nalph
 
-*Definition:* Total number of the chosen α parameters.
+*Definition:*
 
-*Type:* Integer.
+> Total number of the chosen α parameters.
+
+*Type:*
+
+> Integer.
+
+*Example:*
+
+> nalph = 12
 
 *Comment:*
+
+> This parameter is mandatory.
 
 ### alpha
 
@@ -358,7 +368,7 @@ Depth = 2
 
 *Example:*
 
->
+> alpha = 1e9
 
 *Comment:*
 
