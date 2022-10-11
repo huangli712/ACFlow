@@ -562,15 +562,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Number of points of a very fine linear mesh.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> nfine = 100000
 
 *Comment:*
 
@@ -580,15 +580,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Number of δ functions.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> ngamm = 1000
 
 *Comment:*
 
@@ -598,15 +598,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Number of Monte Carlo warmup steps.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> nwarm = 1000
 
 *Comment:*
 
@@ -616,15 +616,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Number of Monte Carlo sweeping steps.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> nstep = 20000
 
 *Comment:*
 
@@ -634,15 +634,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Intervals for monitoring Monte Carlo sweeps.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> ndump = 200
 
 *Comment:*
 
