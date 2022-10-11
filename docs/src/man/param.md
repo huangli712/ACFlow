@@ -15,7 +15,9 @@ Depth = 2
 
 ### finput
 
-*Definition:* Filename for the input data.
+*Definition:*
+
+&nbsp;&nbsp;Filename for the input data.
 
 *Type:* String.
 
@@ -84,67 +86,43 @@ Here,
 
 ### ngrid
 
-*Definition:*
+*Definition:* Number of grid points.
 
-Number of grid points.
+*Type:* Integer.
 
-*Type:*
-
-Integer.
-
-*Comment:*
-
-This parameter must be compatible with the input data.
+*Comment:* This parameter must be compatible with the input data.
 
 ### nmesh
 
-*Definition:*
+*Definition:* Number of mesh points.
 
-Number of mesh points.
-
-*Type:*
-
-Integer.
+*Type:* Integer.
 
 *Comment:*
 
 ### wmax
 
-*Definition:*
+*Definition:* Right boundary (maximum value) of mesh.
 
-Right boundary (maximum value) of mesh.
-
-*Type:*
-
-Float.
+*Type:* Float.
 
 *Comment:*
 
 ### wmin
 
-*Definition:*
+*Definition:* Left boundary (minimum value) of mesh.
 
-Left boundary (minimum value) of mesh.
-
-*Type:*
-
-Float.
+*Type:* Float.
 
 *Comment:*
 
 ### beta
 
-*Definition:*
+*Definition:* Inverse temperature. It is equal to 1/T.
 
-Inverse temperature. It is equal to 1/T.
+*Type:* Float.
 
-*Type:*
-
-Float.
-
-*Comment:*
-
-This parameter must be compatible with the input data and grid.
+*Comment:* This parameter must be compatible with the input data and grid.
 
 ### offdiag
 
@@ -190,37 +168,27 @@ This parameter must be compatible with the input data and grid.
 
 ### nalph
 
-*Definition:*
+*Definition:* Total number of the chosen α parameters.
 
-Total number of the chosen α parameters.
-
-*Type:*
-
-Integer.
-
-*Comment*
-
-### alpha
-
-*Definition:*
-
-Starting value for the α parameter.
-
-*Type:*
-
-Float.
+*Type:* Integer.
 
 *Comment:*
 
-It should be a very large number, such as 1e9 - 1e13.
+### alpha
+
+*Definition:* Starting value for the α parameter.
+
+*Type:* Float.
+
+*Comment:* It should be a very large number, such as 1e9 - 1e13.
 
 ### ratio
 
 *Definition:*
 
-*Type*
+*Type:*
 
-*Comment*
+*Comment:*
 
 ### blur
 
@@ -236,19 +204,15 @@ It should be a very large number, such as 1e9 - 1e13.
 
 *Definition:*
 
-*Type*
+*Type:*
 
-*Comment*
+*Comment:*
 
 ### ngamm
 
-*Definition:*
+*Definition:* Number of δ functions, which is used to mimic the spectral functions.
 
-Number of δ functions, which is used to mimic the spectral functions.
-
-*Type:*
-
-Integer.
+*Type:* Integer.
 
 *Comment:*
 
@@ -264,61 +228,41 @@ Integer.
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### ndump
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### nalph
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### alpha
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### ratio
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ## [StochSK] block
 
@@ -326,97 +270,65 @@ Integer.
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### ngamm
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### nwarm
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### nstep
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### ndump
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### retry
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### theta
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### ratio
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ## [StochOM] block
 
