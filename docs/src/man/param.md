@@ -76,97 +76,91 @@ Here,
 
 *Definition:*
 
-*Type*
+*Type:*
 
-*Comment*
+*Comment:*
 
 ### grid
 
 *Definition:*
 
-*Type*
+This parameter specifies the grid's type for input data (imaginary axis)
 
-*Comment*
+*Type:*
+
+*Comment:*
 
 ### mesh
 
 *Definition:*
 
-*Type*
+*Type:*
 
-*Comment*
+*Comment:*
 
 ### ngrid
 
 *Definition:*
 
-*Type*
+Number of grid points.
 
+*Type:*
 
+Integer.
 
+*Comment:*
 
-
-*Comment*
+This parameter must be compatible with the input data.
 
 ### nmesh
 
 *Definition:*
 
-*Type*
+Number of mesh points.
 
+*Type:*
 
+Integer.
 
-
-
-*Comment*
+*Comment:*
 
 ### wmax
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### wmin
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### beta
 
 *Definition:*
 
-*Type*
+Inverse temperature. It is equal to 1/T.
 
+*Type:*
 
+Float.
 
+*Comment:*
 
-
-*Comment*
+This parameter must be compatible with the input data and grid.
 
 ### offdiag
 
 *Definition:*
 
-*Type*
+*Type:*
 
-
-
-
-
-*Comment*
+*Comment:*
 
 ### pmodel
 
@@ -180,17 +174,17 @@ Here,
 
 *Definition:*
 
-*Type*
+*Type:*
 
-*Comment*
+*Comment:*
 
 ### exclude
 
 *Definition:*
 
-*Type*
+*Type:*
 
-*Comment*
+*Comment:*
 
 ## [MaxEnt] block
 
