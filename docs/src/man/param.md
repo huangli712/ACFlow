@@ -562,79 +562,145 @@ Depth = 2
 
 *Definition:*
 
+>
+
 *Type:*
+
+>
+
+*Example:*
+
+>
 
 *Comment:*
 
-This parameter is mandatory.
+> This parameter is mandatory.
 
 ### ngamm
 
 *Definition:*
 
+>
+
 *Type:*
+
+>
+
+*Example:*
+
+>
 
 *Comment:*
 
-This parameter is mandatory.
+> This parameter is mandatory.
 
 ### nwarm
 
 *Definition:*
 
+>
+
 *Type:*
+
+>
+
+*Example:*
+
+>
 
 *Comment:*
 
-This parameter is mandatory.
+> This parameter is mandatory.
 
 ### nstep
 
 *Definition:*
 
+>
+
 *Type:*
+
+>
+
+*Example:*
+
+>
 
 *Comment:*
 
-This parameter is mandatory.
+> This parameter is mandatory.
 
 ### ndump
 
 *Definition:*
 
+>
+
 *Type:*
+
+>
+
+*Example:*
+
+>
 
 *Comment:*
 
-This parameter is mandatory.
+> This parameter is mandatory.
 
 ### retry
 
 *Definition:*
 
+>
+
 *Type:*
+
+>
+
+*Example:*
+
+>
 
 *Comment:*
 
-This parameter is mandatory.
+> This parameter is mandatory.
 
 ### theta
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+>
 
 ### ratio
 
 *Definition:*
 
+>
+
 *Type:*
+
+>
+
+*Example:*
+
+>
 
 *Comment:*
 
-This parameter is mandatory.
+> This parameter is mandatory.
 
 ## [StochOM] block
 
@@ -642,11 +708,19 @@ This parameter is mandatory.
 
 *Definition:*
 
+>
+
 *Type:*
+
+>
+
+*Example:*
+
+>
 
 *Comment:*
 
-This parameter is mandatory.
+> This parameter is mandatory.
 
 ### nstep
 
