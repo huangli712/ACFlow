@@ -84,11 +84,30 @@ Depth = 2
 
 ### mtype
 
-*Definition:* Type of default model.
+*Definition:*
 
-*Type:* String.
+> Type of default model function. Now **ACFlow.jl** supports the following choices:
+>
+> * flat
+> * gauss
+> * 1gauss
+> * 2gauss
+> * lorentz
+> * 1lorentz
+> * 2lorentz
+> * risedecay
+
+*Type:*
+
+> String.
+
+*Example:*
+
+> mtype = "flat"
 
 *Comment:*
+
+> This parameter is mandatory.
 
 ### grid
 
