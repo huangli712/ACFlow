@@ -113,7 +113,12 @@ Depth = 2
 
 *Definition:* 
 
-> This parameter specifies the grid's type for input data (imaginary axis).
+> This parameter specifies the grid's type for input data (imaginary axis). Now **ACFlow.jl** supports the following choices:
+>
+> * ftime
+> * btime
+> * ffreq
+> * bfreq
 
 *Type:*
 
