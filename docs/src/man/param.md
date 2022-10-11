@@ -416,57 +416,126 @@ Depth = 2
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
 
+> This parameter is mandatory.
 ### ngamm
 
-*Definition:* Number of δ functions, which is used to mimic the spectral functions.
+*Definition:* 
 
-*Type:* Integer.
+> Number of δ functions, which is used to mimic the spectral functions.
+
+*Type:*
+
+> Integer.
+
+*Example:*
+
+>
 
 *Comment:*
+
+>
 
 ### nwarm
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+>
 
 ### nstep
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+>
 
 ### ndump
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+>
 
 ### nalph
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+>
 
 ### alpha
 
 *Definition:*
 
+>
+
 *Type:*
 
+>
+
+*Example:*
+
+>
+
 *Comment:*
+
+>
 
 ### ratio
 
