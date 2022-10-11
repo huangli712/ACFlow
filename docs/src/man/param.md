@@ -15,13 +15,17 @@ Depth = 2
 
 ### finput
 
-*Definition:
+*Definition:*
 
 > Filename for the input data.
 
 *Type:*
 
 > String.
+
+*Example:*
+
+> finput = "green.data"
 
 *Comment:*
 
@@ -31,7 +35,7 @@ Depth = 2
 
 *Definition:*
 
-> This parameter specifies solver for the analytical continuation problem. Now **ACFlow.jl** supports four solvers. They are:
+> This parameter specifies the solvers that used to solve the analytical continuation problem. Now **ACFlow.jl** supports four different solvers. They are as follows:
 >
 > * MaxEnt
 > * StochAC
@@ -40,17 +44,25 @@ Depth = 2
 >
 > Here, `MaxEnt` means the maximum entropy method, `StochAC` means the stochastic analytical continuation method (K. S. D. Beach's version), `StochSK` means the stochastic analytical continuation method (A. W. Sandvik's version), and `StochOM` means the stochastic optimization method.
 
-*Type:* String.
+*Type:*
 
-*Comment:* If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file.
+> String.
 
-If solver = "StochAC", then the [StochAC] block must be available in the configuration file.
+*Example:*
 
-If solver = "StochSK", then the [StochSK] block must be available in the configuration file.
+> solver = "MaxEnt"
 
-If solver = "StochOM", then the [StochOM] block must be available in the configuration file.
+*Comment:*
 
-This parameter is mandatory.
+> If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file.
+>
+> If solver = "StochAC", then the [StochAC] block must be available in the configuration file.
+>
+> If solver = "StochSK", then the [StochSK] block must be available in the configuration file.
+>
+> If solver = "StochOM", then the [StochOM] block must be available in the configuration file.
+>
+> This parameter is mandatory.
 
 ### ktype
 
