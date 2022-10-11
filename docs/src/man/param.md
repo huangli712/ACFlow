@@ -111,11 +111,21 @@ Depth = 2
 
 ### grid
 
-*Definition:* This parameter specifies the grid's type for input data (imaginary axis).
+*Definition:* 
 
-*Type:* String.
+> This parameter specifies the grid's type for input data (imaginary axis).
+
+*Type:*
+
+> String.
+
+*Example:*
+
+> grid = "ftime"
 
 *Comment:*
+
+> This parameter is mandatory.
 
 ### mesh
 
