@@ -708,15 +708,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Number of attempts to figure out the solution.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> ntry = 2000
 
 *Comment:*
 
@@ -726,15 +726,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Number of Monte Carlo steps per try.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> nstep = 1000
 
 *Comment:*
 
@@ -744,15 +744,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Number of boxes to construct the spectrum.
 
 *Type:*
 
->
+> Integer.
 
 *Example:*
 
->
+> nbox = 100
 
 *Comment:*
 
@@ -762,15 +762,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Minimum area of the randomly generated boxes.
 
 *Type:*
 
->
+> Float.
 
 *Example:*
 
->
+> sbox = 0.005
 
 *Comment:*
 
@@ -780,15 +780,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Minimum width of the randomly generated boxes.
 
 *Type:*
 
->
+> Float.
 
 *Example:*
 
->
+> wbox = 0.02
 
 *Comment:*
 
@@ -798,15 +798,15 @@ Depth = 2
 
 *Definition:*
 
->
+> Is the norm calculated.
 
 *Type:*
 
->
+> Float.
 
 *Example:*
 
->
+> norm = -1.0
 
 *Comment:*
 
