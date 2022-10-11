@@ -153,35 +153,75 @@ Depth = 2
 
 ### ngrid
 
-*Definition:* Number of grid points.
+*Definition:*
 
-*Type:* Integer.
+> Number of grid points.
 
-*Comment:* This parameter must be compatible with the input data.
+*Type:*
+
+> Integer.
+
+*Example:*
+
+> ngrid = 10
+
+*Comment:*
+
+> This parameter must be compatible with the input data.
 
 ### nmesh
 
-*Definition:* Number of mesh points.
+*Definition:*
 
-*Type:* Integer.
+> Number of mesh points.
+
+*Type:*
+
+> Integer.
+
+*Example:*
+
+> nmesh = 501
 
 *Comment:*
+
+> This parameter is mandatory.
 
 ### wmax
 
-*Definition:* Right boundary (maximum value) of mesh.
+*Definition:*
 
-*Type:* Float.
+> Right boundary (maximum value) of mesh.
+
+*Type:*
+
+> Float.
+
+*Example:*
+
+> wmax = 10.0
 
 *Comment:*
+
+> This parameter is mandatory.
 
 ### wmin
 
-*Definition:* Left boundary (minimum value) of mesh.
+*Definition:*
 
-*Type:* Float.
+> Left boundary (minimum value) of mesh.
+
+*Type:*
+
+> Float.
+
+*Example:*
+
+> wmin = -10.0
 
 *Comment:*
+
+> This parameter is mandatory.
 
 ### beta
 
