@@ -147,6 +147,10 @@ Depth = 2
 
 > String.
 
+*Example:*
+
+> mesh = "linear"
+
 *Comment:*
 
 > This parameter is mandatory.
