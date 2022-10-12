@@ -189,7 +189,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of mesh points.
+> Number of mesh points. The parameter, together with the `wmax`, `wmin`, and `mesh` parameters, control the generation of mesh for output data. 
 
 *Type:*
 
