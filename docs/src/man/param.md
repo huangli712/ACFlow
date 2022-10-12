@@ -17,7 +17,7 @@ Depth = 3
 
 *Definition:*
 
-> Filename for the input data.
+> Filename for the input data. The data should be saved in a column-wised and formated (CSV-like) text file.
 
 *Type:*
 
@@ -42,7 +42,13 @@ Depth = 3
 > * StochSK
 > * StochOM
 >
-> Here, `MaxEnt` means the maximum entropy method, `StochAC` means the stochastic analytical continuation method (K. S. D. Beach's version), `StochSK` means the stochastic analytical continuation method (A. W. Sandvik's version), and `StochOM` means the stochastic optimization method.
+> Here, `MaxEnt` means the maximum entropy method. The `MaxEnt` solver can be used to treat the correlators in Matsubara frequency or imaginary-time axis. If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file.
+>
+>`StochAC` means the stochastic analytical continuation method (K. S. D. Beach's version). The `StochAC` solver can be used to treat the correlators in imaginary-time axis only. If `solver = "StochAC"`, then the `[StochAC]` block must be available in the configuration file.
+>
+> `StochSK` means the stochastic analytical continuation method (A. W. Sandvik's version). The `StochSK` solver can be used to treat the correlators in imaginary-time axis only. If `solver = "StochSK"`, then the `[StochSK]` block must be available in the configuration file.
+>
+> `StochOM` means the stochastic optimization method. The `StochOM` solver can be used to treat the correlators in Matsubara frequency axis only. If `solver = "StochOM"`, then the `[StochOM]` block must be available in the configuration file.
 
 *Type:*
 
@@ -54,21 +60,19 @@ Depth = 3
 
 *Comment:*
 
-> If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file. If `solver = "StochAC"`, then the `[StochAC]` block must be available in the configuration file. If `solver = "StochSK"`, then the `[StochSK]` block must be available in the configuration file. If `solver = "StochOM"`, then the `[StochOM]` block must be available in the configuration file.
->
 > This parameter is mandatory.
 
 ### ktype
 
 *Definition:*
 
-> It denotes type of kernel function. Now **ACFlow.jl** supports three types of kernel functions. They are:
+> It denotes the type of kernel functions. Now **ACFlow.jl** supports three types of kernel functions. They are:
 >
 > * fermi
 > * boson
 > * bsymm
 >
-> Here, `fermi` means fermionic Kernel, `boson` means bosonic kernel, and `bsymm` means symmetric bosonic kernel. 
+> Here, `fermi` means fermionic kernel, `boson` means bosonic kernel, and `bsymm` means symmetric bosonic kernel. 
 
 *Type:*
 
@@ -86,7 +90,7 @@ Depth = 3
 
 *Definition:*
 
-> Type of default model function. Now **ACFlow.jl** supports the following choices:
+> It denotes the type of default model functions. Now **ACFlow.jl** supports the following choices:
 >
 > * flat
 > * gauss
@@ -96,6 +100,8 @@ Depth = 3
 > * 1lorentz
 > * 2lorentz
 > * risedecay
+>
+> Here, `flat` means the flat model (i.e, constant), `gauss` means the Gaussian model, `1gauss` means the Shifted Gaussian model, `2gauss` means the Two Gaussian model, `lorentz` means the Lorentzian model, `1lorentz` means the Shifted Lorentzian model, `2lorentz` means the Two Lorentzian model, and `risedecay` means the Rise-And-Decay model. As for detailed formula for these models, please refer to `src/model.jl`.
 
 *Type:*
 
@@ -107,7 +113,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. Only the `MaxEnt` solver need these model functions. The `StochAC` solver only supports the `flat` model. The `StochSK` and `StochOM` are free of model functions.
 
 ### grid
 
