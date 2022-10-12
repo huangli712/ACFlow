@@ -261,7 +261,7 @@ Depth = 3
 
 *Definition:*
 
-> Is it the offdiagonal part in matrix-valued function.
+> Is the input correlator the offdiagonal part in matrix-valued function? As for the offdiagonal correlator, the corresponding spectral function might be not positive-definite. Some tricks have been implemented to cure this issue.
 
 *Type:*
 
@@ -273,13 +273,13 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is useful for the `MaxEnt` solver only.
+> This parameter is mandatory. This parameter is useful for the `MaxEnt` solver only.
 
 ### pmodel
 
 *Definition:*
 
-> Additional parameters for customizing the model.
+> Additional parameters for customizing the model functions. Note that the `gauss`, `lorentz`, and `risedecay` models need one parameter ``\Gamma``. The `1gauss` and `1lorentz` need two parameters, ``\Gamma`` and ``s``. The `2gauss` and `2lorentz` needs three parameters, ``\Gamma``, ``s_1``, and ``s_2``. The default values for ``\Gamma``, ``s``, ``s_1``, and ``s_2`` are 2.0, 2.0, -2.0, and 2.0, respectively. The `pmodel` parameter is used to defined these parameters.
 
 *Type:*
 
@@ -287,7 +287,7 @@ Depth = 3
 
 *Example:*
 
->
+> pmodel = [1.0]
 
 *Comment:*
 
