@@ -406,7 +406,7 @@ Depth = 3
 
 *Definition:*
 
-> Scaling factor for the α parameter.
+> Scaling factor for the ``\alpha`` parameter. The next ``\alpha`` is equal to the current ``\alpha`` divided by `ratio`.
 
 *Type:*
 
