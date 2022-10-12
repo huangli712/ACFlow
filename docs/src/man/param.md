@@ -140,7 +140,7 @@ Depth = 3
 
 > This parameter is mandatory. See also [`ngrid`](@ref ngrid).
 
-### mesh
+### [mesh](@id mesh)
 
 *Definition:*
 
@@ -311,7 +311,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is optional. The default values for ``f_1`` and `cut` are 2.1 and 0.01, respectively.
+> This parameter is optional. The default values for ``f_1`` and `cut` are 2.1 and 0.01, respectively. See also [`mesh`](@ref mesh).
 
 ### exclude
 
