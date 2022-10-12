@@ -243,7 +243,7 @@ Depth = 3
 
 *Definition:*
 
-> Inverse temperature ``\beta``. It is equal to 1/T.
+> Inverse temperature ``\beta``. It is equal to ``1/T``.
 
 *Type:*
 
@@ -255,7 +255,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter must be compatible with the input data and grid.
+> This parameter is mandatory. This parameter must be compatible with the input data and grid. Specifically, for the imaginary-time axis, the last grid point should be ``\beta``. As for the Matsubara frequency axis, the difference between two successive grid points should be ``\pi/\beta``.
 
 ### offdiag
 
