@@ -388,7 +388,7 @@ Depth = 3
 
 *Definition:*
 
-> Starting value for the ``\alpha`` parameter. The `MaxEnt` solver always starts with a huge ``\alpha`` parameter, and then decrease it gradually.
+> Starting value for the ``\alpha`` parameter. The `MaxEnt` solver always starts with a huge ``\alpha`` parameter, and then decreases it gradually.
 
 *Type:*
 
@@ -452,7 +452,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of points of a very fine linear mesh.
+> Number of points of a very fine linear mesh. This mesh is for the ``\delta`` functions.
 
 *Type:*
 
@@ -470,7 +470,7 @@ Depth = 3
 
 *Definition:* 
 
-> Number of δ functions, which is used to mimic the spectral functions.
+> Number of ``\delta`` functions, which is used to mimic the spectral functions.
 
 *Type:*
 
@@ -524,7 +524,7 @@ Depth = 3
 
 *Definition:*
 
-> Intervals for monitoring Monte Carlo sweeps.
+> Intervals for monitoring Monte Carlo sweeps. For every `ndump` steps, the `StochAC` solver will try to output some useful information to help diagnosis.
 
 *Type:*
 
@@ -542,7 +542,7 @@ Depth = 3
 
 *Definition:*
 
-> Total number of the chosen α parameters.
+> Total number of the chosen ``\alpha`` parameters.
 
 *Type:*
 
@@ -560,7 +560,7 @@ Depth = 3
 
 *Definition:*
 
-> Starting value for the α parameter.
+> Starting value for the ``\alpha`` parameter. The `StochAC` solver always starts with a small ``\alpha`` parameter, and then increases it gradually.
 
 *Type:*
 
@@ -578,7 +578,7 @@ Depth = 3
 
 *Definition:*
 
-> Scaling factor for the α parameter.
+> Scaling factor for the ``\alpha`` parameter. It should be larger than 1.0.
 
 *Type:*
 
