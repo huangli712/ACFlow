@@ -115,7 +115,7 @@ Depth = 3
 
 > This parameter is mandatory. Only the `MaxEnt` solver need these model functions. The `StochAC` solver only supports the `flat` model. The `StochSK` and `StochOM` are free of model functions.
 
-### grid
+### [grid](@id grid)
 
 *Definition:* 
 
@@ -138,7 +138,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. See also [`ngrid`](@ref ngrid).
 
 ### mesh
 
@@ -167,7 +167,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### ngrid
+### [ngrid](@id ngrid)
 
 *Definition:*
 
@@ -183,7 +183,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter must be compatible with the input data.
+> This parameter is mandatory. It must be compatible with the input data. See also [`grid`](@ref grid).
 
 ### nmesh
 
