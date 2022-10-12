@@ -144,7 +144,7 @@ Depth = 3
 
 *Definition:*
 
-> This parameter specifies the mesh's type for output data (real axis). Now **ACFlow.jl** supports the following choices:
+> This parameter specifies the mesh's type for output data (usually the spectral functions) in real axis. Now **ACFlow.jl** supports the following choices:
 >
 > * linear
 > * tangent
