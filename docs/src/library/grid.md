@@ -1,4 +1,4 @@
-# Grid
+# Grids
 
 *Define various grids for input data.*
 
