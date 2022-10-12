@@ -4,7 +4,7 @@
 
 !!! note
 
-    Thank you for using **ACFlow.jl**. This document will help you to be familiar with and use **ACFlow.jl**.
+    Thank you for using **ACFlow.jl**. This documentation will help you to be familiar with and use **ACFlow.jl**.
 
 !!! warning
 
@@ -38,6 +38,7 @@ Depth = 1
 
 ```@contents
 Pages = [
+    "theory/basic.md",
     "theory/maxent.md",
     "theory/sac.md",
     "theory/som.md",
