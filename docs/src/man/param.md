@@ -424,7 +424,7 @@ Depth = 3
 
 *Definition:*
 
-> Shall we preblur the kernel and spectrum?
+> Sometimes, the kernel functions and spectral functions can be preblurred to obtain smoother results. Shall we preblur them? If `blur` is larger than zero, then it means the blur parameter. If `blur` is smaller than zero, then it means that the preblur is disable.
 
 *Type:*
 
@@ -439,6 +439,14 @@ Depth = 3
 > This parameter is mandatory.
 
 ## [StochAC] block
+
+!!! note
+
+    The parameters in this block is valid for the `StochAC` solver.
+
+!!! warning
+
+    If `solver = "StochAC"`, the `[StochAC]` block must be available.
 
 ### nfine
 
