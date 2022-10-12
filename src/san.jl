@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/08
+# Last modified: 2022/10/13
 #
 
 #=
@@ -380,7 +380,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Update Gᵧ and χ²
     SC.Gᵧ = calc_correlator(SE, SC.kernel)
     SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-    println("Θ = ", SC.Θ, " χ² = ", SC.χ²)
+    println("Θ = ", SC.Θ, " χ² = ", SC.χ², "(step = $c)")
 end
 
 """
@@ -514,7 +514,8 @@ function init_element(S::StochSKSolver, rng::AbstractRNG, allow::Vector{I64})
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
-    position = rand(rng, allow, ngamm)
+    #position = rand(rng, allow, ngamm)
+    position = rand(rng, 1:nfine, ngamm)
     #
     amplitude = 1.0 / ngamm
     #
@@ -629,8 +630,6 @@ function constraints(S::StochSKSolver)
         end
     end
 
-    @show allow
-
     return allow
 end
 
@@ -673,10 +672,7 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext = rand(MC.rng, 1:nfine)
         end
 
-        @show pcurr, pnext
-        !(pnext in SC.allow) && continue
-        @show "hehe"
-        @show pcurr, pnext
+        #!(pnext in SC.allow) && continue
 
         # Calculate the transition probability
         Knext = view(SC.kernel, :, pnext)
@@ -752,10 +748,8 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext₂ = rand(MC.rng, 1:nfine)
         end
 
-        !(pnext₁ in SC.allow) && continue
-        !(pnext₂ in SC.allow) && continue
-
-        @show pcurr₁, pcurr₂, pnext₁, pnext₂
+        #!(pnext₁ in SC.allow) && continue
+        #!(pnext₂ in SC.allow) && continue
 
         # Calculate the transition probability
         Knext₁ = view(SC.kernel, :, pnext₁)
