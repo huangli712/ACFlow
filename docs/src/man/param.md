@@ -796,7 +796,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of boxes to construct the spectrum.
+> Number of boxes, which are used to construct the spectral functions.
 
 *Type:*
 
@@ -850,7 +850,7 @@ Depth = 3
 
 *Definition:*
 
-> Is the norm calculated.
+> Is the norm calculated? If `norm` is larger than 0.0, it denotes the normalization factor. If `norm` is smaller than 0.0, it means that the normalization condition is ignored. 
 
 *Type:*
 
