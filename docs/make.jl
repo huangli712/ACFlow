@@ -27,6 +27,7 @@ makedocs(
             "Optical Conductivity" => "examples/optic.md",
         ],
         "Theory" => Any[
+            "Basic Principles" => "theory/basic.md",
             "Maximum Entropy Method" => "theory/maxent.md",
             "Stochastic Analytical Continuation" => "theory/sac.md",
             "Stochastic Optimization Method" => "theory/som.md",
