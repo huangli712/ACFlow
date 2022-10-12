@@ -299,7 +299,7 @@ Depth = 3
 
 *Definition:*
 
-> Additional parameters for customizing the mesh.
+> Additional parameters for customizing the mesh. The `tangent` mesh needs the ``f_1`` parameter. The `lorentz` and `halflorentz` meshes need the `cut` parameter. The `pmesh` parameter can be used to setup the two parameters. If `pmesh` contains one element or more than one elements, then ``f_1 \equiv `` `cut` ``\equiv`` `pmesh[1]`. 
 
 *Type:*
 
@@ -307,17 +307,17 @@ Depth = 3
 
 *Example:*
 
->
+> pmesh = [2.1]
 
 *Comment:*
 
-> This parameter is optional.
+> This parameter is optional. The default values for ``f_1`` and `cut` are 2.1 and 0.01, respectively.
 
 ### exclude
 
 *Definition:*
 
-> Restriction of the energy range of the spectrum.
+> Restriction of the energy range of the calculated spectral functions.
 
 *Type:*
 
