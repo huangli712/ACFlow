@@ -345,12 +345,14 @@ Depth = 3
 
 *Definition:*
 
-> How to determine the optimized α parameter? The `MaxEnt` solver supports four different algorithms. They are
+> How to determine the optimized ``\alpha`` parameter? The `MaxEnt` solver supports four different algorithms. They are
 >
 > * historic
 > * classic
 > * bryan
 > * chi2kink
+>
+> Usually, the `chi2kink` algorithm is preferred.
 
 *Type:*
 
@@ -368,7 +370,7 @@ Depth = 3
 
 *Definition:*
 
-> Total number of the chosen α parameters.
+> Total number of the chosen ``\alpha`` parameters.
 
 *Type:*
 
@@ -386,7 +388,7 @@ Depth = 3
 
 *Definition:*
 
-> Starting value for the α parameter.
+> Starting value for the ``\alpha`` parameter. The `MaxEnt` solver always starts with a huge ``\alpha`` parameter, and then decrease it gradually.
 
 *Type:*
 
@@ -398,7 +400,7 @@ Depth = 3
 
 *Comment:*
 
-> It should be a very large number, such as 1e9 - 1e13.
+> This parameter is mandatory. It should be a very large number, such as ``10^9 \sim 10^{13}``.
 
 ### ratio
 
