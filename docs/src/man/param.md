@@ -333,6 +333,10 @@ Depth = 3
 
 ## [MaxEnt] block
 
+!!! note
+
+    The parameters in this block is valid for the `MaxEnt` solver.
+
 ### method
 
 *Definition:*
