@@ -337,6 +337,10 @@ Depth = 3
 
     The parameters in this block is valid for the `MaxEnt` solver.
 
+!!! warning
+
+    If `solver = "Maxent"`, the `[MaxEnt]` block must be available.
+
 ### method
 
 *Definition:*
