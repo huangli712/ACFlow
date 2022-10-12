@@ -23,6 +23,10 @@ build_flat_model
 
 ## Gaussian models
 
+!!! note
+
+    The parameters ``\Gamma``, ``s``, ``s_1``, and ``s_2``, which are essential in defining the Gaussian-like models are setup by using the parameter [`pmesh`](@ref pmesh).
+
 ```@docs
 build_gaussian_model
 build_1gaussian_model

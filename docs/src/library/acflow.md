@@ -8,7 +8,7 @@
 ACFlow
 ```
 
-## Functions
+## Initialization
 
 ```@docs
 _precompile

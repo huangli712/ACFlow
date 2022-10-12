@@ -15,14 +15,14 @@ Depth = 3
 Pages = ["solver.md"]
 ```
 
-## Common structs
+## Abstract structs
 
 ```@docs
 AbstractSolver
 AbstractMC
 ```
 
-## MaxEntSolver
+## MaxEnt Solver
 
 ### Structs
 
