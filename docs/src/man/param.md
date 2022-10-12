@@ -317,7 +317,7 @@ Depth = 3
 
 *Definition:*
 
-> Restriction of the energy range of the calculated spectral functions. This features is implemented by the `StochAC`, `StochSK`, and `StochOM` solvers. In these solvers, the ``\delta`` or `box` functions, which are used to mimic the spectral functions, were restricted to live out of the given energy range.
+> Restriction of the energy range of the calculated spectral functions. This features is implemented by the `StochAC`, `StochSK`, and `StochOM` solvers. In these solvers, the ``\delta`` or `box` functions, which are used to mimic the spectral functions, were restricted to live out of the given energy range. For example, `exclude = [8.0,16.0]` means that the energy range `[8.0,16.0]` is forbidden.
 
 *Type:*
 
