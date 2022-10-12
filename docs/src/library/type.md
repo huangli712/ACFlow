@@ -5,14 +5,14 @@
 ## Contents
 
 ```@contents
-Pages = ["types.md"]
+Pages = ["type.md"]
 Depth = 2
 ```
 
 ## Index
 
 ```@index
-Pages = ["types.md"]
+Pages = ["type.md"]
 ```
 
 ## Data types

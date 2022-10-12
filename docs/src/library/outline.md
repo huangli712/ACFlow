@@ -5,7 +5,7 @@
 ```@contents
 Pages = ["acflow.md",
          "global.md",
-         "types.md",
+         "type.md",
          "base.md",
          "solver.md",
          "grid.md",
