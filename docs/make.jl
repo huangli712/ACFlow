@@ -15,16 +15,16 @@ makedocs(
         "Home" => "index.md",
         "Introduction" => "intro.md",
         "Manual" => Any[
-            "Features" => "man/feature.md",
+            "Main Features" => "man/feature.md",
             "Installation" => "man/install.md",
-            "Input" => "man/input.md",
-            "Output" => "man/output.md",
+            "Input Files" => "man/input.md",
+            "Output Files" => "man/output.md",
             "Parameters" => "man/param.md",
         ],
         "Examples" => Any[
-            "T01" => "examples/T01.md",
-            "T02" => "examples/T02.md",
-            "T03" => "examples/T03.md",
+            "Matsubara Self-Energy Function" => "examples/sigma.md",
+            "Imaginary-Time Green's Function" => "examples/green.md",
+            "Optical Conductivity" => "examples/optic.md",
         ],
         "Theory" => Any[
             "Maximum Entropy Method" => "theory/maxent.md",
