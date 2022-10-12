@@ -1,1 +1,1 @@
-# T01
+# Matsubara self-energy function

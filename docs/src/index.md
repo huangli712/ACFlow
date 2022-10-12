@@ -27,9 +27,9 @@ Depth = 1
 
 ```@contents
 Pages = [
-    "examples/T01.md",
-    "examples/T02.md",
-    "examples/T03.md",
+    "examples/sigma.md",
+    "examples/green.md",
+    "examples/optic.md",
 ]
 Depth = 1
 ```
