@@ -594,11 +594,19 @@ Depth = 3
 
 ## [StochSK] block
 
+!!! note
+
+    The parameters in this block is valid for the `StochSK` solver.
+
+!!! warning
+
+    If `solver = "StochSK"`, the `[StochSK]` block must be available.
+
 ### nfine
 
 *Definition:*
 
-> Number of points of a very fine linear mesh.
+> Number of points of a very fine linear mesh. This mesh is for the ``\delta`` functions.
 
 *Type:*
 
@@ -616,7 +624,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of δ functions.
+> Number of ``\delta`` functions, which is used to mimic the spectral functions.
 
 *Type:*
 
@@ -670,7 +678,7 @@ Depth = 3
 
 *Definition:*
 
-> Intervals for monitoring Monte Carlo sweeps.
+> Intervals for monitoring Monte Carlo sweeps. For every `ndump` steps, the `StochSK` solver will try to output some useful information to help diagnosis.
 
 *Type:*
 
@@ -688,7 +696,7 @@ Depth = 3
 
 *Definition:*
 
-> How often to recalculate the goodness function.
+> How often to recalculate the goodness function (it is actually ``\chi^2``) to avoid numerical deterioration.
 
 *Type:*
 
@@ -706,7 +714,7 @@ Depth = 3
 
 *Definition:*
 
-> Starting value for the Θ parameter.
+> Starting value for the ``\Theta`` parameter. The `StochSK` solver always starts with a huge ``\Theta`` parameter, and then decreases it gradually.
 
 *Type:*
 
@@ -724,7 +732,7 @@ Depth = 3
 
 *Definition:*
 
-> Scaling factor for the Θ parameter.
+> Scaling factor for the ``\Theta`` parameter. It should be less than 1.0.
 
 *Type:*
 
