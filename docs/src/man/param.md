@@ -150,6 +150,10 @@ Depth = 3
 > * tangent
 > * lorentz
 > * halflorentz
+>
+> Here, `linear` means the Linear mesh, `tangent` means the Tangent mesh, `lorentz` means the Lorentzian mesh, and `halflorentz` means the Half-Lorentzian mesh.
+>
+> Notes that only the `linear` mesh is uniform, the other three meshes are non-uniform. And the `halflorentz` mesh is defined on the positive-half axis only.
 
 *Type:*
 
