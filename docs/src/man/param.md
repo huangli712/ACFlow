@@ -119,12 +119,14 @@ Depth = 3
 
 *Definition:* 
 
-> This parameter specifies the grid's type for input data (imaginary axis). Now **ACFlow.jl** supports the following choices:
+> This parameter specifies the grid's type for input data in imaginary axis. Now **ACFlow.jl** supports the following choices:
 >
 > * ftime
 > * btime
 > * ffreq
 > * bfreq
+>
+> Here, `ftime` means fermionic and imaginary-time, `btime` means bosonic and imaginary-time, `ffreq` means fermionic and Matsubara frequency, and `bfreq` means bosonic and Matsubara frequency.
 
 *Type:*
 
