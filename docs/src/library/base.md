@@ -15,7 +15,7 @@ Depth = 2
 Pages = ["base.md"]
 ```
 
-## Analytical continuation solvers
+## Solvers
 
 ```@docs
 solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T}) where {T}
@@ -38,10 +38,15 @@ read_data
 make_data
 ```
 
-## Grid and mesh
+## Grids
 
 ```@docs
 make_grid
+```
+
+## Meshes
+
+```@docs
 make_mesh
 ```
 
