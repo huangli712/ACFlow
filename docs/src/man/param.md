@@ -279,7 +279,7 @@ Depth = 3
 
 *Definition:*
 
-> Additional parameters for customizing the model functions. Note that the `gauss`, `lorentz`, and `risedecay` models need one parameter ``\Gamma``. The `1gauss` and `1lorentz` need two parameters, ``\Gamma`` and ``s``. The `2gauss` and `2lorentz` needs three parameters, ``\Gamma``, ``s_1``, and ``s_2``. The default values for ``\Gamma``, ``s``, ``s_1``, and ``s_2`` are 2.0, 2.0, -2.0, and 2.0, respectively.
+> Additional parameters for customizing the model functions. Note that the `gauss`, `lorentz`, and `risedecay` models need one parameter ``\Gamma``. The `1gauss` and `1lorentz` need two parameters, ``\Gamma`` and ``s``. The `2gauss` and `2lorentz` needs three parameters, ``\Gamma``, ``s_1``, and ``s_2``.
 >
 > The `pmodel` parameter is used to defined these parameters. If there are one element in `pmodel`, then ``\Gamma`` = `pmodel[1]`. If there are two elements in `pmodel`, then ``\Gamma`` = `pmodel[1]` and ``s`` = `pmodel[2]`. If there are three elements in `pmodel`, then ``\Gamma`` = `pmodel[1]`, ``s_1`` = `pmodel[2]`, and ``s_2`` = `pmodel[3]`.
 
@@ -293,7 +293,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is optional.
+> This parameter is optional.  The default values for ``\Gamma``, ``s``, ``s_1``, and ``s_2`` are 2.0, 2.0, -2.0, and 2.0, respectively.
 
 ### pmesh
 
