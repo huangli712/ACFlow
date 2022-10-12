@@ -1,6 +1,6 @@
 [BASE]
 finput = "chit.data"
-solver = "StochSK"
+solver = "StochAC"
 ktype  = "bsymm"
 mtype  = "flat"
 grid   = "btime"
