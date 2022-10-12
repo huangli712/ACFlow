@@ -207,7 +207,7 @@ Depth = 3
 
 *Definition:*
 
-> Right boundary (maximum value) of mesh.
+> Right boundary (maximum value) of mesh. Note that `wmax` should be always greater than `wmin`.
 
 *Type:*
 
@@ -225,7 +225,7 @@ Depth = 3
 
 *Definition:*
 
-> Left boundary (minimum value) of mesh.
+> Left boundary (minimum value) of mesh. Note that `wmax` should be always greater than `wmin`.
 
 *Type:*
 
