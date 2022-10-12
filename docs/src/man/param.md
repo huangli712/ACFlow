@@ -748,6 +748,14 @@ Depth = 3
 
 ## [StochOM] block
 
+!!! note
+
+    The parameters in this block is valid for the `StochOM` solver.
+
+!!! warning
+
+    If `solver = "StochOM"`, the `[StochOM]` block must be available.
+
 ### ntry
 
 *Definition:*
