@@ -171,7 +171,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of grid points.
+> Number of grid points. The parameter, together with the `beta` and `grid` parameters, control the generation of grid for input data. 
 
 *Type:*
 
