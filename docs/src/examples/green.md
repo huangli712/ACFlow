@@ -1,1 +1,1 @@
-# Imaginary-time Green's function
+# Imaginary-Time Green's Function

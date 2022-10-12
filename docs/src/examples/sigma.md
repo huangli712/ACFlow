@@ -1,1 +1,1 @@
-# Matsubara self-energy function
+# Matsubara Self-Energy Function
