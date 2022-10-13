@@ -1,6 +1,8 @@
 # Grids
 
-*Define various grids for input data.*
+*Grids on imaginary axis.*
+
+In the **ACFlow.jl** package, the input correlators are defined on `grid`, while the calculated spectral functions are defined on `mesh`.
 
 ## Contents
 
