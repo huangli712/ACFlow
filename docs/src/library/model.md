@@ -2,7 +2,7 @@
 
 *For default model functions.*
 
-The **ACFlow.jl** package supports flat, gaussian, lorentzian, and a few unusual models. They are useful for the `MaxEnt` and `StochAC` solvers.
+The **ACFlow.jl** package supports various model functions, such as flat, Gaussian, Lorentzian, and a few unusual models. They are useful for the `MaxEnt` and `StochAC` solvers. In order to build these model functions, we need some additional parameters, including ``\Gamma``, ``s``, ``s_1``, and ``s_2``. They should be setup by using the parameter [`pmesh`](@ref pmesh).
 
 ## Contents
 
@@ -27,7 +27,7 @@ build_flat_model
 
 !!! note
 
-    The parameters ``\Gamma``, ``s``, ``s_1``, and ``s_2``, which are essential in defining the Gaussian-like models should be setup by using the parameter [`pmesh`](@ref pmesh).
+    This class includes the standard Gaussian model, shifted Gaussian model, and two-Gaussians model.
 
 ```@docs
 build_gaussian_model
