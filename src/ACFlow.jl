@@ -847,7 +847,6 @@ function _precompile()
         # convert it into string and function, respectively.
         str = string(nl[i])
         fun = eval(nl[i])
-        @show fun, str
 
         # For methods only (macros must be excluded)
         if fun isa Function && !startswith(str, "@")

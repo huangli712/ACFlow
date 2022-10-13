@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/08
+# Last modified: 2022/10/13
 #
 
 #=
@@ -912,7 +912,7 @@ for the solution.
 
 See also: [`OnceDifferentiable`](@ref).
 """
-function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T}) where T
+function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T} where T)
     # Some predefined constants
     min_diagonal = 1e-6 # lower bound on values of diagonal matrix
     #
