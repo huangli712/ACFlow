@@ -49,6 +49,10 @@ build_2lorentzians_model
 
 ## Unusual models
 
+!!! note
+
+    This class includes the Rise-And-Decay model, file model, and function model.
+
 ```@docs
 build_risedecay_model
 build_file_model
