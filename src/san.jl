@@ -380,7 +380,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Update Gᵧ and χ²
     SC.Gᵧ = calc_correlator(SE, SC.kernel)
     SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
-    println("Θ = ", SC.Θ, " χ² = ", SC.χ², "(step = $c)")
+    println("Θ = ", SC.Θ, " χ² = ", SC.χ², " (step = $c)")
 end
 
 """
@@ -514,8 +514,7 @@ function init_element(S::StochSKSolver, rng::AbstractRNG, allow::Vector{I64})
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
 
-    #position = rand(rng, allow, ngamm)
-    position = rand(rng, 1:nfine, ngamm)
+    position = rand(rng, allow, ngamm)
     #
     amplitude = 1.0 / ngamm
     #
@@ -625,9 +624,9 @@ function constraints(S::StochSKSolver)
             end
         end
         #
-        if !is_excluded
+        #if !is_excluded
             push!(allow, i)
-        end
+        #end
     end
 
     return allow

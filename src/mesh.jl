@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/07
+# Last modified: 2022/10/13
 #
 
 #=
@@ -14,7 +14,8 @@
 """
     LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
 
-A constructor for the LinearMesh struct, which is announced in types.jl.
+A constructor for the LinearMesh struct, which is announced in
+`src/types.jl`.
 
 See also: [`LinearMesh`](@ref).
 """
@@ -62,7 +63,8 @@ end
 """
     TangentMesh(nmesh::I64, wmin::F64, wmax::F64, 𝑝::F64 = 2.1)
 
-A constructor for the TangentMesh struct, which is announced in types.jl.
+A constructor for the TangentMesh struct, which is announced in
+`src/types.jl`.
 
 See also: [`TangentMesh`](@ref).
 """
@@ -90,8 +92,9 @@ end
 """
     LorentzMesh(nmesh::I64, wmin::F64, wmax::F64, 𝑝::F64 = 0.01)
 
-A constructor for the LorentzMesh struct, which is announced in types.jl. 
-The algorithm for generating a lorentzian mesh is taken from:
+A constructor for the LorentzMesh struct, which is announced in
+`src/types.jl`. The algorithm for generating a lorentzian mesh
+is taken from:
 
 * https://github.com/CQMP/Maxent.
 
@@ -134,8 +137,9 @@ end
 """
     HalfLorentzMesh(nmesh::I64, wmax::F64, 𝑝::F64 = 0.01)
 
-A constructor for the HalfLorentzMesh struct, which is announced in types.jl.
-The algorithm for generating a half-lorentzian mesh is taken from:
+A constructor for the HalfLorentzMesh struct, which is announced 
+in `src/types.jl`. The algorithm for generating a half-lorentzian
+mesh is taken from:
 
 * https://github.com/CQMP/Maxent.
 
@@ -275,6 +279,13 @@ end
 
 Given a position (0.0 ≤ r ≤ 1.0), and return the index of the nearest
 point in the mesh `am`.
+
+### Examples
+```julia
+am = LinearMesh(1001, -10.0, 10.0)
+pos = nearest(am, 0.2) # pos = 201
+println(am[pos]) # -6.0
+```
 
 See also: [`AbstractMesh`](@ref).
 """
