@@ -37,6 +37,10 @@ build_2gaussians_model
 
 ## Lorentzian models
 
+!!! note
+
+    This class includes the standard Lorentzian model, shifted Lorentzian model, and two-Lorentzians model.
+
 ```@docs
 build_lorentzian_model
 build_1lorentzian_model
