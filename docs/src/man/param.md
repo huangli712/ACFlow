@@ -275,7 +275,7 @@ Depth = 3
 
 > This parameter is mandatory. This parameter is useful for the `MaxEnt` solver only.
 
-### pmodel
+### [pmodel](@id pmodel)
 
 *Definition:*
 
