@@ -1,6 +1,8 @@
 # Meshes
 
-*Define various meshes for output data.*
+*Meshes on real axis.*
+
+The spectral functions are defined on real axis. The **ACFlow.jl** package supports various uniform and non-uniform meshes.
 
 ## Contents
 
