@@ -2,7 +2,7 @@
 
 *For default model functions.*
 
-The **ACFlow.jl** package supports Gaussian, Lorentzian, and a few unusual models. They are useful for the `MaxEnt` and `StochAC` solvers.
+The **ACFlow.jl** package supports flat, gaussian, lorentzian, and a few unusual models. They are useful for the `MaxEnt` and `StochAC` solvers.
 
 ## Contents
 
