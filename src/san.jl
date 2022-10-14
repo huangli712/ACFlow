@@ -134,8 +134,7 @@ Initialize the StochSK solver and return the StochSKMC, StochSKElement,
 and StochSKContext structs.
 """
 function init(S::StochSKSolver, rd::RawData)
-    @timev allow = constraints(S)
-    error()
+    allow = constraints(S)
 
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
@@ -673,7 +672,8 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext = rand(MC.rng, 1:nfine)
         end
 
-        #!(pnext in SC.allow) && continue
+        # Apply the constraints
+        !(pnext in SC.allow) && continue
 
         # Calculate the transition probability
         Knext = view(SC.kernel, :, pnext)
@@ -749,8 +749,9 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext₂ = rand(MC.rng, 1:nfine)
         end
 
-        #!(pnext₁ in SC.allow) && continue
-        #!(pnext₂ in SC.allow) && continue
+        # Apply the constraints
+        !(pnext₁ in SC.allow) && continue
+        !(pnext₂ in SC.allow) && continue
 
         # Calculate the transition probability
         Knext₁ = view(SC.kernel, :, pnext₁)
