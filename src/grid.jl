@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/07
+# Last modified: 2022/10/13
 #
 
 #=
@@ -15,7 +15,7 @@
     FermionicImaginaryTimeGrid(ntime::I64, β::F64)
 
 A constructor for the FermionicImaginaryTimeGrid struct, which is defined
-in types.jl.
+in `src/types.jl`.
 
 See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
@@ -149,7 +149,7 @@ end
     FermionicMatsubaraGrid(nfreq::I64, β::F64)
 
 A constructor for the FermionicMatsubaraGrid struct, which is defined in
-types.jl. The Matsubara grid is evaluated as ωₙ = (2n - 1) * π / β.
+`src/types.jl`. The Matsubara grid is evaluated as ωₙ = (2n - 1) π / β.
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
@@ -288,7 +288,7 @@ end
     BosonicImaginaryTimeGrid(ntime::I64, β::F64)
 
 A constructor for the BosonicImaginaryTimeGrid struct, which is defined
-in types.jl.
+in `src/types.jl`.
 
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
@@ -422,7 +422,7 @@ end
     BosonicMatsubaraGrid(nfreq::I64, β::F64)
 
 A constructor for the BosonicMatsubaraGrid struct, which is defined in
-types.jl. The Matsubara grid is evaluated as ωₙ = (2n - 2) * π / β.
+`src/types.jl`. The Matsubara grid is evaluated as ωₙ = (2n - 2) π / β.
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """

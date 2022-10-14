@@ -369,6 +369,8 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     end
     @assert 1 ≤ c ≤ length(SC.𝒞ᵧ)
 
+    #c = 148
+
     # Retrieve the Monte Carlo field configuration
     @. SE.P = SC.𝒞ᵧ[c].P
     SE.A = SC.𝒞ᵧ[c].A
@@ -624,9 +626,9 @@ function constraints(S::StochSKSolver)
             end
         end
         #
-        #if !is_excluded
+        if !is_excluded
             push!(allow, i)
-        #end
+        end
     end
 
     return allow
@@ -671,7 +673,7 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext = rand(MC.rng, 1:nfine)
         end
 
-        #!(pnext in SC.allow) && continue
+        !(pnext in SC.allow) && continue
 
         # Calculate the transition probability
         Knext = view(SC.kernel, :, pnext)
@@ -747,8 +749,8 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext₂ = rand(MC.rng, 1:nfine)
         end
 
-        #!(pnext₁ in SC.allow) && continue
-        #!(pnext₂ in SC.allow) && continue
+        !(pnext₁ in SC.allow) && continue
+        !(pnext₂ in SC.allow) && continue
 
         # Calculate the transition probability
         Knext₁ = view(SC.kernel, :, pnext₁)
