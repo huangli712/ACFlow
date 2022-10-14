@@ -11,8 +11,9 @@
     * Fermionic + Matsubara + Imaginary time
     * Green's function
     * MaxEnt solver (chi2kink algorithm)
-    * StochOM solver (constraints algorithm)
     * StochAC solver (constraints algorithm)
+    * StochSK solver
+    * StochOM solver (constraints algorithm)
     * Flat model
     * Linear mesh
     * Fixed error bar
@@ -21,8 +22,9 @@
     * Bosonic + Matsubara + Imaginary time
     * Optical conductivity
     * MaxEnt solver (chi2kink algorithm)
-    * StochOM solver
     * StochAC solver
+    * StochSK solver
+    * StochOM solver
     * Flat model
     * Half-Lorentzian mesh
     * Fixed error bar

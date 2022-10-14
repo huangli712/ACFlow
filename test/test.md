@@ -78,6 +78,7 @@
     * Bosonic + Imaginary time
     * MaxEnt solver (chi2kink algorithm)
     * StochAC solver (with constraints)
+    * StochSK solver
     * Rise-And-Decay model + Flat model
     * Half-Lorentzian mesh
     * Fixed error bar
