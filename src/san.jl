@@ -607,7 +607,7 @@ function constraints(S::StochSKSolver)
     exclude = get_b("exclude")
     wmin = get_b("wmin")
     wmax = get_b("wmax")
-    nfine = get_a("nfine")
+    nfine = get_k("nfine")
 
     allow = I64[]
     mesh = collect(LinRange(wmin, wmax, nfine))
