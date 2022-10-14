@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/13
+# Last modified: 2022/10/14
 #
 
 #=
@@ -83,6 +83,7 @@ function solve(S::StochSKSolver, rd::RawData)
 
     println("[ StochSK ]")
     MC, SE, SC = init(S, rd)
+    error()
 
     # Parallel version
     if nworkers() > 1
@@ -133,7 +134,8 @@ Initialize the StochSK solver and return the StochSKMC, StochSKElement,
 and StochSKContext structs.
 """
 function init(S::StochSKSolver, rd::RawData)
-    allow = constraints(S)
+    @timev allow = constraints(S)
+    error()
 
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
@@ -368,8 +370,6 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         c = c - 1
     end
     @assert 1 ≤ c ≤ length(SC.𝒞ᵧ)
-
-    #c = 148
 
     # Retrieve the Monte Carlo field configuration
     @. SE.P = SC.𝒞ᵧ[c].P
@@ -610,18 +610,18 @@ function constraints(S::StochSKSolver)
     nfine = get_a("nfine")
 
     allow = I64[]
+    mesh = collect(LinRange(wmin, wmax, nfine))
 
     # Go through the fine linear mesh and check each mesh point.
     # Is is excluded ?
-    for i = 1:nfine
-        e = (wmax - wmin) * i / nfine + wmin
+    for i in eachindex(mesh)
         is_excluded = false
         #
         if !isa(exclude, Missing)
-            for i in eachindex(exclude)
-                if exclude[i][1] ≤ e ≤ exclude[i][2]
+            for j in eachindex(exclude)
+                if exclude[j][1] ≤ mesh[i] ≤ exclude[j][2]
                     is_excluded = true
-                    continue
+                    break
                 end
             end
         end
@@ -673,7 +673,7 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext = rand(MC.rng, 1:nfine)
         end
 
-        !(pnext in SC.allow) && continue
+        #!(pnext in SC.allow) && continue
 
         # Calculate the transition probability
         Knext = view(SC.kernel, :, pnext)
@@ -749,8 +749,8 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             pnext₂ = rand(MC.rng, 1:nfine)
         end
 
-        !(pnext₁ in SC.allow) && continue
-        !(pnext₂ in SC.allow) && continue
+        #!(pnext₁ in SC.allow) && continue
+        #!(pnext₂ in SC.allow) && continue
 
         # Calculate the transition probability
         Knext₁ = view(SC.kernel, :, pnext₁)
