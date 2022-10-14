@@ -1,3 +1,9 @@
+#
+# Test: A01
+#
+# Please change solver to choose your favorite algorithm.
+#
+
 [BASE]
 finput = "giw.data"
 solver = "MaxEnt"

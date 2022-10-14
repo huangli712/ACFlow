@@ -1,3 +1,10 @@
+#
+# Test: A10
+#
+# Please change solver to choose your favorite algorithm.
+# If solver = "StochAC", mtype must be set to "flat".
+#
+
 [BASE]
 finput = "chit.data"
 solver = "StochAC"
