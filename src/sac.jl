@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/08
+# Last modified: 2022/10/15
 #
 
 #=
@@ -632,18 +632,18 @@ function constraints(S::StochACSolver)
     nfine = get_a("nfine")
 
     allow = I64[]
+    mesh = collect(LinRange(wmin, wmax, nfine))
 
     # Go through the fine linear mesh and check each mesh point.
     # Is is excluded ?
-    for i = 1:nfine
-        e = (wmax - wmin) * i / nfine + wmin
+    for i in eachindex(mesh)
         is_excluded = false
         #
         if !isa(exclude, Missing)
-            for i in eachindex(exclude)
-                if exclude[i][1] ≤ e ≤ exclude[i][2]
+            for j in eachindex(exclude)
+                if exclude[j][1] ≤ mesh[i] ≤ exclude[j][2]
                     is_excluded = true
-                    continue
+                    break
                 end
             end
         end
