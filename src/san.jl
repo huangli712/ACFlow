@@ -83,7 +83,6 @@ function solve(S::StochSKSolver, rd::RawData)
 
     println("[ StochSK ]")
     MC, SE, SC = init(S, rd)
-    error()
 
     # Parallel version
     if nworkers() > 1
