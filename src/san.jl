@@ -49,7 +49,6 @@ Mutable struct. It is used within the StochSK solver only.
 * χ²vec  -> Vector of goodness function.
 * Θ      -> Current Θ parameter.
 * Θvec   -> Vector of Θ parameter.
-* 𝒞ᵧ     -> Historical field configuration.
 """
 mutable struct StochSKContext
     Gᵥ     :: Vector{F64}
@@ -65,7 +64,6 @@ mutable struct StochSKContext
     χ²vec  :: Vector{F64}
     Θ      :: F64
     Θvec   :: Vector{F64}
-    𝒞ᵧ     :: Vector{StochSKElement}
 end
 
 #=
@@ -166,11 +164,8 @@ function init(S::StochSKSolver, rd::RawData)
     Θvec = zeros(F64, get_k("nwarm"))
     println("Setup Θ parameter")
 
-    𝒞ᵧ = StochSKElement[]
-    println("Setup historical Monte Carlo configurations")
-
     SC = StochSKContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, kernel, Aout,
-                        χ², χ²min, χ²vec, Θ, Θvec, 𝒞ᵧ)
+                        χ², χ²min, χ²vec, Θ, Θvec)
 
     return MC, SE, SC
 end
@@ -334,6 +329,9 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     nwarm = get_k("nwarm")
     ratio = get_k("ratio")
 
+    # To store the historic Monte Carlo field configurations
+    𝒞ᵧ = StochACElement[]
+
     # Change the Θ parameter and approch the equilibrium state
     for i = 1:nwarm
         # Shuffle the Monte Carlo configurations
@@ -342,7 +340,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         # Backup key parameters and Monte Carlo field configurations
         SC.χ²vec[i] = SC.χ²
         SC.Θvec[i] = SC.Θ
-        push!(SC.𝒞ᵧ, deepcopy(SE))
+        push!(𝒞ᵧ, deepcopy(SE))
 
         # Check whether the equilibrium state is reached
         δχ² = SC.χ² - SC.χ²min
@@ -360,19 +358,19 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Well, we have vectors for Θ and χ². We have to figure out the
     # optimized Θ and χ², and then extract the corresponding Monte
     # Carlo field configuration.
-    c = length(SC.𝒞ᵧ)
+    c = length(𝒞ᵧ)
     while c ≥ 1
         if SC.χ²vec[c] > SC.χ²min + 2.0 * sqrt(SC.χ²min)
             break
         end
         c = c - 1
     end
-    @assert 1 ≤ c ≤ length(SC.𝒞ᵧ)
+    @assert 1 ≤ c ≤ length(𝒞ᵧ)
 
     # Retrieve the Monte Carlo field configuration
-    @. SE.P = SC.𝒞ᵧ[c].P
-    SE.A = SC.𝒞ᵧ[c].A
-    SE.W = SC.𝒞ᵧ[c].W
+    @. SE.P = 𝒞ᵧ[c].P
+    SE.A = 𝒞ᵧ[c].A
+    SE.W = 𝒞ᵧ[c].W
 
     # Reset Θ
     SC.Θ = SC.Θvec[c]
