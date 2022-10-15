@@ -185,7 +185,7 @@ function run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     output_per_steps = get_a("ndump")
     measure_per_steps = 100
 
-    # Warmup the Monte Carlo engine 
+    # Warmup the Monte Carlo engine
     println("Start thermalization...")
     warmup(MC, SE, SC)
 
@@ -237,7 +237,7 @@ function prun(S::StochACSolver,
     output_per_steps = get_a("ndump")
     measure_per_steps = 100
 
-    # Warmup the Monte Carlo engine 
+    # Warmup the Monte Carlo engine
     println("Start thermalization...")
     warmup(MC, SE, SC)
 

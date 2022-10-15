@@ -137,7 +137,7 @@ end
 """
     HalfLorentzMesh(nmesh::I64, wmax::F64, 𝑝::F64 = 0.01)
 
-A constructor for the HalfLorentzMesh struct, which is announced 
+A constructor for the HalfLorentzMesh struct, which is announced
 in `src/types.jl`. The algorithm for generating a half-lorentzian
 mesh is taken from:
 
@@ -298,7 +298,7 @@ function nearest(am::AbstractMesh, r::F64)
     left = 1
     right = length(am)
     @assert am[left] ≤ val ≤ am[right]
-    
+
     while right - left ≥ 2
         mid = round(I64, (left + right) / 2)
         if val < am[mid]

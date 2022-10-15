@@ -187,7 +187,7 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     output_per_steps = get_k("ndump")
     measure_per_steps = 10
 
-    # Warmup the Monte Carlo engine 
+    # Warmup the Monte Carlo engine
     println("Start thermalization...")
     warmup(MC, SE, SC)
 
@@ -247,7 +247,7 @@ function prun(S::StochSKSolver,
     output_per_steps = get_k("ndump")
     measure_per_steps = 10
 
-    # Warmup the Monte Carlo engine 
+    # Warmup the Monte Carlo engine
     println("Start thermalization...")
     warmup(MC, SE, SC)
 
@@ -344,7 +344,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         SC.Θvec[i] = SC.Θ
         push!(SC.𝒞ᵧ, deepcopy(SE))
 
-        # Check whether the equilibrium state is reached 
+        # Check whether the equilibrium state is reached
         δχ² = SC.χ² - SC.χ²min
         @printf("step : %5i ", i)
         @printf("χ² - χ²min -> %12.6e\n", δχ²)
@@ -471,7 +471,7 @@ function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         SE.W = ceil(I64, SE.W / 1.5)
     end
 
-    # Update χ² with averaged χ² 
+    # Update χ² with averaged χ²
     SC.χ² = mean(bin_χ²)
 end
 
