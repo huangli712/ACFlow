@@ -1,6 +1,6 @@
 # Kernels
 
-*Define some kernel functions.*
+*Build kernel functions.*
 
 ## Contents
 
