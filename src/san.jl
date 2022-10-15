@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/15
+# Last modified: 2022/10/16
 #
 
 #=
@@ -330,7 +330,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     ratio = get_k("ratio")
 
     # To store the historic Monte Carlo field configurations
-    𝒞ᵧ = StochACElement[]
+    𝒞ᵧ = StochSKElement[]
 
     # Change the Θ parameter and approch the equilibrium state
     for i = 1:nwarm
