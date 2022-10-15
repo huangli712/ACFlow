@@ -650,21 +650,26 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     MC.Stry = ngamm
     @assert 1 < SE.W ≤ nfine
 
+    # Allocate memory for new correlator
+    Gₙ = zeros(F64, size(SC.Gᵧ))
+    ΔG = zeros(F64, size(SC.Gᵧ))
+
     for i = 1:ngamm
         # Choose single δ function
         s = rand(MC.rng, 1:ngamm)
-        pcurr = SE.P[s]
 
         # Evaluate new position for the δ function
+        pcurr = SE.P[s]
+        #
         if 1 < SE.W < nfine
             δW = rand(MC.rng, 1:SE.W)
-
+            #
             if rand(MC.rng) > 0.5
                 pnext = pcurr + δW
             else
                 pnext = pcurr - δW
             end
-
+            #
             pnext < 1     && (pnext = pnext + nfine)
             pnext > nfine && (pnext = pnext - nfine)
         else
@@ -677,15 +682,18 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         # Calculate the transition probability
         Knext = view(SC.kernel, :, pnext)
         Kcurr = view(SC.kernel, :, pcurr)
-        Gₙ = SC.Gᵧ + SE.A * (Knext - Kcurr)
-        χ²new = calc_goodness(Gₙ, SC.Gᵥ, SC.σ¹)
+        #
+        @. Gₙ = SC.Gᵧ + SE.A * (Knext - Kcurr)
+        @. ΔG = (Gₙ - SC.Gᵥ) * SC.σ¹
+        χ²new = dot(ΔG, ΔG)
+        #
         prob = exp( 0.5 * (SC.χ² - χ²new) / SC.Θ )
 
         # Important sampling, if true, the δ function is shifted and the
         # corresponding objects are updated.
         if rand(MC.rng) < min(prob, 1.0)
             SE.P[s] = pnext
-            SC.Gᵧ = Gₙ
+            @. SC.Gᵧ = Gₙ
             #
             SC.χ² = χ²new
             if χ²new < SC.χ²min
@@ -715,6 +723,10 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     MC.Ptry = ngamm
     @assert 1 < SE.W ≤ nfine
 
+    # Allocate memory for new correlator
+    Gₙ = zeros(F64, size(SC.Gᵧ))
+    ΔG = zeros(F64, size(SC.Gᵧ))
+
     for i = 1:ngamm
         # Choose a pair of δ functions
         s₁ = rand(MC.rng, 1:ngamm)
@@ -726,11 +738,11 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         # Evaluate new positions for the two δ functions
         pcurr₁ = SE.P[s₁]
         pcurr₂ = SE.P[s₂]
-
+        #
         if 1 < SE.W < nfine
             δW₁ = rand(MC.rng, 1:SE.W)
             δW₂ = rand(MC.rng, 1:SE.W)
-
+            #
             if rand(MC.rng) > 0.5
                 pnext₁ = pcurr₁ + δW₁
                 pnext₂ = pcurr₂ - δW₂
@@ -738,7 +750,7 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
                 pnext₁ = pcurr₁ - δW₁
                 pnext₂ = pcurr₂ + δW₂
             end
-
+            #
             pnext₁ < 1     && (pnext₁ = pnext₁ + nfine)
             pnext₁ > nfine && (pnext₁ = pnext₁ - nfine)
             pnext₂ < 1     && (pnext₂ = pnext₂ + nfine)
@@ -757,8 +769,11 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         Kcurr₁ = view(SC.kernel, :, pcurr₁)
         Knext₂ = view(SC.kernel, :, pnext₂)
         Kcurr₂ = view(SC.kernel, :, pcurr₂)
-        Gₙ = SC.Gᵧ + SE.A * (Knext₁ - Kcurr₁ + Knext₂ - Kcurr₂)
-        χ²new = calc_goodness(Gₙ, SC.Gᵥ, SC.σ¹)
+        #
+        @. Gₙ = SC.Gᵧ + SE.A * (Knext₁ - Kcurr₁ + Knext₂ - Kcurr₂)
+        @. ΔG = (Gₙ - SC.Gᵥ) * SC.σ¹
+        χ²new = dot(ΔG, ΔG)
+        #
         prob = exp( 0.5 * (SC.χ² - χ²new) / SC.Θ )
 
         # Important sampling, if true, the δ function is shifted and the
@@ -766,7 +781,7 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         if rand(MC.rng) < min(prob, 1.0)
             SE.P[s₁] = pnext₁
             SE.P[s₂] = pnext₂
-            SC.Gᵧ = Gₙ
+            @. SC.Gᵧ = Gₙ
             #
             SC.χ² = χ²new
             if χ²new < SC.χ²min
