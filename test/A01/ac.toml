@@ -1,7 +1,9 @@
 #
 # Test: A01
 #
-# Please change solver to choose your favorite algorithm.
+# 1. Change [BASE] -> solver (MaxEnt or StochOM).
+# 2. Change the [MaxEnt] -> method (chi2kink or bryan).
+# 3. execute ../../util/acrun.jl ac.toml.
 #
 
 [BASE]
