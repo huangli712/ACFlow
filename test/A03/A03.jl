@@ -9,6 +9,9 @@ welcome()
 # For MaxEnt solver
 
 # Setup parameters
+#
+# For [BASE] block
+# See types.jl/_PBASE for default setup
 B = Dict{String,Any}(
     "finput" => "siw.inp",
     "mtype"  => "2lorentz",
@@ -19,6 +22,8 @@ B = Dict{String,Any}(
     "pmodel" => [2.0, -5.0, 5.0],
 )
 #
+# For [MaxEnt] block
+# See types.jl/_PMaxEnt for default setup
 S = Dict{String,Any}(
     "nalph"  => 15,
     "alpha"  => 1e12,
@@ -37,10 +42,15 @@ cp("repr.data", "repr.mem.data", force = true)
 # For StochOM solver
 
 # Setup parameters
+#
+# For [BASE] block
+# See types.jl/_PBASE for default setup
 B = Dict{String,Any}(
     "solver" => "StochOM"
 )
 #
+# For [StochOM] block
+# See types.jl/_PStochOM for default setup
 S = Dict{String,Any}(
     "ntry"   => 100000
 )
