@@ -73,7 +73,7 @@ cp("repr.data", "repr.mem2.data", force = true)
 # Calculate final self-energy function on real axis
 #
 # Construct final self-energy function
-Σout = mesh.mesh - 1.0 ./ Gout
+Σout = mesh - 1.0 ./ Gout
 #
 # Write self-energy function
 open("sigma.mem2.data", "w") do fout
@@ -112,7 +112,7 @@ cp("repr.data", "repr.som.data", force = true)
 # Calculate final self-energy function on real axis
 #
 # Construct final self-energy function
-Σout = mesh.mesh - 1.0 ./ Gout
+Σout = mesh - 1.0 ./ Gout
 #
 # Write self-energy function
 open("sigma.som.data", "w") do fout
