@@ -34,7 +34,7 @@
     * Fixed error bar
 
 * **A05**
-    * Fermionic + Matsubara (Auxiliary green's function)
+    * Fermionic + Matsubara (Auxiliary Green's function)
     * MaxEnt solver (chi2kink algorithm + preblur)
     * StochOM solver
     * Gaussian model
