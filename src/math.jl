@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/13
+# Last modified: 2022/10/16
 #
 
 #=
@@ -922,7 +922,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T} whe
     #
     Λₘ = 1e+16 # minimum trust region radius
     λₘ = 1e-16 # maximum trust region radius
-    λ  = T(10) # (inverse of) initial trust region radius
+    λ  = eltype(x₀)(10) # (inverse of) initial trust region radius
     λᵢ = 10.0  # λ is multiplied by this factor after step below min quality
     λᵣ = 0.10  # λ is multiplied by this factor after good quality steps
     #
