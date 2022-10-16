@@ -7,9 +7,9 @@
 
 [BASE]
 finput = "chit.data"
-solver = "StochAC"
+solver = "MaxEnt"
 ktype  = "bsymm"
-mtype  = "flat"
+mtype  = "risedecay"
 grid   = "btime"
 mesh   = "halflorentz"
 ngrid  = 1000
