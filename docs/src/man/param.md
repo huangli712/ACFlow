@@ -35,7 +35,7 @@ Depth = 3
 
 *Definition:*
 
-> This parameter specifies the solvers that used to solve the analytical continuation problem. Now **ACFlow.jl** supports four different solvers. They are as follows:
+> This parameter specifies the solvers that used to solve the analytical continuation problem. Now **ACFlow** supports four different solvers. They are as follows:
 >
 > * MaxEnt
 > * StochAC
@@ -66,7 +66,7 @@ Depth = 3
 
 *Definition:*
 
-> It denotes the type of kernel functions. Now **ACFlow.jl** supports three types of kernel functions. They are:
+> It denotes the type of kernel functions. Now **ACFlow** supports three types of kernel functions. They are:
 >
 > * fermi
 > * boson
@@ -90,7 +90,7 @@ Depth = 3
 
 *Definition:*
 
-> It denotes the type of default model functions. Now **ACFlow.jl** supports the following choices:
+> It denotes the type of default model functions. Now **ACFlow** supports the following choices:
 >
 > * flat
 > * gauss
@@ -119,7 +119,7 @@ Depth = 3
 
 *Definition:* 
 
-> This parameter specifies the grid's type for input data in imaginary axis. Now **ACFlow.jl** supports the following choices:
+> This parameter specifies the grid's type for input data in imaginary axis. Now **ACFlow** supports the following choices:
 >
 > * ftime
 > * btime
@@ -144,7 +144,7 @@ Depth = 3
 
 *Definition:*
 
-> This parameter specifies the mesh's type for output data (usually the spectral functions) in real axis. Now **ACFlow.jl** supports the following choices:
+> This parameter specifies the mesh's type for output data (usually the spectral functions) in real axis. Now **ACFlow** supports the following choices:
 >
 > * linear
 > * tangent
