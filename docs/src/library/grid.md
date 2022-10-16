@@ -2,7 +2,7 @@
 
 *Grids on imaginary axis.*
 
-In the **ACFlow.jl** package, the input correlators are defined on `grid`, while the calculated spectral functions are defined on `mesh`. The **ACFlow.jl** package supports both imaginary-time and Matsubara frequency grids.
+In the **ACFlow** package, the input correlators are defined on `grid`, while the calculated spectral functions are defined on `mesh`. The **ACFlow** package supports both imaginary-time and Matsubara frequency grids.
 
 ## Contents
 
