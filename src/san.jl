@@ -387,7 +387,7 @@ end
 Perform Monte Carlo sweeps and sample the field configurations.
 """
 function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
-    if rand(MC.rng) > 0.95
+    if rand(MC.rng) < 0.95
         try_move_s(MC, SE, SC)
     else
         try_move_p(MC, SE, SC)
@@ -430,10 +430,10 @@ function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     retry = get_k("retry")
     max_bin_size = 100 # You can increase it to improve the accuracy
 
-    # Allocate memory
-    bin_χ²  = zeros(F64, max_bin_size)
-    bin_acc = zeros(I64, max_bin_size)
-    bin_try = zeros(I64, max_bin_size)
+    # Announce counters
+    bin_χ²  = 0.0
+    bin_acc = 0.0
+    bin_try = 0.0
 
     # Perform Monte Carlo sweeping
     for s = 1:max_bin_size
@@ -445,16 +445,16 @@ function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         sample(MC, SE, SC)
 
         # Update the counters
-        bin_χ²[s]  = SC.χ²
-        bin_acc[s] = MC.Sacc + MC.Pacc
-        bin_try[s] = MC.Stry + MC.Ptry
+        bin_χ² = bin_χ² + SC.χ²
+        bin_acc = bin_acc + (MC.Sacc + MC.Pacc)
+        bin_try = bin_try + (MC.Stry + MC.Ptry)
     end
 
     # Calculate the transition probability, and then adjust the window,
     # which restricts the movement of the δ functions.
     #
     # The transition probability will be kept around 0.5.
-    𝑝 = sum(bin_acc) / sum(bin_try)
+    𝑝 = bin_acc / bin_try
     #
     if 𝑝 > 0.5
         r = SE.W * 1.5
@@ -470,7 +470,7 @@ function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     end
 
     # Update χ² with averaged χ²
-    SC.χ² = mean(bin_χ²)
+    SC.χ² = bin_χ² / max_bin_size
 end
 
 #=
