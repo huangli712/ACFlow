@@ -12,6 +12,9 @@ welcome()
 # For diagonal elements: green.11.data
 
 # Setup parameters
+#
+# For [BASE] block
+# See types.jl/_PBASE for default setup
 B = Dict{String,Any}(
     "finput" => "giw.11.data",
     "mtype"  => "gauss",
@@ -22,6 +25,8 @@ B = Dict{String,Any}(
     "beta"   => 40.0,
 )
 #
+# For [MaxEnt] block
+# See types.jl/_PMaxEnt for default setup
 S = Dict{String,Any}(
     "nalph"  => 28,
     "alpha"  => 1e18,
@@ -40,10 +45,15 @@ cp("repr.data", "repr.11.data", force = true)
 # For diagonal elements: green.22.data
 
 # Setup parameters
+#
+# For [BASE] block
+# See types.jl/_PBASE for default setup
 B = Dict{String,Any}(
     "finput" => "giw.22.data",
 )
 #
+# For [MaxEnt] block
+# See types.jl/_PMaxEnt for default setup
 S = Dict{String,Any}(
 )
 #
@@ -69,12 +79,17 @@ open("model.inp", "w") do fout
 end
 
 # Setup parameters
+#
+# For [BASE] block
+# See types.jl/_PBASE for default setup
 B = Dict{String,Any}(
     "finput" => "giw.12.data",
     "mtype"  => "file",
     "offdiag"=> true,
 )
 #
+# For [MaxEnt] block
+# See types.jl/_PMaxEnt for default setup
 S = Dict{String,Any}(
     "nalph"  => 30,
     "alpha"  => 1e15,
