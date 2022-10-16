@@ -1,14 +1,14 @@
-# ACFlow.jl
+# ACFlow
 
 *A full-fledged analytical continuation package in Julia*
 
 !!! note
 
-    Thank you for using **ACFlow.jl**. This documentation will help you to be familiar with and use **ACFlow.jl**.
+    Thank you for using **ACFlow**. This documentation will help you to be familiar with and use **ACFlow**.
 
 !!! warning
 
-    The **ACFlow.jl** package is in heavy development. Please use it at your own risk.
+    The **ACFlow** package is in heavy development. Please use it at your own risk.
 
 ## Manual
 
