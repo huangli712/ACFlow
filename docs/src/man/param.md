@@ -13,7 +13,7 @@ Depth = 3
 
     This block is mandatory. The parameters in this block is valid for all the solvers.
 
-### finput
+### [finput](@id finput)
 
 *Definition:*
 
@@ -25,13 +25,13 @@ Depth = 3
 
 *Example:*
 
-> finput = "gtau.inp"
+> finput = "gtau.data"
 
 *Comment:*
 
 > This parameter is mandatory.
 
-### solver
+### [solver](@id solver)
 
 *Definition:*
 
@@ -62,7 +62,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### ktype
+### [ktype](@id ktype)
 
 *Definition:*
 
@@ -72,7 +72,7 @@ Depth = 3
 > * boson
 > * bsymm
 >
-> Here, `fermi` means fermionic kernel, `boson` means bosonic kernel, and `bsymm` means symmetric bosonic kernel. 
+> Here, `fermi` means fermionic kernel, `boson` means bosonic kernel, and `bsymm` means symmetric bosonic kernel. As for detailed formula for these kernel functions, please refer to `src/kernel.jl`.
 
 *Type:*
 
@@ -86,7 +86,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### mtype
+### [mtype](@id mtype)
 
 *Definition:*
 
@@ -100,8 +100,13 @@ Depth = 3
 > * 1lorentz
 > * 2lorentz
 > * risedecay
+> * file
 >
-> Here, `flat` means the flat model (i.e, constant), `gauss` means the Gaussian model, `1gauss` means the Shifted Gaussian model, `2gauss` means the Two Gaussian model, `lorentz` means the Lorentzian model, `1lorentz` means the Shifted Lorentzian model, `2lorentz` means the Two Lorentzian model, and `risedecay` means the Rise-And-Decay model. As for detailed formula for these models, please refer to `src/model.jl`.
+> Here, `flat` means the flat model (i.e, constant), `gauss` means the Gaussian model, `1gauss` means the Shifted Gaussian model, `2gauss` means the Two Gaussian model, `lorentz` means the Lorentzian model, `1lorentz` means the Shifted Lorentzian model, `2lorentz` means the Two Lorentzian model, and `risedecay` means the Rise-And-Decay model.
+>
+> Especially, if `mtype = "file"`, then the default model function is encoded in `model.inp`. **ACFlow** will read this file and initialize the default model function automatically. Be careful, the mesh for this model function must be consistent with the one used in the analytical continuation calculations. 
+>
+> As for detailed formula for these models, please refer to `src/model.jl`.
 
 *Type:*
 
@@ -165,7 +170,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. See also [`nmesh`](@ref nmesh).
 
 ### [ngrid](@id ngrid)
 
@@ -185,7 +190,7 @@ Depth = 3
 
 > This parameter is mandatory. It must be compatible with the input data. See also [`grid`](@ref grid).
 
-### nmesh
+### [nmesh](@id nmesh)
 
 *Definition:*
 
@@ -201,7 +206,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. See also [`mesh`](@ref mesh).
 
 ### wmax
 
