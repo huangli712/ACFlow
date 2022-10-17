@@ -1,8 +1,12 @@
 #
 # Test: T02
 #
-# Please change solver to choose your favorite algorithm.
-# If solver = "StochAC", mtype must be set to "flat".
+# 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK or StochOM).
+# 2. If [BASE] -> solver is StochAC, [BASE] -> mtype must be flat.
+# 3. If [BASE] -> solver is StochAC or StochSK, [BASE] -> grid must be ftime.
+# 4. If [BASE] -> solver is StochOM, [BASE] -> grid must be ffreq.
+# 5. [BASE] -> finput must be compatible with [BASE] -> grid.
+# 6. Execute ../../util/acrun.jl ac.toml.
 #
 
 [BASE]
