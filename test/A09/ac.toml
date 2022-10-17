@@ -22,7 +22,7 @@ offdiag = false
 exclude = [[-8.0,-4.0],[4.0,8.0]]
 
 [MaxEnt]
-method = "chi2kink"
+method = "bryan"
 nalph  = 12
 alpha  = 500.0
 ratio  = 1.1
