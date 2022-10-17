@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/17
+# Last modified: 2022/10/18
 #
 
 #=
@@ -107,24 +107,22 @@ function solve(S::StochSKSolver, rd::RawData)
         #
         # Average the solutions
         Aout = zeros(F64, nmesh)
-        Θout = zeros(F64, nwarm)
         χ²out = zeros(F64, nwarm)
+        Θout = zeros(F64, nwarm)
         for i in eachindex(sol)
             a, b, c = sol[i]
             @. Aout = Aout + a / nworkers()
-            @. Θout = Θout + b / nworkers()
-            @. χ²out = χ²out + c / nworkers()
+            @. χ²out = χ²out + b / nworkers()
+            @. Θout = Θout + c / nworkers()
         end
-        @. SC.Θvec = Θout
-        @. SC.χ²vec = χ²out
         #
         # Postprocess the solutions
-        Gout = last(SC, Aout)
+        Gout = last(SC, Aout, χ²out, Θout)
 
     # Sequential version
     else
-        Aout = run(MC, SE, SC)
-        Gout = last(SC, Aout)
+        Aout, χ²out, Θout  = run(MC, SE, SC)
+        Gout = last(SC, Aout, χ²out, Θout)
 
     end
 
