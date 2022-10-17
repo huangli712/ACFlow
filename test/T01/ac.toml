@@ -2,14 +2,14 @@
 # Test: T01
 #
 # 1. Execute iQIST to generate solver.grn.dat (Using solver.ctqmc.in).
-# 2. Copy solver.grn.dat to giw.inp.
-# 3. Postprocess giw.inp (Keep the first 20 lines, remove the 1st column).
-# 4. You can use the script gendata.jl to prepare giw.inp as well.
+# 2. Copy solver.grn.dat to giw.data.
+# 3. Postprocess giw.data (Keep the first 20 lines, remove the 1st column).
+# 4. You can use the script gendata.jl to prepare giw.data as well.
 # 5. Execute ../../util/acrun.jl ac.toml.
 #
 
 [BASE]
-finput = "giw.inp"
+finput = "giw.data"
 solver = "MaxEnt"
 ktype  = "fermi"
 mtype  = "flat"

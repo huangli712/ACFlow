@@ -14,7 +14,7 @@ giw  = dlm[1:ngrid,3] + im * dlm[1:ngrid,4]
 err  = dlm[1:ngrid,5] + im * dlm[1:ngrid,6]
 
 # Write green's function
-open("giw.inp", "w") do fout
+open("giw.data", "w") do fout
     for i in eachindex(grid)
         zg = giw[i]
         ze = err[i]
@@ -30,7 +30,7 @@ siw  = dlm[1:ngrid,3] + im * dlm[1:ngrid,4]
 err  = dlm[1:ngrid,5] + im * dlm[1:ngrid,6]
 
 # Write self-energy function
-open("siw.inp", "w") do fout
+open("siw.data", "w") do fout
     for i in eachindex(grid)
         zs = siw[i]
         ze = err[i]

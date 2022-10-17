@@ -11,7 +11,7 @@ welcome()
 # Deal with self-energy function
 #
 # Read self-energy function
-dlm = readdlm("siw.inp")
+dlm = readdlm("siw.data")
 #
 # Get grid
 grid = dlm[:,1]
