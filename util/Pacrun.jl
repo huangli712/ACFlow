@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 
 using Distributed
-addprocs(4)
+addprocs(8)
 
 @everywhere push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
