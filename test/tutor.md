@@ -19,6 +19,7 @@
     * Flat model
     * Linear mesh
     * Fixed error bar
+    * Standard mode
 
 * **T03**
     * Bosonic + Matsubara + Imaginary time
@@ -30,3 +31,4 @@
     * Flat model
     * Half-Lorentzian mesh
     * Fixed error bar
+    * Standard mode
