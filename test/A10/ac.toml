@@ -1,8 +1,9 @@
 #
 # Test: A10
 #
-# Please change solver to choose your favorite algorithm.
-# If solver = "StochAC", mtype must be set to "flat".
+# 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK).
+# 2. If [BASE] -> solver is StochAC, [BASE] -> mtype must be flat.
+# 3. execute ../../util/acrun.jl ac.toml.
 #
 
 [BASE]
