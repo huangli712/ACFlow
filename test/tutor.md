@@ -6,6 +6,8 @@
     * MaxEnt solver (chi2kink algorithm)
     * Flat model + Gaussian model
     * Linear mesh + Tangent mesh
+    * Standard mode
+    * Script mode
 
 * **T02**
     * Fermionic + Matsubara + Imaginary time
