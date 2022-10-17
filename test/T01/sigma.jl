@@ -27,6 +27,9 @@ grid = dlm[:,1]
 # For MaxEnt solver
 
 # Setup parameters
+#
+# For [BASE] block
+# See types.jl/_PBASE for default setup
 B = Dict{String,Any}(
     "mtype"  => "gauss",
     "mesh"   => "tangent",
@@ -37,6 +40,8 @@ B = Dict{String,Any}(
     "beta"   => 10.0,
 )
 #
+# For [MaxEnt] block
+# See types.jl/_PMaxEnt for default setup
 S = Dict{String,Any}(
     "nalph"  => 15,
     "alpha"  => 1e12,
