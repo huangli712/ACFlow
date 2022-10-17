@@ -382,7 +382,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. Only the `chi2kink` algorithm needs this parameter to control the number of ``\alpha`` parameters.
 
 ### alpha
 
