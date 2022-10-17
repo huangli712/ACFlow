@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/16
+# Last modified: 2022/10/17
 #
 
 #=
@@ -78,6 +78,7 @@ continuation algorithm (A. W. Sandvik's version).
 """
 function solve(S::StochSKSolver, rd::RawData)
     nmesh = get_b("nmesh")
+    nwarm = get_k("nwarm")
 
     println("[ StochSK ]")
     MC, SE, SC = init(S, rd)
@@ -106,10 +107,16 @@ function solve(S::StochSKSolver, rd::RawData)
         #
         # Average the solutions
         Aout = zeros(F64, nmesh)
+        Θout = zeros(F64, nwarm)
+        χ²out = zeros(F64, nwarm)
         for i in eachindex(sol)
-            a = sol[i]
+            a, b, c = sol[i]
             @. Aout = Aout + a / nworkers()
+            @. Θout = Θout + b / nworkers()
+            @. χ²out = χ²out + c / nworkers()
         end
+        @. SC.Θvec = Θout
+        @. SC.χ²vec = χ²out
         #
         # Postprocess the solutions
         Gout = last(SC, Aout)
@@ -285,21 +292,25 @@ continuation simulations. It will generate the spectral functions.
 function average(step::F64, SC::StochSKContext)
     SC.Aout = SC.Aout ./ (step * SC.mesh.weight)
 
-    return SC.Aout
+    return SC.Aout, SC.χ²vec, SC.Θvec
 end
 
 """
-    last(SC::StochSKContext, Asum::Vector{F64})
+    last(SC::StochSKContext,
+         Asum::Vector{F64},
+         χ²vec::Vector{F64}, Θvec::Vector{F64})
 
 It will process and write the calculated results by the StochSK solver,
 including final spectral function and reproduced correlator.
 """
-function last(SC::StochSKContext, Asum::Vector{F64})
+function last(SC::StochSKContext,
+              Asum::Vector{F64},
+              χ²vec::Vector{F64}, Θvec::Vector{F64})
     # Write final spectral function
     write_spectrum(SC.mesh, Asum)
 
     # Write Θ-dependent goodness function
-    write_goodness(SC.Θvec, SC.χ²vec)
+    write_goodness(Θvec, χ²vec)
 
     # Reproduce input data and write them
     kernel = make_kernel(SC.mesh, SC.grid)
