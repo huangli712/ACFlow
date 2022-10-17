@@ -1,7 +1,10 @@
 #
 # Test: T01
 #
-# Please change solver to choose your favorite algorithm.
+# 1. Execute iQIST to generate solver.grn.dat (Using solver.ctqmc.in).
+# 2. Copy solver.grn.dat to giw.inp.
+# 3. Postprocess giw.inp (Keep the first 20 lines, remove the 1st column).
+# 4. Execute ../../util/acrun.jl ac.toml.
 #
 
 [BASE]
