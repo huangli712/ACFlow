@@ -10,7 +10,7 @@ using ACFlow
 wmin = +0.0  # Left boundary
 wmax = +8.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
-ntau = 1000  # Number of imaginary time points
+ntau = 501   # Number of imaginary time points
 beta = 5.00  # Inverse temperature
 ϵ₁   = 1.00  # Parameters for gaussian peaks
 ϵ₂   = -1.0
