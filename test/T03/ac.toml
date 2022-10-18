@@ -5,7 +5,7 @@
 # 2. If [BASE] -> solver is StochAC, [BASE] -> mtype must be flat.
 # 3. If [BASE] -> solver is StochAC or StochSK, [BASE] -> grid must be btime.
 # 4. If [BASE] -> solver is StochOM, [BASE] -> grid must be bfreq.
-# 5. [BASE] -> finput must be compatible with [BASE] -> grid.
+# 5. [BASE] -> finput must be compatible with [BASE] -> grid and [BASE] -> ngrid.
 # 6. Execute ../../util/acrun.jl ac.toml.
 #
 
