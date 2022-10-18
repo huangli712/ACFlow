@@ -1,5 +1,7 @@
 # Parameters
 
+The official configuration file for the **ACFlow** package is `case.toml`. This page describes all the valid parameters that can appear in `case.toml`.
+
 ## Contents
 
 ```@contents
@@ -103,6 +105,8 @@ Depth = 3
 > * file
 >
 > Here, `flat` means the flat model (i.e, constant), `gauss` means the Gaussian model, `1gauss` means the Shifted Gaussian model, `2gauss` means the Two Gaussian model, `lorentz` means the Lorentzian model, `1lorentz` means the Shifted Lorentzian model, `2lorentz` means the Two Lorentzian model, and `risedecay` means the Rise-And-Decay model.
+>
+> Besides `flat` and `file`, all the other model functions need additional parameters to customize them. The parameters can be specified by the [`pmodel`](@ref pmodel) parameter.
 >
 > Especially, if `mtype = "file"`, then the default model function is encoded in `model.inp`. **ACFlow** will read this file and initialize the default model function automatically. Be careful, the mesh for this model function must be consistent with the one used in the analytical continuation calculations. 
 >
