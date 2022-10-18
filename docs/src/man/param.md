@@ -11,13 +11,13 @@ Depth = 3
 
 !!! note
 
-    This block is mandatory. The parameters in this block is valid for all the solvers.
+    This block is mandatory. The parameters in this block is useful for all the solvers.
 
 ### [finput](@id finput)
 
 *Definition:*
 
-> Filename for the input data. The input data should be saved in a column-wised and formated (CSV-like) text file.
+> Filename for the input data. The input data should be stored in a column-wised and formated (CSV-like) text file.
 
 *Type:*
 
