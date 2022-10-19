@@ -78,33 +78,38 @@ Depth = 3
 >
 > Here, `fermi` means fermionic kernel function, which reads
 >
-> ```math
-> K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}},
-> ```
+> !!! info (math)
+>     ```math
+>     K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}},
+>     ```
 >
 > and
 >
-> ```math
-> K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega}.
-> ```
+> !!! info [math]
+>     ```math
+>     K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega}.
+>     ```
 >
 > `boson` means bosonic kernel function, which reads
 >
-> ```math
-> K(\tau,\omega) = \frac{\omega e^{-\tau\omega}}{1 - e^{-\beta\omega}},
-> ```
+> !!! info [math]
+>     ```math
+>     K(\tau,\omega) = \frac{\omega e^{-\tau\omega}}{1 - e^{-\beta\omega}},
+>     ```
 >
 > and
 >
-> ```math
-> K(\omega_n,\omega) = \frac{\omega}{i\omega_n - \omega}.
-> ```
+> !!! info [math]
+>     ```math
+>     K(\omega_n,\omega) = \frac{\omega}{i\omega_n - \omega}.
+>     ```
 >
 > `bsymm` means symmetric bosonic kernel function, which reads
 >
-> ```math
-> K(\tau,\omega) = \frac{\omega [e^{-\tau\omega} + e^{-(\beta - \tau)\omega}]} {2(1 - e^{-\beta\omega})},
-> ```
+> !!! info [math]
+>     ```math
+>     K(\tau,\omega) = \frac{\omega [e^{-\tau\omega} + e^{-(\beta - \tau)\omega}]} {2(1 - e^{-\beta\omega})},
+>     ```
 >
 > and
 >
