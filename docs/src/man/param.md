@@ -1,6 +1,8 @@
 # Parameters
 
-The official configuration file for the **ACFlow** package is `case.toml`. This page describes all the valid parameters that can appear in `case.toml`.
+*A dictionary about parameters*
+
+The official configuration file for the **ACFlow** package is `case.toml`. This page describes all the valid parameters that can appear in `case.toml`. As for the format of `case.toml`, please click [`case.toml`](input.md).
 
 ## Contents
 
