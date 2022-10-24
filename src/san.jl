@@ -603,11 +603,14 @@ function calc_theta(len::I64, SC::StochSKContext)
     function fitfun(x, p)
         return @. p[1] + p[2] / (1.0 + exp(-p[4] * (x - p[3])))
     end
-    
+
+    # Which algorithm is prefered ?
     method = get_k("method")
 
+    # Get length of Θ and χ² vectors 
     c = len
 
+    # `chi2min` algorithm, proposed by Shao and Sandvik
     if method == "chi2min"
         while c ≥ 1
             if SC.χ²vec[c] > SC.χ²min + 2.0 * sqrt(SC.χ²min)
@@ -617,6 +620,8 @@ function calc_theta(len::I64, SC::StochSKContext)
         end
     end
 
+    # `chi2kink` algorithm, inspired by the `chi2kink` algorithm
+    # used in MaxEnt solver
     if method == "chi2kink"
         guess = [0.0, 5.0, 2.0, 0.0]
         fit = curve_fit(fitfun, log10.(SC.Θvec[1:c]), log10.(SC.χ²vec[1:c]), guess)
