@@ -39,6 +39,7 @@ alpha = 1.00
 ratio = 1.20
 
 [StochSK]
+method = "chi2min"
 nfine = 40000
 ngamm = 1000
 nwarm = 1000
