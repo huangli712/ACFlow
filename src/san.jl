@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/18
+# Last modified: 2022/10/24
 #
 
 #=
@@ -367,13 +367,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Well, we have vectors for Θ and χ². We have to figure out the
     # optimized Θ and χ², and then extract the corresponding Monte
     # Carlo field configuration.
-    c = length(𝒞ᵧ)
-    while c ≥ 1
-        if SC.χ²vec[c] > SC.χ²min + 2.0 * sqrt(SC.χ²min)
-            break
-        end
-        c = c - 1
-    end
+    c = calc_theta(length(𝒞ᵧ), SC)
     @assert 1 ≤ c ≤ length(𝒞ᵧ)
 
     # Retrieve the Monte Carlo field configuration
@@ -597,6 +591,23 @@ See also: [`calc_correlator`](@ref).
 function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
     χ = sum( ( (Gₙ .- Gᵥ) .* σ¹ ) .^ 2.0 )
     return χ
+end
+
+"""
+    calc_theta(len::I64, SC::StochSKContext)
+
+Try to locate the optimal Θ and χ². This function implements the `chi2min`
+algorithm which is proposed by Shao and Sandvik.
+"""
+function calc_theta(len::I64, SC::StochSKContext)
+    c = len
+    while c ≥ 1
+        if SC.χ²vec[c] > SC.χ²min + 2.0 * sqrt(SC.χ²min)
+            break
+        end
+        c = c - 1
+    end
+    return c
 end
 
 """
