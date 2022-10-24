@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/09
+# Last modified: 2022/10/24
 #
 
 """
@@ -654,6 +654,7 @@ init_iodata    -> Preprocess the input data.
 calc_fmesh     -> Build dense linear mesh in [wmin,wmax].
 calc_correlator-> Calculate correlator function from field configuration.
 calc_goodness  -> Calculate χ² function.
+calc_theta     -> Search optimal Θ.
 constraints    -> Limit the position of δ functions.
 #
 try_move_s     -> Try to shift the position of one δ function.
@@ -686,6 +687,7 @@ export init_iodata
 export calc_fmesh
 export calc_correlator
 export calc_goodness
+export calc_theta
 export constraints
 #
 export try_move_s
