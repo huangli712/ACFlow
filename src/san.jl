@@ -597,16 +597,25 @@ end
     calc_theta(len::I64, SC::StochSKContext)
 
 Try to locate the optimal Θ and χ². This function implements the `chi2min`
-algorithm (proposed by Shao and Sandvik) and `chi2kink` algorithm.
+and `chi2kink` algorithms.
 """
 function calc_theta(len::I64, SC::StochSKContext)
+    method = get_k("method")
+
     c = len
-    while c ≥ 1
-        if SC.χ²vec[c] > SC.χ²min + 2.0 * sqrt(SC.χ²min)
-            break
+
+    if method == "chi2min"
+        while c ≥ 1
+            if SC.χ²vec[c] > SC.χ²min + 2.0 * sqrt(SC.χ²min)
+                break
+            end
+            c = c - 1
         end
-        c = c - 1
     end
+
+    if method == "chi2kink"
+    end
+
     return c
 end
 
