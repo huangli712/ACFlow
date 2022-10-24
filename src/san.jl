@@ -600,6 +600,10 @@ Try to locate the optimal Θ and χ². This function implements the `chi2min`
 and `chi2kink` algorithms.
 """
 function calc_theta(len::I64, SC::StochSKContext)
+    function fitfun(x, p)
+        return @. p[1] + p[2] / (1.0 + exp(-p[4] * (x - p[3])))
+    end
+    
     method = get_k("method")
 
     c = len
@@ -614,6 +618,13 @@ function calc_theta(len::I64, SC::StochSKContext)
     end
 
     if method == "chi2kink"
+        guess = [0.0, 5.0, 2.0, 0.0]
+        fit = curve_fit(fitfun, log10.(SC.Θvec[1:c]), log10.(SC.χ²vec[1:c]), guess)
+        _, _, a, b = fit.param
+        #        
+        fit_pos = 2.5
+        Θ_opt = a - fit_pos / b
+        c = argmin( abs.( log10.(SC.Θvec[1:c]) .- Θ_opt ) )
     end
 
     return c
