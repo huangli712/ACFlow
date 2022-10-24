@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/06
+# Last modified: 2022/10/24
 #
 
 #=
@@ -133,6 +133,7 @@ Dictionary for configuration parameters:
 the stochastic analytical continuation method (A. W. Sandvik's version).
 """
 const PStochSK = Dict{String,ADT}(
+    "method"  => [missing, 1, :String, "How to determine the optimized Θ parameter"],
     "nfine"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
     "ngamm"   => [missing, 1, :I64   , "Number of δ functions"],
     "nwarm"   => [missing, 1, :I64   , "Number of Monte Carlo warmup steps"],
@@ -145,6 +146,7 @@ const PStochSK = Dict{String,ADT}(
 
 # Default parameters for PStochSK
 const _PStochSK= Dict{String,Any}(
+    "method"  => "chi2min",
     "nfine"   => 100000,
     "ngamm"   => 1000,
     "nwarm"   => 1000,
