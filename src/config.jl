@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/17
+# Last modified: 2022/10/24
 #
 
 """
@@ -327,6 +327,7 @@ function chk_dict()
             push!(PA, PStochAC)
             @assert get_b("mtype") == "flat"
             @assert get_b("grid") in ("ftime", "btime")
+            #
             @assert get_a("nfine") ≥ 1000
             @assert get_a("ngamm") ≥ 100
             @assert get_a("nwarm") ≥ 100
@@ -340,6 +341,8 @@ function chk_dict()
         @case "StochSK"
             push!(PA, PStochSK)
             @assert get_b("grid") in ("ftime", "btime")
+            #
+            @assert get_k("method") in ("chi2min", "chi2kink")
             @assert get_k("nfine") ≥ 10000
             @assert get_k("ngamm") ≥ 1000
             @assert get_k("nwarm") ≥ 1000
