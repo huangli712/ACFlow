@@ -8,7 +8,7 @@
 
 [BASE]
 finput = "gtau.data"
-solver = "StochSK"
+solver = "MaxEnt"
 ktype  = "fermi"
 mtype  = "2gauss"
 grid   = "ftime"
