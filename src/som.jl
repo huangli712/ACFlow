@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/16
+# Last modified: 2022/10/26
 #
 
 #=
@@ -746,7 +746,7 @@ Try to calculate χ². Here `Gᵥ` and `σ¹` denote the raw correlator and
 related standard deviation. `G` means the reproduced correlator.
 """
 function calc_error(G::Vector{F64}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
-    return sum( abs.((G .- Gᵥ) .* σ¹) )
+    return sum( ( (G .- Gᵥ) .* σ¹ ) .^ 2.0 ) / length(G)
 end
 
 """
