@@ -10,6 +10,14 @@
     * Script mode
 
 * **T02**
+    * Fermionic + Matsubara
+    * StochOM solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Standard mode
+
+* **T03**
     * Fermionic + Matsubara + Imaginary time
     * Green's function
     * MaxEnt solver (chi2kink algorithm)
@@ -21,7 +29,7 @@
     * Fixed error bar
     * Standard mode
 
-* **T03**
+* **T04**
     * Bosonic + Matsubara + Imaginary time
     * Optical conductivity
     * MaxEnt solver (chi2kink algorithm)
