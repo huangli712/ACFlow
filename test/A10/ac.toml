@@ -1,6 +1,7 @@
 #
 # Test: A10
 #
+# 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK).
 # 2. If [BASE] -> solver is StochAC, [BASE] -> mtype must be flat.
 # 3. Execute ../../util/acrun.jl ac.toml.
