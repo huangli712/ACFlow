@@ -1,6 +1,7 @@
 #
 # Test: A06
 #
+# 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or StochOM).
 # 2. Change the [MaxEnt] -> method (chi2kink or bryan).
 # 3. Execute ../../util/acrun.jl ac.toml.
