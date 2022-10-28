@@ -1,6 +1,7 @@
 #
 # Test: T02
 #
+# 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK or StochOM).
 # 2. If [BASE] -> solver is StochAC, [BASE] -> mtype must be flat.
 # 3. If [BASE] -> solver is StochAC or StochSK, [BASE] -> grid must be ftime.
