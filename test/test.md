@@ -1,5 +1,7 @@
 # Summary of internal tests
 
+*Please run the gendata.jl script in every folder to generate input data at first.*
+
 * **A01**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink or bryan algorithm)

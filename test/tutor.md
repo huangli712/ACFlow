@@ -1,5 +1,7 @@
 # Summary of tutorials
 
+*Please run the gendata.jl script in every folder to generate input data at first.*
+
 * **T01**
     * Fermionic + Matsubara
     * Green's function + Self-energy function
