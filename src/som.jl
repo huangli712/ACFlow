@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/26
+# Last modified: 2022/10/28
 #
 
 #=
@@ -744,15 +744,19 @@ end
 
 Try to calculate χ². Here `Gᵥ` and `σ¹` denote the raw correlator and
 related standard deviation. `G` means the reproduced correlator.
+
+See also: [`calc_green`](@ref).
 """
 function calc_error(G::Vector{F64}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
-    return sum( ( (G .- Gᵥ) .* σ¹ ) .^ 2.0 ) / length(G)
+    return sum( ( (G .- Gᵥ) .* σ¹ ) .^ 2.0 )
 end
 
 """
     calc_green(Λ::Array{F64,2}, nk::I64)
 
 Try to reconstruct the correlator via the field configuration.
+
+See also: [`calc_error`](@ref).
 """
 function calc_green(Λ::Array{F64,2}, nk::I64)
     ngrid, nbox = size(Λ)

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/24
+# Last modified: 2022/10/28
 #
 
 #=
@@ -589,8 +589,8 @@ distance between input and regenerated correlators.
 See also: [`calc_correlator`](@ref).
 """
 function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
-    χ = sum( ( (Gₙ .- Gᵥ) .* σ¹ ) .^ 2.0 )
-    return χ
+    χ² = sum( ( (Gₙ .- Gᵥ) .* σ¹ ) .^ 2.0 )
+    return χ²
 end
 
 """
