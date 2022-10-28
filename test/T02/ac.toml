@@ -1,6 +1,7 @@
 #
 # Test: T02
 #
+# 0. Run gendata.jl to generate input data at first.
 # 1. Execute ../../util/acrun.jl ac.toml.
 #
 
