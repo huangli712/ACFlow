@@ -1,6 +1,6 @@
 # Summary of tutorials
 
-*Please run the gendata.jl script in every folder to generate input data at first.*
+*Please run the gendata.jl script in each folder to generate input data at first.*
 
 * **T01**
     * Fermionic + Matsubara
