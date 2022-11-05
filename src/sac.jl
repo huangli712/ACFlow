@@ -482,7 +482,7 @@ function init_iodata(S::StochACSolver, rd::RawData)
     Aout = zeros(F64, nmesh, nalph)
 
     G = make_data(rd)
-    Gᵥ = abs.(G.value)
+    Gᵥ = G.value # Gᵥ = abs.(G.value)
     σ¹ = 1.0 ./ sqrt.(G.covar)
 
     return Gᵥ, σ¹, Aout
