@@ -203,7 +203,7 @@ function run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
             @printf("step = %9i ", iter)
-            @printf("(progress = %3i)\n", prog)
+            @printf("[progress = %3i]\n", prog)
             flush(stdout)
             write_statistics(MC)
         end
@@ -255,7 +255,7 @@ function prun(S::StochACSolver,
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
             @printf("step = %9i ", iter)
-            @printf("(progress = %3i)\n", prog)
+            @printf("[progress = %3i)\n", prog)
             flush(stdout)
             myid() == 2 && write_statistics(MC)
         end
