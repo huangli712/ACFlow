@@ -340,7 +340,6 @@ function chk_dict()
 
         @case "StochSK"
             push!(PA, PStochSK)
-            @assert get_b("grid") in ("ftime", "btime")
             #
             @assert get_k("method") in ("chi2min", "chi2kink")
             @assert get_k("nfine") ≥ 10000
