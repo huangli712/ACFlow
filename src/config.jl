@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/24
+# Last modified: 2022/11/05
 #
 
 """
@@ -317,6 +317,7 @@ function chk_dict()
     @cswitch get_b("solver") begin
         @case "MaxEnt"
             push!(PA, PMaxEnt)
+            #
             @assert get_m("method") in ("historic", "classic", "bryan", "chi2kink")
             @assert get_m("nalph") ≥ 1
             @assert get_m("alpha") > 0.0
@@ -326,7 +327,6 @@ function chk_dict()
         @case "StochAC"
             push!(PA, PStochAC)
             @assert get_b("mtype") == "flat"
-            @assert get_b("grid") in ("ftime", "btime")
             #
             @assert get_a("nfine") ≥ 1000
             @assert get_a("ngamm") ≥ 100
@@ -355,6 +355,7 @@ function chk_dict()
 
         @case "StochOM"
             push!(PA, PStochOM)
+            #
             @assert get_s("ntry")  ≥ 40
             @assert get_s("nstep") ≥ 1000
             @assert get_s("nbox")  ≥ 100
