@@ -5,6 +5,8 @@
 * **A01**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink or bryan algorithm)
+    * StochAC solver
+    * StochSK solver
     * StochOM solver
     * Flat model
     * Linear mesh
@@ -13,6 +15,8 @@
 * **A02**
     * Bosonic (symm) + Matsubara
     * MaxEnt solver (chi2kink or bryan algorithm)
+    * StochAC solver
+    * StochSK solver
     * StochOM solver
     * Flat model
     * Half-Lorentzian mesh
