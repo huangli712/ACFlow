@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/28
+# Last modified: 2022/11/05
 #
 
 #=
@@ -212,7 +212,7 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
             @printf("step = %6i ", iter)
-            @printf("(progress = %3i)\n", prog)
+            @printf("[progress = %3i]\n", prog)
             flush(stdout)
             write_statistics(MC)
         end
@@ -272,7 +272,7 @@ function prun(S::StochSKSolver,
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
             @printf("step = %6i ", iter)
-            @printf("(progress = %3i)\n", prog)
+            @printf("[progress = %3i]\n", prog)
             flush(stdout)
             myid() == 2 && write_statistics(MC)
         end
@@ -540,7 +540,7 @@ function init_iodata(S::StochSKSolver, rd::RawData)
     Aout = zeros(F64, nmesh)
 
     G = make_data(rd)
-    Gᵥ = abs.(G.value)
+    Gᵥ = G.value # Gᵥ = abs.(G.value)
     σ¹ = 1.0 ./ sqrt.(G.covar)
 
     return Gᵥ, σ¹, Aout
@@ -607,7 +607,7 @@ function calc_theta(len::I64, SC::StochSKContext)
     # Which algorithm is prefered ?
     method = get_k("method")
 
-    # Get length of Θ and χ² vectors 
+    # Get length of Θ and χ² vectors
     c = len
 
     # `chi2min` algorithm, proposed by Shao and Sandvik
@@ -626,7 +626,7 @@ function calc_theta(len::I64, SC::StochSKContext)
         guess = [0.0, 5.0, 2.0, 0.0]
         fit = curve_fit(fitfun, log10.(SC.Θvec[1:c]), log10.(SC.χ²vec[1:c]), guess)
         _, _, a, b = fit.param
-        #        
+        #
         fit_pos = 2.5
         Θ_opt = a - fit_pos / b
         c = argmin( abs.( log10.(SC.Θvec[1:c]) .- Θ_opt ) )
