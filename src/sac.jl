@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/15
+# Last modified: 2022/11/05
 #
 
 #=
@@ -202,7 +202,7 @@ function run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
-            @printf("step = %6i ", iter)
+            @printf("step = %9i ", iter)
             @printf("(progress = %3i)\n", prog)
             flush(stdout)
             write_statistics(MC)
@@ -254,7 +254,7 @@ function prun(S::StochACSolver,
 
         if iter % output_per_steps == 0
             prog = round(I64, iter / nstep * 100)
-            @printf("step = %6i ", iter)
+            @printf("step = %9i ", iter)
             @printf("(progress = %3i)\n", prog)
             flush(stdout)
             myid() == 2 && write_statistics(MC)
