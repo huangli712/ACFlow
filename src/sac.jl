@@ -348,12 +348,22 @@ end
 Warmup the Monte Carlo engine to acheieve thermalized equilibrium.
 """
 function warmup(MC::StochACMC, SE::StochACElement, SC::StochACContext)
-    # Get key parameter
+    # Set essential parameter
     nwarm = get_a("nwarm")
+    output_per_steps = 100
 
     # Shuffle the Monte Carlo field configuration
-    for _ = 1:nwarm
+    for iter = 1:nwarm
         sample(MC, SE, SC)
+
+        if iter % output_per_steps == 0
+            prog = round(I64, iter / nwarm * 100)
+            @printf("step = %9i ", iter)
+            @printf("swap( 1 ) -> %8.4f ", MC.Macc[1] / MC.Mtry[1])
+            @printf("swap(end) -> %8.4f ", MC.Macc[end] / MC.Mtry[end])
+            @printf("[progress = %3i]\n", prog)
+            flush(stdout)
+        end
     end
 
     # Reset the counters
