@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/05
+# Last modified: 2022/11/07
 #
 
 #=
@@ -157,12 +157,16 @@ function init(S::StochACSolver, rd::RawData)
     kernel = make_kernel(fmesh, grid)
     println("Build default kernel: ", get_b("ktype"))
 
+    U, V, S = make_singular_space(Diagonal(σ¹) * kernel)
+    Gᵥ = U' *  (Gᵥ .* σ¹)
+    kernel = Diagonal(S) * V'
+
     xmesh = calc_xmesh()
     ϕ = calc_phi(mesh, model)
     Δ = calc_delta(xmesh, ϕ)
     println("Precompute δ functions")
 
-    hτ, Hα, Uα = calc_hamil(SE.Γₐ, SE.Γᵣ, kernel, Gᵥ, σ¹)
+    hτ, Hα, Uα = calc_hamil(SE.Γₐ, SE.Γᵣ, kernel, Gᵥ)
     println("Precompute hamiltonian")
 
     αₗ = calc_alpha()
@@ -566,22 +570,21 @@ end
 
 Initialize h(τ) and H(α) using Eq.(35) and Eq.(36), respectively. `Γₐ`
 and `Γᵣ` represent n(x), `kernel` means the kernel function, `Gᵥ` is the
-correlator, and `σ¹` is equal to 1.0 / σ.
+correlator.
 
 See also: [`calc_htau`](@ref).
 """
 function calc_hamil(Γₐ::Array{I64,2}, Γᵣ::Array{F64,2},
                     kernel::Matrix{F64},
-                    Gᵥ::Vector{F64}, σ¹::Vector{F64})
+                    Gᵥ::Vector{F64})
     nalph = get_a("nalph")
-    ngrid = length(Gᵥ)
 
-    hτ = zeros(F64, ngrid, nalph)
+    hτ = zeros(F64, length(Gᵥ), nalph)
     Hα = zeros(F64, nalph)
     Uα = zeros(F64, nalph)
 
     for i = 1:nalph
-        hτ[:,i] = calc_htau(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ, σ¹)
+        hτ[:,i] = calc_htau(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ)
         Hα[i] = dot(hτ[:,i], hτ[:,i])
     end
 
@@ -589,25 +592,22 @@ function calc_hamil(Γₐ::Array{I64,2}, Γᵣ::Array{F64,2},
 end
 
 """
-    calc_htau(Γₐ, Γᵣ, kernel, Gᵥ, σ¹)
+    calc_htau(Γₐ, Γᵣ, kernel, Gᵥ)
 
 Try to calculate α-dependent h(τ) via Eq.(36). `Γₐ` and `Γᵣ` represent
-n(x), `kernel` means the kernel function, `Gᵥ` is the correlator, and
-`σ¹` is equal to 1.0 / σ.
+n(x), `kernel` means the kernel function, `Gᵥ` is the correlator.
 
 See also: [`calc_hamil`](@ref).
 """
 function calc_htau(Γₐ::Vector{I64}, Γᵣ::Vector{F64},
                    kernel::Matrix{F64},
-                   Gᵥ::Vector{F64}, σ¹::Vector{F64})
+                   Gᵥ::Vector{F64})
     hτ = similar(Gᵥ)
-
+    #
     for i in eachindex(Gᵥ)
-        hτ[i] = dot(Γᵣ, view(kernel, i, Γₐ))
+        hτ[i] = dot(Γᵣ, view(kernel, i, Γₐ)) - Gᵥ[i]
     end
-
-    @. hτ = (hτ - Gᵥ) * σ¹
-
+    #
     return hτ
 end
 
@@ -707,7 +707,7 @@ function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     K1 = view(SC.kernel, :, SE.Γₐ[γ1,i])
     K2 = view(SC.kernel, :, SE.Γₐ[γ2,i])
     #
-    δhc = δr * (K1 - K2) .* SC.σ¹
+    δhc = δr * (K1 - K2)
     δH = dot(δhc, 2.0 * hc + δhc)
 
     # Apply Metropolis algorithm
@@ -764,7 +764,7 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     K3 = view(SC.kernel, :, SE.Γₐ[γ1,i])
     K4 = view(SC.kernel, :, SE.Γₐ[γ2,i])
     #
-    δhc = ( r1 * (K1 - K3) + r2 * (K2 - K4) ) .* SC.σ¹
+    δhc = r1 * (K1 - K3) + r2 * (K2 - K4)
     δH = dot(δhc, 2.0 * hc + δhc)
 
     # Apply Metropolis algorithm
