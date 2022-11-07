@@ -588,7 +588,8 @@ end
 
 Initialize h(τ) and H(α) using Eq.(35) and Eq.(36), respectively. `Γₐ`
 and `Γᵣ` represent n(x), `kernel` means the kernel function, `Gᵥ` is the
-correlator.
+correlator. Note that `kernel` and `Gᵥ` have been rotated into singular
+space. Please see comments in `init()` for more details.
 
 See also: [`calc_htau`](@ref).
 """
@@ -596,8 +597,9 @@ function calc_hamil(Γₐ::Array{I64,2}, Γᵣ::Array{F64,2},
                     kernel::Matrix{F64},
                     Gᵥ::Vector{F64})
     nalph = get_a("nalph")
+    ngrid = length(Gᵥ) # It is not equal to get_b("ngrid")!
 
-    hτ = zeros(F64, length(Gᵥ), nalph)
+    hτ = zeros(F64, ngrid, nalph)
     Hα = zeros(F64, nalph)
     Uα = zeros(F64, nalph)
 
@@ -613,7 +615,9 @@ end
     calc_htau(Γₐ, Γᵣ, kernel, Gᵥ)
 
 Try to calculate α-dependent h(τ) via Eq.(36). `Γₐ` and `Γᵣ` represent
-n(x), `kernel` means the kernel function, `Gᵥ` is the correlator.
+n(x), `kernel` means the kernel function, `Gᵥ` is the correlator. Note
+that `kernel` and `Gᵥ` have been rotated into singular space. Please
+see comments in `init()` for more details.
 
 See also: [`calc_hamil`](@ref).
 """
