@@ -13,7 +13,7 @@
 Now `ACFlow` supports various default model functions `m(ω)`. Note that
 the `StochOM` solver (based on the stochastic optimization method) and
 the `StochSK` solver (based on the stochastic analytical continuation
-method) do not need the default model functions. However, the `StochAC`
+method) do not need any default model functions. However, the `StochAC`
 solver (based on the stochastic analytical continuation method as well)
 only supports the `flat` default model function.
 

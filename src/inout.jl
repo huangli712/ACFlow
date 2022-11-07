@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/08
+# Last modified: 2022/11/08
 #
 
 #=
@@ -195,6 +195,8 @@ end
 
 Write `log10(α)-log10(χ²)` data to `chi2.data`, which could be used to
 judge whether the obtained optimal α parameter is reasonable.
+
+See also: [`write_goodness`](@ref).
 """
 function write_misfit(α_vec::Vector{F64}, χ²_vec::Vector{F64})
     @assert length(α_vec) == length(χ²_vec)
@@ -249,6 +251,8 @@ end
 Write `log10(Θ)-log10(χ²)` data to `goodness.data`, which could be used
 to judge whether the obtained optimal Θ parameter is reasonable. This
 function is only useful for the `StochSK` solver.
+
+See also: [`write_misfit`](@ref).
 """
 function write_goodness(Θ_vec::Vector{F64}, χ²_vec::Vector{F64})
     @assert length(Θ_vec) == length(χ²_vec)
