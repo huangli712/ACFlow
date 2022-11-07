@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/05
+# Last modified: 2022/11/07
 #
 
 #=
@@ -157,10 +157,13 @@ function init(S::StochSKSolver, rd::RawData)
     kernel = make_kernel(fmesh, grid)
     println("Build default kernel: ", get_b("ktype"))
 
+    U, V, S = make_singular_space(Diagonal(σ¹) * kernel)
+    Gᵥ = U' *  (Gᵥ .* σ¹)
+    kernel = Diagonal(S) * V'
     Gᵧ = calc_correlator(SE, kernel)
     println("Precompute correlator")
 
-    χ = calc_goodness(Gᵧ, Gᵥ, σ¹)
+    χ = calc_goodness(Gᵧ, Gᵥ)
     χ², χ²min = χ, χ
     χ²vec = zeros(F64, get_k("nwarm"))
     println("Precompute goodness function")
@@ -199,7 +202,7 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     println("Start stochastic sampling...")
     for iter = 1:nstep
         if iter % retry == 0
-            SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+            SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ)
         end
 
         sample(MC, SE, SC)
@@ -259,7 +262,7 @@ function prun(S::StochSKSolver,
     println("Start stochastic sampling...")
     for iter = 1:nstep
         if iter % retry == 0
-            SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+            SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ)
         end
 
         sample(MC, SE, SC)
@@ -380,7 +383,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
     # Update Gᵧ and χ²
     SC.Gᵧ = calc_correlator(SE, SC.kernel)
-    SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+    SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ)
     println("Θ = ", SC.Θ, " χ² = ", SC.χ², " (step = $c)")
 end
 
@@ -442,7 +445,7 @@ function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     for s = 1:max_bin_size
         # Recalculate the goodness function
         if s % retry == 0
-            SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ, SC.σ¹)
+            SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ)
         end
 
         sample(MC, SE, SC)
@@ -593,6 +596,11 @@ function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
     return χ²
 end
 
+function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64})
+    χ² = sum( (Gₙ .- Gᵥ) .^ 2.0 )
+    return χ²
+end
+
 """
     calc_theta(len::I64, SC::StochSKContext)
 
@@ -727,7 +735,7 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         Kcurr = view(SC.kernel, :, pcurr)
         #
         @. Gₙ = SC.Gᵧ + SE.A * (Knext - Kcurr)
-        @. ΔG = (Gₙ - SC.Gᵥ) * SC.σ¹
+        @. ΔG = Gₙ - SC.Gᵥ
         χ²new = dot(ΔG, ΔG)
         #
         prob = exp( 0.5 * (SC.χ² - χ²new) / SC.Θ )
@@ -814,7 +822,7 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         Kcurr₂ = view(SC.kernel, :, pcurr₂)
         #
         @. Gₙ = SC.Gᵧ + SE.A * (Knext₁ - Kcurr₁ + Knext₂ - Kcurr₂)
-        @. ΔG = (Gₙ - SC.Gᵥ) * SC.σ¹
+        @. ΔG = Gₙ - SC.Gᵥ
         χ²new = dot(ΔG, ΔG)
         #
         prob = exp( 0.5 * (SC.χ² - χ²new) / SC.Θ )
