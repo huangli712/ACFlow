@@ -333,6 +333,8 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     c, d = fit_r.param
     aopt = (d - b) / (a - c)
     close = argmin( abs.( SC.αₗ .- aopt ) )
+    println("Fitting parameters [a,b] are: ", a, b)
+    println("Fitting parameters [c,d] are: ", c, d)
     println("Perhaps the optimal α is: ", aopt)
     write_hamiltonian(SC.αₗ, Uα)
 
