@@ -700,34 +700,34 @@ function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Get current number of δ functions
     ngamm = get_a("ngamm")
 
-    # Choose two δ functions, they are labelled as γ1 and γ2, respectively.
-    γ1 = 1
-    γ2 = 1
-    while γ1 == γ2
-        γ1 = rand(MC.rng, 1:ngamm)
-        γ2 = rand(MC.rng, 1:ngamm)
+    # Choose two δ functions, they are labelled as γ₁ and γ₂, respectively.
+    γ₁ = 1
+    γ₂ = 1
+    while γ₁ == γ₂
+        γ₁ = rand(MC.rng, 1:ngamm)
+        γ₂ = rand(MC.rng, 1:ngamm)
     end
 
-    # Extract weights for the two δ functions (r3 and r4), then try to
-    # calculate new weights for them (r1 and r2).
-    r1 = 0.0
-    r2 = 0.0
-    r3 = SE.Γᵣ[γ1,i]
-    r4 = SE.Γᵣ[γ2,i]
+    # Extract weights for the two δ functions (r₃ and r₄), then try to
+    # calculate new weights for them (r₁ and r₂).
+    r₁ = 0.0
+    r₂ = 0.0
+    r₃ = SE.Γᵣ[γ₁,i]
+    r₄ = SE.Γᵣ[γ₂,i]
     δr = 0.0
     while true
-        δr = rand(MC.rng) * (r3 + r4) - r3
-        r1 = r3 + δr
-        r2 = r4 - δr
-        if r1 > 0 && r2 > 0
+        δr = rand(MC.rng) * (r₃ + r₄) - r₃
+        r₁ = r₃ + δr
+        r₂ = r₄ - δr
+        if r₁ > 0 && r₂ > 0
             break
         end
     end
 
     # Try to calculate the change of Hc using Eq.~(42).
     hc = view(SC.hτ, :, i)
-    K1 = view(SC.kernel, :, SE.Γₐ[γ1,i])
-    K2 = view(SC.kernel, :, SE.Γₐ[γ2,i])
+    K1 = view(SC.kernel, :, SE.Γₐ[γ₁,i])
+    K2 = view(SC.kernel, :, SE.Γₐ[γ₂,i])
     #
     δhc = δr * (K1 - K2)
     δH = dot(δhc, 2.0 * hc + δhc)
@@ -736,8 +736,8 @@ function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     MC.Mtry[i] = MC.Mtry[i] + 1.0
     if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
         # Update Monte Carlo configurations
-        SE.Γᵣ[γ1,i] = r1
-        SE.Γᵣ[γ2,i] = r2
+        SE.Γᵣ[γ₁,i] = r₁
+        SE.Γᵣ[γ₂,i] = r₂
 
         # Update h(τ)
         @. hc = hc + δhc
@@ -762,20 +762,20 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Get current number of δ functions
     ngamm = get_a("ngamm")
 
-    # Choose two δ functions, they are labelled as γ1 and γ2, respectively.
-    γ1 = 1
-    γ2 = 1
-    while γ1 == γ2
-        γ1 = rand(MC.rng, 1:ngamm)
-        γ2 = rand(MC.rng, 1:ngamm)
+    # Choose two δ functions, they are labelled as γ₁ and γ₂, respectively.
+    γ₁ = 1
+    γ₂ = 1
+    while γ₁ == γ₂
+        γ₁ = rand(MC.rng, 1:ngamm)
+        γ₂ = rand(MC.rng, 1:ngamm)
     end
 
-    # Extract weights for the two δ functions (r1 and r2)
-    r1 = SE.Γᵣ[γ1,i]
-    r2 = SE.Γᵣ[γ2,i]
+    # Extract weights for the two δ functions (r₁ and r₂)
+    r₁ = SE.Γᵣ[γ₁,i]
+    r₂ = SE.Γᵣ[γ₂,i]
 
     # Choose new positions for the two δ functions (i1 and i2).
-    # Note that their old positions are SE.Γₐ[γ1,i] and SE.Γₐ[γ2,i].
+    # Note that their old positions are SE.Γₐ[γ₁,i] and SE.Γₐ[γ₂,i].
     i1 = rand(MC.rng, SC.allow)
     i2 = rand(MC.rng, SC.allow)
 
@@ -783,18 +783,18 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     hc = view(SC.hτ, :, i)
     K1 = view(SC.kernel, :, i1)
     K2 = view(SC.kernel, :, i2)
-    K3 = view(SC.kernel, :, SE.Γₐ[γ1,i])
-    K4 = view(SC.kernel, :, SE.Γₐ[γ2,i])
+    K3 = view(SC.kernel, :, SE.Γₐ[γ₁,i])
+    K4 = view(SC.kernel, :, SE.Γₐ[γ₂,i])
     #
-    δhc = r1 * (K1 - K3) + r2 * (K2 - K4)
+    δhc = r₁ * (K1 - K3) + r₂ * (K2 - K4)
     δH = dot(δhc, 2.0 * hc + δhc)
 
     # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1.0
     if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
         # Update Monte Carlo configurations
-        SE.Γₐ[γ1,i] = i1
-        SE.Γₐ[γ2,i] = i2
+        SE.Γₐ[γ₁,i] = i1
+        SE.Γₐ[γ₂,i] = i2
 
         # Update h(τ)
         @. hc = hc + δhc
