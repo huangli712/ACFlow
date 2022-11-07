@@ -132,6 +132,8 @@ Initialize the StochAC solver and return the StochACMC, StochACElement,
 and StochACContext structs.
 """
 function init(S::StochACSolver, rd::RawData)
+    # Initialize possible constraints. The allow array contains all the
+    # possible indices for δ functions.
     allow = constraints(S)
 
     MC = init_mc(S)
@@ -157,15 +159,29 @@ function init(S::StochACSolver, rd::RawData)
     kernel = make_kernel(fmesh, grid)
     println("Build default kernel: ", get_b("ktype"))
 
-    U, V, S = make_singular_space(Diagonal(σ¹) * kernel)
-    Gᵥ = U' *  (Gᵥ .* σ¹)
-    kernel = Diagonal(S) * V'
-
     xmesh = calc_xmesh()
     ϕ = calc_phi(mesh, model)
     Δ = calc_delta(xmesh, ϕ)
     println("Precompute δ functions")
 
+    # In order to accelerate the calculations, the singular space of the
+    # kernel function is used. At first, we preform singular value
+    # decomposition for K/σ:
+    #     K/σ = U S Vᵀ
+    # Then 
+    #     (G - KA)/σ = G/σ - K/σA
+    #                = UU'(G/σ - USVᵀA)
+    #                = U(U'G/σ - U'USVᵀA)
+    #                = U(U'G/σ - SVᵀA)
+    #                = U(G' - K'A)
+    # In the StochAC solver, let Gᵥ → G', kernel → K'. Then new χ² is
+    # calculated by
+    #     |G' - K'A|²
+    # instead of
+    #     |G - KA|²/σ²
+    U, V, S = make_singular_space(Diagonal(σ¹) * kernel)
+    Gᵥ = U' *  (Gᵥ .* σ¹)
+    kernel = Diagonal(S) * V'
     hτ, Hα, Uα = calc_hamil(SE.Γₐ, SE.Γᵣ, kernel, Gᵥ)
     println("Precompute hamiltonian")
 
