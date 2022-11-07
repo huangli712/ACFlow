@@ -726,10 +726,10 @@ function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
     # Try to calculate the change of Hc using Eq.~(42).
     hc = view(SC.hτ, :, i)
-    K1 = view(SC.kernel, :, SE.Γₐ[γ₁,i])
-    K2 = view(SC.kernel, :, SE.Γₐ[γ₂,i])
+    K₁ = view(SC.kernel, :, SE.Γₐ[γ₁,i])
+    K₂ = view(SC.kernel, :, SE.Γₐ[γ₂,i])
     #
-    δhc = δr * (K1 - K2)
+    δhc = δr * (K₁ - K₂)
     δH = dot(δhc, 2.0 * hc + δhc)
 
     # Apply Metropolis algorithm
@@ -781,12 +781,12 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
     # Try to calculate the change of Hc using Eq.~(42).
     hc = view(SC.hτ, :, i)
-    K1 = view(SC.kernel, :, i1)
-    K2 = view(SC.kernel, :, i2)
-    K3 = view(SC.kernel, :, SE.Γₐ[γ₁,i])
-    K4 = view(SC.kernel, :, SE.Γₐ[γ₂,i])
+    K₁ = view(SC.kernel, :, i1)
+    K₂ = view(SC.kernel, :, i2)
+    K₃ = view(SC.kernel, :, SE.Γₐ[γ₁,i])
+    K₄ = view(SC.kernel, :, SE.Γₐ[γ₂,i])
     #
-    δhc = r₁ * (K1 - K3) + r₂ * (K2 - K4)
+    δhc = r₁ * (K₁ - K₃) + r₂ * (K₂ - K₄)
     δH = dot(δhc, 2.0 * hc + δhc)
 
     # Apply Metropolis algorithm
