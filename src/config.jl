@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/05
+# Last modified: 2022/11/08
 #
 
 """
@@ -354,6 +354,7 @@ function chk_dict()
 
         @case "StochOM"
             push!(PA, PStochOM)
+            @assert get_b("grid") in ("btime", "ffreq", "bfreq")
             #
             @assert get_s("ntry")  ≥ 40
             @assert get_s("nstep") ≥ 1000
