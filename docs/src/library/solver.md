@@ -1,6 +1,6 @@
 # Solvers
 
-*Define solvers for the ACFlow package.*
+*Define various solvers for the ACFlow package.*
 
 ## Contents
 
@@ -124,6 +124,7 @@ init_iodata(S::StochSKSolver, rd::RawData)
 calc_fmesh(S::StochSKSolver)
 calc_correlator
 calc_goodness
+calc_theta
 constraints(S::StochSKSolver)
 try_move_s
 try_move_p
