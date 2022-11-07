@@ -774,15 +774,15 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     r₁ = SE.Γᵣ[γ₁,i]
     r₂ = SE.Γᵣ[γ₂,i]
 
-    # Choose new positions for the two δ functions (i1 and i2).
+    # Choose new positions for the two δ functions (i₁ and i₂).
     # Note that their old positions are SE.Γₐ[γ₁,i] and SE.Γₐ[γ₂,i].
-    i1 = rand(MC.rng, SC.allow)
-    i2 = rand(MC.rng, SC.allow)
+    i₁ = rand(MC.rng, SC.allow)
+    i₂ = rand(MC.rng, SC.allow)
 
     # Try to calculate the change of Hc using Eq.~(42).
     hc = view(SC.hτ, :, i)
-    K₁ = view(SC.kernel, :, i1)
-    K₂ = view(SC.kernel, :, i2)
+    K₁ = view(SC.kernel, :, i₁)
+    K₂ = view(SC.kernel, :, i₂)
     K₃ = view(SC.kernel, :, SE.Γₐ[γ₁,i])
     K₄ = view(SC.kernel, :, SE.Γₐ[γ₂,i])
     #
@@ -793,8 +793,8 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     MC.Mtry[i] = MC.Mtry[i] + 1.0
     if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
         # Update Monte Carlo configurations
-        SE.Γₐ[γ₁,i] = i1
-        SE.Γₐ[γ₂,i] = i2
+        SE.Γₐ[γ₁,i] = i₁
+        SE.Γₐ[γ₂,i] = i₂
 
         # Update h(τ)
         @. hc = hc + δhc
