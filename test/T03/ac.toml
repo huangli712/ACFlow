@@ -1,13 +1,12 @@
 #
-# Test: T02
+# Test: T03
 #
 # 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK or StochOM).
 # 2. If [BASE] -> solver is StochAC, [BASE] -> mtype must be flat.
-# 3. If [BASE] -> solver is StochAC or StochSK, [BASE] -> grid must be ftime.
-# 4. If [BASE] -> solver is StochOM, [BASE] -> grid must be ffreq.
-# 5. [BASE] -> finput must be compatible with [BASE] -> grid and [BASE] -> ngrid.
-# 6. Execute ../../util/acrun.jl ac.toml.
+# 3. If [BASE] -> solver is StochOM, [BASE] -> grid must be ffreq.
+# 4. [BASE] -> finput must be compatible with [BASE] -> grid and [BASE] -> ngrid.
+# 5. Execute ../../util/acrun.jl ac.toml.
 #
 
 [BASE]
