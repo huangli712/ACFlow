@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/07
+# Last modified: 2022/11/08
 #
 
 #=
@@ -204,7 +204,7 @@ K(0,0) = 1.
 ```
 
 This is a special case of the previous observable kind with ``B = B^{\dagger}``
-, and its use is in general prefered due to the reduced ``A(\omega)``
+, and its use is in general preferred due to the reduced ``A(\omega)``
 definition domain. The most widely used observables of this kind are
 the longitudinal spin susceptibility,
 

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/07
+# Last modified: 2022/11/08
 #
 
 #=
@@ -618,14 +618,14 @@ end
     calc_theta(len::I64, SC::StochSKContext)
 
 Try to locate the optimal Θ and χ². This function implements the `chi2min`
-and `chi2kink` algorithms.
+and `chi2kink` algorithms. Note that the `chi2min` algorithm is preferred.
 """
 function calc_theta(len::I64, SC::StochSKContext)
     function fitfun(x, p)
         return @. p[1] + p[2] / (1.0 + exp(-p[4] * (x - p[3])))
     end
 
-    # Which algorithm is prefered ?
+    # Which algorithm is preferred ?
     method = get_k("method")
 
     # Get length of Θ and χ² vectors
