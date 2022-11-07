@@ -168,7 +168,7 @@ function init(S::StochACSolver, rd::RawData)
     # kernel function is used. At first, we preform singular value
     # decomposition for K/σ:
     #     K/σ = U S Vᵀ
-    # Then 
+    # Then
     #     (G - KA)/σ = G/σ - K/σA
     #                = UU'(G/σ - USVᵀA)
     #                = U(U'G/σ - U'USVᵀA)
