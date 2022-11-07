@@ -136,6 +136,8 @@ Initialize the StochSK solver and return the StochSKMC, StochSKElement,
 and StochSKContext structs.
 """
 function init(S::StochSKSolver, rd::RawData)
+    # Initialize possible constraints. The allow array contains all the
+    # possible indices for δ functions.
     allow = constraints(S)
 
     MC = init_mc(S)
@@ -157,14 +159,29 @@ function init(S::StochSKSolver, rd::RawData)
     kernel = make_kernel(fmesh, grid)
     println("Build default kernel: ", get_b("ktype"))
 
+    # In order to accelerate the calculations, the singular space of the
+    # kernel function is used. At first, we preform singular value
+    # decomposition for K/σ:
+    #     K/σ = U S Vᵀ
+    # Then 
+    #     (G - KA)/σ = G/σ - K/σA
+    #                = UU'(G/σ - USVᵀA)
+    #                = U(U'G/σ - U'USVᵀA)
+    #                = U(U'G/σ - SVᵀA)
+    #                = U(G' - K'A)
+    # In the StochAC solver, let Gᵥ → G', kernel → K'. Then new χ² is
+    # calculated by
+    #     |G' - K'A|²
+    # instead of
+    #     |G - KA|²/σ²
     U, V, S = make_singular_space(Diagonal(σ¹) * kernel)
     Gᵥ = U' *  (Gᵥ .* σ¹)
     kernel = Diagonal(S) * V'
     Gᵧ = calc_correlator(SE, kernel)
     println("Precompute correlator")
 
-    χ = calc_goodness(Gᵧ, Gᵥ)
-    χ², χ²min = χ, χ
+    𝚾 = calc_goodness(Gᵧ, Gᵥ)
+    χ², χ²min = 𝚾, 𝚾
     χ²vec = zeros(F64, get_k("nwarm"))
     println("Precompute goodness function")
 
@@ -340,6 +357,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Get essential parameters
     nwarm = get_k("nwarm")
     ratio = get_k("ratio")
+    threshold = 1e-3
 
     # To store the historic Monte Carlo field configurations
     𝒞ᵧ = StochSKElement[]
@@ -358,7 +376,7 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         δχ² = SC.χ² - SC.χ²min
         @printf("step : %5i ", i)
         @printf("χ² - χ²min -> %12.6e\n", δχ²)
-        if δχ² < 1e-3
+        if δχ² < threshold
             println("Reach equilibrium state")
             break
         end
@@ -584,21 +602,16 @@ function calc_correlator(SE::StochSKElement, kernel::Array{F64,2})
 end
 
 """
-    calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
+    calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64})
 
 Try to calculate the goodness function (i.e, χ²), which measures the
 distance between input and regenerated correlators.
 
 See also: [`calc_correlator`](@ref).
 """
-function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
-    χ² = sum( ( (Gₙ .- Gᵥ) .* σ¹ ) .^ 2.0 )
-    return χ²
-end
-
 function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64})
-    χ² = sum( (Gₙ .- Gᵥ) .^ 2.0 )
-    return χ²
+    ΔG = Gₙ - Gᵥ
+    return dot(ΔG, ΔG)
 end
 
 """
