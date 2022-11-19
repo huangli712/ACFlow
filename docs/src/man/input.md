@@ -1,1 +1,135 @@
 # Input Files
+
+The input files for the ACFlow toolkit can be divided into two groups: data files and configure files. 
+
+The input data should be store in CSV-like text files. For imaginary time Green's function, the data file should contain three columns. They represent $\tau$, $\bar{G}(\tau)$, and standard deviation of $\bar{G}(\tau)$. For fermionic Matsubara Green's function, the data file should contain five columns. They represent $\omega_n$, Re$G(i\omega_n)$, Im$G(i\omega_n)$, standard deviation of Re$G(i\omega_n)$, and standard deviation of Im$G(i\omega_n)$. For bosonic correlation function $\chi(i\omega_n)$, the data file should contain four columns. They represent $\omega_n$, Re$\chi(i\omega_n)$, and standard deviation of Re$\chi(i\omega_n)$.
+
+The configure file adopts the TOML format. It is used to setup the computational parameters. It consists of one or more blocks. Possible blocks (or sections) in the configuration file include \texttt{[BASE]}, \texttt{[MaxEnt]}, \texttt{[StochAC]}, \texttt{[StochSK]}, and \texttt{[StochOM]}. The \texttt{[BASE]} block is mandatory, while the other blocks are optional. A schematic configuration file (\texttt{ac.toml}) is listed as follows:
+  
+\begin{lstlisting}[language=TOML,
+basicstyle=\ttfamily\small,
+backgroundcolor=\color{yellow!10},
+commentstyle=\color{olive!10!green},
+keywordstyle=\color{purple}]
+[BASE]
+finput = "giw.data"
+solver = "StochOM"
+...
+
+[MaxEnt]
+method = "chi2kink"
+...
+
+[StochAC]
+nfine  = 10000
+...
+
+[StochSK]
+method = "chi2min"
+...
+
+[StochOM]
+ntry   = 100000
+...
+\end{lstlisting}
+In the \texttt{[BASE]} block, the analytical continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The \texttt{[MaxEnt]}, \texttt{[StochAC]}, \texttt{[StochSK]}, and \texttt{[StochOM]} blocks are used to customize the corresponding analytical continuation solvers further. In Table~\ref{tab:base}-Table~\ref{tab:som}, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please refer to the user guide of the ACFlow toolkit. The uses can find it in the \texttt{acflow/docs} directory.   
+  
+\begin{table}[h]
+\centering
+\begin{tabular}{l|l|l|l}
+\hline
+\multicolumn{4}{c}{\texttt{[BASE]} block} \\
+\hline
+Parameter & Type & Default & Description \\
+\hline
+\texttt{finput}  & string  & ``green.data'' & Filename for input data. \\
+\texttt{solver}  & string  & ``MaxEnt''     & Solver for the analytical continuation problem. \\
+\texttt{ktype}   & string  & ``fermi''      & Type of kernel function. \\
+\texttt{mtype}   & string  & ``flat''       & Type of default model function. \\
+\texttt{grid}    & string  & ``'ffreq''     & Grid for input data (imaginary axis). \\
+\texttt{mesh}    & string  & ``linear''     & Mesh for output data (real axis). \\
+\texttt{ngrid}   & integer & 10             & Number of grid points. \\
+\texttt{nmesh}   & integer & 501            & Number of mesh points. \\
+\texttt{wmax}    & float   & 5.0            & Right boundary (maximum value) of mesh. \\
+\texttt{wmin}    & float   & -5.0           & Left boundary (minimum value) of mesh. \\
+\texttt{beta}    & float   & 10.0           & Inverse temperature. \\
+\texttt{offdiag} & bool    & false          & Treat the off-diagonal part of matrix-valued function? \\
+\texttt{pmodel}  & array   & N/A            & Additional parameters for customizing the default model. \\
+\texttt{pmesh}   & array   & N/A            & Additional parameters for customizing the mesh. \\
+\texttt{exclude} & array   & N/A            & Restriction of the energy range of the spectrum. \\
+\hline
+\end{tabular}
+\caption{Possible parameters for the \texttt{[BASE]} block.\label{tab:base}}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|l|l|l}
+\hline
+\multicolumn{4}{c}{\texttt{[MaxEnt]} block} \\
+\hline
+Parameter & Type & Default & Description \\
+\hline
+\texttt{method} & string  & ``chi2kink''& How to determine the optimized $\alpha$ parameter? \\
+\texttt{nalph}  & integer & 12          & Total number of the chosen $\alpha$ parameters. \\
+\texttt{alpha}  & float   & 1e9         & Starting value for the $\alpha$ parameter. \\
+\texttt{ratio}  & float   & 10.0        & Scaling factor for the $\alpha$ parameter. \\
+\texttt{blur}   & float   & -1.0        & Shall we preblur the kernel and spectrum?\\
+\hline
+\end{tabular}
+\caption{Possible input parameters for the \texttt{[MaxEnt]} block, which is used to setup the solver based on the maximum entropy method~\cite{JARRELL1996133,PhysRevB.44.6011}. \label{tab:maxent}}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|l|l|l}
+\hline
+\multicolumn{4}{c}{\texttt{[StochAC]} block} \\
+\hline
+Parameter & Type & Default & Description \\
+\hline
+\texttt{nfine}  & integer & 10000       & Number of points of a very fine linear mesh. \\
+\texttt{ngamm}  & integer & 512         & Number of $\delta$ functions. \\
+\texttt{nwarm}  & integer & 4000        & Number of Monte Carlo thermalization steps. \\
+\texttt{nstep}  & integer & 4000000     & Number of Monte Carlo sweeping steps. \\
+\texttt{ndump}  & integer & 40000       & Intervals for monitoring Monte Carlo sweeps. \\
+\texttt{nalph}  & integer & 20          & Total number of the chosen $\alpha$ parameters. \\
+\texttt{alpha}  & float   & 1.0         & Starting value for the $\alpha$ parameter. \\
+\texttt{ratio}  & float   & 1.2         & Scaling factor for the $\alpha$ parameter. \\
+\hline
+\multicolumn{4}{c}{\texttt{[StochSK]} block} \\
+\hline
+Parameter & Type & Default & Description \\
+\hline
+\texttt{method} & string  & ``chi2min'' & How to determine the optimized $\Theta$ parameter? \\
+\texttt{nfine}  & integer & 100000      & Number of points of a very fine linear mesh. \\
+\texttt{ngamm}  & integer & 1000        & Number of $\delta$ functions. \\
+\texttt{nwarm}  & integer & 1000        & Number of Monte Carlo thermalization steps. \\
+\texttt{nstep}  & integer & 20000       & Number of Monte Carlo sweeping steps. \\
+\texttt{ndump}  & integer & 200         & Intervals for monitoring Monte Carlo sweeps. \\
+\texttt{retry}  & integer & 10          & How often to recalculate the goodness-of-fit function. \\
+\texttt{theta}  & float   & 1e6         & Starting value for the $\Theta$ parameter. \\
+\texttt{ratio}  & float   & 0.9         & Scaling factor for the $\Theta$ parameter. \\
+\hline
+\end{tabular}
+\caption{Possible input parameters for the \texttt{[StochAC]} and \texttt{[StochSK]} blocks, which are used to setup the two solvers based on the stochastic analytical continuation (Beach's and Sandvik's algorithms)~\cite{PhysRevB.57.10287,beach}. \label{tab:sac}}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|l|l|l}
+\hline
+\multicolumn{4}{c}{\texttt{[StochOM]} block} \\
+\hline
+Parameter & Type & Default & Description \\
+\hline
+\texttt{ntry}   & integer & 2000        & Number of attempts to figure out the solution. \\
+\texttt{nstep}  & integer & 1000        & Number of Monte Carlo steps per try. \\
+\texttt{nbox}   & integer & 100         & Number of boxes to construct the spectrum. \\
+\texttt{sbox}   & float   & 0.005       & Minimum area of the randomly generated rectangles. \\
+\texttt{wbox}   & float   & 0.02        & Minimum width of the randomly generated rectangles. \\
+\texttt{norm}   & float   & -1.0        & Is the norm calculated? \\
+\hline
+\end{tabular}
+\caption{Possible input parameters for the \texttt{[StochOM]} block, which are used to setup the solver based on the stochastic optimization method~\cite{PhysRevB.62.6317}. \label{tab:som}}
+\end{table}
