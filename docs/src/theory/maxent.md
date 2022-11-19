@@ -2,7 +2,7 @@
 
 Perhaps the maximum entropy method is the most frequently used approach for analytical continuation problems~\cite{PhysRevB.44.6011,JARRELL1996133} because of its high computational efficiency. Next, we will discuss the basic principles and several variants of it.
 
-\subsubsection{Bayesian inference}
+## Bayesian inference
 
 Bayes's theorem is the cornerstone of the maximum entropy method. Given two events $a$ and $b$, Bayes's theorem says:
 \begin{equation}
@@ -17,7 +17,7 @@ where $P[\bar{G}|A]$ is the likelihood function, $P[A]$ is the prior probability
 P[A|\bar{G}] \propto P[\bar{G}|A]P[A].
 \end{equation}
 
-\subsubsection{Posterior probability}
+## Posterior probability
 
 In the maximum entropy method, the likelihood function $P[\bar{G}|A]$ is assumed to be in direct proportion to $e^{-\chi^2/2}$. $\chi^2$ is named as goodness-of-fit function, which measures distance between $\bar{G}(\tau)$ and reconstructed imaginary time Green's function $\tilde{G}(\tau)$:   
 \begin{equation}
@@ -38,7 +38,7 @@ According to the Bayes's theorem, the posterior probability $P[A|\bar{G}] \propt
 Q = \alpha S - \frac{\chi^2}{2}.
 \end{equation}
 
-\subsubsection{Algorithms of maximum entropy method}
+## Algorithms of maximum entropy method
 
 Now the original analytical continuation problem becomes how to figure out the optimal $A(\omega)$ that maximizes $Q$. In other words, we have to solve the following equation:
 \begin{equation}
