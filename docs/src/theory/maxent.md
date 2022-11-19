@@ -5,17 +5,23 @@ Perhaps the maximum entropy method is the most frequently used approach for anal
 ## Bayesian inference
 
 Bayes's theorem is the cornerstone of the maximum entropy method. Given two events $a$ and $b$, Bayes's theorem says:
+```math
 \begin{equation}
 P[a|b]P[b] = P[b|a]P[a],
 \end{equation}
+```
 where $P[a]$ is the probability of event $a$, $P[a|b]$ is the conditional probability of event $a$ with given event $b$. In the scenario of analytical continuation problem, $\bar{G}(\tau)$ and $A(\omega)$ are treated as two events, where $\bar{G}(\tau)$ denotes the measured value of $G(\tau)$. So the best solution for $A(\omega)$ is of course the one that maximizes $P[A|\bar{G}]$, which is called the posterior probability. According to the Bayes's theorem, we get
+```math
 \begin{equation}
 P[A|\bar{G}] = \frac{P[\bar{G}|A]P[A]}{P[\bar{G}]},
 \end{equation}
+```
 where $P[\bar{G}|A]$ is the likelihood function, $P[A]$ is the prior probability, and $P[\bar{G}]$ is the evidence. Since the evidence is a normalization constant depending on the prior probability and the likelihood function only, it is ignored in the following discussions. Thus,
+```math
 \begin{equation}
 P[A|\bar{G}] \propto P[\bar{G}|A]P[A].
 \end{equation}
+```
 
 ## Posterior probability
 
