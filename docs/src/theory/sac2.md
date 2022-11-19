@@ -141,11 +141,11 @@ The parallel tempering trick~\cite{Marinari:1996dh} is adopted to improve the Mo
 p(\mathcal{C} \to \mathcal{C}') = \exp[(\alpha_p - \alpha_q)(H_{p} - H_{q})],
 \end{equation}
 ```
-where $p$ and $q$ are layer indices, and $p = q \pm 1$. Parallel tempering eliminates the need for an initial annealing stage. Another advantage of parallel tempering is that it yields a complete temperature profile of all the important thermodynamic variables (such as specific heat and internal energy), which can be used to estimate the critical $\alpha$ and final spectral function $\langle A(\omega) \rangle$.   
+where ``p`` and ``q`` are layer indices, and $p = q \pm 1$. Parallel tempering eliminates the need for an initial annealing stage. Another advantage of parallel tempering is that it yields a complete temperature profile of all the important thermodynamic variables (such as specific heat and internal energy), which can be used to estimate the critical $\alpha$ and final spectral function $\langle A(\omega) \rangle$.   
 
 ## Critical inverse temperature
 
-Clearly, $\langle n(x) \rangle$ strongly depends on the inverse temperature $\alpha$. How to use these $\alpha$-dependent $\langle n(x) \rangle$ to construct the final spectral function? Beach proposed a new algorithm~\cite{beach}. During parallel tempering process, the internal energy of the system is also measured in addition to $\langle n(x) \rangle$: 
+Clearly, ``\langle n(x) \rangle`` strongly depends on the inverse temperature $\alpha$. How to use these $\alpha$-dependent $\langle n(x) \rangle$ to construct the final spectral function? Beach proposed a new algorithm~\cite{beach}. During parallel tempering process, the internal energy of the system is also measured in addition to $\langle n(x) \rangle$: 
 ```math
 \begin{equation}
 U(\alpha_p) = \langle H [n] \rangle_{\alpha_p}.
