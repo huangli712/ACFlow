@@ -23,7 +23,9 @@ Pages = [
 ```@contents
 Pages = [
     "man/feature.md",
+    "man/impl.md",
     "man/install.md",
+    "man/run.md",
     "man/input.md",
     "man/output.md",
     "man/param.md",
