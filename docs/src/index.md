@@ -10,6 +10,14 @@
 
     The **ACFlow** package is in heavy development. Please use it at your own risk.
 
+## Introduction
+
+```@contents
+Pages = [
+    "intro.md",
+]
+```
+
 ## Manual
 
 ```@contents
