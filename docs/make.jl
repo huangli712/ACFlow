@@ -18,6 +18,7 @@ makedocs(
             "Main Features" => "man/feature.md",
             "Implementations" => "man/impl.md",
             "Installation" => "man/install.md",
+            "Running modes" => "man/run.md",
             "Input Files" => "man/input.md",
             "Output Files" => "man/output.md",
             "Parameters" => "man/param.md",
