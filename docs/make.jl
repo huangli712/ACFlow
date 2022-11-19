@@ -16,6 +16,7 @@ makedocs(
         "Introduction" => "intro.md",
         "Manual" => Any[
             "Main Features" => "man/feature.md",
+            "Implementations" => "man/impl.md",
             "Installation" => "man/install.md",
             "Input Files" => "man/input.md",
             "Output Files" => "man/output.md",
