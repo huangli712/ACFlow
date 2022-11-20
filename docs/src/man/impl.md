@@ -1,6 +1,6 @@
 # Implementations
 
-The ACFlow toolkit is developed with pure Julia language. Thanks to powerful type system and multiple dispatch paradigm of the Julia language, the four different analytical continuation solvers are integrated into an united software architecture. Redundant codes are greatly reduced. It is quite easy to implement new analytical continuation solver or add new features to the existing solvers in the future. Distributed computing is a built-in feature of Julia. So, it is straightforward to realize parallel calculations in the ACFlow toolkit. Now except for the \texttt{MaxEnt} solver, all the other solvers are paralleled.
+The ACFlow toolkit is developed with pure Julia language. Thanks to powerful type system and multiple dispatch paradigm of the Julia language, the four different analytical continuation solvers are integrated into an united software architecture. Redundant codes are greatly reduced. It is quite easy to implement new analytical continuation solver or add new features to the existing solvers in the future. Distributed computing is a built-in feature of Julia. So, it is straightforward to realize parallel calculations in the ACFlow toolkit. Now except for the `MaxEnt` solver, all the other solvers are paralleled.
 
 \begin{table}[ht]
 \centering
@@ -29,11 +29,10 @@ Filename & Description \\
 \caption{List of source codes of the ACFlow toolkit. \label{tab:source}}
 \end{table}
 
-The source codes of the ACFlow toolkit are placed in the \texttt{acflow/src} folder. Their functions are summarized in Table~\ref{tab:source}. The documentation of the ACFlow toolkit is developed by using the Markdown language and \texttt{Documenter.jl} package. The source codes are placed in the \texttt{acflow/docs} folder. The users can build documentation by themselves. Please see Section~\ref{sec:usage} for how to do that. Or they can read the latest documentation in the following website:
-\begin{verbatim}
-    http://huangli712.github.io
-\end{verbatim}    
-Ten tests and four tutorials are also shipped with the ACFlow toolkit. Their source codes are placed in the \texttt{acflow/test} folder. See \texttt{acflow/test/test.md} and \texttt{acflow/test/tutor.md} for more details. The code repository of the ACFlow toolkit is:
-\begin{verbatim}
-    https://github.com/huangli712/ACFlow
-\end{verbatim}
+The source codes of the ACFlow toolkit are placed in the `acflow/src` folder. Their functions are summarized in Table~\ref{tab:source}. The documentation of the ACFlow toolkit is developed by using the Markdown language and `Documenter.jl` package. The source codes are placed in the `acflow/docs` folder. The users can build documentation by themselves. Please see Section~\ref{sec:usage} for how to do that. Or they can read the latest documentation in the following website:
+
+>    http://huangli712.github.io
+  
+Ten tests and four tutorials are also shipped with the ACFlow toolkit. Their source codes are placed in the `acflow/test` folder. See `acflow/test/test.md` and `acflow/test/tutor.md` for more details. The code repository of the ACFlow toolkit is:
+
+>    https://github.com/huangli712/ACFlow
