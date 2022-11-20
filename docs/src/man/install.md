@@ -15,8 +15,11 @@ Third, the users have to announce a new environment variable `ACFLOW_HOME` for o
 Finally, in order to generate the documentation, the users should type the following commands in the terminal:
 
 >    $ pwd
+>
 >    /home/your_home/acflow
+>
 >    $ cd docs
+>
 >    $ julia make.jl
 
 After a few seconds, the documentation is built and saved in the `acflow/docs/build` directory if everything is OK. The home page of the documentation is `acflow/docs/build/index.html`. We can read it with any web browsers.
