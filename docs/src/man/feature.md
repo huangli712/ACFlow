@@ -21,6 +21,6 @@ Now the ACFlow toolkit supports three analytical continuation methods as introdu
 |Script mode                    | Y | Y | Y | Y |
 |Standard mode                  | Y | Y | Y | Y |
 
-\caption{Major features of the ACFlow toolkit. \texttt{MaxEnt}, \texttt{StochAC}, \texttt{StochSK}, and \texttt{StochOM} are the four analytical continuation solvers implemented in this toolkit. \label{tab:feature}}
+**Table** Major features of the ACFlow toolkit. `MaxEnt`, `StochAC`, `StochSK`, and `StochOM` are the four analytical continuation solvers implemented in this toolkit.
 
 In Table~\ref{tab:feature}, `Y` means yes while `N` means no. `Interactive mode`, `Script mode`, and `Standard model` are three running modes supported by the ACFlow toolkit. We will introduce them in next section. The `MaxEnt` solver supports the `historic`, `classic`, `bryan`, and `chi2kink` algorithms to determine the $\alpha$ parameter. The `StochAC` solver is only compatible with a flat model function, while the `StochSK` and `StochOM` solvers don't rely on any default model functions. The `StochOM` solver does not support analytical continuation of fermionic imaginary time Green's function for the moment. 
