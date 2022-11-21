@@ -5,33 +5,38 @@ The input files for the ACFlow toolkit can be divided into two groups: data file
 The input data should be store in CSV-like text files. For imaginary time Green's function, the data file should contain three columns. They represent ``\tau``, ``\bar{G}(\tau)``, and standard deviation of ``\bar{G}(\tau)``. For fermionic Matsubara Green's function, the data file should contain five columns. They represent ``\omega_n``, Re``G(i\omega_n)``, Im``G(i\omega_n)``, standard deviation of Re``G(i\omega_n)``, and standard deviation of Im``G(i\omega_n)``. For bosonic correlation function ``\chi(i\omega_n)``, the data file should contain four columns. They represent ``\omega_n``, Re``\chi(i\omega_n)``, and standard deviation of Re``\chi(i\omega_n)``.
 
 The configure file adopts the TOML format. It is used to setup the computational parameters. It consists of one or more blocks. Possible blocks (or sections) in the configuration file include `[BASE]`, `[MaxEnt]`, `[StochAC]`, `[StochSK]`, and `[StochOM]`. The `[BASE]` block is mandatory, while the other blocks are optional. A schematic configuration file (`ac.toml`) is listed as follows:
-  
->\begin{lstlisting}[language=TOML,
->basicstyle=\ttfamily\small,
->backgroundcolor=\color{yellow!10},
->commentstyle=\color{olive!10!green},
->keywordstyle=\color{purple}]
+
 >[BASE]
+>
 >finput = "giw.data"
+>
 >solver = "StochOM"
+>
 >...
 >
 >[MaxEnt]
+>
 >method = "chi2kink"
+>
 >...
 >
 >[StochAC]
+>
 >nfine  = 10000
+>
 >...
 >
 >[StochSK]
+>
 >method = "chi2min"
+>
 >...
 >
 >[StochOM]
+>
 >ntry   = 100000
+>
 >...
->\end{lstlisting}
 
 In the `[BASE]` block, the analytical continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[StochAC]`, `[StochSK]`, and `[StochOM]` blocks are used to customize the corresponding analytical continuation solvers further. In Table~\ref{tab:base}-Table~\ref{tab:som}, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please refer to the user guide of the ACFlow toolkit. The uses can find it in the `acflow/docs` directory.   
   
