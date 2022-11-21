@@ -1,37 +1,33 @@
+!!! info
 
+In order to demonstrate usefulness of the ACFlow toolkit, four examples are illustrated in this section. These examples cover typical application scenarios of the ACFlow toolkit, including analytical continuations of Matsubara self-energy function, Matsubara Green's function, imaginary time Green's function, and current-current correlation function within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/test/T*` folders. 
 
 # Matsubara Self-Energy Function
 
-In order to demonstrate usefulness of the ACFlow toolkit, four examples are illustrated in this section. These examples cover typical application scenarios of the ACFlow toolkit, including analytical continuations of Matsubara self-energy function, Matsubara Green's function, imaginary time Green's function, and current-current correlation function within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the \texttt{/home/your\_home/acflow/test/T*} folders.  
-
-\subsection{Matsubara self-energy function\label{subsec:sigma}}
-
 Now let us consider the following single-band Hubbard model on a Bethe lattice at first:
+```math
 \begin{equation}
 H = -t \sum_{\langle ij \rangle \sigma} c^{\dagger}_{i\sigma}c_{j\sigma}
  - \mu \sum_i n_i + U \sum_i n_{i\uparrow} n_{i\downarrow},
 \end{equation}
+```
 where $t$ is the hopping parameter, $\mu$ is the chemical potential, $U$ is the Coulomb interaction, $n$ is the occupation number, $\sigma$ denotes the spin, $i$ and $j$ are site indices. This model is solved by using the dynamical mean-field theory (dubbed DMFT)~\cite{RevModPhys.68.13} with the hybridization expansion continuous-time quantum Monte Carlo solver (dubbed CT-HYB)~\cite{RevModPhys.83.349} as implemented in the $i$QIST package~\cite{HUANG2015140,HUANG2017423}. The parameters used in the DMFT + CT-HYB calculation are $t = 0.5$, $U = 2.0$, $\mu = 1.0$, and $\beta = 10.0$. Once the DMFT self-consistent calculation is finished, the Matsubara self-energy function $\Sigma(i\omega_n)$ is obtained. We are going to convert it to real frequency self-energy function $\Sigma(\omega)$. The data of Matsubara self-energy function $\Sigma(i\omega_n)$ have been preprocessed and stored in \texttt{siw.data}. This file contains five columns, which are used to record the Matsubara frequency $\omega_n$, Re$\Sigma(i\omega_n)$, Im$\Sigma(i\omega_n)$, error bar of Re$\Sigma(i\omega_n)$, error bar of Im$\Sigma(i\omega_n)$, respectively. Only the first twenty Matsubara frequency points are kept, because the high-frequency data are somewhat noisy.
 
 The purpose of this example is to demonstrate usage of the \texttt{MaxEnt} solver and the script mode of the ACFlow toolkit. Next we will explain the key steps in detail. As for the complete Julia script, please refer to \texttt{sigma.jl} and \texttt{gendata.jl} in the \texttt{/home/your\_home/acflow/test/T01/} folder.   
 
 First, we have to load the essential Julia packages. Both the \texttt{DelimitedFiles} and \texttt{Printf} packages belong to Julia's standard library. They are used to read input data and write calculated results, respectively.  
 
-\begin{lstlisting}[language=Julia,
-basicstyle=\ttfamily\small,
-backgroundcolor=\color{yellow!10},
-commentstyle=\color{olive!10!green},
-keywordstyle=\color{purple}]
-#!/usr/bin/env julia
-
-push!(LOAD_PATH, ENV["ACFLOW_HOME"])
-
-using DelimitedFiles
-using Printf
-using ACFlow
-
-welcome() # Print welcome message only
-\end{lstlisting}
+>#!/usr/bin/env julia
+>
+>push!(LOAD_PATH, ENV["ACFLOW_HOME"])
+>
+>using DelimitedFiles
+>
+>using Printf
+>
+>using ACFlow
+>
+>welcome() # Print welcome message only
 
 Next, the data of Matsubara self-energy function are read from \texttt{siw.data}. The Hartree term $\Sigma_{H}$ should be subtracted from its real part:
 \begin{equation}
