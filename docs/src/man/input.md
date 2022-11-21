@@ -70,14 +70,8 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 
 **Table** Possible input parameters for the `[MaxEnt]` block, which is used to setup the solver based on the maximum entropy method.
 
-\begin{table}[h]
-\centering
-\begin{tabular}{l|l|l|l}
-\hline
-\multicolumn{4}{c}{\texttt{[StochAC]} block} \\
-\hline
-Parameter & Type & Default & Description \\
-\hline
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
 \texttt{nfine}  & integer & 10000       & Number of points of a very fine linear mesh. \\
 \texttt{ngamm}  & integer & 512         & Number of ``\delta`` functions. \\
 \texttt{nwarm}  & integer & 4000        & Number of Monte Carlo thermalization steps. \\
@@ -86,11 +80,11 @@ Parameter & Type & Default & Description \\
 \texttt{nalph}  & integer & 20          & Total number of the chosen ``\alpha`` parameters. \\
 \texttt{alpha}  & float   & 1.0         & Starting value for the ``\alpha`` parameter. \\
 \texttt{ratio}  & float   & 1.2         & Scaling factor for the ``\alpha`` parameter. \\
-\hline
-\multicolumn{4}{c}{\texttt{[StochSK]} block} \\
-\hline
+
+**Table** Possible input parameters for the `[StochAC]` block, which is used to setup the solver based on the stochastic analytical continuation (Beach's algorithm).
+
 Parameter & Type & Default & Description \\
-\hline
+| :-------- | :--- | :------ | :---------- |
 \texttt{method} & string  & ``chi2min'' & How to determine the optimized ``\Theta`` parameter? \\
 \texttt{nfine}  & integer & 100000      & Number of points of a very fine linear mesh. \\
 \texttt{ngamm}  & integer & 1000        & Number of ``\delta`` functions. \\
@@ -100,19 +94,11 @@ Parameter & Type & Default & Description \\
 \texttt{retry}  & integer & 10          & How often to recalculate the goodness-of-fit function. \\
 \texttt{theta}  & float   & 1e6         & Starting value for the ``\Theta`` parameter. \\
 \texttt{ratio}  & float   & 0.9         & Scaling factor for the ``\Theta`` parameter. \\
-\hline
-\end{tabular}
-\caption{Possible input parameters for the \texttt{[StochAC]} and \texttt{[StochSK]} blocks, which are used to setup the two solvers based on the stochastic analytical continuation (Beach's and Sandvik's algorithms)~\cite{PhysRevB.57.10287,beach}. \label{tab:sac}}
-\end{table}
 
-\begin{table}[h]
-\centering
-\begin{tabular}{l|l|l|l}
-\hline
-\multicolumn{4}{c}{\texttt{[StochOM]} block} \\
-\hline
-Parameter & Type & Default & Description \\
-\hline
+**Table** Possible input parameters for the `[StochSK]` block, which is used to setup the solver based on the stochastic analytical continuation (Sandvik's algorithm).
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
 \texttt{ntry}   & integer & 2000        & Number of attempts to figure out the solution. \\
 \texttt{nstep}  & integer & 1000        & Number of Monte Carlo steps per try. \\
 \texttt{nbox}   & integer & 100         & Number of boxes to construct the spectrum. \\
