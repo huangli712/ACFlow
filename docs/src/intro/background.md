@@ -1,4 +1,4 @@
-# Motivation
+# Background
 
 It is well-known that quantum Monte Carlo (QMC) method is a powerful and exact numerical approach, and has been widely used in many research fields, such as nuclear physics, condense matter physics, and many-body physics. In this paper, we just focus on the finite temperature QMC algorithms, which are used to solve interacting lattice models or quantum impurity models. Generally speaking, the simulated results of QMC methods are some sorts of single-particle or two-particle correlation functions, which are usually defined on imaginary time axis (``\tau \equiv -it``) or Matsubara frequency axis (``i\omega_n``). Therefore, they can't be compared directly with the correspondingly experimental results, including but not limited to electronic density of states ``A(\omega)``, optical conductivity ``\sigma(\omega)``, dynamical structure factor ``S(\mathbf{q},\omega)``, and so on. It is necessary to convert the QMC simulated results from imaginary time axis or Matsubara frequency axis to real axis (i.e ``\tau \to \omega`` or ``i\omega_n \to \omega``), which is the origin of the analytical continuation problem.
 

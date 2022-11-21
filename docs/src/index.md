@@ -14,7 +14,7 @@
 
 ```@contents
 Pages = [
-    "intro.md",
+    "intro/background.md",
 ]
 ```
 
