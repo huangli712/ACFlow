@@ -13,7 +13,9 @@ makedocs(
     modules = [ACFlow],
     pages = [
         "Home" => "index.md",
-        "Introduction" => "intro.md",
+        "Introduction" => Any[
+            "Background" => "intro/background.md",
+        ],
         "Manual" => Any[
             "Main Features" => "man/feature.md",
             "Implementations" => "man/impl.md",
