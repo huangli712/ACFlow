@@ -16,7 +16,7 @@ Here, ``W`` denotes bandwidth, and ``\Delta`` is used to control size of the ene
 
 First, the imaginary time Green's function ``G(\tau)`` is generated using Eq.~(\ref{eq:kernel_t}). Then a normally-distributed random noise is add to ``G(\tau)``. Maximum amplitude of the noise is 1e-4. The error bar of ``G(\tau)`` is fixed to 1e-3. The data are written in `gtau.data`.
 
-Next, we try to prepare the configure file (`ac.toml`). In this case, we would like to benchmark the `StochAC` solver, so the `solver` parameter is set to ``StochAC'' and the `grid` parameter is set to ''ftime''. Furthermore, the `exclude` parameter is enabled to impose some *a priori* constraints to the spectrum. The full `ac.toml` is listed as follows:
+Next, we try to prepare the configure file (`ac.toml`). In this case, we would like to benchmark the `StochAC` solver, so the `solver` parameter is set to ''StochAC'' and the `grid` parameter is set to ''ftime''. Furthermore, the `exclude` parameter is enabled to impose some *a priori* constraints to the spectrum. The full `ac.toml` is listed as follows:
 
 ```toml
 [BASE]
