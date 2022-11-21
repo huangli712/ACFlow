@@ -11,11 +11,11 @@ H = -t \sum_{\langle ij \rangle \sigma} c^{\dagger}_{i\sigma}c_{j\sigma}
  - \mu \sum_i n_i + U \sum_i n_{i\uparrow} n_{i\downarrow},
 \end{equation}
 ```
-where $t$ is the hopping parameter, $\mu$ is the chemical potential, $U$ is the Coulomb interaction, $n$ is the occupation number, $\sigma$ denotes the spin, $i$ and $j$ are site indices. This model is solved by using the dynamical mean-field theory (dubbed DMFT) with the hybridization expansion continuous-time quantum Monte Carlo solver (dubbed CT-HYB) as implemented in the $i$QIST package. The parameters used in the DMFT + CT-HYB calculation are $t = 0.5$, $U = 2.0$, $\mu = 1.0$, and $\beta = 10.0$. Once the DMFT self-consistent calculation is finished, the Matsubara self-energy function $\Sigma(i\omega_n)$ is obtained. We are going to convert it to real frequency self-energy function $\Sigma(\omega)$. The data of Matsubara self-energy function $\Sigma(i\omega_n)$ have been preprocessed and stored in \texttt{siw.data}. This file contains five columns, which are used to record the Matsubara frequency $\omega_n$, Re$\Sigma(i\omega_n)$, Im$\Sigma(i\omega_n)$, error bar of Re$\Sigma(i\omega_n)$, error bar of Im$\Sigma(i\omega_n)$, respectively. Only the first twenty Matsubara frequency points are kept, because the high-frequency data are somewhat noisy.
+where ``t`` is the hopping parameter, ``\mu`` is the chemical potential, ``U`` is the Coulomb interaction, ``n`` is the occupation number, ``\sigma`` denotes the spin, ``i`` and ``j`` are site indices. This model is solved by using the dynamical mean-field theory (dubbed DMFT) with the hybridization expansion continuous-time quantum Monte Carlo solver (dubbed CT-HYB) as implemented in the ``i``QIST package. The parameters used in the DMFT + CT-HYB calculation are ``t = 0.5``, ``U = 2.0``, ``\mu = 1.0``, and ``\beta = 10.0``. Once the DMFT self-consistent calculation is finished, the Matsubara self-energy function ``\Sigma(i\omega_n)`` is obtained. We are going to convert it to real frequency self-energy function ``\Sigma(\omega)``. The data of Matsubara self-energy function ``\Sigma(i\omega_n)`` have been preprocessed and stored in `siw.data`. This file contains five columns, which are used to record the Matsubara frequency ``\omega_n``, Re``\Sigma(i\omega_n)``, Im``\Sigma(i\omega_n)``, error bar of Re``\Sigma(i\omega_n)``, error bar of Im``\Sigma(i\omega_n)``, respectively. Only the first twenty Matsubara frequency points are kept, because the high-frequency data are somewhat noisy.
 
-The purpose of this example is to demonstrate usage of the \texttt{MaxEnt} solver and the script mode of the ACFlow toolkit. Next we will explain the key steps in detail. As for the complete Julia script, please refer to \texttt{sigma.jl} and \texttt{gendata.jl} in the \texttt{/home/your\_home/acflow/test/T01/} folder.   
+The purpose of this example is to demonstrate usage of the `MaxEnt` solver and the script mode of the ACFlow toolkit. Next we will explain the key steps in detail. As for the complete Julia script, please refer to `sigma.jl` and `gendata.jl` in the `/home/your\_home/acflow/test/T01/` folder.   
 
-First, we have to load the essential Julia packages. Both the \texttt{DelimitedFiles} and \texttt{Printf} packages belong to Julia's standard library. They are used to read input data and write calculated results, respectively.  
+First, we have to load the essential Julia packages. Both the `DelimitedFiles` and `Printf` packages belong to Julia's standard library. They are used to read input data and write calculated results, respectively.  
 
 ```julia
 #!/usr/bin/env julia
@@ -29,13 +29,13 @@ using ACFlow
 welcome() # Print welcome message only
 ```
 
-Next, the data of Matsubara self-energy function are read from \texttt{siw.data}. The Hartree term $\Sigma_{H}$ should be subtracted from its real part:
+Next, the data of Matsubara self-energy function are read from `siw.data`. The Hartree term ``Sigma_{H}`` should be subtracted from its real part:
 ```math
 \begin{equation}
 \Sigma(i\omega_n) \to \Sigma(i\omega_n) - \Sigma_{H}.
 \end{equation}
 ```
-Note that $\Sigma_{H}$ is approximately equal to the asymptotic value of real part of $\Sigma(i\omega_n)$ when $n$ goes to infinite.   
+Note that ``\Sigma_{H}`` is approximately equal to the asymptotic value of real part of ``\Sigma(i\omega_n)`` when ``n`` goes to infinite.   
  
 ```julia
 # Deal with self-energy function
@@ -55,7 +55,7 @@ Sh = 1.0
 @. Sinp = Sinp - Sh
 ```
 
-Next, the computational parameters are encapsulated into two dictionaries. Then the \texttt{setup\_param()} function is called, so that these parameters take effect. Here, the \texttt{MatEnt} solver is employed to tackle the analytical continuation problem. But the other stochastic sampling solvers are also applicable. The default model function is gaussian. The mesh for spectral density is non-uniform (A tangent mesh). The number of used $\alpha$ parameters is 15, and the optimal $\alpha$ parameter is determined by the $\chi^2$kink algorithm. 
+Next, the computational parameters are encapsulated into two dictionaries. Then the `setup_param()` function is called, so that these parameters take effect. Here, the `MatEnt` solver is employed to tackle the analytical continuation problem. But the other stochastic sampling solvers are also applicable. The default model function is gaussian. The mesh for spectral density is non-uniform (A tangent mesh). The number of used ``\alpha`` parameters is 15, and the optimal ``\alpha`` parameter is determined by the ``\chi^2``kink algorithm. 
 
 ```julia
 # Setup parameters
@@ -85,14 +85,14 @@ S = Dict{String,Any}(
 setup_param(B, S)
 ```
 
-It is quite easy to start the analytical continuation calculation. Just call the \texttt{solve()} function and pass the grid, input data, and error bar data to it. The return values of this function call are real frequency mesh, spectral density, and reconstructed Matsubara self-energy function. 
+It is quite easy to start the analytical continuation calculation. Just call the `solve()` function and pass the grid, input data, and error bar data to it. The return values of this function call are real frequency mesh, spectral density, and reconstructed Matsubara self-energy function. 
 
 ```julia
 # Call the solver
 mesh, Aout, Sout = solve(grid, Sinp, Serr)
 ```
 
-Finally, the real frequency self-energy function must be supplemented with the Hartree term. Then the final results are written into \texttt{sigma.data}.   
+Finally, the real frequency self-energy function must be supplemented with the Hartree term. Then the final results are written into `sigma.data`.   
    
 ```julia
 # Calculate final self-energy function on real axis
@@ -113,7 +113,7 @@ end
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\textwidth]{T_E1.pdf}
-\caption{Analytical continuation of Matsubara self-energy function by using the maximum entropy method. (a) Real part of real frequency self-energy function. (b) Imaginary part of real frequency self-energy function. (c) $\chi^{2}$ as a function of $\alpha$. The vertical bar indicates the optimal $\alpha$ parameter chosen by the $\chi^2$kink algorithm. (d) Reproduced and original data for imaginary part of the Matsubara self-energy functions. \label{fig:sig}}
+\caption{Analytical continuation of Matsubara self-energy function by using the maximum entropy method. (a) Real part of real frequency self-energy function. (b) Imaginary part of real frequency self-energy function. (c) ``\chi^{2}`` as a function of ``\alpha``. The vertical bar indicates the optimal ``\alpha`` parameter chosen by the ``\chi^2``kink algorithm. (d) Reproduced and original data for imaginary part of the Matsubara self-energy functions. \label{fig:sig}}
 \end{figure}
 
-The calculated results are displayed in Fig.~\ref{fig:sig}. Fig.~{\ref{fig:sig}}(a) and (b) show the real and imaginary parts of the real frequency self-energy function. Near the Fermi level, Re$\Sigma(\omega)$ exhibits quasi-linear behavior, with which the quasiparticle weight $Z$ and effective mass of electron $m^*$ can be easily evaluated. As for the imaginary part, Im$\Sigma(0)$ is finite, which indicates that the electron-electron scattering is not trivial. Fig.~\ref{fig:sig}(c) shows the $\alpha$-dependent $\chi^{2}$. The vertical bar in this figure indicates the optimal $\alpha$ is around 2.15. In Fig.~\ref{fig:sig}(d), the reproduced and raw self-energy functions are compared. It is apparent that they are consistent with each other.
+The calculated results are displayed in Fig.~\ref{fig:sig}. Fig.~{\ref{fig:sig}}(a) and (b) show the real and imaginary parts of the real frequency self-energy function. Near the Fermi level, Re``\Sigma(\omega)`` exhibits quasi-linear behavior, with which the quasiparticle weight ``Z`` and effective mass of electron ``m^*`` can be easily evaluated. As for the imaginary part, Im``\Sigma(0)`` is finite, which indicates that the electron-electron scattering is not trivial. Fig.~\ref{fig:sig}(c) shows the ``\alpha``-dependent ``\chi^{2}``. The vertical bar in this figure indicates the optimal ``\alpha`` is around 2.15. In Fig.~\ref{fig:sig}(d), the reproduced and raw self-energy functions are compared. It is apparent that they are consistent with each other.
