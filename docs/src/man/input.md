@@ -40,8 +40,6 @@ The configure file adopts the TOML format. It is used to setup the computational
 
 In the `[BASE]` block, the analytical continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[StochAC]`, `[StochSK]`, and `[StochOM]` blocks are used to customize the corresponding analytical continuation solvers further. In Table~\ref{tab:base}-Table~\ref{tab:som}, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please refer to the user guide of the ACFlow toolkit. The uses can find it in the `acflow/docs` directory.   
 
-\multicolumn{4}{c}{\texttt{[BASE]} block} \\
-
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 |`finput`  | string  | ''green.data'' | Filename for input data. |
@@ -60,7 +58,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`pmesh`   | array   | N/A            | Additional parameters for customizing the mesh. |
 |`exclude` | array   | N/A            | Restriction of the energy range of the spectrum. |
 
-\caption{Possible parameters for the \texttt{[BASE]} block.\label{tab:base}}
+**Table** Possible parameters for the `[BASE]` block.
 
 \begin{table}[h]
 \centering
