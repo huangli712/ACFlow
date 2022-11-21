@@ -47,10 +47,8 @@ ratio = 1.20
 
 We perform analytical continuation simulation by running the `acrun.jl` or `Pacrun.jl` script. In order to obtain smooth spectral density, it is useful to increase number of ``\delta`` functions (See `ngamm` parameter) and number of Monte Carlo sampling steps (See `nstep` parameter).     
 
-\begin{figure}[ht]
-\centering
-\includegraphics[width=\textwidth]{T_E3.pdf}
-\caption{Analytical continuation of imaginary time Green's function by using the stochastic analytical continuation (Beach's algorithm). (a) Simulated and exact spectral functions. (b) ``\alpha``-dependent spectral functions. (c) Internal energy ``U`` as a function of ``\alpha``. The vertical bar indicates the optimal ``\alpha`` parameter. (d) Simulated and exact imaginary time Green's functions. \label{fig:gtau}}
-\end{figure}
+![T_E3.png](../assets/T_E3.png)
+
+**Figure |** Analytical continuation of imaginary time Green's function by using the stochastic analytical continuation (Beach's algorithm). (a) Simulated and exact spectral functions. (b) ``\alpha``-dependent spectral functions. (c) Internal energy ``U`` as a function of ``\alpha``. The vertical bar indicates the optimal ``\alpha`` parameter. (d) Simulated and exact imaginary time Green's functions.
  
 Figure~\ref{fig:gtau} shows the calculated results. In Fig.~\ref{fig:gtau}(a), the exact spectral function is compared with the simulated spectrum. Note that besides the `StochAC` solver, the other three solvers are also tested. Their results are also plotted in this figure for a direct comparison. It is remarkable that the `StochAC` and `StochSK` solvers do a superior job of modelling the spectrum. The major characteristics of the spectrum, including flat regions, steep peaks, and sharp gap edges, are well captured by the two solvers. Especially, we have finished more tests without any constraints on the spectral density. The gap in the spectrum can be reproduced as well. On the other hand, the spectra obtained by the `MaxEnt` and `StochOM` solvers are much too smooth, and show extra shoulder peaks around ``\pm`` 2.0. Figure~\ref{fig:gtau}(b) shows ``\alpha``-resolved spectral functions ``A_{\alpha}(\omega)`` for selected ``\alpha`` parameters. Fluctuation in the flat regions of the calculated spectral density grows when ``\alpha`` increases. Figure~\ref{fig:gtau}(c) shows internal energy ``U`` as a function of ``\alpha``. From this figure, the critical ``\alpha`` is estimated, which is indicated by the vertical bar. Finally, the reproduced Green's function ``\tilde{G}(\tau)`` agrees quite well with the raw input data, which is shown in Fig.~\ref{fig:gtau}(d).     
