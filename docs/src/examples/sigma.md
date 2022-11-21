@@ -1,6 +1,6 @@
 !!! info
 
-In order to demonstrate usefulness of the ACFlow toolkit, four examples are illustrated in this section. These examples cover typical application scenarios of the ACFlow toolkit, including analytical continuations of Matsubara self-energy function, Matsubara Green's function, imaginary time Green's function, and current-current correlation function within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/test/T*` folders. 
+    In order to demonstrate usefulness of the ACFlow toolkit, four examples are illustrated in this section. These examples cover typical application scenarios of the ACFlow toolkit, including analytical continuations of Matsubara self-energy function, Matsubara Green's function, imaginary time Green's function, and current-current correlation function within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/test/T*` folders. 
 
 # Matsubara Self-Energy Function
 
@@ -110,10 +110,9 @@ open("sigma.data", "w") do fout
 end
 ```
 
-\begin{figure}[ht]
-\centering
-\includegraphics[width=\textwidth]{T_E1.pdf}
+
+!(../assets/T_E1.png)
+
 \caption{Analytical continuation of Matsubara self-energy function by using the maximum entropy method. (a) Real part of real frequency self-energy function. (b) Imaginary part of real frequency self-energy function. (c) ``\chi^{2}`` as a function of ``\alpha``. The vertical bar indicates the optimal ``\alpha`` parameter chosen by the ``\chi^2``kink algorithm. (d) Reproduced and original data for imaginary part of the Matsubara self-energy functions. \label{fig:sig}}
-\end{figure}
 
 The calculated results are displayed in Fig.~\ref{fig:sig}. Fig.~{\ref{fig:sig}}(a) and (b) show the real and imaginary parts of the real frequency self-energy function. Near the Fermi level, Re``\Sigma(\omega)`` exhibits quasi-linear behavior, with which the quasiparticle weight ``Z`` and effective mass of electron ``m^*`` can be easily evaluated. As for the imaginary part, Im``\Sigma(0)`` is finite, which indicates that the electron-electron scattering is not trivial. Fig.~\ref{fig:sig}(c) shows the ``\alpha``-dependent ``\chi^{2}``. The vertical bar in this figure indicates the optimal ``\alpha`` is around 2.15. In Fig.~\ref{fig:sig}(d), the reproduced and raw self-energy functions are compared. It is apparent that they are consistent with each other.
