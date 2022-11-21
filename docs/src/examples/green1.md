@@ -38,10 +38,8 @@ wbox  = 0.02
 norm  = -1.0
 ```
 
-\begin{figure}[ht]
-\centering
-\includegraphics[width=\textwidth]{T_E2.pdf}
-\caption{Analytical continuation of Matsubara Green's function by using the stochastic optimization method. (a) Simulated and exact spectral functions. (b) Reconstructed and synthetic Matsubara Green's functions. Only the imaginary parts are presented in this figure. \label{fig:giw}}
-\end{figure}
+![T_E2.png](../assets/T_E2.png)
+
+**Figure |** Analytical continuation of Matsubara Green's function by using the stochastic optimization method. (a) Simulated and exact spectral functions. (b) Reconstructed and synthetic Matsubara Green's functions. Only the imaginary parts are presented in this figure.
 
 Then we use the `acrun.jl` or `Pacrun.jl` script to perform analytical continuation simulation. The calculated results are shown in Fig.~\ref{fig:giw}. As is seen in Fig.~\ref{fig:giw}(a), both the sharp peak around 0.5~eV and the broad peak around -2.5~eV are correctly reproduced by the `StochOM` solver. In Fig.~\ref{fig:giw}(b), the reconstructed Matsubara Green's function agrees quite well with the raw input data.
