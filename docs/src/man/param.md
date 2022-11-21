@@ -11,7 +11,7 @@ Pages = ["param.md"]
 Depth = 3
 ```
 
-## [BASE] block
+## [BASE] Block
 
 !!! note
 
@@ -378,7 +378,7 @@ Depth = 3
 
 > This parameter is optional. If you are using the `MaxEnt` solver, this parameter will be ignored.
 
-## [MaxEnt] block
+## [MaxEnt] Block
 
 !!! note
 
@@ -485,7 +485,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-## [StochAC] block
+## [StochAC] Block
 
 !!! note
 
@@ -639,7 +639,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-## [StochSK] block
+## [StochSK] Block
 
 !!! note
 
@@ -793,7 +793,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-## [StochOM] block
+## [StochOM] Block
 
 !!! note
 
