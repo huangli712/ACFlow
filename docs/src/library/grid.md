@@ -36,7 +36,7 @@ BosonicImaginaryTimeGrid(ntime::I64, β::F64)
 BosonicMatsubaraGrid(nfreq::I64, β::F64)
 ```
 
-## Base.* functions
+## Base.* Functions
 
 ```@docs
 Base.length(fg::FermionicImaginaryTimeGrid)

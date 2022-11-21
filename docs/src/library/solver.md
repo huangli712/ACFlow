@@ -15,7 +15,7 @@ Depth = 3
 Pages = ["solver.md"]
 ```
 
-## Abstract structs
+## Abstract Structs
 
 ```@docs
 AbstractSolver
@@ -55,7 +55,7 @@ calc_bayes_offdiag
 calc_chi2
 ```
 
-## StochAC solver
+## StochAC Solver
 
 ### Structs
 
@@ -94,7 +94,7 @@ try_mov2
 try_swap
 ```
 
-## StochSK solver
+## StochSK Solver
 
 ### Structs
 
@@ -130,7 +130,7 @@ try_move_s
 try_move_p
 ```
 
-## StochOM solver
+## StochOM Solver
 
 ### Structs
 

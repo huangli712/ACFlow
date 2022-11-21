@@ -15,14 +15,14 @@ Depth = 3
 Pages = ["math.md"]
 ```
 
-## Root finding
+## Root Finding
 
 ```@docs
 secant
 newton
 ```
 
-## Numerical integrations
+## Numerical Integrations
 
 ```@docs
 trapz
@@ -55,13 +55,13 @@ munge_data
 _interp
 ```
 
-## Einstein summation convention
+## Einstein Summation Convention
 
 ```@docs
 @einsum
 ```
 
-## Curve fitting
+## Curve Fitting
 
 ### Structs
 

@@ -17,13 +17,13 @@ Depth = 2
 Pages = ["model.md"]
 ```
 
-## Flat model
+## Flat Model
 
 ```@docs
 build_flat_model
 ```
 
-## Gaussian models
+## Gaussian Models
 
 !!! note
 
@@ -35,7 +35,7 @@ build_1gaussian_model
 build_2gaussians_model
 ```
 
-## Lorentzian models
+## Lorentzian Models
 
 !!! note
 
@@ -47,7 +47,7 @@ build_1lorentzian_model
 build_2lorentzians_model
 ```
 
-## Unusual models
+## Unusual Models
 
 !!! note
 

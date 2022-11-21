@@ -15,7 +15,7 @@ Depth = 2
 Pages = ["type.md"]
 ```
 
-## Data types
+## Data Types
 
 ```@docs
 DType

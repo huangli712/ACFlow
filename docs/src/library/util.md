@@ -15,7 +15,7 @@ Depth = 2
 Pages = ["util.md"]
 ```
 
-## Color constants
+## Color Constants
 
 ```@docs
 COLORS
@@ -30,7 +30,7 @@ MODES
 @pcs
 ```
 
-## Query runtime environment
+## Query Runtime Environment
 
 ```@docs
 require
@@ -38,7 +38,7 @@ setup_args
 query_args
 ```
 
-## Colorful outputs
+## Colorful Outputs
 
 ```@docs
 welcome
@@ -48,13 +48,13 @@ sorry
 prompt
 ```
 
-## Input/output operations
+## Input/output Operations
 
 ```@docs
 line_to_array
 ```
 
-## Color tools
+## Color Tools
 
 ```@docs
 colorize

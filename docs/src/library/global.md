@@ -15,7 +15,7 @@ Depth = 2
 Pages = ["global.md"]
 ```
 
-## Numerical types
+## Numerical Types
 
 ```@docs
 I32
@@ -30,7 +30,7 @@ N32
 N64
 ```
 
-## String constants
+## String Constants
 
 ```@docs
 __LIBNAME__

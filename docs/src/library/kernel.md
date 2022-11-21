@@ -15,7 +15,7 @@ Depth = 2
 Pages = ["kernel.md"]
 ```
 
-## Making kernels
+## Making Kernels
 
 ```@docs
 build_kernel

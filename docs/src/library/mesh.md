@@ -37,7 +37,7 @@ LorentzMesh(nmesh::I64, wmin::F64, wmax::F64, 𝑝::F64 = 0.01)
 HalfLorentzMesh(nmesh::I64, wmax::F64, 𝑝::F64 = 0.01)
 ```
 
-## Base.* functions
+## Base.* Functions
 
 ```@docs
 Base.length(am::AbstractMesh)

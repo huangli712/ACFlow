@@ -15,14 +15,14 @@ Depth = 2
 Pages = ["inout.md"]
 ```
 
-## Read data
+## Read Data
 
 ```@docs
 read_real_data
 read_cmplx_data
 ```
 
-## Write data
+## Write Data
 
 ```@docs
 write_spectrum
