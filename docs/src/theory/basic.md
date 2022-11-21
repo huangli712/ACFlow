@@ -1,6 +1,6 @@
 # Basic Principles
 
-## Finite temperature Green's functions
+## Finite Temperature Green's Functions
 
 Under the Wick's rotation ``t \to i\tau``, the time evolution operator in the Heisenberg picture ``e^{itH}`` will be replaced by ``e^{-\tau H}``. Such a transformation will increase efficiency of QMC random walking and suppress numerical oscillation (when ``t`` is large, the periodic oscillation of ``e^{itH}`` is quite obvious). This is an important reason why most of the finite temperature QMC algorithms are formulated in imaginary time axis. The outputs of finite temperature QMC simulations are usually single-particle or two-particle correlation functions. For example, the imaginary time Green's function ``G(\tau)`` is defined as follows: 
 ```math
@@ -21,7 +21,7 @@ G(\tau) = \frac{1}{\beta} \sum_n e^{i\omega_n \tau} G(i\omega_n).
 ```
 Here, ``\beta`` means the inverse temperature (``\beta \equiv 1/T``) and ``\omega_n`` is the Matsubara frequency. Note that ``\omega_n`` is equal to ``(2n + 1) \pi / \beta`` for fermions and ``2n\pi/ \beta`` for bosons (``n`` is an integer).
 
-## Spectral density
+## Spectral Density
 
 Clearly, neither ``G(\tau)`` nor ``G(i\omega_n)`` can be observed experimentally. We have to extract dynamical response function, i.e., the spectral density ``A(\omega)``, from them. ``A(\omega)`` is indeed an observable quantity. It is related to ``G(\tau)`` via the following Laplace transformation:
 ```math

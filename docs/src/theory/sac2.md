@@ -10,7 +10,7 @@
 
 K. S. D. Beach proposed another variant of stochastic analytical continuation in 2004. In his approach, the analytical continuation problem is mapped into a system of interacting classic fields at first. Then the classic field is sampled using Monte Carlo method to obtain the final solution. He concluded that the maximum entropy method is simply the mean field limit of the stochastic analytical continuation. Next, this algorithm will be explained concisely.     
 
-## Classic fields
+## Classic Fields
 
 Recalled that the goodness-of-fit functional ``\chi^{2}[A]`` measures how closely the Green's function generated from ``A(\omega)`` matches the raw input data. Its expression is rewritten as follows: 
 ```math
@@ -74,7 +74,7 @@ Finally, according to the definition of the classic field, the averaged spectral
 ```
 So, by introducing the classic field ``\{n(x)\}``, the analytical continuation problem is converted into a statistical sampling of the classic field, which is easily solved by using the Monte Carlo method.   
 
-## Monte Carlo sampling
+## Monte Carlo Sampling
 
 Next we clarify how to sample the classic field. Similar to Sandvik's algorithm, ``n(x)`` is parameterized as a superposition of many ``\delta`` functions (see Fig.~\ref{fig:san} for schematic diagram): 
 ```math
@@ -149,7 +149,7 @@ p(C \to C') = \exp(-\alpha \Delta H).
 \end{equation}
 ```
 
-## Parallel tempering
+## Parallel Tempering
 
 The parallel tempering trick is adopted to improve the Monte Carlo algorithm as described above. It is possible to proceed multiple simulations simultaneously for a sequence of inverse temperature parameters ``\{\alpha_1, \alpha_2, \cdots, \alpha_N \}``. The ratio for two adjacent ``\alpha`` parameters is a constant: ``\alpha_{p+1} / \alpha_p = R``. Note that the field configurations in all simulations evolve in parallel but not independently. We can swap the field configurations between two adjacent layers. Of course, the detailed balance is always preserved, and each simulation will eventually settle into thermal equilibrium at given ``\alpha``. The transition probability of such a global Monte Carlo update is:
 ```math
@@ -159,7 +159,7 @@ p(\mathcal{C} \to \mathcal{C}') = \exp[(\alpha_p - \alpha_q)(H_{p} - H_{q})],
 ```
 where ``p`` and ``q`` are layer indices, and ``p = q \pm 1``. Parallel tempering eliminates the need for an initial annealing stage. Another advantage of parallel tempering is that it yields a complete temperature profile of all the important thermodynamic variables (such as specific heat and internal energy), which can be used to estimate the critical ``\alpha`` and final spectral function ``\langle A(\omega) \rangle``.   
 
-## Critical inverse temperature
+## Critical Inverse Temperature
 
 Clearly, ``\langle n(x) \rangle`` strongly depends on the inverse temperature ``\alpha``. How to use these ``\alpha``-dependent ``\langle n(x) \rangle`` to construct the final spectral function? Beach proposed a new algorithm. During parallel tempering process, the internal energy of the system is also measured in addition to ``\langle n(x) \rangle``: 
 ```math
@@ -177,7 +177,7 @@ Let us plot ``\log_{10}[U(\alpha)]`` as a function of ``\log_{10} (\alpha)``. We
 ```
 where ``N`` is the total number of ``\alpha``, and ``\alpha_{p*}`` (``\equiv \alpha^{*}``) is the critical inverse temperature.
 
-## Likelihood function
+## Likelihood Function
 
 Neither of the Sandvik's and Beach's algorithms needs extra entropic term to regulate spectral density. All the stochastically generated spectra are treated on the same footing. Thus, the calculated spectral function retains more subtle structures than that obtained by the maximum entropy method. Actually, in stochastic analytical continuation,
 ```math

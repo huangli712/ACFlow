@@ -8,7 +8,7 @@
 
 A. O. Mishchenko *et al.* proposed the stochastic optimization method. Though it looks like the stochastic analytical continuation, their differences are quite apparent. The stochastic optimization method does not need any likelihood function or Boltzmann distribution to weight the candidate spectral functions. It generates a lot of spectral functions through Monte Carlo samplings. For each candidate spectral function, the deviation ``D`` between the reconstructed Green's function ``\tilde{G}`` and original Green's function ``\bar{G}`` is measured. Those spectral functions with small deviations ``D`` are selected and averaged. Such that the desired spectral function is obtained.   
 
-## Deviation function
+## Deviation Function
 
 In the stochastic optimization method, the deviation between reconstructed data ``\tilde{G}`` and input data ``\bar{G}`` is described by:
 ```math
@@ -24,7 +24,7 @@ where ``M`` is the number of input data, and ``\Delta(m)`` is the deviation func
 ```
 Here, ``S(m) = |G(m)|^{d}`` (where ``0 \le d \le 1``). Recently, Krivenko *et al.* suggested that it would be better to use the goodness-of-fit functional ``\chi^2[A]`` to replace ``D[A]``.  
 
-## Spectral density
+## Spectral Density
 
 The stochastic optimization method will try to accumulate the candidate spectral functions that manifest small ``D[A]``. Supposed the Monte Carlo simulations are repeated for ``L`` times. For the ``i``-th Monte Carlo simulation, the spectral density ``A_i(\omega)`` and deviation ``D[A_i]`` are recorded. The minimum value of deviation is ``\min\{D[A_i]\}``. Thus, the final spectral density reads: 
 ```math
@@ -48,7 +48,7 @@ D[A_i] \le \alpha_{\text{good}} \min\{D[A_i]\}.
 ```
 Clearly, the larger ``\alpha_{\text{good}}`` is, the more spectral functions are included. It is usually set to 2.  
 
-## Rectangle representation
+## Rectangle Representation
 
 Similar to the stochastic analytical continuation, the stochastic optimization method usually employs a few rectangle functions to parameterize the spectral function:
 ```math
@@ -72,7 +72,7 @@ where ``c_i``, ``w_i``, ``h_i`` denote the center, width, and height of the ``i`
 \end{equation}
 ```
 
-## Monte Carlo sampling
+## Monte Carlo Sampling
 
 The parameters of all rectangle functions create a configuration space:
 ```math

@@ -1,1 +1,1 @@
-# Imaginary-Time Green's Function
+# Matsubara Green's Function
