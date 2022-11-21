@@ -62,38 +62,38 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-|\texttt{method} & string  & ``chi2kink''& How to determine the optimized ``\alpha`` parameter? \\
-|\texttt{nalph}  & integer & 12          & Total number of the chosen ``\alpha`` parameters. \\
-|\texttt{alpha}  & float   & 1e9         & Starting value for the ``\alpha`` parameter. \\
-|\texttt{ratio}  & float   & 10.0        & Scaling factor for the ``\alpha`` parameter. \\
-|\texttt{blur}   & float   & -1.0        & Shall we preblur the kernel and spectrum?\\
+|\texttt{method} | string  | ``chi2kink''| How to determine the optimized ``\alpha`` parameter? \\
+|\texttt{nalph}  | integer | 12          | Total number of the chosen ``\alpha`` parameters. \\
+|\texttt{alpha}  | float   | 1e9         | Starting value for the ``\alpha`` parameter. \\
+|\texttt{ratio}  | float   | 10.0        | Scaling factor for the ``\alpha`` parameter. \\
+|\texttt{blur}   | float   | -1.0        | Shall we preblur the kernel and spectrum?\\
 
 **Table** Possible input parameters for the `[MaxEnt]` block, which are used to setup the solver based on the maximum entropy method.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-\texttt{nfine}  & integer & 10000       & Number of points of a very fine linear mesh. \\
-\texttt{ngamm}  & integer & 512         & Number of ``\delta`` functions. \\
-\texttt{nwarm}  & integer & 4000        & Number of Monte Carlo thermalization steps. \\
-\texttt{nstep}  & integer & 4000000     & Number of Monte Carlo sweeping steps. \\
-\texttt{ndump}  & integer & 40000       & Intervals for monitoring Monte Carlo sweeps. \\
-\texttt{nalph}  & integer & 20          & Total number of the chosen ``\alpha`` parameters. \\
-\texttt{alpha}  & float   & 1.0         & Starting value for the ``\alpha`` parameter. \\
-\texttt{ratio}  & float   & 1.2         & Scaling factor for the ``\alpha`` parameter. \\
+|\texttt{nfine}  | integer | 10000       | Number of points of a very fine linear mesh. \\
+|\texttt{ngamm}  | integer | 512         | Number of ``\delta`` functions. \\
+|\texttt{nwarm}  | integer | 4000        | Number of Monte Carlo thermalization steps. \\
+|\texttt{nstep}  | integer | 4000000     | Number of Monte Carlo sweeping steps. \\
+|\texttt{ndump}  | integer | 40000       | Intervals for monitoring Monte Carlo sweeps. \\
+|\texttt{nalph}  | integer | 20          | Total number of the chosen ``\alpha`` parameters. \\
+|\texttt{alpha}  | float   | 1.0         | Starting value for the ``\alpha`` parameter. \\
+|\texttt{ratio}  | float   | 1.2         | Scaling factor for the ``\alpha`` parameter. \\
 
 **Table** Possible input parameters for the `[StochAC]` block, which are used to setup the solver based on the stochastic analytical continuation (Beach's algorithm).
 
 Parameter & Type & Default & Description \\
 | :-------- | :--- | :------ | :---------- |
-\texttt{method} & string  & ``chi2min'' & How to determine the optimized ``\Theta`` parameter? \\
-\texttt{nfine}  & integer & 100000      & Number of points of a very fine linear mesh. \\
-\texttt{ngamm}  & integer & 1000        & Number of ``\delta`` functions. \\
-\texttt{nwarm}  & integer & 1000        & Number of Monte Carlo thermalization steps. \\
-\texttt{nstep}  & integer & 20000       & Number of Monte Carlo sweeping steps. \\
-\texttt{ndump}  & integer & 200         & Intervals for monitoring Monte Carlo sweeps. \\
-\texttt{retry}  & integer & 10          & How often to recalculate the goodness-of-fit function. \\
-\texttt{theta}  & float   & 1e6         & Starting value for the ``\Theta`` parameter. \\
-\texttt{ratio}  & float   & 0.9         & Scaling factor for the ``\Theta`` parameter. \\
+|\texttt{method} | string  | ``chi2min'' | How to determine the optimized ``\Theta`` parameter? |
+|\texttt{nfine}  | integer | 100000      | Number of points of a very fine linear mesh. |
+|\texttt{ngamm}  | integer | 1000        | Number of ``\delta`` functions. |
+|\texttt{nwarm}  | integer | 1000        | Number of Monte Carlo thermalization steps. |
+|\texttt{nstep}  | integer | 20000       | Number of Monte Carlo sweeping steps. |
+|\texttt{ndump}  | integer | 200         | Intervals for monitoring Monte Carlo sweeps. |
+|\texttt{retry}  | integer | 10          | How often to recalculate the goodness-of-fit function. |
+|\texttt{theta}  | float   | 1e6         | Starting value for the ``\Theta`` parameter. |
+|\texttt{ratio}  | float   | 0.9         | Scaling factor for the ``\Theta`` parameter. |
 
 **Table** Possible input parameters for the `[StochSK]` block, which are used to setup the solver based on the stochastic analytical continuation (Sandvik's algorithm).
 
