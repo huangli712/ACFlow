@@ -68,7 +68,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |\texttt{ratio}  & float   & 10.0        & Scaling factor for the ``\alpha`` parameter. \\
 |\texttt{blur}   & float   & -1.0        & Shall we preblur the kernel and spectrum?\\
 
-**Table** Possible input parameters for the `[MaxEnt]` block, which is used to setup the solver based on the maximum entropy method.
+**Table** Possible input parameters for the `[MaxEnt]` block, which are used to setup the solver based on the maximum entropy method.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -81,7 +81,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 \texttt{alpha}  & float   & 1.0         & Starting value for the ``\alpha`` parameter. \\
 \texttt{ratio}  & float   & 1.2         & Scaling factor for the ``\alpha`` parameter. \\
 
-**Table** Possible input parameters for the `[StochAC]` block, which is used to setup the solver based on the stochastic analytical continuation (Beach's algorithm).
+**Table** Possible input parameters for the `[StochAC]` block, which are used to setup the solver based on the stochastic analytical continuation (Beach's algorithm).
 
 Parameter & Type & Default & Description \\
 | :-------- | :--- | :------ | :---------- |
@@ -95,17 +95,15 @@ Parameter & Type & Default & Description \\
 \texttt{theta}  & float   & 1e6         & Starting value for the ``\Theta`` parameter. \\
 \texttt{ratio}  & float   & 0.9         & Scaling factor for the ``\Theta`` parameter. \\
 
-**Table** Possible input parameters for the `[StochSK]` block, which is used to setup the solver based on the stochastic analytical continuation (Sandvik's algorithm).
+**Table** Possible input parameters for the `[StochSK]` block, which are used to setup the solver based on the stochastic analytical continuation (Sandvik's algorithm).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-\texttt{ntry}   & integer & 2000        & Number of attempts to figure out the solution. \\
-\texttt{nstep}  & integer & 1000        & Number of Monte Carlo steps per try. \\
-\texttt{nbox}   & integer & 100         & Number of boxes to construct the spectrum. \\
-\texttt{sbox}   & float   & 0.005       & Minimum area of the randomly generated rectangles. \\
-\texttt{wbox}   & float   & 0.02        & Minimum width of the randomly generated rectangles. \\
-\texttt{norm}   & float   & -1.0        & Is the norm calculated? \\
-\hline
-\end{tabular}
-\caption{Possible input parameters for the \texttt{[StochOM]} block, which are used to setup the solver based on the stochastic optimization method~\cite{PhysRevB.62.6317}. \label{tab:som}}
-\end{table}
+|\texttt{ntry}   | integer | 2000        | Number of attempts to figure out the solution. |
+|\texttt{nstep}  | integer | 1000        | Number of Monte Carlo steps per try. |
+|\texttt{nbox}   | integer | 100         | Number of boxes to construct the spectrum. |
+|\texttt{sbox}   | float   | 0.005       | Minimum area of the randomly generated rectangles. |
+|\texttt{wbox}   | float   | 0.02        | Minimum width of the randomly generated rectangles. |
+|\texttt{norm}   | float   | -1.0        | Is the norm calculated? |
+
+**Table** Possible input parameters for the `[StochOM]` block, which are used to setup the solver based on the stochastic optimization method.
