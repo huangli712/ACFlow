@@ -60,23 +60,15 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 
 **Table** Possible parameters for the `[BASE]` block.
 
-\begin{table}[h]
-\centering
-\begin{tabular}{l|l|l|l}
-\hline
-\multicolumn{4}{c}{\texttt{[MaxEnt]} block} \\
-\hline
-Parameter & Type & Default & Description \\
-\hline
-\texttt{method} & string  & ``chi2kink''& How to determine the optimized ``\alpha`` parameter? \\
-\texttt{nalph}  & integer & 12          & Total number of the chosen ``\alpha`` parameters. \\
-\texttt{alpha}  & float   & 1e9         & Starting value for the ``\alpha`` parameter. \\
-\texttt{ratio}  & float   & 10.0        & Scaling factor for the ``\alpha`` parameter. \\
-\texttt{blur}   & float   & -1.0        & Shall we preblur the kernel and spectrum?\\
-\hline
-\end{tabular}
-\caption{Possible input parameters for the \texttt{[MaxEnt]} block, which is used to setup the solver based on the maximum entropy method~\cite{JARRELL1996133,PhysRevB.44.6011}. \label{tab:maxent}}
-\end{table}
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+|\texttt{method} & string  & ``chi2kink''& How to determine the optimized ``\alpha`` parameter? \\
+|\texttt{nalph}  & integer & 12          & Total number of the chosen ``\alpha`` parameters. \\
+|\texttt{alpha}  & float   & 1e9         & Starting value for the ``\alpha`` parameter. \\
+|\texttt{ratio}  & float   & 10.0        & Scaling factor for the ``\alpha`` parameter. \\
+|\texttt{blur}   & float   & -1.0        & Shall we preblur the kernel and spectrum?\\
+
+**Table** Possible input parameters for the `[MaxEnt]` block, which is used to setup the solver based on the maximum entropy method.
 
 \begin{table}[h]
 \centering
