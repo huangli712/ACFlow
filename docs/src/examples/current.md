@@ -32,11 +32,7 @@ At first, we use Eq.~(\ref{eq:optic}) ``\sim`` Eq.~(\ref{eq:Koptic}) to prepare 
 
 Next, we conduct analytical continuation simulation as usual. The used configuration file is attached as follows. Here, the `StochSK` solver is adopted, so the `solver` parameter is ''StochSK'' and the `grid` parameter is ''btime''. And the Shao-Sandvik algorithm is applied to seek optimal ``\Theta``, so the `method` parameter is ''chi2min''. The users can further increase the values of `nfine`, `ngamm`, and `nstep` parameters to improve computational accuracy. 
  
-\begin{lstlisting}[language=TOML,
-basicstyle=\ttfamily\small,
-backgroundcolor=\color{yellow!10},
-commentstyle=\color{olive!10!green},
-keywordstyle=\color{purple}]
+```toml
 [BASE]
 finput = "chit.data"
 solver = "StochSK"
@@ -61,7 +57,7 @@ ndump = 200
 retry = 10
 theta = 1e+6
 ratio = 0.90
-\end{lstlisting}
+```
 
 \begin{figure}[ht]
 \centering
