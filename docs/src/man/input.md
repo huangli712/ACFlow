@@ -39,34 +39,28 @@ The configure file adopts the TOML format. It is used to setup the computational
 >...
 
 In the `[BASE]` block, the analytical continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[StochAC]`, `[StochSK]`, and `[StochOM]` blocks are used to customize the corresponding analytical continuation solvers further. In Table~\ref{tab:base}-Table~\ref{tab:som}, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please refer to the user guide of the ACFlow toolkit. The uses can find it in the `acflow/docs` directory.   
-  
-\begin{table}[h]
-\centering
-\begin{tabular}{l|l|l|l}
-\hline
+
 \multicolumn{4}{c}{\texttt{[BASE]} block} \\
-\hline
-Parameter & Type & Default & Description \\
-\hline
-\texttt{finput}  & string  & ``green.data'' & Filename for input data. \\
-\texttt{solver}  & string  & ``MaxEnt''     & Solver for the analytical continuation problem. \\
-\texttt{ktype}   & string  & ``fermi''      & Type of kernel function. \\
-\texttt{mtype}   & string  & ``flat''       & Type of default model function. \\
-\texttt{grid}    & string  & ``'ffreq''     & Grid for input data (imaginary axis). \\
-\texttt{mesh}    & string  & ``linear''     & Mesh for output data (real axis). \\
-\texttt{ngrid}   & integer & 10             & Number of grid points. \\
-\texttt{nmesh}   & integer & 501            & Number of mesh points. \\
-\texttt{wmax}    & float   & 5.0            & Right boundary (maximum value) of mesh. \\
-\texttt{wmin}    & float   & -5.0           & Left boundary (minimum value) of mesh. \\
-\texttt{beta}    & float   & 10.0           & Inverse temperature. \\
-\texttt{offdiag} & bool    & false          & Treat the off-diagonal part of matrix-valued function? \\
-\texttt{pmodel}  & array   & N/A            & Additional parameters for customizing the default model. \\
-\texttt{pmesh}   & array   & N/A            & Additional parameters for customizing the mesh. \\
-\texttt{exclude} & array   & N/A            & Restriction of the energy range of the spectrum. \\
-\hline
-\end{tabular}
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+|`finput`  | string  | ''green.data'' | Filename for input data. |
+|`solver`  | string  | ''MaxEnt''     | Solver for the analytical continuation problem. |
+|`ktype`   | string  | ''fermi''      | Type of kernel function. |
+|`mtype`   | string  | ''flat''       | Type of default model function. |
+|`grid`    | string  | ''ffreq''      | Grid for input data (imaginary axis). |
+|`mesh`    | string  | ''linear''     | Mesh for output data (real axis). |
+|`ngrid`   | integer | 10             | Number of grid points. |
+|`nmesh`   | integer | 501            | Number of mesh points. |
+|`wmax`    | float   | 5.0            | Right boundary (maximum value) of mesh. |
+|`wmin`    | float   | -5.0           | Left boundary (minimum value) of mesh. |
+|`beta`    | float   | 10.0           | Inverse temperature. |
+|`offdiag` | bool    | false          | Treat the off-diagonal part of matrix-valued function? |
+|`pmodel`  | array   | N/A            | Additional parameters for customizing the default model. |
+|`pmesh`   | array   | N/A            | Additional parameters for customizing the mesh. |
+|`exclude` | array   | N/A            | Restriction of the energy range of the spectrum. |
+
 \caption{Possible parameters for the \texttt{[BASE]} block.\label{tab:base}}
-\end{table}
 
 \begin{table}[h]
 \centering
