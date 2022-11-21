@@ -5,14 +5,18 @@ The ACFlow toolkit is designed to be flexible and easy-to-use. It provides three
 ## Interactive mode
 
 With the ACFlow toolkit, the users can setup and carry out analytical continuation simulations interactively in Julia's REPL (Read-Eval-Print Loop) environment. For example,
-\begin{verbatim}
-    julia> push!(LOAD_PATH, ENV["ACFLOW_HOME"])
-    julia> using ACFlow
-    julia> setup_args("ac.toml")
-    julia> read_param()
-    julia> mesh, Aout, Gout = solve(read_data())
-\end{verbatim}
-Here, \texttt{ac.toml} is a configuration file, which contains essential computational parameters. The return values of the \texttt{solve()} function (i.e., \texttt{mesh}, \texttt{Aout}, and \texttt{Gout}) are mesh at real axis $\omega$, spectral density $A(\omega)$, and reproduced Green's function $\tilde{G}$, respectively. They can be further analyzed or visualized by the users.  
+
+>    julia> push!(LOAD_PATH, ENV["ACFLOW_HOME"])
+>
+>    julia> using ACFlow
+>
+>    julia> setup_args("ac.toml")
+>
+>    julia> read_param()
+>
+>    julia> mesh, Aout, Gout = solve(read_data())
+
+Here, `ac.toml` is a configuration file, which contains essential computational parameters. The return values of the `solve()` function (i.e., `mesh`, `Aout`, and `Gout`) are mesh at real axis ``\omega``, spectral density ``A(\omega)``, and reproduced Green's function ``\tilde{G}``, respectively. They can be further analyzed or visualized by the users.  
 
 ## Script mode
 
