@@ -38,6 +38,7 @@ Depth = 1
 ```@contents
 Pages = [
     "examples/green1.md",
+    "examples/green2.md",
     "examples/current.md",
 ]
 Depth = 1

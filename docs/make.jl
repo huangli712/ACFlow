@@ -26,7 +26,7 @@ makedocs(
         "Examples" => Any[
             #"Matsubara Self-Energy Function" => "examples/sigma.md",
             "Matsubara Green's Function" => "examples/green1.md",
-            #"Imaginary-Time Green's Function" => "examples/green2.md",
+            "Imaginary-Time Green's Function" => "examples/green2.md",
             "Current-Current Correlation Function" => "examples/current.md",
         ],
         "Theory" => Any[
