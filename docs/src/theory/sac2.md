@@ -2,12 +2,6 @@
 
 *Beach's algorithm*
 
-\begin{figure}[ht]
-\centering
-\includegraphics[width=0.7\textwidth]{sac.pdf}
-\caption{Typical Monte Carlo field configurations for stochastic analytical continuation (K. S. D. Beach's version). Note that the amplitudes ``\{\gamma_i\}`` of all the ``\delta`` functions are not identical. Both amplitudes ``\{\gamma_i\}`` and positions ``\{r_i\}`` (``0.0 < r_i < 1.0``) can be sampled by Monte Carlo method. \label{fig:sac}}
-\end{figure}
-
 K. S. D. Beach proposed another variant of stochastic analytical continuation in 2004. In his approach, the analytical continuation problem is mapped into a system of interacting classic fields at first. Then the classic field is sampled using Monte Carlo method to obtain the final solution. He concluded that the maximum entropy method is simply the mean field limit of the stochastic analytical continuation. Next, this algorithm will be explained concisely.     
 
 ## Classic Fields
@@ -148,6 +142,10 @@ Finally, the transition probability from ``\mathcal{C}`` to ``\mathcal{C}'`` rea
 p(C \to C') = \exp(-\alpha \Delta H).
 \end{equation}
 ```
+
+![sac.png](../assets/sac.png)
+
+**Figure |** Typical Monte Carlo field configurations for stochastic analytical continuation (K. S. D. Beach's version). Note that the amplitudes ``\{\gamma_i\}`` of all the ``\delta`` functions are not identical. Both amplitudes ``\{\gamma_i\}`` and positions ``\{r_i\}`` (``0.0 < r_i < 1.0``) can be sampled by Monte Carlo method.
 
 ## Parallel Tempering
 
