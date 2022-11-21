@@ -1,11 +1,5 @@
 # Stochastic Optimization Method
 
-\begin{figure}[th]
-\centering
-\includegraphics[width=0.7\textwidth]{som.pdf}
-\caption{Typical Monte Carlo field configurations for stochastic optimization method~\cite{PhysRevB.62.6317}. The spectral function is parameterized by multiple rectangle functions. Here, ``c_i``, ``w_i``, and ``h_i`` denote the center, width, and height of the ``i``-th rectangle, respectively. \label{fig:som}}
-\end{figure}
-
 A. O. Mishchenko *et al.* proposed the stochastic optimization method. Though it looks like the stochastic analytical continuation, their differences are quite apparent. The stochastic optimization method does not need any likelihood function or Boltzmann distribution to weight the candidate spectral functions. It generates a lot of spectral functions through Monte Carlo samplings. For each candidate spectral function, the deviation ``D`` between the reconstructed Green's function ``\tilde{G}`` and original Green's function ``\bar{G}`` is measured. Those spectral functions with small deviations ``D`` are selected and averaged. Such that the desired spectral function is obtained.   
 
 ## Deviation Function
@@ -71,6 +65,10 @@ where ``c_i``, ``w_i``, ``h_i`` denote the center, width, and height of the ``i`
 \sum_i h_i w_i = 1.
 \end{equation}
 ```
+
+![som.png](../assets/som.png)
+
+**Figure |** Typical Monte Carlo field configurations for stochastic optimization method. The spectral function is parameterized by multiple rectangle functions. Here, ``c_i``, ``w_i``, and ``h_i`` denote the center, width, and height of the ``i``-th rectangle, respectively.
 
 ## Monte Carlo Sampling
 
