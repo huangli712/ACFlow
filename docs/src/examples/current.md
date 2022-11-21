@@ -59,10 +59,8 @@ theta = 1e+6
 ratio = 0.90
 ```
 
-\begin{figure}[ht]
-\centering
-\includegraphics[width=\textwidth]{T_E4.pdf}
-\caption{Analytical continuation of current-current correlation function by using the stochastic analytical continuation (Sandvik's algorithm). (a) Simulated and exact optical conductivities ``\sigma(\omega)``. (b) Simulated and exact current-current correlation functions ``\Pi(\tau)``. \label{fig:optic}}
-\end{figure}
+![T_E4.png](../assets/T_E4.png)
+
+**Figure |** Analytical continuation of current-current correlation function by using the stochastic analytical continuation (Sandvik's algorithm). (a) Simulated and exact optical conductivities ``\sigma(\omega)``. (b) Simulated and exact current-current correlation functions ``\Pi(\tau)``.
 
 The calculated results are illustrated in Fig.~\ref{fig:optic}. From Fig.~\ref{fig:optic}(a), it is clear that the main features of optical conductivity are successfully captured by the \texttt{StochSK} solver. Both the sharp Drude peak at ``\omega = 0`` and a broad satellite peak around ``\omega = 3.0`` are well reproduced. As is seen in Fig.~\ref{fig:optic}(b), the reconstructed ``\tilde{\Pi}(\tau)`` coincides with the original ``\Pi(\tau)``. 
