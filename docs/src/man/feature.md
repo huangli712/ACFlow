@@ -10,7 +10,7 @@ Now the ACFlow toolkit supports three analytical continuation methods as introdu
 Just as their names suggest, the `MaxEnt` solver implements the maximum entropy method. The `StochAC` and `StochSK` solvers implement the K. S. D. Beach's version and A. W. Sandvik's version of stochastic analytical continuation, respectively. The `StochOM` solver implements the stochastic optimization method. The ACFlow toolkit also provides a convenient library, which can be used to prepare and carry out analytical continuation calculations flexibly. The major features of the ACFlow toolkit are summarized in **Table 1**.
 
 | Features | MaxEnt | StochAC | StochSK | StochOM |
-| :------- | :----- | :------ | :-------| :------ |
+| :------- | :----: | :-----: | :-----: | :-----: |
 |Matrix-valued Green's function | Y | N | N | N |
 |Imaginary time grid            | Y | Y | Y | Y |
 |Matsubara frequency grid       | Y | Y | Y | Y |
