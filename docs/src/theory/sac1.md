@@ -4,7 +4,7 @@ In principle, for given Green's function ``G``, there exists infinitely many spe
 
 ## Sandvik's Algorithm
 
-It was early on realized that a different way to achieve a smooth spectrum is to average over many solutions with reasonable ``\chi^2`` values. Several years later, A. W. Sandvik introduced the stochastic analytical continuation in a slightly different form. He suggested that the spectral function ``A(\omega)`` can be parameterized using ``N`` ``\delta`` functions (Please see Fig.~\ref{fig:san} for schematic diagram):
+It was early on realized that a different way to achieve a smooth spectrum is to average over many solutions with reasonable ``\chi^2`` values. Several years later, A. W. Sandvik introduced the stochastic analytical continuation in a slightly different form. He suggested that the spectral function ``A(\omega)`` can be parameterized using ``N`` ``\delta`` functions (Please see Fig.1 for schematic diagram):
 ```math
 \begin{equation}
 A(\omega) = \sum^{N}_{i = 1} \gamma_i \delta(\omega - \omega_i),
@@ -14,7 +14,7 @@ where ``\gamma_i`` and ``\omega_i`` denote the amplitude and position of the ``i
 
 ![san.png](../assets/san.png)
 
-**Figure |** Typical Monte Carlo field configurations for stochastic analytical continuation (A. W. Sandvik's version). Here, the ``\delta`` functions reside at unrestricted frequencies ``\{\omega_i\}``, but their amplitudes ``\{\gamma_i\}`` are equal and fixed. Note that different parameterizations are also possible.
+**Figure 1 |** Typical Monte Carlo field configurations for stochastic analytical continuation (A. W. Sandvik's version). Here, the ``\delta`` functions reside at unrestricted frequencies ``\{\omega_i\}``, but their amplitudes ``\{\gamma_i\}`` are equal and fixed. Note that different parameterizations are also possible.
 
 The transition probability of Monte Carlo updates reads:
 ```math

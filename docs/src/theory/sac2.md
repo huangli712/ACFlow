@@ -70,7 +70,7 @@ So, by introducing the classic field ``\{n(x)\}``, the analytical continuation p
 
 ## Monte Carlo Sampling
 
-Next we clarify how to sample the classic field. Similar to Sandvik's algorithm, ``n(x)`` is parameterized as a superposition of many ``\delta`` functions (see Fig.~\ref{fig:san} for schematic diagram): 
+Next we clarify how to sample the classic field. Similar to Sandvik's algorithm, ``n(x)`` is parameterized as a superposition of many ``\delta`` functions (see Fig.1 for schematic diagram): 
 ```math
 \begin{equation}
 n_{\mathcal{C}} (x) = \sum_i \gamma_i \delta(x - r_i),
@@ -145,7 +145,7 @@ p(C \to C') = \exp(-\alpha \Delta H).
 
 ![sac.png](../assets/sac.png)
 
-**Figure |** Typical Monte Carlo field configurations for stochastic analytical continuation (K. S. D. Beach's version). Note that the amplitudes ``\{\gamma_i\}`` of all the ``\delta`` functions are not identical. Both amplitudes ``\{\gamma_i\}`` and positions ``\{r_i\}`` (``0.0 < r_i < 1.0``) can be sampled by Monte Carlo method.
+**Figure 1 |** Typical Monte Carlo field configurations for stochastic analytical continuation (K. S. D. Beach's version). Note that the amplitudes ``\{\gamma_i\}`` of all the ``\delta`` functions are not identical. Both amplitudes ``\{\gamma_i\}`` and positions ``\{r_i\}`` (``0.0 < r_i < 1.0``) can be sampled by Monte Carlo method.
 
 ## Parallel Tempering
 
