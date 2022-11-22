@@ -68,7 +68,7 @@ where ``c_i``, ``w_i``, ``h_i`` denote the center, width, and height of the ``i`
 
 ![som.png](../assets/som.png)
 
-**Figure |** Typical Monte Carlo field configurations for stochastic optimization method. The spectral function is parameterized by multiple rectangle functions. Here, ``c_i``, ``w_i``, and ``h_i`` denote the center, width, and height of the ``i``-th rectangle, respectively.
+**Figure 1 |** Typical Monte Carlo field configurations for stochastic optimization method. The spectral function is parameterized by multiple rectangle functions. Here, ``c_i``, ``w_i``, and ``h_i`` denote the center, width, and height of the ``i``-th rectangle, respectively.
 
 ## Monte Carlo Sampling
 
