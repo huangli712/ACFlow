@@ -1,20 +1,22 @@
 # ACFlow
 
-*A full-fledged analytical continuation package in Julia*
+*A full-fledged analytical continuation toolkit in Julia*
 
 !!! note
 
-    Thank you for using **ACFlow**. This documentation will help you to be familiar with and use **ACFlow**.
+    Thank you for using **ACFlow**. This documentation will help you to be familiar with and use the **ACFlow** toolkit.
 
 !!! warning
 
-    The **ACFlow** package is in heavy development. Please use it at your own risk.
+    The **ACFlow** toolkit is in heavy development. Please use it at your own risk.
 
 ## Introduction
 
 ```@contents
 Pages = [
     "intro/background.md",
+    "intro/ack.md",
+    "intro/cite.md",
 ]
 ```
 
@@ -54,6 +56,7 @@ Pages = [
     "theory/sac1.md",
     "theory/sac2.md",
     "theory/som.md",
+    "theory/reference.md",
 ]
 Depth = 1
 ```
