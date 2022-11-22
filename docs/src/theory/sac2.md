@@ -1,6 +1,6 @@
 # Stochastic Analytical Continuation 2
 
-*Beach's algorithm*
+## Beach's Algorithm
 
 K. S. D. Beach proposed another variant of stochastic analytical continuation in 2004. In his approach, the analytical continuation problem is mapped into a system of interacting classic fields at first. Then the classic field is sampled using Monte Carlo method to obtain the final solution. He concluded that the maximum entropy method is simply the mean field limit of the stochastic analytical continuation. Next, this algorithm will be explained concisely.     
 
