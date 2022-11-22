@@ -29,7 +29,7 @@ ntry   = 100000
 ...
 ```
 
-In the `[BASE]` block, the analytical continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[StochAC]`, `[StochSK]`, and `[StochOM]` blocks are used to customize the corresponding analytical continuation solvers further. In Table~\ref{tab:base}-Table~\ref{tab:som}, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please refer to the user guide of the ACFlow toolkit. The uses can find it in the `acflow/docs` directory.   
+In the `[BASE]` block, the analytical continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[StochAC]`, `[StochSK]`, and `[StochOM]` blocks are used to customize the corresponding analytical continuation solvers further. In **Table 1**-**Table 5**, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please refer to the user guide of the ACFlow toolkit. The uses can find it in the `acflow/docs` directory.   
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -49,7 +49,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`pmesh`   | array   | N/A            | Additional parameters for customizing the mesh. |
 |`exclude` | array   | N/A            | Restriction of the energy range of the spectrum. |
 
-**Table** Possible parameters for the `[BASE]` block.
+**Table 1 |** Possible parameters for the `[BASE]` block.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -59,7 +59,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`ratio`  | float   | 10.0        | Scaling factor for the ``\alpha`` parameter. |
 |`blur`   | float   | -1.0        | Shall we preblur the kernel and spectrum? |
 
-**Table** Possible input parameters for the `[MaxEnt]` block, which are used to setup the solver based on the maximum entropy method.
+**Table 2 |** Possible input parameters for the `[MaxEnt]` block, which are used to setup the solver based on the maximum entropy method.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -72,7 +72,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`alpha`  | float   | 1.0         | Starting value for the ``\alpha`` parameter. |
 |`ratio`  | float   | 1.2         | Scaling factor for the ``\alpha`` parameter. |
 
-**Table** Possible input parameters for the `[StochAC]` block, which are used to setup the solver based on the stochastic analytical continuation (Beach's algorithm).
+**Table 3 |** Possible input parameters for the `[StochAC]` block, which are used to setup the solver based on the stochastic analytical continuation (Beach's algorithm).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -86,7 +86,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`theta`  | float   | 1e6         | Starting value for the ``\Theta`` parameter. |
 |`ratio`  | float   | 0.9         | Scaling factor for the ``\Theta`` parameter. |
 
-**Table** Possible input parameters for the `[StochSK]` block, which are used to setup the solver based on the stochastic analytical continuation (Sandvik's algorithm).
+**Table 4 |** Possible input parameters for the `[StochSK]` block, which are used to setup the solver based on the stochastic analytical continuation (Sandvik's algorithm).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -97,4 +97,4 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`wbox`   | float   | 0.02        | Minimum width of the randomly generated rectangles. |
 |`norm`   | float   | -1.0        | Is the norm calculated? |
 
-**Table** Possible input parameters for the `[StochOM]` block, which are used to setup the solver based on the stochastic optimization method.
+**Table 5 |** Possible input parameters for the `[StochOM]` block, which are used to setup the solver based on the stochastic optimization method.
