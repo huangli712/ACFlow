@@ -59,7 +59,7 @@ Now the original analytical continuation problem becomes how to figure out the o
 \frac{\partial Q}{\partial A} \bigg|_{A = \hat{A}} = 0,
 \end{equation}
 ```
-where ``\hat{A}(\omega)`` is the optimal ``A(\omega)``. Eq.~(\ref{eq:maxent}) can be easily solved by using standard Newton method. However, the obtained ``\hat{A}(\omega)`` is ``\alpha``-dependent. That is to say, for a given ``\alpha``, there is always a ``\hat{A}(\omega)`` that satisfies Eq.~(\ref{eq:maxent}). So, new problem arises because we have to find out a way to generate the final spectral function from these ``\alpha``-resolved ``\hat{A}(\omega)``. Now there exist four algorithms, namely `historic`, `classic`, `bryan`, and ``\chi^2``kink. Next we will introduce them one by one.
+where ``\hat{A}(\omega)`` is the optimal ``A(\omega)``. Eq.(8) can be easily solved by using standard Newton method. However, the obtained ``\hat{A}(\omega)`` is ``\alpha``-dependent. That is to say, for a given ``\alpha``, there is always a ``\hat{A}(\omega)`` that satisfies Eq.(8). So, new problem arises because we have to find out a way to generate the final spectral function from these ``\alpha``-resolved ``\hat{A}(\omega)``. Now there exist four algorithms, namely `historic`, `classic`, `bryan`, and ``\chi^2``kink. Next we will introduce them one by one.
 
 ### Historic Algorithm
 
@@ -88,7 +88,7 @@ where ``I`` is an identity matrix. The elements of ``\Lambda`` matrix are calcul
 \Lambda_{ij} = \sqrt{A_i} \left(\sum_{kl} K_{ki} [C^{-1}]_{kl} K_{lj}\right) \sqrt{A_j}, 
 \end{equation}
 ```
-where ``C`` is the covariance matrix. Eq.~(\ref{eq:classic}) will be iteratively solved until the optimal ``\alpha`` and ``\hat{A}(\omega)`` are figured out.  
+where ``C`` is the covariance matrix. Eq.(10) will be iteratively solved until the optimal ``\alpha`` and ``\hat{A}(\omega)`` are figured out.  
 
 ### Bryan Algorithm
 
@@ -101,7 +101,7 @@ In both historic and classic algorithms, the spectral function ``\hat{A}(\omega)
 
 ### chi2kink Algorithm
 
-This algorithm was proposed by Bergeron and Tremblay recently. The first step is to generate a series of ``\alpha`` parameters and evaluate the corresponding spectral functions ``A_{\alpha}(\omega)`` and goodness-of-fit functions ``\chi^{2}[A_{\alpha}]``. Then we plot ``\log_{10}(\chi^{2})`` as a function of ``\log_{10}(\alpha)``. Usually this plot is split into three different regions: (1) `Default model region`. In the limit of ``\alpha \to \infty``, ``\chi^{2}`` goes to a constant high value. It means that the likelihood function ``e^{-\chi^2/2}`` has negligible weight, such that the prior probability ``e^{\alpha S}`` becomes dominant and minimizes ``Q[A]``. At that time, the calculated ``A(\omega)`` resembles the default model function ``m(\omega)``. (2) `Noise-fitting region`. In the limit of ``\alpha \to 0``, ``\chi^2`` is relatively flat and approaches its global minimum. In this region, the minimization algorithm tends to fit the noise in ``G(\tau)``. (3) `Information-fitting region`. ``\alpha S`` is comparable with ``\chi^2/2``, so that ``\chi^{2}`` is strongly dependent on ``\alpha``. Bergeron *et al.* suggested that the optimal ``\alpha`` parameter situates in the crossover between noise-fitting region and information-fitting region. So the second derivative of ``\chi^{2}`` with respect to ``\alpha`` is calculated, and the maximum value in the resulting curve indicates the optimal value of ``\alpha``. Quite recently, Kaufmann and Held proposed a more numerically stable and flexible approach to compute the optimal ``\alpha``. They use the following function to fit ``\chi^{2}(\alpha)``:
+This algorithm was proposed by Bergeron and Tremblay recently. The first step is to generate a series of ``\alpha`` parameters and evaluate the corresponding spectral functions ``A_{\alpha}(\omega)`` and goodness-of-fit functions ``\chi^{2}[A_{\alpha}]``. Then we plot ``\log_{10}(\chi^{2})`` as a function of ``\log_{10}(\alpha)``. Usually this plot is split into three different regions: (1) *Default model region*. In the limit of ``\alpha \to \infty``, ``\chi^{2}`` goes to a constant high value. It means that the likelihood function ``e^{-\chi^2/2}`` has negligible weight, such that the prior probability ``e^{\alpha S}`` becomes dominant and minimizes ``Q[A]``. At that time, the calculated ``A(\omega)`` resembles the default model function ``m(\omega)``. (2) *Noise-fitting region*. In the limit of ``\alpha \to 0``, ``\chi^2`` is relatively flat and approaches its global minimum. In this region, the minimization algorithm tends to fit the noise in ``G(\tau)``. (3) *Information-fitting region*. ``\alpha S`` is comparable with ``\chi^2/2``, so that ``\chi^{2}`` is strongly dependent on ``\alpha``. Bergeron *et al.* suggested that the optimal ``\alpha`` parameter situates in the crossover between noise-fitting region and information-fitting region. So the second derivative of ``\chi^{2}`` with respect to ``\alpha`` is calculated, and the maximum value in the resulting curve indicates the optimal value of ``\alpha``. Quite recently, Kaufmann and Held proposed a more numerically stable and flexible approach to compute the optimal ``\alpha``. They use the following function to fit ``\chi^{2}(\alpha)``:
 ```math
 \begin{equation}
 \phi(x;a,b,c,d) = a + \frac{b}{1 + e^{-d(x-c)}},
