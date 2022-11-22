@@ -101,7 +101,7 @@ r_i + \sum_{\lambda \in \Lambda} \delta_{i\lambda} \Delta r_{\lambda},
 \gamma_i + \sum_{\lambda \in \Lambda} \delta_{i\lambda} \Delta \gamma_{\lambda},
 \end{equation}
 ```
-where ``\Lambda`` means a subset of the ``\delta`` functions, then the Hamiltonian of the system is changed from ``H_{\mathcal{C}}`` to ``H_{\mathcal{C}'}``. According to Eq.~(\ref{eq:hamil}), ``H_\mathcal{C}``, ``H_{\mathcal{C}'}``, and their difference ``\Delta H`` can be calculated by:
+where ``\Lambda`` means a subset of the ``\delta`` functions, then the Hamiltonian of the system is changed from ``H_{\mathcal{C}}`` to ``H_{\mathcal{C}'}``. According to Eq.(5), ``H_\mathcal{C}``, ``H_{\mathcal{C}'}``, and their difference ``\Delta H`` can be calculated by:
 ```math
 \begin{equation}
 H_{\mathcal{C}} = \int^{\beta}_0 d\tau~h_{\mathcal{C}}(\tau)^2,
@@ -183,4 +183,4 @@ Neither of the Sandvik's and Beach's algorithms needs extra entropic term to reg
 \langle A \rangle = \int \mathcal{D} A~P[A|\bar{G}] A.
 \end{equation}
 ```
-The weight of the candidate spectral function ``A`` is given by the likelihood function ``P[A|\bar{G}]``. Eq.~(\ref{eq:trans_san}) and Eq.~(\ref{eq:trans_sac}) can be viewed as likelihood functions in stochastic analytical continuation.
+The weight of the candidate spectral function ``A`` is given by the likelihood function ``P[A|\bar{G}]``. Eq.(20) can be viewed as likelihood functions in stochastic analytical continuation.
