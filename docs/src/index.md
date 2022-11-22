@@ -4,11 +4,11 @@
 
 !!! note
 
-    Thank you for using **ACFlow**. This documentation will help you to be familiar with and use the **ACFlow** toolkit.
+    Thank you for using ACFlow. This documentation will help you to be familiar with and use the ACFlow toolkit.
 
 !!! warning
 
-    The **ACFlow** toolkit is in heavy development. Please use it at your own risk.
+    The ACFlow toolkit is in heavy development. Please use it at your own risk.
 
 ## Introduction
 
