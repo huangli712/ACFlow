@@ -1,4 +1,4 @@
-# Installation
+# Installation {#install}
 
 It is an easy task to install the ACFlow toolkit. First, since it is written in pure Julia language, it is necessary to install the Julia runtime environment at first. The newest version of Julia is always preferred (version $>$ 1.60). Since the core codes only rely on Julia's built-in standard library, no the third-party packages are needed. Second, just download source codes of the ACFlow toolkit from its github repository. It should be a compressed file, such as `acflow.zip` or `acflow.tar.gz`. Please uncompress it in your favorite directory by using the following commands:
 
