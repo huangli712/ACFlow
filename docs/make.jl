@@ -15,6 +15,8 @@ makedocs(
         "Home" => "index.md",
         "Introduction" => Any[
             "Background" => "intro/background.md",
+            "Acknowledgements" => "intro/ack.md",
+            "Citation" => "intro/cite.md",
         ],
         "Manual" => Any[
             "Main Features" => "man/feature.md",
@@ -37,6 +39,7 @@ makedocs(
             "Stochastic Analytical Continuation 1" => "theory/sac1.md",
             "Stochastic Analytical Continuation 2" => "theory/sac2.md",
             "Stochastic Optimization Method" => "theory/som.md",
+            "References" => "theory/reference.md",
         ],
         "Library" => Any[
             "Outline" => "library/outline.md",
