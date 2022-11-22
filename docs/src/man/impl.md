@@ -23,7 +23,7 @@ The ACFlow toolkit is developed with pure Julia language. Thanks to powerful typ
 
 **Table 1 |** List of source codes of the ACFlow toolkit.
 
-The source codes of the ACFlow toolkit are placed in the `acflow/src` folder. Their functions are summarized in **Table 1**. The documentation of the ACFlow toolkit is developed by using the Markdown language and `Documenter.jl` package. The source codes are placed in the `acflow/docs` folder. The users can build documentation by themselves. Please see [Installation](#install) for how to do that. Or they can read the latest documentation in the following website:
+The source codes of the ACFlow toolkit are placed in the `acflow/src` folder. Their functions are summarized in **Table 1**. The documentation of the ACFlow toolkit is developed by using the Markdown language and `Documenter.jl` package. The source codes are placed in the `acflow/docs` folder. The users can build documentation by themselves. Please see [Installation](@ref install) for how to do that. Or they can read the latest documentation in the following website:
 
 >    http://huangli712.github.io
   
