@@ -1,5 +1,14 @@
 #!/usr/bin/env julia
 
+#
+# This script is used to start analytical continuation simulations.
+# It will launch only 8 processes.
+#
+# Usage:
+#
+#     $ acrun.jl ac.toml
+#
+
 using Distributed
 addprocs(8)
 
