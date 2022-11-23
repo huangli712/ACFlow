@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/08
+# Last modified: 2022/11/24
 #
 
 """
@@ -314,6 +314,7 @@ function chk_dict()
     @assert get_b("beta") ≥ 0.0
 
     PA = [PBASE]
+    #
     @cswitch get_b("solver") begin
         @case "MaxEnt"
             push!(PA, PMaxEnt)
