@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/08
+# Last modified: 2022/11/24
 #
 
 #=
@@ -108,7 +108,7 @@ const N64 = Union{I64,F64,C64}
 """
     __LIBNAME__
 
-Name of this julia package.
+Name of this julia toolkit.
 
 See also: [`__VERSION__`](@ref).
 """
@@ -117,16 +117,16 @@ const __LIBNAME__ = "ACFlow"
 """
     __VERSION__
 
-Version of this julia package.
+Version of this julia toolkit.
 
 See also: [`__RELEASE__`](@ref).
 """
-const __VERSION__ = v"0.8.6-devel.221108"
+const __VERSION__ = v"1.0.0-devel.221124"
 
 """
     __RELEASE__
 
-Release date of this julia package.
+Release date of this julia toolkit.
 
 See also: [`__AUTHORS__`](@ref).
 """
@@ -146,7 +146,7 @@ such as:
 """
     __AUTHORS__
 
-Core authors of this julia package.
+Core authors of this julia toolkit.
 
 See also: [`__LIBNAME__`](@ref).
 """
@@ -155,7 +155,7 @@ const __AUTHORS__ = [(name = "Li Huang", email = "huangli@caep.cn")]
 """
     authors()
 
-Print authors / contributors of the `ACFlow` package.
+Print authors / contributors of the `ACFlow` toolkit.
 
 See also: [`__AUTHORS__`](@ref).
 """
