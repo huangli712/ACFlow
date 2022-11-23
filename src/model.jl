@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/07
+# Last modified: 2022/11/24
 #
 
 #=
@@ -15,7 +15,8 @@ the `StochOM` solver (based on the stochastic optimization method) and
 the `StochSK` solver (based on the stochastic analytical continuation
 method) do not need any default model functions. However, the `StochAC`
 solver (based on the stochastic analytical continuation method as well)
-only supports the `flat` default model function.
+only supports the `flat` default model function. The users can use the
+`mtype` parameter to choose which default model should be used.
 
 These default model functions are summaried as follows.
 
@@ -94,9 +95,9 @@ m(ω) = Γ\omega^2 \exp{(-\Gamma\omega)},\quad \omega \ge 0
 \end{equation}
 ```
 
-Be careful, ``\Gamma``, ``\omega_1``, and ``\omega_2`` are all parameters.
+Be careful, ``\Gamma``, ``\omega_1``, and ``\omega_2`` are all model parameters.
 Their default values are defined in `make_model()`, but you can modified
-them according to `pmodel`.
+them according to the `pmodel` parameter.
 
 ---
 =#
@@ -260,7 +261,7 @@ end
 
 Try to build a model function by customized function `fun`. `kwargs`
 denotes the arguments required by `fun`. Actually, this feature does
-not really work.
+**not** really work.
 
 See also: [`AbstractMesh`](@ref).
 """
