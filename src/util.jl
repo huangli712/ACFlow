@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/04/08
+# Last modified: 2022/11/24
 #
 
 #=
@@ -139,8 +139,8 @@ end
 
 Check the version of julia runtime environment. It should be higher
 than v1.6.x. One of the most important philosophies of the `ACFlow`
-package is minimizing the dependence on the third-party libraries as
-far as possible. Note that the `ACFlow` package relys on the `TOML`
+toolkit is minimizing the dependence on the third-party libraries as
+far as possible. Note that the `ACFlow` toolkit relys on the `TOML`
 package to parse the *.toml file. Only in v1.6.0 and higher versions,
 julia includes the `TOML` package in its standard library.
 """
