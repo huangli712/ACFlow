@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/08
+# Last modified: 2022/11/24
 #
 
 """
@@ -345,7 +345,7 @@ end
     make_mesh()
 
 Try to generate an uniform (linear) or non-uniform (non-linear) mesh for
-the spectrum function in real axis.
+the spectral function in real axis.
 
 See also: [`LinearMesh`](@ref), [`TangentMesh`](@ref), [`LorentzMesh`](@ref).
 """
