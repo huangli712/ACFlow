@@ -44,7 +44,7 @@ tmesh = collect(LinRange(0, beta, ntau))
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
-noise_ampl = 1.0e-4
+noise_ampl = 1.0e-3
 noise = randn(rng, F64, ntau) * noise_ampl
 
 # Build green's function
