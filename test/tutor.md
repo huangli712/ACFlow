@@ -33,7 +33,7 @@
 
 * **T04**
     * Bosonic + Matsubara + Imaginary time
-    * Optical conductivity
+    * Current-current correlation function
     * MaxEnt solver (chi2kink algorithm)
     * StochAC solver
     * StochSK solver
