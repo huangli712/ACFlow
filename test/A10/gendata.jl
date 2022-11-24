@@ -56,7 +56,7 @@ for i = 1:ntau
     K = 0.5 * rmesh .* (tw .+ btw) ./ (1.0 .- bw)
     K[1] = 1.0 / beta
     KA = K .* image
-    gtau[i] = trapz(rmesh, KA)
+    gtau[i] = trapz(rmesh, KA) + noise[i]
 end
 
 # Build error
