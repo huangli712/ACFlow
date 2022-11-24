@@ -106,7 +106,7 @@ for i = 1:ntau
     K = 0.5 * rmesh .* (tw .+ btw) ./ (1.0 .- bw)
     K[1] = 1.0 / beta
     global KA = K .* image
-    chit[i] = trapz(rmesh, KA)
+    chit[i] = trapz(rmesh, KA) + noise[i]
 end
 
 # Build error
