@@ -24,8 +24,8 @@ exclude = [[8.0,16.0]]
 
 [MaxEnt]
 method = "chi2kink"
-nalph  = 12
-alpha  = 1e9
+nalph  = 15
+alpha  = 1e12
 ratio  = 10.0
 blur   = -1.0
 
