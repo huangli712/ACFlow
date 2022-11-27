@@ -128,6 +128,7 @@ calc_theta
 constraints(S::StochSKSolver)
 try_move_s
 try_move_p
+try_move_q
 ```
 
 ## StochOM Solver
