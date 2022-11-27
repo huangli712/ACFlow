@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/24
+# Last modified: 2022/11/27
 #
 
 #=
@@ -363,6 +363,11 @@ function write_statistics(MC::StochSKMC)
         @printf(fout, "accept -> %16i    \n", MC.Pacc)
         @printf(fout, "try    -> %16i    \n", MC.Ptry)
         @printf(fout, "prob   -> %16.12f \n", MC.Pacc / MC.Ptry)
+        println(fout)
+        println(fout, "# Move Q statistics:")
+        @printf(fout, "accept -> %16i    \n", MC.Qacc)
+        @printf(fout, "try    -> %16i    \n", MC.Qtry)
+        @printf(fout, "prob   -> %16.12f \n", MC.Qacc / MC.Qtry)
     end
 end
 

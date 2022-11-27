@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/24
+# Last modified: 2022/11/27
 #
 
 #=
@@ -522,6 +522,8 @@ number generator and some counters.
 * Stry -> Counter for single-updated operation (tried).
 * Pacc -> Counter for pair-updated operation (accepted).
 * Ptry -> Counter for pair-updated operation (tried).
+* Qacc -> Counter for quadruple-updated operation (accepted).
+* Qtry -> Counter for quadruple-updated operation (tried).
 
 See also: [`StochSKSolver`](@ref).
 """
@@ -531,6 +533,8 @@ mutable struct StochSKMC
     Stry :: I64
     Pacc :: I64
     Ptry :: I64
+    Qacc :: I64
+    Qtry :: I64
 end
 
 """
