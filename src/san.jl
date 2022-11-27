@@ -867,3 +867,120 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         end
     end
 end
+
+"""
+    try_move_q(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+
+Try to update the Monte Carlo field configurations via the Metropolis
+algorithm. In each update, four different δ functions are shifted.
+
+See also: [`try_move_p`](@ref).
+"""
+function try_move_q(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    # Get parameters
+    nfine = get_k("nfine")
+    ngamm = get_k("ngamm")
+
+    # Reset counters
+    MC.Qacc = 0
+    MC.Qtry = ngamm
+    @assert 1 < SE.W ≤ nfine
+
+    # Allocate memory for new correlator
+    Gₙ = zeros(F64, size(SC.Gᵧ))
+    ΔG = zeros(F64, size(SC.Gᵧ))
+
+    for i = 1:ngamm
+        # Choose four different δ functions
+        𝑆 = nothing 
+        while true
+            𝑆 = rand(MC.rng, 1:ngamm, 4)
+            𝒮 = unique(𝑆)
+            if length(𝑆) == length(𝒮)
+                break
+            end
+        end
+        s₁, s₂, s₃, s₄ = 𝑆
+
+        # Evaluate new positions for the four δ functions
+        pcurr₁ = SE.P[s₁]
+        pcurr₂ = SE.P[s₂]
+        pcurr₃ = SE.P[s₃]
+        pcurr₄ = SE.P[s₄]
+        #
+        if 1 < SE.W < nfine
+            δW₁ = rand(MC.rng, 1:SE.W)
+            δW₂ = rand(MC.rng, 1:SE.W)
+            δW₃ = rand(MC.rng, 1:SE.W)
+            δW₄ = rand(MC.rng, 1:SE.W)
+            #
+            if rand(MC.rng) > 0.5
+                pnext₁ = pcurr₁ + δW₁
+                pnext₂ = pcurr₂ - δW₂
+                pnext₃ = pcurr₃ + δW₃
+                pnext₄ = pcurr₄ - δW₄
+            else
+                pnext₁ = pcurr₁ - δW₁
+                pnext₂ = pcurr₂ + δW₂
+                pnext₃ = pcurr₃ - δW₃
+                pnext₄ = pcurr₄ + δW₄
+            end
+            #
+            pnext₁ < 1     && (pnext₁ = pnext₁ + nfine)
+            pnext₁ > nfine && (pnext₁ = pnext₁ - nfine)
+            pnext₂ < 1     && (pnext₂ = pnext₂ + nfine)
+            pnext₂ > nfine && (pnext₂ = pnext₂ - nfine)
+            pnext₃ < 1     && (pnext₃ = pnext₃ + nfine)
+            pnext₃ > nfine && (pnext₃ = pnext₃ - nfine)
+            pnext₄ < 1     && (pnext₄ = pnext₄ + nfine)
+            pnext₄ > nfine && (pnext₄ = pnext₄ - nfine)
+        else
+            pnext₁ = rand(MC.rng, 1:nfine)
+            pnext₂ = rand(MC.rng, 1:nfine)
+            pnext₃ = rand(MC.rng, 1:nfine)
+            pnext₄ = rand(MC.rng, 1:nfine)
+        end
+
+        # Apply the constraints
+        !(pnext₁ in SC.allow) && continue
+        !(pnext₂ in SC.allow) && continue
+        !(pnext₃ in SC.allow) && continue
+        !(pnext₄ in SC.allow) && continue
+
+        # Calculate the transition probability
+        Knext₁ = view(SC.kernel, :, pnext₁)
+        Kcurr₁ = view(SC.kernel, :, pcurr₁)
+        Knext₂ = view(SC.kernel, :, pnext₂)
+        Kcurr₂ = view(SC.kernel, :, pcurr₂)
+        Knext₃ = view(SC.kernel, :, pnext₃)
+        Kcurr₃ = view(SC.kernel, :, pcurr₃)
+        Knext₄ = view(SC.kernel, :, pnext₄)
+        Kcurr₄ = view(SC.kernel, :, pcurr₄)
+        #
+        @. Gₙ = SC.Gᵧ + SE.A * ( Knext₁ - Kcurr₁ +
+                                 Knext₂ - Kcurr₂ +
+                                 Knext₃ - Kcurr₃ +
+                                 Knext₄ - Kcurr₄ )
+        @. ΔG = Gₙ - SC.Gᵥ
+        χ²new = dot(ΔG, ΔG)
+        #
+        prob = exp( 0.5 * (SC.χ² - χ²new) / SC.Θ )
+
+        # Important sampling, if true, the δ functions are shifted and the
+        # corresponding objects are updated.
+        if rand(MC.rng) < min(prob, 1.0)
+            SE.P[s₁] = pnext₁
+            SE.P[s₂] = pnext₂
+            SE.P[s₃] = pnext₃
+            SE.P[s₄] = pnext₄
+            @. SC.Gᵧ = Gₙ
+            #
+            SC.χ² = χ²new
+            if χ²new < SC.χ²min
+                SC.χ²min = χ²new
+            end
+            #
+            MC.Qacc = MC.Qacc + 1
+        end
+    end
+end
