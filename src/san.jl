@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/08
+# Last modified: 2022/11/27
 #
 
 #=
@@ -379,6 +379,10 @@ function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         if δχ² < threshold
             println("Reach equilibrium state")
             break
+        else
+            if i == nwarm
+                error("Fail to reach equilibrium state")
+            end
         end
 
         # Adjust the Θ parameter
@@ -411,10 +415,14 @@ end
 Perform Monte Carlo sweeps and sample the field configurations.
 """
 function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
-    if rand(MC.rng) < 0.95
+    if rand(MC.rng) < 0.80
         try_move_s(MC, SE, SC)
     else
-        try_move_p(MC, SE, SC)
+        if rand(MC.rng) < 0.50
+            try_move_p(MC, SE, SC)
+        else
+            try_move_q(MC, SE, SC)
+        end
     end
 end
 
@@ -511,12 +519,15 @@ See also: [`StochSKMC`](@ref).
 function init_mc(S::StochSKSolver)
     seed = rand(1:100000000)
     rng = MersenneTwister(seed)
+    #
     Sacc = 0
     Stry = 0
     Pacc = 0
     Ptry = 0
+    Qacc = 0
+    Qtry = 0
 
-    MC = StochSKMC(rng, Sacc, Stry, Pacc, Ptry)
+    MC = StochSKMC(rng, Sacc, Stry, Pacc, Ptry, Qacc, Qtry)
 
     return MC
 end
