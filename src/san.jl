@@ -415,7 +415,7 @@ end
 Perform Monte Carlo sweeps and sample the field configurations.
 """
 function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
-    if rand(MC.rng) < 0.90
+    if rand(MC.rng) < 0.80
         try_move_s(MC, SE, SC)
     else
         if rand(MC.rng) < 0.50
