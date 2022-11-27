@@ -851,7 +851,7 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
         #
         prob = exp( 0.5 * (SC.χ² - χ²new) / SC.Θ )
 
-        # Important sampling, if true, the δ function is shifted and the
+        # Important sampling, if true, the δ functions are shifted and the
         # corresponding objects are updated.
         if rand(MC.rng) < min(prob, 1.0)
             SE.P[s₁] = pnext₁
