@@ -12,7 +12,7 @@ Let's concentrate on the following Fredholm integral equation of the first kind:
 g(y) = \int K(y,x) f(x)~dx.
 \end{equation}
 ```
-Here, $K(y,x)$ is the known kernel function, ``f(x)`` is the model function, and ``g(y)`` denotes raw data. Given ``f(x)``, it is quite easy to get ``g(y)`` via numerical integration. However, given ``g(y)``, solving the Fredholm integral equation reversely to get ``f(x)`` is not as easy as expected. There is no universal solution. In some cases, even the existence of solution can not be guaranteed. 
+Here, $K(y,x)$ is the known kernel function, ``f(x)`` is the model function, and ``g(y)`` denotes raw data. Given ``f(x)``, it is quite easy to get ``g(y)`` via numerical integration. However, given ``g(y)``, solving the Fredholm integral equation reversely to get ``f(x)`` is not as easy as expected. There is no universal solution. In some cases, even the existence of solution can not be guaranteed.
 
 ## Available Analytical Continuation Methods
 
