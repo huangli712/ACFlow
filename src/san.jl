@@ -874,7 +874,7 @@ end
 Try to update the Monte Carlo field configurations via the Metropolis
 algorithm. In each update, four different δ functions are shifted.
 
-See also: [`try_move_p`](@ref).
+See also: [`try_move_s`](@ref).
 """
 function try_move_q(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Get parameters
