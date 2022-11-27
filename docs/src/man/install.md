@@ -26,4 +26,4 @@ $ cd docs
 $ julia make.jl
 ```
 
-After a few seconds, the documentation is built and saved in the `acflow/docs/build` directory if everything is OK. The home page of the documentation is `acflow/docs/build/index.html`. We can read it with any web browsers.
+After a few seconds, the documentation is built and saved in the `acflow/docs/build` directory if everything is OK. The home page of the documentation is `acflow/docs/build/index.html`. The users can open it with any web browsers.
