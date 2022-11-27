@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/24
+# Last modified: 2022/11/27
 #
 
 """
@@ -659,6 +659,7 @@ constraints    -> Limit the position of δ functions.
 #
 try_move_s     -> Try to shift the position of one δ function.
 try_move_p     -> Try to shift the positions of two δ functions.
+try_move_q     -> Try to shift the positions of four δ functions.
 ```
 =#
 
@@ -692,6 +693,7 @@ export constraints
 #
 export try_move_s
 export try_move_p
+export try_move_q
 
 #=
 ### *Includes And Exports* : *som.jl*
