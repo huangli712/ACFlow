@@ -784,7 +784,7 @@ end
     try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
 Try to update the Monte Carlo field configurations via the Metropolis
-algorithm. In each update, only a pair of δ functions is shifted.
+algorithm. In each update, only a pair of δ functions are shifted.
 
 See also: [`try_move_s`](@ref).
 """
