@@ -1,6 +1,6 @@
 # Acknowledgements
 
-This project is supported by the following foundations:
+This project has been supported by the following foundations:
 
 * CAEP Foundation (under Grant No.CX100000)
 * National Science Foundation of China (under Grants No.11874329).
