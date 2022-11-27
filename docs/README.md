@@ -1,6 +1,6 @@
 ## About
 
-This is the documentation for the *ACFlow* package. It is developed with the `Markdown` + `Documenter.jl`.
+This is the documentation for the ACFlow toolkit. It is developed with the `Markdown` language and the `Documenter.jl` package.
 
 ## Prerequisites
 
@@ -10,12 +10,12 @@ Make sure that the [`Julia programming language`](https://julialang.org/) was in
 
 Just type the following command in your terminal. Here `$` is only the prompt.
 
-```sh
+```shell
 $ julia make.jl
 ```
 
-The `Documenter.jl` will automatically generate some static webs for the documentation.
+Then `Documenter.jl` will automatically generate some static webs for the documentation.
 
 ## Read the docs
 
-If everything is OK, you will find a new directory `build` under the `docs` folder. Get in it and then double click the `index.html` file to open it with browser (`Chrome` or `Firefox`). Enjoy it!
+If everything is OK, you will find a new directory - `build` - under the `docs` folder. Get in it and then double click the `index.html` file to open it with web browser (perhaps it is `Chrome` or `Firefox`). Enjoy it!
