@@ -11,7 +11,7 @@ or
 $ tar xvfz acflow.tar.gz
 ```
 
-Third, the users have to announce a new environment variable `ACFLOW_HOME` for operation system. Supposed that the root directory of the ACFLow toolkit is `/home/your_home/acflow`, then `ACFLOW_HOME` should be setup as follows:
+Third, the users have to announce a new environment variable `ACFLOW_HOME`. Supposed that the root directory of the ACFLow toolkit is `/home/your_home/acflow`, then `ACFLOW_HOME` should be setup as follows:
 
 ```shell
 $ export ACFLOW_HOME=/home/your_home/acflow/src
