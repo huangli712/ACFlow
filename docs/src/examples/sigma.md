@@ -1,13 +1,13 @@
 !!! info
 
-    In order to demonstrate usefulness of the ACFlow toolkit, four examples are illustrated in this section. These examples cover typical application scenarios of the ACFlow toolkit, including analytical continuations of 
+    In order to demonstrate usefulness of the ACFlow toolkit, four examples are illustrated in this section. These examples cover typical application scenarios of the ACFlow toolkit, including analytical continuations of
 
     * Matsubara self-energy function
     * Matsubara Green's function
     * Imaginary time Green's function
     * Current-current correlation function
 
-    within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/test/T*` folders. 
+    within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/test/T*` folders.
 
 # Matsubara Self-Energy Function
 
@@ -18,9 +18,9 @@ H = -t \sum_{\langle ij \rangle \sigma} c^{\dagger}_{i\sigma}c_{j\sigma}
 ```
 where ``t`` is the hopping parameter, ``\mu`` is the chemical potential, ``U`` is the Coulomb interaction, ``n`` is the occupation number, ``\sigma`` denotes the spin, ``i`` and ``j`` are site indices. This model is solved by using the dynamical mean-field theory (dubbed DMFT) with the hybridization expansion continuous-time quantum Monte Carlo solver (dubbed CT-HYB) as implemented in the ``i``QIST package. The parameters used in the DMFT + CT-HYB calculation are ``t = 0.5``, ``U = 2.0``, ``\mu = 1.0``, and ``\beta = 10.0``. Once the DMFT self-consistent calculation is finished, the Matsubara self-energy function ``\Sigma(i\omega_n)`` is obtained. We are going to convert it to real frequency self-energy function ``\Sigma(\omega)``. The data of Matsubara self-energy function ``\Sigma(i\omega_n)`` have been preprocessed and stored in `siw.data`. This file contains five columns, which are used to record the Matsubara frequency ``\omega_n``, Re``\Sigma(i\omega_n)``, Im``\Sigma(i\omega_n)``, error bar of Re``\Sigma(i\omega_n)``, error bar of Im``\Sigma(i\omega_n)``, respectively. Only the first twenty Matsubara frequency points are kept, because the high-frequency data are somewhat noisy.
 
-The purpose of this example is to demonstrate usage of the `MaxEnt` solver and the script mode of the ACFlow toolkit. Next we will explain the key steps in detail. As for the complete Julia script, please refer to `sigma.jl` and `gendata.jl` in the `/home/your_home/acflow/test/T01/` folder.   
+The purpose of this example is to demonstrate usage of the `MaxEnt` solver and the script mode of the ACFlow toolkit. Next we will explain the key steps in detail. As for the complete Julia script, please refer to `sigma.jl` and `gendata.jl` in the `/home/your_home/acflow/test/T01/` folder.
 
-First, we have to load the essential Julia packages. Both the `DelimitedFiles` and `Printf` packages belong to Julia's standard library. They are used to read input data and write calculated results, respectively.  
+First, we have to load the essential Julia packages. Both the `DelimitedFiles` and `Printf` packages belong to Julia's standard library. They are used to read input data and write calculated results, respectively.
 
 ```julia
 #!/usr/bin/env julia
@@ -40,8 +40,8 @@ Next, the data of Matsubara self-energy function are read from `siw.data`. The H
 \Sigma(i\omega_n) \to \Sigma(i\omega_n) - \Sigma_{H}.
 \end{equation}
 ```
-Note that ``\Sigma_{H}`` is approximately equal to the asymptotic value of real part of ``\Sigma(i\omega_n)`` when ``n`` goes to infinite.   
- 
+Note that ``\Sigma_{H}`` is approximately equal to the asymptotic value of real part of ``\Sigma(i\omega_n)`` when ``n`` goes to infinite.
+
 ```julia
 # Deal with self-energy function
 #
@@ -60,7 +60,7 @@ Sh = 1.0
 @. Sinp = Sinp - Sh
 ```
 
-Next, the computational parameters are encapsulated into two dictionaries. The dict `B` is for the `[BASE]` block, while the dict `S` is for the solver. Then the `setup_param()` function is called, so that these parameters take effect. Here, the `MatEnt` solver is employed to tackle the analytical continuation problem. But the other stochastic sampling solvers are also applicable. The default model function is gaussian. The mesh for spectral density is non-uniform (A tangent mesh). The number of used ``\alpha`` parameters is 15, and the optimal ``\alpha`` parameter is determined by the ``\chi^2``kink algorithm. 
+Next, the computational parameters are encapsulated into two dictionaries. The dict `B` is for the `[BASE]` block, while the dict `S` is for the solver. Then the `setup_param()` function is called, so that these parameters take effect. Here, the `MatEnt` solver is employed to tackle the analytical continuation problem. But the other stochastic sampling solvers are also applicable. The default model function is gaussian. The mesh for spectral density is non-uniform (A tangent mesh). The number of used ``\alpha`` parameters is 15, and the optimal ``\alpha`` parameter is determined by the ``\chi^2``kink algorithm.
 
 ```julia
 # Setup parameters
@@ -90,15 +90,15 @@ S = Dict{String,Any}(
 setup_param(B, S)
 ```
 
-It is quite easy to start the analytical continuation calculation. Just call the `solve()` function and pass the grid, input data, and error bar data to it. The return values of this function call are real frequency mesh, spectral density, and reconstructed Matsubara self-energy function. 
+It is quite easy to start the analytical continuation calculation. Just call the `solve()` function and pass the grid, input data, and error bar data to it. The return values of this function call are real frequency mesh, spectral density, and reconstructed Matsubara self-energy function.
 
 ```julia
 # Call the solver
 mesh, Aout, Sout = solve(grid, Sinp, Serr)
 ```
 
-Finally, the real frequency self-energy function must be supplemented with the Hartree term. Then the final results are written into `sigma.data`.   
-   
+Finally, the real frequency self-energy function must be supplemented with the Hartree term. Then the final results are written into `sigma.data`.
+
 ```julia
 # Calculate final self-energy function on real axis
 #
