@@ -1,4 +1,4 @@
-# Maximum Entropy Method
+# [Maximum Entropy Method](@id mem)
 
 Perhaps the maximum entropy method is the most frequently used approach for analytical continuation problems because of its high computational efficiency. Next, we will discuss the basic principles and several variants of it.
 

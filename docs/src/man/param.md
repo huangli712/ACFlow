@@ -423,7 +423,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. As for the underlying principles of these algorithms, please see [Maximum Entropy Method](@ref mem).
 
 ### nalph
 
