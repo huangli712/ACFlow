@@ -2,6 +2,10 @@
 
 The ACFlow toolkit is designed to be flexible and easy-to-use. It provides three running modes to facilitate analytical continuation calculations, namely the interactive, script, and standard modes.  
 
+!!! warning
+
+    The environment variable `ACFLOW_HOME` must be setup at advance.
+
 ## Interactive Mode
 
 With the ACFlow toolkit, the users can setup and carry out analytical continuation simulations interactively in Julia's REPL (Read-Eval-Print Loop) environment. For example,
@@ -32,7 +36,7 @@ read_param()
 mesh, Aout, Gout = solve(read_data())
 ```
 
-Of course, this script can be extended to finish complex tasks. In section~\ref{subsec:sigma}, a realistic example is provided to show how to complete an analytical continuation of Matsubara self-energy function via the script mode.              
+Of course, this script can be extended to finish complex tasks. Later, a realistic example will be provided to show how to complete an analytical continuation of Matsubara self-energy function via the script mode.              
 
 ## Standard Mode
 
@@ -49,3 +53,7 @@ $ /home/your_home/acflow/util/Pacrun.jl ac.toml
 ```
 
 Noted that the `acrun.jl` script runs sequentially, while the `Pacrun.jl` script supports parallel and distributed computing. As we can conclude from the filename extension of configuration file (`ac.toml`), it adopts the `TOML` specification. The users may edit it with any text-based editors. Next we will introduce syntax and format of the input data files and configuration files.
+
+!!! warning
+
+    
