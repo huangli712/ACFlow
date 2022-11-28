@@ -56,4 +56,8 @@ Noted that the `acrun.jl` script runs sequentially, while the `Pacrun.jl` script
 
 !!! warning
 
-    
+    By default, the `Pacrun.jl` will boost launch 8 processes. If the users want to use more or less processes, they should modify line `13` in `Pacrun.jl`:
+
+    ```julia
+    addprocs(8)
+    ``` 
