@@ -27,7 +27,7 @@ A(\omega) = \frac{1}{L_{\text{good}}} \sum^{L}_{i = 1}
 \theta(\alpha_{\text{good}} \min\{D[A_i]\} - D[A_i]) A_{i}(\omega).
 \end{equation}
 ```
-Here, ``\theta(x)`` is the Heaviside step function, and ``\alpha_{\text{good}}`` is a adjustable parameter. ``L_{\text{good}}`` denotes the number of ``good'' spectral functions:
+Here, ``\theta(x)`` is the Heaviside step function, and ``\alpha_{\text{good}}`` is a adjustable parameter. ``L_{\text{good}}`` denotes the number of `good` spectral functions:
 ```math
 \begin{equation}
 L_{\text{good}} = \sum^{L}_{i = 1} 
