@@ -15,13 +15,11 @@ In this example, analytical continuation of imaginary time Green's function will
 
 The exact spectral function reads:
 ```math
-\begin{equation}
 A(\omega) =
 \begin{cases}
 \frac{1}{W} \frac{|\omega|}{\sqrt{\omega^2 - \Delta^2}},~\quad & \text{if}~\Delta < |\omega| < W/2. \\
 0, & \text{otherwise}.
 \end{cases}
-\end{equation}
 ```
 Here, ``W`` denotes bandwidth, and ``\Delta`` is used to control size of the energy gap. Let ``W = 6`` and ``2\Delta = 1``. This spectrum should exhibit flat shoulders, steep peaks, and sharp gap edges. Actually, it is the spectrum of a BCS superconductor.
 

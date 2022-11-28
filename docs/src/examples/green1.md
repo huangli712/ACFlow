@@ -15,11 +15,9 @@ The purpose of the second example is to treat the Matsubara Green's function by 
 
 At first, please consider the following spectral density with two gaussian peaks:
 ```math
-\begin{equation}
 A(\omega) =
 A_1 \exp\left[\frac{-(\omega - \epsilon_1)^2}{2 \Gamma^2_1}\right] +
 A_2 \exp\left[\frac{-(\omega - \epsilon_2)^2}{2 \Gamma^2_2}\right],
-\end{equation}
 ```
 with ``A_1 = 1.0``, ``A_2 = 0.3``, ``\epsilon_1 = 0.5``, ``\epsilon_2 = -2.5``, ``\Gamma_1 = 0.2``, and ``\Gamma_2 = 0.8``. Then the Matsubara Green's function ``G(i\omega_n)`` is evaluated by using ``\mathbf{G} = \mathbf{KA}`` with ``\beta = 10.0``. Random noises, built by formula ``0.0001 r_1 \exp{}(i 2\pi r_2 )`` where ``r_1`` and ``r_2`` are random numbers in (0.0,1.0), are added to ``G(i\omega_n)``. The error bar of ``G(i\omega_n)`` is fixed to 1e-4. The generated data for ``G(i\omega_n)`` are written in `giw.data`.
 

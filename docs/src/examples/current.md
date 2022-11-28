@@ -15,7 +15,6 @@ The former three examples only concern fermionic correlators. How about bosonic 
 
 The exact optical conductivity ``\sigma(\omega)`` reads:
 ```math
-\begin{equation}
 \sigma(\omega) = 
 \left\{
 \frac{W_1}{1 + (\omega/\Gamma_1)^2} + 
@@ -23,7 +22,6 @@ The exact optical conductivity ``\sigma(\omega)`` reads:
 \frac{W_2}{1 + [(\omega + \epsilon)/\Gamma_2]^2}
 \right\}
 \frac{1}{1 + (\omega/\Gamma_3)^6},
-\end{equation}
 ```
 where ``W_1 = 0.3``, ``W_2 = 0.2``, ``\Gamma_1 = 0.3``, ``\Gamma_2 = 1.2``, ``\Gamma_3 = 4.0``, and ``\epsilon = 3.0``. The current-current correlation function ``\Pi(\tau)`` can be evaluated from ``\sigma(\omega)`` by using the following equation:
 ```math
