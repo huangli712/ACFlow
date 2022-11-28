@@ -199,7 +199,7 @@ Depth = 3
 
 *Definition:*
 
-> This parameter specifies the mesh's type for output data (usually the spectral functions) in real axis. Now **ACFlow** supports the following choices:
+> This parameter specifies the mesh's type for output data (usually the spectral functions) in real axis. Now the ACFlow toolkit supports the following choices:
 >
 > * linear
 > * tangent
@@ -221,6 +221,10 @@ Depth = 3
 *Comment:*
 
 > This parameter is mandatory. See also [`nmesh`](@ref nmesh).
+
+!!! info
+
+    As for the `StochOM` solver , it seems that the linear mesh works better.
 
 ### [ngrid](@id ngrid)
 
