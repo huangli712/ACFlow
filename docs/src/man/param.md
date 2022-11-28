@@ -46,13 +46,17 @@ Depth = 3
 > * StochSK
 > * StochOM
 >
-> Here, `MaxEnt` means the maximum entropy method. The `MaxEnt` solver can be used to treat the correlators in Matsubara frequency or imaginary-time axis. If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file.
+> Here, `MaxEnt` means the maximum entropy method. The `MaxEnt` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file.
 >
->`StochAC` means the stochastic analytical continuation method (K. S. D. Beach's version). The `StochAC` solver can be used to treat the correlators in imaginary-time axis only. If `solver = "StochAC"`, then the `[StochAC]` block must be available in the configuration file.
+>`StochAC` means the stochastic analytical continuation method (K. S. D. Beach's algorithm). The `StochAC` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochAC"`, then the `[StochAC]` block must be available in the configuration file.
 >
-> `StochSK` means the stochastic analytical continuation method (A. W. Sandvik's version). The `StochSK` solver can be used to treat the correlators in imaginary-time axis only. If `solver = "StochSK"`, then the `[StochSK]` block must be available in the configuration file.
+> `StochSK` means the stochastic analytical continuation method (A. W. Sandvik's algorithm). The `StochSK` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochSK"`, then the `[StochSK]` block must be available in the configuration file.
 >
-> `StochOM` means the stochastic optimization method. The `StochOM` solver can be used to treat the correlators in Matsubara frequency axis only. If `solver = "StochOM"`, then the `[StochOM]` block must be available in the configuration file.
+> `StochOM` means the stochastic optimization method. The `StochOM` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochOM"`, then the `[StochOM]` block must be available in the configuration file.
+
+!!! warning
+
+    For the `StochOM` solver, if the correlators are defined in imaginary time axis, they must be bosonic. In other words, the `StochOM` solver does not support analytical continuation of fermionic imaginary time correlation function.
 
 *Type:*
 
