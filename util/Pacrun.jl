@@ -6,7 +6,7 @@
 #
 # Usage:
 #
-#     $ acrun.jl ac.toml
+#     $ Pacrun.jl ac.toml
 #
 
 using Distributed
