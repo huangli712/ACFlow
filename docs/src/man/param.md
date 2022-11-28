@@ -338,9 +338,9 @@ Depth = 3
 
 *Definition:*
 
-> Additional parameters for customizing the model functions. Note that the `gauss`, `lorentz`, and `risedecay` models need one parameter ``\Gamma``. The `1gauss` and `1lorentz` need two parameters, ``\Gamma`` and ``s``. The `2gauss` and `2lorentz` needs three parameters, ``\Gamma``, ``s_1``, and ``s_2``.
+> Additional parameters for customizing the model functions. Note that the `gauss`, `lorentz`, and `risedecay` models need one parameter ``\Gamma``. The `1gauss` and `1lorentz` models need two parameters, ``\Gamma`` and ``s``. The `2gauss` and `2lorentz` models need three parameters, ``\Gamma``, ``s_1``, and ``s_2``.
 >
-> The `pmodel` parameter is used to defined these parameters. If there are one element in `pmodel`, then ``\Gamma`` = `pmodel[1]`. If there are two elements in `pmodel`, then ``\Gamma`` = `pmodel[1]` and ``s`` = `pmodel[2]`. If there are three elements in `pmodel`, then ``\Gamma`` = `pmodel[1]`, ``s_1`` = `pmodel[2]`, and ``s_2`` = `pmodel[3]`.
+> The `pmodel` parameter is used to defined these parameters. If there is one element in `pmodel`, then ``\Gamma`` = `pmodel[1]`. If there are two elements in `pmodel`, then ``\Gamma`` = `pmodel[1]` and ``s`` = `pmodel[2]`. If there are three elements in `pmodel`, then ``\Gamma`` = `pmodel[1]`, ``s_1`` = `pmodel[2]`, and ``s_2`` = `pmodel[3]`.
 
 *Type:*
 
@@ -376,7 +376,7 @@ Depth = 3
 
 *Definition:*
 
-> Restriction of the energy range of the calculated spectral functions. This features is implemented by the `StochAC`, `StochSK`, and `StochOM` solvers. In these solvers, the ``\delta`` or `box` functions, which are used to mimic the spectral functions, were restricted to live out of the given energy range. For example, `exclude = [8.0,16.0]` means that the energy range `[8.0,16.0]` is forbidden.
+> Restriction of the energy range of the calculated spectral functions. This features is implemented by the `StochAC`, `StochSK`, and `StochOM` solvers. In these solvers, the ``\delta`` or `box` functions, which are used to mimic the spectral functions, were restricted to live out of the given energy ranges. For example, `exclude = [8.0,16.0]` means that the energy range `[8.0,16.0]` is forbidden.
 
 *Type:*
 
@@ -394,7 +394,7 @@ Depth = 3
 
 !!! note
 
-    The parameters in this block is valid for the `MaxEnt` solver.
+    The parameters in this block is valid for the `MaxEnt` solver only.
 
 !!! warning
 
