@@ -60,7 +60,7 @@ Sh = 1.0
 @. Sinp = Sinp - Sh
 ```
 
-Next, the computational parameters are encapsulated into two dictionaries. Then the `setup_param()` function is called, so that these parameters take effect. Here, the `MatEnt` solver is employed to tackle the analytical continuation problem. But the other stochastic sampling solvers are also applicable. The default model function is gaussian. The mesh for spectral density is non-uniform (A tangent mesh). The number of used ``\alpha`` parameters is 15, and the optimal ``\alpha`` parameter is determined by the ``\chi^2``kink algorithm. 
+Next, the computational parameters are encapsulated into two dictionaries. The dict `B` is for the `[BASE]` block, while the dict `S` is for the solver. Then the `setup_param()` function is called, so that these parameters take effect. Here, the `MatEnt` solver is employed to tackle the analytical continuation problem. But the other stochastic sampling solvers are also applicable. The default model function is gaussian. The mesh for spectral density is non-uniform (A tangent mesh). The number of used ``\alpha`` parameters is 15, and the optimal ``\alpha`` parameter is determined by the ``\chi^2``kink algorithm. 
 
 ```julia
 # Setup parameters
