@@ -724,7 +724,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of Monte Carlo warmup steps.
+> Number of Monte Carlo thermalization steps.
 
 *Type:*
 
@@ -778,7 +778,7 @@ Depth = 3
 
 *Definition:*
 
-> How often to recalculate the goodness function (it is actually ``\chi^2``) to avoid numerical deterioration.
+> How often to recalculate the goodness-of-fit function (it is actually ``\chi^2``) to avoid numerical deterioration.
 
 *Type:*
 
