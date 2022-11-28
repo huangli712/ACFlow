@@ -1,23 +1,23 @@
 !!! info
 
-    In order to demonstrate usefulness of the ACFlow toolkit, four examples are illustrated in this section. These examples cover typical application scenarios of the ACFlow toolkit, including analytical continuations of 
+    In order to demonstrate usefulness of the ACFlow toolkit, four examples are illustrated in this section. These examples cover typical application scenarios of the ACFlow toolkit, including analytical continuations of
 
     * Matsubara self-energy function
     * Matsubara Green's function
     * Imaginary time Green's function
     * Current-current correlation function
 
-    within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/test/T*` folders. 
+    within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/test/T*` folders.
 
 # Current-Current Correlation Function
 
-The former three examples only concern fermionic correlators. How about bosonic correlators? In this example, we will demonstrate how to perform analytical continuation simulation for a typical bosonic correlator, the current-current correlation function ``\Pi(\tau)``, to obtain the optical conductivity ``\sigma(\omega)``. Note that this example is taken from *Phys. Rev. B 82, 165125 (2010)* directly. 
+The former three examples only concern fermionic correlators. How about bosonic correlators? In this example, we will demonstrate how to perform analytical continuation simulation for a typical bosonic correlator, the current-current correlation function ``\Pi(\tau)``, to obtain the optical conductivity ``\sigma(\omega)``. Note that this example is taken from *Phys. Rev. B 82, 165125 (2010)* directly.
 
 The exact optical conductivity ``\sigma(\omega)`` reads:
 ```math
-\sigma(\omega) = 
+\sigma(\omega) =
 \left\{
-\frac{W_1}{1 + (\omega/\Gamma_1)^2} + 
+\frac{W_1}{1 + (\omega/\Gamma_1)^2} +
 \frac{W_2}{1 + [(\omega - \epsilon)/\Gamma_2]^2} +
 \frac{W_2}{1 + [(\omega + \epsilon)/\Gamma_2]^2}
 \right\}
@@ -35,12 +35,12 @@ where the kernel function ``K(\tau,\omega)`` is different from the general form.
 K(\tau,\omega) = \frac{1}{\pi} \frac{\omega e^{-\tau\omega}}{1- e^{-\beta\omega}}.
 \end{equation}
 ```
-In this case, ``\beta`` is fixed to be 20.0. 
+In this case, ``\beta`` is fixed to be 20.0.
 
-At first, we use Eq.(1) ``\sim`` Eq.(3) to prepare ``\Pi(\tau)``. The error bar of ``\Pi(\tau)`` is fixed to 1e-4. The calculated ``\Pi(\tau)`` is written in `chit.data`. 
+At first, we use Eq.(1) ``\sim`` Eq.(3) to prepare ``\Pi(\tau)``. The error bar of ``\Pi(\tau)`` is fixed to 1e-4. The calculated ``\Pi(\tau)`` is written in `chit.data`.
 
-Next, we conduct analytical continuation simulation as usual. The used configuration file is attached as follows. Here, the `StochSK` solver is adopted, so the `solver` parameter is ''StochSK'' and the `grid` parameter is ''btime''. And the Shao-Sandvik algorithm is applied to seek optimal ``\Theta``, so the `method` parameter is ''chi2min''. The users can further increase the values of `nfine`, `ngamm`, and `nstep` parameters to improve computational accuracy. 
- 
+Next, we conduct analytical continuation simulation as usual. The used configuration file is attached as follows. Here, the `StochSK` solver is adopted, so the `solver` parameter is ''StochSK'' and the `grid` parameter is ''btime''. And the Shao-Sandvik algorithm is applied to seek optimal ``\Theta``, so the `method` parameter is ''chi2min''. The users can further increase the values of `nfine`, `ngamm`, and `nstep` parameters to improve computational accuracy.
+
 ```toml
 [BASE]
 finput = "chit.data"
