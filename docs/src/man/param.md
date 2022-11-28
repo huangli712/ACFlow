@@ -2,7 +2,7 @@
 
 *A dictionary about parameters*
 
-The official configuration file for the **ACFlow** package is `case.toml`. This page describes all the valid parameters that can appear in `case.toml`. As for the format of `case.toml`, please click [`case.toml`](input.md).
+The official configuration file for the **ACFlow** package is `case.toml`. This page describes all the valid parameters that can appear in `case.toml`. As for the format of `case.toml`, please look at [`case.toml`](input.md).
 
 ## Contents
 
@@ -39,7 +39,7 @@ Depth = 3
 
 *Definition:*
 
-> This parameter specifies the solvers that used to solve the analytical continuation problem. Now **ACFlow** supports four different solvers. They are as follows:
+> This parameter specifies the solvers that used to solve the analytical continuation problem. Now the ACFlow toolkit supports four different solvers. They are as follows:
 >
 > * MaxEnt
 > * StochAC
