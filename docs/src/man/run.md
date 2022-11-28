@@ -52,8 +52,6 @@ or
 $ /home/your_home/acflow/util/Pacrun.jl ac.toml
 ```
 
-Noted that the `acrun.jl` script runs sequentially, while the `Pacrun.jl` script supports parallel and distributed computing. As we can conclude from the filename extension of configuration file (`ac.toml`), it adopts the `TOML` specification. The users may edit it with any text-based editors. Next we will introduce syntax and format of the input data files and configuration files.
-
 !!! warning
 
     By default, the `Pacrun.jl` will boost launch 8 processes. If the users want to use more or less processes, they should modify line `13` in `Pacrun.jl`:
@@ -61,3 +59,8 @@ Noted that the `acrun.jl` script runs sequentially, while the `Pacrun.jl` script
     ```julia
     addprocs(8)
     ``` 
+
+    Specifically, change number `8`.
+
+Noted that the `acrun.jl` script runs sequentially, while the `Pacrun.jl` script supports parallel and distributed computing. As we can conclude from the filename extension of configuration file (`ac.toml`), it adopts the `TOML` specification. The users may edit it with any text-based editors. Next we will introduce syntax and format of the input data files and configuration files.
+
