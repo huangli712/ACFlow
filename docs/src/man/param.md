@@ -655,11 +655,32 @@ Depth = 3
 
 !!! note
 
-    The parameters in this block is valid for the `StochSK` solver.
+    The parameters in this block is valid for the `StochSK` solver only.
 
 !!! warning
 
     If `solver = "StochSK"`, the `[StochSK]` block must be available.
+
+### method
+
+*Definition:*
+
+> How to determine the optimized ``\Theta`` parameter? The `StochSK` solver supports two different algorithms. They are
+>
+> * chi2min
+> * chi2kink
+
+*Type:*
+
+> String.
+
+*Example:*
+
+> method = "chi2min"
+
+*Comment:*
+
+> This parameter is mandatory.
 
 ### nfine
 
