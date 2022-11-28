@@ -193,7 +193,7 @@ Depth = 3
 
 !!! warning
 
-    If the `StochOM` solver is employed, the grid parameter should not be "btime".
+    If the `StochOM` solver is employed, the grid parameter should not be "ftime".
 
 ### [mesh](@id mesh)
 
