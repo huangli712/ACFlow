@@ -1,3 +1,14 @@
+!!! info
+
+    In order to demonstrate usefulness of the ACFlow toolkit, four examples are illustrated in this section. These examples cover typical application scenarios of the ACFlow toolkit, including analytical continuations of 
+
+    * Matsubara self-energy function
+    * Matsubara Green's function
+    * Imaginary time Green's function
+    * Current-current correlation function
+
+    within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/test/T*` folders. 
+
 # Matsubara Green's Function
 
 The purpose of the second example is to treat the Matsubara Green's function by using the `StochOM` solver.     
