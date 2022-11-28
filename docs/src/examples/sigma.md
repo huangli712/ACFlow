@@ -13,10 +13,8 @@
 
 Now let us consider the following single-band Hubbard model on a Bethe lattice at first:
 ```math
-\begin{equation}
 H = -t \sum_{\langle ij \rangle \sigma} c^{\dagger}_{i\sigma}c_{j\sigma}
  - \mu \sum_i n_i + U \sum_i n_{i\uparrow} n_{i\downarrow},
-\end{equation}
 ```
 where ``t`` is the hopping parameter, ``\mu`` is the chemical potential, ``U`` is the Coulomb interaction, ``n`` is the occupation number, ``\sigma`` denotes the spin, ``i`` and ``j`` are site indices. This model is solved by using the dynamical mean-field theory (dubbed DMFT) with the hybridization expansion continuous-time quantum Monte Carlo solver (dubbed CT-HYB) as implemented in the ``i``QIST package. The parameters used in the DMFT + CT-HYB calculation are ``t = 0.5``, ``U = 2.0``, ``\mu = 1.0``, and ``\beta = 10.0``. Once the DMFT self-consistent calculation is finished, the Matsubara self-energy function ``\Sigma(i\omega_n)`` is obtained. We are going to convert it to real frequency self-energy function ``\Sigma(\omega)``. The data of Matsubara self-energy function ``\Sigma(i\omega_n)`` have been preprocessed and stored in `siw.data`. This file contains five columns, which are used to record the Matsubara frequency ``\omega_n``, Re``\Sigma(i\omega_n)``, Im``\Sigma(i\omega_n)``, error bar of Re``\Sigma(i\omega_n)``, error bar of Im``\Sigma(i\omega_n)``, respectively. Only the first twenty Matsubara frequency points are kept, because the high-frequency data are somewhat noisy.
 
@@ -36,7 +34,7 @@ using ACFlow
 welcome() # Print welcome message only
 ```
 
-Next, the data of Matsubara self-energy function are read from `siw.data`. The Hartree term ``Sigma_{H}`` should be subtracted from its real part:
+Next, the data of Matsubara self-energy function are read from `siw.data`. The Hartree term ``\Sigma_{H}`` should be subtracted from its real part:
 ```math
 \begin{equation}
 \Sigma(i\omega_n) \to \Sigma(i\omega_n) - \Sigma_{H}.
