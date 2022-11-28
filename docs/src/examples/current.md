@@ -25,19 +25,15 @@ The exact optical conductivity ``\sigma(\omega)`` reads:
 ```
 where ``W_1 = 0.3``, ``W_2 = 0.2``, ``\Gamma_1 = 0.3``, ``\Gamma_2 = 1.2``, ``\Gamma_3 = 4.0``, and ``\epsilon = 3.0``. The current-current correlation function ``\Pi(\tau)`` can be evaluated from ``\sigma(\omega)`` by using the following equation:
 ```math
-\begin{equation}
 \Pi(\tau) = \int^{\infty}_{-\infty} K(\tau,\omega) \sigma(\omega)~d\omega,
-\end{equation}
 ```
 where the kernel function ``K(\tau,\omega)`` is different from the general form. It reads:
 ```math
-\begin{equation}
 K(\tau,\omega) = \frac{1}{\pi} \frac{\omega e^{-\tau\omega}}{1- e^{-\beta\omega}}.
-\end{equation}
 ```
 In this case, ``\beta`` is fixed to be 20.0.
 
-At first, we use Eq.(1) ``\sim`` Eq.(3) to prepare ``\Pi(\tau)``. The error bar of ``\Pi(\tau)`` is fixed to 1e-4. The calculated ``\Pi(\tau)`` is written in `chit.data`.
+At first, we use the above equations to prepare ``\Pi(\tau)``. The error bar of ``\Pi(\tau)`` is fixed to 1e-4. The calculated ``\Pi(\tau)`` is written in `chit.data`.
 
 Next, we conduct analytical continuation simulation as usual. The used configuration file is attached as follows. Here, the `StochSK` solver is adopted, so the `solver` parameter is ''StochSK'' and the `grid` parameter is ''btime''. And the Shao-Sandvik algorithm is applied to seek optimal ``\Theta``, so the `method` parameter is ''chi2min''. The users can further increase the values of `nfine`, `ngamm`, and `nstep` parameters to improve computational accuracy.
 
@@ -48,8 +44,8 @@ solver = "StochSK"
 ktype  = "bsymm"
 mtype  = "flat"
 grid   = "btime"
-mesh   = "halflorentz"
-ngrid  = 10
+mesh   = "linear"
+ngrid  = 501
 nmesh  = 801
 wmax   = 8.0
 wmin   = 0.0
