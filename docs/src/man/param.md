@@ -74,7 +74,7 @@ Depth = 3
 
 *Definition:*
 
-> It denotes the type of kernel functions. Now **ACFlow** supports three types of kernel functions. They are:
+> It denotes the type of kernel functions. Now the ACFlow toolkit supports three types of kernel functions. They are:
 >
 > * fermi
 > * boson
