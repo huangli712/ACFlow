@@ -115,9 +115,8 @@ open("sigma.data", "w") do fout
 end
 ```
 
+The calculated results are displayed in **Fig.1**. **Fig.1(a)** and **(b)** show the real and imaginary parts of the real frequency self-energy function. Near the Fermi level, Re``\Sigma(\omega)`` exhibits quasi-linear behavior, with which the quasiparticle weight ``Z`` and effective mass of electron ``m^*`` can be easily evaluated. As for the imaginary part, Im``\Sigma(0)`` is finite, which indicates that the electron-electron scattering is not trivial. **Fig.1(c)** shows the ``\alpha``-dependent ``\chi^{2}``. The vertical bar in this figure indicates the optimal ``\alpha`` is around 2.15. In **Fig.(d)**, the reproduced and raw self-energy functions are compared. It is apparent that they are consistent with each other.
 
 ![T_E1.png](../assets/T_E1.png)
 
 **Figure 1 |** Analytical continuation of Matsubara self-energy function by using the maximum entropy method. (a) Real part of real frequency self-energy function. (b) Imaginary part of real frequency self-energy function. (c) ``\chi^{2}`` as a function of ``\alpha``. The vertical bar indicates the optimal ``\alpha`` parameter chosen by the `chi2kink` algorithm. (d) Reproduced and original data for imaginary part of the Matsubara self-energy functions.
-
-The calculated results are displayed in **Fig.1**. **Fig.1(a)** and **(b)** show the real and imaginary parts of the real frequency self-energy function. Near the Fermi level, Re``\Sigma(\omega)`` exhibits quasi-linear behavior, with which the quasiparticle weight ``Z`` and effective mass of electron ``m^*`` can be easily evaluated. As for the imaginary part, Im``\Sigma(0)`` is finite, which indicates that the electron-electron scattering is not trivial. **Fig.1(c)** shows the ``\alpha``-dependent ``\chi^{2}``. The vertical bar in this figure indicates the optimal ``\alpha`` is around 2.15. In **Fig.(d)**, the reproduced and raw self-energy functions are compared. It is apparent that they are consistent with each other.
