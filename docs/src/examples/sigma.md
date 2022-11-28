@@ -36,9 +36,7 @@ welcome() # Print welcome message only
 
 Next, the data of Matsubara self-energy function are read from `siw.data`. The Hartree term ``\Sigma_{H}`` should be subtracted from its real part:
 ```math
-\begin{equation}
 \Sigma(i\omega_n) \to \Sigma(i\omega_n) - \Sigma_{H}.
-\end{equation}
 ```
 Note that ``\Sigma_{H}`` is approximately equal to the asymptotic value of real part of ``\Sigma(i\omega_n)`` when ``n`` goes to infinite.
 
