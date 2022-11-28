@@ -146,11 +146,11 @@ Depth = 3
 > * risedecay
 > * file
 >
-> Here, `flat` means the flat model (i.e, constant), `gauss` means the Gaussian model, `1gauss` means the Shifted Gaussian model, `2gauss` means the Two Gaussian model, `lorentz` means the Lorentzian model, `1lorentz` means the Shifted Lorentzian model, `2lorentz` means the Two Lorentzian model, and `risedecay` means the Rise-And-Decay model.
+> Here, `flat` means the flat model (i.e., constant), `gauss` means the Gaussian model, `1gauss` means the Shifted Gaussian model, `2gauss` means the Two Gaussians model, `lorentz` means the Lorentzian model, `1lorentz` means the Shifted Lorentzian model, `2lorentz` means the Two Lorentzians model, and `risedecay` means the Rise-And-Decay model.
 >
-> Besides `flat` and `file`, all the other model functions need additional parameters to customize them. The parameters can be specified by the [`pmodel`](@ref pmodel) parameter.
+> Besides `flat` and `file`, all the other model functions need additional parameters to customize them (Of course, the ACFlow toolkit will supplement default parameters). The parameters can be specified by the [`pmodel`](@ref pmodel) parameter.
 >
-> Especially, if `mtype = "file"`, then the default model function is encoded in `model.inp`. **ACFlow** will read this file and initialize the default model function automatically. Be careful, the mesh for this model function must be consistent with the one used in the analytical continuation calculations. 
+> Especially, if `mtype = "file"`, then the default model function is encoded in `model.inp`. ACFlow will read this file and initialize the default model function automatically. Be careful, the mesh for this model function must be consistent with the one used in the analytical continuation calculations. 
 >
 > As for detailed formula for these models, please refer to `src/model.jl`.
 
@@ -170,14 +170,14 @@ Depth = 3
 
 *Definition:* 
 
-> This parameter specifies the grid's type for input data in imaginary axis. Now **ACFlow** supports the following choices:
+> This parameter specifies the grid's type for input data in imaginary axis. Now the ACFlow toolkit supports the following choices:
 >
 > * ftime
 > * btime
 > * ffreq
 > * bfreq
 >
-> Here, `ftime` means fermionic and imaginary-time, `btime` means bosonic and imaginary-time, `ffreq` means fermionic and Matsubara frequency, and `bfreq` means bosonic and Matsubara frequency.
+> Here, `ftime` means fermionic and imaginary time, `btime` means bosonic and imaginary time, `ffreq` means fermionic and Matsubara frequency, and `bfreq` means bosonic and Matsubara frequency.
 
 *Type:*
 
@@ -190,6 +190,10 @@ Depth = 3
 *Comment:*
 
 > This parameter is mandatory. See also [`ngrid`](@ref ngrid).
+
+!!! warning
+
+    If the `StochOM` solver is employed, the grid parameter should not be "btime".
 
 ### [mesh](@id mesh)
 
