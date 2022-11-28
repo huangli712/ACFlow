@@ -669,6 +669,8 @@ Depth = 3
 >
 > * chi2min
 > * chi2kink
+>
+> Usually, the `chi2min` algorithm is preferred. This algorithm is proposed by Shao and Sandvik *et al*. See [Stochastic Analytical Continuation 1](@ref san) for more details.
 
 *Type:*
 
