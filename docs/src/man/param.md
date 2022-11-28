@@ -222,7 +222,7 @@ Depth = 3
 
 > This parameter is mandatory. See also [`nmesh`](@ref nmesh).
 
-!!! info
+!!! warning
 
     As for the `StochOM` solver , it seems that the linear mesh works better.
 
