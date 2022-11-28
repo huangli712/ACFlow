@@ -6,7 +6,7 @@ The ACFlow toolkit is developed with pure Julia language. Thanks to powerful typ
 
 ## Code Repository
 
-The code repository of the ACFlow toolkit is:
+The official code repository of the ACFlow toolkit is:
 
 ```text
 https://github.com/huangli712/ACFlow
