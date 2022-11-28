@@ -134,7 +134,7 @@ Depth = 3
 
 *Definition:*
 
-> It denotes the type of default model functions. Now **ACFlow** supports the following choices:
+> It denotes the type of default model functions. Now the ACFlow toolkit supports the following choices:
 >
 > * flat
 > * gauss
