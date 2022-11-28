@@ -477,7 +477,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. It muse be larger than 1.0.
 
 ### blur
 
@@ -501,7 +501,7 @@ Depth = 3
 
 !!! note
 
-    The parameters in this block is valid for the `StochAC` solver.
+    The parameters in this block is valid for the `StochAC` solver only.
 
 !!! warning
 
@@ -547,7 +547,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of Monte Carlo warmup steps.
+> Number of Monte Carlo thermalization steps.
 
 *Type:*
 
