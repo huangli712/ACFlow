@@ -832,7 +832,7 @@ Depth = 3
 
 !!! note
 
-    The parameters in this block is valid for the `StochOM` solver.
+    The parameters in this block is valid for the `StochOM` solver only.
 
 !!! warning
 
