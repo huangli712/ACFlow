@@ -8,7 +8,7 @@ The input data should be store in CSV-like text files. For imaginary time Green'
 
 ## Configuration Files
 
-The configuration file adopts the TOML format. It is used to setup the computational parameters. It consists of one or more blocks. Possible blocks (or sections) in the configuration file include `[BASE]`, `[MaxEnt]`, `[StochAC]`, `[StochSK]`, and `[StochOM]`. The `[BASE]` block is mandatory, while the other blocks are optional. A schematic configuration file (`ac.toml`) is listed as follows:
+The configuration file adopts the TOML format. It is used to setup the computational parameters. It consists of one or more blocks. Possible blocks (or sections) of the configuration file include `[BASE]`, `[MaxEnt]`, `[StochAC]`, `[StochSK]`, and `[StochOM]`. The `[BASE]` block is mandatory, while the other blocks are optional. A schematic configuration file (`ac.toml`) is listed as follows:
 
 ```toml
 [BASE]
@@ -51,7 +51,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`offdiag` | bool    | false          | Treat the off-diagonal part of matrix-valued function? |
 |`pmodel`  | array   | N/A            | Additional parameters for customizing the default model. |
 |`pmesh`   | array   | N/A            | Additional parameters for customizing the mesh. |
-|`exclude` | array   | N/A            | Restriction of the energy range of the spectrum. |
+|`exclude` | array   | N/A            | Restriction of energy range of the spectrum. |
 
 **Table 1 |** Possible parameters for the `[BASE]` block.
 
