@@ -18,6 +18,7 @@ Pages = [
     "intro/ack.md",
     "intro/cite.md",
 ]
+Depth = 1
 ```
 
 ## Manual
