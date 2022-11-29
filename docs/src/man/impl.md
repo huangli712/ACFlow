@@ -20,8 +20,8 @@ The source codes of the ACFlow toolkit are placed in the `acflow/src` folder. Th
 | :------- | :---------- |
 | `ACFlow.jl` | Entry of the ACFlow module. |
 | `maxent.jl` | Maximum entropy method. |
-| `sac.jl`    | Stochastic analytical continuation (K. S. D. Beach's version). |
-| `san.jl`    | Stochastic analytical continuation (A. W. Sandvik's version). |
+| `sac.jl`    | Stochastic analytical continuation (K. S. D. Beach's algorithm). |
+| `san.jl`    | Stochastic analytical continuation (A. W. Sandvik's algorithm). |
 | `som.jl`    | Stochastic optimization method. |
 | `global.jl` | Numerical and physical constants. |
 | `types.jl`  | Basic data structures and computational parameters. |
