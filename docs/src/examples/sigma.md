@@ -58,7 +58,7 @@ Sh = 1.0
 @. Sinp = Sinp - Sh
 ```
 
-Next, the computational parameters are encapsulated into two dictionaries. The dict `B` is for the `[BASE]` block, while the dict `S` is for the solver. Then the `setup_param()` function is called, so that these parameters take effect. Here, the `MatEnt` solver is employed to tackle the analytical continuation problem. But the other stochastic sampling solvers are also applicable. The default model function is gaussian. The mesh for spectral density is non-uniform (A tangent mesh). The number of used ``\alpha`` parameters is 15, and the optimal ``\alpha`` parameter is determined by the ``\chi^2``kink algorithm.
+Next, the computational parameters are encapsulated into two dictionaries. The dict `B` is for the `[BASE]` block, while the dict `S` is for the `MaxEnt` solver. Then the `setup_param()` function is called, so that these parameters take effect. Here, the `MatEnt` solver is employed to tackle the analytical continuation problem. But the other stochastic sampling solvers are also applicable. The default model function is gaussian. The mesh for spectral density is non-uniform (A tangent mesh). The number of used ``\alpha`` parameters is 15, and the optimal ``\alpha`` parameter is determined by the ``\chi^2``kink algorithm.
 
 ```julia
 # Setup parameters
@@ -113,7 +113,7 @@ open("sigma.data", "w") do fout
 end
 ```
 
-The calculated results are displayed in **Fig.1**. **Fig.1(a)** and **(b)** show the real and imaginary parts of the real frequency self-energy function. Near the Fermi level, Re``\Sigma(\omega)`` exhibits quasi-linear behavior, with which the quasiparticle weight ``Z`` and effective mass of electron ``m^*`` can be easily evaluated. As for the imaginary part, Im``\Sigma(0)`` is finite, which indicates that the electron-electron scattering is not trivial. **Fig.1(c)** shows the ``\alpha``-dependent ``\chi^{2}``. The vertical bar in this figure indicates the optimal ``\alpha`` is around 2.15. In **Fig.(d)**, the reproduced and raw self-energy functions are compared. It is apparent that they are consistent with each other.
+The calculated results are displayed in **Fig.1**. **Fig.1(a)** and **(b)** show the real and imaginary parts of the real frequency self-energy function, respectively. Near the Fermi level, Re``\Sigma(\omega)`` exhibits quasi-linear behavior, with which the quasiparticle weight ``Z`` and effective mass of electron ``m^*`` can be easily evaluated. As for the imaginary part, Im``\Sigma(0)`` is finite, which indicates that the electron-electron scattering is not trivial. **Fig.1(c)** shows the ``\alpha``-dependent ``\chi^{2}``. The vertical bar in this figure indicates the optimal ``\alpha`` is around 2.15. In **Fig.(d)**, the reproduced and raw self-energy functions are compared. It is apparent that they are consistent with each other.
 
 ![T_E1.png](../assets/T_E1.png)
 
