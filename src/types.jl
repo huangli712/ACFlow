@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/27
+# Last modified: 2022/12/03
 #
 
 #=
@@ -182,6 +182,27 @@ const _PStochOM = Dict{String,Any}(
     "norm"    => -1.0, # Negative value means off.
 )
 
+"""
+    PStochPX
+
+Dictionary for configuration parameters:
+the stochastic pole expansion.
+"""
+const PStochPX = Dict{String,ADT}(
+    "nfine"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
+    "npole"   => [missing, 1, :I64   , "Number of poles"],
+    "ntry"    => [missing, 1, :I64   , "Number of attempts (tries) to seek the solution"],
+    "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo steps per attempt / try"],
+)
+
+# Default parameters for PStochPX
+const _PStochPX = Dict{String,Any}(
+    "nfine"   => 100000,
+    "npole"   => 200,
+    "ntry"    => 1000,
+    "nstep"   => 1000000,
+)
+
 #=
 ### *Customized Structs* : *AC Solver*
 =#
@@ -226,6 +247,14 @@ It represents the analytical continuation solver that implements the
 stochastic optimization method.
 """
 struct StochOMSolver <: AbstractSolver end
+
+"""
+    StochPXSolver
+
+It represents the analytical continuation solver that implements the
+stochastic pole expansion.
+"""
+struct StochPXSolver <: AbstractSolver end
 
 #=
 ### *Customized Structs* : *Input Data*
@@ -555,4 +584,28 @@ mutable struct StochOMMC <: AbstractMC
     rng :: AbstractRNG
     Macc :: Vector{I64}
     Mtry :: Vector{I64}
+end
+
+"""
+    StochPXMC
+
+Mutable struct. It is used within the StochPX solver. It includes random
+number generator and some counters.
+
+### Members
+
+* rng  -> Random number generator.
+* Pacc -> Counter for Pmove operation (accepted).
+* Ptry -> Counter for Pmove operation (tried).
+* Aacc -> Counter for Amove operation (accepted).
+* Atry -> Counter for Amove operation (tried).
+
+See also: [`StochPXSolver`](@ref).
+"""
+mutable struct StochPXMC <: AbstractMC
+    rng :: AbstractRNG
+    Pacc :: Vector{I64}
+    Ptry :: Vector{I64}
+    Aacc :: Vector{I64}
+    Atry :: Vector{I64}
 end
