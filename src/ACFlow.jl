@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/27
+# Last modified: 2022/12/03
 #
 
 """
@@ -20,6 +20,7 @@ Nowadays the ACFlow toolkit supports the following algorithms:
 * Maximum Entropy Method (`MaxEnt` solver)
 * Stochastic Analytical Continuation (`StochAC` and `StochSK` solvers)
 * Stochastic Optimization Method (`StochOM` solver)
+* Stochastic Pole Expansion (`StochPE` solver, `experimental`)
 
 More algorithms will be implemented in the future.
 
@@ -778,6 +779,14 @@ export try_split
 export try_merge
 #
 export Pdx
+
+#=
+### *Includes And Exports* : *spe.jl*
+=#
+
+#
+include("spe.jl")
+#
 
 #=
 ### *Includes And Exports* : *base.jl*
