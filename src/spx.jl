@@ -11,6 +11,17 @@
 ### *Customized Structs* : *StochPX Solver*
 =#
 
-mutable struct StochPEElement
+mutable struct StochPXElement
+    P :: Vector{I64}
+    A :: Vector{F64}
 end
 
+mutable struct StochPXContext
+    Gᵥ    :: Vector{F64}
+    Gᵧ    :: Vector{F64}
+    σ¹    :: Vector{F64}
+    allow :: Vector{I64}
+    grid  :: AbstractGrid
+    mesh  :: AbstractMesh
+    Aout  :: Vector{F64}
+end
