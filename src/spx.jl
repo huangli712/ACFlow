@@ -194,6 +194,24 @@ function init_iodata(S::StochPXSolver, rd::RawData)
 end
 
 """
+    calc_fmesh(S::StochPXSolver)
+
+Try to calculate very fine (dense) linear mesh in [wmin, wmax], which
+is used internally to build the correlation function.
+
+See also: [`LinearMesh`](@ref).
+"""
+function calc_fmesh(S::StochPXSolver)
+    nfine = get_x("nfine")
+    wmin = get_b("wmin")
+    wmax = get_b("wmax")
+
+    fmesh = LinearMesh(nfine, wmin, wmax)
+
+    return fmesh
+end
+
+"""
     constraints(S::StochPXSolver)
 
 Try to implement the constrained stochastic pole expansion. This
