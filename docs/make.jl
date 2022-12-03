@@ -10,6 +10,7 @@ makedocs(
         prettyurls = false,
         ansicolor = true,
     ),
+    #format = Documenter.LaTeX(),
     modules = [ACFlow],
     pages = [
         "Home" => "index.md",
