@@ -72,3 +72,8 @@ end
 function constraints(S::StochPXSolver)
 end
 
+function try_move_p()
+end
+
+function try_move_a()
+end
