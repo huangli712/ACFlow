@@ -116,6 +116,13 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     ntry = get_x("nstep")
     nstep = get_x("nstep")
 
+    for t = 1:ntry
+        println("Try: ", t)
+
+        for i = 1:nstep
+        end
+
+    end
 end
 
 function prun(S::StochPXSolver,
@@ -204,6 +211,25 @@ function init_iodata(S::StochPXSolver, rd::RawData)
     σ¹ = 1.0 ./ sqrt.(G.covar)
 
     return Gᵥ, σ¹, Aout
+end
+
+function reset_mc(MC::StochPXMC)
+    MC.Pacc = 0
+    MC.Ptry = 0
+    MC.Aacc = 0
+    MC.Atry = 0
+end
+
+function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
+    npole = get_x("npole")
+
+    P = rand(rng, allow, npole)
+    A = rand(rng, F64, npole)
+
+    s = sum(A)
+
+    @. SE.P = P
+    @. SE.A = A / s
 end
 
 """
