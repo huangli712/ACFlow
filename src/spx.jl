@@ -119,6 +119,9 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     for t = 1:ntry
         println("Try: ", t)
 
+        reset_mc(MC)
+        reset_element(MC.rng, SC.allow, SE)
+        error()
         for i = 1:nstep
         end
 
