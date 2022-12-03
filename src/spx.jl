@@ -108,6 +108,7 @@ function init(S::StochPXSolver, rd::RawData)
 
     χ², Pᵥ, Aᵥ = init_context(S)
 
+    error()
     SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, χ², Pᵥ, Aᵥ)
 
     return MC, SE, SC
@@ -228,6 +229,18 @@ function init_iodata(S::StochPXSolver, rd::RawData)
 end
 
 function init_context(S::StochPXSolver)
+    ntry = get_x("ntry")
+    npole = get_x("npole")
+
+    χ² = zeros(F64, ntry)
+
+    Pᵥ = []
+    Aᵥ = []
+    for i = 1:ntry
+        push!(Pᵥ, zeros(I64, npole))
+        push!(Aᵥ, zeros(F64, npole))
+    end
+
     return χ², Pᵥ, Aᵥ
 end
 
@@ -248,6 +261,9 @@ function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
 
     @. SE.P = P
     @. SE.A = A / s
+end
+
+function reset_iodata()
 end
 
 function reset_context(SE::StochPXElement, SC::StochPXContext)
