@@ -413,7 +413,7 @@ function try_move_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     A3 = 0
     A4 = 0
     while true
-        δA = rand(rng) * (A1 + A2) - A1
+        δA = rand(MC.rng) * (A1 + A2) - A1
         A3 = A1 + δA
         A4 = A2 - δA
 
