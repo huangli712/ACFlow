@@ -127,6 +127,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
         for i = 1:nstep
             sample(MC, SE, SC)
+            @show i, SC.χ²
         end
         error()
         measure()
@@ -362,14 +363,14 @@ function try_move_p(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     P1 = SE.P[s1]
     P3 = P1
     while P3 == P1
-        P3 = rand(rng, SC.allow)
+        P3 = rand(MC.rng, SC.allow)
     end
     A1 = SE.A[s1]
     #
     P2 = SE.P[s2]
     P4 = P2
     while P4 == P2
-        P4 = rand(rng, SC.allow)
+        P4 = rand(MC.rng, SC.allow)
     end
     A2 = SE.A[s2]
 
@@ -401,8 +402,8 @@ function try_move_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     s1 = 1
     s2 = 1
     while s1 == s2
-        s1 = rand(rng, 1:npole)
-        s2 = rand(rng, 1:npole)
+        s1 = rand(MC.rng, 1:npole)
+        s2 = rand(MC.rng, 1:npole)
     end
 
     P1 = SE.P[s1]
