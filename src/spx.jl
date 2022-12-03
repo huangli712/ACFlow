@@ -91,6 +91,9 @@ function init(S::StochPXSolver, rd::RawData)
     SE = init_element(S, MC.rng, allow)
     println("Randomize Monte Carlo configurations")
 
+    Gᵥ, σ¹, Aout = init_iodata(S, rd)
+    println("Postprocess input data: ", length(σ¹), " points")
+
 end
 
 function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
@@ -164,7 +167,24 @@ function init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
     return SE
 end
 
+"""
+    init_iodata(S::StochPXSolver, rd::RawData)
+
+Preprocess the input data (`rd`), then allocate memory for the calculated
+spectral functions.
+
+See also: [`RawData`](@ref).
+"""
 function init_iodata(S::StochPXSolver, rd::RawData)
+    nmesh = get_b("nmesh")
+
+    Aout = zeros(F64, nmesh)
+
+    G = make_data(rd)
+    Gᵥ = G.value # Gᵥ = abs.(G.value)
+    σ¹ = 1.0 ./ sqrt.(G.covar)
+
+    return Gᵥ, σ¹, Aout
 end
 
 """
