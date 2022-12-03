@@ -23,6 +23,7 @@ mutable struct StochPXContext
     allow :: Vector{I64}
     grid  :: AbstractGrid
     mesh  :: AbstractMesh
+    fmesh :: AbstractMesh
     Aout  :: Vector{F64}
 end
 
@@ -101,6 +102,13 @@ function init(S::StochPXSolver, rd::RawData)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
     fmesh = calc_fmesh(S)
+    Gᵧ = calc_green(SE.P, SE.A, grid, fmesh)
+
+    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, Aout)
+
+    error()
+
+    return MC, SE, SC
 end
 
 function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
@@ -210,6 +218,44 @@ function calc_fmesh(S::StochPXSolver)
     fmesh = LinearMesh(nfine, wmin, wmax)
 
     return fmesh
+end
+
+function calc_green(P::Vector{I64},
+                    A::Vector{F64},
+                    grid::AbstractGrid,
+                    fmesh::AbstractMesh)
+    npole = get_x("npole")
+    ngrid = length(grid)
+
+    G = zeros(C64, ngrid)
+    for i in eachindex(grid)
+        z = 0.0
+        for j = 1:npole
+            z = z + A[j] / ( im * grid[i] - fmesh[P[j]] )
+        end
+        G[i] = z
+    end
+
+    return vcat(real(G), imag(G))
+end
+
+function calc_green(P::Vector{I64},
+                    A::Vector{F64},
+                    mesh::AbstractMesh,
+                    fmesh::AbstractMesh)
+    npole = get_x("npole")
+    nmesh = length(mesh)
+
+    G = zeros(C64, nmesh)
+    for i in eachindex(mesh)
+        z = 0.0
+        for j = 1:npole
+            z = z + A[j] / ( mesh[i] + im * 1.0e-4 - fmesh[P[j]] )
+        end
+        G[i] = z
+    end
+
+    return G
 end
 
 """
