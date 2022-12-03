@@ -107,7 +107,7 @@ function init(S::StochPXSolver, rd::RawData)
     Gᵧ = deepcopy(Gᵥ)
 
     χ², Pᵥ, Aᵥ = init_context(S)
-
+    @show typeof(χ²), typeof(Pᵥ), typeof(Aᵥ)
     error()
     SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, χ², Pᵥ, Aᵥ)
 
@@ -124,10 +124,10 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
         reset_mc(MC)
         reset_element(MC.rng, SC.allow, SE)
-        reset_context(SE, SC)
+        reset_context(t, SE, SC)
     
         for i = 1:nstep
-            sample(MC, SE, SC)
+            sample(t, MC, SE, SC)
             #@show i, SC.χ²
             if SC.χ² < 1e-6
                 break
@@ -234,8 +234,8 @@ function init_context(S::StochPXSolver)
 
     χ² = zeros(F64, ntry)
 
-    Pᵥ = []
-    Aᵥ = []
+    Pᵥ = Vector{I64}[]
+    Aᵥ = Vector{F64}[]
     for i = 1:ntry
         push!(Pᵥ, zeros(I64, npole))
         push!(Aᵥ, zeros(F64, npole))
@@ -266,11 +266,14 @@ end
 function reset_iodata()
 end
 
-function reset_context(SE::StochPXElement, SC::StochPXContext)
+function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
+    ntry = get_x("ntry")
+    @assert 1 ≤ t ≤ ntry
+
     Gᵧ = calc_green(SE.P, SE.A, SC.grid, SC.fmesh)
     χ² = calc_chi2(Gᵧ, SC.Gᵥ)
     @. SC.Gᵧ = Gᵧ
-    SC.χ² = χ²
+    SC.χ²[t] = χ²
 end
 
 """
