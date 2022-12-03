@@ -94,6 +94,12 @@ function init(S::StochPXSolver, rd::RawData)
     Gᵥ, σ¹, Aout = init_iodata(S, rd)
     println("Postprocess input data: ", length(σ¹), " points")
 
+    grid = make_grid(rd)
+    println("Build grid for input data: ", length(grid), " points")
+
+    mesh = make_mesh()
+    println("Build mesh for spectrum: ", length(mesh), " points")
+
 end
 
 function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
