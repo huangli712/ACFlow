@@ -128,11 +128,14 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         for i = 1:nstep
             sample(MC, SE, SC)
             @show i, SC.χ²
+            if SC.χ² < 1e-6
+                break
+            end
         end
 
         open("repr.data", "w") do fout
             for i in eachindex(SC.grid)
-                println(fout, i, " ", SC.grid[i], " ", real(SC.Gᵧ[i]), " ", imag(SC.Gᵧ[i]))
+                println(fout, i, " ", SC.grid[i], " ", real(SC.Gᵧ[i]), " ", imag(SC.Gᵧ[i+10]))
             end
         end
 
