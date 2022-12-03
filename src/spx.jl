@@ -129,6 +129,13 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
             sample(MC, SE, SC)
             @show i, SC.χ²
         end
+
+        open("repr.data", "w") do fout
+            for i in eachindex(SC.grid)
+                println(fout, i, " ", SC.grid[i], " ", real(SC.Gᵧ[i]), " ", imag(SC.Gᵧ[i]))
+            end
+        end
+
         error()
         measure()
     end
