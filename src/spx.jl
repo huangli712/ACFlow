@@ -24,8 +24,9 @@ mutable struct StochPXContext
     grid  :: AbstractGrid
     mesh  :: AbstractMesh
     fmesh :: AbstractMesh
-    Aout  :: Vector{F64}
-    χ²    :: F64
+    χ²    :: Vector{F64}
+    Pᵥ    :: Vector{Vector{I64}}
+    Aᵥ    :: Vector{Vector{F64}}
 end
 
 """
@@ -121,26 +122,17 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
         reset_mc(MC)
         reset_element(MC.rng, SC.allow, SE)
-        @show SE.A
-        @show SE.P
-        #error()
-
+        reset_context(SE, SC)
+    
         for i = 1:nstep
             sample(MC, SE, SC)
-            @show i, SC.χ²
+            #@show i, SC.χ²
             if SC.χ² < 1e-6
                 break
             end
         end
 
-        open("repr.data", "w") do fout
-            for i in eachindex(SC.grid)
-                println(fout, i, " ", SC.grid[i], " ", real(SC.Gᵧ[i]), " ", imag(SC.Gᵧ[i+10]))
-            end
-        end
-
-        error()
-        measure()
+        measure(SE, SC)
     end
     error()
 end
@@ -255,6 +247,13 @@ function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
 
     @. SE.P = P
     @. SE.A = A / s
+end
+
+function reset_context(SE::StochPXElement, SC::StochPXContext)
+    Gᵧ = calc_green(SE.P, SE.A, SC.grid, SC.fmesh)
+    χ² = calc_chi2(Gᵧ, SC.Gᵥ)
+    @. SC.Gᵧ = Gᵧ
+    SC.χ² = χ²
 end
 
 """
