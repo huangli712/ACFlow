@@ -308,6 +308,42 @@ function rev_dict(S::StochOMSolver, StochOM::Dict{String,Vector{Any}})
 end
 
 """
+    rev_dict(S::StochPXSolver, StochPX::Dict{String,Any})
+
+Setup the configuration dictionary: `PStochPX`.
+
+See also: [`PStochPX`](@ref).
+"""
+function rev_dict(S::StochPXSolver, StochPX::Dict{String,Any})
+    for key in keys(StochPX)
+        if haskey(PStochPX, key)
+            PStochPX[key][1] = StochPX[key]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+    foreach(x -> _v(x.first, x.second), PStochPX)
+end
+
+"""
+    rev_dict(S::StochPXSolver, StochPX::Dict{String,Vector{Any}})
+
+Setup the configuration dictionary: `PStochPX`.
+
+See also: [`PStochPX`](@ref).
+"""
+function rev_dict(S::StochPXSolver, StochPX::Dict{String,Vector{Any}})
+    for key in keys(StochPX)
+        if haskey(PStochPX, key)
+            PStochPX[key][1] = StochPX[key][1]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+    foreach(x -> _v(x.first, x.second), PStochPX)
+end
+
+"""
     chk_dict()
 
 Validate the correctness and consistency of configurations.
@@ -315,7 +351,7 @@ Validate the correctness and consistency of configurations.
 See also: [`fil_dict`](@ref), [`_v`](@ref).
 """
 function chk_dict()
-    @assert get_b("solver") in ("MaxEnt", "StochAC", "StochSK", "StochOM")
+    @assert get_b("solver") in ("MaxEnt", "StochAC", "StochSK", "StochOM", "StochPX")
     @assert get_b("ktype") in ("fermi", "boson", "bsymm")
     @assert get_b("mtype") in ("flat", "gauss", "1gauss", "2gauss", "lorentz", "1lorentz", "2lorentz", "risedecay", "file")
     @assert get_b("grid") in ("ftime", "btime", "ffreq", "bfreq")
@@ -374,6 +410,16 @@ function chk_dict()
             @assert get_s("nbox")  ≥ 100
             @assert get_s("sbox")  > 0.0
             @assert get_s("wbox")  > 0.0
+            break
+        
+        @case "StochPX"
+            push!(PA, PStochPX)
+            @assert get_b("grid") in ("ffreq")
+            #
+            @assert get_x("nfine") ≥ 10000
+            @assert get_x("npole") ≥ 20
+            @assert get_x("ntry")  ≥ 100
+            @assert get_x("nstep") ≥ 100000
             break
     end
 
@@ -473,5 +519,20 @@ See also: [`PStochOM`](@ref).
         PStochOM[key][1]
     else
         error("Sorry, PStochOM does not contain key: $key")
+    end
+end
+
+"""
+    get_x(key::String)
+
+Extract configurations from dict: PStochPX.
+
+See also: [`PStochPX`](@ref).
+"""
+@inline function get_x(key::String)
+    if haskey(PStochPX, key)
+        PStochPX[key][1]
+    else
+        error("Sorry, PStochPX does not contain key: $key")
     end
 end
