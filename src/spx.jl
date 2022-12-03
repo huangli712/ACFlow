@@ -347,46 +347,48 @@ function constraints(S::StochPXSolver)
 end
 
 function try_move_p(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
-    N = length(A)
-    nfreq = length(fmg)
-    nfine = length(fmesh)
-    G2 = zeros(C64, nfreq)
+    ngrid = get_b("ngrid")
+    npole = get_x("npole")
+
+    δG = zeros(C64, ngrid)
 
     s1 = 1
     s2 = 1
     while s1 == s2
-        s1 = rand(rng, 1:N)
-        s2 = rand(rng, 1:N)
+        s1 = rand(MC.rng, 1:npole)
+        s2 = rand(MC.rng, 1:npole)
     end
 
-    P1 = P[s1]
-    P2 = P[s2]
+    P1 = SE.P[s1]
     P3 = P1
-    P4 = P2
     while P3 == P1
-        P3 = rand(rng, 1:nfine)
+        P3 = rand(rng, SC.allow)
     end
+    A1 = SE.A[s1]
+    #
+    P2 = SE.P[s2]
+    P4 = P2
     while P4 == P2
-        P4 = rand(rng, 1:nfine)
+        P4 = rand(rng, SC.allow)
     end
-    A1 = A[s1]
-    A2 = A[s2]
+    A2 = SE.A[s2]
 
-    for i in eachindex(fmg)
-        z =     A1 / ( im * fmg[i] - fmesh[P3] ) - A1 / ( im * fmg[i] - fmesh[P1] )
-        z = z + A2 / ( im * fmg[i] - fmesh[P4] ) - A2 / ( im * fmg[i] - fmesh[P2] )
-        G2[i] = G1[i] + z
+    for i in eachindex(SC.grid)
+        z = 0 + A1 / ( im * SC.grid[i] - SC.fmesh[P3] )
+        z = z - A1 / ( im * SC.grid[i] - SC.fmesh[P1] )
+        z = z + A2 / ( im * SC.grid[i] - SC.fmesh[P4] )
+        z = z - A2 / ( im * SC.grid[i] - SC.fmesh[P2] )
+        δG[i] = z
     end
 
-    _χ² = calc_goodness(G2, Gf)
+    Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
+    χ² = calc_chi2(Gₙ, SC.Gᵥ)
 
-    if _χ² < χ² 
-        P[s1] = P3
-        P[s2] = P4
-        @. G1 = G2
-        return _χ²
-    else
-        return χ²
+    if χ² < SC.χ²
+        SE.P[s1] = P3
+        SE.P[s2] = P4
+        @. SC.Gᵧ = Gₙ
+        SC.χ² = χ²
     end
 end
 
