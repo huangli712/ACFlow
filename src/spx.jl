@@ -113,7 +113,7 @@ end
 
 function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Setup essential parameters
-    ntry = get_x("nstep")
+    ntry = get_x("ntry")
     nstep = get_x("nstep")
 
     for t = 1:ntry
@@ -121,9 +121,15 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
         reset_mc(MC)
         reset_element(MC.rng, SC.allow, SE)
-        error()
+        @show SE.A
+        @show SE.P
+        #error()
+
         for i = 1:nstep
+            sample(MC, SE, SC)
         end
+
+        measure()
 
     end
 end
@@ -143,7 +149,12 @@ end
 function warmup()
 end
 
-function sample()
+function sample(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    if rand(MC.rng) < 0.5
+        try_move_p(MC, SE, SC)
+    else
+        try_move_a(MC, SE, SC)
+    end
 end
 
 function measure()
@@ -335,8 +346,8 @@ function constraints(S::StochPXSolver)
     return allow
 end
 
-function try_move_p()
+function try_move_p(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 end
 
-function try_move_a()
+function try_move_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 end
