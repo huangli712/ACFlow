@@ -604,8 +604,8 @@ See also: [`StochPXSolver`](@ref).
 """
 mutable struct StochPXMC <: AbstractMC
     rng :: AbstractRNG
-    Pacc :: Vector{I64}
-    Ptry :: Vector{I64}
-    Aacc :: Vector{I64}
-    Atry :: Vector{I64}
+    Pacc :: I64
+    Ptry :: I64
+    Aacc :: I64
+    Atry :: I64
 end

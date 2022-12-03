@@ -85,6 +85,8 @@ function init(S::StochPXSolver, rd::RawData)
     # possible indices for poles.
     allow = constraints(S)
 
+    MC = init_mc(S)
+    println("Create infrastructure for Monte Carlo sampling")
 
 end
 
@@ -116,7 +118,25 @@ end
 ### *Service Functions*
 =#
 
+"""
+    init_mc(S::StochPXSolver)
+
+Try to create a StochPXMC struct.
+
+See also: [`StochPXMC`](@ref).
+"""
 function init_mc(S::StochPXSolver)
+    seed = rand(1:100000000)
+    rng = MersenneTwister(seed)
+    #
+    Pacc = 0
+    Ptry = 0
+    Aacc = 0
+    Atry = 0
+
+    MC = StochPXMC(rng, Pacc, Ptry, Aacc, Atry)
+
+    return MC
 end
 
 function init_element(S::StochPXSolver)
