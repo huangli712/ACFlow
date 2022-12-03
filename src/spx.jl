@@ -393,4 +393,47 @@ function try_move_p(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 end
 
 function try_move_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    ngrid = get_b("ngrid")
+    npole = get_x("npole")
+
+    δG = zeros(C64, ngrid)
+
+    s1 = 1
+    s2 = 1
+    while s1 == s2
+        s1 = rand(rng, 1:npole)
+        s2 = rand(rng, 1:npole)
+    end
+
+    P1 = SE.P[s1]
+    P2 = SE.P[s2]
+    A1 = SE.A[s1]
+    A2 = SE.A[s2]
+    A3 = 0
+    A4 = 0
+    while true
+        δA = rand(rng) * (A1 + A2) - A1
+        A3 = A1 + δA
+        A4 = A2 - δA
+
+        if A3 > 0 && A4 > 0
+            break
+        end
+    end
+
+    for i in eachindex(SC.grid)
+        z = 0 + (A3 - A1) / ( im * SC.grid[i] - SC.fmesh[P1] )
+        z = z + (A4 - A2) / ( im * SC.grid[i] - SC.fmesh[P2] )
+        δG[i] = z
+    end
+
+    Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
+    χ² = calc_chi2(Gₙ, SC.Gᵥ)
+
+    if χ² < SC.χ²
+        SE.A[s1] = A3
+        SE.A[s2] = A4
+        @. SC.Gᵧ = Gₙ
+        SC.χ² = χ²
+    end
 end
