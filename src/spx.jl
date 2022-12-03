@@ -81,6 +81,11 @@ function solve(S::StochPXSolver, rd::RawData)
 end
 
 function init(S::StochPXSolver, rd::RawData)
+    # Initialize possible constraints. The allow array contains all the
+    # possible indices for poles.
+    allow = constraints(S)
+
+
 end
 
 function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
@@ -120,7 +125,43 @@ end
 function init_iodata(S::StochPXSolver, rd::RawData)
 end
 
+"""
+    constraints(S::StochPXSolver)
+
+Try to implement the constrained stochastic pole expansion. This
+function will return a collection. It contains all the allowable indices.
+
+See also: [`StochPXSolver`](@ref).
+"""
 function constraints(S::StochPXSolver)
+    exclude = get_b("exclude")
+    wmin = get_b("wmin")
+    wmax = get_b("wmax")
+    nfine = get_x("nfine")
+
+    allow = I64[]
+    mesh = collect(LinRange(wmin, wmax, nfine))
+
+    # Go through the fine linear mesh and check each mesh point.
+    # Is is excluded ?
+    for i in eachindex(mesh)
+        is_excluded = false
+        #
+        if !isa(exclude, Missing)
+            for j in eachindex(exclude)
+                if exclude[j][1] ≤ mesh[i] ≤ exclude[j][2]
+                    is_excluded = true
+                    break
+                end
+            end
+        end
+        #
+        if !is_excluded
+            push!(allow, i)
+        end
+    end
+
+    return allow
 end
 
 function try_move_p()
