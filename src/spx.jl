@@ -100,6 +100,7 @@ function init(S::StochPXSolver, rd::RawData)
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
+    fmesh = calc_fmesh(S)
 end
 
 function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
