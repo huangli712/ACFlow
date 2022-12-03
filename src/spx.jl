@@ -142,7 +142,26 @@ function init_mc(S::StochPXSolver)
     return MC
 end
 
-function init_element(S::StochPXSolver)
+"""
+    init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
+
+Randomize the configurations for future Monte Carlo sampling. It will
+return a StochPXElement object.
+
+See also: [`StochPXElement`](@ref).
+"""
+function init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
+    npole = get_x("npole")
+
+    P = rand(rng, allow, npole)
+    A = rand(rng, F64, npole)
+
+    s = sum(A)
+    @. A = A / s
+
+    SE = StochPXElement(P, A)
+
+    return SE
 end
 
 function init_iodata(S::StochPXSolver, rd::RawData)
