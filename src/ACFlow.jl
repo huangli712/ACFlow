@@ -118,12 +118,14 @@ PMaxEnt         -> Dict for MaxEnt solver.
 PStochAC        -> Dict for StochAC solver.
 PStochSK        -> Dict for StochSK solver.
 PStochOM        -> Dict for StochOM solver.
+PStochPX        -> Dict for StochPX solver.
 #
 AbstractSolver  -> Abstract AC solver.
 MaxEntSolver    -> It represents the MaxEnt solver.
 StochACSolver   -> It represents the StochAC solver.
 StochSKSolver   -> It represents the StochSK solver.
 StochOMSolver   -> It represents the StochOM solver.
+StochPXSolver   -> It represents the StochPX solver.
 #
 AbstractData    -> Abstract input data in imaginary axis.
 RawData         -> Raw input data.
@@ -145,6 +147,7 @@ AbstractMC      -> Abstract Monte Carlo engine.
 StochACMC       -> Monte Carlo engine used in the StochAC solver.
 StochSKMC       -> Monte Carlo engine used in the StochSK solver.
 StochOMMC       -> Monte Carlo engine used in the StochOM solver.
+StochPXMC       -> Monte Carlo engine used in the StochPX solver.
 ```
 =#
 
@@ -159,12 +162,14 @@ export PMaxEnt
 export PStochAC
 export PStochSK
 export PStochOM
+export PStochPX
 #
 export AbstractSolver
 export MaxEntSolver
 export StochACSolver
 export StochSKSolver
 export StochOMSolver
+export StochPXSolver
 #
 export AbstractData
 export RawData
@@ -186,6 +191,7 @@ export AbstractMC
 export StochACMC
 export StochSKMC
 export StochOMMC
+export StochPXMC
 
 #=
 ### *Includes And Exports* : *util.jl*
@@ -349,6 +355,7 @@ get_m    -> Extract value from dict (PMaxEnt dict), return raw value.
 get_a    -> Extract value from dict (PStochAC dict), return raw value.
 get_k    -> Extract value from dict (PStochSK dict), return raw value.
 get_s    -> Extract value from dict (PStochOM dict), return raw value.
+get_x    -> Extract value from dict (PStochPX dict), return raw value.
 ```
 =#
 
@@ -365,6 +372,7 @@ export get_m
 export get_a
 export get_k
 export get_s
+export get_x
 
 #=
 ### *Includes And Exports* : *inout.jl*
