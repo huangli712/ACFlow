@@ -414,7 +414,7 @@ function chk_dict()
         
         @case "StochPX"
             push!(PA, PStochPX)
-            @assert get_b("grid") in ("ffreq")
+            @assert get_b("grid") in ("ffreq", "bfreq")
             #
             @assert get_x("nfine") ≥ 10000
             @assert get_x("npole") ≥ 20
