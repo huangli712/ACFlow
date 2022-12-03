@@ -94,7 +94,7 @@ function init(S::StochPXSolver, rd::RawData)
     SE = init_element(S, MC.rng, allow)
     println("Randomize Monte Carlo configurations")
 
-    Gᵥ, σ¹, Aout = init_iodata(S, rd)
+    Gᵥ, σ¹ = init_iodata(S, rd)
     println("Postprocess input data: ", length(σ¹), " points")
 
     grid = make_grid(rd)
@@ -107,7 +107,7 @@ function init(S::StochPXSolver, rd::RawData)
     Gᵧ = calc_green(SE.P, SE.A, grid, fmesh)
     χ² = calc_chi2(Gᵧ, Gᵥ)
 
-    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, Aout, χ²)
+    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, χ²)
 
     return MC, SE, SC
 end
@@ -219,15 +219,15 @@ spectral functions.
 See also: [`RawData`](@ref).
 """
 function init_iodata(S::StochPXSolver, rd::RawData)
-    nmesh = get_b("nmesh")
-
-    Aout = zeros(F64, nmesh)
-
     G = make_data(rd)
     Gᵥ = G.value # Gᵥ = abs.(G.value)
     σ¹ = 1.0 ./ sqrt.(G.covar)
 
-    return Gᵥ, σ¹, Aout
+    return Gᵥ, σ¹
+end
+
+function init_context(S::StochPXSolver)
+    return χ², Pᵥ, Aᵥ
 end
 
 function reset_mc(MC::StochPXMC)
