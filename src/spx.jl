@@ -88,6 +88,9 @@ function init(S::StochPXSolver, rd::RawData)
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
+    SE = init_element(S, MC.rng, allow)
+    println("Randomize Monte Carlo configurations")
+
 end
 
 function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
