@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/27
+# Last modified: 2022/12/03
 #
 
 #=
@@ -613,14 +613,14 @@ function calc_correlator(SE::StochSKElement, kernel::Array{F64,2})
 end
 
 """
-    calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64})
+    calc_goodness(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
 
 Try to calculate the goodness function (i.e, χ²), which measures the
 distance between input and regenerated correlators.
 
 See also: [`calc_correlator`](@ref).
 """
-function calc_goodness(Gₙ::Vector{F64,}, Gᵥ::Vector{F64})
+function calc_goodness(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
     ΔG = Gₙ - Gᵥ
     return dot(ΔG, ΔG)
 end
