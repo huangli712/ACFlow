@@ -26,7 +26,58 @@ mutable struct StochPXContext
     Aout  :: Vector{F64}
 end
 
+"""
+    solve(S::StochPXSolver, rd::RawData)
+
+Solve the analytical continuation problem by the stochastic
+pole expansion.
+"""
 function solve(S::StochPXSolver, rd::RawData)
+    nmesh = get_b("nmesh")
+
+    println("[ StochPX ]")
+    MC, SE, SC = init(S, rd)
+
+    # Parallel version
+    if nworkers() > 1
+        println("Using $(nworkers()) workers")
+        #
+        # Copy configuration dicts
+        p1 = deepcopy(PBASE)
+        p2 = deepcopy(PStochPX)
+        #
+        # Launch the task
+        𝐹 = Future[]
+        for i = 1:nworkers()
+            𝑓 = @spawnat i + 1 prun(S, p1, p2, MC, SE, SC)
+            push!(𝐹, 𝑓)
+        end
+        #
+        # Wait and collect the solutions
+        sol = []
+        for i = 1:nworkers()
+            wait(𝐹[i])
+            push!(sol, fetch(𝐹[i]))
+        end
+        #
+        # Average the solutions
+        Aout = zeros(F64, nmesh)
+        for i in eachindex(sol)
+            a = sol[i]
+            @. Aout = Aout + a / nworkers()
+        end
+        #
+        # Postprocess the solutions
+        Gout = last(SC, Aout)
+
+    # Sequential version
+    else
+        Aout = run(MC, SE, SC)
+        Gout = last(SC, Aout)
+
+    end
+
+    return SC.mesh.mesh, Aout, Gout
 end
 
 function init(S::StochPXSolver, rd::RawData)
