@@ -104,10 +104,11 @@ function init(S::StochPXSolver, rd::RawData)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
     fmesh = calc_fmesh(S)
-    Gᵧ = calc_green(SE.P, SE.A, grid, fmesh)
-    χ² = calc_chi2(Gᵧ, Gᵥ)
+    Gᵧ = deepcopy(Gᵥ)
 
-    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, χ²)
+    χ², Pᵥ, Aᵥ = init_context(S)
+
+    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, χ², Pᵥ, Aᵥ)
 
     return MC, SE, SC
 end
