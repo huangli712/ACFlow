@@ -25,6 +25,7 @@ mutable struct StochPXContext
     mesh  :: AbstractMesh
     fmesh :: AbstractMesh
     Aout  :: Vector{F64}
+    χ²    :: F64
 end
 
 """
@@ -103,15 +104,18 @@ function init(S::StochPXSolver, rd::RawData)
 
     fmesh = calc_fmesh(S)
     Gᵧ = calc_green(SE.P, SE.A, grid, fmesh)
+    χ² = calc_chi2(Gᵧ, Gᵥ)
 
-    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, Aout)
-
-    error()
+    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, Aout, χ²)
 
     return MC, SE, SC
 end
 
 function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    # Setup essential parameters
+    ntry = get_x("nstep")
+    nstep = get_x("nstep")
+
 end
 
 function prun(S::StochPXSolver,
@@ -256,6 +260,11 @@ function calc_green(P::Vector{I64},
     end
 
     return G
+end
+
+function calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
+    ΔG = Gₙ - Gᵥ
+    return dot(ΔG, ΔG)
 end
 
 """
