@@ -154,11 +154,11 @@ end
 function warmup()
 end
 
-function sample(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     if rand(MC.rng) < 0.5
-        try_move_p(MC, SE, SC)
+        try_move_p(t, MC, SE, SC)
     else
-        try_move_a(MC, SE, SC)
+        try_move_a(t, MC, SE, SC)
     end
 end
 
@@ -376,7 +376,7 @@ function constraints(S::StochPXSolver)
     return allow
 end
 
-function try_move_p(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     ngrid = get_b("ngrid")
     npole = get_x("npole")
 
@@ -414,15 +414,15 @@ function try_move_p(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
     χ² = calc_chi2(Gₙ, SC.Gᵥ)
 
-    if χ² < SC.χ²
+    if χ² < SC.χ²[t]
         SE.P[s1] = P3
         SE.P[s2] = P4
         @. SC.Gᵧ = Gₙ
-        SC.χ² = χ²
+        SC.χ²[t] = χ²
     end
 end
 
-function try_move_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     ngrid = get_b("ngrid")
     npole = get_x("npole")
 
@@ -460,10 +460,10 @@ function try_move_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
     χ² = calc_chi2(Gₙ, SC.Gᵥ)
 
-    if χ² < SC.χ²
+    if χ² < SC.χ²[t]
         SE.A[s1] = A3
         SE.A[s2] = A4
         @. SC.Gᵧ = Gₙ
-        SC.χ² = χ²
+        SC.χ²[t] = χ²
     end
 end
