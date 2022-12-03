@@ -107,8 +107,8 @@ function init(S::StochPXSolver, rd::RawData)
     Gᵧ = deepcopy(Gᵥ)
 
     χ², Pᵥ, Aᵥ = init_context(S)
-    @show typeof(χ²), typeof(Pᵥ), typeof(Aᵥ)
-    error()
+    #@show typeof(χ²), typeof(Pᵥ), typeof(Aᵥ)
+    #error()
     SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, χ², Pᵥ, Aᵥ)
 
     return MC, SE, SC
@@ -128,15 +128,15 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     
         for i = 1:nstep
             sample(t, MC, SE, SC)
-            #@show i, SC.χ²
-            if SC.χ² < 1e-6
+            if SC.χ²[t] < 1e-6
+                println("try :", t, " ", SC.χ²[t])
                 break
             end
         end
-
-        measure(SE, SC)
+        measure(t, SE, SC)
     end
     error()
+    return average(SC)
 end
 
 function prun(S::StochPXSolver,
@@ -145,7 +145,7 @@ function prun(S::StochPXSolver,
             MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 end
 
-function average(step::F64, SC::StochPXContext)
+function average(SC::StochPXContext)
 end
 
 function last(SC::StochPXContext, Aout::Array{F64,2})
@@ -162,7 +162,9 @@ function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     end
 end
 
-function measure()
+function measure(t::I64, SE::StochPXElement, SC::StochPXContext)
+    @. SC.Pᵥ[t] = SE.P
+    @. SC.Aᵥ[t] = SE.A
 end
 
 #=
