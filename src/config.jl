@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/24
+# Last modified: 2022/12/03
 #
 
 """
@@ -108,6 +108,18 @@ function fil_dict(cfg::Dict{String,Any})
         for key in keys(StochOM)
             if haskey(PStochOM, key)
                 PStochOM[key][1] = StochOM[key]
+            else
+                error("Sorry, $key is not supported currently")
+            end
+        end
+    end
+
+    # For StochPX block
+    if haskey(cfg, "StochPX")
+        StochPX = cfg["StochPX"]
+        for key in keys(StochPX)
+            if haskey(PStochPX, key)
+                PStochPX[key][1] = StochPX[key]
             else
                 error("Sorry, $key is not supported currently")
             end
