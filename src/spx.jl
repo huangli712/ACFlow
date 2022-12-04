@@ -328,7 +328,7 @@ function average(SC::StochPXContext)
     @. Gout = Gout / c
     @. Gᵣ = Gᵣ / c
 
-    return -imag.(Gout) / π, Gout, Gr
+    return -imag.(Gout) / π, Gout, Gᵣ
 end
 
 """
