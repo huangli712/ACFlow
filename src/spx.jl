@@ -341,6 +341,8 @@ function reset_mc(MC::StochPXMC)
     MC.Ptry = 0
     MC.Aacc = 0
     MC.Atry = 0
+    MC.Sacc = 0
+    MC.Stry = 0
 end
 
 function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
