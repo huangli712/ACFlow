@@ -59,6 +59,6 @@ norm  = -1.0
 
 [StochPX]
 nfine = 20000
-npole = 200
-ntry  = 100
+npole = 100
+ntry  = 1000
 nstep = 1000000
