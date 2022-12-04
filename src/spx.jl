@@ -281,25 +281,46 @@ function prun(S::StochPXSolver,
     return average(SC)
 end
 
+"""
+    average(SC::StochPXContext)
+
+Postprocess the results generated during the stochastic pole expansion
+simulations. It will generate the spectral functions, real frequency
+green's function, and imaginary frequency green's function.
+"""
 function average(SC::StochPXContext)
+    # Setup essential parameters
     nmesh = get_b("nmesh")
     ngrid = get_b("ngrid")
     ntry = get_x("ntry")
 
+    # The threshold is used to distinguish good or bad solutions
+    threshold = 1e-6
+
+    # Allocate memory
+    # Gout: real frequency green's function, G(ω).
+    # Gᵣ: imaginary frequency green's function, G(iωₙ)
     Gout = zeros(C64, nmesh)
-    Gr = zeros(F64, 2 * ngrid)
+    Gᵣ = zeros(F64, 2 * ngrid)
+
+    # Go through all the solutions
     c = 0.0
     for i = 1:ntry
-        if SC.χ²[i] < 1e-6
+        if SC.χ²[i] < threshold
             G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh)
             @. Gout = Gout + G
+            #
             G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.grid, SC.fmesh)
-            @. Gr = Gr + G
+            @. Gᵣ = Gᵣ + G
+            #
+            # Increase the counter
             c = c + 1.0
         end
     end
+    #
+    # Average the final results
     @. Gout = Gout / c
-    @. Gr = Gr / c
+    @. Gᵣ = Gᵣ / c
 
     return -imag.(Gout) / π, Gout, Gr
 end
