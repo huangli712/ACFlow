@@ -470,6 +470,11 @@ function init_context(S::StochPXSolver)
     return χ², Pᵥ, Aᵥ
 end
 
+"""
+    reset_mc(MC::StochPXMC)
+
+Reset the counters in StochPXMC struct.
+"""
 function reset_mc(MC::StochPXMC)
     MC.Pacc = 0
     MC.Ptry = 0
@@ -479,6 +484,12 @@ function reset_mc(MC::StochPXMC)
     MC.Stry = 0
 end
 
+"""
+    reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
+
+Reset the Monte Carlo field configurations (i.e. positions and amplitudes
+of the poles).
+"""
 function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
     npole = get_x("npole")
 
@@ -489,9 +500,6 @@ function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
 
     @. SE.P = P
     @. SE.A = A / s
-end
-
-function reset_iodata()
 end
 
 function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
