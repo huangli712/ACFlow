@@ -588,6 +588,14 @@ function calc_green(P::Vector{I64},
     return G
 end
 
+"""
+    calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
+
+Try to calculate the goodness function (i.e, χ²), which measures the
+distance between input and regenerated correlators.
+
+See also: [`calc_green`](@ref).
+"""
 function calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
     ΔG = Gₙ - Gᵥ
     return dot(ΔG, ΔG)
