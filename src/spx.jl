@@ -198,6 +198,9 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
             end
         end
 
+        # Write Monte Carlo statistics
+        write_statistics(MC)
+
         # Record Monte Carlo field configuration
         measure(t, SE, SC)
     end
@@ -267,6 +270,9 @@ function prun(S::StochPXSolver,
                 end
             end
         end
+
+        # Write Monte Carlo statistics
+        myid() == 2 && write_statistics(MC)
 
         # Record Monte Carlo field configuration
         measure(t, SE, SC)
