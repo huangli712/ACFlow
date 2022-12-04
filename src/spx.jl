@@ -75,8 +75,8 @@ function solve(S::StochPXSolver, rd::RawData)
 
     # Sequential version
     else
-        Aout = run(MC, SE, SC)
-        Gout = last(SC, Aout)
+        Aout, Gout, Gr = run(MC, SE, SC)
+        last(SC, Aout, Gout, Gr)
 
     end
 
@@ -135,7 +135,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         end
         measure(t, SE, SC)
     end
-    error()
+
     return average(SC)
 end
 
@@ -146,9 +146,32 @@ function prun(S::StochPXSolver,
 end
 
 function average(SC::StochPXContext)
+    nmesh = get_b("nmesh")
+    ngrid = get_b("ngrid")
+    ntry = get_x("ntry")
+
+    Gout = zeros(C64, nmesh)
+    Gr = zeros(F64, 2 * ngrid)
+    c = 0.0
+    for i = 1:ntry
+        if SC.χ²[i] < 1e-6
+            G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh)
+            @. Gout = Gout + G
+            G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.grid, SC.fmesh)
+            @. Gr = Gr + G
+            c = c + 1.0
+        end
+    end
+    @. Gout = Gout / c
+    @. Gr = Gr / c
+
+    return -imag.(Gout) / π, Gout, Gr
 end
 
-function last(SC::StochPXContext, Aout::Array{F64,2})
+function last(SC::StochPXContext, Aout::Vector{F64}, Gout::Vector{C64}, Gr::Vector{F64})
+    write_spectrum(SC.mesh, Aout)
+    write_backward(SC.grid, Gr)
+    write_complete(SC.mesh, Gout)
 end
 
 function warmup()
