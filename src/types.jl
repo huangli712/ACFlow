@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/03
+# Last modified: 2022/12/04
 #
 
 #=
@@ -193,6 +193,7 @@ const PStochPX = Dict{String,ADT}(
     "npole"   => [missing, 1, :I64   , "Number of poles"],
     "ntry"    => [missing, 1, :I64   , "Number of attempts (tries) to seek the solution"],
     "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo steps per attempt / try"],
+    "eta"     => [missing, 1, :F64   , "Tiny distance from the real axis"],
 )
 
 # Default parameters for PStochPX
@@ -201,6 +202,7 @@ const _PStochPX = Dict{String,Any}(
     "npole"   => 200,
     "ntry"    => 1000,
     "nstep"   => 1000000,
+    "eta"     => 1e-4,
 )
 
 #=
@@ -595,10 +597,12 @@ number generator and some counters.
 ### Members
 
 * rng  -> Random number generator.
-* Pacc -> Counter for Pmove operation (accepted).
-* Ptry -> Counter for Pmove operation (tried).
-* Aacc -> Counter for Amove operation (accepted).
-* Atry -> Counter for Amove operation (tried).
+* Pacc -> Counter for position-updated operation (accepted).
+* Ptry -> Counter for position-updated operation (tried).
+* Aacc -> Counter for amplitude-updated operation (accepted).
+* Atry -> Counter for amplitude-updated operation (tried).
+* Sacc -> Counter for swap operation (accepted).
+* Stry -> Counter for swap operation (tried).
 
 See also: [`StochPXSolver`](@ref).
 """
@@ -608,4 +612,6 @@ mutable struct StochPXMC <: AbstractMC
     Ptry :: I64
     Aacc :: I64
     Atry :: I64
+    Sacc :: I64
+    Stry :: I64
 end
