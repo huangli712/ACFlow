@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/04
+# Last modified: 2022/12/05
 #
 
 #=
@@ -203,20 +203,82 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     end
     #
     # Print summary information
-    passed = count(<(1e-6), SC.χ²)
-    failed = count(≥(1e-6), SC.χ²)
+    passed = count(<(threshold), SC.χ²)
+    failed = count(≥(threshold), SC.χ²)
     println("Summary: passed [$passed] failed [$failed]")
 
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
 end
 
+"""
+    prun(S::StochPXSolver,
+         p1::Dict{String,Vector{Any}},
+         p2::Dict{String,Vector{Any}},
+         MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
-
+Perform stochastic pole expansion simulation, parallel version.
+The arguments `p1` and `p2` are copies of PBASE and PStochPX, respectively.
+"""
 function prun(S::StochPXSolver,
-            p1::Dict{String,Vector{Any}},
-            p2::Dict{String,Vector{Any}},
-            MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+              p1::Dict{String,Vector{Any}},
+              p2::Dict{String,Vector{Any}},
+              MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    # Revise parameteric dicts
+    rev_dict(p1)
+    rev_dict(S, p2)
+
+    # Initialize random number generator again
+    MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
+
+    # Setup essential parameters
+    ntry = get_x("ntry")
+    nstep = get_x("nstep")
+    threshold = 1e-6
+
+    println("Start stochastic sampling...")
+    #
+    # Sample and collect data
+    for t = 1:ntry
+        # Reset Monte Carlo counters
+        reset_mc(MC)
+
+        # Reset Monte Carlo field configuration
+        reset_element(MC.rng, SC.allow, SE)
+
+        # Reset Gᵧ and χ²
+        reset_context(t, SE, SC)
+
+        # Apply simulated annealling algorithm
+        for i = 1:nstep
+            sample(t, MC, SE, SC)
+
+            # Check convergence
+            if SC.χ²[t] < threshold
+                @printf("try = %6i ", t)
+                @printf("[χ² = %9.4e]\n", SC.χ²[t])
+                flush(stdout)
+                break
+            else
+                if i == nstep
+                    @printf("try = %6i ", t)
+                    @printf("[χ² = %9.4e] FAILED\n", SC.χ²[t])
+                    flush(stdout)
+                end
+            end
+        end
+
+        # Record Monte Carlo field configuration
+        measure(t, SE, SC)
+    end
+    #
+    # Print summary information
+    passed = count(<(threshold), SC.χ²)
+    failed = count(≥(threshold), SC.χ²)
+    println("Summary: passed [$passed] failed [$failed]")
+
+    # Generate spectral density from Monte Carlo field configuration
+    return average(SC)
 end
 
 function average(SC::StochPXContext)
