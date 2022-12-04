@@ -241,6 +241,7 @@ function last(SC::StochPXContext, Aout::Vector{F64}, Gout::Vector{C64}, Gr::Vect
     write_spectrum(SC.mesh, Aout)
     write_backward(SC.grid, Gr)
     write_complete(SC.mesh, Gout)
+    write_pole(SC.Pᵥ, SC.Aᵥ, SC.fmesh)
 end
 
 function warmup()
