@@ -4,19 +4,20 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/24
+# Last modified: 2022/12/04
 #
 
 #=
 *Remarks* : Default Models
 
 Now `ACFlow` supports various default model functions `m(ω)`. Note that
-the `StochOM` solver (based on the stochastic optimization method) and
-the `StochSK` solver (based on the stochastic analytical continuation
-method) do not need any default model functions. However, the `StochAC`
-solver (based on the stochastic analytical continuation method as well)
-only supports the `flat` default model function. The users can use the
-`mtype` parameter to choose which default model should be used.
+the `StochOM` solver (based on the stochastic optimization method), the
+`StochSK` solver (based on the stochastic analytical continuation method),
+and the `StochPX` solver (based on the stochastic pole expansion method)
+do not need any default model functions. However, the `StochAC` solver
+(based on the stochastic analytical continuation method as well) only
+supports the `flat` default model function. The users can use the `mtype`
+parameter to choose which default model should be used.
 
 These default model functions are summaried as follows.
 
