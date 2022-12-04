@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/03
+# Last modified: 2022/12/04
 #
 
 """
@@ -396,8 +396,9 @@ write_misfit      -> Write α-dependent χ².
 write_goodness    -> Write Θ-dependent χ².
 write_model       -> Write default model function.
 write_hamiltonian -> Write effective hamiltonian for StochAC solver.
+write_pole        -> Write pole's information for StochPX solver.
 write_probability -> Write Bayesian a-posteriori probability.
-write_statistics  -> Write statistics info. for StochAC/StochSK/StochOM solver.
+write_statistics  -> Write statistics info. for StochAC/StochSK/StochOM/StochPX solver.
 ```
 =#
 
@@ -414,6 +415,7 @@ export write_misfit
 export write_goodness
 export write_model
 export write_hamiltonian
+export write_pole
 export write_probability
 export write_statistics
 
