@@ -199,6 +199,10 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         # Record Monte Carlo field configuration
         measure(t, SE, SC)
     end
+    #
+    passed = count(<(1e-6), SC.χ²)
+    failed = count(≥(1e-6), SC.χ²)
+    println("summary: passed [$passed] failed [$failed]")
 
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
