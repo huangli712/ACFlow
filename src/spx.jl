@@ -503,6 +503,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         s₂ = rand(MC.rng, 1:npole)
     end
 
+    # Try to change position of s₁ pole
     P₁ = SE.P[s₁]
     P₃ = P₁
     while P₃ == P₁
@@ -510,6 +511,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     end
     A₁ = SE.A[s₁]
     #
+    # Try to change position of s₂ pole
     P₂ = SE.P[s₂]
     P₄ = P₂
     while P₄ == P₂
@@ -517,6 +519,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     end
     A₂ = SE.A[s₂]
 
+    # Calculate change of green's function
     for i in eachindex(SC.grid)
         z = 0 + A₁ / ( im * SC.grid[i] - SC.fmesh[P₃] )
         z = z - A₁ / ( im * SC.grid[i] - SC.fmesh[P₁] )
@@ -525,13 +528,20 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         δG[i] = z
     end
 
+    # Calculate new green's function and goodness-of-fit function
     Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
     χ² = calc_chi2(Gₙ, SC.Gᵥ)
 
+    # Simulated annealling algorithm
     if χ² < SC.χ²[t]
+        # Update Monte Carlo configuration
         SE.P[s₁] = P₃
         SE.P[s₂] = P₄
+
+        # Update reconstructed green's function
         @. SC.Gᵧ = Gₙ
+
+        # Update goodness-of-fit function
         SC.χ²[t] = χ²
     end
 end
