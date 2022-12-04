@@ -274,8 +274,10 @@ function init_mc(S::StochPXSolver)
     Ptry = 0
     Aacc = 0
     Atry = 0
+    Sacc = 0
+    Stry = 0
 
-    MC = StochPXMC(rng, Pacc, Ptry, Aacc, Atry)
+    MC = StochPXMC(rng, Pacc, Ptry, Aacc, Atry, Sacc, Stry)
 
     return MC
 end
