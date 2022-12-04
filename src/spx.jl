@@ -11,11 +11,40 @@
 ### *Customized Structs* : *StochPX Solver*
 =#
 
+"""
+    StochPXElement
+
+Mutable struct. It is used to record the field configurations, which will
+be sampled by Monte Carlo sweeping procedure.
+
+### Members
+
+* P -> It means the positions of the poles.
+* A -> It means the weights / amplitudes of the poles.
+"""
 mutable struct StochPXElement
     P :: Vector{I64}
     A :: Vector{F64}
 end
 
+"""
+    StochPXContext
+
+Mutable struct. It is used within the StochPX solver only.
+
+### Members
+
+* Gᵥ     -> Input data for correlator.
+* Gᵧ     -> Generated correlator.
+* σ¹     -> Actually 1.0 / σ¹.
+* allow  -> Allowable indices.
+* grid   -> Grid for input data.
+* mesh   -> Mesh for output spectrum.
+* fmesh  -> Very dense mesh for the poles.
+* χ²     -> Vector of goodness function.
+* Pᵥ     -> Vector of poles' positions.
+* Aᵥ     -> Vector of poles' amplitudes.
+"""
 mutable struct StochPXContext
     Gᵥ    :: Vector{F64}
     Gᵧ    :: Vector{F64}
@@ -28,6 +57,10 @@ mutable struct StochPXContext
     Pᵥ    :: Vector{Vector{I64}}
     Aᵥ    :: Vector{Vector{F64}}
 end
+
+#=
+### *Global Drivers*
+=#
 
 """
     solve(S::StochPXSolver, rd::RawData)
