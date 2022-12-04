@@ -502,10 +502,13 @@ function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
     @. SE.A = A / s
 end
 
-function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
-    ntry = get_x("ntry")
-    @assert 1 ≤ t ≤ ntry
+"""
+    reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
 
+Recalculate imaginary frequency green's function and goodness-of-fit
+function by new Monte Carlo field configurations for the t-th attempts.
+"""
+function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
     Gᵧ = calc_green(SE.P, SE.A, SC.grid, SC.fmesh)
     χ² = calc_chi2(Gᵧ, SC.Gᵥ)
     @. SC.Gᵧ = Gᵧ
@@ -516,7 +519,7 @@ end
     calc_fmesh(S::StochPXSolver)
 
 Try to calculate very fine (dense) linear mesh in [wmin, wmax], which
-is used internally to build the correlation function.
+is used internally to represent the possible positions of poles.
 
 See also: [`LinearMesh`](@ref).
 """
