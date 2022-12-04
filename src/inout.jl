@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/27
+# Last modified: 2022/12/04
 #
 
 #=
@@ -389,5 +389,32 @@ function write_statistics(MC::StochOMMC)
         @printf(fout, "height box -> %16.12f\n", MC.Macc[5] / MC.Mtry[5])
         @printf(fout, "split  box -> %16.12f\n", MC.Macc[6] / MC.Mtry[6])
         @printf(fout, "merge  box -> %16.12f\n", MC.Macc[7] / MC.Mtry[7])
+    end
+end
+
+"""
+    write_statistics(MC::StochPXMC)
+
+Write Monte Carlo statistical information for the `StochPX` solver. Note
+that the `StochPX` solver is based on a stochastic approach.
+
+See also: [`PStochPX`](@ref), [`StochPXMC`](@ref).
+"""
+function write_statistics(MC::StochPXMC)
+    open("stat.data", "w") do fout
+        println(fout, "# Move P statistics:")
+        @printf(fout, "accept -> %16i    \n", MC.Pacc)
+        @printf(fout, "try    -> %16i    \n", MC.Ptry)
+        @printf(fout, "prob   -> %16.12f \n", MC.Pacc / MC.Ptry)
+        println(fout)
+        println(fout, "# Move A statistics:")
+        @printf(fout, "accept -> %16i    \n", MC.Aacc)
+        @printf(fout, "try    -> %16i    \n", MC.Atry)
+        @printf(fout, "prob   -> %16.12f \n", MC.Aacc / MC.Atry)
+        println(fout)
+        println(fout, "# Move S statistics:")
+        @printf(fout, "accept -> %16i    \n", MC.Sacc)
+        @printf(fout, "try    -> %16i    \n", MC.Stry)
+        @printf(fout, "prob   -> %16.12f \n", MC.Sacc / MC.Stry)
     end
 end
