@@ -325,10 +325,23 @@ function average(SC::StochPXContext)
     return -imag.(Gout) / π, Gout, Gr
 end
 
-function last(SC::StochPXContext, Aout::Vector{F64}, Gout::Vector{C64}, Gr::Vector{F64})
+"""
+    last(SC::StochPXContext, Aout::Vector{F64}, Gout::Vector{C64}, Gᵣ::Vector{F64})
+
+It will write the calculated results by the StochPX solver, including
+final spectral function and reproduced correlator.
+"""
+function last(SC::StochPXContext, Aout::Vector{F64}, Gout::Vector{C64}, Gᵣ::Vector{F64})
+    # Write the spectral function
     write_spectrum(SC.mesh, Aout)
-    write_backward(SC.grid, Gr)
+
+    # Reproduce input data and write them
+    write_backward(SC.grid, Gᵣ)
+
+    # Write full response function on real axis
     write_complete(SC.mesh, Gout)
+
+    # Write pole expansion coefficients
     write_pole(SC.Pᵥ, SC.Aᵥ, SC.fmesh)
 end
 
