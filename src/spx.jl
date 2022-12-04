@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/03
+# Last modified: 2022/12/04
 #
 
 #=
@@ -349,7 +349,7 @@ function calc_green(P::Vector{I64},
     for i in eachindex(mesh)
         z = 0.0
         for j = 1:npole
-            z = z + A[j] / ( mesh[i] + im * 1.0e-4 - fmesh[P[j]] )
+            z = z + A[j] / ( mesh[i] + im * 1.0e-2 - fmesh[P[j]] )
         end
         G[i] = z
     end
