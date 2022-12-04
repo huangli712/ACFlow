@@ -694,7 +694,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Simulated annealling algorithm
     MC.Ptry = MC.Ptry + 1
-    if χ² < SC.χ²[t]
+    if χ² < SC.χ²[t] || rand(MC.rng) < min(exp(-(χ² - SC.χ²[t])), 1.0)
         # Update Monte Carlo configuration
         SE.P[s₁] = P₃
         SE.P[s₂] = P₄
@@ -763,7 +763,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Simulated annealling algorithm
     MC.Atry = MC.Atry + 1
-    if χ² < SC.χ²[t]
+    if χ² < SC.χ²[t] || rand(MC.rng) < min(exp(-(χ² - SC.χ²[t])), 1.0)
         # Update Monte Carlo configuration
         SE.A[s₁] = A₃
         SE.A[s₂] = A₄
