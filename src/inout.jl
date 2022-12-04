@@ -320,7 +320,7 @@ function write_pole(Pᵥ::Vector{Vector{I64}},
             println(fout, "# Try: ", i)
             for j in eachindex(Pᵥ[i])
                 p = Pᵥ[i][j]
-                @print(fout, "%4i %16.12f %16.12f\n", j, fmesh[p], Aᵥ[i][j])
+                @printf(fout, "%4i %16.12f %16.12f\n", j, fmesh[p], Aᵥ[i][j])
             end
             println(fout)
             println(fout)
