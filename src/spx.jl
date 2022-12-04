@@ -533,6 +533,14 @@ function calc_fmesh(S::StochPXSolver)
     return fmesh
 end
 
+"""
+    calc_green(P::Vector{I64},
+               A::Vector{F64},
+               grid::AbstractGrid,
+               fmesh::AbstractMesh)
+
+Reconstruct green's function at imaginary axis by the pole expansion.
+"""
 function calc_green(P::Vector{I64},
                     A::Vector{F64},
                     grid::AbstractGrid,
@@ -552,18 +560,27 @@ function calc_green(P::Vector{I64},
     return vcat(real(G), imag(G))
 end
 
+"""
+    calc_green(P::Vector{I64},
+               A::Vector{F64},
+               mesh::AbstractMesh,
+               fmesh::AbstractMesh)
+
+Reconstruct green's function at real axis by the pole expansion.
+"""
 function calc_green(P::Vector{I64},
                     A::Vector{F64},
                     mesh::AbstractMesh,
                     fmesh::AbstractMesh)
     npole = get_x("npole")
+    η = get_x("eta")
     nmesh = length(mesh)
 
     G = zeros(C64, nmesh)
     for i in eachindex(mesh)
         z = 0.0
         for j = 1:npole
-            z = z + A[j] / ( mesh[i] + im * 1.0e-2 - fmesh[P[j]] )
+            z = z + A[j] / ( mesh[i] + im * η - fmesh[P[j]] )
         end
         G[i] = z
     end
