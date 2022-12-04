@@ -184,13 +184,13 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
             # Check convergence
             if SC.χ²[t] < threshold
                 @printf("try = %6i ", t)
-                @printf("[χ² = %16.12e]\n", SC.χ²[t])
+                @printf("[χ² = %9.4e]\n", SC.χ²[t])
                 flush(stdout)
                 break
             else
                 if i == nstep
                     @printf("try = %6i ", t)
-                    @printf("[χ² = %16.12e] FAILED\n", SC.χ²[t])
+                    @printf("[χ² = %9.4e] FAILED\n", SC.χ²[t])
                     flush(stdout)
                 end
             end
