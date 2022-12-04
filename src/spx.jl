@@ -121,6 +121,12 @@ function solve(S::StochPXSolver, rd::RawData)
     return SC.mesh.mesh, Aout, Gout
 end
 
+"""
+    init(S::StochPXSolver, rd::RawData)
+
+Initialize the StochPX solver and return the StochPXMC, StochPXElement,
+and StochPXContext structs.
+"""
 function init(S::StochPXSolver, rd::RawData)
     # Initialize possible constraints. The allow array contains all the
     # possible indices for poles.
@@ -133,20 +139,17 @@ function init(S::StochPXSolver, rd::RawData)
     println("Randomize Monte Carlo configurations")
 
     Gᵥ, σ¹ = init_iodata(S, rd)
+    Gᵧ = deepcopy(Gᵥ)
     println("Postprocess input data: ", length(σ¹), " points")
 
     grid = make_grid(rd)
     println("Build grid for input data: ", length(grid), " points")
 
     mesh = make_mesh()
+    fmesh = calc_fmesh(S)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    fmesh = calc_fmesh(S)
-    Gᵧ = deepcopy(Gᵥ)
-
     χ², Pᵥ, Aᵥ = init_context(S)
-    #@show typeof(χ²), typeof(Pᵥ), typeof(Aᵥ)
-    #error()
     SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, χ², Pᵥ, Aᵥ)
 
     return MC, SE, SC
