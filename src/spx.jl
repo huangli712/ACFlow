@@ -447,6 +447,13 @@ function init_iodata(S::StochPXSolver, rd::RawData)
     return Gᵥ, σ¹
 end
 
+"""
+    init_context(S::StochPXSolver)
+
+Try to initialize the key members of a StochPXContext struct.
+
+See also: [`StochPXContext`](@ref).
+"""
 function init_context(S::StochPXSolver)
     ntry = get_x("ntry")
     npole = get_x("npole")
