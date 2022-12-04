@@ -351,17 +351,32 @@ function last(SC::StochPXContext, Aout::Vector{F64}, Gout::Vector{C64}, Gᵣ::Ve
     write_pole(SC.Pᵥ, SC.Aᵥ, SC.fmesh)
 end
 
-function warmup()
-end
+#=
+### *Core Algorithms*
+=#
 
+"""
+    sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+
+Try to search the configuration space to locate the minimum by using the
+simulated annealling algorithm. Here, `t` means the t-th attempt.
+"""
 function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    # Try to change positions of two poles
     if rand(MC.rng) < 0.5
         try_move_p(t, MC, SE, SC)
+    # Try to change amplitudes of two poles
     else
         try_move_a(t, MC, SE, SC)
     end
 end
 
+"""
+    measure(t::I64, SE::StochPXElement, SC::StochPXContext)
+
+Store Monte Carlo field configurations (positions and amplitudes of many
+poles) for the t-th attempt.
+"""
 function measure(t::I64, SE::StochPXElement, SC::StochPXContext)
     @. SC.Pᵥ[t] = SE.P
     @. SC.Aᵥ[t] = SE.A
