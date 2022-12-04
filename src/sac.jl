@@ -733,7 +733,7 @@ function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     δH = dot(δhc, 2.0 * hc + δhc)
 
     # Apply Metropolis algorithm
-    MC.Mtry[i] = MC.Mtry[i] + 1.0
+    MC.Mtry[i] = MC.Mtry[i] + 1
     if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
         # Update Monte Carlo configurations
         SE.Γᵣ[γ₁,i] = r₁
@@ -746,7 +746,7 @@ function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
         SC.Hα[i] = SC.Hα[i] + δH
 
         # Update Monte Carlo counter
-        MC.Macc[i] = MC.Macc[i] + 1.0
+        MC.Macc[i] = MC.Macc[i] + 1
     end
 end
 
@@ -790,7 +790,7 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     δH = dot(δhc, 2.0 * hc + δhc)
 
     # Apply Metropolis algorithm
-    MC.Mtry[i] = MC.Mtry[i] + 1.0
+    MC.Mtry[i] = MC.Mtry[i] + 1
     if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
         # Update Monte Carlo configurations
         SE.Γₐ[γ₁,i] = i₁
@@ -803,7 +803,7 @@ function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
         SC.Hα[i] = SC.Hα[i] + δH
 
         # Update Monte Carlo counter
-        MC.Macc[i] = MC.Macc[i] + 1.0
+        MC.Macc[i] = MC.Macc[i] + 1
     end
 end
 
@@ -827,8 +827,8 @@ function try_swap(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     δH = SC.Hα[i] - SC.Hα[j]
 
     # Apply Metropolis algorithm
-    MC.Stry[i] = MC.Stry[i] + 1.0
-    MC.Stry[j] = MC.Stry[j] + 1.0
+    MC.Stry[i] = MC.Stry[i] + 1
+    MC.Stry[j] = MC.Stry[j] + 1
     if exp(δα * δH) > rand(MC.rng)
         # Update Monte Carlo configurations
         SE.Γₐ[:,i], SE.Γₐ[:,j] = SE.Γₐ[:,j], SE.Γₐ[:,i]
@@ -839,7 +839,7 @@ function try_swap(MC::StochACMC, SE::StochACElement, SC::StochACContext)
         SC.Hα[i], SC.Hα[j] = SC.Hα[j], SC.Hα[i]
 
         # Update Monte Carlo counters
-        MC.Sacc[i] = MC.Sacc[i] + 1.0
-        MC.Sacc[j] = MC.Sacc[j] + 1.0
+        MC.Sacc[i] = MC.Sacc[i] + 1
+        MC.Sacc[j] = MC.Sacc[j] + 1
     end
 end
