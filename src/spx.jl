@@ -167,6 +167,8 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     threshold = 1e-6
 
     println("Start stochastic sampling...")
+    #
+    # Sample and collect data
     for t = 1:ntry
         # Reset Monte Carlo counters
         reset_mc(MC)
@@ -177,7 +179,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         # Reset Gᵧ and χ²
         reset_context(t, SE, SC)
 
-        # Simulated annealling
+        # Apply simulated annealling algorithm
         for i = 1:nstep
             sample(t, MC, SE, SC)
 
@@ -200,9 +202,10 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         measure(t, SE, SC)
     end
     #
+    # Print summary information
     passed = count(<(1e-6), SC.χ²)
     failed = count(≥(1e-6), SC.χ²)
-    println("summary: passed [$passed] failed [$failed]")
+    println("Summary: passed [$passed] failed [$failed]")
 
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
