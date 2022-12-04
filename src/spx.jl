@@ -155,28 +155,52 @@ function init(S::StochPXSolver, rd::RawData)
     return MC, SE, SC
 end
 
+"""
+    run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+
+Perform stochastic pole expansion simulation, sequential version.
+"""
 function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
+    threshold = 1e-6
 
+    println("Start stochastic sampling...")
     for t = 1:ntry
-        println("Try: ", t)
-
+        # Reset Monte Carlo counters
         reset_mc(MC)
+
+        # Reset Monte Carlo field configuration
         reset_element(MC.rng, SC.allow, SE)
+
+        # Reset Gᵧ and χ²
         reset_context(t, SE, SC)
-    
+
+        # Simulated annealling
         for i = 1:nstep
             sample(t, MC, SE, SC)
-            if SC.χ²[t] < 1e-6
-                println("try :", t, " ", SC.χ²[t])
+
+            # Check convergence
+            if SC.χ²[t] < threshold
+                @printf("try = %6i ", t)
+                @printf("[χ² = %16.12e]\n", SC.χ²[t])
+                flush(stdout)
                 break
+            else
+                if i == nstep
+                    @printf("try = %6i ", t)
+                    @printf("[χ² = %16.12e] FAILED\n", SC.χ²[t])
+                    flush(stdout)
+                end
             end
         end
+
+        # Record Monte Carlo field configuration
         measure(t, SE, SC)
     end
 
+    # Generate spectral density from Monte Carlo field configuration
     return average(SC)
 end
 
