@@ -423,6 +423,7 @@ function init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
     P = rand(rng, allow, npole)
     A = rand(rng, F64, npole)
 
+    # We have to make sure ∑ Aᵢ = 1
     s = sum(A)
     @. A = A / s
 
@@ -434,8 +435,7 @@ end
 """
     init_iodata(S::StochPXSolver, rd::RawData)
 
-Preprocess the input data (`rd`), then allocate memory for the calculated
-spectral functions.
+Preprocess the input data (`rd`).
 
 See also: [`RawData`](@ref).
 """
