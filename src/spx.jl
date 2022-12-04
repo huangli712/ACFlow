@@ -533,6 +533,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     χ² = calc_chi2(Gₙ, SC.Gᵥ)
 
     # Simulated annealling algorithm
+    MC.Ptry = MC.Ptry + 1
     if χ² < SC.χ²[t]
         # Update Monte Carlo configuration
         SE.P[s₁] = P₃
@@ -543,6 +544,9 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
         # Update goodness-of-fit function
         SC.χ²[t] = χ²
+
+        # Update Monte Carlo counter
+        MC.Pacc = MC.Pacc + 1
     end
 end
 
