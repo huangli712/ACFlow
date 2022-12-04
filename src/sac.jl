@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/24
+# Last modified: 2022/12/04
 #
 
 #=
@@ -89,7 +89,7 @@ function solve(S::StochACSolver, rd::RawData)
         p1 = deepcopy(PBASE)
         p2 = deepcopy(PStochAC)
         #
-        # Launch the task
+        # Launch the tasks one by one
         𝐹 = Future[]
         for i = 1:nworkers()
             𝑓 = @spawnat i + 1 prun(S, p1, p2, MC, SE, SC)

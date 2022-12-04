@@ -66,7 +66,7 @@ end
     solve(S::StochPXSolver, rd::RawData)
 
 Solve the analytical continuation problem by the stochastic
-pole expansion.
+pole expansion. Note that this solver is still `experimental`.
 """
 function solve(S::StochPXSolver, rd::RawData)
     nmesh = get_b("nmesh")
@@ -82,7 +82,7 @@ function solve(S::StochPXSolver, rd::RawData)
         p1 = deepcopy(PBASE)
         p2 = deepcopy(PStochPX)
         #
-        # Launch the task
+        # Launch the tasks one by one
         𝐹 = Future[]
         for i = 1:nworkers()
             𝑓 = @spawnat i + 1 prun(S, p1, p2, MC, SE, SC)
