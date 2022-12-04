@@ -211,6 +211,8 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     return average(SC)
 end
 
+
+
 function prun(S::StochPXSolver,
             p1::Dict{String,Vector{Any}},
             p2::Dict{String,Vector{Any}},
@@ -478,38 +480,48 @@ function constraints(S::StochPXSolver)
     return allow
 end
 
+"""
+    try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+
+Change the positions of two randomly selected poles.
+
+See also: [`try_move_a`](@ref).
+"""
 function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    # Get parameters
     ngrid = get_b("ngrid")
     npole = get_x("npole")
 
+    # It is used to save the change of green's function
     δG = zeros(C64, ngrid)
 
-    s1 = 1
-    s2 = 1
-    while s1 == s2
-        s1 = rand(MC.rng, 1:npole)
-        s2 = rand(MC.rng, 1:npole)
+    # Select two poles randomly
+    s₁ = 1
+    s₂ = 1
+    while s₁ == s₂
+        s₁ = rand(MC.rng, 1:npole)
+        s₂ = rand(MC.rng, 1:npole)
     end
 
-    P1 = SE.P[s1]
-    P3 = P1
-    while P3 == P1
-        P3 = rand(MC.rng, SC.allow)
+    P₁ = SE.P[s₁]
+    P₃ = P₁
+    while P₃ == P₁
+        P₃ = rand(MC.rng, SC.allow)
     end
-    A1 = SE.A[s1]
+    A₁ = SE.A[s₁]
     #
-    P2 = SE.P[s2]
-    P4 = P2
-    while P4 == P2
-        P4 = rand(MC.rng, SC.allow)
+    P₂ = SE.P[s₂]
+    P₄ = P₂
+    while P₄ == P₂
+        P₄ = rand(MC.rng, SC.allow)
     end
-    A2 = SE.A[s2]
+    A₂ = SE.A[s₂]
 
     for i in eachindex(SC.grid)
-        z = 0 + A1 / ( im * SC.grid[i] - SC.fmesh[P3] )
-        z = z - A1 / ( im * SC.grid[i] - SC.fmesh[P1] )
-        z = z + A2 / ( im * SC.grid[i] - SC.fmesh[P4] )
-        z = z - A2 / ( im * SC.grid[i] - SC.fmesh[P2] )
+        z = 0 + A₁ / ( im * SC.grid[i] - SC.fmesh[P₃] )
+        z = z - A₁ / ( im * SC.grid[i] - SC.fmesh[P₁] )
+        z = z + A₂ / ( im * SC.grid[i] - SC.fmesh[P₄] )
+        z = z - A₂ / ( im * SC.grid[i] - SC.fmesh[P₂] )
         δG[i] = z
     end
 
@@ -517,8 +529,8 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     χ² = calc_chi2(Gₙ, SC.Gᵥ)
 
     if χ² < SC.χ²[t]
-        SE.P[s1] = P3
-        SE.P[s2] = P4
+        SE.P[s₁] = P₃
+        SE.P[s₂] = P₄
         @. SC.Gᵧ = Gₙ
         SC.χ²[t] = χ²
     end
