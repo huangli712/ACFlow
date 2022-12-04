@@ -69,6 +69,7 @@ Solve the analytical continuation problem by the stochastic
 pole expansion. Note that this solver is still `experimental`.
 """
 function solve(S::StochPXSolver, rd::RawData)
+    ngrid = get_b("ngrid")
     nmesh = get_b("nmesh")
 
     println("[ StochPX ]")
@@ -98,18 +99,22 @@ function solve(S::StochPXSolver, rd::RawData)
         #
         # Average the solutions
         Aout = zeros(F64, nmesh)
+        Gout = zeros(C64, nmesh)
+        Gᵣ = zeros(F64, 2 * ngrid)
         for i in eachindex(sol)
-            a = sol[i]
+            a, b, c = sol[i]
             @. Aout = Aout + a / nworkers()
+            @. Gout = Gout + b / nworkers()
+            @. Gᵣ = Gᵣ + c / nworkers()
         end
         #
         # Postprocess the solutions
-        Gout = last(SC, Aout)
+        last(SC, Aout, Gout, Gᵣ)
 
     # Sequential version
     else
-        Aout, Gout, Gr = run(MC, SE, SC)
-        last(SC, Aout, Gout, Gr)
+        Aout, Gout, Gᵣ = run(MC, SE, SC)
+        last(SC, Aout, Gout, Gᵣ)
 
     end
 
