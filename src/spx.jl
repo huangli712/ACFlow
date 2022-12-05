@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/05
+# Last modified: 2022/12/06
 #
 
 #=
@@ -502,14 +502,14 @@ of the poles).
 """
 function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
     npole = get_x("npole")
-    nselect = 20
+    nselect = 10
     @assert nselect ≤ npole
 
     selected = rand(rng, 1:npole, nselect)
     unique!(selected)
     nselect = length(selected)
 
-    if rand(rng) > 0.90
+    if rand(rng) < 0.1
         P = rand(rng, allow, nselect)
         @. SE.P[selected] = P
     else
@@ -569,16 +569,12 @@ function calc_green(P::Vector{I64},
                     A::Vector{F64},
                     grid::AbstractGrid,
                     fmesh::AbstractMesh)
-    npole = get_x("npole")
     ngrid = length(grid)
 
+    iωₙ = im * grid.ω
     G = zeros(C64, ngrid)
     for i in eachindex(grid)
-        z = 0.0
-        for j = 1:npole
-            z = z + A[j] / ( im * grid[i] - fmesh[P[j]] )
-        end
-        G[i] = z
+        G[i] = sum( @. A / (iωₙ[i] - fmesh.mesh[P]) )
     end
 
     return vcat(real(G), imag(G))
@@ -596,17 +592,13 @@ function calc_green(P::Vector{I64},
                     A::Vector{F64},
                     mesh::AbstractMesh,
                     fmesh::AbstractMesh)
-    npole = get_x("npole")
     η = get_x("eta")
     nmesh = length(mesh)
 
+    iωₙ = mesh.mesh .+ im * η
     G = zeros(C64, nmesh)
     for i in eachindex(mesh)
-        z = 0.0
-        for j = 1:npole
-            z = z + A[j] / ( mesh[i] + im * η - fmesh[P[j]] )
-        end
-        G[i] = z
+        G[i] = sum( @. A / (iωₙ[i] - fmesh.mesh[P]) )
     end
 
     return G
@@ -705,13 +697,11 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     A₂ = SE.A[s₂]
 
     # Calculate change of green's function
-    for i in eachindex(SC.grid)
-        z = 0 + A₁ / ( im * SC.grid[i] - SC.fmesh[P₃] )
-        z = z - A₁ / ( im * SC.grid[i] - SC.fmesh[P₁] )
-        z = z + A₂ / ( im * SC.grid[i] - SC.fmesh[P₄] )
-        z = z - A₂ / ( im * SC.grid[i] - SC.fmesh[P₂] )
-        δG[i] = z
-    end
+    iωₙ = im * SC.grid.ω
+    @. δG = (
+        + A₁ / (iωₙ - SC.fmesh[P₃]) + A₂ / (iωₙ - SC.fmesh[P₄]) 
+        - A₁ / (iωₙ - SC.fmesh[P₁]) - A₂ / (iωₙ - SC.fmesh[P₂])
+    )
 
     # Calculate new green's function and goodness-of-fit function
     Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
@@ -784,11 +774,8 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     end
 
     # Calculate change of green's function
-    for i in eachindex(SC.grid)
-        z = 0 + (A₃ - A₁) / ( im * SC.grid[i] - SC.fmesh[P₁] )
-        z = z + (A₄ - A₂) / ( im * SC.grid[i] - SC.fmesh[P₂] )
-        δG[i] = z
-    end
+    iωₙ = im * SC.grid.ω
+    @. δG = (A₃ - A₁) / (iωₙ - SC.fmesh[P₁]) + (A₄ - A₂) / (iωₙ - SC.fmesh[P₂])
 
     # Calculate new green's function and goodness-of-fit function
     Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
@@ -852,11 +839,8 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     A₄ = A₁
 
     # Calculate change of green's function
-    for i in eachindex(SC.grid)
-        z = 0 + (A₃ - A₁) / ( im * SC.grid[i] - SC.fmesh[P₁] )
-        z = z + (A₄ - A₂) / ( im * SC.grid[i] - SC.fmesh[P₂] )
-        δG[i] = z
-    end
+    iωₙ = im * SC.grid.ω
+    @. δG = (A₃ - A₁) / (iωₙ - SC.fmesh[P₁]) + (A₄ - A₂) / (iωₙ - SC.fmesh[P₂])
 
     # Calculate new green's function and goodness-of-fit function
     Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
