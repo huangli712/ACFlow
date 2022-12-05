@@ -797,43 +797,40 @@ export Pdx
 #=
 *Summary* :
 
-To implement the StochOM solver for analytically continuation problem.
+To implement the StochPX solver for analytically continuation problem.
 
 *Members* :
 
 ```text
-Box            -> A struct for describing the field configuration.
-StochOMElement -> A struct that contains Monte Carlo field configurations.
-StochOMContext -> Essential struct for the StochOM solver.
+StochPXElement -> A struct that contains Monte Carlo field configurations.
+StochPXContext -> Essential struct for the StochPX solver.
 #
-solve          -> Wrapper function for the StochOM solver.
-init           -> Initialize stochastic optimization simulation.
-run (prun)     -> Perform stochastic optimization simulation.
+solve          -> Wrapper function for the StochPX solver.
+init           -> Initialize stochastic pole expansion simulation.
+run (prun)     -> Perform stochastic pole expansion simulation.
 average        -> Evaluate the averaged results.
 last           -> Postprocess the calculated results and write them.
 #
-update         -> Sample field configurations via metropolis algorithm.
+sample         -> Sample field configurations via simulated annealing algorithm.
+measure        -> Record Monte Carlo field configurations.
 #
-init_mc        -> Create a StochOMMC struct.
-init_element   -> Create a StochOMElement struct.
+init_mc        -> Create a StochPXMC struct.
+init_element   -> Create a StochPXElement struct.
 init_iodata    -> Preprocess the input data.
-init_context   -> Prepare data for a StochOMContext struct.
+init_context   -> Prepare data for a StochPXContext struct.
 #
-calc_lambda    -> Build kernel function.
-calc_error     -> Calculate χ² function.
+reset_mc       -> Reset counters in StochPXMC struct.
+reset_element  -> Reset Monte Carlo field configurations.
+reset_context  -> Reset green's function and goodness-of-fit function.
+#
+calc_fmesh     -> Build very dense mesh for poles.
 calc_green     -> Reproduce green's function via the field configurations.
-calc_norm      -> Calculate norm of the field configurations.
-constraints    -> Limit the position of δ functions.
+calc_chi2      -> Calculate goodness-of-fit function.
+constraints    -> Limit the position of poles.
 #
-try_insert     -> Try to insert a new box in the configuration.
-try_remove     -> Try to remove a box.
-try_shift      -> Try to shift a box.
-try_width      -> Try to change width of a box.
-try_height     -> Try to change height of a box.
-try_split      -> Try to split a box.
-try_merge      -> Try to merge two boxes.
-#
-Pdx            -> Try to calculate the probability density function.
+try_move_p     -> Shift positions of two poles.
+try_move_a     -> Change amplitudes of two poles.
+try_move_s     -> Swap amplitudes of two poles.
 ```
 =#
 
