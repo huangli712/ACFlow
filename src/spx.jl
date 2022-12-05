@@ -41,7 +41,6 @@ Mutable struct. It is used within the StochPX solver only.
 * grid   -> Grid for input data.
 * mesh   -> Mesh for output spectrum.
 * fmesh  -> Very dense mesh for the poles.
-* Θ      -> Inverse temperature.
 * χ²min  -> Minimum of χ²min.
 * χ²     -> Vector of goodness function.
 * Pᵥ     -> Vector of poles' positions.
@@ -55,7 +54,6 @@ mutable struct StochPXContext
     grid  :: AbstractGrid
     mesh  :: AbstractMesh
     fmesh :: AbstractMesh
-    Θ     :: F64
     χ²min :: F64
     χ²    :: Vector{F64}
     Pᵥ    :: Vector{Vector{I64}}
@@ -153,8 +151,8 @@ function init(S::StochPXSolver, rd::RawData)
     fmesh = calc_fmesh(S)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    Θ, χ²min, χ², Pᵥ, Aᵥ = init_context(S)
-    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, Θ, χ²min, χ², Pᵥ, Aᵥ)
+    χ²min, χ², Pᵥ, Aᵥ = init_context(S)
+    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, χ²min, χ², Pᵥ, Aᵥ)
 
     return MC, SE, SC
 end
@@ -468,6 +466,7 @@ function init_context(S::StochPXSolver)
     ntry = get_x("ntry")
     npole = get_x("npole")
 
+    χ²min = 10000.0
     χ² = zeros(F64, ntry)
 
     Pᵥ = Vector{I64}[]
@@ -477,10 +476,7 @@ function init_context(S::StochPXSolver)
         push!(Aᵥ, zeros(F64, npole))
     end
 
-    Θ = 1.0
-    χ²min = 10000.0
-
-    return Θ, χ²min, χ², Pᵥ, Aᵥ
+    return χ²min, χ², Pᵥ, Aᵥ
 end
 
 """
@@ -528,7 +524,6 @@ function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
     @. SC.Gᵧ = Gᵧ
     SC.χ²[t] = χ²
     #
-    SC.Θ = 1.0
     SC.χ²min = 10000.0
 end
 
