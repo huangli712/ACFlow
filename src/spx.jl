@@ -502,17 +502,25 @@ of the poles).
 """
 function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
     npole = get_x("npole")
-    nselect = 10
+    nselect = 20
+    @assert nselect ≤ npole
 
     selected = rand(rng, 1:npole, nselect)
+    unique!(selected)
+    nselect = length(selected)
 
-    if rand(rng) > 0.98
-        P = rand(rng, allow, npole)
-        @. SE.P = P
+    if rand(rng) > 0.90
+        P = rand(rng, allow, nselect)
+        @. SE.P[selected] = P
     else
-        A = rand(rng, F64, npole)
-        s = sum(A)
-        @. SE.A = A / s
+        A₁ = SE.A[selected]
+        s₁ = sum(A₁)
+        #
+        A₂ = rand(rng, F64, nselect)
+        s₂ = sum(A₂)
+        @. A₂ = A₂ / s₂ * s₁
+        #
+        @. SE.A[selected] = A₂
     end
 end
 
