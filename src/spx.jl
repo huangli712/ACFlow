@@ -517,10 +517,10 @@ function by new Monte Carlo field configurations for the t-th attempts.
 function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
     Gᵧ = calc_green(SE.P, SE.A, SC.grid, SC.fmesh)
     χ² = calc_chi2(Gᵧ, SC.Gᵥ)
-    #
+
     @. SC.Gᵧ = Gᵧ
     SC.χ²[t] = χ²
-    #
+
     SC.χ²min = 10000.0
 end
 
@@ -719,6 +719,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         # Update Monte Carlo counter
         MC.Pacc = MC.Pacc + 1
 
+        # Save optimal solution
         if χ² < SC.χ²min
             SC.χ²min = χ²
             measure(t, SE, SC)
@@ -795,6 +796,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         # Update Monte Carlo counter
         MC.Aacc = MC.Aacc + 1
 
+        # Save optimal solution
         if χ² < SC.χ²min
             SC.χ²min = χ²
             measure(t, SE, SC)
