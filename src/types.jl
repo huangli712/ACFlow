@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/04
+# Last modified: 2022/12/05
 #
 
 #=
@@ -193,6 +193,7 @@ const PStochPX = Dict{String,ADT}(
     "npole"   => [missing, 1, :I64   , "Number of poles"],
     "ntry"    => [missing, 1, :I64   , "Number of attempts (tries) to seek the solution"],
     "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo steps per attempt / try"],
+    "theta"   => [missing, 1, :F64   , "Artificial inverse temperature"],
     "eta"     => [missing, 1, :F64   , "Tiny distance from the real axis"],
 )
 
@@ -202,6 +203,7 @@ const _PStochPX = Dict{String,Any}(
     "npole"   => 200,
     "ntry"    => 1000,
     "nstep"   => 1000000,
+    "theta"   => 1e+6,
     "eta"     => 1e-4,
 )
 

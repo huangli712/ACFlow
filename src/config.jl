@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/04
+# Last modified: 2022/12/05
 #
 
 """
@@ -420,6 +420,7 @@ function chk_dict()
             @assert get_x("npole") ≥ 20
             @assert get_x("ntry")  ≥ 100
             @assert get_x("nstep") ≥ 100000
+            @assert get_x("theta") ≥ 1e+2
             @assert get_x("eta")   ≥ 1e-8
             break
     end
