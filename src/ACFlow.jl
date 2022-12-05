@@ -797,6 +797,36 @@ export Pdx
 #
 include("spx.jl")
 #
+export StochPXElement
+export StochPXContext
+#
+export solve
+export init
+export run
+export prun
+export average
+export last
+#
+export sample
+export measure
+#
+export init_mc
+export init_element
+export init_iodata
+export init_context
+#
+export reset_mc
+export reset_element
+export reset_context
+#
+export calc_fmesh
+export calc_green
+export calc_chi2
+export constraints
+#
+export try_move_p
+export try_move_a
+export try_move_s
 
 #=
 ### *Includes And Exports* : *base.jl*
