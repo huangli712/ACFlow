@@ -695,10 +695,11 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Calculate new green's function and goodness-of-fit function
     Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
     χ² = calc_chi2(Gₙ, SC.Gᵥ)
+    δχ² = χ² - SC.χ²[t]
 
     # Simulated annealling algorithm
     MC.Ptry = MC.Ptry + 1
-    if χ² < SC.χ²[t]
+    if δχ² < 0
         # Update Monte Carlo configuration
         SE.P[s₁] = P₃
         SE.P[s₂] = P₄
@@ -764,10 +765,11 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Calculate new green's function and goodness-of-fit function
     Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
     χ² = calc_chi2(Gₙ, SC.Gᵥ)
+    δχ² = χ² - SC.χ²[t]
 
     # Simulated annealling algorithm
     MC.Atry = MC.Atry + 1
-    if χ² < SC.χ²[t]
+    if δχ² < 0
         # Update Monte Carlo configuration
         SE.A[s₁] = A₃
         SE.A[s₂] = A₄
