@@ -737,7 +737,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Get parameters
     ngrid = get_b("ngrid")
     npole = get_x("npole")
-    θ = get_x("theta")
+    Θ = get_x("theta")
 
     # It is used to save the change of green's function
     δG = zeros(C64, ngrid)
