@@ -185,7 +185,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
             # Check convergence
             if SC.χ²[t] < threshold
-                @printf("try = %6i ", t)
+                @printf("try = %6i -> step = %8i ", t, i)
                 @printf("[χ² = %9.4e]\n", SC.χ²[t])
                 flush(stdout)
                 break
@@ -200,6 +200,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
         # Write Monte Carlo statistics
         write_statistics(MC)
+        error()
 
         # Record Monte Carlo field configuration
         measure(t, SE, SC)
@@ -398,7 +399,7 @@ See also: [`StochPXMC`](@ref).
 """
 function init_mc(S::StochPXSolver)
     seed = rand(1:100000000)
-    rng = MersenneTwister(seed)
+    rng = MersenneTwister(10000)
     #
     Pacc = 0
     Ptry = 0
