@@ -185,9 +185,9 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
         # Apply simulated annealling algorithm
         for i = 1:nstep
-            if i % 1000 == 0
-                SC.Θ = SC.Θ * 10.0
-            end
+            #if i % 10000 == 0
+                SC.Θ = 1e6 #SC.Θ * 10.0
+            #end
 
             sample(t, MC, SE, SC)
 
@@ -375,7 +375,7 @@ simulated annealling algorithm. Here, `t` means the t-th attempt.
 """
 function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Try to change positions of two poles
-    if rand(MC.rng) < 0.5
+    if rand(MC.rng) < 0.2
         try_move_p(t, MC, SE, SC)
     # Try to change amplitudes of two poles
     else
