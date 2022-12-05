@@ -803,3 +803,71 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         end
     end
 end
+
+"""
+    try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+
+Swap the amplitudes of two randomly selected poles.
+
+See also: [`try_move_a`](@ref).
+"""
+function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    # Get parameters
+    ngrid = get_b("ngrid")
+    npole = get_x("npole")
+    Θ = get_x("theta")
+
+    # It is used to save the change of green's function
+    δG = zeros(C64, ngrid)
+
+    # Select two poles randomly
+    s₁ = 1
+    s₂ = 1
+    while s₁ == s₂
+        s₁ = rand(MC.rng, 1:npole)
+        s₂ = rand(MC.rng, 1:npole)
+    end
+
+    # Try to swap amplitudes of the two poles, but their sum is kept.
+    P₁ = SE.P[s₁]
+    P₂ = SE.P[s₂]
+    A₁ = SE.A[s₁]
+    A₂ = SE.A[s₂]
+    A₃ = A₂
+    A₄ = A₁
+
+    # Calculate change of green's function
+    for i in eachindex(SC.grid)
+        z = 0 + (A₃ - A₁) / ( im * SC.grid[i] - SC.fmesh[P₁] )
+        z = z + (A₄ - A₂) / ( im * SC.grid[i] - SC.fmesh[P₂] )
+        δG[i] = z
+    end
+
+    # Calculate new green's function and goodness-of-fit function
+    Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
+    χ² = calc_chi2(Gₙ, SC.Gᵥ)
+    δχ² = χ² - SC.χ²[t]
+
+    # Simulated annealling algorithm
+    MC.Stry = MC.Stry + 1
+    if δχ² < 0 || min(1.0, exp(-δχ² * Θ)) > rand(MC.rng)
+        # Update Monte Carlo configuration
+        SE.A[s₁] = A₃
+        SE.A[s₂] = A₄
+
+        # Update reconstructed green's function
+        @. SC.Gᵧ = Gₙ
+
+        # Update goodness-of-fit function
+        SC.χ²[t] = χ²
+
+        # Update Monte Carlo counter
+        MC.Sacc = MC.Sacc + 1
+
+        # Save optimal solution
+        if χ² < SC.χ²min
+            SC.χ²min = χ²
+            measure(t, SE, SC)
+        end
+    end
+end
