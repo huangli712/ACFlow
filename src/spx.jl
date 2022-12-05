@@ -185,10 +185,8 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
         # Apply simulated annealling algorithm
         for i = 1:nstep
-            #if i % 10000 == 0
-                SC.Θ = 1e6 #SC.Θ * 10.0
-            #end
-
+            SC.Θ = 1e6 #SC.Θ * 10.0
+            
             sample(t, MC, SE, SC)
 
             # Check convergence
