@@ -70,7 +70,7 @@ function solve(rd::RawData)
         @case "StochOM"
             return solve(StochOMSolver(), rd)
             break
-        
+
         @case "StochPX"
             return solve(StochPXSolver(), rd)
             break

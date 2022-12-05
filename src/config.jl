@@ -411,7 +411,7 @@ function chk_dict()
             @assert get_s("sbox")  > 0.0
             @assert get_s("wbox")  > 0.0
             break
-        
+
         @case "StochPX"
             push!(PA, PStochPX)
             @assert get_b("grid") in ("ffreq", "bfreq")

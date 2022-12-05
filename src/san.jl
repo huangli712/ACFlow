@@ -892,7 +892,7 @@ function try_move_q(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
     for i = 1:ngamm
         # Choose four different δ functions
-        𝑆 = nothing 
+        𝑆 = nothing
         while true
             𝑆 = rand(MC.rng, 1:ngamm, 4)
             𝒮 = unique(𝑆)
