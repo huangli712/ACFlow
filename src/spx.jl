@@ -372,7 +372,11 @@ function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         try_move_p(t, MC, SE, SC)
     # Try to change amplitudes of two poles
     else
-        try_move_a(t, MC, SE, SC)
+        if rand(MC.rng) < 0.5
+            try_move_a(t, MC, SE, SC)
+        else
+            try_move_s(t, MC, SE, SC)
+        end
     end
 end
 
@@ -400,7 +404,7 @@ See also: [`StochPXMC`](@ref).
 """
 function init_mc(S::StochPXSolver)
     seed = rand(1:100000000)
-    rng = MersenneTwister(seed)
+    rng = MersenneTwister(1000)
     #
     Pacc = 0
     Ptry = 0
