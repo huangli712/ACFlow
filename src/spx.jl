@@ -503,12 +503,13 @@ of the poles).
 function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
     npole = get_x("npole")
 
-    P = rand(rng, allow, npole)
+    if rand(rng) > 0.9
+        P = rand(rng, allow, npole)
+        @. SE.P = P
+    end
+
     A = rand(rng, F64, npole)
-
     s = sum(A)
-
-    @. SE.P = P
     @. SE.A = A / s
 end
 
