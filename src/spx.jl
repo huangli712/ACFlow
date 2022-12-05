@@ -41,6 +41,7 @@ Mutable struct. It is used within the StochPX solver only.
 * grid   -> Grid for input data.
 * mesh   -> Mesh for output spectrum.
 * fmesh  -> Very dense mesh for the poles.
+* χ²min  -> Minimum of χ²min.
 * χ²     -> Vector of goodness function.
 * Pᵥ     -> Vector of poles' positions.
 * Aᵥ     -> Vector of poles' amplitudes.
@@ -53,6 +54,7 @@ mutable struct StochPXContext
     grid  :: AbstractGrid
     mesh  :: AbstractMesh
     fmesh :: AbstractMesh
+    χ²min :: F64
     χ²    :: Vector{F64}
     Pᵥ    :: Vector{Vector{I64}}
     Aᵥ    :: Vector{Vector{F64}}
@@ -150,7 +152,8 @@ function init(S::StochPXSolver, rd::RawData)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
     χ², Pᵥ, Aᵥ = init_context(S)
-    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, χ², Pᵥ, Aᵥ)
+    χ²min = 10000.0
+    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, χ²min, χ², Pᵥ, Aᵥ)
 
     return MC, SE, SC
 end
@@ -184,15 +187,15 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
             sample(t, MC, SE, SC)
 
             # Check convergence
-            if SC.χ²[t] < threshold
+            if SC.χ²min < threshold
                 @printf("try = %6i -> step = %8i ", t, i)
-                @printf("[χ² = %9.4e]\n", SC.χ²[t])
+                @printf("[χ² = %9.4e]\n", SC.χ²min)
                 flush(stdout)
                 break
             else
                 if i == nstep
-                    @printf("try = %6i ", t)
-                    @printf("[χ² = %9.4e] FAILED\n", SC.χ²[t])
+                    @printf("try = %6i -> step = %8i ", t, i)
+                    @printf("[χ² = %9.4e] FAILED\n", SC.χ²min)
                     flush(stdout)
                 end
             end
@@ -202,8 +205,8 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         write_statistics(MC)
         error()
 
-        # Record Monte Carlo field configuration
-        measure(t, SE, SC)
+        # Update χ²[t] to be consistent with SC.Pᵥ[t] and SC.Aᵥ[t]
+        SC.χ²[t] = SC.χ²min
     end
     #
     # Print summary information
@@ -466,7 +469,7 @@ function init_context(S::StochPXSolver)
 
     Pᵥ = Vector{I64}[]
     Aᵥ = Vector{F64}[]
-    for i = 1:ntry
+    for _ = 1:ntry
         push!(Pᵥ, zeros(I64, npole))
         push!(Aᵥ, zeros(F64, npole))
     end
@@ -517,6 +520,7 @@ function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
     χ² = calc_chi2(Gᵧ, SC.Gᵥ)
     @. SC.Gᵧ = Gᵧ
     SC.χ²[t] = χ²
+    SC.χ²min = 10000.0
 end
 
 """
@@ -699,7 +703,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Simulated annealling algorithm
     MC.Ptry = MC.Ptry + 1
-    if δχ² < 0
+    if δχ² < 0 || exp(-δχ²) > rand(MC.rng)
         # Update Monte Carlo configuration
         SE.P[s₁] = P₃
         SE.P[s₂] = P₄
@@ -712,6 +716,11 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
         # Update Monte Carlo counter
         MC.Pacc = MC.Pacc + 1
+
+        if χ² < SC.χ²min
+            SC.χ²min = χ²
+            measure(t, SE, SC)
+        end
     end
 end
 
@@ -769,7 +778,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Simulated annealling algorithm
     MC.Atry = MC.Atry + 1
-    if δχ² < 0
+    if δχ² < 0 || exp(-δχ²) > rand(MC.rng)
         # Update Monte Carlo configuration
         SE.A[s₁] = A₃
         SE.A[s₂] = A₄
@@ -782,5 +791,10 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
         # Update Monte Carlo counter
         MC.Aacc = MC.Aacc + 1
+
+        if χ² < SC.χ²min
+            SC.χ²min = χ²
+            measure(t, SE, SC)
+        end
     end
 end
