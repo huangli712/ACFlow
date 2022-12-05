@@ -794,6 +794,49 @@ export Pdx
 ### *Includes And Exports* : *spx.jl*
 =#
 
+#=
+*Summary* :
+
+To implement the StochOM solver for analytically continuation problem.
+
+*Members* :
+
+```text
+Box            -> A struct for describing the field configuration.
+StochOMElement -> A struct that contains Monte Carlo field configurations.
+StochOMContext -> Essential struct for the StochOM solver.
+#
+solve          -> Wrapper function for the StochOM solver.
+init           -> Initialize stochastic optimization simulation.
+run (prun)     -> Perform stochastic optimization simulation.
+average        -> Evaluate the averaged results.
+last           -> Postprocess the calculated results and write them.
+#
+update         -> Sample field configurations via metropolis algorithm.
+#
+init_mc        -> Create a StochOMMC struct.
+init_element   -> Create a StochOMElement struct.
+init_iodata    -> Preprocess the input data.
+init_context   -> Prepare data for a StochOMContext struct.
+#
+calc_lambda    -> Build kernel function.
+calc_error     -> Calculate χ² function.
+calc_green     -> Reproduce green's function via the field configurations.
+calc_norm      -> Calculate norm of the field configurations.
+constraints    -> Limit the position of δ functions.
+#
+try_insert     -> Try to insert a new box in the configuration.
+try_remove     -> Try to remove a box.
+try_shift      -> Try to shift a box.
+try_width      -> Try to change width of a box.
+try_height     -> Try to change height of a box.
+try_split      -> Try to split a box.
+try_merge      -> Try to merge two boxes.
+#
+Pdx            -> Try to calculate the probability density function.
+```
+=#
+
 #
 include("spx.jl")
 #
