@@ -183,8 +183,6 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
         # Apply simulated annealling algorithm
         for i = 1:nstep
-            SC.Θ = 1e6 #SC.Θ * 10.0
-            
             sample(t, MC, SE, SC)
 
             # Check convergence
@@ -204,7 +202,6 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
         # Write Monte Carlo statistics
         write_statistics(MC)
-        #error()
 
         # Update χ²[t] to be consistent with SC.Pᵥ[t] and SC.Aᵥ[t]
         SC.χ²[t] = SC.χ²min
