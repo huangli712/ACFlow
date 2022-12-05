@@ -525,8 +525,7 @@ function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
 
     @. SC.Gᵧ = Gᵧ
     SC.χ²[t] = χ²
-
-    SC.χ²min = 10000.0
+    SC.χ²min = χ²
 end
 
 """
