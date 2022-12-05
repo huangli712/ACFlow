@@ -660,6 +660,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Get parameters
     ngrid = get_b("ngrid")
     npole = get_x("npole")
+    Θ = get_x("theta")
 
     # It is used to save the change of green's function
     δG = zeros(C64, ngrid)
@@ -704,7 +705,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Simulated annealling algorithm
     MC.Ptry = MC.Ptry + 1
-    if δχ² < 0 || min(1.0, exp(-δχ²*SC.Θ)) > rand(MC.rng)
+    if δχ² < 0 || min(1.0, exp(-δχ² * Θ)) > rand(MC.rng)
         # Update Monte Carlo configuration
         SE.P[s₁] = P₃
         SE.P[s₂] = P₄
@@ -736,6 +737,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Get parameters
     ngrid = get_b("ngrid")
     npole = get_x("npole")
+    θ = get_x("theta")
 
     # It is used to save the change of green's function
     δG = zeros(C64, ngrid)
@@ -779,7 +781,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Simulated annealling algorithm
     MC.Atry = MC.Atry + 1
-    if δχ² < 0 || min(1.0, exp(-δχ²*SC.Θ)) > rand(MC.rng)
+    if δχ² < 0 || min(1.0, exp(-δχ² * Θ)) > rand(MC.rng)
         # Update Monte Carlo configuration
         SE.A[s₁] = A₃
         SE.A[s₂] = A₄
