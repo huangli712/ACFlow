@@ -41,6 +41,7 @@ Mutable struct. It is used within the StochPX solver only.
 * grid   -> Grid for input data.
 * mesh   -> Mesh for output spectrum.
 * fmesh  -> Very dense mesh for the poles.
+* Θ      -> Inverse temperature.
 * χ²min  -> Minimum of χ²min.
 * χ²     -> Vector of goodness function.
 * Pᵥ     -> Vector of poles' positions.
@@ -54,6 +55,7 @@ mutable struct StochPXContext
     grid  :: AbstractGrid
     mesh  :: AbstractMesh
     fmesh :: AbstractMesh
+    Θ     :: F64
     χ²min :: F64
     χ²    :: Vector{F64}
     Pᵥ    :: Vector{Vector{I64}}
@@ -151,9 +153,8 @@ function init(S::StochPXSolver, rd::RawData)
     fmesh = calc_fmesh(S)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    χ², Pᵥ, Aᵥ = init_context(S)
-    χ²min = 10000.0
-    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, χ²min, χ², Pᵥ, Aᵥ)
+    Θ, χ²min, χ², Pᵥ, Aᵥ = init_context(S)
+    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, Θ, χ²min, χ², Pᵥ, Aᵥ)
 
     return MC, SE, SC
 end
@@ -203,7 +204,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
         # Write Monte Carlo statistics
         write_statistics(MC)
-        error()
+        #error()
 
         # Update χ²[t] to be consistent with SC.Pᵥ[t] and SC.Aᵥ[t]
         SC.χ²[t] = SC.χ²min
@@ -703,7 +704,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Simulated annealling algorithm
     MC.Ptry = MC.Ptry + 1
-    if δχ² < 0 || exp(-δχ²) > rand(MC.rng)
+    if δχ² < 0 || min(1.0, exp(-δχ²*1000000.0)) > rand(MC.rng)
         # Update Monte Carlo configuration
         SE.P[s₁] = P₃
         SE.P[s₂] = P₄
@@ -778,7 +779,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Simulated annealling algorithm
     MC.Atry = MC.Atry + 1
-    if δχ² < 0 || exp(-δχ²) > rand(MC.rng)
+    if δχ² < 0 || min(1.0, exp(-δχ²*1000000.0)) > rand(MC.rng)
         # Update Monte Carlo configuration
         SE.A[s₁] = A₃
         SE.A[s₂] = A₄
