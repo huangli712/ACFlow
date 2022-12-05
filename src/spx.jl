@@ -475,7 +475,10 @@ function init_context(S::StochPXSolver)
         push!(Aᵥ, zeros(F64, npole))
     end
 
-    return χ², Pᵥ, Aᵥ
+    Θ = 1.0
+    χ²min = 10000.0
+
+    return Θ, χ²min, χ², Pᵥ, Aᵥ
 end
 
 """
@@ -519,8 +522,11 @@ function by new Monte Carlo field configurations for the t-th attempts.
 function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
     Gᵧ = calc_green(SE.P, SE.A, SC.grid, SC.fmesh)
     χ² = calc_chi2(Gᵧ, SC.Gᵥ)
+    #
     @. SC.Gᵧ = Gᵧ
     SC.χ²[t] = χ²
+    #
+    SC.Θ = 1.0
     SC.χ²min = 10000.0
 end
 
@@ -704,7 +710,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Simulated annealling algorithm
     MC.Ptry = MC.Ptry + 1
-    if δχ² < 0 || min(1.0, exp(-δχ²*1000000.0)) > rand(MC.rng)
+    if δχ² < 0 || min(1.0, exp(-δχ²*SC.Θ)) > rand(MC.rng)
         # Update Monte Carlo configuration
         SE.P[s₁] = P₃
         SE.P[s₂] = P₄
@@ -779,7 +785,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Simulated annealling algorithm
     MC.Atry = MC.Atry + 1
-    if δχ² < 0 || min(1.0, exp(-δχ²*1000000.0)) > rand(MC.rng)
+    if δχ² < 0 || min(1.0, exp(-δχ²*SC.Θ)) > rand(MC.rng)
         # Update Monte Carlo configuration
         SE.A[s₁] = A₃
         SE.A[s₂] = A₄
