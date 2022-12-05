@@ -210,6 +210,9 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     failed = count(≥(threshold), SC.χ²)
     println("Summary: passed [$passed] failed [$failed]")
 
+    # Write pole expansion coefficients
+    write_pole(SC.Pᵥ, SC.Aᵥ, SC.fmesh)
+
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
 end
@@ -283,6 +286,9 @@ function prun(S::StochPXSolver,
     failed = count(≥(threshold), SC.χ²)
     println("Summary: passed [$passed] failed [$failed]")
 
+    # Write pole expansion coefficients
+    myid() == 2 && write_pole(SC.Pᵥ, SC.Aᵥ, SC.fmesh)
+
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
 end
@@ -346,9 +352,6 @@ function last(SC::StochPXContext, Aout::Vector{F64}, Gout::Vector{C64}, Gᵣ::Ve
 
     # Write full response function on real axis
     write_complete(SC.mesh, Gout)
-
-    # Write pole expansion coefficients
-    write_pole(SC.Pᵥ, SC.Aᵥ, SC.fmesh)
 end
 
 #=
