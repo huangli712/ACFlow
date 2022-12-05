@@ -262,15 +262,15 @@ function prun(S::StochPXSolver,
             sample(t, MC, SE, SC)
 
             # Check convergence
-            if SC.χ²[t] < threshold
-                @printf("try = %6i ", t)
-                @printf("[χ² = %9.4e]\n", SC.χ²[t])
+            if SC.χ²min < threshold
+                @printf("try = %6i -> step = %8i ", t, i)
+                @printf("[χ² = %9.4e]\n", SC.χ²min)
                 flush(stdout)
                 break
             else
                 if i == nstep
-                    @printf("try = %6i ", t)
-                    @printf("[χ² = %9.4e] FAILED\n", SC.χ²[t])
+                    @printf("try = %6i -> step = %8i ", t, i)
+                    @printf("[χ² = %9.4e] FAILED\n", SC.χ²min)
                     flush(stdout)
                 end
             end
@@ -279,8 +279,8 @@ function prun(S::StochPXSolver,
         # Write Monte Carlo statistics
         myid() == 2 && write_statistics(MC)
 
-        # Record Monte Carlo field configuration
-        measure(t, SE, SC)
+        # Update χ²[t] to be consistent with SC.Pᵥ[t] and SC.Aᵥ[t]
+        SC.χ²[t] = SC.χ²min
     end
     #
     # Print summary information
