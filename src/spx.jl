@@ -400,7 +400,7 @@ See also: [`StochPXMC`](@ref).
 """
 function init_mc(S::StochPXSolver)
     seed = rand(1:100000000)
-    rng = MersenneTwister(10000)
+    rng = MersenneTwister(seed)
     #
     Pacc = 0
     Ptry = 0
@@ -428,7 +428,7 @@ function init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
     P = rand(rng, allow, npole)
     A = rand(rng, F64, npole)
 
-    # We have to make sure ∑ Aᵢ = 1
+    # We have to make sure ∑ᵢ Aᵢ = 1
     s = sum(A)
     @. A = A / s
 
