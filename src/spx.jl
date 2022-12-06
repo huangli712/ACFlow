@@ -202,7 +202,6 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
             break
         end
     end
-    error()
 
     println("Start stochastic sampling...")
     #
