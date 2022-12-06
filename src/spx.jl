@@ -540,7 +540,7 @@ function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
 
     @. SC.Gᵧ = Gᵧ
     SC.χ²[t] = χ²
-    SC.χ²min = χ²
+    SC.χ²min = 10000.0
     SC.Θ = get_x("theta")
 end
 
