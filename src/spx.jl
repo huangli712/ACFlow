@@ -41,6 +41,7 @@ Mutable struct. It is used within the StochPX solver only.
 * grid   -> Grid for input data.
 * mesh   -> Mesh for output spectrum.
 * fmesh  -> Very dense mesh for the poles.
+* Θ      -> Artificial inverse temperature.
 * χ²min  -> Minimum of χ²min.
 * χ²     -> Vector of goodness function.
 * Pᵥ     -> Vector of poles' positions.
@@ -54,6 +55,7 @@ mutable struct StochPXContext
     grid  :: AbstractGrid
     mesh  :: AbstractMesh
     fmesh :: AbstractMesh
+    Θ     :: F64
     χ²min :: F64
     χ²    :: Vector{F64}
     Pᵥ    :: Vector{Vector{I64}}
@@ -151,8 +153,8 @@ function init(S::StochPXSolver, rd::RawData)
     fmesh = calc_fmesh(S)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    χ²min, χ², Pᵥ, Aᵥ = init_context(S)
-    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, χ²min, χ², Pᵥ, Aᵥ)
+    Θ, χ²min, χ², Pᵥ, Aᵥ = init_context(S)
+    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, Θ, χ²min, χ², Pᵥ, Aᵥ)
 
     return MC, SE, SC
 end
@@ -466,6 +468,7 @@ See also: [`StochPXContext`](@ref).
 function init_context(S::StochPXSolver)
     ntry = get_x("ntry")
     npole = get_x("npole")
+    Θ = get_x("theta")
 
     χ²min = 10000.0
     χ² = zeros(F64, ntry)
@@ -477,7 +480,7 @@ function init_context(S::StochPXSolver)
         push!(Aᵥ, zeros(F64, npole))
     end
 
-    return χ²min, χ², Pᵥ, Aᵥ
+    return Θ, χ²min, χ², Pᵥ, Aᵥ
 end
 
 """
@@ -502,7 +505,7 @@ of the poles).
 """
 function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
     npole = get_x("npole")
-    nselect = 10
+    nselect = 4
     @assert nselect ≤ npole
 
     selected = rand(rng, 1:npole, nselect)
@@ -537,6 +540,7 @@ function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
     @. SC.Gᵧ = Gᵧ
     SC.χ²[t] = χ²
     SC.χ²min = χ²
+    SC.Θ = get_x("theta")
 end
 
 """
@@ -667,7 +671,6 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Get parameters
     ngrid = get_b("ngrid")
     npole = get_x("npole")
-    Θ = get_x("theta")
 
     # It is used to save the change of green's function
     δG = zeros(C64, ngrid)
@@ -710,7 +713,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Simulated annealling algorithm
     MC.Ptry = MC.Ptry + 1
-    if δχ² < 0 || min(1.0, exp(-δχ² * Θ)) > rand(MC.rng)
+    if δχ² < 0 || min(1.0, exp(-δχ² * SC.Θ)) > rand(MC.rng)
         # Update Monte Carlo configuration
         SE.P[s₁] = P₃
         SE.P[s₂] = P₄
@@ -743,7 +746,6 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Get parameters
     ngrid = get_b("ngrid")
     npole = get_x("npole")
-    Θ = get_x("theta")
 
     # It is used to save the change of green's function
     δG = zeros(C64, ngrid)
@@ -784,7 +786,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Simulated annealling algorithm
     MC.Atry = MC.Atry + 1
-    if δχ² < 0 || min(1.0, exp(-δχ² * Θ)) > rand(MC.rng)
+    if δχ² < 0 || min(1.0, exp(-δχ² * SC.Θ)) > rand(MC.rng)
         # Update Monte Carlo configuration
         SE.A[s₁] = A₃
         SE.A[s₂] = A₄
@@ -817,7 +819,6 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Get parameters
     ngrid = get_b("ngrid")
     npole = get_x("npole")
-    Θ = get_x("theta")
 
     # It is used to save the change of green's function
     δG = zeros(C64, ngrid)
@@ -849,7 +850,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Simulated annealling algorithm
     MC.Stry = MC.Stry + 1
-    if δχ² < 0 || min(1.0, exp(-δχ² * Θ)) > rand(MC.rng)
+    if δχ² < 0 || min(1.0, exp(-δχ² * SC.Θ)) > rand(MC.rng)
         # Update Monte Carlo configuration
         SE.A[s₁] = A₃
         SE.A[s₂] = A₄
