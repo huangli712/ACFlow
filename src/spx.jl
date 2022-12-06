@@ -143,7 +143,6 @@ function init(S::StochPXSolver, rd::RawData)
     println("Randomize Monte Carlo configurations")
 
     Gᵥ, σ¹ = init_iodata(S, rd)
-    Gᵧ = deepcopy(Gᵥ)
     println("Postprocess input data: ", length(σ¹), " points")
 
     grid = make_grid(rd)
@@ -154,6 +153,7 @@ function init(S::StochPXSolver, rd::RawData)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
     Θ, χ²min, χ², Pᵥ, Aᵥ = init_context(S)
+    Gᵧ = calc_green(SE.P, SE.A, grid, fmesh)
     SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, Θ, χ²min, χ², Pᵥ, Aᵥ)
 
     return MC, SE, SC
@@ -170,6 +170,40 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     nstep = get_x("nstep")
     threshold = 1e-5
 
+    # Setup simulated annealing parameters
+    Θₛ = 10.0           # Starting value of Θ
+    Θₑ = get_x("theta") # Ending value of Θ
+    ΔΘ = Θₑ - Θₛ
+
+    # Try to figure out global minimum by simulated annealing
+    println("Start simulated annealing...")
+    SC.Θ = Θₛ
+    c = 0 # Counter for simulated annealing steps
+    for i = 1:nstep
+        sample(1, MC, SE, SC)
+
+        # Change Θ, artificial inverse temperature
+        if i % 1000 == 0
+            @printf("Θ: %9.4e ", SC.Θ)
+            @printf("[χ² = %9.4e]\n", SC.χ²min)
+            c = c + 1
+            SC.Θ = Θₛ + ΔΘ / ( exp(-(c - 10.0)) + 1.0 )
+        end
+
+        # Reach global minimum
+        if SC.χ²min < threshold
+            @printf("try = %6i -> step = %8i ", 0, i)
+            @printf("[χ² = %9.4e]\n", SC.χ²min)
+            flush(stdout)
+            #
+            # Set global minimum as current solution
+            @. SE.P = SC.Pᵥ[1]
+            @. SE.A = SC.Aᵥ[1]
+            break
+        end
+    end
+    error()
+
     println("Start stochastic sampling...")
     #
     # Sample and collect data
@@ -183,7 +217,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         # Reset Gᵧ and χ²
         reset_context(t, SE, SC)
 
-        # Apply simulated annealling algorithm
+        # Apply simulated annealing algorithm
         for i = 1:nstep
             sample(t, MC, SE, SC)
 
@@ -259,7 +293,7 @@ function prun(S::StochPXSolver,
         # Reset Gᵧ and χ²
         reset_context(t, SE, SC)
 
-        # Apply simulated annealling algorithm
+        # Apply simulated annealing algorithm
         for i = 1:nstep
             sample(t, MC, SE, SC)
 
@@ -366,7 +400,7 @@ end
     sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
 Try to search the configuration space to locate the minimum by using the
-simulated annealling algorithm. Here, `t` means the t-th attempt.
+simulated annealing algorithm. Here, `t` means the t-th attempt.
 """
 function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Try to change positions of two poles
@@ -712,7 +746,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     χ² = calc_chi2(Gₙ, SC.Gᵥ)
     δχ² = χ² - SC.χ²[t]
 
-    # Simulated annealling algorithm
+    # Simulated annealing algorithm
     MC.Ptry = MC.Ptry + 1
     if δχ² < 0 || min(1.0, exp(-δχ² * SC.Θ)) > rand(MC.rng)
         # Update Monte Carlo configuration
@@ -785,7 +819,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     χ² = calc_chi2(Gₙ, SC.Gᵥ)
     δχ² = χ² - SC.χ²[t]
 
-    # Simulated annealling algorithm
+    # Simulated annealing algorithm
     MC.Atry = MC.Atry + 1
     if δχ² < 0 || min(1.0, exp(-δχ² * SC.Θ)) > rand(MC.rng)
         # Update Monte Carlo configuration
@@ -849,7 +883,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     χ² = calc_chi2(Gₙ, SC.Gᵥ)
     δχ² = χ² - SC.χ²[t]
 
-    # Simulated annealling algorithm
+    # Simulated annealing algorithm
     MC.Stry = MC.Stry + 1
     if δχ² < 0 || min(1.0, exp(-δχ² * SC.Θ)) > rand(MC.rng)
         # Update Monte Carlo configuration
