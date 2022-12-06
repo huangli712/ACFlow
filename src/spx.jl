@@ -168,7 +168,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
-    threshold = 1e-6
+    threshold = 1e-5
 
     println("Start stochastic sampling...")
     #
@@ -244,7 +244,7 @@ function prun(S::StochPXSolver,
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
-    threshold = 1e-6
+    threshold = 1e-5
 
     println("Start stochastic sampling...")
     #
@@ -311,7 +311,7 @@ function average(SC::StochPXContext)
     ntry = get_x("ntry")
 
     # The threshold is used to distinguish good or bad solutions
-    threshold = 1e-6
+    threshold = 1e-5
 
     # Allocate memory
     # Gout: real frequency green's function, G(ω).
