@@ -194,6 +194,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         if SC.χ²min < threshold
             @printf("try = %6i -> step = %8i ", 0, i)
             @printf("[χ² = %9.4e]\n", SC.χ²min)
+            println("Reach global minimum")
             flush(stdout)
             #
             # Set global minimum as current solution
@@ -303,6 +304,7 @@ function prun(S::StochPXSolver,
         if SC.χ²min < threshold
             @printf("try = %6i -> step = %8i ", 0, i)
             @printf("[χ² = %9.4e]\n", SC.χ²min)
+            println("Reach global minimum")
             flush(stdout)
             #
             # Set global minimum as current solution
