@@ -407,7 +407,6 @@ See also: [`StochPXMC`](@ref).
 function init_mc(S::StochPXSolver)
     seed = rand(1:100000000)
     rng = MersenneTwister(seed)
-    @show seed
     #
     Pacc = 0
     Ptry = 0
