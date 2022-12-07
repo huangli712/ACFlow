@@ -211,6 +211,9 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
             try_move_x(t, MC, SE, SC)
             @show i, SC.χ²min
 
+            try_move_s(t, MC, SE, SC)
+            @show i, SC.χ²min
+
             try_move_p(t, MC, SE, SC)
             @show i, SC.χ²min
         end
@@ -706,6 +709,9 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         s = rand(MC.rng, 1:npole)
 
         # Try to change position of the s pole
+        A₁ = SE.A[s]
+        A₂ = SE.A[s]
+        #
         δP = rand(MC.rng, 1:5)
         #
         P₁ = SE.P[s]
@@ -716,10 +722,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
             P₂ = P₁ - δP
         end
         #
-        if !(P₂ in SC.allow) && continue
-        #
-        A₁ = SE.A[s]
-        A₂ = SE.A[s]
+        !(P₂ in SC.allow) && continue
 
         # Calculate change of green's function
         @. δG = A₂ / (iωₙ - SC.fmesh[P₂]) - A₁ / (iωₙ - SC.fmesh[P₁])
