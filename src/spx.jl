@@ -184,7 +184,6 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         reset_context(t, SE, SC)
 
         # Apply simulated annealing algorithm
-        #=
         for i = 1:nstep
             sample(t, MC, SE, SC)
 
@@ -202,25 +201,6 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
                 end
             end
         end
-        =#
-
-        for i = 1:1000
-            try_move_a(t, MC, SE, SC)
-            @show i, SC.χ²min
-
-            try_move_x(t, MC, SE, SC)
-            @show i, SC.χ²min
-
-            try_move_s(t, MC, SE, SC)
-            @show i, SC.χ²min
-
-            try_move_p(t, MC, SE, SC)
-            @show i, SC.χ²min
-        end
-        G = calc_green(SC.Pᵥ[1], SC.Aᵥ[1], SC.mesh, SC.fmesh)
-        write_statistics(MC)
-        write_complete(SC.mesh, G)
-        error()
 
         # Write Monte Carlo statistics
         write_statistics(MC)
@@ -389,10 +369,14 @@ Try to search the configuration space to locate the minimum by using the
 simulated annealing algorithm. Here, `t` means the t-th attempt.
 """
 function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
-    # Try to change positions of two poles
-    if rand(MC.rng) < 0.1
-        try_move_p(t, MC, SE, SC)
-    # Try to change amplitudes of two poles
+    # Try to change positions of poles
+    if rand(MC.rng) < 0.5
+        if rand(MC.rng) < 0.5
+            try_move_s(t, MC, SE, SC)
+        else
+            try_move_p(t, MC, SE, SC)
+        end
+    # Try to change amplitudes of poles
     else
         if rand(MC.rng) < 0.5
             try_move_a(t, MC, SE, SC)
@@ -529,14 +513,14 @@ of the poles).
 """
 function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
     npole = get_x("npole")
-    nselect = 10
+    nselect = 8
     @assert nselect ≤ npole
 
     selected = rand(rng, 1:npole, nselect)
     unique!(selected)
     nselect = length(selected)
 
-    if rand(rng) < 0.1
+    if rand(rng) < 0.5
         P = rand(rng, allow, nselect)
         @. SE.P[selected] = P
     else
@@ -712,7 +696,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         A₁ = SE.A[s]
         A₂ = SE.A[s]
         #
-        δP = rand(MC.rng, 1:5)
+        δP = rand(MC.rng, 1:100)
         #
         P₁ = SE.P[s]
         P₂ = P₁
