@@ -425,6 +425,8 @@ function init_mc(S::StochPXSolver)
     seed = rand(1:100000000)
     rng = MersenneTwister(seed)
     #
+    Sacc = 0
+    Stry = 0
     Pacc = 0
     Ptry = 0
     Aacc = 0
@@ -432,7 +434,7 @@ function init_mc(S::StochPXSolver)
     Xacc = 0
     Xtry = 0
 
-    MC = StochPXMC(rng, Pacc, Ptry, Aacc, Atry, Xacc, Xtry)
+    MC = StochPXMC(rng, Sacc, Stry, Pacc, Ptry, Aacc, Atry, Xacc, Xtry)
 
     return MC
 end
@@ -506,6 +508,8 @@ end
 Reset the counters in StochPXMC struct.
 """
 function reset_mc(MC::StochPXMC)
+    MC.Sacc = 0
+    MC.Stry = 0
     MC.Pacc = 0
     MC.Ptry = 0
     MC.Aacc = 0
