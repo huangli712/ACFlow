@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/04
+# Last modified: 2022/12/07
 #
 
 #=
@@ -428,6 +428,11 @@ See also: [`PStochPX`](@ref), [`StochPXMC`](@ref).
 """
 function write_statistics(MC::StochPXMC)
     open("stat.data", "w") do fout
+        println(fout, "# Move S statistics:")
+        @printf(fout, "accept -> %16i    \n", MC.Sacc)
+        @printf(fout, "try    -> %16i    \n", MC.Stry)
+        @printf(fout, "prob   -> %16.12f \n", MC.Sacc / MC.Stry)
+        println(fout)
         println(fout, "# Move P statistics:")
         @printf(fout, "accept -> %16i    \n", MC.Pacc)
         @printf(fout, "try    -> %16i    \n", MC.Ptry)
@@ -438,9 +443,9 @@ function write_statistics(MC::StochPXMC)
         @printf(fout, "try    -> %16i    \n", MC.Atry)
         @printf(fout, "prob   -> %16.12f \n", MC.Aacc / MC.Atry)
         println(fout)
-        println(fout, "# Move S statistics:")
-        @printf(fout, "accept -> %16i    \n", MC.Sacc)
-        @printf(fout, "try    -> %16i    \n", MC.Stry)
-        @printf(fout, "prob   -> %16.12f \n", MC.Sacc / MC.Stry)
+        println(fout, "# Move X statistics:")
+        @printf(fout, "accept -> %16i    \n", MC.Xacc)
+        @printf(fout, "try    -> %16i    \n", MC.Xtry)
+        @printf(fout, "prob   -> %16.12f \n", MC.Xacc / MC.Xtry)
     end
 end
