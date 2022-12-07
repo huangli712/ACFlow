@@ -168,7 +168,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
-    threshold = 1e-7
+    threshold = 1e-5
 
     println("Start stochastic sampling...")
     #
@@ -244,7 +244,7 @@ function prun(S::StochPXSolver,
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
-    threshold = 1e-7
+    threshold = 1e-5
 
     println("Start stochastic sampling...")
     #
@@ -311,7 +311,7 @@ function average(SC::StochPXContext)
     ntry = get_x("ntry")
 
     # The threshold is used to distinguish good or bad solutions
-    threshold = 1e-7
+    threshold = 1e-5
 
     # Allocate memory
     # Gout: real frequency green's function, G(ω).
@@ -371,7 +371,7 @@ simulated annealing algorithm. Here, `t` means the t-th attempt.
 function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Try to change positions of poles
     if rand(MC.rng) < 0.5
-        if rand(MC.rng) < 0.5
+        if rand(MC.rng) < 0.8
             try_move_s(t, MC, SE, SC)
         else
             try_move_p(t, MC, SE, SC)
@@ -513,7 +513,7 @@ of the poles).
 """
 function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
     npole = get_x("npole")
-    nselect = 8
+    nselect = ceil(I64, npole / 4)
     @assert nselect ≤ npole
 
     selected = rand(rng, 1:npole, nselect)
