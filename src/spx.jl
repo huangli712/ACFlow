@@ -697,63 +697,70 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # It is used to save the change of green's function
     δG = zeros(C64, ngrid)
 
-    # Select two poles randomly
-    s₁ = 1
-    s₂ = 1
-    while s₁ == s₂
-        s₁ = rand(MC.rng, 1:npole)
-        s₂ = rand(MC.rng, 1:npole)
-    end
-
-    # Try to change position of the s₁ pole
-    P₁ = SE.P[s₁]
-    P₃ = P₁
-    while P₃ == P₁
-        P₃ = rand(MC.rng, SC.allow)
-    end
-    A₁ = SE.A[s₁]
-    #
-    # Try to change position of the s₂ pole
-    P₂ = SE.P[s₂]
-    P₄ = P₂
-    while P₄ == P₂
-        P₄ = rand(MC.rng, SC.allow)
-    end
-    A₂ = SE.A[s₂]
-
-    # Calculate change of green's function
+    # Matsubara frequency grid
     iωₙ = im * SC.grid.ω
-    @. δG = (
-        + A₁ / (iωₙ - SC.fmesh[P₃]) + A₂ / (iωₙ - SC.fmesh[P₄]) 
-        - A₁ / (iωₙ - SC.fmesh[P₁]) - A₂ / (iωₙ - SC.fmesh[P₂])
-    )
 
-    # Calculate new green's function and goodness-of-fit function
-    Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
-    χ² = calc_chi2(Gₙ, SC.Gᵥ)
-    δχ² = χ² - SC.χ²[t]
+    # Try to go through each pole
+    for _ = 1:npole
 
-    # Simulated annealing algorithm
-    MC.Ptry = MC.Ptry + 1
-    if δχ² < 0 || min(1.0, exp(-δχ² * SC.Θ)) > rand(MC.rng)
-        # Update Monte Carlo configuration
-        SE.P[s₁] = P₃
-        SE.P[s₂] = P₄
-
-        # Update reconstructed green's function
-        @. SC.Gᵧ = Gₙ
-
-        # Update goodness-of-fit function
-        SC.χ²[t] = χ²
-
-        # Update Monte Carlo counter
-        MC.Pacc = MC.Pacc + 1
-
-        # Save optimal solution
-        if χ² < SC.χ²min
-            SC.χ²min = χ²
-            measure(t, SE, SC)
+        # Select two poles randomly
+        s₁ = 1
+        s₂ = 1
+        while s₁ == s₂
+            s₁ = rand(MC.rng, 1:npole)
+            s₂ = rand(MC.rng, 1:npole)
         end
+
+        # Try to change position of the s₁ pole
+        P₁ = SE.P[s₁]
+        P₃ = P₁
+        while P₃ == P₁
+            P₃ = rand(MC.rng, SC.allow)
+        end
+        A₁ = SE.A[s₁]
+        #
+        # Try to change position of the s₂ pole
+        P₂ = SE.P[s₂]
+        P₄ = P₂
+        while P₄ == P₂
+            P₄ = rand(MC.rng, SC.allow)
+        end
+        A₂ = SE.A[s₂]
+
+        # Calculate change of green's function
+        @. δG = (
+            + A₁ / (iωₙ - SC.fmesh[P₃]) + A₂ / (iωₙ - SC.fmesh[P₄]) 
+            - A₁ / (iωₙ - SC.fmesh[P₁]) - A₂ / (iωₙ - SC.fmesh[P₂])
+        )
+
+        # Calculate new green's function and goodness-of-fit function
+        Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
+        χ² = calc_chi2(Gₙ, SC.Gᵥ)
+        δχ² = χ² - SC.χ²[t]
+
+        # Simulated annealing algorithm
+        MC.Ptry = MC.Ptry + 1
+        if δχ² < 0 || min(1.0, exp(-δχ² * SC.Θ)) > rand(MC.rng)
+            # Update Monte Carlo configuration
+            SE.P[s₁] = P₃
+            SE.P[s₂] = P₄
+
+            # Update reconstructed green's function
+            @. SC.Gᵧ = Gₙ
+
+            # Update goodness-of-fit function
+            SC.χ²[t] = χ²
+
+            # Update Monte Carlo counter
+            MC.Pacc = MC.Pacc + 1
+
+            # Save optimal solution
+            if χ² < SC.χ²min
+                SC.χ²min = χ²
+                measure(t, SE, SC)
+            end
+        end
+
     end
 end
 
