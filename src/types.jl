@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/05
+# Last modified: 2022/12/07
 #
 
 #=
@@ -599,21 +599,25 @@ number generator and some counters.
 ### Members
 
 * rng  -> Random number generator.
-* Pacc -> Counter for position-updated operation (accepted).
-* Ptry -> Counter for position-updated operation (tried).
+* Sacc -> Counter for position-updated (type 1) operation (accepted).
+* Stry -> Counter for position-updated (type 1) operation (tried).
+* Pacc -> Counter for position-updated (type 2) operation (accepted).
+* Ptry -> Counter for position-updated (type 2) operation (tried).
 * Aacc -> Counter for amplitude-updated operation (accepted).
 * Atry -> Counter for amplitude-updated operation (tried).
-* Sacc -> Counter for swap operation (accepted).
-* Stry -> Counter for swap operation (tried).
+* Xacc -> Counter for exchange operation (accepted).
+* Xtry -> Counter for exchange operation (tried).
 
 See also: [`StochPXSolver`](@ref).
 """
 mutable struct StochPXMC <: AbstractMC
     rng :: AbstractRNG
+    Sacc :: I64
+    Stry :: I64
     Pacc :: I64
     Ptry :: I64
     Aacc :: I64
     Atry :: I64
-    Sacc :: I64
-    Stry :: I64
+    Xacc :: I64
+    Xtry :: I64
 end
