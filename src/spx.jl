@@ -205,22 +205,17 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         =#
 
         for i = 1:1000
-            for j = 1:1000
-                try_move_a(t, MC, SE, SC)
-            end
+            try_move_a(t, MC, SE, SC)
             @show i, SC.χ²min
 
-            for j = 1:1000
-                try_move_s(t, MC, SE, SC)
-            end
+            try_move_s(t, MC, SE, SC)
             @show i, SC.χ²min
 
-            for j = 1:1000
-                try_move_p(t, MC, SE, SC)
-            end
+            try_move_p(t, MC, SE, SC)
             @show i, SC.χ²min
         end
         G = calc_green(SC.Pᵥ[1], SC.Aᵥ[1], SC.mesh, SC.fmesh)
+        write_statistics(MC)
         write_complete(SC.mesh, G)
         error()
 
