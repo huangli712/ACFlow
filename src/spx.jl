@@ -208,7 +208,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
             try_move_a(t, MC, SE, SC)
             @show i, SC.χ²min
 
-            try_move_s(t, MC, SE, SC)
+            try_move_x(t, MC, SE, SC)
             @show i, SC.χ²min
 
             try_move_p(t, MC, SE, SC)
@@ -394,7 +394,7 @@ function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         if rand(MC.rng) < 0.5
             try_move_a(t, MC, SE, SC)
         else
-            try_move_s(t, MC, SE, SC)
+            try_move_x(t, MC, SE, SC)
         end
     end
 end
@@ -429,10 +429,10 @@ function init_mc(S::StochPXSolver)
     Ptry = 0
     Aacc = 0
     Atry = 0
-    Sacc = 0
-    Stry = 0
+    Xacc = 0
+    Xtry = 0
 
-    MC = StochPXMC(rng, Pacc, Ptry, Aacc, Atry, Sacc, Stry)
+    MC = StochPXMC(rng, Pacc, Ptry, Aacc, Atry, Xacc, Xtry)
 
     return MC
 end
@@ -510,8 +510,8 @@ function reset_mc(MC::StochPXMC)
     MC.Ptry = 0
     MC.Aacc = 0
     MC.Atry = 0
-    MC.Sacc = 0
-    MC.Stry = 0
+    MC.Xacc = 0
+    MC.Xtry = 0
 end
 
 """
@@ -682,7 +682,7 @@ end
 
 Change the positions of two randomly selected poles.
 
-See also: [`try_move_a`](@ref).
+See also: [`try_move_s`](@ref).
 """
 function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Get parameters
@@ -764,7 +764,7 @@ end
 
 Change the amplitudes of two randomly selected poles.
 
-See also: [`try_move_p`](@ref).
+See also: [`try_move_x`](@ref).
 """
 function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Get parameters
@@ -843,13 +843,13 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 end
 
 """
-    try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
-Swap the amplitudes of two randomly selected poles.
+Exchange the amplitudes of two randomly selected poles.
 
 See also: [`try_move_a`](@ref).
 """
-function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Get parameters
     ngrid = get_b("ngrid")
     npole = get_x("npole")
@@ -891,7 +891,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         δχ² = χ² - SC.χ²[t]
 
         # Simulated annealing algorithm
-        MC.Stry = MC.Stry + 1
+        MC.Xtry = MC.Xtry + 1
         if δχ² < 0 || min(1.0, exp(-δχ² * SC.Θ)) > rand(MC.rng)
             # Update Monte Carlo configuration
             SE.A[s₁] = A₃
@@ -904,7 +904,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
             SC.χ²[t] = χ²
 
             # Update Monte Carlo counter
-            MC.Sacc = MC.Sacc + 1
+            MC.Xacc = MC.Xacc + 1
 
             # Save optimal solution
             if χ² < SC.χ²min
