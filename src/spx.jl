@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/06
+# Last modified: 2022/12/07
 #
 
 #=
@@ -168,7 +168,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
-    threshold = 1e-5
+    threshold = 1e-7
 
     println("Start stochastic sampling...")
     #
@@ -184,6 +184,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         reset_context(t, SE, SC)
 
         # Apply simulated annealing algorithm
+        #=
         for i = 1:nstep
             sample(t, MC, SE, SC)
 
@@ -201,6 +202,27 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
                 end
             end
         end
+        =#
+
+        for i = 1:1000
+            for j = 1:1000
+                try_move_a(t, MC, SE, SC)
+            end
+            @show i, SC.χ²min
+
+            for j = 1:1000
+                try_move_s(t, MC, SE, SC)
+            end
+            @show i, SC.χ²min
+
+            for j = 1:1000
+                try_move_p(t, MC, SE, SC)
+            end
+            @show i, SC.χ²min
+        end
+        G = calc_green(SC.Pᵥ[1], SC.Aᵥ[1], SC.mesh, SC.fmesh)
+        write_complete(SC.mesh, G)
+        error()
 
         # Write Monte Carlo statistics
         write_statistics(MC)
@@ -244,7 +266,7 @@ function prun(S::StochPXSolver,
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
-    threshold = 1e-5
+    threshold = 1e-7
 
     println("Start stochastic sampling...")
     #
@@ -311,7 +333,7 @@ function average(SC::StochPXContext)
     ntry = get_x("ntry")
 
     # The threshold is used to distinguish good or bad solutions
-    threshold = 1e-5
+    threshold = 1e-7
 
     # Allocate memory
     # Gout: real frequency green's function, G(ω).
@@ -505,7 +527,7 @@ of the poles).
 """
 function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
     npole = get_x("npole")
-    nselect = 40
+    nselect = 10
     @assert nselect ≤ npole
 
     selected = rand(rng, 1:npole, nselect)
@@ -823,51 +845,61 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # It is used to save the change of green's function
     δG = zeros(C64, ngrid)
 
-    # Select two poles randomly
-    s₁ = 1
-    s₂ = 1
-    while s₁ == s₂
-        s₁ = rand(MC.rng, 1:npole)
-        s₂ = rand(MC.rng, 1:npole)
-    end
-
-    # Try to swap amplitudes of the two poles, but their sum is kept.
-    P₁ = SE.P[s₁]
-    P₂ = SE.P[s₂]
-    A₁ = SE.A[s₁]
-    A₂ = SE.A[s₂]
-    A₃ = A₂
-    A₄ = A₁
-
-    # Calculate change of green's function
+    # Matsubara frequency grid
     iωₙ = im * SC.grid.ω
-    @. δG = (A₃ - A₁) / (iωₙ - SC.fmesh[P₁]) + (A₄ - A₂) / (iωₙ - SC.fmesh[P₂])
 
-    # Calculate new green's function and goodness-of-fit function
-    Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
-    χ² = calc_chi2(Gₙ, SC.Gᵥ)
-    δχ² = χ² - SC.χ²[t]
+    # Try to go through each pole
+    for _ = 1:npole
 
-    # Simulated annealing algorithm
-    MC.Stry = MC.Stry + 1
-    if δχ² < 0 || min(1.0, exp(-δχ² * SC.Θ)) > rand(MC.rng)
-        # Update Monte Carlo configuration
-        SE.A[s₁] = A₃
-        SE.A[s₂] = A₄
-
-        # Update reconstructed green's function
-        @. SC.Gᵧ = Gₙ
-
-        # Update goodness-of-fit function
-        SC.χ²[t] = χ²
-
-        # Update Monte Carlo counter
-        MC.Sacc = MC.Sacc + 1
-
-        # Save optimal solution
-        if χ² < SC.χ²min
-            SC.χ²min = χ²
-            measure(t, SE, SC)
+        # Select two poles randomly
+        s₁ = 1
+        s₂ = 1
+        while s₁ == s₂
+            s₁ = rand(MC.rng, 1:npole)
+            s₂ = rand(MC.rng, 1:npole)
         end
+
+        # Try to swap amplitudes of the two poles, but their sum is kept.
+        P₁ = SE.P[s₁]
+        P₂ = SE.P[s₂]
+        A₁ = SE.A[s₁]
+        A₂ = SE.A[s₂]
+        A₃ = A₂
+        A₄ = A₁
+
+        # Calculate change of green's function
+        @. δG = (
+            +(A₃ - A₁) / (iωₙ - SC.fmesh[P₁])
+            +(A₄ - A₂) / (iωₙ - SC.fmesh[P₂])
+        )
+
+        # Calculate new green's function and goodness-of-fit function
+        Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
+        χ² = calc_chi2(Gₙ, SC.Gᵥ)
+        δχ² = χ² - SC.χ²[t]
+
+        # Simulated annealing algorithm
+        MC.Stry = MC.Stry + 1
+        if δχ² < 0 || min(1.0, exp(-δχ² * SC.Θ)) > rand(MC.rng)
+            # Update Monte Carlo configuration
+            SE.A[s₁] = A₃
+            SE.A[s₂] = A₄
+
+            # Update reconstructed green's function
+            @. SC.Gᵧ = Gₙ
+
+            # Update goodness-of-fit function
+            SC.χ²[t] = χ²
+
+            # Update Monte Carlo counter
+            MC.Sacc = MC.Sacc + 1
+
+            # Save optimal solution
+            if χ² < SC.χ²min
+                SC.χ²min = χ²
+                measure(t, SE, SC)
+            end
+        end
+
     end
 end
