@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/04
+# Last modified: 2022/12/07
 #
 
 """
@@ -828,9 +828,10 @@ calc_green     -> Reproduce green's function via the field configurations.
 calc_chi2      -> Calculate goodness-of-fit function.
 constraints    -> Limit the position of poles.
 #
+try_move_s     -> Shift positions of single pole.
 try_move_p     -> Shift positions of two poles.
 try_move_a     -> Change amplitudes of two poles.
-try_move_s     -> Swap amplitudes of two poles.
+try_move_x     -> Exchange amplitudes of two poles.
 ```
 =#
 
@@ -864,9 +865,10 @@ export calc_green
 export calc_chi2
 export constraints
 #
+export try_move_s
 export try_move_p
 export try_move_a
-export try_move_s
+export try_move_x
 
 #=
 ### *Includes And Exports* : *base.jl*
