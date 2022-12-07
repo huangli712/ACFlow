@@ -684,7 +684,7 @@ end
 """
     try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
-Change the positions of two randomly selected poles.
+Change the position of one randomly selected pole.
 
 See also: [`try_move_p`](@ref).
 """
@@ -702,35 +702,27 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Try to go through each pole
     for _ = 1:npole
 
-        # Select two poles randomly
-        s₁ = 1
-        s₂ = 1
-        while s₁ == s₂
-            s₁ = rand(MC.rng, 1:npole)
-            s₂ = rand(MC.rng, 1:npole)
-        end
+        # Select one pole randomly
+        s = rand(MC.rng, 1:npole)
 
-        # Try to change position of the s₁ pole
-        P₁ = SE.P[s₁]
-        P₃ = P₁
-        while P₃ == P₁
-            P₃ = rand(MC.rng, SC.allow)
-        end
-        A₁ = SE.A[s₁]
+        # Try to change position of the s pole
+        δP = rand(MC.rng, 1:5)
         #
-        # Try to change position of the s₂ pole
-        P₂ = SE.P[s₂]
-        P₄ = P₂
-        while P₄ == P₂
-            P₄ = rand(MC.rng, SC.allow)
+        P₁ = SE.P[s]
+        P₂ = P₁
+        if rand(MC.rng) > 0.5
+            P₂ = P₁ + δP
+        else
+            P₂ = P₁ - δP
         end
-        A₂ = SE.A[s₂]
+        #
+        if !(P₂ in SC.allow) && continue
+        #
+        A₁ = SE.A[s]
+        A₂ = SE.A[s]
 
         # Calculate change of green's function
-        @. δG = (
-            + A₁ / (iωₙ - SC.fmesh[P₃]) + A₂ / (iωₙ - SC.fmesh[P₄]) 
-            - A₁ / (iωₙ - SC.fmesh[P₁]) - A₂ / (iωₙ - SC.fmesh[P₂])
-        )
+        @. δG = A₂ / (iωₙ - SC.fmesh[P₂]) - A₁ / (iωₙ - SC.fmesh[P₁])
 
         # Calculate new green's function and goodness-of-fit function
         Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
@@ -738,11 +730,10 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         δχ² = χ² - SC.χ²[t]
 
         # Simulated annealing algorithm
-        MC.Ptry = MC.Ptry + 1
+        MC.Stry = MC.Stry + 1
         if δχ² < 0 || min(1.0, exp(-δχ² * SC.Θ)) > rand(MC.rng)
             # Update Monte Carlo configuration
-            SE.P[s₁] = P₃
-            SE.P[s₂] = P₄
+            SE.P[s] = P₂
 
             # Update reconstructed green's function
             @. SC.Gᵧ = Gₙ
@@ -751,7 +742,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
             SC.χ²[t] = χ²
 
             # Update Monte Carlo counter
-            MC.Pacc = MC.Pacc + 1
+            MC.Sacc = MC.Sacc + 1
 
             # Save optimal solution
             if χ² < SC.χ²min
