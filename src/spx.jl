@@ -295,10 +295,8 @@ function average(SC::StochPXContext)
     # Setup essential parameters
     nmesh = get_b("nmesh")
     ngrid = get_b("ngrid")
+    method = get_x("method")
     ntry = get_x("ntry")
-
-    # The threshold is used to distinguish good or bad solutions
-    threshold = 1e-5
 
     # Allocate memory
     # Gout: real frequency green's function, G(ω).
@@ -306,24 +304,42 @@ function average(SC::StochPXContext)
     Gout = zeros(C64, nmesh)
     Gᵣ = zeros(F64, 2 * ngrid)
 
-    # Go through all the solutions
-    c = 0.0
-    for i = 1:ntry
-        if SC.χ²[i] < threshold
-            G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh)
-            @. Gout = Gout + G
-            #
-            G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.grid, SC.fmesh)
-            @. Gᵣ = Gᵣ + G
-            #
-            # Increase the counter
-            c = c + 1.0
+    if method == "best"
+        p = argmin(SC.χ²)
+        Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh)
+        Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.grid, SC.fmesh)
+        @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, SC.χ²[p])
+    else
+        # Calculate the median of SC.χ²
+        dev_ave = median(SC.χ²)
+
+        # Determine the αgood parameter, which is used to filter the
+        # calculated spectra.
+        αgood = 1.2
+        if count(x -> x < dev_ave / αgood, SC.χ²) == 0
+            αgood = 1.0
         end
+
+        # Go through all the solutions
+        c = 0.0
+        for i = 1:ntry
+            if SC.χ²[i] < dev_ave / αgood
+                G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh)
+                @. Gout = Gout + G
+                #
+                G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.grid, SC.fmesh)
+                @. Gᵣ = Gᵣ + G
+                #
+                # Increase the counter
+                c = c + 1.0
+            end
+        end
+        #
+        # Normalize the final results
+        @. Gout = Gout / c
+        @. Gᵣ = Gᵣ / c
+        @printf("Accumulate %6i solutions to get the final spectral density")
     end
-    #
-    # Average the final results
-    @. Gout = Gout / c
-    @. Gᵣ = Gᵣ / c
 
     return -imag.(Gout) / π, Gout, Gᵣ
 end
