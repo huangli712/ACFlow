@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/07
+# Last modified: 2022/12/10
 #
 
 #=
@@ -189,6 +189,7 @@ Dictionary for configuration parameters:
 the stochastic pole expansion.
 """
 const PStochPX = Dict{String,ADT}(
+    "method"  => [missing, 1, :String, "How to evaluate the final spectral density"],
     "nfine"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
     "npole"   => [missing, 1, :I64   , "Number of poles"],
     "ntry"    => [missing, 1, :I64   , "Number of attempts (tries) to seek the solution"],
@@ -199,6 +200,7 @@ const PStochPX = Dict{String,ADT}(
 
 # Default parameters for PStochPX
 const _PStochPX = Dict{String,Any}(
+    "method"  => "mean",
     "nfine"   => 100000,
     "npole"   => 200,
     "ntry"    => 1000,
