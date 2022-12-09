@@ -134,7 +134,11 @@ and StochPXContext structs.
 function init(S::StochPXSolver, rd::RawData)
     # Initialize possible constraints. The allow array contains all the
     # possible indices for poles.
-    allow = constraints(S)
+    if isfile("Aout.data")
+        allow = constraints(S, "Aout.data")
+    else
+        allow = constraints(S)
+    end
 
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
@@ -664,6 +668,30 @@ function constraints(S::StochPXSolver)
             push!(allow, i)
         end
     end
+
+    return allow
+end
+
+function constraints(S::StochPXSolver, finput::AbstractString)
+    nfine = get_x("nfine")
+
+    dlm = readdlm(finput)
+    #
+    mesh = LinearMesh(dlm[:,1])
+    Aout = dlm[:,2]
+    #
+    Amin = minimum(Aout)
+    @. Aout = Aout - Amin
+    Amax = maximum(Aout)
+
+    allow = I64[]
+    for i = 1:nfine
+        p = nearest(mesh, i / nfine)
+        if Aout[p] / Amax ≥ 0.01
+            push!(allow, i)
+        end
+    end
+    @show Amin, Amax, length(allow)
 
     return allow
 end
