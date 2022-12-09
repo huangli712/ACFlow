@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/07
+# Last modified: 2022/12/10
 #
 
 #=
@@ -134,11 +134,7 @@ and StochPXContext structs.
 function init(S::StochPXSolver, rd::RawData)
     # Initialize possible constraints. The allow array contains all the
     # possible indices for poles.
-    if isfile("Aout.data")
-        allow = constraints(S, "Aout.data")
-    else
-        allow = constraints(S)
-    end
+    allow = constraints(S)
 
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
@@ -172,11 +168,15 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
-    threshold = 1e-5
 
-    println("Start stochastic sampling...")
-    #
+    # Warmup the Monte Carlo engine
+    println("Start thermalization...")
+    for _ = 1:nstep
+        sample(1, MC, SE, SC)
+    end
+
     # Sample and collect data
+    println("Start stochastic sampling...")
     for t = 1:ntry
         # Reset Monte Carlo counters
         reset_mc(MC)
@@ -188,24 +188,8 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         reset_context(t, SE, SC)
 
         # Apply simulated annealing algorithm
-        for i = 1:nstep
+        for _ = 1:nstep
             sample(t, MC, SE, SC)
-
-            #=
-            # Check convergence
-            if SC.χ²min < threshold
-                @printf("try = %6i -> step = %8i ", t, i)
-                @printf("[χ² = %9.4e]\n", SC.χ²min)
-                flush(stdout)
-                break
-            else
-                if i == nstep
-                    @printf("try = %6i -> step = %8i ", t, i)
-                    @printf("[χ² = %9.4e] FAILED\n", SC.χ²min)
-                    flush(stdout)
-                end
-            end
-            =#
         end
 
         # Write Monte Carlo statistics
@@ -213,13 +197,9 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
         # Update χ²[t] to be consistent with SC.Pᵥ[t] and SC.Aᵥ[t]
         SC.χ²[t] = SC.χ²min
-        @show t, SC.χ²min
+        @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²min)
+        flush(stdout)
     end
-    #
-    # Print summary information
-    passed = count(<(threshold), SC.χ²)
-    failed = count(≥(threshold), SC.χ²)
-    println("Summary: passed [$passed] failed [$failed]")
 
     # Write pole expansion coefficients
     write_pole(SC.Pᵥ, SC.Aᵥ, SC.fmesh)
@@ -671,30 +651,6 @@ function constraints(S::StochPXSolver)
             push!(allow, i)
         end
     end
-
-    return allow
-end
-
-function constraints(S::StochPXSolver, finput::AbstractString)
-    nfine = get_x("nfine")
-
-    dlm = readdlm(finput)
-    #
-    mesh = LinearMesh(dlm[:,1])
-    Aout = dlm[:,2]
-    #
-    Amin = minimum(Aout)
-    @. Aout = Aout - Amin
-    Amax = maximum(Aout)
-
-    allow = I64[]
-    for i = 1:nfine
-        p = nearest(mesh, i / nfine)
-        if Aout[p] / Amax ≥ 0.10
-            push!(allow, i)
-        end
-    end
-    @show Amin, Amax, length(allow)
 
     return allow
 end
