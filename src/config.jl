@@ -417,8 +417,8 @@ function chk_dict()
             @assert get_b("grid") in ("ffreq", "bfreq")
             #
             @assert get_x("nfine") ≥ 10000
-            @assert get_x("npole") ≥ 20
-            @assert get_x("ntry")  ≥ 100
+            @assert get_x("npole") ≥ 4
+            @assert get_x("ntry")  ≥ 10
             @assert get_x("nstep") ≥ 100000
             @assert get_x("theta") ≥ 1e+2
             @assert get_x("eta")   ≥ 1e-8

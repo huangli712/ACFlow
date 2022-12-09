@@ -20,7 +20,6 @@ wmax   = 5.0
 wmin   = -5.0
 beta   = 10.0
 offdiag = false
-exclude = [[-5.0,-4.2], [-3.8,-2.2], [-1.8,1.8], [2.2,3.8], [4.2,5.0]]
 
 [MaxEnt]
 method = "chi2kink"
@@ -59,9 +58,9 @@ wbox  = 0.02
 norm  = -1.0
 
 [StochPX]
-nfine = 100000
+nfine = 1000000
 npole = 4
-ntry  = 100
+ntry  = 1000
 nstep = 100000
 theta = 1e+8
 eta   = 1e-3

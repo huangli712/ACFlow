@@ -9,7 +9,7 @@
 
 [BASE]
 finput = "giw.data"
-solver = "MaxEnt"
+solver = "StochPX"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
@@ -58,9 +58,9 @@ wbox  = 0.02
 norm  = -1.0
 
 [StochPX]
-nfine = 20000
-npole = 100
-ntry  = 20000
-nstep = 1000000
-theta = 1e+6
-eta   = 1e-2
+nfine = 100000
+npole = 2000
+ntry  = 1000
+nstep = 100000
+theta = 1e+8
+eta   = 1e-3

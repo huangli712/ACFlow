@@ -12,18 +12,18 @@ wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 10    # Number of Matsubara frequencies
 beta = 10.0  # Inverse temperature
-ϵ₁   = 0.20  # Parameters for gaussian peaks
-ϵ₂   = -0.5
-ϵ₃   = 1.00
-ϵ₄   = -1.5
+ϵ₁   = 2.00  # Parameters for gaussian peaks
+ϵ₂   = -2.0
+ϵ₃   = 4.00
+ϵ₄   = -4.0
 A₁   = 0.50
-A₂   = 0.30
+A₂   = 0.50
 A₃   = 0.40
 A₄   = 0.40
-Γ₁   = 0.04
-Γ₂   = 0.02
-Γ₃   = 0.02
-Γ₄   = 0.02
+Γ₁   = 0.05
+Γ₂   = 0.05
+Γ₃   = 0.05
+Γ₄   = 0.05
 
 # Real frequency mesh
 rmesh = collect(LinRange(wmin, wmax, nmesh))
@@ -32,8 +32,8 @@ rmesh = collect(LinRange(wmin, wmax, nmesh))
 image = similar(rmesh)
 #
 @. image  = A₁ * exp(-(rmesh - ϵ₁) ^ 2.0 / (2.0 * Γ₁ ^ 2.0))
-#@. image += A₂ * exp(-(rmesh - ϵ₂) ^ 2.0 / (2.0 * Γ₂ ^ 2.0))
-#@. image += A₃ * exp(-(rmesh - ϵ₃) ^ 2.0 / (2.0 * Γ₃ ^ 2.0))
+@. image += A₂ * exp(-(rmesh - ϵ₂) ^ 2.0 / (2.0 * Γ₂ ^ 2.0))
+@. image += A₃ * exp(-(rmesh - ϵ₃) ^ 2.0 / (2.0 * Γ₃ ^ 2.0))
 @. image += A₄ * exp(-(rmesh - ϵ₄) ^ 2.0 / (2.0 * Γ₄ ^ 2.0))
 #
 image = image ./ trapz(rmesh, image)
@@ -56,7 +56,7 @@ kernel = 1.0 ./ (im * reshape(iw, (niw,1)) .- reshape(rmesh, (1,nmesh)))
 KA = kernel .* reshape(image, (1,nmesh))
 giw = zeros(C64, niw)
 for i in eachindex(giw)
-    giw[i] = trapz(rmesh, KA[i,:]) #+ noise[i]
+    giw[i] = trapz(rmesh, KA[i,:]) + noise[i]
 end
 
 # Build error

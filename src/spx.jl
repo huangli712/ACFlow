@@ -172,7 +172,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
-    threshold = 1e-6
+    threshold = 1e-5
 
     println("Start stochastic sampling...")
     #
@@ -191,6 +191,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         for i = 1:nstep
             sample(t, MC, SE, SC)
 
+            #=
             # Check convergence
             if SC.χ²min < threshold
                 @printf("try = %6i -> step = %8i ", t, i)
@@ -204,6 +205,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
                     flush(stdout)
                 end
             end
+            =#
         end
 
         # Write Monte Carlo statistics
@@ -211,6 +213,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
         # Update χ²[t] to be consistent with SC.Pᵥ[t] and SC.Aᵥ[t]
         SC.χ²[t] = SC.χ²min
+        @show t, SC.χ²min
     end
     #
     # Print summary information
@@ -248,7 +251,7 @@ function prun(S::StochPXSolver,
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
-    threshold = 1e-6
+    threshold = 1e-5
 
     println("Start stochastic sampling...")
     #
@@ -315,7 +318,7 @@ function average(SC::StochPXContext)
     ntry = get_x("ntry")
 
     # The threshold is used to distinguish good or bad solutions
-    threshold = 1e-6
+    threshold = 1e-5
 
     # Allocate memory
     # Gout: real frequency green's function, G(ω).
@@ -687,7 +690,7 @@ function constraints(S::StochPXSolver, finput::AbstractString)
     allow = I64[]
     for i = 1:nfine
         p = nearest(mesh, i / nfine)
-        if Aout[p] / Amax ≥ 0.01
+        if Aout[p] / Amax ≥ 0.10
             push!(allow, i)
         end
     end
