@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/05
+# Last modified: 2022/12/10
 #
 
 """
@@ -416,8 +416,9 @@ function chk_dict()
             push!(PA, PStochPX)
             @assert get_b("grid") in ("ffreq", "bfreq")
             #
+            @assert get_x("method") in ("best", "mean")
             @assert get_x("nfine") ≥ 10000
-            @assert get_x("npole") ≥ 4
+            @assert get_x("npole") ≥ 2
             @assert get_x("ntry")  ≥ 10
             @assert get_x("nstep") ≥ 100000
             @assert get_x("theta") ≥ 1e+2
