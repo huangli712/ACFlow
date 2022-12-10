@@ -325,7 +325,7 @@ function average(SC::StochPXContext)
         # Normalize the final results
         @. Gout = Gout / c
         @. Gᵣ = Gᵣ / c
-        @printf("Accumulate %6i solutions to get the final spectral density", c)
+        println("Accumulate $c solutions to get the final spectral density")
     end
 
     return -imag.(Gout) / π, Gout, Gᵣ
