@@ -206,7 +206,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     end
 
     # Write pole expansion coefficients
-    write_pole(SC.Pᵥ, SC.Aᵥ, SC.fmesh)
+    write_pole(SC.Pᵥ, SC.Aᵥ, SC.χ², SC.fmesh)
 
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
@@ -269,7 +269,7 @@ function prun(S::StochPXSolver,
     end
 
     # Write pole expansion coefficients
-    myid() == 2 && write_pole(SC.Pᵥ, SC.Aᵥ, SC.fmesh)
+    myid() == 2 && write_pole(SC.Pᵥ, SC.Aᵥ, SC.χ², SC.fmesh)
 
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
