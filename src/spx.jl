@@ -504,7 +504,11 @@ of the poles).
 function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
     npole = get_x("npole")
     if npole ≤ 5
-        nselect = npole
+        if 4 ≤ npole ≤ 5
+            nselect = 2
+        else
+            nselect = 1
+        end
     else
         nselect = ceil(I64, npole / 5)
     end
