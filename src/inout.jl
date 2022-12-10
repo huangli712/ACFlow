@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/07
+# Last modified: 2022/12/11
 #
 
 #=
@@ -305,6 +305,7 @@ end
 """
     write_pole(Pᵥ::Vector{Vector{I64}},
                Aᵥ::Vector{Vector{F64}},
+               χ²::Vector{F64},
                fmesh::AbstractMesh)
 
 Write poles' positions and amplitudes to `pole.data`. This function is
@@ -312,12 +313,13 @@ only useful for the `StochPX` solver.
 """
 function write_pole(Pᵥ::Vector{Vector{I64}},
                     Aᵥ::Vector{Vector{F64}},
+                    χ²::Vector{F64},
                     fmesh::AbstractMesh)
     ntry = length(Pᵥ)
 
     open("pole.data", "w") do fout
         for i = 1:ntry
-            println(fout, "# Try: ", i)
+            println(fout, "# Try: ", i, "  χ²: ", χ²[i])
             for j in eachindex(Pᵥ[i])
                 p = Pᵥ[i][j]
                 @printf(fout, "%4i %16.12f %16.12f\n", j, fmesh[p], Aᵥ[i][j])
