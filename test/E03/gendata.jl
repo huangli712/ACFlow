@@ -12,12 +12,14 @@ wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 10    # Number of Matsubara frequencies
 beta = 10.0  # Inverse temperature
-ϵ₁   = 4.00  # Parameters for gaussian peaks
+ϵ₁   = 4.00  # Parameters for δ-like peaks
 ϵ₂   = -4.0
 ϵ₃   = 1.00
-A₁   = 0.30
-A₂   = 0.30
-A₃   = 0.40
+ϵ₄   = -1.0
+A₁   = 0.25
+A₂   = 0.25
+A₃   = 0.25
+A₄   = 0.25
 η    = 1e-2
 
 # Real frequency mesh
@@ -37,12 +39,22 @@ noise = noise_abs .* exp.(noise_phase * im)
 # Build green's function
 giw = zeros(C64, niw)
 for i in eachindex(giw)
-    giw[i] = A₁ / (iωₙ[i] * im - ϵ₁) + A₂ / (iωₙ[i] * im - ϵ₂) + A₃ / (iωₙ[i] * im - ϵ₃) + noise[i]
+    giw[i] = (
+        A₁ / (iωₙ[i] * im - ϵ₁) +
+        A₂ / (iωₙ[i] * im - ϵ₂) +
+        A₃ / (iωₙ[i] * im - ϵ₃) +
+        A₄ / (iωₙ[i] * im - ϵ₄) + noise[i]
+    )
 end
 #
 gre = zeros(C64, nmesh)
 for i in eachindex(gre)
-    gre[i] = A₁ / (ω[i] + η * im - ϵ₁) + A₂ / (ω[i] + η * im - ϵ₂) + A₃ / (ω[i] + η * im - ϵ₃)
+    gre[i] = (
+        A₁ / (ω[i] + η * im - ϵ₁) +
+        A₂ / (ω[i] + η * im - ϵ₂) +
+        A₃ / (ω[i] + η * im - ϵ₃) +
+        A₄ / (ω[i] + η * im - ϵ₄)
+    )
 end
 
 # Build error

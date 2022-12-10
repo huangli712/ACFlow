@@ -60,7 +60,7 @@ norm  = -1.0
 [StochPX]
 method = "best"
 nfine = 100000
-npole = 3
+npole = 4
 ntry  = 100
 nstep = 100000
 theta = 1e+8
