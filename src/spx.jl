@@ -168,9 +168,6 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
-    #
-    threshold = 1e-8
-    χ²width = 100
 
     # Warmup the Monte Carlo engine
     println("Start thermalization...")
@@ -191,18 +188,8 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         reset_context(t, SE, SC)
 
         # Apply simulated annealing algorithm
-        c = 0
-        χ²list = F64[]
         for _ = 1:nstep
             sample(t, MC, SE, SC)
-
-            c = c + 1
-            push!(χ²list, SC.χ²[t])
-            if c ≥ χ²width
-                if std(χ²list[end-χ²width+1:end]) ≤ threshold
-                    break
-                end
-            end
         end
 
         # Write Monte Carlo statistics
@@ -210,7 +197,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
         # Update χ²[t] to be consistent with SC.Pᵥ[t] and SC.Aᵥ[t]
         SC.χ²[t] = SC.χ²min
-        @printf("try = %6i -> step = %6i [χ² = %9.4e]\n", t, c, SC.χ²min)
+        @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²min)
         flush(stdout)
     end
 
