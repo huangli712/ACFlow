@@ -291,11 +291,13 @@ function average(SC::StochPXContext)
     Gout = zeros(C64, nmesh)
     Gᵣ = zeros(F64, 2 * ngrid)
 
+    # Choose the best solution
     if method == "best"
         p = argmin(SC.χ²)
         Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh)
         Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.grid, SC.fmesh)
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, SC.χ²[p])
+    # Collect the `good` solutions and calculate their average.
     else
         # Calculate the median of SC.χ²
         chi2_ave = median(SC.χ²)
