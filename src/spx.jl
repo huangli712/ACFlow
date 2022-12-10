@@ -303,7 +303,7 @@ function average(SC::StochPXContext)
         # Determine the αgood parameter, which is used to filter the
         # calculated spectra.
         αgood = 1.2
-        if count(x -> x < chi2_ave / αgood, SC.χ²) == 0
+        if count(x -> x < chi2_ave / αgood, SC.χ²) ≤ ntry / 10
             αgood = 1.0
         end
 
