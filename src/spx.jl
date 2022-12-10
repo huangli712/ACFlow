@@ -152,8 +152,12 @@ function init(S::StochPXSolver, rd::RawData)
     fmesh = calc_fmesh(S)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
+    # We have to make sure Gᵧ and χ²[1] are consistent with the current
+    # Monte Carlo configuration fields.
     Θ, χ²min, χ², Pᵥ, Aᵥ = init_context(S)
     Gᵧ = calc_green(SE.P, SE.A, grid, fmesh)
+    χ²[1] = calc_chi2(Gᵧ, Gᵥ, σ¹)
+
     SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, Θ, χ²min, χ², Pᵥ, Aᵥ)
 
     return MC, SE, SC
@@ -362,11 +366,9 @@ simulated annealing algorithm. Here, `t` means the t-th attempt.
 """
 function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Try to change positions of poles
-    if rand(MC.rng) < 0.99
-        if rand(MC.rng) < 0.999
+    if rand(MC.rng) < 0.5
+        if rand(MC.rng) < 0.9
             try_move_s(t, MC, SE, SC)
-            @timev try_move_s(t, MC, SE, SC)
-            error()
         else
             try_move_p(t, MC, SE, SC)
         end
@@ -404,7 +406,7 @@ See also: [`StochPXMC`](@ref).
 """
 function init_mc(S::StochPXSolver)
     seed = rand(1:100000000)
-    rng = MersenneTwister(1000)
+    rng = MersenneTwister(seed)
     #
     Sacc = 0
     Stry = 0
@@ -470,7 +472,7 @@ function init_context(S::StochPXSolver)
     npole = get_x("npole")
     Θ = get_x("theta")
 
-    χ²min = 10000.0
+    χ²min = 1e10
     χ² = zeros(F64, ntry)
 
     Pᵥ = Vector{I64}[]
@@ -545,11 +547,11 @@ function by new Monte Carlo field configurations for the t-th attempts.
 """
 function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
     Gᵧ = calc_green(SE.P, SE.A, SC.grid, SC.fmesh)
-    χ² = calc_chi2(Gᵧ, SC.Gᵥ)
+    χ² = calc_chi2(Gᵧ, SC.Gᵥ, SC.σ¹)
 
     @. SC.Gᵧ = Gᵧ
     SC.χ²[t] = χ²
-    SC.χ²min = 10000.0
+    SC.χ²min = 1e10
     SC.Θ = get_x("theta")
 end
 
@@ -619,15 +621,15 @@ function calc_green(P::Vector{I64},
 end
 
 """
-    calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
+    calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
 
 Try to calculate the goodness function (i.e, χ²), which measures the
 distance between input and regenerated correlators.
 
 See also: [`calc_green`](@ref).
 """
-function calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
-    ΔG = Gₙ - Gᵥ
+function calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
+    ΔG = @. (Gₙ - Gᵥ) * σ¹
     return dot(ΔG, ΔG)
 end
 
@@ -681,6 +683,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Get parameters
     ngrid = get_b("ngrid")
     npole = get_x("npole")
+    move_window = 100
 
     # It is used to save the change of green's function
     δG = zeros(C64, ngrid)
@@ -698,7 +701,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         A₁ = SE.A[s]
         A₂ = SE.A[s]
         #
-        δP = rand(MC.rng, 1:100)
+        δP = rand(MC.rng, 1:move_window)
         #
         P₁ = SE.P[s]
         P₂ = P₁
@@ -714,8 +717,9 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         @. δG = A₂ / (iωₙ - SC.fmesh[P₂]) - A₁ / (iωₙ - SC.fmesh[P₁])
 
         # Calculate new green's function and goodness-of-fit function
-        Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
-        χ² = calc_chi2(Gₙ, SC.Gᵥ)
+        Gₙ = vcat(real(δG), imag(δG))
+        @. Gₙ = Gₙ + SC.Gᵧ
+        χ² = calc_chi2(Gₙ, SC.Gᵥ, SC.σ¹)
         δχ² = χ² - SC.χ²[t]
 
         # Simulated annealing algorithm
@@ -795,8 +799,9 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         )
 
         # Calculate new green's function and goodness-of-fit function
-        Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
-        χ² = calc_chi2(Gₙ, SC.Gᵥ)
+        Gₙ = vcat(real(δG), imag(δG))
+        @. Gₙ = Gₙ + SC.Gᵧ
+        χ² = calc_chi2(Gₙ, SC.Gᵥ, SC.σ¹)
         δχ² = χ² - SC.χ²[t]
 
         # Simulated annealing algorithm
@@ -878,8 +883,9 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         )
 
         # Calculate new green's function and goodness-of-fit function
-        Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
-        χ² = calc_chi2(Gₙ, SC.Gᵥ)
+        Gₙ = vcat(real(δG), imag(δG))
+        @. Gₙ = Gₙ + SC.Gᵧ
+        χ² = calc_chi2(Gₙ, SC.Gᵥ, SC.σ¹)
         δχ² = χ² - SC.χ²[t]
 
         # Simulated annealing algorithm
@@ -952,8 +958,9 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         )
 
         # Calculate new green's function and goodness-of-fit function
-        Gₙ = SC.Gᵧ + vcat(real(δG), imag(δG))
-        χ² = calc_chi2(Gₙ, SC.Gᵥ)
+        Gₙ = vcat(real(δG), imag(δG))
+        @. Gₙ = Gₙ + SC.Gᵧ
+        χ² = calc_chi2(Gₙ, SC.Gᵥ, SC.σ¹)
         δχ² = χ² - SC.χ²[t]
 
         # Simulated annealing algorithm
