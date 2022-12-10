@@ -298,19 +298,19 @@ function average(SC::StochPXContext)
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, SC.χ²[p])
     else
         # Calculate the median of SC.χ²
-        dev_ave = median(SC.χ²)
+        chi2_ave = median(SC.χ²)
 
         # Determine the αgood parameter, which is used to filter the
         # calculated spectra.
         αgood = 1.2
-        if count(x -> x < dev_ave / αgood, SC.χ²) == 0
+        if count(x -> x < chi2_ave / αgood, SC.χ²) == 0
             αgood = 1.0
         end
 
         # Go through all the solutions
         c = 0.0
         for i = 1:ntry
-            if SC.χ²[i] < dev_ave / αgood
+            if SC.χ²[i] < chi2_ave / αgood
                 G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh)
                 @. Gout = Gout + G
                 #
@@ -361,7 +361,7 @@ simulated annealing algorithm. Here, `t` means the t-th attempt.
 function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Try to change positions of poles
     if rand(MC.rng) < 0.5
-        if rand(MC.rng) < 0.8
+        if rand(MC.rng) < 0.9
             try_move_s(t, MC, SE, SC)
         else
             try_move_p(t, MC, SE, SC)
@@ -503,7 +503,11 @@ of the poles).
 """
 function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
     npole = get_x("npole")
-    nselect = ceil(I64, npole / 4)
+    if npole ≤ 5
+        nselect = npole
+    else
+        nselect = ceil(I64, npole / 5)
+    end
     @assert nselect ≤ npole
 
     selected = rand(rng, 1:npole, nselect)
