@@ -362,9 +362,11 @@ simulated annealing algorithm. Here, `t` means the t-th attempt.
 """
 function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Try to change positions of poles
-    if rand(MC.rng) < 0.5
-        if rand(MC.rng) < 0.9
+    if rand(MC.rng) < 0.99
+        if rand(MC.rng) < 0.999
             try_move_s(t, MC, SE, SC)
+            @timev try_move_s(t, MC, SE, SC)
+            error()
         else
             try_move_p(t, MC, SE, SC)
         end
@@ -402,7 +404,7 @@ See also: [`StochPXMC`](@ref).
 """
 function init_mc(S::StochPXSolver)
     seed = rand(1:100000000)
-    rng = MersenneTwister(seed)
+    rng = MersenneTwister(1000)
     #
     Sacc = 0
     Stry = 0
