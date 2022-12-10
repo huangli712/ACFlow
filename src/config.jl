@@ -418,7 +418,7 @@ function chk_dict()
             #
             @assert get_x("method") in ("best", "mean")
             @assert get_x("nfine") ≥ 10000
-            @assert get_x("npole") ≥ 2
+            @assert get_x("npole") ≥ 1
             @assert get_x("ntry")  ≥ 10
             @assert get_x("nstep") ≥ 100000
             @assert get_x("theta") ≥ 1e+2
