@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/11
+# Last modified: 2022/12/10
 #
 
 #=
@@ -331,7 +331,7 @@ function average(SC::StochPXContext)
         # Normalize the final results
         @. Gout = Gout / c
         @. Gᵣ = Gᵣ / c
-        println("Accumulate $(round(I64, c)) solutions to get the spectral density")
+        println("Accumulate $c solutions to get the final spectral density")
     end
 
     return -imag.(Gout) / π, Gout, Gᵣ
