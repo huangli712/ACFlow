@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/10
+# Last modified: 2022/12/11
 #
 
 #=
@@ -156,7 +156,7 @@ function init(S::StochPXSolver, rd::RawData)
     # Monte Carlo configuration fields.
     Θ, χ²min, χ², Pᵥ, Aᵥ = init_context(S)
     Gᵧ = calc_green(SE.P, SE.A, grid, fmesh)
-    χ²[1] = calc_chi2(Gᵧ, Gᵥ)
+    χ²[1] = calc_chi2(Gᵧ, Gᵥ, σ¹)
 
     SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, Θ, χ²min, χ², Pᵥ, Aᵥ)
 
@@ -331,7 +331,7 @@ function average(SC::StochPXContext)
         # Normalize the final results
         @. Gout = Gout / c
         @. Gᵣ = Gᵣ / c
-        println("Accumulate $c solutions to get the final spectral density")
+        println("Accumulate $(round(I64,c)) solutions to get the spectral density")
     end
 
     return -imag.(Gout) / π, Gout, Gᵣ
@@ -547,7 +547,7 @@ function by new Monte Carlo field configurations for the t-th attempts.
 """
 function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
     Gᵧ = calc_green(SE.P, SE.A, SC.grid, SC.fmesh)
-    χ² = calc_chi2(Gᵧ, SC.Gᵥ)
+    χ² = calc_chi2(Gᵧ, SC.Gᵥ, SC.σ¹)
 
     @. SC.Gᵧ = Gᵧ
     SC.χ²[t] = χ²
@@ -621,15 +621,15 @@ function calc_green(P::Vector{I64},
 end
 
 """
-    calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
+    calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
 
 Try to calculate the goodness function (i.e, χ²), which measures the
 distance between input and regenerated correlators.
 
 See also: [`calc_green`](@ref).
 """
-function calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
-    ΔG = Gₙ - Gᵥ
+function calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
+    ΔG = @. (Gₙ - Gᵥ) * σ¹
     return dot(ΔG, ΔG)
 end
 
@@ -719,7 +719,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         # Calculate new green's function and goodness-of-fit function
         Gₙ = vcat(real(δG), imag(δG))
         @. Gₙ = Gₙ + SC.Gᵧ
-        χ² = calc_chi2(Gₙ, SC.Gᵥ)
+        χ² = calc_chi2(Gₙ, SC.Gᵥ, SC.σ¹)
         δχ² = χ² - SC.χ²[t]
 
         # Simulated annealing algorithm
@@ -801,7 +801,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         # Calculate new green's function and goodness-of-fit function
         Gₙ = vcat(real(δG), imag(δG))
         @. Gₙ = Gₙ + SC.Gᵧ
-        χ² = calc_chi2(Gₙ, SC.Gᵥ)
+        χ² = calc_chi2(Gₙ, SC.Gᵥ, SC.σ¹)
         δχ² = χ² - SC.χ²[t]
 
         # Simulated annealing algorithm
@@ -885,7 +885,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         # Calculate new green's function and goodness-of-fit function
         Gₙ = vcat(real(δG), imag(δG))
         @. Gₙ = Gₙ + SC.Gᵧ
-        χ² = calc_chi2(Gₙ, SC.Gᵥ)
+        χ² = calc_chi2(Gₙ, SC.Gᵥ, SC.σ¹)
         δχ² = χ² - SC.χ²[t]
 
         # Simulated annealing algorithm
@@ -960,7 +960,7 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         # Calculate new green's function and goodness-of-fit function
         Gₙ = vcat(real(δG), imag(δG))
         @. Gₙ = Gₙ + SC.Gᵧ
-        χ² = calc_chi2(Gₙ, SC.Gᵥ)
+        χ² = calc_chi2(Gₙ, SC.Gᵥ, SC.σ¹)
         δχ² = χ² - SC.χ²[t]
 
         # Simulated annealing algorithm
