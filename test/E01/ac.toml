@@ -58,10 +58,10 @@ wbox  = 0.02
 norm  = -1.0
 
 [StochPX]
-method = "best"
+method = "mean"
 nfine = 100000
-npole = 200
+npole = 2000
 ntry  = 100
-nstep = 100000
+nstep = 1000
 theta = 1e+8
 eta   = 1e-3
