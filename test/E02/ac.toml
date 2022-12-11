@@ -1,10 +1,9 @@
 #
-# Test: A01
+# Test: E02
 #
 # 0. Run gendata.jl to generate input data at first.
-# 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK or StochOM).
-# 2. Change the [MaxEnt] -> method (chi2kink or bryan).
-# 3. Execute ../../util/acrun.jl ac.toml.
+# 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK or StochOM or StochPX).
+# 2. Execute ../../util/acrun.jl ac.toml.
 #
 
 [BASE]
@@ -58,10 +57,10 @@ wbox  = 0.02
 norm  = -1.0
 
 [StochPX]
-method = "best"
+method = "mean"
 nfine = 100000
-npole = 200
+npole = 2000
 ntry  = 100
-nstep = 100000
+nstep = 1000
 theta = 1e+8
 eta   = 1e-3
