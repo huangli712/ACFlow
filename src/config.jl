@@ -420,7 +420,7 @@ function chk_dict()
             @assert get_x("nfine") ≥ 10000
             @assert get_x("npole") ≥ 1
             @assert get_x("ntry")  ≥ 10
-            @assert get_x("nstep") ≥ 1000
+            @assert get_x("nstep") ≥ 100
             @assert get_x("theta") ≥ 1.00
             @assert get_x("eta")   ≥ 1e-8
             break
