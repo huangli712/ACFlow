@@ -1,0 +1,67 @@
+#
+# Test: E03
+#
+# 0. Run gendata.jl to generate input data at first.
+# 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK or StochOM or StochPX).
+# 3. Execute ../../util/acrun.jl ac.toml.
+#
+
+[BASE]
+finput = "giw.data"
+solver = "StochPX"
+ktype  = "fermi"
+mtype  = "flat"
+grid   = "ffreq"
+mesh   = "linear"
+ngrid  = 10
+nmesh  = 501
+wmax   = 5.0
+wmin   = -5.0
+beta   = 10.0
+offdiag = false
+exclude = [[-5.0, -4.3], [-3.7, -1.3], [1.3, 3.7], [4.3, 5.0]]
+
+[MaxEnt]
+method = "chi2kink"
+nalph  = 12
+alpha  = 1e9
+ratio  = 10.0
+blur   = -1.0
+
+[StochAC]
+nfine = 10000
+ngamm = 512
+nwarm = 40000
+nstep = 10000000
+ndump = 40000
+nalph = 40
+alpha = 1.00
+ratio = 1.20
+
+[StochSK]
+method = "chi2min"
+nfine = 40000
+ngamm = 1000
+nwarm = 1000
+nstep = 20000
+ndump = 200
+retry = 10
+theta = 1e+6
+ratio = 0.90
+
+[StochOM]
+ntry  = 100000
+nstep = 1000
+nbox  = 100
+sbox  = 0.005
+wbox  = 0.02
+norm  = -1.0
+
+[StochPX]
+method = "best"
+nfine = 100000
+npole = 4
+ntry  = 200
+nstep = 40000
+theta = 1e+6
+eta   = 1e-2
