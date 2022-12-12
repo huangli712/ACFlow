@@ -33,4 +33,5 @@ PMaxEnt
 PStochAC
 PStochSK
 PStochOM
+PStochPX
 ```

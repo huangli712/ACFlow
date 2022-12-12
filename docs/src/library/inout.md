@@ -26,12 +26,13 @@ read_cmplx_data
 
 ```@docs
 write_spectrum
-write_model
-write_misfit
-write_probability
-write_hamiltonian
-write_goodness
 write_backward
 write_complete
+write_misfit
+write_goodness
+write_model
+write_hamiltonian
+write_pole
+write_probability
 write_statistics
 ```

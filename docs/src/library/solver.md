@@ -89,9 +89,9 @@ calc_hamil
 calc_htau
 calc_alpha
 constraints(S::StochACSolver)
-try_mov1
-try_mov2
-try_swap
+try_move_a(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+try_move_p(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+try_move_x(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 ```
 
 ## StochSK Solver
@@ -170,4 +170,26 @@ try_height
 try_split
 try_merge
 Pdx
+```
+
+## StochPX Solver
+
+### Structs
+
+```@docs
+StochPXSolver
+StochPXMC
+StochPXElement
+StochPXContext
+```
+
+### Functions
+
+```@docs
+solve(S::StochPXSolver, rd::RawData)
+init(S::StochPXSolver, rd::RawData)
+ACFlow.run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+prun(S::StochPXSolver, p1::Dict{String,Vector{Any}}, p2::Dict{String,Vector{Any}}, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+average(SC::StochPXContext)
+ACFlow.last(SC::StochPXContext, Aout::Vector{F64}, Gout::Vector{C64}, Gᵣ::Vector{F64})
 ```
