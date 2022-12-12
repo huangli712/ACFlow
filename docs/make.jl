@@ -40,6 +40,7 @@ makedocs(
             "Stochastic Analytical Continuation 1" => "theory/sac1.md",
             "Stochastic Analytical Continuation 2" => "theory/sac2.md",
             "Stochastic Optimization Method" => "theory/som.md",
+            "Stochastic Pole Expansion" => "theory/spx.md",
             "References" => "theory/reference.md",
         ],
         "Library" => Any[

@@ -57,6 +57,7 @@ Pages = [
     "theory/sac1.md",
     "theory/sac2.md",
     "theory/som.md",
+    "theory/spx.md",
     "theory/reference.md",
 ]
 Depth = 1
