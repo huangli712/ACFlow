@@ -1,11 +1,9 @@
 #
-# Test: T03
+# Test: X05
 #
 # 0. Run gendata.jl to generate input data at first.
-# 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK or StochOM).
-# 2. If [BASE] -> solver is StochAC, [BASE] -> mtype must be flat.
-# 3. [BASE] -> finput must be compatible with [BASE] -> grid and [BASE] -> ngrid.
-# 4. Execute ../../util/acrun.jl ac.toml.
+# 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK or StochOM or StochPX).
+# 2. Execute ../../util/acrun.jl ac.toml.
 #
 
 [BASE]
@@ -57,3 +55,12 @@ nbox  = 100
 sbox  = 0.005
 wbox  = 0.02
 norm  = -1.0
+
+[StochPX]
+method = "best"
+nfine = 100000
+npole = 4
+ntry  = 1000
+nstep = 40000
+theta = 1e+6
+eta   = 1e-2
