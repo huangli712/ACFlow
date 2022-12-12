@@ -52,7 +52,7 @@ calc_entropy
 calc_entropy_offdiag
 calc_bayes
 calc_bayes_offdiag
-calc_chi2
+calc_chi2(mec::MaxEntContext, A::Vector{F64})
 ```
 
 ## StochAC Solver
@@ -159,7 +159,7 @@ init_iodata(S::StochOMSolver, rd::RawData)
 init_context(S::StochOMSolver)
 calc_lambda
 calc_error
-calc_green
+calc_green(Λ::Array{F64,2}, nk::I64)
 calc_norm
 constraints(e₁::F64, e₂::F64)
 try_insert
