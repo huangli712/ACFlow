@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/11
+# Last modified: 2022/12/12
 #
 
 """
@@ -364,6 +364,7 @@ function chk_dict()
     PA = [PBASE]
     #
     @cswitch get_b("solver") begin
+        # For MaxEnt solver
         @case "MaxEnt"
             push!(PA, PMaxEnt)
             #
@@ -373,6 +374,7 @@ function chk_dict()
             @assert get_m("ratio") > 0.0
             break
 
+        # For StochAC solver
         @case "StochAC"
             push!(PA, PStochAC)
             @assert get_b("mtype") == "flat"
@@ -387,6 +389,7 @@ function chk_dict()
             @assert get_a("ratio") > 0.0
             break
 
+        # For StochSK solver
         @case "StochSK"
             push!(PA, PStochSK)
             #
@@ -401,6 +404,7 @@ function chk_dict()
             @assert get_k("ratio") > 0.0
             break
 
+        # For StochOM solver
         @case "StochOM"
             push!(PA, PStochOM)
             @assert get_b("grid") in ("btime", "ffreq", "bfreq")
@@ -412,6 +416,7 @@ function chk_dict()
             @assert get_s("wbox")  > 0.0
             break
 
+        # For StochPX solver
         @case "StochPX"
             push!(PA, PStochPX)
             @assert get_b("grid") in ("ffreq", "bfreq")
@@ -421,7 +426,7 @@ function chk_dict()
             @assert get_x("npole") ≥ 1
             @assert get_x("ntry")  ≥ 10
             @assert get_x("nstep") ≥ 100
-            @assert get_x("theta") ≥ 1.00
+            @assert get_x("theta") ≥ 0.00
             @assert get_x("eta")   ≥ 1e-8
             break
     end
