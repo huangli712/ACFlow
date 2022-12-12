@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/04
+# Last modified: 2022/12/12
 #
 
 #=
@@ -407,16 +407,16 @@ function sample(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     if rand(MC.rng) < 0.9
         if rand(MC.rng) > 0.5
             for i = 1:nalph
-                try_mov1(i, MC, SE, SC)
+                try_move_a(i, MC, SE, SC)
             end
         else
             for i = 1:nalph
-                try_mov2(i, MC, SE, SC)
+                try_move_p(i, MC, SE, SC)
             end
         end
     else
         if nalph > 1
-            try_swap(MC, SE, SC)
+            try_move_x(MC, SE, SC)
         end
     end
 end
@@ -689,14 +689,14 @@ function constraints(S::StochACSolver)
 end
 
 """
-    try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+    try_move_a(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Select two δ functions and then change their weights. Here `i` means the
 index for α parameters.
 
-See also: [`try_mov2`](@ref).
+See also: [`try_move_p`](@ref).
 """
-function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+function try_move_a(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Get current number of δ functions
     ngamm = get_a("ngamm")
 
@@ -751,14 +751,14 @@ function try_mov1(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 end
 
 """
-    try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+    try_move_p(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Select two δ functions and then change their positions. Here `i` means the
 index for α parameters.
 
-See also: [`try_mov1`](@ref).
+See also: [`try_move_a`](@ref).
 """
-function try_mov2(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+function try_move_p(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Get current number of δ functions
     ngamm = get_a("ngamm")
 
@@ -812,7 +812,7 @@ end
 
 Try to exchange field configurations between two adjacent layers.
 """
-function try_swap(MC::StochACMC, SE::StochACElement, SC::StochACContext)
+function try_move_x(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Get number of α parameters
     nalph = get_a("nalph")
 
