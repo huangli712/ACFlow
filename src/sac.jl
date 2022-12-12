@@ -19,12 +19,12 @@ be sampled by  Monte Carlo sweeping procedure.
 
 ### Members
 
-* Γₐ -> It means the positions of the δ functions.
-* Γᵣ -> It means the weights / amplitudes of the δ functions.
+* Γₚ -> It means the positions of the δ functions.
+* Γₐ -> It means the weights / amplitudes of the δ functions.
 """
 mutable struct StochACElement
-    Γₐ :: Array{I64,2}
-    Γᵣ :: Array{F64,2}
+    Γₚ :: Array{I64,2}
+    Γₐ :: Array{F64,2}
 end
 
 """
@@ -182,7 +182,7 @@ function init(S::StochACSolver, rd::RawData)
     U, V, S = make_singular_space(Diagonal(σ¹) * kernel)
     Gᵥ = U' *  (Gᵥ .* σ¹)
     kernel = Diagonal(S) * V'
-    hτ, Hα, Uα = calc_hamil(SE.Γₐ, SE.Γᵣ, kernel, Gᵥ)
+    hτ, Hα, Uα = calc_hamil(SE.Γₚ, SE.Γₐ, kernel, Gᵥ)
     println("Precompute hamiltonian")
 
     αₗ = calc_alpha()
@@ -430,9 +430,9 @@ function measure(SE::StochACElement, SC::StochACContext)
     nalph = get_a("nalph")
 
     for ia = 1:nalph
-        dr = view(SE.Γᵣ, :, ia)
         da = view(SE.Γₐ, :, ia)
-        SC.Aout[:,ia] = SC.Aout[:,ia] .+ SC.Δ[:,da] * dr
+        dp = view(SE.Γₚ, :, ia)
+        SC.Aout[:,ia] = SC.Aout[:,ia] .+ SC.Δ[:,dp] * da
         SC.Uα[ia] = SC.Uα[ia] + SC.Hα[ia]
     end
 end
@@ -475,16 +475,16 @@ function init_element(S::StochACSolver, rng::AbstractRNG, allow::Vector{I64})
     nalph = get_a("nalph")
     ngamm = get_a("ngamm")
 
-    Γᵣ = rand(rng, F64, (ngamm, nalph))
-    Γₐ = rand(rng, allow, (ngamm, nalph))
+    Γₚ = rand(rng, allow, (ngamm, nalph))
+    Γₐ = rand(rng, F64, (ngamm, nalph))
 
     for j = 1:nalph
-        Γⱼ = view(Γᵣ, :, j)
+        Γⱼ = view(Γₐ, :, j)
         s = sum(Γⱼ)
         @. Γⱼ = Γⱼ / s
     end
 
-    SE = StochACElement(Γₐ, Γᵣ)
+    SE = StochACElement(Γₚ, Γₐ)
 
     return SE
 end
@@ -584,27 +584,27 @@ function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
 end
 
 """
-    calc_hamil(Γₐ, Γᵣ, kernel, Gᵥ, σ¹)
+    calc_hamil(Γₚ, Γₐ, kernel, Gᵥ, σ¹)
 
-Initialize h(τ) and H(α) using Eq.(35) and Eq.(36), respectively. `Γₐ`
-and `Γᵣ` represent n(x), `kernel` means the kernel function, `Gᵥ` is the
+Initialize h(τ) and H(α) using Eq.(35) and Eq.(36), respectively. `Γₚ`
+and `Γₐ` represent n(x), `kernel` means the kernel function, `Gᵥ` is the
 correlator. Note that `kernel` and `Gᵥ` have been rotated into singular
 space. Please see comments in `init()` for more details.
 
 See also: [`calc_htau`](@ref).
 """
-function calc_hamil(Γₐ::Array{I64,2}, Γᵣ::Array{F64,2},
+function calc_hamil(Γₚ::Array{I64,2}, Γₐ::Array{F64,2},
                     kernel::Matrix{F64},
                     Gᵥ::Vector{F64})
     nalph = get_a("nalph")
-    ngrid = length(Gᵥ) # It is not equal to get_b("ngrid")!
+    ngrid = length(Gᵥ) # It is not equal to get_b("ngrid") any more!
 
     hτ = zeros(F64, ngrid, nalph)
     Hα = zeros(F64, nalph)
     Uα = zeros(F64, nalph)
 
     for i = 1:nalph
-        hτ[:,i] = calc_htau(Γₐ[:,i], Γᵣ[:,i], kernel, Gᵥ)
+        hτ[:,i] = calc_htau(Γₚ[:,i], Γₐ[:,i], kernel, Gᵥ)
         Hα[i] = dot(hτ[:,i], hτ[:,i])
     end
 
@@ -612,22 +612,22 @@ function calc_hamil(Γₐ::Array{I64,2}, Γᵣ::Array{F64,2},
 end
 
 """
-    calc_htau(Γₐ, Γᵣ, kernel, Gᵥ)
+    calc_htau(Γₚ, Γₐ, kernel, Gᵥ)
 
-Try to calculate α-dependent h(τ) via Eq.(36). `Γₐ` and `Γᵣ` represent
+Try to calculate α-dependent h(τ) via Eq.(36). `Γₚ` and `Γₐ` represent
 n(x), `kernel` means the kernel function, `Gᵥ` is the correlator. Note
 that `kernel` and `Gᵥ` have been rotated into singular space. Please
 see comments in `init()` for more details.
 
 See also: [`calc_hamil`](@ref).
 """
-function calc_htau(Γₐ::Vector{I64}, Γᵣ::Vector{F64},
+function calc_htau(Γₚ::Vector{I64}, Γₐ::Vector{F64},
                    kernel::Matrix{F64},
                    Gᵥ::Vector{F64})
     hτ = similar(Gᵥ)
     #
     for i in eachindex(Gᵥ)
-        hτ[i] = dot(Γᵣ, view(kernel, i, Γₐ)) - Gᵥ[i]
+        hτ[i] = dot(Γₐ, view(kernel, i, Γₚ)) - Gᵥ[i]
     end
     #
     return hτ
@@ -691,8 +691,8 @@ end
 """
     try_move_a(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
-Select two δ functions and then change their weights. Here `i` means the
-index for α parameters.
+Select two δ functions randomly and then change their weights. Here `i`
+means the index for α parameters.
 
 See also: [`try_move_p`](@ref).
 """
@@ -708,36 +708,36 @@ function try_move_a(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContex
         γ₂ = rand(MC.rng, 1:ngamm)
     end
 
-    # Extract weights for the two δ functions (r₃ and r₄), then try to
-    # calculate new weights for them (r₁ and r₂).
-    r₁ = 0.0
-    r₂ = 0.0
-    r₃ = SE.Γᵣ[γ₁,i]
-    r₄ = SE.Γᵣ[γ₂,i]
-    δr = 0.0
+    # Extract weights for the two δ functions (a₃ and a₄), then try to
+    # calculate new weights for them (a₁ and a₂).
+    a₁ = 0.0
+    a₂ = 0.0
+    a₃ = SE.Γₐ[γ₁,i]
+    a₄ = SE.Γₐ[γ₂,i]
+    δa = 0.0
     while true
-        δr = rand(MC.rng) * (r₃ + r₄) - r₃
-        r₁ = r₃ + δr
-        r₂ = r₄ - δr
-        if r₁ > 0 && r₂ > 0
+        δa = rand(MC.rng) * (a₃ + a₄) - a₃
+        a₁ = a₃ + δa
+        a₂ = a₄ - δa
+        if a₁ > 0 && a₂ > 0
             break
         end
     end
 
     # Try to calculate the change of Hc using Eq.~(42).
     hc = view(SC.hτ, :, i)
-    K₁ = view(SC.kernel, :, SE.Γₐ[γ₁,i])
-    K₂ = view(SC.kernel, :, SE.Γₐ[γ₂,i])
+    K₁ = view(SC.kernel, :, SE.Γₚ[γ₁,i])
+    K₂ = view(SC.kernel, :, SE.Γₚ[γ₂,i])
     #
-    δhc = δr * (K₁ - K₂)
+    δhc = δa * (K₁ - K₂)
     δH = dot(δhc, 2.0 * hc + δhc)
 
     # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1
     if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
         # Update Monte Carlo configurations
-        SE.Γᵣ[γ₁,i] = r₁
-        SE.Γᵣ[γ₂,i] = r₂
+        SE.Γₐ[γ₁,i] = a₁
+        SE.Γₐ[γ₂,i] = a₂
 
         # Update h(τ)
         @. hc = hc + δhc
@@ -753,8 +753,8 @@ end
 """
     try_move_p(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
-Select two δ functions and then change their positions. Here `i` means the
-index for α parameters.
+Select two δ functions randomly and then change their positions. Here `i`
+means the index for α parameters.
 
 See also: [`try_move_a`](@ref).
 """
@@ -770,31 +770,31 @@ function try_move_p(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContex
         γ₂ = rand(MC.rng, 1:ngamm)
     end
 
-    # Extract weights for the two δ functions (r₁ and r₂)
-    r₁ = SE.Γᵣ[γ₁,i]
-    r₂ = SE.Γᵣ[γ₂,i]
+    # Extract weights for the two δ functions (a₁ and a₂)
+    a₁ = SE.Γₐ[γ₁,i]
+    a₂ = SE.Γₐ[γ₂,i]
 
-    # Choose new positions for the two δ functions (i₁ and i₂).
-    # Note that their old positions are SE.Γₐ[γ₁,i] and SE.Γₐ[γ₂,i].
-    i₁ = rand(MC.rng, SC.allow)
-    i₂ = rand(MC.rng, SC.allow)
+    # Choose new positions for the two δ functions (p₁ and p₂).
+    # Note that their old positions are SE.Γₚ[γ₁,i] and SE.Γₚ[γ₂,i].
+    p₁ = rand(MC.rng, SC.allow)
+    p₂ = rand(MC.rng, SC.allow)
 
     # Try to calculate the change of Hc using Eq.~(42).
     hc = view(SC.hτ, :, i)
-    K₁ = view(SC.kernel, :, i₁)
-    K₂ = view(SC.kernel, :, i₂)
-    K₃ = view(SC.kernel, :, SE.Γₐ[γ₁,i])
-    K₄ = view(SC.kernel, :, SE.Γₐ[γ₂,i])
+    K₁ = view(SC.kernel, :, p₁)
+    K₂ = view(SC.kernel, :, p₂)
+    K₃ = view(SC.kernel, :, SE.Γₚ[γ₁,i])
+    K₄ = view(SC.kernel, :, SE.Γₚ[γ₂,i])
     #
-    δhc = r₁ * (K₁ - K₃) + r₂ * (K₂ - K₄)
+    δhc = a₁ * (K₁ - K₃) + a₂ * (K₂ - K₄)
     δH = dot(δhc, 2.0 * hc + δhc)
 
     # Apply Metropolis algorithm
     MC.Mtry[i] = MC.Mtry[i] + 1
     if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
         # Update Monte Carlo configurations
-        SE.Γₐ[γ₁,i] = i₁
-        SE.Γₐ[γ₂,i] = i₂
+        SE.Γₚ[γ₁,i] = p₁
+        SE.Γₚ[γ₂,i] = p₂
 
         # Update h(τ)
         @. hc = hc + δhc
@@ -808,7 +808,7 @@ function try_move_p(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContex
 end
 
 """
-    try_swap(MC::StochACMC, SE::StochACElement, SC::StochACContext)
+    try_move_x(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Try to exchange field configurations between two adjacent layers.
 """
@@ -831,8 +831,8 @@ function try_move_x(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     MC.Stry[j] = MC.Stry[j] + 1
     if exp(δα * δH) > rand(MC.rng)
         # Update Monte Carlo configurations
+        SE.Γₚ[:,i], SE.Γₚ[:,j] = SE.Γₚ[:,j], SE.Γₚ[:,i]
         SE.Γₐ[:,i], SE.Γₐ[:,j] = SE.Γₐ[:,j], SE.Γₐ[:,i]
-        SE.Γᵣ[:,i], SE.Γᵣ[:,j] = SE.Γᵣ[:,j], SE.Γᵣ[:,i]
 
         # Update h(τ) and Hc
         SC.hτ[:,i], SC.hτ[:,j] = SC.hτ[:,j], SC.hτ[:,i]
