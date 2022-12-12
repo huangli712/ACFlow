@@ -126,9 +126,9 @@ calc_correlator
 calc_goodness
 calc_theta
 constraints(S::StochSKSolver)
-try_move_s
-try_move_p
-try_move_q
+try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+try_move_q(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 ```
 
 ## StochOM Solver
@@ -198,4 +198,16 @@ init_mc(S::StochPXSolver)
 init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
 init_iodata(S::StochPXSolver, rd::RawData)
 init_context(S::StochPXSolver)
+reset_mc(MC::StochPXMC)
+reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
+reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
+calc_fmesh(S::StochPXSolver)
+calc_green(P::Vector{I64}, A::Vector{F64}, grid::AbstractGrid, fmesh::AbstractMesh)
+calc_green(P::Vector{I64}, A::Vector{F64}, mesh::AbstractMesh, fmesh::AbstractMesh)
+calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
+constraints(S::StochPXSolver)
+try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 ```
