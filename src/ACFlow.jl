@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/07
+# Last modified: 2022/12/12
 #
 
 """
@@ -592,9 +592,9 @@ calc_htau      -> Calculate α-resolved h(τ).
 calc_alpha     -> Calculate α parameters.
 constraints    -> Limit the position of δ functions.
 #
-try_mov1       -> Try to change the weights of δ functions.
-try_mov2       -> Try to shift the positions of δ functions.
-try_swap       -> Try to exchange configurations between two adjacent layers.
+try_move_a     -> Try to change the weights of δ functions.
+try_move_p     -> Try to shift the positions of δ functions.
+try_move_x     -> Try to exchange configurations between two adjacent layers.
 ```
 =#
 
@@ -628,9 +628,9 @@ export calc_htau
 export calc_alpha
 export constraints
 #
-export try_mov1
-export try_mov2
-export try_swap
+export try_move_a
+export try_move_p
+export try_move_x
 
 #=
 ### *Includes And Exports* : *san.jl*
@@ -960,9 +960,9 @@ function _precompile()
             end
 
             # Precompile them one by one
-            # println(i, " -> ", str, " -> ", length(types), " -> ", T)
+            println(i, " -> ", str, " -> ", length(types), " -> ", T)
             precompile(fun, T)
-            #@printf("Function %15s (#%3i) is compiled.\r", str, cf)
+            @printf("Function %15s (#%3i) is compiled.\r", str, cf)
         end
     end
 
