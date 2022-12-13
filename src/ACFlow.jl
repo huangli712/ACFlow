@@ -824,6 +824,7 @@ reset_element  -> Reset Monte Carlo field configurations.
 reset_context  -> Reset green's function and goodness-of-fit function.
 #
 calc_fmesh     -> Build very dense mesh for poles.
+calc_lambda    -> Precompute 1 / (iωₙ - ϵ).
 calc_green     -> Reproduce green's function via the field configurations.
 calc_chi2      -> Calculate goodness-of-fit function.
 constraints    -> Limit the position of poles.
@@ -861,6 +862,7 @@ export reset_element
 export reset_context
 #
 export calc_fmesh
+export calc_lambda
 export calc_green
 export calc_chi2
 export constraints
