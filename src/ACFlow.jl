@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/12
+# Last modified: 2022/12/13
 #
 
 """
@@ -960,7 +960,7 @@ function _precompile()
             end
 
             # Precompile them one by one
-            println(i, " -> ", str, " -> ", length(types), " -> ", T)
+            #println(i, " -> ", str, " -> ", length(types), " -> ", T)
             precompile(fun, T)
             @printf("Function %15s (#%3i) is compiled.\r", str, cf)
         end
