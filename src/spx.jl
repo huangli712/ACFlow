@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/11
+# Last modified: 2022/12/13
 #
 
 #=
@@ -41,6 +41,7 @@ Mutable struct. It is used within the StochPX solver only.
 * grid   -> Grid for input data.
 * mesh   -> Mesh for output spectrum.
 * fmesh  -> Very dense mesh for the poles.
+* Λ      -> Precomputed 1 / (iωₙ - ϵ).
 * Θ      -> Artificial inverse temperature.
 * χ²min  -> Minimum of χ²min.
 * χ²     -> Vector of goodness function.
@@ -55,6 +56,7 @@ mutable struct StochPXContext
     grid  :: AbstractGrid
     mesh  :: AbstractMesh
     fmesh :: AbstractMesh
+    Λ     :: Array{F64,2}
     Θ     :: F64
     χ²min :: F64
     χ²    :: Vector{F64}
@@ -152,13 +154,19 @@ function init(S::StochPXSolver, rd::RawData)
     fmesh = calc_fmesh(S)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
+    # Prepare Λ (≡ 1 / (iωₙ - ϵ)). It is used to speed up the simulation.
+    Λ = calc_lambda(grid, fmesh)
+
+    # Prepare some key variables
+    Θ, χ²min, χ², Pᵥ, Aᵥ = init_context(S)
+
     # We have to make sure Gᵧ and χ²[1] are consistent with the current
     # Monte Carlo configuration fields.
-    Θ, χ²min, χ², Pᵥ, Aᵥ = init_context(S)
-    Gᵧ = calc_green(SE.P, SE.A, grid, fmesh)
+    Gᵧ = calc_green(SE.P, SE.A, Λ)
     χ²[1] = calc_chi2(Gᵧ, Gᵥ)
 
-    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh, Θ, χ²min, χ², Pᵥ, Aᵥ)
+    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh,
+                        Λ, Θ, χ²min, χ², Pᵥ, Aᵥ)
 
     return MC, SE, SC
 end
@@ -299,7 +307,7 @@ function average(SC::StochPXContext)
     if method == "best"
         p = argmin(SC.χ²)
         Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh)
-        Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.grid, SC.fmesh)
+        Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.Λ)
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, SC.χ²[p])
     # Collect the `good` solutions and calculate their average.
     else
@@ -320,7 +328,7 @@ function average(SC::StochPXContext)
                 G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh)
                 @. Gout = Gout + G
                 #
-                G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.grid, SC.fmesh)
+                G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.Λ)
                 @. Gᵣ = Gᵣ + G
                 #
                 # Increase the counter
@@ -546,7 +554,7 @@ Recalculate imaginary frequency green's function and goodness-of-fit
 function by new Monte Carlo field configurations for the t-th attempts.
 """
 function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
-    Gᵧ = calc_green(SE.P, SE.A, SC.grid, SC.fmesh)
+    Gᵧ = calc_green(SE.P, SE.A, SC.Λ)
     χ² = calc_chi2(Gᵧ, SC.Gᵥ)
 
     @. SC.Gᵧ = Gᵧ
@@ -574,26 +582,45 @@ function calc_fmesh(S::StochPXSolver)
 end
 
 """
+    calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh)
+
+Precompute Λ ≡ 1 / (iωₙ - ϵ).
+"""
+function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh)
+    ngrid = get_b("ngrid")
+    nfine = get_x("nfine")
+
+    _Λ = zeros(C64, ngrid, nfine)
+    #
+    for i in eachindex(grid)
+        iωₙ = im * grid[i]
+        for j in eachindex(fmesh)
+            _Λ[i,j] = 1.0 / (iωₙ - fmesh[j])
+        end
+    end
+    #
+    Λ = vcat(real(_Λ), imag(_Λ))
+
+    return Λ
+end
+
+"""
     calc_green(P::Vector{I64},
                A::Vector{F64},
-               grid::AbstractGrid,
-               fmesh::AbstractMesh)
+               Λ::Array{F64,2})
 
 Reconstruct green's function at imaginary axis by the pole expansion.
 """
-function calc_green(P::Vector{I64},
-                    A::Vector{F64},
-                    grid::AbstractGrid,
-                    fmesh::AbstractMesh)
-    ngrid = length(grid)
+function calc_green(P::Vector{I64}, A::Vector{F64}, Λ::Array{F64,2})
+    # Note that here `ngrid` is actually 2 × ngrid.
+    ngrid, _ = size(Λ)
 
-    iωₙ = im * grid.ω
-    G = zeros(C64, ngrid)
-    for i in eachindex(grid)
-        G[i] = sum( @. A / (iωₙ[i] - fmesh.mesh[P]) )
+    G = zeros(F64, ngrid)
+    for i = 1:ngrid
+        G[i] = dot(A, Λ[i,P])
     end
 
-    return vcat(real(G), imag(G))
+    return G
 end
 
 """
@@ -686,10 +713,8 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     move_window = 100
 
     # It is used to save the change of green's function
-    δG = zeros(C64, ngrid)
-
-    # Matsubara frequency grid
-    iωₙ = im * SC.grid.ω
+    δG = zeros(F64, 2 * ngrid)
+    Gₙ = zeros(F64, 2 * ngrid)
 
     # Try to go through each pole
     for _ = 1:npole
@@ -698,8 +723,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         s = rand(MC.rng, 1:npole)
 
         # Try to change position of the s pole
-        A₁ = SE.A[s]
-        A₂ = SE.A[s]
+        Aₛ = SE.A[s]
         #
         δP = rand(MC.rng, 1:move_window)
         #
@@ -714,11 +738,12 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         !(P₂ in SC.allow) && continue
 
         # Calculate change of green's function
-        @. δG = A₂ / (iωₙ - SC.fmesh[P₂]) - A₁ / (iωₙ - SC.fmesh[P₁])
+        Λ₁ = view(SC.Λ, :, P₁)
+        Λ₂ = view(SC.Λ, :, P₂)
+        @. δG = Aₛ * (Λ₂ - Λ₁)
 
         # Calculate new green's function and goodness-of-fit function
-        Gₙ = vcat(real(δG), imag(δG))
-        @. Gₙ = Gₙ + SC.Gᵧ
+        @. Gₙ = δG + SC.Gᵧ
         χ² = calc_chi2(Gₙ, SC.Gᵥ)
         δχ² = χ² - SC.χ²[t]
 
@@ -760,10 +785,8 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     npole = get_x("npole")
 
     # It is used to save the change of green's function
-    δG = zeros(C64, ngrid)
-
-    # Matsubara frequency grid
-    iωₙ = im * SC.grid.ω
+    δG = zeros(F64, 2 * ngrid)
+    Gₙ = zeros(F64, 2 * ngrid)
 
     # Try to go through each pole
     for _ = 1:npole
@@ -793,14 +816,14 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         A₂ = SE.A[s₂]
 
         # Calculate change of green's function
-        @. δG = (
-            + A₁ / (iωₙ - SC.fmesh[P₃]) + A₂ / (iωₙ - SC.fmesh[P₄]) 
-            - A₁ / (iωₙ - SC.fmesh[P₁]) - A₂ / (iωₙ - SC.fmesh[P₂])
-        )
+        Λ₁ = view(SC.Λ, :, P₁)
+        Λ₂ = view(SC.Λ, :, P₂)
+        Λ₃ = view(SC.Λ, :, P₃)
+        Λ₄ = view(SC.Λ, :, P₄)
+        @. δG = A₁ * (Λ₃ - Λ₁) + A₂ * (Λ₄ - Λ₂)
 
         # Calculate new green's function and goodness-of-fit function
-        Gₙ = vcat(real(δG), imag(δG))
-        @. Gₙ = Gₙ + SC.Gᵧ
+        @. Gₙ = δG + SC.Gᵧ
         χ² = calc_chi2(Gₙ, SC.Gᵥ)
         δχ² = χ² - SC.χ²[t]
 
@@ -843,10 +866,8 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     npole = get_x("npole")
 
     # It is used to save the change of green's function
-    δG = zeros(C64, ngrid)
-
-    # Matsubara frequency grid
-    iωₙ = im * SC.grid.ω
+    δG = zeros(F64, 2 * ngrid)
+    Gₙ = zeros(F64, 2 * ngrid)
 
     # Try to go through each pole
     for _ = 1:npole
@@ -877,14 +898,12 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         end
 
         # Calculate change of green's function
-        @. δG = (
-            +(A₃ - A₁) / (iωₙ - SC.fmesh[P₁])
-            +(A₄ - A₂) / (iωₙ - SC.fmesh[P₂])
-        )
+        Λ₁ = view(SC.Λ, :, P₁)
+        Λ₂ = view(SC.Λ, :, P₂)
+        @. δG = (A₃ - A₁) * Λ₁ + (A₄ - A₂) * Λ₂
 
         # Calculate new green's function and goodness-of-fit function
-        Gₙ = vcat(real(δG), imag(δG))
-        @. Gₙ = Gₙ + SC.Gᵧ
+        @. Gₙ = δG + SC.Gᵧ
         χ² = calc_chi2(Gₙ, SC.Gᵥ)
         δχ² = χ² - SC.χ²[t]
 
@@ -927,10 +946,8 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     npole = get_x("npole")
 
     # It is used to save the change of green's function
-    δG = zeros(C64, ngrid)
-
-    # Matsubara frequency grid
-    iωₙ = im * SC.grid.ω
+    δG = zeros(F64, 2 * ngrid)
+    Gₙ = zeros(F64, 2 * ngrid)
 
     # Try to go through each pole
     for _ = 1:npole
@@ -952,14 +969,12 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         A₄ = A₁
 
         # Calculate change of green's function
-        @. δG = (
-            +(A₃ - A₁) / (iωₙ - SC.fmesh[P₁])
-            +(A₄ - A₂) / (iωₙ - SC.fmesh[P₂])
-        )
+        Λ₁ = view(SC.Λ, :, P₁)
+        Λ₂ = view(SC.Λ, :, P₂)
+        @. δG = (A₃ - A₁) * Λ₁ + (A₄ - A₂) * Λ₂
 
         # Calculate new green's function and goodness-of-fit function
-        Gₙ = vcat(real(δG), imag(δG))
-        @. Gₙ = Gₙ + SC.Gᵧ
+        @. Gₙ = δG + SC.Gᵧ
         χ² = calc_chi2(Gₙ, SC.Gᵥ)
         δχ² = χ² - SC.χ²[t]
 
