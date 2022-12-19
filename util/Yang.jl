@@ -158,7 +158,7 @@ function run_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     return average(SC)
 end
 
-function solve()
+function solve_p()
     npole = get_x("npole")
 
     S = StochPXSolver()
@@ -172,7 +172,10 @@ function solve()
 
     Aout, Gout, Gᵣ = run_p(MC, SE, SC)
     ACFlow.last(SC, Aout, Gout, Gᵣ)
+end
 
+function solve_t()
+    #=
     p = argmin(SC.χ²)
     @. SE.P = SC.Pᵥ[p]
     @show SE.P
@@ -188,9 +191,10 @@ function solve()
 
     Aout, Gout, Gᵣ = run_p(MC, SE, SC)
     ACFlow.last(SC, Aout, Gout, Gᵣ)
+    =#
 end
 
 welcome()
 overview()
 read_param()
-solve()
+solve_p()
