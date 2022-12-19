@@ -159,11 +159,35 @@ function run_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 end
 
 function solve()
+    npole = get_x("npole")
+
     S = StochPXSolver()
     rd = read_data()
 
     println("[ StochPX ]")
     MC, SE, SC = init(S, rd)
+
+    @. SE.A = 1.0 / npole
+    reset_context(1, SE, SC)
+
+    Aout, Gout, Gᵣ = run_p(MC, SE, SC)
+    ACFlow.last(SC, Aout, Gout, Gᵣ)
+
+    p = argmin(SC.χ²)
+    @. SE.P = SC.Pᵥ[p]
+    @show SE.P
+    reset_context(1, SE, SC)
+
+    Aout, Gout, Gᵣ = run_a(MC, SE, SC)
+    ACFlow.last(SC, Aout, Gout, Gᵣ)
+
+    p = argmin(SC.χ²)
+    @. SE.A = SC.Aᵥ[p]
+    @show SE.A
+    reset_context(1, SE, SC)
+
+    Aout, Gout, Gᵣ = run_p(MC, SE, SC)
+    ACFlow.last(SC, Aout, Gout, Gᵣ)
 end
 
 welcome()
