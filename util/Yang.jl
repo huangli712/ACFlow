@@ -70,6 +70,103 @@ function reset_element_a(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElemen
     @. SE.A[selected] = A₂
 end
 
+function run_p(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    # Setup essential parameters
+    ntry = get_x("ntry")
+    nstep = get_x("nstep")
+
+    # Warmup the Monte Carlo engine
+    println("Start thermalization...")
+    for _ = 1:nstep
+        sample_p(1, MC, SE, SC)
+    end
+
+    # Sample and collect data
+    println("Start stochastic sampling...")
+    for t = 1:ntry
+        # Reset Monte Carlo counters
+        reset_mc(MC)
+
+        # Reset Monte Carlo field configuration
+        reset_element_p(MC.rng, SC.allow, SE)
+
+        # Reset Gᵧ and χ²
+        reset_context(t, SE, SC)
+
+        # Apply simulated annealing algorithm
+        for _ = 1:nstep
+            sample_p(t, MC, SE, SC)
+        end
+
+        # Write Monte Carlo statistics
+        write_statistics(MC)
+
+        # Update χ²[t] to be consistent with SC.Pᵥ[t] and SC.Aᵥ[t]
+        SC.χ²[t] = SC.χ²min
+        @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²min)
+        flush(stdout)
+    end
+
+    # Write pole expansion coefficients
+    write_pole(SC.Pᵥ, SC.Aᵥ, SC.χ², SC.fmesh)
+
+    # Generate spectral density from Monte Carlo field configuration
+    return average(SC)
+end
+
+function run_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    # Setup essential parameters
+    ntry = get_x("ntry")
+    nstep = get_x("nstep")
+
+    # Warmup the Monte Carlo engine
+    println("Start thermalization...")
+    for _ = 1:nstep
+        sample_a(1, MC, SE, SC)
+    end
+
+    # Sample and collect data
+    println("Start stochastic sampling...")
+    for t = 1:ntry
+        # Reset Monte Carlo counters
+        reset_mc(MC)
+
+        # Reset Monte Carlo field configuration
+        reset_element_a(MC.rng, SC.allow, SE)
+
+        # Reset Gᵧ and χ²
+        reset_context(t, SE, SC)
+
+        # Apply simulated annealing algorithm
+        for _ = 1:nstep
+            sample_a(t, MC, SE, SC)
+        end
+
+        # Write Monte Carlo statistics
+        write_statistics(MC)
+
+        # Update χ²[t] to be consistent with SC.Pᵥ[t] and SC.Aᵥ[t]
+        SC.χ²[t] = SC.χ²min
+        @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²min)
+        flush(stdout)
+    end
+
+    # Write pole expansion coefficients
+    write_pole(SC.Pᵥ, SC.Aᵥ, SC.χ², SC.fmesh)
+
+    # Generate spectral density from Monte Carlo field configuration
+    return average(SC)
+end
+
+function solve()
+    S = StochPXSolver()
+    rd = read_data()
+
+    println("[ StochPX ]")
+    MC, SE, SC = init(S, rd)
+end
+
 welcome()
 overview()
 read_param()
+solve()
