@@ -1,3 +1,7 @@
+#!/usr/bin/env julia
+push!(LOAD_PATH, ENV["ACFLOW_HOME"])
+
+using ACFlow
 
 function sample_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     if rand(MC.rng) < 0.9
@@ -62,3 +66,7 @@ function reset_element_a(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElemen
     #
     @. SE.A[selected] = A₂
 end
+
+welcome()
+overview()
+read_param()
