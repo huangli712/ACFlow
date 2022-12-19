@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/11
+# Last modified: 2022/12/19
 #
 
 #=
@@ -322,7 +322,7 @@ function write_pole(Pᵥ::Vector{Vector{I64}},
             println(fout, "# Try: ", i, "  χ²: ", χ²[i])
             for j in eachindex(Pᵥ[i])
                 p = Pᵥ[i][j]
-                @printf(fout, "%4i %16.12f %16.12f\n", j, fmesh[p], Aᵥ[i][j])
+                @printf(fout, "%4i %8i %16.12f %16.12f\n", j, p, fmesh[p], Aᵥ[i][j])
             end
             println(fout)
             println(fout)
