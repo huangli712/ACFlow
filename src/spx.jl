@@ -709,8 +709,9 @@ See also: [`try_move_p`](@ref).
 function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Get parameters
     ngrid = get_b("ngrid")
+    nfine = get_x("nfine")
     npole = get_x("npole")
-    move_window = 100
+    move_window = ceil(I64, nfine / 100)
 
     # It is used to save the change of green's function
     δG = zeros(F64, 2 * ngrid)
