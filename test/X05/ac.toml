@@ -1,5 +1,5 @@
 #
-# Test: X05
+# Test: X04
 #
 # 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK or StochOM or StochPX).
@@ -14,11 +14,12 @@ mtype  = "flat"
 grid   = "ffreq"
 mesh   = "linear"
 ngrid  = 10
-nmesh  = 1001
-wmax   = 10.0
-wmin   = -10.0
+nmesh  = 501
+wmax   = 5.0
+wmin   = -5.0
 beta   = 10.0
 offdiag = false
+exclude = [[-5.0, -4.3], [-3.7, -1.3], [-0.9, 0.9], [1.3, 3.7], [4.3, 5.0]]
 
 [MaxEnt]
 method = "chi2kink"
@@ -59,8 +60,8 @@ norm  = -1.0
 [StochPX]
 method = "best"
 nfine = 100000
-npole = 8
+npole = 4
 ntry  = 1000
-nstep = 10000
+nstep = 40000
 theta = 1e+6
 eta   = 1e-2

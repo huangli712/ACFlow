@@ -7,27 +7,19 @@ using Printf
 using ACFlow
 
 # Setup parameters
-wmin = -10.0 # Left boundary
-wmax = +10.0 # Right boundary
+wmin = -5.0  # Left boundary
+wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 10    # Number of Matsubara frequencies
 beta = 10.0  # Inverse temperature
-ϵ₀   = 9.00  # Parameters for δ-like peaks
-ϵ₁   = 3.00  
-ϵ₂   = 0.50
-ϵ₃   = 0.00
-ϵ₄   =-0.50
-ϵ₅   =-3.00
-ϵ₆   =-6.00
-ϵ₇   =-9.00
-A₀   = 0.125
-A₁   = 0.125
-A₂   = 0.125
-A₃   = 0.125
-A₄   = 0.125
-A₅   = 0.125
-A₆   = 0.125
-A₇   = 0.125
+ϵ₁   = 4.00  # Parameters for δ-like peaks
+ϵ₂   = -4.0
+ϵ₃   = 1.00
+ϵ₄   = -1.0
+A₁   = 0.25
+A₂   = 0.25
+A₃   = 0.25
+A₄   = 0.25
 η    = 1e-2
 
 # Real frequency mesh
@@ -48,28 +40,20 @@ noise = noise_abs .* exp.(noise_phase * im)
 giw = zeros(C64, niw)
 for i in eachindex(giw)
     giw[i] = (
-        A₀ / (iωₙ[i] * im - ϵ₀) +
         A₁ / (iωₙ[i] * im - ϵ₁) +
         A₂ / (iωₙ[i] * im - ϵ₂) +
         A₃ / (iωₙ[i] * im - ϵ₃) +
-        A₄ / (iωₙ[i] * im - ϵ₄) +
-        A₅ / (iωₙ[i] * im - ϵ₅) +
-        A₆ / (iωₙ[i] * im - ϵ₆) +
-        A₇ / (iωₙ[i] * im - ϵ₇) + noise[i]
+        A₄ / (iωₙ[i] * im - ϵ₄) + noise[i]
     )
 end
 #
 gre = zeros(C64, nmesh)
 for i in eachindex(gre)
     gre[i] = (
-        A₀ / (ω[i] + η * im - ϵ₀) +
         A₁ / (ω[i] + η * im - ϵ₁) +
         A₂ / (ω[i] + η * im - ϵ₂) +
         A₃ / (ω[i] + η * im - ϵ₃) +
-        A₄ / (ω[i] + η * im - ϵ₄) +
-        A₅ / (ω[i] + η * im - ϵ₅) +
-        A₆ / (ω[i] + η * im - ϵ₆) +
-        A₇ / (ω[i] + η * im - ϵ₇)
+        A₄ / (ω[i] + η * im - ϵ₄)
     )
 end
 
