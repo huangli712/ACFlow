@@ -2,6 +2,10 @@
 
 *Please run the gendata.jl script in each folder to generate input data at first.*
 
+## Standard tests
+
+The following ten tests are used to test the basic features of the ACFlow toolkit.
+
 * **A01**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink or bryan algorithm)
@@ -88,3 +92,58 @@
     * Rise-And-Decay model + Flat model
     * Half-Lorentzian mesh
     * Fixed error bar
+
+## Experimental tests
+
+The following tests are designed to test the newly developed StochPX solver (stochastic pole expansion).
+
+* **X01**
+    * Fermionic + Matsubara
+    * MaxEnt solver (chi2kink or bryan algorithm)
+    * StochAC solver
+    * StochSK solver
+    * StochOM solver
+    * StochPX solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * A clone of **A01**
+    * Broad spectrum
+
+* **X02**
+    * Fermionic + Matsubara
+    * MaxEnt solver (chi2kink or bryan algorithm)
+    * StochAC solver
+    * StochSK solver
+    * StochOM solver
+    * StochPX solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * With sharp quasiparticle peak
+
+* **X03**
+    * Fermionic + Matsubara + Imaginary time
+    * Green's function
+    * MaxEnt solver (chi2kink algorithm)
+    * StochAC solver (with constraints)
+    * StochSK solver (with constraints)
+    * StochOM solver (with constraints)
+    * StochPX solver (with constraints)
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Standard mode
+    * A clone of **T03**
+    * Sharp gap edges
+
+* **X04**
+    * Fermionic + Matsubara
+    * Green's function + Self-energy function
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
+    * Flat model + Gaussian model
+    * Linear mesh + Tangent mesh
+    * Standard mode
+    * Script mode
+    * A clone of **T01**
