@@ -58,7 +58,7 @@ norm  = -1.0
 
 [StochPX]
 method = "best"
-nfine = 100000
+nfine = 100001
 npole = 10
 ntry  = 100
 nstep = 10000
