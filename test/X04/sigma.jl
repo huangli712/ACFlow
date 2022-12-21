@@ -24,14 +24,14 @@ grid = dlm[:,1]
 Σ∞  = 1.0
 @. Σinp = Σinp - Σ∞
 
-# For MaxEnt solver
+# For StochPX solver
 
 # Setup parameters
 #
 # For [BASE] block
 # See types.jl/_PBASE for default setup
 B = Dict{String,Any}(
-    "solver" => "MaxEnt",  # Choose MaxEnt solver
+    "solver" => "StochPX", # Choose StochPX solver
     "mtype"  => "gauss",   # Default model function
     "mesh"   => "tangent", # Mesh for spectral function
     "ngrid"  => 20,        # Number of grid points for input data
@@ -41,12 +41,16 @@ B = Dict{String,Any}(
     "beta"   => 10.0,      # Inverse temperature
 )
 #
-# For [MaxEnt] block
-# See types.jl/_PMaxEnt for default setup
+# For [StochPX] block
+# See types.jl/_PStochPX for default setup
 S = Dict{String,Any}(
-    "nalph"  => 15,        # Number of α parameters
-    "alpha"  => 1e12,      # Starting value of α parameter
-    "blur"   => -1.0,      # Enable preblur or not
+    "method" => "mean",    # How to evaluate the final spectral density
+    "nfine"  => 100000,    # Number of points of a very fine linear mesh
+    "npole"  => 2000,      # Number of poles
+    "ntry"   => 2000,      # Number of attempts (tries) to seek the solution
+    "nstep"  => 100,       # Number of Monte Carlo steps per attempt / try
+    "theta"  => 1e+8,      # Artificial inverse temperature
+    "eta"    => 1e-3,      # Tiny distance from the real axis
 )
 #
 setup_param(B, S)
