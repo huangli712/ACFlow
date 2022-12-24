@@ -1,5 +1,5 @@
 #
-# Test: X04
+# Test: X05
 #
 # 0. Execute iQIST to generate solver.grn.dat (Using solver.ctqmc.in).
 # 1. Copy solver.grn.dat to giw.data.
