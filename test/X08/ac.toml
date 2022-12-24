@@ -1,5 +1,5 @@
 #
-# Test: X06
+# Test: X08
 #
 # 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK or StochOM or StochPX).
