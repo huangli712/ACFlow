@@ -486,7 +486,7 @@ function init_context(S::StochPXSolver)
     Pᵥ = Vector{I64}[]
     Aᵥ = Vector{F64}[]
     for _ = 1:ntry
-        push!(Pᵥ, zeros(I64, npole))
+        push!(Pᵥ,  ones(I64, npole))
         push!(Aᵥ, zeros(F64, npole))
     end
 
