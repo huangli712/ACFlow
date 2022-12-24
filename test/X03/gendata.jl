@@ -11,14 +11,16 @@ wmin = -5.0  # Left boundary
 wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 10    # Number of Matsubara frequencies
-ntau = 1000  # Number of imaginary time points
 beta = 10.0  # Inverse temperature
-Δ    = 0.50  # 2Δ is the size of the gap
-W    = 6.00  # Bandwidth of the spectrum
-
-#
-# For true spectrum
-#
+ϵ₁   = 0.00  # Parameters for gaussian peaks
+ϵ₂   = -2.5
+ϵ₃   = 1.50
+A₁   = 1.00
+A₂   = 0.30
+A₃   = 0.40
+Γ₁   = 0.02
+Γ₂   = 0.80
+Γ₃   = 0.50
 
 # Real frequency mesh
 rmesh = collect(LinRange(wmin, wmax, nmesh))
@@ -26,25 +28,11 @@ rmesh = collect(LinRange(wmin, wmax, nmesh))
 # Spectral function
 image = similar(rmesh)
 #
-for i in eachindex(rmesh)
-    image[i] = 0.0
-    if Δ < abs(rmesh[i]) < W/2
-        image[i] = abs(rmesh[i]) / sqrt(rmesh[i] ^ 2.0 - Δ ^ 2.0) / W
-    end
-end
+@. image  = A₁ * exp(-(rmesh - ϵ₁) ^ 2.0 / (2.0 * Γ₁ ^ 2.0))
+@. image += A₂ * exp(-(rmesh - ϵ₂) ^ 2.0 / (2.0 * Γ₂ ^ 2.0))
+@. image += A₃ * exp(-(rmesh - ϵ₃) ^ 2.0 / (2.0 * Γ₃ ^ 2.0))
 #
 image = image ./ trapz(rmesh, image)
-
-# Write spectral function
-open("image.data", "w") do fout
-    for i in eachindex(image)
-        @printf(fout, "%20.16f %20.16f\n", rmesh[i], image[i])
-    end
-end
-
-#
-# For Matsubara frequency data
-#
 
 # Matsubara frequency mesh
 iw = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
@@ -78,33 +66,9 @@ open("giw.data", "w") do fout
     end
 end
 
-#
-# For imaginary time data
-#
-
-# Imaginary time mesh
-tmesh = collect(LinRange(0, beta, ntau))
-
-# Noise
-seed = rand(1:100000000)
-rng = MersenneTwister(seed)
-noise_ampl = 1.0e-4
-noise = randn(rng, F64, ntau) * noise_ampl
-
-# Build green's function
-gtau = zeros(F64, ntau)
-for i = 1:ntau
-    tw = exp.(-tmesh[i] * rmesh)
-    bw = exp.(-beta * rmesh)
-    gtau[i] = trapz(rmesh, image .* tw ./ (1.0 .+ bw)) + noise[i]
-end
-
-# Build error
-err = ones(F64, ntau) * noise_ampl * 10.0
-
-# Write green's function
-open("gtau.data", "w") do fout
-    for i in eachindex(gtau)
-        @printf(fout, "%16.12f %16.12f %16.12f\n", tmesh[i], gtau[i], err[i])
+# Write spectral function
+open("image.data", "w") do fout
+    for i in eachindex(image)
+        @printf(fout, "%20.16f %20.16f\n", rmesh[i], image[i])
     end
 end

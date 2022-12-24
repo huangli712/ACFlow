@@ -1,77 +1,40 @@
 #!/usr/bin/env julia
 
-push!(LOAD_PATH, ENV["ACFLOW_HOME"])
-
-using Random
+using DelimitedFiles
 using Printf
-using ACFlow
 
-# Setup parameters
-wmin = -5.0  # Left boundary
-wmax = +5.0  # Right boundary
-nmesh = 2001 # Number of real-frequency points
-niw  = 10    # Number of Matsubara frequencies
-beta = 10.0  # Inverse temperature
-ϵ₁   = 4.00  # Parameters for δ-like peaks
-ϵ₂   = -4.0
-ϵ₃   = 1.00
-ϵ₄   = -1.0
-A₁   = 0.25
-A₂   = 0.25
-A₃   = 0.25
-A₄   = 0.25
-η    = 1e-2
+# Number of grid points for input data
+# The first twenty points are enough
+ngrid = 20
 
-# Real frequency mesh
-ω = collect(LinRange(wmin, wmax, nmesh))
+# Read Matsubara green's function from solver.grn.dat
+dlm = readdlm("solver.grn.dat")
+grid = dlm[1:ngrid,2]
+giw  = dlm[1:ngrid,3] + im * dlm[1:ngrid,4]
+err  = dlm[1:ngrid,5] + im * dlm[1:ngrid,6]
 
-# Matsubara frequency mesh
-iωₙ = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
-
-# Noise
-seed = rand(1:100000000)
-rng = MersenneTwister(seed)
-noise_ampl = 1.0e-4
-noise_abs = randn(rng, F64, niw) * noise_ampl
-noise_phase = rand(rng, niw) * 2.0 * π
-noise = noise_abs .* exp.(noise_phase * im)
-
-# Build green's function
-giw = zeros(C64, niw)
-for i in eachindex(giw)
-    giw[i] = (
-        A₁ / (iωₙ[i] * im - ϵ₁) +
-        A₂ / (iωₙ[i] * im - ϵ₂) +
-        A₃ / (iωₙ[i] * im - ϵ₃) +
-        A₄ / (iωₙ[i] * im - ϵ₄) + noise[i]
-    )
-end
-#
-gre = zeros(C64, nmesh)
-for i in eachindex(gre)
-    gre[i] = (
-        A₁ / (ω[i] + η * im - ϵ₁) +
-        A₂ / (ω[i] + η * im - ϵ₂) +
-        A₃ / (ω[i] + η * im - ϵ₃) +
-        A₄ / (ω[i] + η * im - ϵ₄)
-    )
-end
-
-# Build error
-err = ones(F64, niw) * noise_ampl
-
-# Write green's function (Matsubara frequency axis)
+# Write green's function
 open("giw.data", "w") do fout
-    for i in eachindex(giw)
-        z = giw[i]
-        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iωₙ[i], real(z), imag(z), err[i])
+    for i in eachindex(grid)
+        zg = giw[i]
+        ze = err[i]
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f %20.16f\n",
+            grid[i], real(zg), imag(zg), real(ze), imag(ze))
     end
 end
 
-# Write green's function (real frequency axis)
-open("gre.data", "w") do fout
-    for i in eachindex(gre)
-        z = gre[i]
-        @printf(fout, "%20.16f %20.16f %20.16f\n", ω[i], real(z), imag(z))
+# Read Matsubara self-energy function from solver.sgm.dat
+dlm = readdlm("solver.sgm.dat")
+grid = dlm[1:ngrid,2]
+siw  = dlm[1:ngrid,3] + im * dlm[1:ngrid,4]
+err  = dlm[1:ngrid,5] + im * dlm[1:ngrid,6]
+
+# Write self-energy function
+open("siw.data", "w") do fout
+    for i in eachindex(grid)
+        zs = siw[i]
+        ze = err[i]
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f %20.16f\n",
+            grid[i], real(zs), imag(zs), real(ze), imag(ze))
     end
 end

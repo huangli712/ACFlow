@@ -12,15 +12,12 @@ wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 10    # Number of Matsubara frequencies
 beta = 10.0  # Inverse temperature
-ϵ₁   = 0.00  # Parameters for gaussian peaks
+ϵ₁   = 0.50  # Parameters for gaussian peaks
 ϵ₂   = -2.5
-ϵ₃   = 1.50
 A₁   = 1.00
 A₂   = 0.30
-A₃   = 0.40
-Γ₁   = 0.02
+Γ₁   = 0.20
 Γ₂   = 0.80
-Γ₃   = 0.50
 
 # Real frequency mesh
 rmesh = collect(LinRange(wmin, wmax, nmesh))
@@ -30,7 +27,6 @@ image = similar(rmesh)
 #
 @. image  = A₁ * exp(-(rmesh - ϵ₁) ^ 2.0 / (2.0 * Γ₁ ^ 2.0))
 @. image += A₂ * exp(-(rmesh - ϵ₂) ^ 2.0 / (2.0 * Γ₂ ^ 2.0))
-@. image += A₃ * exp(-(rmesh - ϵ₃) ^ 2.0 / (2.0 * Γ₃ ^ 2.0))
 #
 image = image ./ trapz(rmesh, image)
 
