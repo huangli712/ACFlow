@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/20
+# Last modified: 2022/12/24
 #
 
 #=
@@ -784,6 +784,10 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Get parameters
     ngrid = get_b("ngrid")
     npole = get_x("npole")
+    #
+    if npole == 1
+        return
+    end
 
     # It is used to save the change of green's function
     δG = zeros(F64, 2 * ngrid)
@@ -865,6 +869,10 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Get parameters
     ngrid = get_b("ngrid")
     npole = get_x("npole")
+    #
+    if npole == 1
+        return
+    end
 
     # It is used to save the change of green's function
     δG = zeros(F64, 2 * ngrid)
@@ -945,6 +953,10 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Get parameters
     ngrid = get_b("ngrid")
     npole = get_x("npole")
+    #
+    if npole == 1
+        return
+    end
 
     # It is used to save the change of green's function
     δG = zeros(F64, 2 * ngrid)
