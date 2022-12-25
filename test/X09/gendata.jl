@@ -14,24 +14,20 @@ niw  = 20    # Number of Matsubara frequencies
 beta = 20.0  # Inverse temperature
 ϵ₀   = 8.00  # Parameters for δ-like peaks
 ϵ₁   = 4.00
-ϵ₂   = 1.00
+ϵ₂   = 0.50
 ϵ₃   = 0.00
-ϵ₄   =-1.00
-ϵ₅   =-2.00
+ϵ₄   =-0.50
+ϵ₅   =-1.00
 ϵ₆   =-5.00
-ϵ₇   =-8.00
-ϵ₈   = 5.00
-ϵ₉   = 6.00
-A₀   = 0.10
-A₁   = 0.10
-A₂   = 0.10
-A₃   = 0.10
-A₄   = 0.10
-A₅   = 0.10
-A₆   = 0.10
-A₇   = 0.10
-A₈   = 0.10
-A₉   = 0.10
+ϵ₇   =-9.00
+A₀   = 0.125
+A₁   = 0.125
+A₂   = 0.125
+A₃   = 0.125
+A₄   = 0.125
+A₅   = 0.125
+A₆   = 0.125
+A₇   = 0.125
 η    = 1e-2
 
 # Real frequency mesh
@@ -43,7 +39,7 @@ iωₙ = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
-noise_ampl = 0.0e-4
+noise_ampl = 1.0e-4
 noise_abs = randn(rng, F64, niw) * noise_ampl
 noise_phase = rand(rng, niw) * 2.0 * π
 noise = noise_abs .* exp.(noise_phase * im)
@@ -59,9 +55,7 @@ for i in eachindex(giw)
         A₄ / (iωₙ[i] * im - ϵ₄) +
         A₅ / (iωₙ[i] * im - ϵ₅) +
         A₆ / (iωₙ[i] * im - ϵ₆) +
-        A₇ / (iωₙ[i] * im - ϵ₇) +
-        A₈ / (iωₙ[i] * im - ϵ₈) +
-        A₉ / (iωₙ[i] * im - ϵ₉) + noise[i]
+        A₇ / (iωₙ[i] * im - ϵ₇) + noise[i]
     )
 end
 #
@@ -75,9 +69,7 @@ for i in eachindex(gre)
         A₄ / (ω[i] + η * im - ϵ₄) +
         A₅ / (ω[i] + η * im - ϵ₅) +
         A₆ / (ω[i] + η * im - ϵ₆) +
-        A₇ / (ω[i] + η * im - ϵ₇) +
-        A₈ / (ω[i] + η * im - ϵ₈) +
-        A₉ / (ω[i] + η * im - ϵ₉)
+        A₇ / (ω[i] + η * im - ϵ₇)
     )
 end
 
