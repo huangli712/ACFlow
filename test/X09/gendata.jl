@@ -7,21 +7,21 @@ using Printf
 using ACFlow
 
 # Setup parameters
-wmin = -40.0 # Left boundary
-wmax = +40.0 # Right boundary
+wmin = -10.0 # Left boundary
+wmax = +10.0 # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 20    # Number of Matsubara frequencies
 beta = 20.0  # Inverse temperature
-ϵ₀   = 30.0  # Parameters for δ-like peaks
-ϵ₁   = 10.0
-ϵ₂   = 2.00
+ϵ₀   = 8.00  # Parameters for δ-like peaks
+ϵ₁   = 4.00
+ϵ₂   = 1.00
 ϵ₃   = 0.00
-ϵ₄   =-2.00
-ϵ₅   =-10.0
-ϵ₆   =+6.00
-ϵ₇   =-30.0
-ϵ₈   =-4.00
-ϵ₉   = 4.00
+ϵ₄   =-1.00
+ϵ₅   =-2.00
+ϵ₆   =-5.00
+ϵ₇   =-8.00
+ϵ₈   = 5.00
+ϵ₉   = 6.00
 A₀   = 0.10
 A₁   = 0.10
 A₂   = 0.10
