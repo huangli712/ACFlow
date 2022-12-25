@@ -29,9 +29,9 @@ blur   = -1.0
 
 [StochPX]
 method = "mean"
-nfine = 100000
-npole = 2000
-ntry  = 2000
-nstep = 100
-theta = 1e+8
-eta   = 1e-3
+nfine  = 100000
+npole  = 2000
+ntry   = 2000
+nstep  = 100
+theta  = 1e+8
+eta    = 1e-3

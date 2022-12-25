@@ -100,21 +100,15 @@ The following tests are designed to test the newly developed StochPX solver (sto
 * **X01**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
-    * StochAC solver
-    * StochSK solver
-    * StochOM solver
     * StochPX solver
     * Flat model
     * Linear mesh
     * Fixed error bar
-    * Single gaussian peak
+    * Two gaussian peaks + big gap
 
 * **X02**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
-    * StochAC solver
-    * StochSK solver
-    * StochOM solver
     * StochPX solver
     * Flat model
     * Linear mesh
@@ -138,9 +132,6 @@ The following tests are designed to test the newly developed StochPX solver (sto
     * Fermionic + Matsubara + Imaginary time
     * Green's function
     * MaxEnt solver (chi2kink algorithm)
-    * StochAC solver (with constraints)
-    * StochSK solver (with constraints)
-    * StochOM solver (with constraints)
     * StochPX solver (with constraints)
     * Flat model
     * Linear mesh
@@ -163,9 +154,6 @@ The following tests are designed to test the newly developed StochPX solver (sto
 * **X06**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
-    * StochAC solver
-    * StochSK solver
-    * StochOM solver
     * StochPX solver
     * Flat model
     * Linear mesh
@@ -187,9 +175,6 @@ The following tests are designed to test the newly developed StochPX solver (sto
 * **X08**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
-    * StochAC solver (with constraints)
-    * StochSK solver (with constraints)
-    * StochOM solver (with constraints)
     * StochPX solver (with constraints)
     * Flat model
     * Linear mesh

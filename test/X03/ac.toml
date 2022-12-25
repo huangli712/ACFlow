@@ -28,39 +28,39 @@ ratio  = 10.0
 blur   = -1.0
 
 [StochAC]
-nfine = 10000
-ngamm = 512
-nwarm = 40000
-nstep = 10000000
-ndump = 40000
-nalph = 40
-alpha = 1.00
-ratio = 1.20
+nfine  = 10000
+ngamm  = 512
+nwarm  = 40000
+nstep  = 10000000
+ndump  = 40000
+nalph  = 40
+alpha  = 1.00
+ratio  = 1.20
 
 [StochSK]
 method = "chi2min"
-nfine = 40000
-ngamm = 1000
-nwarm = 1000
-nstep = 20000
-ndump = 200
-retry = 10
-theta = 1e+6
-ratio = 0.90
+nfine  = 40000
+ngamm  = 1000
+nwarm  = 1000
+nstep  = 20000
+ndump  = 200
+retry  = 10
+theta  = 1e+6
+ratio  = 0.90
 
 [StochOM]
-ntry  = 100000
-nstep = 1000
-nbox  = 100
-sbox  = 0.005
-wbox  = 0.02
-norm  = -1.0
+ntry   = 100000
+nstep  = 1000
+nbox   = 100
+sbox   = 0.005
+wbox   = 0.02
+norm   = -1.0
 
 [StochPX]
 method = "mean"
-nfine = 100000
-npole = 2000
-ntry  = 2000
-nstep = 100
-theta = 1e+8
-eta   = 1e-3
+nfine  = 100000
+npole  = 2000
+ntry   = 2000
+nstep  = 100
+theta  = 1e+8
+eta    = 1e-3

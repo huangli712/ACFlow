@@ -7,21 +7,21 @@ using Printf
 using ACFlow
 
 # Setup parameters
-wmin = -4.0 # Left boundary
-wmax = +4.0 # Right boundary
+wmin = -40.0 # Left boundary
+wmax = +40.0 # Right boundary
 nmesh = 2001 # Number of real-frequency points
-niw  = 10    # Number of Matsubara frequencies
+niw  = 20    # Number of Matsubara frequencies
 beta = 20.0  # Inverse temperature
-ϵ₀   = 36.0 / 10  # Parameters for δ-like peaks
-ϵ₁   = 12.0 / 10
-ϵ₂   = 2.00 / 10
-ϵ₃   = 0.00 / 10
-ϵ₄   =-2.00 / 10
-ϵ₅   =-12.0 / 10
-ϵ₆   =-24.0 / 10
-ϵ₇   =-36.0 / 10
-ϵ₈   =-8.00 / 10
-ϵ₉   = 10.0 / 10
+ϵ₀   = 30.0  # Parameters for δ-like peaks
+ϵ₁   = 10.0
+ϵ₂   = 2.00
+ϵ₃   = 0.00
+ϵ₄   =-2.00
+ϵ₅   =-10.0
+ϵ₆   =+6.00
+ϵ₇   =-30.0
+ϵ₈   =-4.00
+ϵ₉   = 4.00
 A₀   = 0.10
 A₁   = 0.10
 A₂   = 0.10
@@ -43,7 +43,7 @@ iωₙ = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
-noise_ampl = 1.0e-4
+noise_ampl = 0.0e-4
 noise_abs = randn(rng, F64, niw) * noise_ampl
 noise_phase = rand(rng, niw) * 2.0 * π
 noise = noise_abs .* exp.(noise_phase * im)

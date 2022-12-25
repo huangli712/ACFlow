@@ -20,9 +20,9 @@ beta   = 10.0
 offdiag = false
 
 [StochOM]
-ntry  = 100000
-nstep = 1000
-nbox  = 100
-sbox  = 0.005
-wbox  = 0.02
-norm  = -1.0
+ntry   = 100000
+nstep  = 1000
+nbox   = 100
+sbox   = 0.005
+wbox   = 0.02
+norm   = -1.0
