@@ -3,7 +3,6 @@ push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
 using Random
 using Printf
-
 using ACFlow
 
 function sample_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
@@ -172,26 +171,6 @@ function solve_p()
 
     Aout, Gout, Gᵣ = run_p(MC, SE, SC)
     ACFlow.last(SC, Aout, Gout, Gᵣ)
-end
-
-function solve_t()
-    #=
-    p = argmin(SC.χ²)
-    @. SE.P = SC.Pᵥ[p]
-    @show SE.P
-    reset_context(1, SE, SC)
-
-    Aout, Gout, Gᵣ = run_a(MC, SE, SC)
-    ACFlow.last(SC, Aout, Gout, Gᵣ)
-
-    p = argmin(SC.χ²)
-    @. SE.A = SC.Aᵥ[p]
-    @show SE.A
-    reset_context(1, SE, SC)
-
-    Aout, Gout, Gᵣ = run_p(MC, SE, SC)
-    ACFlow.last(SC, Aout, Gout, Gᵣ)
-    =#
 end
 
 welcome()
