@@ -19,3 +19,7 @@ The so-called analytical continuation problem can be reformulated in terms of th
 ## Our Motivations
 
 In recent years, quite a few analytical continuation codes have been released, including maxent (by Mark Jarrell), ``\Omega``Maxent, ana\_cont, ALPSCore/maxent, TRIQS/som, ALF, just to name a few. We note that the maximum entropy method has dominated this field for quite a long time. Thus most of these codes only support the maximum entropy method. It is rather difficult to crosscheck the simulated results obtained by various analytical continuation methods. In addition, the features of the available codes are quite limited and hard to be extended. In order to fill in this gap, we would like to present a new open source toolkit, called ACFlow, for analytical continuation. This toolkit implements three primary analytical continuation methods, namely the maximum entropy method, stochastic analytical continuation, and stochastic optimization method, within an united framework. It provides an easy-to-used library and application interface. Some diagnostic and analytical tools are also available. With ACFlow, the users can easily setup and execute analytical continuation calculations, and validate the calculated results. We believe that this toolkit will play a vital role in solving analytical continuation problems.
+
+!!! info
+
+    Quite recently, a new analytical continuation method, namely the stochastic pole expansion, has been implemented in the ACFlow toolkit.
