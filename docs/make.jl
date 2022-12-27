@@ -1,4 +1,4 @@
--push!(LOAD_PATH, ENV["ACFLOW_HOME"])
+push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
 using Documenter, ACFlow, Random
 
