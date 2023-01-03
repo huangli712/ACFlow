@@ -17,7 +17,7 @@ ngrid  = 10
 nmesh  = 501
 wmax   = 5.0
 wmin   = -5.0
-beta   = 10.0
+beta   = 20.0
 offdiag = false
 exclude = [[-5.0, -4.3], [-3.7, -1.3], [-0.9, 0.9], [1.3, 3.7], [4.3, 5.0]]
 
