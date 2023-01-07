@@ -965,7 +965,7 @@ Depth = 3
 > * mean
 > * best
 >
-> If `method = "mean"`, 
+> If `method = "mean"`, then the solver will try to calculate averaged spectrum from some selected `good` solutions. If `method = "best"`, then then solve will pick up the best solution (which exhibits the smallest goodness-of-fit functional).
 
 *Type:*
 
@@ -977,7 +977,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. Note that the "mean" method is suitable for the condensed matter cases (broad and smooth peaks), while the "best" method is useful for the molecule cases (sharp peaks).
 
 ### nfine
 
