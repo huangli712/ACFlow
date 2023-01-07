@@ -8,7 +8,7 @@ The input data should be store in CSV-like text files. For imaginary time Green'
 
 ## Configuration Files
 
-The configuration file adopts the TOML format. It is used to setup the computational parameters. It consists of one or more blocks. Possible blocks (or sections) of the configuration file include `[BASE]`, `[MaxEnt]`, `[StochAC]`, `[StochSK]`, and `[StochOM]`. The `[BASE]` block is mandatory, while the other blocks are optional. A schematic configuration file (`ac.toml`) is listed as follows:
+The configuration file adopts the TOML format. It is used to setup the computational parameters. It consists of one or more blocks. Possible blocks (or sections) of the configuration file include `[BASE]`, `[MaxEnt]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]`. The `[BASE]` block is mandatory, while the other blocks are optional. A schematic configuration file (`ac.toml`) is listed as follows:
 
 ```toml
 [BASE]
@@ -31,9 +31,13 @@ method = "chi2min"
 [StochOM]
 ntry   = 100000
 ...
+
+[StochPX]
+method = "mean"
+...
 ```
 
-In the `[BASE]` block, the analytical continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[StochAC]`, `[StochSK]`, and `[StochOM]` blocks are used to customize the corresponding analytical continuation solvers further. In **Table 1**-**Table 5**, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please see [Parameters](@ref param).   
+In the `[BASE]` block, the analytical continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]` blocks are used to customize the corresponding analytical continuation solvers further. In **Table 1**-**Table 6**, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please see [Parameters](@ref param).   
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -102,3 +106,15 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`norm`   | float   | -1.0        | Is the norm calculated? |
 
 **Table 5 |** Possible input parameters for the `[StochOM]` block, which are used to setup the solver based on the stochastic optimization method.
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+|`method` | string  | ''mean''    | How to evaluate the final spectral density. |
+|`nfine`  | integer | 100000      | Number of points of a very fine linear mesh. |
+|`npole`  | integer | 200         | Number of poles. |
+|`ntry`   | integer | 1000        | Number of attempts to figure out the solution. |
+|`nstep`  | integer | 1000000     | Number of Monte Carlo steps per attempt / try. |
+|`theta`  | float   | 1e+6        | Artificial inverse temperature ``\Theta``. |
+|`eta`    | float   | 1e-4        | Tiny distance from the real axis ``\eta``. |
+
+**Table 6 |** Possible input parameters for the `[StochPX]` block, which are used to setup the solver based on the stochastic pole expansion.
