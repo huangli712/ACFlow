@@ -1055,7 +1055,7 @@ Depth = 3
 
 *Definition:*
 
-> Starting value for the ``\alpha`` parameter. The `StochAC` solver always starts with a small ``\alpha`` parameter, and then increases it gradually.
+> Artificial inverse temperature ``\Theta``. When it is increased, the transition probabilities of Monte Carlo updates will decrease.
 
 *Type:*
 
@@ -1063,7 +1063,7 @@ Depth = 3
 
 *Example:*
 
-> alpha = 1.0
+> theta = 1e+6
 
 *Comment:*
 
@@ -1073,7 +1073,7 @@ Depth = 3
 
 *Definition:*
 
-> Scaling factor for the ``\alpha`` parameter. It should be larger than 1.0.
+> Tiny distance from the real axis ``\eta``, which is used to reconstruct the retarded Green's function and the spectral density. When it is increased, the spectral density will be become more and more smooth.
 
 *Type:*
 
@@ -1081,7 +1081,7 @@ Depth = 3
 
 *Example:*
 
-> ratio = 1.2
+> eta = 1e-4
 
 *Comment:*
 
