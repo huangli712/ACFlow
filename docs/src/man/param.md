@@ -945,3 +945,144 @@ Depth = 3
 *Comment:*
 
 > This parameter is mandatory.
+
+## [StochPX] Block
+
+!!! note
+
+    The parameters in this block is valid for the `StochPX` solver only.
+
+!!! warning
+
+    If `solver = "StochPX"`, the `[StochPX]` block must be available.
+
+### method
+
+*Definition:*
+
+> How to determine the optimized ``\Theta`` parameter? The `StochSK` solver supports two different algorithms. They are
+>
+> * chi2min
+> * chi2kink
+>
+> Usually, the `chi2min` algorithm is preferred. This algorithm is proposed by Shao and Sandvik *et al*. See [Stochastic Analytical Continuation 1](@ref san) for more details.
+
+*Type:*
+
+> String.
+
+*Example:*
+
+> method = "chi2min"
+
+*Comment:*
+
+> This parameter is mandatory.
+
+### nfine
+
+*Definition:*
+
+> Number of points of a very fine linear mesh. This mesh is for the ``\delta`` functions.
+
+*Type:*
+
+> Integer.
+
+*Example:*
+
+> nfine = 10000
+
+*Comment:*
+
+> This parameter is mandatory.
+
+### npole
+
+*Definition:* 
+
+> Number of ``\delta`` functions, which is used to mimic the spectral functions.
+
+*Type:*
+
+> Integer.
+
+*Example:*
+
+> ngamm = 512
+
+*Comment:*
+
+> This parameter is mandatory.
+
+### ntry
+
+*Definition:*
+
+> Number of Monte Carlo thermalization steps.
+
+*Type:*
+
+> Integer.
+
+*Example:*
+
+> nwarm = 4000
+
+*Comment:*
+
+> This parameter is mandatory.
+
+### nstep
+
+*Definition:*
+
+> Number of Monte Carlo sweeping steps.
+
+*Type:*
+
+> Integer.
+
+*Example:*
+
+> nstep = 4000000
+
+*Comment:*
+
+> This parameter is mandatory.
+
+### theta
+
+*Definition:*
+
+> Starting value for the ``\alpha`` parameter. The `StochAC` solver always starts with a small ``\alpha`` parameter, and then increases it gradually.
+
+*Type:*
+
+> Float.
+
+*Example:*
+
+> alpha = 1.0
+
+*Comment:*
+
+> This parameter is mandatory.
+
+### eta
+
+*Definition:*
+
+> Scaling factor for the ``\alpha`` parameter. It should be larger than 1.0.
+
+*Type:*
+
+> Float.
+
+*Example:*
+
+> ratio = 1.2
+
+*Comment:*
+
+> This parameter is mandatory.
