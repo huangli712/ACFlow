@@ -965,7 +965,7 @@ Depth = 3
 > * mean
 > * best
 >
-> If `method = "mean"`, then the solver will try to calculate averaged spectrum from some selected `good` solutions. If `method = "best"`, then then solve will pick up the best solution (which exhibits the smallest goodness-of-fit functional).
+> If `method = "mean"`, then the solver will try to calculate an averaged spectrum from some selected `good` solutions. If `method = "best"`, then then solve will pick up the best solution (which exhibits the smallest goodness-of-fit functional ``\chi^2``).
 
 *Type:*
 
@@ -1013,7 +1013,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. For condensed matter cases, `npole` should be large. While for molecule cases, `npole` should be small.
 
 ### ntry
 
