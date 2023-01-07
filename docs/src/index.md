@@ -4,7 +4,7 @@
 
 !!! note
 
-    Thank you for using ACFlow. This documentation will help you to be familiar with and use the ACFlow toolkit.
+    Thank you for using ACFlow. This documentation will help you to be familiar with and explore the ACFlow toolkit.
 
 !!! warning
 
