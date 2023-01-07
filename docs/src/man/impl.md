@@ -44,7 +44,7 @@ The source codes of the ACFlow toolkit are placed in the `acflow/src` folder. Th
 
 ## Documentation
 
- The documentation of the ACFlow toolkit is written by using the `Markdown` language and `Documenter.jl` package. The source codes are placed in the `acflow/docs` folder. The users can build documentation by themselves. Please see [Installation](@ref install) for how to do that. Or they can read the latest documentation in the following website:
+ The documentation of the ACFlow toolkit is written by using the `Markdown` language and the `Documenter.jl` package. The source codes are placed in the `acflow/docs` folder. The users can build documentation by themselves. Please see [Installation](@ref install) for how to do that. Or they can read the latest documentation in the following website:
 
 ```text
 https://huangli712.github.io/projects/acflow/index.html
