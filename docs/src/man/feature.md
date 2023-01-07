@@ -8,7 +8,7 @@ Now the ACFlow toolkit supports four analytical continuation methods as introduc
 * `StochOM`
 * `StochPX`
 
-Just as their names suggested, the `MaxEnt` solver implements the maximum entropy method. The `StochAC` and `StochSK` solvers implement the K. S. D. Beach's algorithm and A. W. Sandvik's algorithm of the stochastic analytical continuation, respectively. The `StochOM` solver implements the stochastic optimization method. The `StochPX` solver implements the stochastic pole expansion method. The ACFlow toolkit also provides a convenient library, which can be used to prepare and carry out analytical continuation calculations flexibly. The major features of the present ACFlow toolkit (*v1.2.0*) are summarized in **Table 1**.
+Just as their names suggested, the `MaxEnt` solver implements the maximum entropy method. The `StochAC` and `StochSK` solvers implement the K. S. D. Beach's algorithm and A. W. Sandvik's algorithm of the stochastic analytical continuation, respectively. The `StochOM` solver implements the stochastic optimization method. The `StochPX` solver implements the stochastic pole expansion method. The ACFlow toolkit also provides a convenient library, which can be used to prepare and carry out analytical continuation calculations flexibly. The major features of the present ACFlow toolkit (*v1.2.0* and above) are summarized in **Table 1**.
 
 | Features | MaxEnt | StochAC | StochSK | StochOM | StochPX |
 | :------- | :----: | :-----: | :-----: | :-----: | :-----: |
