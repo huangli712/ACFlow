@@ -960,12 +960,12 @@ Depth = 3
 
 *Definition:*
 
-> How to determine the optimized ``\Theta`` parameter? The `StochSK` solver supports two different algorithms. They are
+> How to evaluate the final spectral density? The `StochPX` solver supports two different algorithms. They are
 >
-> * chi2min
-> * chi2kink
+> * mean
+> * best
 >
-> Usually, the `chi2min` algorithm is preferred. This algorithm is proposed by Shao and Sandvik *et al*. See [Stochastic Analytical Continuation 1](@ref san) for more details.
+> If `method = "mean"`, 
 
 *Type:*
 
@@ -973,7 +973,7 @@ Depth = 3
 
 *Example:*
 
-> method = "chi2min"
+> method = "mean"
 
 *Comment:*
 
@@ -983,7 +983,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of points of a very fine linear mesh. This mesh is for the ``\delta`` functions.
+> Number of points of a very fine linear mesh. This mesh is for the poles.
 
 *Type:*
 
@@ -991,7 +991,7 @@ Depth = 3
 
 *Example:*
 
-> nfine = 10000
+> nfine = 100000
 
 *Comment:*
 
@@ -1001,7 +1001,7 @@ Depth = 3
 
 *Definition:* 
 
-> Number of ``\delta`` functions, which is used to mimic the spectral functions.
+> Number of poles on the real axis, which is used to mimic the Matsubara Green's function.
 
 *Type:*
 
@@ -1009,7 +1009,7 @@ Depth = 3
 
 *Example:*
 
-> ngamm = 512
+> npole = 200
 
 *Comment:*
 
@@ -1019,7 +1019,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of Monte Carlo thermalization steps.
+> Number of attempts to figure out the solution.
 
 *Type:*
 
@@ -1027,7 +1027,7 @@ Depth = 3
 
 *Example:*
 
-> nwarm = 4000
+> ntry = 1000
 
 *Comment:*
 
@@ -1037,7 +1037,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of Monte Carlo sweeping steps.
+> Number of Monte Carlo sweeping steps per attempt / try.
 
 *Type:*
 
@@ -1045,7 +1045,7 @@ Depth = 3
 
 *Example:*
 
-> nstep = 4000000
+> nstep = 1000000
 
 *Comment:*
 
