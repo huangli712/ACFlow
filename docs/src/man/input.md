@@ -109,7 +109,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-|`method` | string  | ''mean''    | How to evaluate the final spectral density. |
+|`method` | string  | ''mean''    | How to evaluate the final spectral density? |
 |`nfine`  | integer | 100000      | Number of points of a very fine linear mesh. |
 |`npole`  | integer | 200         | Number of poles. |
 |`ntry`   | integer | 1000        | Number of attempts to figure out the solution. |

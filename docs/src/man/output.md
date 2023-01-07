@@ -5,14 +5,15 @@ Once the analytical continuation simulation is finished, the final spectral func
 | Filename | Description |
 | :------- | :---------- |
 |`Aout.data` | Final spectral function ``A(\omega)``. |
-|`Gout.data` | Full Green's function at real axis ``G(\omega)``. |
-|`repr.data` | Reproduced Green's function ``\tilde{G}`` at imaginary time or frequency axis. |
-|`model.data` | Default model function ``m(\omega)``. |
-|`chi2.data` | ``\log_{10}(\chi^2)`` vs ``\log_{10}(\alpha)``. |
-|`prob.data` | ``P[\alpha\|\bar{G}]`` vs ``\alpha`` for the `MaxEnt` solver (`bryan` algorithm). |
 |`Aout.data.alpha`_``i`` | ``\alpha``-resolved spectral function ``A_{\alpha}(\omega)`` for the `StochAC` solver. |
-|`hamil.data` | ``U(\alpha)`` vs ``\alpha`` for the `StochAC` solver. |
+|`repr.data` | Reproduced Green's function ``\tilde{G}`` at imaginary time or frequency axis. |
+|`Gout.data` | Full Green's function at real axis ``G(\omega)``. |
+|`chi2.data` | ``\log_{10}(\chi^2)`` vs ``\log_{10}(\alpha)``. |
 |`goodness.dat` | ``\log_{10}(\chi^2)`` vs ``\log_{10}(\Theta)`` for the `StochSK` solver. |
-|`stat.data` | Monte Carlo statistical information for stochastic sampling method. |
+|`model.data` | Default model function ``m(\omega)``. |
+|`hamil.data` | ``U(\alpha)`` vs ``\alpha`` for the `StochAC` solver. |
+|`pole.data` | Amplitudes and positions of the poles for the `StochPX` solver. |
+|`prob.data` | ``P[\alpha\|\bar{G}]`` vs ``\alpha`` for the `MaxEnt` solver (`bryan` algorithm). |
+|`stat.data` | Monte Carlo statistical information for stochastic sampling methods. |
 
 **Table 1 |** Possible output files of the ACFlow toolkit.
