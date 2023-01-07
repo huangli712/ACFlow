@@ -2,7 +2,7 @@
 
 *A comprehensive dictionary about parameters*
 
-The official configuration file for the **ACFlow** toolkit is `case.toml`. This page contains all the valid parameters that can appear in `case.toml`. As for the format of `case.toml`, please look at [`case.toml`](input.md).
+The official configuration file for the ACFlow toolkit is `case.toml`. This page contains all the valid parameters that can appear in `case.toml`. As for the format of `case.toml`, please look at [`case.toml`](input.md).
 
 ## Contents
 
