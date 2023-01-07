@@ -1,0 +1,37 @@
+#
+# Test: A07
+#
+# 0. Run gendata.jl to generate input data at first.
+# 1. Change [BASE] -> solver (MaxEnt or StochOM).
+# 2. Change the [MaxEnt] -> method (chi2kink or bryan).
+# 3. Execute ../../util/acrun.jl ac.toml.
+#
+
+[BASE]
+finput = "chiw.data"
+solver = "MaxEnt"
+ktype  = "bsymm"
+mtype  = "risedecay"
+grid   = "bfreq"
+mesh   = "halflorentz"
+ngrid  = 20
+nmesh  = 801
+wmax   = 8.0
+wmin   = 0.0
+beta   = 20.0
+offdiag = false
+
+[MaxEnt]
+method = "chi2kink"
+nalph  = 14
+alpha  = 1e12
+ratio  = 10.0
+blur   = 0.8
+
+[StochOM]
+ntry   = 100000
+nstep  = 1000
+nbox   = 100
+sbox   = 0.005
+wbox   = 0.02
+norm   = -1.0
