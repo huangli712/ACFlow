@@ -4,11 +4,11 @@ The input files for the ACFlow toolkit can be divided into two groups: data file
 
 ## Data Files
 
-The input data should be store in CSV-like text files. For imaginary time Green's function, the data file should contain three columns. They represent ``\tau``, ``\bar{G}(\tau)``, and standard deviation of ``\bar{G}(\tau)``. For fermionic Matsubara Green's function, the data file should contain five columns. They represent ``\omega_n``, Re``G(i\omega_n)``, Im``G(i\omega_n)``, standard deviation of Re``G(i\omega_n)``, and standard deviation of Im``G(i\omega_n)``. For bosonic correlation function ``\chi(i\omega_n)``, the data file should contain four columns. They represent ``\omega_n``, Re``\chi(i\omega_n)``, and standard deviation of Re``\chi(i\omega_n)``.
+The input data should be store in CSV-like text files. For imaginary time Green's function, the data file should contain three columns. They represent ``\tau``, ``\bar{G}(\tau)``, and standard deviation of ``\bar{G}(\tau)``. For fermionic Matsubara Green's function, the data file should contain five columns. They represent ``\omega_n``, Re``G(i\omega_n)``, Im``G(i\omega_n)``, standard deviation of Re``G(i\omega_n)``, and standard deviation of Im``G(i\omega_n)``. For bosonic correlation function ``\chi(i\omega_n)``, the data file should contain three columns. They represent ``\omega_n``, Re``\chi(i\omega_n)``, and standard deviation of Re``\chi(i\omega_n)``.
 
 ## Configuration Files
 
-The configuration file adopts the TOML format. It is used to setup the computational parameters. It consists of one or more blocks. Possible blocks (or sections) of the configuration file include `[BASE]`, `[MaxEnt]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]`. The `[BASE]` block is mandatory, while the other blocks are optional. A schematic configuration file (`ac.toml`) is listed as follows:
+The configuration file adopts the TOML format. It is used to customize the computational parameters. It consists of one or more blocks. Possible blocks (or sections) of the configuration file include `[BASE]`, `[MaxEnt]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]`. The `[BASE]` block is mandatory, while the other blocks are optional. A schematic configuration file (`ac.toml`) is listed as follows:
 
 ```toml
 [BASE]
@@ -62,12 +62,12 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 |`method` | string  | ''chi2kink''| How to determine the optimized ``\alpha`` parameter? |
-|`nalph`  | integer | 12          | Total number of the chosen ``\alpha`` parameters. |
+|`nalph`  | integer | 12          | Total number of the used ``\alpha`` parameters. |
 |`alpha`  | float   | 1e9         | Starting value for the ``\alpha`` parameter. |
 |`ratio`  | float   | 10.0        | Scaling factor for the ``\alpha`` parameter. |
 |`blur`   | float   | -1.0        | Shall we preblur the kernel and spectrum? |
 
-**Table 2 |** Possible input parameters for the `[MaxEnt]` block, which are used to setup the solver based on the maximum entropy method.
+**Table 2 |** Possible input parameters for the `[MaxEnt]` block, which are used to configure the solver based on the maximum entropy method.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -76,11 +76,11 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`nwarm`  | integer | 4000        | Number of Monte Carlo thermalization steps. |
 |`nstep`  | integer | 4000000     | Number of Monte Carlo sweeping steps. |
 |`ndump`  | integer | 40000       | Intervals for monitoring Monte Carlo sweeps. |
-|`nalph`  | integer | 20          | Total number of the chosen ``\alpha`` parameters. |
+|`nalph`  | integer | 20          | Total number of the used ``\alpha`` parameters. |
 |`alpha`  | float   | 1.0         | Starting value for the ``\alpha`` parameter. |
 |`ratio`  | float   | 1.2         | Scaling factor for the ``\alpha`` parameter. |
 
-**Table 3 |** Possible input parameters for the `[StochAC]` block, which are used to setup the solver based on the stochastic analytical continuation (Beach's algorithm).
+**Table 3 |** Possible input parameters for the `[StochAC]` block, which are used to configure the solver based on the stochastic analytical continuation (Beach's algorithm).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -94,18 +94,18 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`theta`  | float   | 1e6         | Starting value for the ``\Theta`` parameter. |
 |`ratio`  | float   | 0.9         | Scaling factor for the ``\Theta`` parameter. |
 
-**Table 4 |** Possible input parameters for the `[StochSK]` block, which are used to setup the solver based on the stochastic analytical continuation (Sandvik's algorithm).
+**Table 4 |** Possible input parameters for the `[StochSK]` block, which are used to configure the solver based on the stochastic analytical continuation (Sandvik's algorithm).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 |`ntry`   | integer | 2000        | Number of attempts to figure out the solution. |
-|`nstep`  | integer | 1000        | Number of Monte Carlo steps per try. |
-|`nbox`   | integer | 100         | Number of boxes to construct the spectrum. |
+|`nstep`  | integer | 1000        | Number of Monte Carlo sweeping steps per try. |
+|`nbox`   | integer | 100         | Number of rectangles to used construct the spectrum. |
 |`sbox`   | float   | 0.005       | Minimum area of the randomly generated rectangles. |
 |`wbox`   | float   | 0.02        | Minimum width of the randomly generated rectangles. |
 |`norm`   | float   | -1.0        | Is the norm calculated? |
 
-**Table 5 |** Possible input parameters for the `[StochOM]` block, which are used to setup the solver based on the stochastic optimization method.
+**Table 5 |** Possible input parameters for the `[StochOM]` block, which are used to configure the solver based on the stochastic optimization method.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -113,8 +113,8 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`nfine`  | integer | 100000      | Number of points of a very fine linear mesh. |
 |`npole`  | integer | 200         | Number of poles. |
 |`ntry`   | integer | 1000        | Number of attempts to figure out the solution. |
-|`nstep`  | integer | 1000000     | Number of Monte Carlo steps per attempt / try. |
+|`nstep`  | integer | 1000000     | Number of Monte Carlo sweeping steps per attempt / try. |
 |`theta`  | float   | 1e+6        | Artificial inverse temperature ``\Theta``. |
 |`eta`    | float   | 1e-4        | Tiny distance from the real axis ``\eta``. |
 
-**Table 6 |** Possible input parameters for the `[StochPX]` block, which are used to setup the solver based on the stochastic pole expansion.
+**Table 6 |** Possible input parameters for the `[StochPX]` block, which are used to configure the solver based on the stochastic pole expansion.

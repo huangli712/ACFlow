@@ -4,11 +4,11 @@ The ACFlow toolkit is designed to be flexible and easy-to-use. It provides three
 
 !!! warning
 
-    The environment variable `ACFLOW_HOME` must be setup at advance.
+    The environment variable `ACFLOW_HOME` must be set at advance.
 
 ## Interactive Mode
 
-With the ACFlow toolkit, the users can setup and carry out analytical continuation simulations interactively in Julia's REPL (Read-Eval-Print Loop) environment. For example,
+With the ACFlow toolkit, the users can configure and carry out analytical continuation simulations interactively in Julia's REPL (Read-Eval-Print Loop) environment. For example,
 
 ```julia-repl
 julia> push!(LOAD_PATH, ENV["ACFLOW_HOME"])
