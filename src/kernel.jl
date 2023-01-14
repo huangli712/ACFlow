@@ -194,7 +194,6 @@ K(\omega_n,\omega) = \frac{\omega}{i\omega_n - \omega},
 \end{equation}
 ```
 
-where ``\omega_n`` is a Matsubara frequencies equal to ``2n\pi/\beta``.
 Especially, if ``\omega_n = 0`` and ``\omega = 0``,
 
 ```math
@@ -204,9 +203,7 @@ K(0,0) = -1.
 ```
 
 Here, the spectral density ``A(\omega)``, or equivalently ``\tilde{A}(\omega)``,
-is defined on ``(-\infty,\infty)``. ``G_{B}(\tau)`` is related to
-``G_{B}(i\omega_n)`` via the Fourier transformation and inverse Fourier
-transformation as mentioned above.
+is defined on ``(-\infty,\infty)``.
 
 These kernel functions are for finite temperature correlation function of
 boson-like operators ``B`` and ``B^{\dagger}``,
