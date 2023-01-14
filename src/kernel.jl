@@ -231,15 +231,37 @@ In imaginary-time axis, we have
 
 ```math
 \begin{equation}
+G_{B}(\tau) = \int^{\infty}_{0} d\omega
+              \frac{e^{-\tau\omega} + e^{-(\beta - \tau)\omega}}
+                   {1 - e^{-\beta\omega}}
+              A(\omega).
+\end{equation}
+```
+
+We introduce ``\tilde{A}(\omega) = A(\omega)/\omega`` again:
+
+```math
+\begin{equation}
+G_{B}(\tau) = \int^{\infty}_{0} d\omega
+              \frac{\omega [e^{-\tau\omega} + e^{-(\beta - \tau)\omega}]}
+                   {1 - e^{-\beta\omega}}
+              \tilde{A}(\omega).
+\end{equation}
+```
+
+```math
+\begin{equation}
 K(\tau,\omega) = \frac{\omega [e^{-\tau\omega} + e^{-(\beta - \tau)\omega}]}
-                      {2(1 - e^{-\beta\omega})}.
+                      {1 - e^{-\beta\omega}}.
 \end{equation}
 ```
 
 if ``\omega = 0``,
 
 ```math
-K(\tau,0) = \frac{1}{\beta}.
+\begin{equation}
+K(\tau,0) = \frac{2}{\beta}.
+\end{equation}
 ```
 
 In Matsubara frequency axis, we have
