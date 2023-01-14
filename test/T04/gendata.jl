@@ -60,9 +60,9 @@ noise_ampl = 1.0e-4
 noise = randn(rng, F64, niw) * noise_ampl
 
 # Kernel function
-kernel = reshape(rmesh .^ 2.0, (1,nmesh)) ./
+kernel = -2.0 * reshape(rmesh .^ 2.0, (1,nmesh)) ./
          (reshape(iw .^ 2.0, (niw,1)) .+ reshape(rmesh .^ 2.0, (1,nmesh)))
-kernel[1,1] = 1.0
+kernel[1,1] = -2.0
 
 # Build green's function
 KA = kernel .* reshape(image, (1,nmesh))
@@ -70,11 +70,9 @@ chiw = zeros(F64, niw)
 for i in eachindex(chiw)
     chiw[i] = trapz(rmesh, KA[i,:]) + noise[i]
 end
-norm = chiw[1]
-chiw = chiw / norm
 
 # Build error
-err = ones(F64, niw) * noise_ampl / norm
+err = ones(F64, niw) * noise_ampl
 
 # Write green's function
 open("chiw.data", "w") do fout
@@ -103,8 +101,8 @@ for i = 1:ntau
     tw = exp.(-tmesh[i] * rmesh)
     bw = exp.(-beta * rmesh)
     btw = exp.(-(beta - tmesh[i]) * rmesh)
-    K = 0.5 * rmesh .* (tw .+ btw) ./ (1.0 .- bw)
-    K[1] = 1.0 / beta
+    K = rmesh .* (tw .+ btw) ./ (1.0 .- bw)
+    K[1] = 2.0 / beta
     global KA = K .* image
     chit[i] = trapz(rmesh, KA) + noise[i]
 end
