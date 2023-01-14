@@ -267,13 +267,13 @@ In Matsubara frequency axis, we have
 ```math
 \begin{equation}
 G_{B}(i\omega_n) = \int^{\infty}_{0} d\omega
-                   \frac{2\omega^2}{\omega_n^2 + \omega^2} \tilde{A}(\omega).
+                   \frac{-2\omega^2}{\omega_n^2 + \omega^2} \tilde{A}(\omega).
 \end{equation}
 ```
 
 ```math
 \begin{equation}
-K(\omega_n, \omega) = \frac{2\omega^2}{\omega_n^2 + \omega^2}.
+K(\omega_n, \omega) = \frac{-2\omega^2}{\omega_n^2 + \omega^2}.
 \end{equation}
 ```
 
@@ -281,7 +281,7 @@ Especially, if ``\omega_n = 0`` and ``\omega = 0``,
 
 ```math
 \begin{equation}
-K(0,0) = 2.
+K(0,0) = -2.
 \end{equation}
 ```
 
@@ -289,7 +289,7 @@ This is a special case of the previous observable kind with ``b = b^{\dagger}``
 , and its use is in general preferred due to the reduced ``A(\omega)``
 definition domain. Here, the spectral density ``A(\omega)``, or equivalently
 ``\tilde{A}(\omega)``, is defined on ``(0,\infty)``. Note that ``A(\omega)``
-is an odd function, while ``\tilde{A}(\omega)`` is an even function. The most
+is an odd function, hence ``\tilde{A}(\omega)`` is an even function. The most
 widely used observables of this kind are the longitudinal spin susceptibility,
 
 ```math
@@ -313,7 +313,16 @@ For bosonic-like system, the calculated spectral density might be not
 fact depends on the type of the correlation function and how the kernel
 function is defined.
 
+**Reference:**
+
+[1] J. Schott, *et al.*, Phys. Rev. B **94**, 245140 (2016).
+
+[2] O. Gunnarsson, *et al.*, Phys. Rev. B **82**, 165125 (2010).
+
+[3] M. Jarrell, *et al.*, Phys. Rep. **269**, 133 (1996).
+
 ---
+
 =#
 
 """
