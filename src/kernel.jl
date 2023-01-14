@@ -22,7 +22,38 @@ The purpose of `ACFlow` is to solve the following equation:
 
 Here, ``\mathbf{G}``, ``\mathbf{K}``, and ``\mathbf{A}`` are the input
 green's function, kernel function, and spectral density, respectively.
-`ACFlow` supports various kernel functions. They are summaried as follows.
+`ACFlow` supports various kernel functions. Here, we would like to dive
+into them.
+
+---
+
+**Preliminary Knowledge: Imaginary-Time Green's Function**
+
+The single-particle imaginary-time Green's function reads,
+
+```math
+\begin{equation}
+G_{F/B}(\tau) = \langle \mathcal{T}_{\tau} c(\tau) c^{\dagger}(0)\rangle,
+\end{equation}
+```
+
+where `F` denotes fermions and `B` denotes bosons.
+
+For fermions, ``G_{F}(\tau)`` must fulfil the anti-periodicity condition,
+
+```math
+\begin{equation}
+G_{F}(\tau + \beta) = -G_{F}(\tau).
+\end{equation}
+```
+
+For bosons, ``G_{B}(\tau)`` must be ``\beta``-periodic, i.e.,
+
+```math
+\begin{equation}
+G_{B}(\tau + \beta) = G_{B}(\tau).
+\end{equation}
+```
 
 ---
 
@@ -40,9 +71,14 @@ G(i\omega_n) = \int^{\beta}_0 d\tau\ e^{-i\omega_n \tau} G(\tau),
 
 ```math
 \begin{equation}
-G(\tau) = \frac{1}{\beta} \sum_n e^{i\omega_n \tau} G(i\omega_n).
+G(\tau) = \frac{1}{\beta} \sum_n e^{i\omega_n \tau} G(i\omega_n),
 \end{equation}
 ```
+
+where ``\beta`` is the inverse temperature (``\beta = 1/T``), ``\tau``
+denotes the imaginary time and ``\omega_n`` means the Matsubara frequency.
+Note that ``\omega_n = (2n + 1) \pi / \beta`` and ``2n \pi / \beta`` for
+fermions and bosons, respectively.
 
 ---
 
@@ -78,26 +114,8 @@ K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega},
 \end{equation}
 ```
 
-where ``\omega_n`` is a Matsubara frequency. It is equal to ``(2n + 1)\pi/\beta``.
 The spectral density ``A(\omega)`` is defined on ``(-\infty,\infty)`` and is causal,
 i.e., ``A(\omega) \ge 0``.
-
-These kernel functions are for the finite temperature Green's function of
-fermions,
-
-```math
-\begin{equation}
-G(\tau) = \langle \mathcal{T}_{\tau} c(\tau) c^{\dagger}(0)\rangle.
-\end{equation}
-```
-
-``G(\tau)`` must fulfil the anti-periodicity condition,
-
-```math
-\begin{equation}
-G(\tau + \beta) = -G(\tau).
-\end{equation}
-```
 
 It is also possible to analytically continue similar anti-periodic
 functions, such as fermionic self-energy function ``\Sigma(i\omega_n)``,
@@ -199,13 +217,7 @@ boson-like operators ``B`` and ``B^{\dagger}``,
 \end{equation}
 ```
 
-``\chi_{B}(\tau)`` must be ``\beta``-periodic, i.e.,
 
-```math
-\begin{equation}
-\chi_{B}(\tau + \beta) = \chi_{B}(\tau).
-\end{equation}
-```
 
 Typical examples of such functions are Green's function of bosons
 
