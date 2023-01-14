@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/11/08
+# Last modified: 2023/01/14
 #
 
 #=
@@ -57,12 +57,13 @@ K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega},
 ```
 
 where ``\omega_n`` is a Matsubara frequencies equal to ``(2n + 1)\pi/\beta``.
+The spectral density ``A(\omega)`` is defined on ``(-\infty,\infty)``.
 
 These kernel functions are for the finite temperature Green's function of
 fermions,
 
 ```math
-G(\tau) = -\langle \mathcal{T} c(\tau) c^{\dagger}(0)\rangle.
+G(\tau) = \langle \mathcal{T}_{\tau} c(\tau) c^{\dagger}(0)\rangle.
 ```
 
 ``G(\tau)`` must fulfil the anti-periodicity condition,
@@ -71,7 +72,7 @@ G(\tau) = -\langle \mathcal{T} c(\tau) c^{\dagger}(0)\rangle.
 G(\tau + \beta) = -G(\tau).
 ```
 
-And its Fourier transform and inverse Fourier transform are given by
+And its Fourier transformation and inverse Fourier transformation are given by
 
 ```math
 G(i\omega_n) = \int^{\beta}_0 d\tau\ e^{-i\omega_n \tau} G(\tau),
@@ -96,8 +97,34 @@ In imaginary-time axis, we have
 ```math
 \begin{equation}
 G_{B}(\tau) = \int^{+\infty}_{-\infty} d\omega
+          \frac{e^{-\tau\omega}}{1 - e^{-\beta\omega}}
+          A(\omega),
+\end{equation}
+```
+
+For bosonic system, the spectral density obey the following constraint:
+
+```math
+\begin{equation}
+\text{sign}(\omega) A(\omega) \ge 0.
+\end{equation}
+```
+
+It is quite convenient to introduce a new variable ``\tilde{A}(\omega)``:
+
+```math
+\begin{equation}
+\tilde{A}(\omega) = \frac{A(\omega)}{\omega}.
+\end{equation}
+```
+
+Clearly, $\tilde{A}(\omega) \ge 0$. Thus, we have
+
+```math
+\begin{equation}
+G_{B}(\tau) = \int^{+\infty}_{-\infty} d\omega
           \frac{\omega e^{-\tau\omega}}{1 - e^{-\beta\omega}}
-          \frac{A(\omega)}{\omega},
+          \tilde{A}(\omega),
 \end{equation}
 ```
 
@@ -120,8 +147,9 @@ In Matsubara frequency axis, we have
 ```math
 \begin{equation}
 G_{B}(i\omega_n) = \int^{+\infty}_{-\infty} d\omega
-               \frac{\omega}{i\omega_n - \omega}
-               \frac{A(\omega)}{\omega},
+               \frac{1}{i\omega_n - \omega} A(\omega)
+                 = \int^{+\infty}_{-\infty} d\omega
+               \frac{\omega}{i\omega_n - \omega} \tilde{A}(\omega)
 \end{equation}
 ```
 
@@ -132,9 +160,6 @@ K(\omega_n,\omega) = \frac{\omega}{i\omega_n - \omega},
 ```
 
 where ``\omega_n`` is a Matsubara frequencies equal to ``2n\pi/\beta``.
-``G_{B}(\tau)`` is related to ``G_{B}(i\omega_n)`` via the Fourier
-transform as mentioned above.
-
 Especially, if ``\omega_n = 0`` and ``\omega = 0``,
 
 ```math
@@ -142,6 +167,11 @@ Especially, if ``\omega_n = 0`` and ``\omega = 0``,
 K(0,0) = -1.
 \end{equation}
 ```
+
+Here, the spectral density ``A(\omega)``, or equivalently ``\tilde{A}(\omega)``,
+is defined on ``(-\infty,\infty)``. ``G_{B}(\tau)`` is related to
+``G_{B}(i\omega_n)`` via the Fourier transformation and inverse Fourier
+transformation as mentioned above.
 
 These kernel functions are for finite temperature correlation function of
 boson-like operators ``B`` and ``B^{\dagger}``,
