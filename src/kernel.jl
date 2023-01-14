@@ -490,10 +490,11 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
         for i = 1:nmesh
             for j = 1:nfreq
                 kernel[j,i] = am[i] ^ 2.0 / ( bg[j] ^ 2.0 + am[i] ^ 2.0 )
+                kernel[j,i] = -2.0 * kernel[j,i]
             end
         end
         if am[1] == 0.0 && bg[1] == 0.0
-            kernel[1,1] = 1.0
+            kernel[1,1] = -2.0
         end
     else
         bmesh, gaussian = make_gauss_peaks(blur)
@@ -507,12 +508,12 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
             for j = 1:nfreq
                 g² = bg[j] ^ 2.0
                 for k = 1:nsize
-                    A² = (bmesh[k] + am[i]) ^ 2.0; I₁[k] = A² / (A² + g²)
-                    B² = (bmesh[k] - am[i]) ^ 2.0; I₂[k] = B² / (B² + g²)
+                    A² = (bmesh[k] + am[i]) ^ 2.0; I₁[k] = -2.0 * A² / (A² + g²)
+                    B² = (bmesh[k] - am[i]) ^ 2.0; I₂[k] = -2.0 * B² / (B² + g²)
                 end
                 if i == 1 && j == 1
-                    I₁ .= 1.0
-                    I₂ .= 1.0
+                    I₁ .= -2.0
+                    I₂ .= -2.0
                 end
                 @. I₃ = (I₁ + I₂) * gaussian / 2.0
                 kernel[j,i] = simpson(bmesh, I₃)
