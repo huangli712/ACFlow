@@ -107,13 +107,13 @@ Depth = 3
 > `bsymm` means symmetric bosonic kernel function, which reads
 >
 > ```math
-> K(\tau,\omega) = \frac{\omega [e^{-\tau\omega} + e^{-(\beta - \tau)\omega}]} {2(1 - e^{-\beta\omega})},
+> K(\tau,\omega) = \frac{\omega [e^{-\tau\omega} + e^{-(\beta - \tau)\omega}]} {1 - e^{-\beta\omega}},
 > ```
 >
 > and
 >
 > ```math
-> K(\omega_n, \omega) = \frac{\omega^2}{\omega_n^2 + \omega^2}.
+> K(\omega_n, \omega) = \frac{-2\omega^2}{\omega_n^2 + \omega^2}.
 > ```
 >
 > As for detailed formula for these kernel functions, please refer to `src/kernel.jl`.
