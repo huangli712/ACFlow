@@ -10,6 +10,8 @@
 #=
 *Remarks* :
 
+**Preliminary Knowledge: Background**
+
 The purpose of `ACFlow` is to solve the following equation:
 
 ```math
@@ -21,6 +23,22 @@ The purpose of `ACFlow` is to solve the following equation:
 Here, ``\mathbf{G}``, ``\mathbf{K}``, and ``\mathbf{A}`` are the input
 green's function, kernel function, and spectral density, respectively.
 `ACFlow` supports various kernel functions. They are summaried as follows.
+
+---
+
+**Preliminary Knowledge: Fourier Transformation**
+
+The imaginary-time Green's function ``G(\tau)`` and Matsubara Green's
+function ``G(i\omega_n)`` are connected by the Fourier transformation
+and inverse Fourier transformation:
+
+```math
+G(i\omega_n) = \int^{\beta}_0 d\tau\ e^{-i\omega_n \tau} G(\tau),
+```
+
+```math
+G(\tau) = \frac{1}{\beta} \sum_n e^{i\omega_n \tau} G(i\omega_n).
+```
 
 ---
 
@@ -72,18 +90,9 @@ G(\tau) = \langle \mathcal{T}_{\tau} c(\tau) c^{\dagger}(0)\rangle.
 G(\tau + \beta) = -G(\tau).
 ```
 
-And its Fourier transformation and inverse Fourier transformation are given by
 
-```math
-G(i\omega_n) = \int^{\beta}_0 d\tau\ e^{-i\omega_n \tau} G(\tau),
-```
-
-```math
-G(\tau) = \frac{1}{\beta} \sum_n e^{i\omega_n \tau} G(i\omega_n).
-```
-
-It is possible to analytically continue similar anti-periodic
-functions, such as fermionic self-energy function ``\Sigma``,
+It is also possible to analytically continue similar anti-periodic
+functions, such as fermionic self-energy function ``\Sigma(i\omega_n)``,
 with these kernel functions. For the self-energies, it is addtionally
 required that the constant contribution ``\Sigma(i\infty)`` is
 subtracted from ``\Sigma(i\omega_n)``.
