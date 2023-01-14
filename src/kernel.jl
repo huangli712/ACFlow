@@ -114,14 +114,14 @@ K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega},
 \end{equation}
 ```
 
-The spectral density ``A(\omega)`` is defined on ``(-\infty,\infty)`` and is causal,
+The spectral density ``A(\omega)`` is defined on ``(-\infty,\infty)``. It is causal,
 i.e., ``A(\omega) \ge 0``.
 
 It is also possible to analytically continue similar anti-periodic
-functions, such as fermionic self-energy function ``\Sigma(i\omega_n)``,
+functions, such as the fermionic self-energy function ``\Sigma(i\omega_n)``,
 with these kernel functions. For the self-energies, it is addtionally
 required that the constant contribution ``\Sigma(i\infty)`` is
-subtracted from ``\Sigma(i\omega_n)``.
+subtracted from ``\Sigma(i\omega_n)`` beforehand.
 
 ---
 
