@@ -74,8 +74,9 @@ K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega},
 \end{equation}
 ```
 
-where ``\omega_n`` is a Matsubara frequencies equal to ``(2n + 1)\pi/\beta``.
-The spectral density ``A(\omega)`` is defined on ``(-\infty,\infty)``.
+where ``\omega_n`` is a Matsubara frequency. It is equal to ``(2n + 1)\pi/\beta``.
+The spectral density ``A(\omega)`` is defined on ``(-\infty,\infty)`` and is causal,
+i.e., ``A(\omega) \ge 0``.
 
 These kernel functions are for the finite temperature Green's function of
 fermions,
