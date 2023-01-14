@@ -285,7 +285,7 @@ K(0,0) = 2.
 \end{equation}
 ```
 
-This is a special case of the previous observable kind with ``B = B^{\dagger}``
+This is a special case of the previous observable kind with ``b = b^{\dagger}``
 , and its use is in general preferred due to the reduced ``A(\omega)``
 definition domain. Here, the spectral density ``A(\omega)``, or equivalently
 ``\tilde{A}(\omega)``, is defined on ``(0,\infty)``. Note that ``A(\omega)``
