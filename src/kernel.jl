@@ -194,25 +194,33 @@ These kernel functions are for finite temperature correlation function of
 boson-like operators ``B`` and ``B^{\dagger}``,
 
 ```math
-\chi_{B}(\tau) = \langle \mathcal{T} B(\tau) B^{\dagger}(0)\rangle.
+\begin{equation}
+\chi_{B}(\tau) = \langle \mathcal{T}_{\tau} B(\tau) B^{\dagger}(0)\rangle.
+\end{equation}
 ```
 
 ``\chi_{B}(\tau)`` must be ``\beta``-periodic, i.e.,
 
 ```math
+\begin{equation}
 \chi_{B}(\tau + \beta) = \chi_{B}(\tau).
+\end{equation}
 ```
 
 Typical examples of such functions are Green's function of bosons
 
 ```math
+\begin{equation}
 G_{b}(\tau) = \langle \mathcal{T} b(\tau) b^{\dagger}(0)\rangle,
+\end{equation}
 ```
 
 and the transverse spin susceptibility
 
 ```math
+\begin{equation}
 \chi_{+-}(\tau) = \langle \mathcal{T} S_{+}(\tau) S_{-}(0) \rangle.
+\end{equation}
 ```
 
 ---
