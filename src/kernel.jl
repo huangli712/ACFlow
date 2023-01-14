@@ -33,11 +33,15 @@ function ``G(i\omega_n)`` are connected by the Fourier transformation
 and inverse Fourier transformation:
 
 ```math
+\begin{equation}
 G(i\omega_n) = \int^{\beta}_0 d\tau\ e^{-i\omega_n \tau} G(\tau),
+\end{equation}
 ```
 
 ```math
+\begin{equation}
 G(\tau) = \frac{1}{\beta} \sum_n e^{i\omega_n \tau} G(i\omega_n).
+\end{equation}
 ```
 
 ---
@@ -82,15 +86,18 @@ These kernel functions are for the finite temperature Green's function of
 fermions,
 
 ```math
+\begin{equation}
 G(\tau) = \langle \mathcal{T}_{\tau} c(\tau) c^{\dagger}(0)\rangle.
+\end{equation}
 ```
 
 ``G(\tau)`` must fulfil the anti-periodicity condition,
 
 ```math
+\begin{equation}
 G(\tau + \beta) = -G(\tau).
+\end{equation}
 ```
-
 
 It is also possible to analytically continue similar anti-periodic
 functions, such as fermionic self-energy function ``\Sigma(i\omega_n)``,
