@@ -53,8 +53,8 @@ for i = 1:ntau
     tw = exp.(-tmesh[i] * rmesh)
     bw = exp.(-beta * rmesh)
     btw = exp.(-(beta - tmesh[i]) * rmesh)
-    K = 0.5 * rmesh .* (tw .+ btw) ./ (1.0 .- bw)
-    K[1] = 1.0 / beta
+    K = rmesh .* (tw .+ btw) ./ (1.0 .- bw)
+    K[1] = 2.0 / beta
     KA = K .* image
     gtau[i] = trapz(rmesh, KA) + noise[i]
 end
