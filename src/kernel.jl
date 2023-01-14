@@ -268,7 +268,14 @@ In Matsubara frequency axis, we have
 
 ```math
 \begin{equation}
-K(\omega_n, \omega) = \frac{\omega^2}{\omega_n^2 + \omega^2}.
+G_{B}(i\omega_n) = \int^{\infty}_{0} d\omega
+                   \frac{2\omega^2}{\omega_n^2 + \omega^2} \tilde{A}(\omega).
+\end{equation}
+```
+
+```math
+\begin{equation}
+K(\omega_n, \omega) = \frac{2\omega^2}{\omega_n^2 + \omega^2}.
 \end{equation}
 ```
 
@@ -276,23 +283,29 @@ Especially, if ``\omega_n = 0`` and ``\omega = 0``,
 
 ```math
 \begin{equation}
-K(0,0) = 1.
+K(0,0) = 2.
 \end{equation}
 ```
 
 This is a special case of the previous observable kind with ``B = B^{\dagger}``
 , and its use is in general preferred due to the reduced ``A(\omega)``
-definition domain. The most widely used observables of this kind are
-the longitudinal spin susceptibility,
+definition domain. Here, the spectral density ``A(\omega)``, or equivalently
+``\tilde{A}(\omega)``, is defined on ``(0,\infty)``. Note that ``A(\omega)``
+is an odd function, while ``\tilde{A}(\omega)`` is an even function. The most
+widely used observables of this kind are the longitudinal spin susceptibility,
 
 ```math
+\begin{equation}
 \chi_{zz}(\tau) = \langle S_z(\tau) S_z(0) \rangle,
+\end{equation}
 ```
 
 and the charge susceptibility,
 
 ```math
+\begin{equation}
 \chi(\tau) = \langle N(\tau) N(0) \rangle.
+\end{equation}
 ```
 
 **Cautions:**
