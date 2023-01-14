@@ -459,13 +459,13 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
     kernel = zeros(F64, ntime, nmesh)
     #
     for i = 1:nmesh
-        r = am[i] * 0.5 / (1.0 - exp(-β * am[i]))
+        r = am[i] / (1.0 - exp(-β * am[i]))
         for j = 1:ntime
             kernel[j,i] = r * (exp(-am[i] * bg[j]) + exp(-am[i] * (β - bg[j])))
         end
     end
     #
-    @. kernel[:,1] = 1.0 / β
+    @. kernel[:,1] = 2.0 / β
 
     return kernel
 end
