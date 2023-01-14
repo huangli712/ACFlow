@@ -205,22 +205,11 @@ K(0,0) = -1.
 Here, the spectral density ``A(\omega)``, or equivalently ``\tilde{A}(\omega)``,
 is defined on ``(-\infty,\infty)``.
 
-These kernel functions are for finite temperature correlation function of
-boson-like operators ``B`` and ``B^{\dagger}``,
+Typical examples of this case include Green's function of bosons
 
 ```math
 \begin{equation}
-\chi_{B}(\tau) = \langle \mathcal{T}_{\tau} B(\tau) B^{\dagger}(0)\rangle.
-\end{equation}
-```
-
-
-
-Typical examples of such functions are Green's function of bosons
-
-```math
-\begin{equation}
-G_{b}(\tau) = \langle \mathcal{T} b(\tau) b^{\dagger}(0)\rangle,
+G_{b}(\tau) = \langle \mathcal{T}_{\tau} b(\tau) b^{\dagger}(0)\rangle,
 \end{equation}
 ```
 
@@ -228,7 +217,7 @@ and the transverse spin susceptibility
 
 ```math
 \begin{equation}
-\chi_{+-}(\tau) = \langle \mathcal{T} S_{+}(\tau) S_{-}(0) \rangle.
+\chi_{+-}(\tau) = \langle \mathcal{T}_{\tau} S_{+}(\tau) S_{-}(0) \rangle.
 \end{equation}
 ```
 
