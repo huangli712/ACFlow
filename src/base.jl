@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/03
+# Last modified: 2023/01/17
 #
 
 """
@@ -246,6 +246,7 @@ See also: [`RawData`](@ref).
 """
 function read_data(only_real_part::Bool = true)
     finput = get_b("finput")
+    ktype = get_b("ktype")
     ngrid = get_b("ngrid")
 
     @cswitch get_b("grid") begin
@@ -262,7 +263,11 @@ function read_data(only_real_part::Bool = true)
             break
 
         @case "bfreq"
-            return read_cmplx_data(finput, ngrid, only_real_part)
+            if ktype == "boson"
+                return read_cmplx_data(finput, ngrid)
+            else
+                return read_cmplx_data(finput, ngrid, only_real_part)
+            end
             break
 
         @default
@@ -283,17 +288,18 @@ while the `RawData` struct is exposed to the users.
 See also: [`RawData`](@ref), [`GreenData`](@ref).
 """
 function make_data(rd::RawData)
+    ktype = get_b("ktype")
     grid = get_b("grid")
     val = rd.value
     err = rd.error
 
-    if grid == "ffreq"
+    if grid == "ffreq" || ( grid == "bfreq" && ktype == "boson" )
         value = vcat(real(val), imag(val))
         error = vcat(real(err), imag(err))
         covar = error .^ 2.0
         _data = GreenData(value, error, covar)
         return _data
-    else
+    else # grid == "bfreq" && ktype == "bsymm"
         value = real(val)
         error = real(err)
         covar = error .^ 2.0
