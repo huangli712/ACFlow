@@ -44,6 +44,12 @@ noise = noise_abs .* exp.(noise_phase * im)
 # Kernel function
 kernel = reshape(rmesh, (1,nmesh)) ./ 
              (im * reshape(iw, (niw,1)) .- reshape(rmesh, (1,nmesh)))
+#
+# Locate the point at which ω = 0
+_, zero_point = findmin(abs.(rmesh))
+#
+# Treat special case with ωₙ = 0 and ω = 0
+kernel[1,zero_point] = -1.0
 
 # Build green's function
 KA = kernel .* reshape(image, (1,nmesh))
