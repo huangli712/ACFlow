@@ -180,3 +180,12 @@ The following tests are designed to test the newly developed StochPX solver (sto
     * Linear mesh
     * Fixed error bar
     * Four off-centered delta peaks
+
+* **X09**
+    * Fermionic + Matsubara
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Eight off-centered delta peaks
