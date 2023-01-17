@@ -1,5 +1,5 @@
 #
-# Test: X01
+# Test: X10
 #
 # 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or StochPX).
@@ -8,10 +8,10 @@
 
 [BASE]
 finput = "giw.data"
-solver = "StochPX"
-ktype  = "fermi"
+solver = "MaxEnt"
+ktype  = "boson"
 mtype  = "flat"
-grid   = "ffreq"
+grid   = "bfreq"
 mesh   = "linear"
 ngrid  = 10
 nmesh  = 501
