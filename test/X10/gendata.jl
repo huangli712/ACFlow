@@ -31,7 +31,7 @@ image = similar(rmesh)
 image = image ./ trapz(rmesh, image)
 
 # Matsubara frequency mesh
-iw = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
+iw = π / beta * (2.0 * collect(0:niw-1) .+ 0.0)
 
 # Noise
 seed = rand(1:100000000)
