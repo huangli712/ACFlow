@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/01/14
+# Last modified: 2023/01/17
 #
 
 #=
@@ -410,7 +410,12 @@ function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
         end
     end
     #
-    @. kernel[:,1] = 1.0 / β
+    # Be careful, am[1] is not 0.0! We have to find out where
+    # the zero point is in the real mesh.
+    _, zero_point = findmin(abs.(am.mesh))
+    if am[zero_point] == 0.0
+        @. kernel[:,zero_point] = 1.0 / β
+    end
 
     return kernel
 end
@@ -427,17 +432,20 @@ function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
     nmesh = am.nmesh
 
     _kernel = zeros(C64, nfreq, nmesh)
-
+    #
     for i = 1:nmesh
         for j = 1:nfreq
             _kernel[j,i] = am[i] / (im * bg[j] - am[i])
         end
     end
-
-    if am[1] == 0.0 && bg[1] == 0.0
-        _kernel[1,1] = -1.0
+    #
+    # Be careful, am[1] is not 0.0! We have to find out where
+    # the zero point is in the real mesh.
+    _, zero_point = findmin(abs.(am.mesh))
+    if am[zero_point] == 0.0 && bg[1] == 0.0
+        _kernel[1,zero_point] = -1.0
     end
-
+    #
     kernel = vcat(real(_kernel), imag(_kernel))
 
     return kernel
