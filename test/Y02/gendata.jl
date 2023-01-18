@@ -28,7 +28,7 @@ image = similar(rmesh)
 @. image  = A₁ * exp(-(rmesh - ϵ₁) ^ 2.0 / (2.0 * Γ₁ ^ 2.0))
 @. image += A₂ * exp(-(rmesh - ϵ₂) ^ 2.0 / (2.0 * Γ₂ ^ 2.0))
 #
-image = image ./ trapz(rmesh, image)
+image = image ./ trapz(rmesh, image) * 2.0
 
 # Matsubara frequency mesh
 iw = π / beta * (2.0 * collect(0:niw-1) .+ 0.0)
@@ -65,7 +65,7 @@ err = ones(F64, niw) * noise_ampl
 open("giw.data", "w") do fout
     for i in eachindex(giw)
         z = giw[i]
-        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err[i])
+        @printf(fout, "%20.16f %20.16f %20.16f\n", iw[i], real(z), err[i])
     end
 end
 

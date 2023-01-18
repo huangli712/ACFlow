@@ -1,5 +1,5 @@
 #
-# Test: X10
+# Test: Y02
 #
 # 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or StochPX).
@@ -7,7 +7,7 @@
 #
 
 [BASE]
-finput = "giw.new"
+finput = "giw.data"
 solver = "MaxEnt"
 ktype  = "bsymm"
 mtype  = "flat"
