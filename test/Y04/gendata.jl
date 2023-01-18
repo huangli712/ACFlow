@@ -12,21 +12,21 @@ wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 10    # Number of Matsubara frequencies
 beta = 20.0  # Inverse temperature
-ϵ₁   = 4.00  # Parameters for δ-like peaks
-ϵ₂   = -4.0
+ϵ₁   = 2.00  # Parameters for δ-like peaks
+ϵ₂   = -2.0
 ϵ₃   = 1.00
 ϵ₄   = -1.0
 A₁   = 0.25
-A₂   = 0.25
+A₂   =-0.25
 A₃   = 0.25
-A₄   = 0.25
+A₄   =-0.25
 η    = 1e-2
 
 # Real frequency mesh
 ω = collect(LinRange(wmin, wmax, nmesh))
 
 # Matsubara frequency mesh
-iωₙ = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
+iωₙ = π / beta * (2.0 * collect(0:niw-1) .+ 0.0)
 
 # Noise
 seed = rand(1:100000000)
