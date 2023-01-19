@@ -18,7 +18,7 @@ beta = 20.0  # Inverse temperature
 ϵ₄   = -1.0
 A₁   = 0.25
 A₂   =-0.25
-A₃   = 0.25
+A₃   = 1.25
 A₄   =-0.25
 η    = 1e-2
 
@@ -73,5 +73,41 @@ open("gre.data", "w") do fout
     for i in eachindex(gre)
         z = gre[i]
         @printf(fout, "%20.16f %20.16f %20.16f\n", ω[i], real(z), imag(z))
+    end
+end
+
+
+
+# TEST
+
+# Calculate A(ω) and A(ω) / ω
+true_image = - imag.(gre) ./ π
+image = true_image ./ ω
+_, zero_point = findmin(abs.(ω))
+image[zero_point] = (image[zero_point - 1] + image[zero_point + 1]) / 2.0
+open("image.data", "w") do fout
+    for i in eachindex(image)
+        @printf(fout, "%20.16f %20.16f %20.16f\n", ω[i], true_image[i], image[i])
+    end
+end
+
+# Kernel function
+kernel = reshape(ω, (1,nmesh)) ./ 
+             (im * reshape(iωₙ, (niw,1)) .- reshape(ω, (1,nmesh)))
+#
+# Treat special case with ωₙ = 0 and ω = 0
+kernel[1,zero_point] = -1.0
+
+# Rebuild green's function
+KA = kernel .* reshape(image, (1,nmesh))
+for i in eachindex(giw)
+    giw[i] = trapz(ω, KA[i,:])
+end
+
+# Rewrite green's function (Matsubara frequency axis)
+open("giw_new.data", "w") do fout
+    for i in eachindex(giw)
+        z = giw[i]
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iωₙ[i], real(z), imag(z), err[i])
     end
 end
