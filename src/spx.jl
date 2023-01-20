@@ -306,15 +306,15 @@ function average(SC::StochPXContext)
     # Setup essential parameters
     ktype = get_b("ktype")
     nmesh = get_b("nmesh")
-    ngrid = get_b("ngrid")
     method = get_x("method")
     ntry = get_x("ntry")
 
     # Allocate memory
     # Gout: real frequency green's function, G(ω).
     # Gᵣ: imaginary frequency green's function, G(iωₙ)
+    ngrid, _ = size(SC.Λ)
     Gout = zeros(C64, nmesh)
-    Gᵣ = zeros(F64, 2 * ngrid)
+    Gᵣ = zeros(F64, ngrid)
 
     # Choose the best solution
     if method == "best"
@@ -349,7 +349,16 @@ function average(SC::StochPXContext)
         c = 0.0
         for i = 1:ntry
             if SC.χ²[i] < chi2_ave / αgood
-                G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh)
+                if     ktype == "fermi"
+                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh)
+                #
+                elseif ktype == "boson"
+                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh, -SC.Gᵥ[1], false)
+                #
+                elseif ktype == "bsymm"
+                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh, -SC.Gᵥ[1], true)
+                #
+                end
                 @. Gout = Gout + G
                 #
                 G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.Λ)
