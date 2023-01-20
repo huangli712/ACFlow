@@ -619,6 +619,127 @@ function calc_fmesh(S::StochPXSolver)
     return fmesh
 end
 
+#=
+*Remarks* :
+
+Here, we would like to discuss the kernel matrix and sum-rule in the
+stochastic pole expansion algorithm.
+
+**For Fermionic Green's Functions**
+
+The pole expansion of fermionic Green's function reads:
+
+```math
+\begin{equation}
+G(i\omega_n) = \sum^{N_p}_{i = 1} \frac{A_i}{i\omega_n - P_i}.
+\end{equation}
+```
+
+The kernel matrix reads:
+
+```math
+\begin{equation}
+Λ(\omega_n, \omega) = \frac{1}{i\omega_n - \omega}.
+\end{equation}
+```
+
+The sum-rule reads:
+
+```math
+\begin{equation}
+\sum^{N_p}_{i=1} A_i = 1.
+\end{equation}
+```
+
+---
+
+**For Bosonic Green's Functions**
+
+Supposed that ``\chi_0 \equiv -G(i\omega_n = 0)``, which must be a
+positive real number, then the pole expansion of bosonic Green's
+function reads:
+
+```math
+\begin{equation}
+G(i\omega_n) = \sum^{N_p}_{i = 1} \frac{A_i}{i\omega_n - P_i}
+= \sum^{N_p}_{i=1}
+\frac{\chi_0 P_i}{i\omega_n - P_i}
+\frac{A_i}{\chi_0 P_i}.
+\end{equation}
+```
+
+The kernel matrix reads:
+
+```math
+\begin{equation}
+Λ(\omega_n, \omega) = \frac{\chi_0 \omega}{i\omega_n - \omega}.
+\end{equation}
+```
+
+Be careful, when ``\omega_n = 0``, ``\Lambda(0,\omega) = -\chi_0``.
+
+The sum-rule reads:
+
+```math
+\begin{equation}
+\sum^{N_p}_{i=1} \tilde{A}_i = 1,
+\end{equation}
+```
+
+where
+
+```math
+\begin{equation}
+\tilde{A}_i = \frac{A_i}{\chi_0 P_i}.
+\end{equation}
+```
+
+---
+
+**For Correlator of Hermitian Operator**
+
+The pole expansion for correlator of Hermitian operator reads:
+
+```math
+\begin{equation}
+G(i\omega_n) = \sum^{N_p}_{i = 1} A_i
+\left(\frac{1}{i\omega_n - P_i} - \frac{1}{i\omega_n + P_i}\right)
+= \sum^{N_p}_{i =1}
+\frac{-\chi_0 P^2_i}{\omega^2_n + P^2_i} \frac{2A_i}{\chi_0 P_i}.
+\end{equation}
+```
+
+Here, ``\chi_0 \equiv -G(i\omega_n = 0)``, which is a positive real
+number. And ``\forall i, A_i \ge 0, P_i \ge 0``.
+
+The kernel matrix reads:
+
+```math
+\begin{equation}
+Λ(\omega_n, \omega) = \frac{-\chi_0 \omega^2}{\omega^2_n + \omega^2}.
+\end{equation}
+```
+
+The sum-rule reads:
+
+```math
+\begin{equation}
+\sum^{N_p}_{i=1} \tilde{A}_i = 1,
+\end{equation}
+```
+
+where
+
+```math
+\begin{equation}
+\tilde{A}_i = \frac{2A_i}{\chi_0 P_i}.
+\end{equation}
+```
+
+---
+
+=#
+
 """
     calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh)
 
