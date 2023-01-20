@@ -172,8 +172,8 @@ function init(S::StochPXSolver, rd::RawData)
     # Prepare some key variables
     Θ, χ²min, χ², Pᵥ, Aᵥ = init_context(S)
 
-    # We have to make sure Gᵧ and χ²[1] are consistent with the current
-    # Monte Carlo configuration fields.
+    # We have to make sure the starting Gᵧ and χ² (i.e. χ²[1]) are
+    # consistent with the current Monte Carlo configuration fields.
     Gᵧ = calc_green(SE.P, SE.A, Λ)
     χ²[1] = calc_chi2(Gᵧ, Gᵥ)
 
@@ -304,6 +304,7 @@ green's function, and imaginary frequency green's function.
 """
 function average(SC::StochPXContext)
     # Setup essential parameters
+    ktype = get_b("ktype")
     nmesh = get_b("nmesh")
     ngrid = get_b("ngrid")
     method = get_x("method")
@@ -318,10 +319,17 @@ function average(SC::StochPXContext)
     # Choose the best solution
     if method == "best"
         p = argmin(SC.χ²)
-        # Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh)
-        
-        Fᵥ = SC.fmesh.mesh[SC.Pᵥ[p]] * (-SC.Gᵥ[1])
-        Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p] .* Fᵥ, SC.mesh, SC.fmesh)
+
+        if     ktype == "fermi"
+            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh)
+        #
+        elseif ktype == "boson"
+            Fᵥ = SC.fmesh.mesh[SC.Pᵥ[p]] * (-SC.Gᵥ[1])
+            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p] .* Fᵥ, SC.mesh, SC.fmesh)
+        #
+        elseif ktype == "bsymm"
+        #
+        end
 
         Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.Λ)
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, SC.χ²[p])
