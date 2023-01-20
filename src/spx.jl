@@ -320,20 +320,22 @@ function average(SC::StochPXContext)
     # Choose the best solution
     if method == "best"
         p = argmin(SC.χ²)
+        χ₀ = -SC.Gᵥ[1]
 
         if     ktype == "fermi"
             Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh)
         #
         elseif ktype == "boson"
-            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh, -SC.Gᵥ[1], false)
+            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh, χ₀, false)
         #
         elseif ktype == "bsymm"
-            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh, -SC.Gᵥ[1], true)
+            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh, χ₀, true)
         #
         end
 
         Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.Λ)
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, SC.χ²[p])
+    #
     # Collect the `good` solutions and calculate their average.
     else
         # Calculate the median of SC.χ²
@@ -348,16 +350,17 @@ function average(SC::StochPXContext)
 
         # Go through all the solutions
         c = 0.0
+        χ₀ = -SC.Gᵥ[1]
         for i = 1:ntry
             if SC.χ²[i] < chi2_ave / αgood
                 if     ktype == "fermi"
                     G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh)
                 #
                 elseif ktype == "boson"
-                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh, -SC.Gᵥ[1], false)
+                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh, χ₀, false)
                 #
                 elseif ktype == "bsymm"
-                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh, -SC.Gᵥ[1], true)
+                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh, χ₀, true)
                 #
                 end
                 @. Gout = Gout + G
@@ -374,6 +377,7 @@ function average(SC::StochPXContext)
         @. Gout = Gout / c
         @. Gᵣ = Gᵣ / c
         println("Accumulate $(round(I64,c)) solutions to get the spectral density")
+    #
     end
 
     return -imag.(Gout) / π, Gout, Gᵣ
