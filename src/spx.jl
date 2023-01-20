@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/01/20
+# Last modified: 2023/01/21
 #
 
 #=
@@ -134,7 +134,7 @@ Initialize the StochPX solver and return the StochPXMC, StochPXElement,
 and StochPXContext structs.
 """
 function init(S::StochPXSolver, rd::RawData)
-    # Initialize possible constraints. The allow array contains all the
+    # Initialize possible constraints. The array arrow contains all the
     # possible indices for poles.
     allow = constraints(S)
 
@@ -157,22 +157,23 @@ function init(S::StochPXSolver, rd::RawData)
     # Prepare the kernel matrix Λ. It is used to speed up the simulation.
     # Note that Λ depends on the type of kernel.
     ktype = get_b("ktype")
+    χ₀ = -Gᵥ[1]
     #
     if     ktype == "fermi"
         Λ = calc_lambda(grid, fmesh)
     #
     elseif ktype == "boson"
-        Λ = calc_lambda(grid, fmesh, -Gᵥ[1], false)
+        Λ = calc_lambda(grid, fmesh, χ₀, false)
     #
     elseif ktype == "bsymm"
-        Λ = calc_lambda(grid, fmesh, -Gᵥ[1], true)
+        Λ = calc_lambda(grid, fmesh, χ₀, true)
     #
     end
 
     # Prepare some key variables
     Θ, χ²min, χ², Pᵥ, Aᵥ = init_context(S)
 
-    # We have to make sure the starting Gᵧ and χ² (i.e. χ²[1]) are
+    # We have to make sure that the starting Gᵧ and χ² (i.e. χ²[1]) are
     # consistent with the current Monte Carlo configuration fields.
     Gᵧ = calc_green(SE.P, SE.A, Λ)
     χ²[1] = calc_chi2(Gᵧ, Gᵥ)

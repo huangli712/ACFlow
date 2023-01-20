@@ -132,7 +132,7 @@ Initialize the StochAC solver and return the StochACMC, StochACElement,
 and StochACContext structs.
 """
 function init(S::StochACSolver, rd::RawData)
-    # Initialize possible constraints. The allow array contains all the
+    # Initialize possible constraints. The array allow contains all the
     # possible indices for δ functions.
     allow = constraints(S)
 

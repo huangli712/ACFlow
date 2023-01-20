@@ -136,7 +136,7 @@ Initialize the StochSK solver and return the StochSKMC, StochSKElement,
 and StochSKContext structs.
 """
 function init(S::StochSKSolver, rd::RawData)
-    # Initialize possible constraints. The allow array contains all the
+    # Initialize possible constraints. The array allow contains all the
     # possible indices for δ functions.
     allow = constraints(S)
 
