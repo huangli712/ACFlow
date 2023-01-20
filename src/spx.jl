@@ -829,7 +829,7 @@ end
 Reconstruct green's function at imaginary axis by the pole expansion.
 """
 function calc_green(P::Vector{I64}, A::Vector{F64}, Λ::Array{F64,2})
-    # Note that here `ngrid` is actually 2 × ngrid.
+    # Note that here `ngrid` is equal to 2 × ngrid sometimes.
     ngrid, _ = size(Λ)
 
     G = zeros(F64, ngrid)
