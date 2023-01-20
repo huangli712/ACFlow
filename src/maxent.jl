@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/08
+# Last modified: 2023/01/21
 #
 
 #=
@@ -144,11 +144,16 @@ function last(mec::MaxEntContext, svec::Vector, sol::Dict)
     end
 
     # Regenerate the input data and write them
-    G = reprod(mec.mesh, mec.kernel, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
+    Aout = haskey(sol, :Araw) ? sol[:Araw] : sol[:A]
+    G = reprod(mec.mesh, mec.kernel, Aout)
     write_backward(mec.grid, G)
 
     # Calculate full response function on real axis and write them
-    _G = kramers(mec.mesh, haskey(sol, :Araw) ? sol[:Araw] : sol[:A])
+    if get_b("ktype") == "fermi"
+        _G = kramers(mec.mesh, Aout)
+    else
+        _G = kramers(mec.mesh, Aout .* mec.mesh)
+    end
     write_complete(mec.mesh, _G)
 
     return _G
