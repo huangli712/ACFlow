@@ -324,10 +324,10 @@ function average(SC::StochPXContext)
             Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh)
         #
         elseif ktype == "boson"
-            Fᵥ = SC.fmesh.mesh[SC.Pᵥ[p]] * (-SC.Gᵥ[1])
-            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p] .* Fᵥ, SC.mesh, SC.fmesh)
+            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh, -SC.Gᵥ[1], false)
         #
         elseif ktype == "bsymm"
+            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh, -SC.Gᵥ[1], true)
         #
         end
 
