@@ -709,7 +709,8 @@ end
                mesh::AbstractMesh,
                fmesh::AbstractMesh)
 
-Reconstruct green's function at real axis by the pole expansion.
+Reconstruct green's function at real axis by the pole expansion. It is
+for the fermionic systems only.
 """
 function calc_green(P::Vector{I64},
                     A::Vector{F64},
@@ -722,6 +723,46 @@ function calc_green(P::Vector{I64},
     G = zeros(C64, nmesh)
     for i in eachindex(mesh)
         G[i] = sum( @. A / (iωₙ[i] - fmesh.mesh[P]) )
+    end
+
+    return G
+end
+
+"""
+    calc_green(P::Vector{I64},
+               A::Vector{F64},
+               mesh::AbstractMesh,
+               fmesh::AbstractMesh, χ₀::F64, bsymm::Bool)
+
+Reconstruct green's function at real axis by the pole expansion. Here,
+`χ₀` is actually -G(iωₙ = 0). And the argument `bsymm` is used to
+distinguish two different bosonic kernels. If `bsymm` is false, it means
+that the kernel is `boson`. If `bsymm` is true, the kernel is `bsymm`.
+It is for the bosonic systems only.
+"""
+function calc_green(P::Vector{I64},
+                    A::Vector{F64},
+                    mesh::AbstractMesh,
+                    fmesh::AbstractMesh, χ₀::F64, bsymm::Bool)
+    η = get_x("eta")
+    nmesh = length(mesh)
+
+    iωₙ = mesh.mesh .+ im * η
+    G = zeros(C64, nmesh)
+    if bsymm == false
+        _A = A .* χ₀ .* fmesh.mesh[P]
+        for i in eachindex(mesh)
+            G[i] = sum( @. A / (iωₙ[i] - fmesh.mesh[P]) )
+        end
+    #
+    else
+        _A = A .* χ₀ .* fmesh.mesh[P] .* 0.5
+        for i in eachindex(mesh)
+            G₊ = sum( @. A / (iωₙ[i] - fmesh.mesh[P]) )
+            G₋ = sum( @. A / (iωₙ[i] + fmesh.mesh[P]) )
+            G[i] = G₊ - G₋
+        end
+    #
     end
 
     return G
