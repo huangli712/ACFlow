@@ -633,10 +633,11 @@ function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh, χ₀::F64, bsymm:
     ngrid = get_b("ngrid")
     nfine = get_x("nfine")
 
+    # For standard bosonic kernel matrix
     if bsymm == false
 
         _Λ = zeros(C64, ngrid, nfine)
-
+        #
         for i in eachindex(grid)
             iωₙ = im * grid[i]
             for j in eachindex(fmesh)
@@ -644,16 +645,18 @@ function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh, χ₀::F64, bsymm:
             end
         end
         #
+        # Special treatment for iωₙ = 0
         for j in eachindex(fmesh)
             _Λ[1,j] = -χ₀
         end
 
         Λ = vcat(real(_Λ), imag(_Λ))
 
+    # For symmetric bosonic kernel matrix
     else
 
         _Λ = zeros(F64, ngrid, nfine)
-
+        #
         for i in eachindex(grid)
             ωₙ = grid[i]
             for j in eachindex(fmesh)
@@ -661,10 +664,11 @@ function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh, χ₀::F64, bsymm:
             end
         end
         #
+        # Special treatment for ωₙ = 0
         for j in eachindex(fmesh)
             _Λ[1,j] = -χ₀
         end
-
+        #
         Λ = copy(_Λ)
 
     end
