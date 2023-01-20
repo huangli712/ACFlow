@@ -761,14 +761,14 @@ function calc_green(P::Vector{I64},
     if bsymm == false
         _A = A .* χ₀ .* fmesh.mesh[P]
         for i in eachindex(mesh)
-            G[i] = sum( @. A / (iωₙ[i] - fmesh.mesh[P]) )
+            G[i] = sum( @. _A / (iωₙ[i] - fmesh.mesh[P]) )
         end
     #
     else
         _A = A .* χ₀ .* fmesh.mesh[P] .* 0.5
         for i in eachindex(mesh)
-            G₊ = sum( @. A / (iωₙ[i] - fmesh.mesh[P]) )
-            G₋ = sum( @. A / (iωₙ[i] + fmesh.mesh[P]) )
+            G₊ = sum( @. _A / (iωₙ[i] - fmesh.mesh[P]) )
+            G₋ = sum( @. _A / (iωₙ[i] + fmesh.mesh[P]) )
             G[i] = G₊ - G₋
         end
     #
