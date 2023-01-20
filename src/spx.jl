@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/24
+# Last modified: 2023/01/20
 #
 
 #=
@@ -41,7 +41,7 @@ Mutable struct. It is used within the StochPX solver only.
 * grid   -> Grid for input data.
 * mesh   -> Mesh for output spectrum.
 * fmesh  -> Very dense mesh for the poles.
-* Λ      -> Precomputed 1 / (iωₙ - ϵ).
+* Λ      -> Precomputed kernel matrix.
 * Θ      -> Artificial inverse temperature.
 * χ²min  -> Minimum of χ²min.
 * χ²     -> Vector of goodness function.
@@ -154,15 +154,20 @@ function init(S::StochPXSolver, rd::RawData)
     fmesh = calc_fmesh(S)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    # Prepare Λ (≡ 1 / (iωₙ - ϵ)). It is used to speed up the simulation.
+    # Prepare the kernel matrix Λ. It is used to speed up the simulation.
+    # Note that Λ depends on the type of kernel.
     ktype = get_b("ktype")
-    @show ktype
-    if ktype == "boson"
-        Λ = calc_lambda(grid, fmesh, -Gᵥ[1])
+    #
+    if     ktype == "fermi"
+        Λ = calc_lambda(grid, fmesh)
+    #
+    elseif ktype == "boson"
+        Λ = calc_lambda(grid, fmesh, -Gᵥ[1], false)
+    #
+    elseif ktype == "bsymm"
+        Λ = calc_lambda(grid, fmesh, -Gᵥ[1], true)
+    #
     end
-    # Λ = calc_lambda(grid, fmesh)
-
-    #error()
 
     # Prepare some key variables
     Θ, χ²min, χ², Pᵥ, Aᵥ = init_context(S)
@@ -595,7 +600,8 @@ end
 """
     calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh)
 
-Precompute Λ ≡ 1 / (iωₙ - ϵ).
+Precompute the kernel matrix Λ (Λ ≡ 1 / (iωₙ - ϵ)).
+It is for the fermionic systems.
 """
 function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh)
     ngrid = get_b("ngrid")
@@ -615,20 +621,53 @@ function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh)
     return Λ
 end
 
-function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh, χ₀::F64)
+"""
+    calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh, χ₀::F64, bsymm::Bool)
+
+Precompute the kernel matrix Λ. Here, `χ₀` is actually -G(iωₙ = 0). And
+the argument `bsymm` is used to distinguish two different bosonic kernels.
+If `bsymm` is false, it means that the kernel is `boson`. If `bsymm` is
+true, the kernel is `bsymm`. This function is for the bosonic systems.
+"""
+function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh, χ₀::F64, bsymm::Bool)
     ngrid = get_b("ngrid")
     nfine = get_x("nfine")
 
-    _Λ = zeros(C64, ngrid, nfine)
-    #
-    for i in eachindex(grid)
-        iωₙ = im * grid[i]
-        for j in eachindex(fmesh)
-            _Λ[i,j] = χ₀ * fmesh[j] / (iωₙ - fmesh[j])
+    if bsymm == false
+
+        _Λ = zeros(C64, ngrid, nfine)
+
+        for i in eachindex(grid)
+            iωₙ = im * grid[i]
+            for j in eachindex(fmesh)
+                _Λ[i,j] = χ₀ * fmesh[j] / (iωₙ - fmesh[j])
+            end
         end
+        #
+        for j in eachindex(fmesh)
+            _Λ[1,j] = -χ₀
+        end
+
+        Λ = vcat(real(_Λ), imag(_Λ))
+
+    else
+
+        _Λ = zeros(F64, ngrid, nfine)
+
+        for i in eachindex(grid)
+            ωₙ = grid[i]
+            for j in eachindex(fmesh)
+                _Λ[i,j] = -χ₀ * (fmesh[j] ^ 2.0) / (ωₙ ^ 2.0 + fmesh[j] ^ 2.0)
+            end
+        end
+        #
+        for j in eachindex(fmesh)
+            _Λ[1,j] = -χ₀
+        end
+
+        Λ = copy(_Λ)
+
     end
-    #
-    Λ = vcat(real(_Λ), imag(_Λ))
 
     return Λ
 end
