@@ -8,7 +8,7 @@
 
 [BASE]
 finput = "giw.data"
-solver = "MaxEnt"
+solver = "StochPX"
 ktype  = "boson"
 mtype  = "flat"
 grid   = "bfreq"
@@ -31,7 +31,7 @@ blur   = -1.0
 method = "mean"
 nfine  = 100000
 npole  = 2000
-ntry   = 2000
+ntry   = 100
 nstep  = 100
 theta  = 1e+8
 eta    = 1e-3
