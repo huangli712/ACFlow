@@ -720,6 +720,8 @@ The kernel matrix reads:
 \end{equation}
 ```
 
+Be careful, when ``\omega_n = 0``, ``\Lambda(0,\omega) = -\chi_0``.
+
 The sum-rule reads:
 
 ```math
