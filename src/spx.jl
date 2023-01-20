@@ -838,14 +838,14 @@ See also: [`try_move_p`](@ref).
 """
 function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Get parameters
-    ngrid = get_b("ngrid")
+    ngrid = length(SC.Gᵧ) # get_b("ngrid")
     nfine = get_x("nfine")
     npole = get_x("npole")
     move_window = ceil(I64, nfine / 100)
 
     # It is used to save the change of green's function
-    δG = zeros(F64, 2 * ngrid)
-    Gₙ = zeros(F64, 2 * ngrid)
+    δG = zeros(F64, ngrid)
+    Gₙ = zeros(F64, ngrid)
 
     # Try to go through each pole
     for _ = 1:npole
@@ -912,7 +912,7 @@ See also: [`try_move_s`](@ref).
 """
 function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Get parameters
-    ngrid = get_b("ngrid")
+    ngrid = length(SC.Gᵧ) # get_b("ngrid")
     npole = get_x("npole")
     #
     if npole == 1
@@ -920,8 +920,8 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     end
 
     # It is used to save the change of green's function
-    δG = zeros(F64, 2 * ngrid)
-    Gₙ = zeros(F64, 2 * ngrid)
+    δG = zeros(F64, ngrid)
+    Gₙ = zeros(F64, ngrid)
 
     # Try to go through each pole
     for _ = 1:npole
@@ -997,7 +997,7 @@ See also: [`try_move_x`](@ref).
 """
 function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Get parameters
-    ngrid = get_b("ngrid")
+    ngrid = length(SC.Gᵧ) # get_b("ngrid")
     npole = get_x("npole")
     #
     if npole == 1
@@ -1005,8 +1005,8 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     end
 
     # It is used to save the change of green's function
-    δG = zeros(F64, 2 * ngrid)
-    Gₙ = zeros(F64, 2 * ngrid)
+    δG = zeros(F64, ngrid)
+    Gₙ = zeros(F64, ngrid)
 
     # Try to go through each pole
     for _ = 1:npole
@@ -1081,7 +1081,7 @@ See also: [`try_move_a`](@ref).
 """
 function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Get parameters
-    ngrid = get_b("ngrid")
+    ngrid = length(SC.Gᵧ) # get_b("ngrid")
     npole = get_x("npole")
     #
     if npole == 1
@@ -1089,8 +1089,8 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     end
 
     # It is used to save the change of green's function
-    δG = zeros(F64, 2 * ngrid)
-    Gₙ = zeros(F64, 2 * ngrid)
+    δG = zeros(F64, ngrid)
+    Gₙ = zeros(F64, ngrid)
 
     # Try to go through each pole
     for _ = 1:npole
