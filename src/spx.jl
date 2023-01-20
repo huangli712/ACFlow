@@ -155,7 +155,14 @@ function init(S::StochPXSolver, rd::RawData)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
     # Prepare Λ (≡ 1 / (iωₙ - ϵ)). It is used to speed up the simulation.
-    Λ = calc_lambda(grid, fmesh)
+    ktype = get_b("ktype")
+    @show ktype
+    if ktype == "boson"
+        Λ = calc_lambda(grid, fmesh, -Gᵥ[1])
+    end
+    # Λ = calc_lambda(grid, fmesh)
+
+    #error()
 
     # Prepare some key variables
     Θ, χ²min, χ², Pᵥ, Aᵥ = init_context(S)
@@ -306,7 +313,11 @@ function average(SC::StochPXContext)
     # Choose the best solution
     if method == "best"
         p = argmin(SC.χ²)
-        Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh)
+        # Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh)
+        
+        Fᵥ = SC.fmesh.mesh[SC.Pᵥ[p]] * (-SC.Gᵥ[1])
+        Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p] .* Fᵥ, SC.mesh, SC.fmesh)
+
         Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.Λ)
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, SC.χ²[p])
     # Collect the `good` solutions and calculate their average.
@@ -596,6 +607,24 @@ function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh)
         iωₙ = im * grid[i]
         for j in eachindex(fmesh)
             _Λ[i,j] = 1.0 / (iωₙ - fmesh[j])
+        end
+    end
+    #
+    Λ = vcat(real(_Λ), imag(_Λ))
+
+    return Λ
+end
+
+function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh, χ₀::F64)
+    ngrid = get_b("ngrid")
+    nfine = get_x("nfine")
+
+    _Λ = zeros(C64, ngrid, nfine)
+    #
+    for i in eachindex(grid)
+        iωₙ = im * grid[i]
+        for j in eachindex(fmesh)
+            _Λ[i,j] = χ₀ * fmesh[j] / (iωₙ - fmesh[j])
         end
     end
     #
