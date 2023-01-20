@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/12
+# Last modified: 2023/01/21
 #
 
 #=
@@ -354,7 +354,11 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     write_backward(SC.grid, G)
 
     # Calculate full response function on real axis and write them
-    _G = kramers(SC.mesh, Asum)
+    if get_b("ktype") == "fermi"
+        _G = kramers(SC.mesh, Asum)
+    else
+        _G = kramers(SC.mesh, Asum .* SC.mesh)
+    end
     write_complete(SC.mesh, _G)
 
     return _G
