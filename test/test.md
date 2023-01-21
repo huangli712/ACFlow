@@ -189,3 +189,57 @@ The following tests are designed to test the newly developed StochPX solver (sto
     * Linear mesh
     * Fixed error bar
     * Eight off-centered delta peaks
+
+* **Y01**
+    * Bosonic + Matsubara (imaginary part = 0)
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Two gaussian peaks + big gap
+
+* **Y02**
+    * Bosonic (symm) + Matsubara
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Two gaussian peaks + big gap
+
+* **Y03**
+    * Bosonic + Matsubara
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Two gaussian peaks + big gap
+
+* **Y04**
+    * Bosonic + Matsubara (imaginary part = 0)
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Four off-centered delta peaks
+
+* **Y05**
+    * Bosonic (symm) + Matsubara
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Four off-centered delta peaks
+
+* **Y06**
+    * Bosonic + Matsubara
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Four off-centered delta peaks
