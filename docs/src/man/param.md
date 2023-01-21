@@ -307,7 +307,7 @@ Depth = 3
 
 !!! warning
 
-    If the `ktype = "bsymm"`, the wmin parameter should be 0.0.
+    If the `ktype = "bsymm"`, the `wmin` parameter should be 0.0.
 
 ### beta
 
