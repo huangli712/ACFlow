@@ -42,7 +42,7 @@ noise_phase = rand(rng, niw) * 2.0 * π
 noise = noise_abs .* exp.(noise_phase * im)
 
 # Kernel function
-kernel = reshape(rmesh, (1,nmesh)) ./ 
+kernel = reshape(rmesh, (1,nmesh)) ./
              (im * reshape(iw, (niw,1)) .- reshape(rmesh, (1,nmesh)))
 #
 # Locate the point at which ω = 0
