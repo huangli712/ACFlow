@@ -984,7 +984,7 @@ Depth = 3
 > * mean
 > * best
 >
-> If `method = "mean"`, then the solver will try to calculate an averaged spectrum from some selected `good` solutions. If `method = "best"`, then then solve will pick up the best solution (which exhibits the smallest goodness-of-fit functional ``\chi^2``).
+> If `method = "mean"`, then the solver will try to calculate an averaged spectrum from some selected `good` solutions. If `method = "best"`, then the solver will pick up the best solution (which should exhibit the smallest goodness-of-fit functional ``\chi^2``).
 
 *Type:*
 
