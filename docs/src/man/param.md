@@ -971,6 +971,10 @@ Depth = 3
 
     If `solver = "StochPX"`, the `[StochPX]` block must be available.
 
+!!! warning
+
+    The `StochPX` solver is still in development. Please use it at your own risk.
+
 ### method
 
 *Definition:*
