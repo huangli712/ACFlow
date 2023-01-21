@@ -498,7 +498,7 @@ Depth = 3
 
 *Definition:*
 
-> Sometimes, the kernel functions and spectral functions can be preblurred to obtain smoother results. Shall we preblur them? If `blur` is larger than zero, then it means the blur parameter. If `blur` is smaller than zero, then it means that the preblur is disable.
+> Sometimes, the kernel functions and spectral functions can be preblurred to obtain smoother results. Shall we preblur them? If `blur` is larger than zero, then it means the blur parameter. If `blur` is smaller than zero, then it means that the preblur feature is disable.
 
 *Type:*
 
@@ -544,7 +544,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of ``\delta`` functions, which is used to mimic the spectral functions.
+> Number of ``\delta`` functions. Their superposition is used to mimic the spectral functions.
 
 *Type:*
 
@@ -685,7 +685,7 @@ Depth = 3
 > * chi2min
 > * chi2kink
 >
-> Usually, the `chi2min` algorithm is preferred. This algorithm is proposed by Shao and Sandvik *et al*. See [Stochastic Analytical Continuation 1](@ref san) for more details.
+> Usually, the `chi2min` algorithm is preferred. This algorithm is suggested by Shao and Sandvik *et al*. See [Stochastic Analytical Continuation 1](@ref san) for more details.
 
 *Type:*
 
@@ -721,7 +721,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of ``\delta`` functions, which is used to mimic the spectral functions.
+> Number of ``\delta`` functions. Their superposition is used to mimic the spectral functions.
 
 *Type:*
 
@@ -893,7 +893,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of boxes, which are used to construct the spectral functions.
+> Number of boxes. Their superposition is used to construct the spectral functions.
 
 *Type:*
 
