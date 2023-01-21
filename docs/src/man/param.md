@@ -39,12 +39,13 @@ Depth = 3
 
 *Definition:*
 
-> This parameter specifies the solvers that used to solve the analytical continuation problem. Now the ACFlow toolkit supports four different solvers. They are as follows:
+> This parameter specifies the solvers that used to solve the analytical continuation problem. Now the ACFlow toolkit supports five different solvers. They are as follows:
 >
 > * MaxEnt
 > * StochAC
 > * StochSK
 > * StochOM
+> * StochPX
 >
 > Here, `MaxEnt` means the maximum entropy method. The `MaxEnt` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file.
 >
@@ -53,6 +54,8 @@ Depth = 3
 > `StochSK` means the stochastic analytical continuation method (A. W. Sandvik's algorithm). The `StochSK` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochSK"`, then the `[StochSK]` block must be available in the configuration file.
 >
 > `StochOM` means the stochastic optimization method. The `StochOM` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochOM"`, then the `[StochOM]` block must be available in the configuration file.
+>
+> `StochPX` means the stochastic pole expansion method. The `StochPX` solver can be used to treat the correlators in Matsubara frequency axis only. If `solver = "StochPX"`, then the `[StochPX]` block must be available in the configuration file.
 
 !!! warning
 
