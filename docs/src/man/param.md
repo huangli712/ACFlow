@@ -131,7 +131,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. It must be compatible with the `grid` parameter.
 
 ### [mtype](@id mtype)
 
@@ -192,7 +192,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory. See also [`ngrid`](@ref ngrid).
+> This parameter is mandatory. It must be compatible with the `ktype` parameter. See also [`ngrid`](@ref ngrid).
 
 !!! warning
 
@@ -304,6 +304,10 @@ Depth = 3
 *Comment:*
 
 > This parameter is mandatory.
+
+!!! warning
+
+    If the `ktype = "bsymm"`, the wmin parameter should be 0.0.
 
 ### beta
 
