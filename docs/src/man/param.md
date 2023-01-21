@@ -150,7 +150,7 @@ Depth = 3
 >
 > Besides `flat` and `file`, all the other model functions need additional parameters to customize them (Of course, the ACFlow toolkit will supplement default parameters). The parameters can be specified by the [`pmodel`](@ref pmodel) parameter.
 >
-> Especially, if `mtype = "file"`, then the default model function is encoded in `model.inp`. ACFlow will read this file and initialize the default model function automatically. Be careful, the mesh for this model function must be consistent with the one used in the analytical continuation calculations. 
+> Especially, if `mtype = "file"`, then the default model function is encoded in `model.inp`. ACFlow will read this file and initialize the default model function automatically. Be careful, the mesh for this model function must be consistent with the one used in the analytical continuation calculations.
 >
 > As for detailed formula for these models, please refer to `src/model.jl`.
 
@@ -168,7 +168,7 @@ Depth = 3
 
 ### [grid](@id grid)
 
-*Definition:* 
+*Definition:*
 
 > This parameter specifies the grid's type for input data in imaginary axis. Now the ACFlow toolkit supports the following choices:
 >
@@ -230,7 +230,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of grid points. The parameter, together with the `beta` and `grid` parameters, control the generation of grid for input data. 
+> Number of grid points. The parameter, together with the `beta` and `grid` parameters, control the generation of grid for input data.
 
 *Type:*
 
@@ -248,7 +248,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of mesh points. The parameter, together with the `wmax`, `wmin`, and `mesh` parameters, control the generation of mesh for output data. 
+> Number of mesh points. The parameter, together with the `wmax`, `wmin`, and `mesh` parameters, control the generation of mesh for output data.
 
 *Type:*
 
@@ -358,7 +358,7 @@ Depth = 3
 
 *Definition:*
 
-> Additional parameters for customizing the mesh. The `tangent` mesh needs the ``f_1`` parameter. The `lorentz` and `halflorentz` meshes need the `cut` parameter. The `pmesh` parameter can be used to setup the two parameters. If `pmesh` contains one element or more than one elements, then ``f_1 \equiv `` `cut` ``\equiv`` `pmesh[1]`. 
+> Additional parameters for customizing the mesh. The `tangent` mesh needs the ``f_1`` parameter. The `lorentz` and `halflorentz` meshes need the `cut` parameter. The `pmesh` parameter can be used to setup the two parameters. If `pmesh` contains one element or more than one elements, then ``f_1 \equiv `` `cut` ``\equiv`` `pmesh[1]`.
 
 *Type:*
 
@@ -527,7 +527,7 @@ Depth = 3
 
 ### ngamm
 
-*Definition:* 
+*Definition:*
 
 > Number of ``\delta`` functions, which is used to mimic the spectral functions.
 
@@ -932,7 +932,7 @@ Depth = 3
 
 *Definition:*
 
-> Is the norm calculated? If `norm` is larger than 0.0, it denotes the normalization factor. If `norm` is smaller than 0.0, it means that the normalization condition is ignored. 
+> Is the norm calculated? If `norm` is larger than 0.0, it denotes the normalization factor. If `norm` is smaller than 0.0, it means that the normalization condition is ignored.
 
 *Type:*
 
@@ -999,7 +999,7 @@ Depth = 3
 
 ### npole
 
-*Definition:* 
+*Definition:*
 
 > Number of poles on the real axis, which is used to mimic the Matsubara Green's function.
 

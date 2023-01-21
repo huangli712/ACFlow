@@ -1,6 +1,6 @@
 # Input Files
 
-The input files for the ACFlow toolkit can be divided into two groups: data files and configuration files. 
+The input files for the ACFlow toolkit can be divided into two groups: data files and configuration files.
 
 ## Data Files
 
@@ -37,7 +37,7 @@ method = "mean"
 ...
 ```
 
-In the `[BASE]` block, the analytical continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]` blocks are used to customize the corresponding analytical continuation solvers further. In **Table 1**-**Table 6**, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please see [Parameters](@ref param).   
+In the `[BASE]` block, the analytical continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]` blocks are used to customize the corresponding analytical continuation solvers further. In **Table 1**-**Table 6**, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please see [Parameters](@ref param).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

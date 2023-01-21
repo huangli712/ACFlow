@@ -1,6 +1,6 @@
 # Running Modes
 
-The ACFlow toolkit is designed to be flexible and easy-to-use. It provides three running modes to facilitate analytical continuation calculations, namely the interactive, script, and standard modes.  
+The ACFlow toolkit is designed to be flexible and easy-to-use. It provides three running modes to facilitate analytical continuation calculations, namely the interactive, script, and standard modes.
 
 !!! warning
 
@@ -18,7 +18,7 @@ julia> read_param()
 julia> mesh, Aout, Gout = solve(read_data())
 ```
 
-Here, `ac.toml` is a configuration file, which contains essential computational parameters. The return values of the `solve()` function (i.e., `mesh`, `Aout`, and `Gout`) are mesh at real axis ``\omega``, spectral density ``A(\omega)``, and reproduced Green's function ``\tilde{G}``, respectively. They can be further analyzed or visualized by the users.  
+Here, `ac.toml` is a configuration file, which contains essential computational parameters. The return values of the `solve()` function (i.e., `mesh`, `Aout`, and `Gout`) are mesh at real axis ``\omega``, spectral density ``A(\omega)``, and reproduced Green's function ``\tilde{G}``, respectively. They can be further analyzed or visualized by the users.
 
 ## Script Mode
 
@@ -36,7 +36,7 @@ read_param()
 mesh, Aout, Gout = solve(read_data())
 ```
 
-Of course, this script can be extended to finish complex tasks. Later, a realistic example will be provided to show how to complete an analytical continuation of Matsubara self-energy function via the script mode.              
+Of course, this script can be extended to finish complex tasks. Later, a realistic example will be provided to show how to complete an analytical continuation of Matsubara self-energy function via the script mode.
 
 ## Standard Mode
 
@@ -58,7 +58,7 @@ $ /home/your_home/acflow/util/Pacrun.jl ac.toml
 
     ```julia
     addprocs(8)
-    ``` 
+    ```
 
     Specifically, change number `8`.
 
