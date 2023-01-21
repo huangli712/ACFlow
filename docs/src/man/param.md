@@ -1032,7 +1032,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory. For condensed matter cases, `npole` should be large. While for molecule cases, `npole` should be small.
+> This parameter is mandatory. For condensed matter cases, `npole` should be quite large. While for molecule cases, `npole` should be small.
 
 ### ntry
 
@@ -1068,7 +1068,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. This parameter is related to the `npole` parameter. If `npole` is large, `nstep` could be small. If `npole` is small, `nstep` should be large.
 
 ### theta
 
@@ -1086,7 +1086,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. The users can check the `stat.data` file to judge whether the `theta` parameter is reasonable.
 
 ### eta
 
