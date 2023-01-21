@@ -8,7 +8,7 @@
 
 [BASE]
 finput = "giw.data"
-solver = "MaxEnt"
+solver = "StochPX"
 ktype  = "boson"
 mtype  = "flat"
 grid   = "bfreq"
