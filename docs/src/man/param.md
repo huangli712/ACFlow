@@ -196,11 +196,11 @@ Depth = 3
 
 !!! warning
 
-    If the `StochOM` solver is employed, the grid parameter should not be "ftime".
+    If the `StochOM` solver is employed, the `grid` parameter should not be "ftime".
 
 !!! warning
 
-    If the `StochPX` solver is employed, the grid parameter should be "ffreq" or "bfreq".
+    If the `StochPX` solver is employed, the `grid` parameter should be "ffreq" or "bfreq".
 
 ### [mesh](@id mesh)
 
@@ -237,7 +237,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of grid points. The parameter, together with the `beta` and `grid` parameters, control the generation of grid for input data.
+> Number of grid points. The parameter, together with the `beta` and `grid` parameters, controls the generation of grid for input data.
 
 *Type:*
 
@@ -255,7 +255,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of mesh points. The parameter, together with the `wmax`, `wmin`, and `mesh` parameters, control the generation of mesh for output data.
+> Number of mesh points. The parameter, together with the `wmax`, `wmin`, and `mesh` parameters, controls the generation of mesh for output data.
 
 *Type:*
 
@@ -307,7 +307,7 @@ Depth = 3
 
 !!! warning
 
-    If the `ktype = "bsymm"`, the `wmin` parameter should be 0.0.
+    If the `ktype = "bsymm"`, the `wmin` parameter should be 0.0. In other words, the spectral density is defined on the half positive axis.
 
 ### beta
 
@@ -345,13 +345,17 @@ Depth = 3
 
 > This parameter is mandatory. This parameter is useful for the `MaxEnt` solver only.
 
+!!! warning
+
+    Now only the `MaxEnt` solver supports this parameter.
+
 ### [pmodel](@id pmodel)
 
 *Definition:*
 
 > Additional parameters for customizing the model functions. Note that the `gauss`, `lorentz`, and `risedecay` models need one parameter ``\Gamma``. The `1gauss` and `1lorentz` models need two parameters, ``\Gamma`` and ``s``. The `2gauss` and `2lorentz` models need three parameters, ``\Gamma``, ``s_1``, and ``s_2``.
 >
-> The `pmodel` parameter is used to defined these parameters. If there is one element in `pmodel`, then ``\Gamma`` = `pmodel[1]`. If there are two elements in `pmodel`, then ``\Gamma`` = `pmodel[1]` and ``s`` = `pmodel[2]`. If there are three elements in `pmodel`, then ``\Gamma`` = `pmodel[1]`, ``s_1`` = `pmodel[2]`, and ``s_2`` = `pmodel[3]`.
+> The `pmodel` parameter is used to define these parameters. If there is only one element in `pmodel`, then ``\Gamma`` = `pmodel[1]`. If there are two elements in `pmodel`, then ``\Gamma`` = `pmodel[1]` and ``s`` = `pmodel[2]`. If there are three elements in `pmodel`, then ``\Gamma`` = `pmodel[1]`, ``s_1`` = `pmodel[2]`, and ``s_2`` = `pmodel[3]`.
 
 *Type:*
 
@@ -387,7 +391,7 @@ Depth = 3
 
 *Definition:*
 
-> Restriction of the energy range of the calculated spectral functions. This features is implemented by the `StochAC`, `StochSK`, and `StochOM` solvers. In these solvers, the ``\delta`` or `box` functions, which are used to mimic the spectral functions, were restricted to live out of the given energy ranges. For example, `exclude = [8.0,16.0]` means that the energy range `[8.0,16.0]` is forbidden.
+> Restriction of the energy range of the calculated spectral functions. This features is implemented by the `StochAC`, `StochSK`, `StochOM`, and `StochPX` solvers. In these solvers, the ``\delta`` or `box` functions, which are used to mimic the spectral functions, are restricted to live out of the given energy ranges. For example, `exclude = [8.0,16.0]` means that the energy range `[8.0,16.0]` is strictly forbidden.
 
 *Type:*
 
