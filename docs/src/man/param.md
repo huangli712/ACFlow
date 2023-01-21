@@ -119,7 +119,7 @@ Depth = 3
 > K(\omega_n, \omega) = \frac{-2\omega^2}{\omega_n^2 + \omega^2}.
 > ```
 >
-> As for detailed formula for these kernel functions, please refer to `src/kernel.jl`.
+> As for detailed formula for these kernel functions, please refer to the comments in `src/kernel.jl`.
 
 *Type:*
 
@@ -155,7 +155,7 @@ Depth = 3
 >
 > Especially, if `mtype = "file"`, then the default model function is encoded in `model.inp`. ACFlow will read this file and initialize the default model function automatically. Be careful, the mesh for this model function must be consistent with the one used in the analytical continuation calculations.
 >
-> As for detailed formula for these models, please refer to `src/model.jl`.
+> As for detailed formula for these models, please refer to the comments in `src/model.jl`.
 
 *Type:*
 
@@ -197,6 +197,10 @@ Depth = 3
 !!! warning
 
     If the `StochOM` solver is employed, the grid parameter should not be "ftime".
+
+!!! warning
+
+    If the `StochPX` solver is employed, the grid parameter should be "ffreq" or "bfreq".
 
 ### [mesh](@id mesh)
 
