@@ -167,7 +167,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory. Only the `MaxEnt` solver need these model functions. The `StochAC` solver only supports the `flat` model. The `StochSK` and `StochOM` are free of model functions.
+> This parameter is mandatory. Only the `MaxEnt` solver need these model functions. The `StochAC` solver only supports the `flat` model. The `StochSK`, `StochOM`, and `StochPX` solvers are free of model functions.
 
 ### [grid](@id grid)
 
