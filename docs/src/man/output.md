@@ -17,3 +17,7 @@ Once the analytical continuation simulation is finished, the final spectral func
 |`stat.data` | Monte Carlo statistical information for stochastic sampling methods. |
 
 **Table 1 |** Possible output files of the ACFlow toolkit.
+
+!!! warning
+
+    For bosonic systems, the `MaxEnt`, `StochAC`, `StochSK`, and `StochOM` solvers will generate and output ``\tilde{A}(\omega) (\equiv A(\omega) / \omega)``, instead of traditional ``A(\omega)``. That is to say, in `Aout.data`, the data are actually ``\tilde{A}(\omega)``. If the users want to have ``A(\omega)``, they have to do the transformation by themselves or resort to `Gout.data`. On the other hand, the `StochPX` solver will always generate and output ``A(\omega)``, irrespective of bosonic and fermionic systems.
