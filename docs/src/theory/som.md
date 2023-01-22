@@ -1,6 +1,6 @@
 # Stochastic Optimization Method
 
-A. O. Mishchenko *et al.* proposed the stochastic optimization method. Though it looks like the stochastic analytical continuation, their differences are quite apparent. The stochastic optimization method does not need any likelihood function or Boltzmann distribution to weight the candidate spectral functions. It generates a lot of spectral functions through Monte Carlo samplings. For each candidate spectral function, the deviation ``D`` between the reconstructed Green's function ``\tilde{G}`` and original Green's function ``\bar{G}`` is measured. Those spectral functions with small deviations ``D`` are selected and averaged. Such that the desired spectral function is obtained.   
+A. O. Mishchenko *et al.* proposed the stochastic optimization method. Though it looks like the stochastic analytical continuation, their differences are quite apparent. The stochastic optimization method does not need any likelihood function or Boltzmann distribution to weight the candidate spectral functions. It generates a lot of spectral functions through Monte Carlo samplings. For each candidate spectral function, the deviation ``D`` between the reconstructed Green's function ``\tilde{G}`` and original Green's function ``\bar{G}`` is measured. Those spectral functions with small deviations ``D`` are selected and averaged. Such that the desired spectral function is obtained.
 
 ## Deviation Function
 
@@ -16,11 +16,11 @@ where ``M`` is the number of input data, and ``\Delta(m)`` is the deviation func
 \Delta(m) = \frac{\bar{G}(m) - \tilde{G}(m)}{S(m)}.
 \end{equation}
 ```
-Here, ``S(m) = |G(m)|^{d}`` (where ``0 \le d \le 1``). Recently, Krivenko *et al.* suggested that it would be better to use the goodness-of-fit functional ``\chi^2[A]`` to replace ``D[A]``.  
+Here, ``S(m) = |G(m)|^{d}`` (where ``0 \le d \le 1``). Recently, Krivenko *et al.* suggested that it would be better to use the goodness-of-fit functional ``\chi^2[A]`` to replace ``D[A]``.
 
 ## Spectral Density
 
-The stochastic optimization method will try to accumulate the candidate spectral functions that manifest small ``D[A]``. Supposed the Monte Carlo simulations are repeated for ``L`` times. For the ``i``-th Monte Carlo simulation, the spectral density ``A_i(\omega)`` and deviation ``D[A_i]`` are recorded. The minimum value of deviation is ``\min\{D[A_i]\}``. Thus, the final spectral density reads: 
+The stochastic optimization method will try to accumulate the candidate spectral functions that manifest small ``D[A]``. Supposed the Monte Carlo simulations are repeated for ``L`` times. For the ``i``-th Monte Carlo simulation, the spectral density ``A_i(\omega)`` and deviation ``D[A_i]`` are recorded. The minimum value of deviation is ``\min\{D[A_i]\}``. Thus, the final spectral density reads:
 ```math
 \begin{equation}
 A(\omega) = \frac{1}{L_{\text{good}}} \sum^{L}_{i = 1}
@@ -30,7 +30,7 @@ A(\omega) = \frac{1}{L_{\text{good}}} \sum^{L}_{i = 1}
 Here, ``\theta(x)`` is the Heaviside step function, and ``\alpha_{\text{good}}`` is a adjustable parameter. ``L_{\text{good}}`` denotes the number of `good` spectral functions:
 ```math
 \begin{equation}
-L_{\text{good}} = \sum^{L}_{i = 1} 
+L_{\text{good}} = \sum^{L}_{i = 1}
 \theta(\alpha_{\text{good}} \min\{D[A_i]\} - D[A_i]).
 \end{equation}
 ```
@@ -40,7 +40,7 @@ That is to say, only those spectral functions who satisfy the following conditio
 D[A_i] \le \alpha_{\text{good}} \min\{D[A_i]\}.
 \end{equation}
 ```
-Clearly, the larger ``\alpha_{\text{good}}`` is, the more spectral functions are included. It is usually set to 2.  
+Clearly, the larger ``\alpha_{\text{good}}`` is, the more spectral functions are included. It is usually set to 2.
 
 ## Rectangle Representation
 
@@ -53,8 +53,8 @@ A(\omega) = \sum_i R_{\{c_i, w_i, h_i\}} (\omega),
 where ``i`` is the index of rectangle function. The definition of rectangle function ``R_{\{c_i, w_i, h_i\}} (\omega)`` reads:
 ```math
 \begin{equation}
-R_{\{c_i, w_i, h_i\}} (\omega) = 
-h_i 
+R_{\{c_i, w_i, h_i\}} (\omega) =
+h_i
 \theta[\omega - (c_i - w_i/2)]
 \theta[(c_i + w_i/2) - \omega],
 \end{equation}

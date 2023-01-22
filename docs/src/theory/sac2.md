@@ -6,19 +6,19 @@
 
 ## Beach's Algorithm
 
-K. S. D. Beach proposed another variant of stochastic analytical continuation in 2004. In his approach, the analytical continuation problem is mapped into a system of interacting classic fields at first. Then the classic field is sampled using Monte Carlo method to obtain the final solution. He concluded that the maximum entropy method is simply the mean field limit of the stochastic analytical continuation. Next, this algorithm will be explained concisely.     
+K. S. D. Beach proposed another variant of stochastic analytical continuation in 2004. In his approach, the analytical continuation problem is mapped into a system of interacting classic fields at first. Then the classic field is sampled using Monte Carlo method to obtain the final solution. He concluded that the maximum entropy method is simply the mean field limit of the stochastic analytical continuation. Next, this algorithm will be explained concisely.
 
 ## Classic Fields
 
-Recalled that the goodness-of-fit functional ``\chi^{2}[A]`` measures how closely the Green's function generated from ``A(\omega)`` matches the raw input data. Its expression is rewritten as follows: 
+Recalled that the goodness-of-fit functional ``\chi^{2}[A]`` measures how closely the Green's function generated from ``A(\omega)`` matches the raw input data. Its expression is rewritten as follows:
 ```math
 \begin{equation}
-\chi^{2}[A] = \int^{\beta}_{0} \frac{1}{\sigma(\tau)^2} 
+\chi^{2}[A] = \int^{\beta}_{0} \frac{1}{\sigma(\tau)^2}
 \left|\int d\omega~K(\tau,\omega) A(\omega) - \bar{G}(\tau)\right|^2 d\tau.
 \end{equation}
 ```
 At first, a new variable ``x`` is introduced. The relation between ``x`` and ``\omega`` is:
-```math  
+```math
 \begin{equation}
 x = \phi(\omega) = \int^{\omega}_{-\infty} d\omega'~m(\omega'),
 \end{equation}
@@ -29,7 +29,7 @@ where ``m(\omega)`` denotes default model function. Clearly, the ``\phi(\omega)`
 n(x) = \frac{A(\phi^{-1}(x))}{m(\phi^{-1}(x))}.
 \end{equation}
 ```
-It is easy to prove that both ``n(x)`` and ``A(\omega)`` obey similar normalization condition: 
+It is easy to prove that both ``n(x)`` and ``A(\omega)`` obey similar normalization condition:
 ```math
 \begin{equation}
 \int d\omega~A(\omega) = \int^{1}_0 dx~n(x) = 1.
@@ -53,7 +53,7 @@ Z = \int \mathcal{D}n~e^{-\alpha H[n]},
 where
 ```math
 \begin{equation}
-\int \mathcal{D}n = 
+\int \mathcal{D}n =
 \int^{\infty}_0 \left[\prod_x dn(x)\right]
 \delta\left(\int^{1}_0 dx~n(x) - 1\right).
 \end{equation}
@@ -70,11 +70,11 @@ Finally, according to the definition of the classic field, the averaged spectral
 \langle A(\omega) \rangle = \langle n(\phi(\omega)) \rangle m(\omega).
 \end{equation}
 ```
-So, by introducing the classic field ``\{n(x)\}``, the analytical continuation problem is converted into a statistical sampling of the classic field, which is easily solved by using the Monte Carlo method.   
+So, by introducing the classic field ``\{n(x)\}``, the analytical continuation problem is converted into a statistical sampling of the classic field, which is easily solved by using the Monte Carlo method.
 
 ## Monte Carlo Sampling
 
-Next we clarify how to sample the classic field. Similar to Sandvik's algorithm, ``n(x)`` is parameterized as a superposition of many ``\delta`` functions (see Fig.1 for schematic diagram): 
+Next we clarify how to sample the classic field. Similar to Sandvik's algorithm, ``n(x)`` is parameterized as a superposition of many ``\delta`` functions (see Fig.1 for schematic diagram):
 ```math
 \begin{equation}
 n_{\mathcal{C}} (x) = \sum_i \gamma_i \delta(x - r_i),
@@ -92,10 +92,10 @@ Note that ``\gamma_i`` and ``r_i`` satisfy the following constraints:
 \forall i,~\gamma_i > 0,~\sum_i \gamma_i = 1,~ 0 \le r_i \le 1.
 \end{equation}
 ```
-Supposed that there is a transition from ``\mathcal{C}`` to ``\mathcal{C}'`` (``\{r_i, \gamma_i\} \to \{r'_i, \gamma'_i\}``): 
+Supposed that there is a transition from ``\mathcal{C}`` to ``\mathcal{C}'`` (``\{r_i, \gamma_i\} \to \{r'_i, \gamma'_i\}``):
 ```math
 \begin{equation}
-r_i \to r'_i = 
+r_i \to r'_i =
 r_i + \sum_{\lambda \in \Lambda} \delta_{i\lambda} \Delta r_{\lambda},
 \end{equation}
 ```
@@ -113,14 +113,14 @@ H_{\mathcal{C}} = \int^{\beta}_0 d\tau~h_{\mathcal{C}}(\tau)^2,
 ```
 ```math
 \begin{equation}
-H_{\mathcal{C}'} = \int^{\beta}_0 d\tau 
+H_{\mathcal{C}'} = \int^{\beta}_0 d\tau
 \left[h_{\mathcal{C}}(\tau) + \Delta h(\tau)\right]^2,
 \end{equation}
 ```
 ```math
 \begin{equation}
-\Delta H = H_{\mathcal{C}'} - H_{\mathcal{C}} = 
-\int^{\beta}_0 d\tau~\Delta h(\tau) 
+\Delta H = H_{\mathcal{C}'} - H_{\mathcal{C}} =
+\int^{\beta}_0 d\tau~\Delta h(\tau)
 [2h_{\mathcal{C}}(\tau) + \Delta h(\tau)].
 \end{equation}
 ```
@@ -159,11 +159,11 @@ The parallel tempering trick is adopted to improve the Monte Carlo algorithm as 
 p(\mathcal{C} \to \mathcal{C}') = \exp[(\alpha_p - \alpha_q)(H_{p} - H_{q})],
 \end{equation}
 ```
-where ``p`` and ``q`` are layer indices, and ``p = q \pm 1``. Parallel tempering eliminates the need for an initial annealing stage. Another advantage of parallel tempering is that it yields a complete temperature profile of all the important thermodynamic variables (such as specific heat and internal energy), which can be used to estimate the critical ``\alpha`` and final spectral function ``\langle A(\omega) \rangle``.   
+where ``p`` and ``q`` are layer indices, and ``p = q \pm 1``. Parallel tempering eliminates the need for an initial annealing stage. Another advantage of parallel tempering is that it yields a complete temperature profile of all the important thermodynamic variables (such as specific heat and internal energy), which can be used to estimate the critical ``\alpha`` and final spectral function ``\langle A(\omega) \rangle``.
 
 ## Critical Inverse Temperature
 
-Clearly, ``\langle n(x) \rangle`` strongly depends on the inverse temperature ``\alpha``. How to use these ``\alpha``-dependent ``\langle n(x) \rangle`` to construct the final spectral function? Beach proposed a new algorithm. During parallel tempering process, the internal energy of the system is also measured in addition to ``\langle n(x) \rangle``: 
+Clearly, ``\langle n(x) \rangle`` strongly depends on the inverse temperature ``\alpha``. How to use these ``\alpha``-dependent ``\langle n(x) \rangle`` to construct the final spectral function? Beach proposed a new algorithm. During parallel tempering process, the internal energy of the system is also measured in addition to ``\langle n(x) \rangle``:
 ```math
 \begin{equation}
 U(\alpha_p) = \langle H [n] \rangle_{\alpha_p}.

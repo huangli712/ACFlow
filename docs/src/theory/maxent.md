@@ -76,7 +76,7 @@ where ``N`` is the number of mesh points for spectral density ``A(\omega)``.
 The basic equation for the classic algorithm reads
 ```math
 \begin{equation}
--2 \alpha S(A_{\alpha}) = \text{Tr} 
+-2 \alpha S(A_{\alpha}) = \text{Tr}
 \left[
 \frac{\Lambda(A_{\alpha})}{\alpha I + \Lambda(A_{\alpha})}
 \right],
@@ -85,10 +85,10 @@ The basic equation for the classic algorithm reads
 where ``I`` is an identity matrix. The elements of ``\Lambda`` matrix are calculated as follows:
 ```math
 \begin{equation}
-\Lambda_{ij} = \sqrt{A_i} \left(\sum_{kl} K_{ki} [C^{-1}]_{kl} K_{lj}\right) \sqrt{A_j}, 
+\Lambda_{ij} = \sqrt{A_i} \left(\sum_{kl} K_{ki} [C^{-1}]_{kl} K_{lj}\right) \sqrt{A_j},
 \end{equation}
 ```
-where ``C`` is the covariance matrix. Eq.(10) will be iteratively solved until the optimal ``\alpha`` and ``\hat{A}(\omega)`` are figured out.  
+where ``C`` is the covariance matrix. Eq.(10) will be iteratively solved until the optimal ``\alpha`` and ``\hat{A}(\omega)`` are figured out.
 
 ### Bryan Algorithm
 
