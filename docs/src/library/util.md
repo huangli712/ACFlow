@@ -1,6 +1,6 @@
 # Utilities
 
-*Provide some utility macros and functions for the ACFlow package.*
+*Provide some utility macros and functions for the ACFlow toolkit.*
 
 ## Contents
 
