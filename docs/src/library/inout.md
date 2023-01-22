@@ -1,6 +1,6 @@
 # Input and output
 
-*Define input and output functions for the ACFlow package.*
+*Define input and output functions for the ACFlow toolkit.*
 
 ## Contents
 
