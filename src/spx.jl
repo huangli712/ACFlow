@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/01/21
+# Last modified: 2023/01/22
 #
 
 #=
@@ -339,12 +339,13 @@ function average(SC::StochPXContext)
     # Collect the `good` solutions and calculate their average.
     else
         # Calculate the median of SC.χ²
-        chi2_ave = median(SC.χ²)
+        chi2_med = median(SC.χ²)
+        chi2_ave = mean(SC.χ²)
 
         # Determine the αgood parameter, which is used to filter the
         # calculated spectra.
         αgood = 1.2
-        if count(x -> x < chi2_ave / αgood, SC.χ²) ≤ ntry / 10
+        if count(x -> x < chi2_med / αgood, SC.χ²) ≤ ntry / 10
             αgood = 1.0
         end
 
@@ -352,7 +353,7 @@ function average(SC::StochPXContext)
         c = 0.0
         χ₀ = -SC.Gᵥ[1]
         for i = 1:ntry
-            if SC.χ²[i] < chi2_ave / αgood
+            if SC.χ²[i] < chi2_med / αgood
                 if     ktype == "fermi"
                     G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh)
                 #
@@ -376,6 +377,8 @@ function average(SC::StochPXContext)
         # Normalize the final results
         @. Gout = Gout / c
         @. Gᵣ = Gᵣ / c
+        println("Mean value of χ²: $(chi2_ave)")
+        println("Median value of χ²: $(chi2_med)")
         println("Accumulate $(round(I64,c)) solutions to get the spectral density")
     #
     end
