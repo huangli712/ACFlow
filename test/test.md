@@ -95,7 +95,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
 
 ## Experimental tests
 
-The following tests are designed to test the newly developed StochPX solver (stochastic pole expansion).
+The following tests are designed to test the newly developed StochPX solver (based on the stochastic pole expansion).
 
 * **X01**
     * Fermionic + Matsubara
