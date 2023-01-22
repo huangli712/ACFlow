@@ -80,7 +80,7 @@ Pages = [
     "library/config.md",
     "library/inout.md",
     "library/math.md",
-    "library/util.md",    
+    "library/util.md",
 ]
 Depth = 1
 ```
