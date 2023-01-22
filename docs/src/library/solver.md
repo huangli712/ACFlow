@@ -1,6 +1,16 @@
 # Solvers
 
-*Define various solvers for the ACFlow package.*
+*Define various solvers for the ACFlow toolkit.*
+
+Now the ACFlow toolkit supports five analytical continuation solvers. They are:
+
+* `MaxEnt` (Maximum Entropy Method, see `maxent.jl`)
+* `StochAC` (Stochastic Analytical Continuations, see `sac.jl`)
+* `StochSK` (Stochastic Analytical Continuation, see `san.jl`)
+* `StochOM` (Stochastic Optimization Method, see `som.jl`)
+* `StochPX` (Stochastic Pole Expansion, see `spx.jl`)
+
+Note that the `StochAC` solver is based on the Beach's variant, while the `StochSK` solver is based on the Sandvik's variant.
 
 ## Contents
 

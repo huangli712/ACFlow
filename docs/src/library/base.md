@@ -1,6 +1,6 @@
 # Core
 
-*Provide basic user's interfaces for the ACFlow package.*
+*Provide basic user's interfaces for the ACFlow toolkit.*
 
 ## Contents
 

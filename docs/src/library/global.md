@@ -1,6 +1,6 @@
 # Constants
 
-*Define some type aliases and string constants for the ACFlow package.*
+*Define some type aliases and string constants for the ACFlow toolkit.*
 
 ## Contents
 

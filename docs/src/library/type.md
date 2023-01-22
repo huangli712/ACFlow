@@ -1,6 +1,6 @@
 # Types
 
-*Define some fundamental types and structs for the ACFlow package.*
+*Define some fundamental types and structs for the ACFlow toolkit.*
 
 ## Contents
 
@@ -25,7 +25,7 @@ RawData
 GreenData
 ```
 
-## Constants
+## Dictionaries
 
 ```@docs
 PBASE
