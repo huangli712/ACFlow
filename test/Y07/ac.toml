@@ -8,7 +8,7 @@
 
 [BASE]
 finput = "chiw.data"
-solver = "MaxEnt"
+solver = "StochPX"
 ktype  = "bsymm"
 mtype  = "flat"
 grid   = "bfreq"
@@ -26,3 +26,12 @@ nalph  = 14
 alpha  = 1e12
 ratio  = 10.0
 blur   = -1.0
+
+[StochPX]
+method = "mean"
+nfine  = 100000
+npole  = 2000
+ntry   = 2000
+nstep  = 100
+theta  = 1e+8
+eta    = 1e-3
