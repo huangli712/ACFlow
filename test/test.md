@@ -243,3 +243,12 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Linear mesh
     * Fixed error bar
     * Four off-centered delta peaks
+
+* **Y07**
+    * Bosonic (symm) + Matsubara
+    * Current-current correlation function
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
+    * Flat model
+    * Half-Lorentzian mesh
+    * Fixed error bar
