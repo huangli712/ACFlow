@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/01/22
+# Last modified: 2023/01/25
 #
 
 #=
@@ -75,6 +75,7 @@ Solve the analytical continuation problem by the stochastic
 pole expansion. Note that this solver is still `experimental`.
 """
 function solve(S::StochPXSolver, rd::RawData)
+    ktype = get_b("ktype")
     ngrid = get_b("ngrid")
     nmesh = get_b("nmesh")
 
@@ -106,7 +107,11 @@ function solve(S::StochPXSolver, rd::RawData)
         # Average the solutions
         Aout = zeros(F64, nmesh)
         Gout = zeros(C64, nmesh)
-        Gᵣ = zeros(F64, 2 * ngrid)
+        if ktype == "bsymm"
+            Gᵣ = zeros(F64, ngrid)
+        else
+            Gᵣ = zeros(F64, 2 * ngrid)
+        end
         for i in eachindex(sol)
             a, b, c = sol[i]
             @. Aout = Aout + a / nworkers()
