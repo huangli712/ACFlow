@@ -16,6 +16,7 @@ nmesh = 501
 chiw = zeros(C64, nkpt, niw)
 Akw = zeros(F64, nkpt, nmesh)
 grid = zeros(F64, niw)
+mesh = zeros(F64, nmesh)
 
 # Read momentum-resolved Lindhard function
 open("chiw.data", "r") do fin
@@ -63,7 +64,7 @@ for k = 1:nkpt
     setup_param(B, S)
 
     # Call the solver
-    mesh, Aout, Gout = solve(grid, chiw[k,:])
+    mesh[:], Aout, Gout = solve(grid, chiw[k,:])
 
     # Store spectral density
     Akw[k,:] = mesh .* Aout
