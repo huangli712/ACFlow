@@ -37,6 +37,37 @@ function calc_ek(ikx, iky)
     return ek
 end
 
+function ksum(iqx, iqy, w, ek)
+    k = 0.0
+    r = 0.0
+    for ipx = -nkx:nkx
+        for ipy = -nky:nky
+            ipqx = ipx + iqx
+            if ipqx > +nkx
+                ipqx = ipqx - 2 * nkx
+            end
+            if ipqx < -nkx
+                ipqx = ipqx + 2 * nkx
+            end
+
+            ipqy = ipy + iqy
+            if ipqy > +nky
+                ipqy = ipqy - 2 * nky
+            end
+            if ipqy < -nky
+                ipqy = ipqy + 2 * nky
+            end
+
+            ep = ek[ipx+nkx+1,ipy+nky+1]
+            epq = ek[ipqx+nkx+1,ipqy+nky+1]
+    
+            k = k + 1
+            r = r + ( fermi(ep) - fermi(epq) ) / (ep - epq + w)
+        end
+    end
+    return r / k
+end
+
 # Define high-symmetry path: Γ - X - M - Γ
 KGX = [(i,0) for i = 0:nkx]    # Γ - X
 KXM = [(nkx,i) for i = 0:nky]  # X - M
@@ -64,39 +95,9 @@ chiw = zeros(C64, length(KPATH), nmesh)
 for m = 1:nmesh
     w = rmesh[m] + im * eta
     println("w -> ", w)
-
     for ik in eachindex(KPATH)
         iqx, iqy = KPATH[ik]
-        r = 0.0
-        k = 0
-
-        for ipx = -nkx:nkx
-            for ipy = -nky:nky
-                ipqx = ipx + iqx
-                if ipqx > +nkx
-                    ipqx = ipqx - 2 * nkx
-                end
-                if ipqx < -nkx
-                    ipqx = ipqx + 2 * nkx
-                end
-
-                ipqy = ipy + iqy
-                if ipqy > +nky
-                    ipqy = ipqy - 2 * nky
-                end
-                if ipqy < -nky
-                    ipqy = ipqy + 2 * nky
-                end
-
-                ep = ek[ipx+nkx+1,ipy+nky+1]
-                epq = ek[ipqx+nkx+1,ipqy+nky+1]
-            
-                k = k + 1
-                r = r + ( fermi(ep) - fermi(epq) ) / (ep - epq + w)
-            end
-        end
-
-        chiw[ik,m] = r / k
+        chiw[ik,m] = ksum(iqx, iqy, w, ek)
     end
 end
 
