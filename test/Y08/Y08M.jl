@@ -3,6 +3,7 @@
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
 using ACFlow
+using Printf
 
 welcome()
 
