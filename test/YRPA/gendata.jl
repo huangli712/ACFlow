@@ -29,6 +29,17 @@ function fermi(e)
     return 1.0 / ( exp((e - mune) * beta) + 1.0 )
 end
 
+# Define high-symmetry path: Γ - X - M - Γ
+function calc_kpath()
+    KGX = [(i,0) for i = 0:nkx]    # Γ - X
+    KXM = [(nkx,i) for i = 0:nky]  # X - M
+    KMG = [(i,i) for i = nkx:-1:0] # M - Γ
+    KPATH = union(KGX, KXM, KMG)
+    push!(KPATH, (0,0)) # Add the final Γ points
+
+    return KPATH
+end
+
 # Band dispersion for square lattice
 function calc_ek(ikx, iky)
     kx = ikx * π / nkx
@@ -70,14 +81,7 @@ function calc_ksum(iqx, iqy, w, ek)
     return r / k
 end
 
-# Define high-symmetry path: Γ - X - M - Γ
-KGX = [(i,0) for i = 0:nkx]    # Γ - X
-KXM = [(nkx,i) for i = 0:nky]  # X - M
-KMG = [(i,i) for i = nkx:-1:0] # M - Γ
-#
-KPATH = union(KGX, KXM, KMG)
-#
-push!(KPATH, (0,0)) # Add the final Γ points
+
 
 # Real frequency mesh
 rmesh = collect(LinRange(wmin, wmax, nmesh))
