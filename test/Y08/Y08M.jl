@@ -29,7 +29,7 @@ end
 # Analytically continuation k by k
 for k = 1:nkpt
 
-    println("k -> ", k, " [finished]")
+    println("k -> $k [finished]")
 
     # For MaxEnt solver
 
