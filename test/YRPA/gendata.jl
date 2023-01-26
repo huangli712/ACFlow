@@ -6,14 +6,20 @@ using Random
 using Printf
 using ACFlow
 
+#
+# This script is used to generate Lindhard function for square lattice.
+#
+# See Phys. Rev. B 94, 245140 (2016)
+#
+
 # Setup parameters
 wmin = +0.0  # Left boundary
-wmax = +4.0  # Right boundary
-nmesh = 1001 # Number of real-frequency points
+wmax = +2.5  # Right boundary
+nmesh = 501  # Number of real-frequency points
 niw  = 10    # Number of Matsubara frequencies
 beta = 50.0  # Inverse temperature
-nkx  = 10    # Number of k-points along the x axis
-nky  = 10    # Number of k-points along the y axis
+nkx  = 50    # Number of k-points along the x axis
+nky  = 50    # Number of k-points along the y axis
 t    = 0.25  # Hopping parameter
 mune = -0.5  # Chemical potential
 eta  = 0.05  # η
@@ -43,9 +49,6 @@ push!(KPATH, (0,0)) # Add the final Γ points
 # Real frequency mesh
 rmesh = collect(LinRange(wmin, wmax, nmesh))
 
-# Lindhard function
-chiw = zeros(C64, length(KPATH), nmesh)
-
 # Precompute band dispersion
 ek = zeros(F64, 2 * nkx + 1, 2 * nky + 1)
 for ipx = -nkx:nkx
@@ -53,6 +56,9 @@ for ipx = -nkx:nkx
         ek[ipx+nkx+1,ipy+nky+1] = calc_ek(ipx,ipy)
     end
 end
+
+# Announce the Lindhard function
+chiw = zeros(C64, length(KPATH), nmesh)
 
 # Try to calculate the Lindhard function
 for m = 1:nmesh
@@ -82,8 +88,8 @@ for m = 1:nmesh
                     ipqy = ipqy + 2 * nky
                 end
 
-                ep = ek[ipx+nkx+1, ipy+nky+1]
-                epq = ek[ipqx+nkx+1, ipqy+nky+1]
+                ep = ek[ipx+nkx+1,ipy+nky+1]
+                epq = ek[ipqx+nkx+1,ipqy+nky+1]
             
                 k = k + 1
                 r = r + ( fermi(ep) - fermi(epq) ) / (ep - epq + w)
