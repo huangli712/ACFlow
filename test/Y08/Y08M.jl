@@ -22,40 +22,44 @@ open("chiw.data", "r") do fin
     end
 end
 
-# For MaxEnt solver
+for k = 1:nkpt
 
-# Setup parameters
-#
-# For [BASE] block
-# See types.jl/_PBASE for default setup
-B = Dict{String,Any}(
-    "finput" => "chiw.data",
-    "solver" => "MaxEnt",
-    "ktype"  => "bsymm",
-    "mtype"  => "flat",
-    "grid"   => "bfreq",
-    "mesh"   => "linear",
-    "ngrid"  => 10,
-    "nmesh"  => 501,
-    "wmax"   => 2.5,
-    "wmin"   => 0.0,
-    "beta"   => 50.0,
-)
-#
-# For [MaxEnt] block
-# See types.jl/_PMaxEnt for default setup
-S = Dict{String,Any}(
-    "method" => "chi2kink",
-    "nalph"  => 14,
-    "alpha"  => 1e12,
-)
-#
-setup_param(B, S)
+    # For MaxEnt solver
 
-# Call the solver
-mesh, Aout, Gout = solve(grid, chiw[1,:])
+    # Setup parameters
+    #
+    # For [BASE] block
+    # See types.jl/_PBASE for default setup
+    B = Dict{String,Any}(
+        "finput" => "chiw.data",
+        "solver" => "MaxEnt",
+        "ktype"  => "bsymm",
+        "mtype"  => "flat",
+        "grid"   => "bfreq",
+        "mesh"   => "linear",
+        "ngrid"  => 10,
+        "nmesh"  => 501,
+        "wmax"   => 2.5,
+        "wmin"   => 0.0,
+        "beta"   => 50.0,
+    )
+    #
+    # For [MaxEnt] block
+    # See types.jl/_PMaxEnt for default setup
+    S = Dict{String,Any}(
+        "method" => "chi2kink",
+        "nalph"  => 14,
+        "alpha"  => 1e12,
+    )
+    #
+    setup_param(B, S)
 
-# Backup calculated results
-cp("Aout.data", "Aout.mem.data", force = true)
-cp("Gout.data", "Gout.mem.data", force = true)
-cp("repr.data", "repr.mem.data", force = true)
+    # Call the solver
+    mesh, Aout, Gout = solve(grid, chiw[k,:])
+
+    # Backup calculated results
+    cp("Aout.data", "Aout.mem.$k", force = true)
+    cp("Gout.data", "Gout.mem.$k", force = true)
+    cp("repr.data", "repr.mem.$k", force = true)
+
+end
