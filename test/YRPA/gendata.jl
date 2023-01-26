@@ -126,8 +126,8 @@ end
 
 # Write the Lindhard function at real frequency
 open("chir.data", "w") do fout
-    for i in eachindex(rmesh)
-        for k in eachindex(KPATH)
+    for k in eachindex(KPATH)
+        for i in eachindex(rmesh)
             z = chir[k,i]
             @printf(fout, "%5i %20.16f %20.16f %20.16f\n", k, rmesh[i], real(z), imag(z))
         end
@@ -135,3 +135,11 @@ open("chir.data", "w") do fout
 end
 
 # Write the Lindhard function at imaginary frequency
+open("chiw.data", "w") do fout
+    for k in eachindex(KPATH)
+        for i in eachindex(iωₙ)
+            z = chiw[k,i]
+            @printf(fout, "%5i %20.16f %20.16f %20.16f\n", k, iωₙ[i], real(z), imag(z))
+        end
+    end
+end
