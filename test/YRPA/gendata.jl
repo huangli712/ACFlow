@@ -37,7 +37,8 @@ function calc_ek(ikx, iky)
     return ek
 end
 
-function ksum(iqx, iqy, w, ek)
+# K-summation
+function calc_ksum(iqx, iqy, w, ek)
     k = 0.0
     r = 0.0
     for ipx = -nkx:nkx
