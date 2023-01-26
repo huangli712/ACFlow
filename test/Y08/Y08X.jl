@@ -1,9 +1,12 @@
 #!/usr/bin/env julia
 
-push!(LOAD_PATH, ENV["ACFLOW_HOME"])
+using Distributed
+addprocs(8)
 
-using ACFlow
-using Printf
+@everywhere push!(LOAD_PATH, ENV["ACFLOW_HOME"])
+
+@everywhere using ACFlow
+@everywhere using Printf
 
 welcome()
 
@@ -33,7 +36,7 @@ end
 # Analytically continuation k by k
 for k = 1:nkpt
 
-    # For MaxEnt solver
+    # For StochPX solver
 
     # Setup parameters
     #
@@ -41,7 +44,7 @@ for k = 1:nkpt
     # See types.jl/_PBASE for default setup
     B = Dict{String,Any}(
         "finput" => "chiw.data",
-        "solver" => "MaxEnt",
+        "solver" => "StochPX",
         "ktype"  => "bsymm",
         "mtype"  => "flat",
         "grid"   => "bfreq",
@@ -53,12 +56,16 @@ for k = 1:nkpt
         "beta"   => 50.0,
     )
     #
-    # For [MaxEnt] block
-    # See types.jl/_PMaxEnt for default setup
+    # For [StochPX] block
+    # See types.jl/_PStochPX for default setup
     S = Dict{String,Any}(
-        "method" => "chi2kink",
-        "nalph"  => 14,
-        "alpha"  => 1e12,
+        "method" => "mean",
+        "nfine"  => 100000,
+        "npole"  => 2000,
+        "ntry"   => 2000,
+        "nstep"  => 100,
+        "theta"  => 1e+8,
+        "eta"    => 1e-3,
     )
     #
     setup_param(B, S)
@@ -67,7 +74,7 @@ for k = 1:nkpt
     mesh[:], Aout, Gout = solve(grid, chiw[k,:])
 
     # Store spectral density
-    Akw[k,:] = mesh .* Aout
+    Akw[k,:] = Aout
 
     # Backup calculated results
     cp("Aout.data", "Aout.data.$k", force = true)
