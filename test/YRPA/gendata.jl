@@ -36,7 +36,6 @@ function calc_kpath()
     KMG = [(i,i) for i = nkx:-1:0] # M - Γ
     KPATH = union(KGX, KXM, KMG)
     push!(KPATH, (0,0)) # Add the final Γ points
-
     return KPATH
 end
 
@@ -54,6 +53,8 @@ function calc_ksum(iqx, iqy, w, ek)
     r = zeros(C64, length(w))
     for ipx = -nkx:nkx
         for ipy = -nky:nky
+            k = k + 1
+
             ipqx = ipx + iqx
             if ipqx > +nkx
                 ipqx = ipqx - 2 * nkx
@@ -72,19 +73,30 @@ function calc_ksum(iqx, iqy, w, ek)
 
             ep = ek[ipx+nkx+1,ipy+nky+1]
             epq = ek[ipqx+nkx+1,ipqy+nky+1]
-    
-            k = k + 1
-            f = fermi(ep) - fermi(epq)
-            @. r = r + f / (ep - epq + w)
+            f₁ = fermi(ep) - fermi(epq)
+            f₂ = ep - epq
+            @. r = r + f₁ / (f₂ + w)
         end
     end
     return r / k
 end
 
-
-
 # Real frequency mesh
 rmesh = collect(LinRange(wmin, wmax, nmesh))
+
+# Matsubara frequency mesh
+iωₙ = π / beta * (2.0 * collect(0:niw-1) .+ 0.0)
+
+# Noise
+seed = rand(1:100000000)
+rng = MersenneTwister(seed)
+noise_ampl = 1.0e-4
+noise_abs = randn(rng, F64, niw) * noise_ampl
+noise_phase = rand(rng, niw) * 2.0 * π
+noise = noise_abs .* exp.(noise_phase * im)
+
+# Evaluate KPATH
+KPATH = calc_kpath()
 
 # Precompute band dispersion
 ek = zeros(F64, 2 * nkx + 1, 2 * nky + 1)
@@ -95,7 +107,7 @@ for ipx = -nkx:nkx
 end
 
 # Announce the Lindhard function
-chiw = zeros(C64, length(KPATH), nmesh)
+chir = zeros(C64, length(KPATH), nmesh)
 
 # Try to calculate the Lindhard function
 for ik in eachindex(KPATH)
