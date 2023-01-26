@@ -54,6 +54,7 @@ for ipx = -nkx:nkx
     end
 end
 
+# Try to calculate the Lindhard function
 for m = 1:nmesh
     w = rmesh[m] + im * eta
     println("w -> ", w)
