@@ -6,11 +6,15 @@ using ACFlow
 
 welcome()
 
+# Setup key parameters
 nkpt = 151
 niw = 10
+
+# Allocate memories at advance
 chiw = zeros(C64, nkpt, niw)
 grid = zeros(F64, niw)
 
+# Read momentum-resolved Lindhard function
 open("chiw.data", "r") do fin
     for k = 1:nkpt
         for i = 1:niw
@@ -22,7 +26,10 @@ open("chiw.data", "r") do fin
     end
 end
 
+# Analytically continuation k by k
 for k = 1:nkpt
+
+    println("k -> ", k, " [finished]")
 
     # For MaxEnt solver
 
