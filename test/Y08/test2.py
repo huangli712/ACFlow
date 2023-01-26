@@ -18,8 +18,8 @@ g.close()
 
 extent = np.min(kmesh), np.max(kmesh), np.min(rmesh), np.max(rmesh)
 im1 = plt.imshow(Akw,
-                 cmap=plt.cm.hot,   #viridis,
-                 interpolation='bicubic',
+                 cmap = plt.cm.hot,
+                 interpolation = 'bicubic',
                  extent = extent,
                  origin = "lower",
                  aspect = "auto")
