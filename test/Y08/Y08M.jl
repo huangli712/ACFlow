@@ -9,9 +9,11 @@ welcome()
 # Setup key parameters
 nkpt = 151
 niw = 10
+nmesh = 501
 
 # Allocate memories at advance
 chiw = zeros(C64, nkpt, niw)
+Akw = zeros(F64, nkpt, nmesh)
 grid = zeros(F64, niw)
 
 # Read momentum-resolved Lindhard function
@@ -28,8 +30,6 @@ end
 
 # Analytically continuation k by k
 for k = 1:nkpt
-
-    println("k -> $k [finished]")
 
     # For MaxEnt solver
 
@@ -64,9 +64,22 @@ for k = 1:nkpt
     # Call the solver
     mesh, Aout, Gout = solve(grid, chiw[k,:])
 
-    # Backup calculated results
-    cp("Aout.data", "Aout.mem.$k", force = true)
-    cp("Gout.data", "Gout.mem.$k", force = true)
-    cp("repr.data", "repr.mem.$k", force = true)
+    # Store spectral density
+    Akw[k,:] = mesh .* Aout
 
+    # Backup calculated results
+    cp("Aout.data", "Aout.data.$k", force = true)
+    cp("Gout.data", "Gout.data.$k", force = true)
+    cp("repr.data", "repr.data.$k", force = true)
+
+    println("k -> $k [finished]\n")
+end
+
+# Write Akw
+open("Akw.data", "w") do fout
+    for k = 1:nkpt
+        for i = 1:nmesh
+            @printf(fout, "%5i %20.16f %20.16f\n", k, mesh[i], Akw[k,i])
+        end
+    end
 end
