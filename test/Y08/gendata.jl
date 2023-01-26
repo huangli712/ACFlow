@@ -90,7 +90,7 @@ iωₙ = π / beta * (2.0 * collect(0:niw-1) .+ 0.0)
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
-noise_ampl = 1.0e-6
+noise_ampl = 1.0e-4
 noise_abs = randn(rng, F64, niw) * noise_ampl
 noise_phase = rand(rng, niw) * 2.0 * π
 noise = noise_abs .* exp.(noise_phase * im)

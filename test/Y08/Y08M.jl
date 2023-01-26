@@ -9,7 +9,7 @@ welcome()
 
 # Setup key parameters
 nkpt = 151
-niw = 10
+niw = 20
 nmesh = 501
 
 # Allocate memories at advance
@@ -46,7 +46,7 @@ for k = 1:nkpt
         "mtype"  => "flat",
         "grid"   => "bfreq",
         "mesh"   => "linear",
-        "ngrid"  => 10,
+        "ngrid"  => 20,
         "nmesh"  => 501,
         "wmax"   => 2.5,
         "wmin"   => 0.0,
