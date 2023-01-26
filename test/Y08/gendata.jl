@@ -120,7 +120,7 @@ for ik in eachindex(KPATH)
     chir[ik,:] = calc_ksum(iqx, iqy, w, ek)
 
     # For imaginary frequency data
-    w = iωₙ * im
+    w = iωₙ * im .+ 1e-10
     chiw[ik,:] = calc_ksum(iqx, iqy, w, ek) + noise
 end
 
