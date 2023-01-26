@@ -108,20 +108,30 @@ end
 
 # Announce the Lindhard function
 chir = zeros(C64, length(KPATH), nmesh)
+chiw = zeros(C64, length(KPATH), niw)
 
 # Try to calculate the Lindhard function
 for ik in eachindex(KPATH)
     iqx, iqy = KPATH[ik]
     println("ik = ", ik)
+
+    # For real frequency data
     w = @. rmesh + im * eta
-    chiw[ik,:] = calc_ksum(iqx, iqy, w, ek)
+    chir[ik,:] = calc_ksum(iqx, iqy, w, ek)
+
+    # For imaginary frequency data
+    w = iωₙ * im
+    chiw[ik,:] = calc_ksum(iqx, iqy, w, ek) + noise
 end
 
-open("chiw.data", "w") do fout
+# Write the Lindhard function at real frequency
+open("chir.data", "w") do fout
     for i in eachindex(rmesh)
         for k in eachindex(KPATH)
-            z = chiw[k,i]
+            z = chir[k,i]
             @printf(fout, "%5i %20.16f %20.16f %20.16f\n", k, rmesh[i], real(z), imag(z))
         end
     end
 end
+
+# Write the Lindhard function at imaginary frequency
