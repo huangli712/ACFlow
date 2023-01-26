@@ -40,7 +40,7 @@ end
 # K-summation
 function calc_ksum(iqx, iqy, w, ek)
     k = 0.0
-    r = 0.0
+    r = zeros(C64, length(w))
     for ipx = -nkx:nkx
         for ipy = -nky:nky
             ipqx = ipx + iqx
@@ -63,7 +63,8 @@ function calc_ksum(iqx, iqy, w, ek)
             epq = ek[ipqx+nkx+1,ipqy+nky+1]
     
             k = k + 1
-            r = r + ( fermi(ep) - fermi(epq) ) / (ep - epq + w)
+            f = fermi(ep) - fermi(epq)
+            @. r = r + f / (ep - epq + w)
         end
     end
     return r / k
@@ -93,13 +94,11 @@ end
 chiw = zeros(C64, length(KPATH), nmesh)
 
 # Try to calculate the Lindhard function
-for m = 1:nmesh
-    w = rmesh[m] + im * eta
-    println("w -> ", w)
-    for ik in eachindex(KPATH)
-        iqx, iqy = KPATH[ik]
-        chiw[ik,m] = ksum(iqx, iqy, w, ek)
-    end
+for ik in eachindex(KPATH)
+    iqx, iqy = KPATH[ik]
+    println("ik = ", ik)
+    w = @. rmesh + im * eta
+    chiw[ik,:] = calc_ksum(iqx, iqy, w, ek)
 end
 
 open("chiw.data", "w") do fout
