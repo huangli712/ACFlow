@@ -11,6 +11,7 @@ addprocs(8)
 welcome()
 
 # Setup key parameters
+# This parameters should be consistent with those in gendata.jl
 nkpt = 151
 niw = 20
 nmesh = 501

@@ -49,12 +49,17 @@ end
 
 # K-summation
 function calc_ksum(iqx, iqy, w, ek)
-    k = 0.0
+    k = 0.0 # Counter for k-points
     r = zeros(C64, length(w))
+
+    # Go through the brillouin zone
     for ipx = -nkx:nkx
         for ipy = -nky:nky
+            # Increase the counter
             k = k + 1
 
+            # Periodical boundary condition
+            # Along x axis
             ipqx = ipx + iqx
             if ipqx > +nkx
                 ipqx = ipqx - 2 * nkx
@@ -62,7 +67,8 @@ function calc_ksum(iqx, iqy, w, ek)
             if ipqx < -nkx
                 ipqx = ipqx + 2 * nkx
             end
-
+            #
+            # Along y axis
             ipqy = ipy + iqy
             if ipqy > +nky
                 ipqy = ipqy - 2 * nky
@@ -71,10 +77,12 @@ function calc_ksum(iqx, iqy, w, ek)
                 ipqy = ipqy + 2 * nky
             end
 
+            # Evaluate the Lindhard function
             ep = ek[ipx+nkx+1,ipy+nky+1]
             epq = ek[ipqx+nkx+1,ipqy+nky+1]
             f₁ = fermi(ep) - fermi(epq)
             f₂ = ep - epq
+            #
             @. r = r + f₁ / (f₂ + w)
         end
     end
@@ -120,7 +128,7 @@ for ik in eachindex(KPATH)
     chir[ik,:] = calc_ksum(iqx, iqy, w, ek)
 
     # For imaginary frequency data
-    w = iωₙ * im .+ 1e-10
+    w = iωₙ * im .+ 1e-10 # Add a small real part to avoid NaN at iωₙ = 0
     chiw[ik,:] = calc_ksum(iqx, iqy, w, ek) + noise
 end
 
