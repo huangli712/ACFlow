@@ -252,3 +252,13 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Flat model
     * Half-Lorentzian mesh
     * Fixed error bar
+
+* **Y08**
+    * Bosonic (symm) + Matsubara
+    * Lindhard function on square lattice
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
+    * Flat model
+    * linear mesh
+    * Fixed error bar
+    * Script mode
