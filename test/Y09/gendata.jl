@@ -63,7 +63,7 @@ kernel[1,1] = -2.0
 
 # Build green's function
 KA = kernel .* reshape(image, (1,nmesh))
-giw = zeros(C64, niw)
+giw = zeros(F64, niw)
 for i in eachindex(giw)
     giw[i] = trapz(rmesh, KA[i,:]) + noise[i]
 end
@@ -75,6 +75,6 @@ err = ones(F64, niw) * noise_ampl
 open("giw.data", "w") do fout
     for i in eachindex(giw)
         z = giw[i]
-        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err[i])
+        @printf(fout, "%20.16f %20.16f %20.16f\n", iw[i], z, err[i])
     end
 end
