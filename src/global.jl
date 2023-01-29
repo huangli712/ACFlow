@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/01/27
+# Last modified: 2023/01/29
 #
 
 #=
@@ -121,7 +121,7 @@ Version of this julia toolkit.
 
 See also: [`__RELEASE__`](@ref).
 """
-const __VERSION__ = v"1.3.5-devel.230127"
+const __VERSION__ = v"1.3.6-devel.230129"
 
 """
     __RELEASE__
