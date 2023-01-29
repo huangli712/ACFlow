@@ -7,7 +7,7 @@ using Printf
 using ACFlow
 
 # Setup parameters
-wmin = -5.0  # Left boundary
+wmin = +0.0  # Left boundary
 wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 10    # Number of Matsubara frequencies
@@ -34,7 +34,9 @@ for i in eachindex(rmesh)
 end
 #
 image = image ./ trapz(rmesh, image)
-@. image  = image / (rmesh + 1e-10) / (rmesh + 1e-10)
+_rmesh = deepcopy(rmesh)
+_rmesh[1] = _rmesh[1] + 1e-10
+@. image  = image / _rmesh / _rmesh
 
 # Write spectral function
 open("image.data", "w") do fout
@@ -54,9 +56,7 @@ iw = π / beta * (2.0 * collect(0:niw-1) .+ 0.0)
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
 noise_ampl = 1.0e-4
-noise_abs = randn(rng, F64, niw) * noise_ampl
-noise_phase = rand(rng, niw) * 2.0 * π
-noise = noise_abs .* exp.(noise_phase * im)
+noise = randn(rng, F64, niw) * noise_ampl
 
 # Kernel function
 kernel = -2.0 * reshape(rmesh .^ 2.0, (1,nmesh)) ./
