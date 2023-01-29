@@ -77,34 +77,3 @@ open("giw.data", "w") do fout
         @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err[i])
     end
 end
-
-#
-# For imaginary time data
-#
-
-# Imaginary time mesh
-tmesh = collect(LinRange(0, beta, ntau))
-
-# Noise
-seed = rand(1:100000000)
-rng = MersenneTwister(seed)
-noise_ampl = 1.0e-4
-noise = randn(rng, F64, ntau) * noise_ampl
-
-# Build green's function
-gtau = zeros(F64, ntau)
-for i = 1:ntau
-    tw = exp.(-tmesh[i] * rmesh)
-    bw = exp.(-beta * rmesh)
-    gtau[i] = trapz(rmesh, image .* tw ./ (1.0 .+ bw)) + noise[i]
-end
-
-# Build error
-err = ones(F64, ntau) * noise_ampl * 10.0
-
-# Write green's function
-open("gtau.data", "w") do fout
-    for i in eachindex(gtau)
-        @printf(fout, "%16.12f %16.12f %16.12f\n", tmesh[i], gtau[i], err[i])
-    end
-end

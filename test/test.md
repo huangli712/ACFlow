@@ -95,7 +95,9 @@ The following ten tests are used to test the basic features of the ACFlow toolki
 
 ## Experimental tests
 
-The following tests are designed to test the newly developed StochPX solver (based on the stochastic pole expansion).
+The following tests are designed to test the newly developed StochPX solver (based on
+the stochastic pole expansion). Note that the `X` series are for the fermionic systems,
+while the `Y` series are for the bosonic systems.
 
 * **X01**
     * Fermionic + Matsubara
@@ -129,7 +131,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * With sharp quasiparticle peak
 
 * **X04**
-    * Fermionic + Matsubara + Imaginary time
+    * Fermionic + Matsubara
     * Green's function
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver (with constraints)
