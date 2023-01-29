@@ -36,7 +36,7 @@ end
 image = image ./ trapz(rmesh, image)
 _rmesh = deepcopy(rmesh)
 _rmesh[1] = _rmesh[1] + 1e-10
-@. image  = image / _rmesh / _rmesh
+@. image  = image / _rmesh
 
 # Write spectral function
 open("image.data", "w") do fout

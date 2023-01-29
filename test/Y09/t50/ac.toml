@@ -1,0 +1,38 @@
+#
+# Test: Y09
+#
+# 0. Run gendata.jl to generate input data at first.
+# 1. Change [BASE] -> solver (MaxEnt or StochPX).
+# 2. Execute ../../util/acrun.jl ac.toml.
+#
+
+[BASE]
+finput = "giw.data"
+solver = "StochPX"
+ktype  = "bsymm"
+mtype  = "flat"
+grid   = "bfreq"
+mesh   = "linear"
+ngrid  = 10
+nmesh  = 501
+wmax   = 5.0
+wmin   = 0.0
+beta   = 10.0
+offdiag = false
+exclude = [[0.0,0.5]]
+
+[MaxEnt]
+method = "chi2kink"
+nalph  = 12
+alpha  = 1e9
+ratio  = 10.0
+blur   = -1.0
+
+[StochPX]
+method = "mean"
+nfine  = 100000
+npole  = 2000
+ntry   = 200
+nstep  = 100
+theta  = 1e+8
+eta    = 1e-3
