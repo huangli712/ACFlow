@@ -33,7 +33,8 @@ for i in eachindex(rmesh)
     end
 end
 #
-image = image ./ trapz(rmesh, image) ./ (rmesh .+ 1e-10) ./ (rmesh .+ 1e-10)
+image = image ./ trapz(rmesh, image)
+@. image  = image / (rmesh + 1e-10) / (rmesh + 1e-10)
 
 # Write spectral function
 open("image.data", "w") do fout
