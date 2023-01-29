@@ -115,8 +115,8 @@ while the `Y` series are for the bosonic systems.
     * Flat model
     * Linear mesh
     * Fixed error bar
-    * A clone of **A01**
     * Broad spectrum, two peaks
+    * A clone of **A01**
 
 * **X03**
     * Fermionic + Matsubara
@@ -138,9 +138,8 @@ while the `Y` series are for the bosonic systems.
     * Flat model
     * Linear mesh
     * Fixed error bar
-    * Standard mode
-    * A clone of **T03**
     * Sharp gap edges
+    * A clone of **T03**
 
 * **X05**
     * Fermionic + Matsubara
@@ -264,3 +263,13 @@ while the `Y` series are for the bosonic systems.
     * linear mesh
     * Fixed error bar
     * Script mode
+
+* **Y09**
+    * Bosonic (symm) + Matsubara
+    * Green's function
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver (with constraints)
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Sharp gap edges + broad tail
