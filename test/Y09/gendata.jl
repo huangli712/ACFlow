@@ -33,7 +33,7 @@ for i in eachindex(rmesh)
     end
 end
 #
-image = image ./ trapz(rmesh, image)
+image = image ./ trapz(rmesh, image) ./ (rmesh .+ 1e-10) ./ (rmesh .+ 1e-10)
 
 # Write spectral function
 open("image.data", "w") do fout
@@ -47,18 +47,18 @@ end
 #
 
 # Matsubara frequency mesh
-iw = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
+iw = π / beta * (2.0 * collect(0:niw-1) .+ 0.0)
 
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
 noise_ampl = 1.0e-4
-noise_abs = randn(rng, F64, niw) * noise_ampl
-noise_phase = rand(rng, niw) * 2.0 * π
-noise = noise_abs .* exp.(noise_phase * im)
+noise = randn(rng, F64, niw) * noise_ampl
 
 # Kernel function
-kernel = 1.0 ./ (im * reshape(iw, (niw,1)) .- reshape(rmesh, (1,nmesh)))
+kernel = -2.0 * reshape(rmesh .^ 2.0, (1,nmesh)) ./
+         (reshape(iw .^ 2.0, (niw,1)) .+ reshape(rmesh .^ 2.0, (1,nmesh)))
+kernel[1,1] = -2.0
 
 # Build green's function
 KA = kernel .* reshape(image, (1,nmesh))
@@ -75,36 +75,5 @@ open("giw.data", "w") do fout
     for i in eachindex(giw)
         z = giw[i]
         @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err[i])
-    end
-end
-
-#
-# For imaginary time data
-#
-
-# Imaginary time mesh
-tmesh = collect(LinRange(0, beta, ntau))
-
-# Noise
-seed = rand(1:100000000)
-rng = MersenneTwister(seed)
-noise_ampl = 1.0e-4
-noise = randn(rng, F64, ntau) * noise_ampl
-
-# Build green's function
-gtau = zeros(F64, ntau)
-for i = 1:ntau
-    tw = exp.(-tmesh[i] * rmesh)
-    bw = exp.(-beta * rmesh)
-    gtau[i] = trapz(rmesh, image .* tw ./ (1.0 .+ bw)) + noise[i]
-end
-
-# Build error
-err = ones(F64, ntau) * noise_ampl * 10.0
-
-# Write green's function
-open("gtau.data", "w") do fout
-    for i in eachindex(gtau)
-        @printf(fout, "%16.12f %16.12f %16.12f\n", tmesh[i], gtau[i], err[i])
     end
 end
