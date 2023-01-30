@@ -153,7 +153,7 @@ It is quite convenient to introduce a new variable ``\tilde{A}(\omega)``:
 \end{equation}
 ```
 
-Clearly, $\tilde{A}(\omega) \ge 0$. Thus, we have
+Clearly, ``\tilde{A}(\omega) \ge 0``. Thus, we have
 
 ```math
 \begin{equation}
