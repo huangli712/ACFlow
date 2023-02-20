@@ -74,6 +74,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
     * Linear mesh
     * Script mode
     * Fixed error bar
+    * MaxEntAux algorithm
 
 * **A09**
     * Fermionic + Imaginary time
