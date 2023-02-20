@@ -37,9 +37,9 @@ image2 = similar(rmesh)
 @. image2  = A₃ * exp(-(rmesh - ϵ₃) ^ 2.0 / (2.0 * Γ₃ ^ 2.0)) / (Γ₃ * sqrt(2.0 * π))
 @. image2 += A₄ * exp(-(rmesh - ϵ₄) ^ 2.0 / (2.0 * Γ₄ ^ 2.0)) / (Γ₄ * sqrt(2.0 * π))
 #
-𝐴 = zeros(F64, (2,2,nmesh))
-𝐴[1,1,:] .= image1
-𝐴[2,2,:] .= image2
+𝔸 = zeros(F64, (2,2,nmesh))
+𝔸[1,1,:] .= image1
+𝔸[2,2,:] .= image2
 
 # Rotate spectral function to generate non-diagonal element
 #
@@ -47,12 +47,12 @@ image2 = similar(rmesh)
 θ = 0.1
 #
 # Build rotation matrix
-𝑅 = [cos(θ) sin(θ); -sin(θ) cos(θ)]
+ℝ = [cos(θ) sin(θ); -sin(θ) cos(θ)]
 #
 # Get final spectral function
-true_image = zeros(F64, (2,2,nmesh))
+𝒜 = zeros(F64, (2,2,nmesh))
 for w = 1:nmesh
-    true_image[:,:,w] = 𝑅 * 𝐴[:,:,w] * 𝑅'
+    𝒜[:,:,w] = ℝ * 𝔸[:,:,w] * ℝ'
 end
 
 # Matsubara frequency mesh
@@ -62,7 +62,7 @@ iw = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
 kernel = 1.0 ./ (im * reshape(iw, (niw,1)) .- reshape(rmesh, (1,nmesh)))
 
 # Build green's function
-KA = reshape(kernel, (1,1,niw,nmesh)) .* reshape(true_image, (2,2,1,nmesh))
+KA = reshape(kernel, (1,1,niw,nmesh)) .* reshape(𝒜, (2,2,1,nmesh))
 giw = zeros(C64, (2,2,niw))
 for i = 1:2
     for j = 1:2
@@ -76,6 +76,7 @@ end
 err = 1e-5
 
 # Write green's function
+# For diagonal element
 open("giw.11.data", "w") do fout
     for i = 1:niw
         z = giw[1,1,i]
@@ -83,6 +84,7 @@ open("giw.11.data", "w") do fout
     end
 end
 #
+# For non-diagonal element
 open("giw.12.data", "w") do fout
     for i = 1:niw
         z = giw[1,2,i]
@@ -90,6 +92,7 @@ open("giw.12.data", "w") do fout
     end
 end
 #
+# For diagonal element
 open("giw.22.data", "w") do fout
     for i = 1:niw
         z = giw[2,2,i]
@@ -97,7 +100,8 @@ open("giw.22.data", "w") do fout
     end
 end
 #
-open("gdiff.data", "w") do fout
+# For auxiliary green's function
+open("giw.aux.data", "w") do fout
     for i = 1:niw
         z = giw[1,1,i] + giw[2,2,i] - 2 * giw[1,2,i]
         @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
@@ -105,18 +109,21 @@ open("gdiff.data", "w") do fout
 end
 
 # Write spectral function
+# For diagonal element
 open("image.11.data", "w") do fout
     for i in eachindex(rmesh)
         @printf(fout, "%20.16f %20.16f\n", rmesh[i], true_image[1,1,i])
     end
 end
 #
+# For non-diagonal element
 open("image.12.data", "w") do fout
     for i in eachindex(rmesh)
         @printf(fout, "%20.16f %20.16f\n", rmesh[i], true_image[1,2,i])
     end
 end
 #
+# For diagonal element
 open("image.22.data", "w") do fout
     for i in eachindex(rmesh)
         @printf(fout, "%20.16f %20.16f\n", rmesh[i], true_image[2,2,i])
