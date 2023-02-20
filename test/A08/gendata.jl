@@ -96,6 +96,13 @@ open("giw.22.data", "w") do fout
         @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
     end
 end
+#
+open("gdiff.data", "w") do fout
+    for i = 1:niw
+        z = giw[1,1,i] + giw[2,2,i] - 2 * giw[1,2,i]
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
+    end
+end
 
 # Write spectral function
 open("image.11.data", "w") do fout

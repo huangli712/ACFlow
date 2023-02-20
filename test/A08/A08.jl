@@ -67,6 +67,31 @@ cp("Aout.data", "Aout.22.data", force = true)
 cp("Gout.data", "Gout.22.data", force = true)
 cp("repr.data", "repr.22.data", force = true)
 
+# For diagonal elements: green.diff.data
+
+# Setup parameters
+#
+# For [BASE] block
+# See types.jl/_PBASE for default setup
+B = Dict{String,Any}(
+    "finput" => "gdiff.data",
+)
+#
+# For [MaxEnt] block
+# See types.jl/_PMaxEnt for default setup
+S = Dict{String,Any}(
+)
+#
+setup_param(B, S, false)
+
+# Call the solver
+mesh, Aoutdiff, Goutdiff = solve(read_data())
+
+# Backup calculated results
+cp("Aout.data", "Aout.diff.data", force = true)
+cp("Gout.data", "Gout.diff.data", force = true)
+cp("repr.data", "repr.diff.data", force = true)
+
 # For non-diagonal elements: green.12.data
 
 # Generate model function at first
