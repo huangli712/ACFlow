@@ -9,7 +9,7 @@ welcome()
 
 # For MaxEnt solver
 
-# For diagonal elements: green.11.data
+# For diagonal elements: giw.11.data
 
 # Setup parameters
 #
@@ -42,7 +42,7 @@ cp("Aout.data", "Aout.11.data", force = true)
 cp("Gout.data", "Gout.11.data", force = true)
 cp("repr.data", "repr.11.data", force = true)
 
-# For diagonal elements: green.22.data
+# For diagonal elements: giw.22.data
 
 # Setup parameters
 #
@@ -67,14 +67,14 @@ cp("Aout.data", "Aout.22.data", force = true)
 cp("Gout.data", "Gout.22.data", force = true)
 cp("repr.data", "repr.22.data", force = true)
 
-# For diagonal elements: green.diff.data
+# For auxiliary functions: giw.aux.data
 
 # Setup parameters
 #
 # For [BASE] block
 # See types.jl/_PBASE for default setup
 B = Dict{String,Any}(
-    "finput" => "gdiff.data",
+    "finput" => "giw.aux.data",
 )
 #
 # For [MaxEnt] block
@@ -85,14 +85,14 @@ S = Dict{String,Any}(
 setup_param(B, S, false)
 
 # Call the solver
-mesh, Aoutdiff, Goutdiff = solve(read_data())
+mesh, Aaux, Gaux = solve(read_data())
 
 # Backup calculated results
-cp("Aout.data", "Aout.diff.data", force = true)
-cp("Gout.data", "Gout.diff.data", force = true)
-cp("repr.data", "repr.diff.data", force = true)
+cp("Aout.data", "Aout.aux.data", force = true)
+cp("Gout.data", "Gout.aux.data", force = true)
+cp("repr.data", "repr.aux.data", force = true)
 
-# For non-diagonal elements: green.12.data
+# For non-diagonal elements: giw.12.data
 
 # Generate model function at first
 model_offdiag = sqrt.(Aout11 .* Aout22)
