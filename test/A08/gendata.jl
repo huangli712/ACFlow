@@ -112,20 +112,20 @@ end
 # For diagonal element
 open("image.11.data", "w") do fout
     for i in eachindex(rmesh)
-        @printf(fout, "%20.16f %20.16f\n", rmesh[i], true_image[1,1,i])
+        @printf(fout, "%20.16f %20.16f\n", rmesh[i], 𝒜[1,1,i])
     end
 end
 #
 # For non-diagonal element
 open("image.12.data", "w") do fout
     for i in eachindex(rmesh)
-        @printf(fout, "%20.16f %20.16f\n", rmesh[i], true_image[1,2,i])
+        @printf(fout, "%20.16f %20.16f\n", rmesh[i], 𝒜[1,2,i])
     end
 end
 #
 # For diagonal element
 open("image.22.data", "w") do fout
     for i in eachindex(rmesh)
-        @printf(fout, "%20.16f %20.16f\n", rmesh[i], true_image[2,2,i])
+        @printf(fout, "%20.16f %20.16f\n", rmesh[i], 𝒜[2,2,i])
     end
 end
