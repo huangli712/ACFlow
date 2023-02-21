@@ -67,14 +67,14 @@ cp("Aout.data", "Aout.22.data", force = true)
 cp("Gout.data", "Gout.22.data", force = true)
 cp("repr.data", "repr.22.data", force = true)
 
-# For auxiliary functions: giw.aux.data
+# For auxiliary functions: giw.aux12.data
 
 # Setup parameters
 #
 # For [BASE] block
 # See types.jl/_PBASE for default setup
 B = Dict{String,Any}(
-    "finput" => "giw.aux.data",
+    "finput" => "giw.aux12.data",
 )
 #
 # For [MaxEnt] block
@@ -85,12 +85,37 @@ S = Dict{String,Any}(
 setup_param(B, S, false)
 
 # Call the solver
-mesh, Aaux, Gaux = solve(read_data())
+mesh, Aaux12, Gaux12 = solve(read_data())
 
 # Backup calculated results
-cp("Aout.data", "Aout.aux.data", force = true)
-cp("Gout.data", "Gout.aux.data", force = true)
-cp("repr.data", "repr.aux.data", force = true)
+cp("Aout.data", "Aout.aux12.data", force = true)
+cp("Gout.data", "Gout.aux12.data", force = true)
+cp("repr.data", "repr.aux12.data", force = true)
+
+# For auxiliary functions: giw.aux21.data
+
+# Setup parameters
+#
+# For [BASE] block
+# See types.jl/_PBASE for default setup
+B = Dict{String,Any}(
+    "finput" => "giw.aux21.data",
+)
+#
+# For [MaxEnt] block
+# See types.jl/_PMaxEnt for default setup
+S = Dict{String,Any}(
+)
+#
+setup_param(B, S, false)
+
+# Call the solver
+mesh, Aaux21, Gaux21 = solve(read_data())
+
+# Backup calculated results
+cp("Aout.data", "Aout.aux21.data", force = true)
+cp("Gout.data", "Gout.aux21.data", force = true)
+cp("repr.data", "repr.aux21.data", force = true)
 
 # For non-diagonal elements: giw.12.data
 
@@ -129,3 +154,32 @@ mesh, Aout12, Gout12 = solve(read_data())
 cp("Aout.data", "Aout.12.data", force = true)
 cp("Gout.data", "Gout.12.data", force = true)
 cp("repr.data", "repr.12.data", force = true)
+
+# For non-diagonal elements: giw.21.data
+
+# Setup parameters
+#
+# For [BASE] block
+# See types.jl/_PBASE for default setup
+B = Dict{String,Any}(
+    "finput" => "giw.21.data",
+    "mtype"  => "file",
+    "offdiag"=> true,
+)
+#
+# For [MaxEnt] block
+# See types.jl/_PMaxEnt for default setup
+S = Dict{String,Any}(
+    "nalph"  => 30,
+    "alpha"  => 1e15,
+)
+#
+setup_param(B, S, false)
+
+# Call the solver
+mesh, Aout21, Gout21 = solve(read_data())
+
+# Backup calculated results
+cp("Aout.data", "Aout.21.data", force = true)
+cp("Gout.data", "Gout.21.data", force = true)
+cp("repr.data", "repr.21.data", force = true)
