@@ -109,9 +109,17 @@ open("giw.22.data", "w") do fout
 end
 #
 # For auxiliary green's function
-open("giw.aux.data", "w") do fout
+open("giw.aux12.data", "w") do fout
     for i = 1:niw
         z = giw[1,1,i] + giw[2,2,i] - 2 * giw[1,2,i]
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
+    end
+end
+#
+# For auxiliary green's function
+open("giw.aux21.data", "w") do fout
+    for i = 1:niw
+        z = giw[1,1,i] + giw[2,2,i] - 2 * giw[2,1,i]
         @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
     end
 end
@@ -128,6 +136,13 @@ end
 open("image.12.data", "w") do fout
     for i in eachindex(rmesh)
         @printf(fout, "%20.16f %20.16f\n", rmesh[i], 𝒜[1,2,i])
+    end
+end
+#
+# For non-diagonal element
+open("image.21.data", "w") do fout
+    for i in eachindex(rmesh)
+        @printf(fout, "%20.16f %20.16f\n", rmesh[i], 𝒜[2,1,i])
     end
 end
 #
