@@ -92,6 +92,14 @@ open("giw.12.data", "w") do fout
     end
 end
 #
+# For non-diagonal element
+open("giw.21.data", "w") do fout
+    for i = 1:niw
+        z = giw[2,1,i]
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
+    end
+end
+#
 # For diagonal element
 open("giw.22.data", "w") do fout
     for i = 1:niw
