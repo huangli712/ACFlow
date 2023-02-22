@@ -9,7 +9,7 @@ welcome()
 
 # For MaxEnt solver
 
-# For diagonal elements: giw.11.data
+# For diagonal part: giw.11.data
 
 # Setup parameters
 #
@@ -42,7 +42,7 @@ cp("Aout.data", "Aout.11.data", force = true)
 cp("Gout.data", "Gout.11.data", force = true)
 cp("repr.data", "repr.11.data", force = true)
 
-# For diagonal elements: giw.22.data
+# For diagonal part: giw.22.data
 
 # Setup parameters
 #
@@ -117,7 +117,7 @@ cp("Aout.data", "Aout.aux21.data", force = true)
 cp("Gout.data", "Gout.aux21.data", force = true)
 cp("repr.data", "repr.aux21.data", force = true)
 
-# For non-diagonal elements: giw.12.data
+# For non-diagonal part: giw.12.data
 
 # Generate model function at first
 model_offdiag = sqrt.(Aout11 .* Aout22)
@@ -155,7 +155,7 @@ cp("Aout.data", "Aout.12.data", force = true)
 cp("Gout.data", "Gout.12.data", force = true)
 cp("repr.data", "repr.12.data", force = true)
 
-# For non-diagonal elements: giw.21.data
+# For non-diagonal part: giw.21.data
 
 # Setup parameters
 #

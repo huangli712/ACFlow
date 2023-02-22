@@ -76,7 +76,7 @@ end
 err = 1e-5
 
 # Write green's function
-# For diagonal element
+# For diagonal part
 open("giw.11.data", "w") do fout
     for i = 1:niw
         z = giw[1,1,i]
@@ -84,7 +84,7 @@ open("giw.11.data", "w") do fout
     end
 end
 #
-# For non-diagonal element
+# For non-diagonal part
 open("giw.12.data", "w") do fout
     for i = 1:niw
         z = giw[1,2,i]
@@ -92,7 +92,7 @@ open("giw.12.data", "w") do fout
     end
 end
 #
-# For non-diagonal element
+# For non-diagonal part
 open("giw.21.data", "w") do fout
     for i = 1:niw
         z = giw[2,1,i]
@@ -100,7 +100,7 @@ open("giw.21.data", "w") do fout
     end
 end
 #
-# For diagonal element
+# For diagonal part
 open("giw.22.data", "w") do fout
     for i = 1:niw
         z = giw[2,2,i]
@@ -125,28 +125,28 @@ open("giw.aux21.data", "w") do fout
 end
 
 # Write spectral function
-# For diagonal element
+# For diagonal part
 open("image.11.data", "w") do fout
     for i in eachindex(rmesh)
         @printf(fout, "%20.16f %20.16f\n", rmesh[i], 𝒜[1,1,i])
     end
 end
 #
-# For non-diagonal element
+# For non-diagonal part
 open("image.12.data", "w") do fout
     for i in eachindex(rmesh)
         @printf(fout, "%20.16f %20.16f\n", rmesh[i], 𝒜[1,2,i])
     end
 end
 #
-# For non-diagonal element
+# For non-diagonal part
 open("image.21.data", "w") do fout
     for i in eachindex(rmesh)
         @printf(fout, "%20.16f %20.16f\n", rmesh[i], 𝒜[2,1,i])
     end
 end
 #
-# For diagonal element
+# For diagonal part
 open("image.22.data", "w") do fout
     for i in eachindex(rmesh)
         @printf(fout, "%20.16f %20.16f\n", rmesh[i], 𝒜[2,2,i])
