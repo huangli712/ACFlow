@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/01/17
+# Last modified: 2023/03/06
 #
 
 """
@@ -38,7 +38,12 @@ a fixed value `1.0e-4`.
 """
 function solve(grid::Vector{F64}, Gval::Vector{T}) where {T}
     Gerr = similar(Gval)
-    fill!(Gerr, 1.0e-4)
+    err = 1.0e-4
+    if T == F64
+        fill!(Gerr, err)
+    else
+        fill!(Gerr, err + err * im)
+    end
     return solve(RawData(grid, Gval, Gerr))
 end
 
