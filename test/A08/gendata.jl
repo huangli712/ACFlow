@@ -108,10 +108,11 @@ open("giw.22.data", "w") do fout
     end
 end
 #
+# Be careful, we use two different auxiliary green's functions here
 # For auxiliary green's function
 open("giw.aux12.data", "w") do fout
     for i = 1:niw
-        z = giw[1,1,i] + giw[2,2,i] - 2 * giw[1,2,i]
+        z = giw[1,1,i] + giw[2,2,i] + 2 * giw[1,2,i]
         @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
     end
 end

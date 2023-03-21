@@ -117,8 +117,6 @@ cp("Aout.data", "Aout.aux21.data", force = true)
 cp("Gout.data", "Gout.aux21.data", force = true)
 cp("repr.data", "repr.aux21.data", force = true)
 
-# For non-diagonal part: giw.12.data
-
 # Generate model function at first
 model_offdiag = sqrt.(Aout11 .* Aout22)
 #
@@ -127,6 +125,8 @@ open("model.inp", "w") do fout
         @printf(fout, "%20.16f %20.16f\n", mesh[i], model_offdiag[i])
     end
 end
+
+# For non-diagonal part: giw.12.data
 
 # Setup parameters
 #
