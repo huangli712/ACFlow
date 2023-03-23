@@ -8,13 +8,14 @@ using ACFlow
 
 # Setup parameters
 wmin = +0.0  # Left boundary
-wmax = +1000.# Right boundary
+wmax = +10.0 # Right boundary
 nmesh = 2001 # Number of real-frequency points
-niw  = 40    # Number of Matsubara frequencies
+niw  = 50    # Number of Matsubara frequencies
 ntau = 501   # Number of imaginary time points
-beta = 0.50  # Inverse temperature
-𝑀    = 300.0 # Parameters for Breit-Wigner model
-γ    = 100.0
+beta = 50.0  # Inverse temperature
+𝑀    = 2.00  # Parameters for Breit-Wigner model
+Γ    = 0.50
+𝐴    = 1.00
 
 #
 # For true spectrum
@@ -27,13 +28,12 @@ rmesh = collect(LinRange(wmin, wmax, nmesh))
 image = similar(rmesh)
 #
 for i in eachindex(rmesh)
-    A = 2.0 * rmesh[i] * γ / π
-    B = (rmesh[i] ^ 2.0 - γ ^ 2.0 - 𝑀 ^ 2.0) ^ 2.0
-    C = 4.0 * (rmesh[i] ^ 2.0) * (γ ^ 2.0)
-    image[i] = A / (B + C)
+    B₁ = (𝑀 ^ 2.0 + Γ ^ 2.0 - rmesh[i] ^ 2.0) ^ 2.0
+    B₂ = 4.0 * (Γ ^ 2.0) * (rmesh[i] ^ 2.0)
+    image[i] = 4.0 * 𝐴 * Γ * rmesh[i] / (B₁ + B₂)
 end
 #
-rmesh[1] = 1e-8
+rmesh[1] = 1e-8 # To avoid NaN
 image = image ./ rmesh
 rmesh[1] = 0.0
 
@@ -54,7 +54,7 @@ iw = π / beta * (2.0 * collect(0:niw-1) .+ 0.0)
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
-noise_ampl = 1.0e-10
+noise_ampl = 1.0e-4
 noise = randn(rng, F64, niw) * noise_ampl
 
 # Kernel function
@@ -90,7 +90,7 @@ tmesh = collect(LinRange(0, beta, ntau))
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
-noise_ampl = 1.0e-10
+noise_ampl = 1.0e-4
 noise = randn(rng, F64, ntau) * noise_ampl
 
 # Build green's function
