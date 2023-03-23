@@ -1,5 +1,9 @@
 #!/usr/bin/env julia
 
+#
+# This example is taken from Phys. Rev. D 106, L051502 (2022)
+#
+
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
 using Random
