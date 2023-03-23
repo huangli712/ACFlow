@@ -2,6 +2,7 @@
 
 #
 # This example is taken from Phys. Rev. D 106, L051502 (2022)
+# One Breit-Wigner peaks
 #
 
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])

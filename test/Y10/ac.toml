@@ -7,13 +7,13 @@
 #
 
 [BASE]
-finput = "chit.data"
-solver = "MaxEnt"
+finput = "chiw.data"
+solver = "StochPX"
 ktype  = "bsymm"
 mtype  = "flat"
-grid   = "btime"
+grid   = "bfreq"
 mesh   = "linear"
-ngrid  = 501
+ngrid  = 50
 nmesh  = 1001
 wmax   = 10.0
 wmin   = 0.0
@@ -33,5 +33,5 @@ nfine  = 100000
 npole  = 2000
 ntry   = 2000
 nstep  = 100
-theta  = 1e+18
-eta    = 1e-0
+theta  = 1e+8
+eta    = 1e-3
