@@ -1,5 +1,5 @@
 #
-# Test: Y10
+# Test: Y11
 #
 # 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or StochPX).
@@ -8,7 +8,7 @@
 
 [BASE]
 finput = "chiw.data"
-solver = "MaxEnt"
+solver = "StochPX"
 ktype  = "bsymm"
 mtype  = "flat"
 grid   = "bfreq"
@@ -33,5 +33,5 @@ nfine  = 100000
 npole  = 2000
 ntry   = 200
 nstep  = 100
-theta  = 1e+20
-eta    = 1e-2
+theta  = 1e+8
+eta    = 1e-3
