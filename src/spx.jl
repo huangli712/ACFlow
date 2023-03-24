@@ -388,8 +388,12 @@ function average(SC::StochPXContext)
         println("Median value of χ²: $(chi2_med)")
         println("Accumulate $(round(I64,c)) solutions to get the spectral density")
         #
-        #
-        @show passed
+        # Write indices of selected solutions
+        if nworkers() > 1
+            myid() == 2 && write_passed(passed, chi2_med, αgood)
+        else
+            write_passed(passed, chi2_med, αgood)
+        end
     #
     end
 
