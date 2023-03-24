@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/01/25
+# Last modified: 2023/03/24
 #
 
 #=
@@ -357,6 +357,7 @@ function average(SC::StochPXContext)
         # Go through all the solutions
         c = 0.0
         χ₀ = -SC.Gᵥ[1]
+        passed = I64[]
         for i = 1:ntry
             if SC.χ²[i] < chi2_med / αgood
                 if     ktype == "fermi"
@@ -376,6 +377,7 @@ function average(SC::StochPXContext)
                 #
                 # Increase the counter
                 c = c + 1.0
+                append!(passed, i)
             end
         end
         #
@@ -385,6 +387,9 @@ function average(SC::StochPXContext)
         println("Mean value of χ²: $(chi2_ave)")
         println("Median value of χ²: $(chi2_med)")
         println("Accumulate $(round(I64,c)) solutions to get the spectral density")
+        #
+        #
+        @show passed
     #
     end
 

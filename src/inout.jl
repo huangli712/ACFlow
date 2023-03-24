@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/19
+# Last modified: 2023/3/24
 #
 
 #=
@@ -298,6 +298,25 @@ function write_hamiltonian(α_vec::Vector{F64}, Uα::Vector{F64})
     open("hamil.data", "w") do fout
         for i in eachindex(α_vec)
             @printf(fout, "%16.8f %16.12f\n", α_vec[i], Uα[i])
+        end
+    end
+end
+
+"""
+    write_passed(passed::Vector{I64}, med::F64, αgood::F64)
+
+Write indices of selected solutions which should be used to calculate
+the averaged spectrum. Here, `passed` means the indices, `med` is the
+median value of χ², and `αgood` is the factor that is used to filter
+the solutions. This function is only useful for the `StochOM` and the
+`StochPX` solvers.
+"""
+function write_passed(passed::Vector{I64}, med::F64, αgood::F64)
+    open("passed.data", "w") do fout
+        npass = length(passed)
+        println(fout, "# Count: ", npass, "  Median: ", med, " αgood: ", αgood)
+        for i in eachindex(passed)
+            @printf(fout, "%4i %8i\n", i, passed[i])
         end
     end
 end
