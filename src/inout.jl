@@ -314,7 +314,7 @@ the solutions. This function is only useful for the `StochOM` and the
 function write_passed(passed::Vector{I64}, med::F64, αgood::F64)
     open("passed.data", "w") do fout
         npass = length(passed)
-        println(fout, "# Count: ", npass, "  Median: ", med, " αgood: ", αgood)
+        println(fout, "# Count: ", npass, "  Median: ", med, "  αgood: ", αgood)
         for i in eachindex(passed)
             @printf(fout, "%4i %8i\n", i, passed[i])
         end

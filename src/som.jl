@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/01/21
+# Last modified: 2023/03/24
 #
 
 #=
@@ -246,6 +246,7 @@ function average(SC::StochOMContext)
 
     # Accumulate the final spectrum
     Aom = zeros(F64, nmesh)
+    passed = I64[]
     for l = 1:ntry
         if SC.Δᵥ[l] < dev_ave / αgood
             for w = 1:nmesh
@@ -257,15 +258,22 @@ function average(SC::StochOMContext)
                     end
                 end
             end
+            append!(passed, l)
         end
     end
 
     # Normalize the spectrum
     Lgood = count(x -> x < dev_ave / αgood, SC.Δᵥ)
     @. Aom = Aom / Lgood
-
     @printf("Median χ² : %16.12e Accepted configurations : %5i\n", dev_ave, Lgood)
 
+    # Write indices of selected solutions
+    if nworkers() > 1
+        myid() == 2 && write_passed(passed, dev_ave, αgood)
+    else
+        write_passed(passed, dev_ave, αgood)
+    end
+    
     return Aom
 end
 
