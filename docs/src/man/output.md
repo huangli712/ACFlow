@@ -12,6 +12,7 @@ Once the analytical continuation simulation is finished, the final spectral func
 |`goodness.dat` | ``\log_{10}(\chi^2)`` vs ``\log_{10}(\Theta)`` for the `StochSK` solver. |
 |`model.data` | Default model ``m(\omega)``. |
 |`hamil.data` | ``U(\alpha)`` vs ``\alpha`` for the `StochAC` solver. |
+|`passed.data`| Indices of selected solutions for the `StochOM` and the `StochPX` solvers. |
 |`pole.data` | Amplitudes and positions of the poles for the `StochPX` solver. |
 |`prob.data` | ``P[\alpha\|\bar{G}]`` vs ``\alpha`` for the `MaxEnt` solver (`bryan` algorithm). |
 |`stat.data` | Monte Carlo statistical information for stochastic sampling methods. |
