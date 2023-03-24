@@ -32,6 +32,7 @@ write_misfit
 write_goodness
 write_model
 write_hamiltonian
+write_passed
 write_pole
 write_probability
 write_statistics
