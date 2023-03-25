@@ -16,7 +16,7 @@ grid   = "btime"
 mesh   = "halflorentz"
 ngrid  = 501
 nmesh  = 801
-wmax   =16.0
+wmax   = 16.0
 wmin   = 0.0
 beta   = 5.0
 offdiag = false
@@ -24,6 +24,7 @@ exclude = [[8.0,16.0]]
 
 [MaxEnt]
 method = "chi2kink"
+stype  = "sj"
 nalph  = 15
 alpha  = 1e12
 ratio  = 10.0
