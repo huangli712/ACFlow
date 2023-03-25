@@ -696,8 +696,14 @@ vector that parametrizes the spectral function.
 See also: [`calc_entropy_offdiag`](@ref).
 """
 function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
-    #f = A - mec.model - A .* (mec.Vₛ * u)
-    f = 1.0 .- A ./ mec.model + (mec.Vₛ * u)
+    stype = get_m("stype")
+    #
+    if stype == "sj"
+        f = A - mec.model - A .* (mec.Vₛ * u)
+    else
+        f = 1.0 .- A ./ mec.model + (mec.Vₛ * u)
+    end
+    #
     return trapz(mec.mesh, f)
 end
 
@@ -710,14 +716,17 @@ Here the argument `A` means spectral function.
 See also: [`calc_entropy`](@ref).
 """
 function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64})
-    #root = sqrt.(A .^ 2.0 + 4.0 .* mec.model .* mec.model)
-    #f = root - 2.0 .* mec.model - A .* log.((root + A) ./ (2.0 .* mec.model))
-
-    root = sqrt.(A .^ 2.0 + mec.model .^ 2.0) + mec.model
-    f = 2.0 + log(0.25) .- (root ./ mec.model) +
-        log.((root + A) ./ mec.model) +
-        log.((root - A) ./ mec.model)
-
+    stype = get_m("stype")
+    #
+    if stype == "sj"
+        root = sqrt.(A .^ 2.0 + 4.0 .* mec.model .* mec.model)
+        f = root - 2.0 .* mec.model
+        f = f - A .* log.((root + A) ./ (2.0 .* mec.model))
+    else
+        root = sqrt.(A .^ 2.0 + mec.model .^ 2.0) + mec.model
+        f = 2.0 .- (root ./ mec.model) + log.(root ./ mec.model .* 0.5)
+    end
+    #
     return trapz(mec.mesh, f)
 end
 
