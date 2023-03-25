@@ -631,8 +631,14 @@ Here the argument `A` means spectral function.
 See also: [`calc_entropy`](@ref).
 """
 function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64})
-    root = sqrt.(A .^ 2.0 + 4.0 .* mec.model .* mec.model)
-    f = root - 2.0 .* mec.model - A .* log.((root + A) ./ (2.0 .* mec.model))
+    #root = sqrt.(A .^ 2.0 + 4.0 .* mec.model .* mec.model)
+    #f = root - 2.0 .* mec.model - A .* log.((root + A) ./ (2.0 .* mec.model))
+
+    root = sqrt.(A .^ 2.0 + mec.model .^ 2.0) + mec.model
+    f = 2.0 + log(0.25) .- root +
+        log.((root + A) ./ mec.model) +
+        log.((root - A) ./ mec.model)
+
     return trapz(mec.mesh, f)
 end
 
