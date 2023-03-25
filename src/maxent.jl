@@ -617,7 +617,8 @@ vector that parametrizes the spectral function.
 See also: [`calc_entropy_offdiag`](@ref).
 """
 function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
-    f = A - mec.model - A .* (mec.Vₛ * u)
+    #f = A - mec.model - A .* (mec.Vₛ * u)
+    f = 1.0 .- A ./ mec.model + (mec.Vₛ * u)
     return trapz(mec.mesh, f)
 end
 
