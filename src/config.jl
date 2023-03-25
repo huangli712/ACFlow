@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/12
+# Last modified: 2023/03/25
 #
 
 """
@@ -369,6 +369,7 @@ function chk_dict()
             push!(PA, PMaxEnt)
             #
             @assert get_m("method") in ("historic", "classic", "bryan", "chi2kink")
+            @assert get_m("stype") in ("sj", "br")
             @assert get_m("nalph") ≥ 1
             @assert get_m("alpha") > 0.0
             @assert get_m("ratio") > 0.0
