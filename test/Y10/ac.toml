@@ -22,6 +22,7 @@ offdiag = false
 
 [MaxEnt]
 method = "chi2kink"
+stype  = "sj"
 nalph  = 16
 alpha  = 1e16
 ratio  = 10.0

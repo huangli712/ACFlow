@@ -23,6 +23,7 @@ exclude = [[0.0,0.5], [3.0,5.0]]
 
 [MaxEnt]
 method = "chi2kink"
+stype  = "sj"
 nalph  = 12
 alpha  = 1e9
 ratio  = 10.0
