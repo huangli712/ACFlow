@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/10
+# Last modified: 2023/03/25
 #
 
 #=
@@ -82,6 +82,7 @@ the maximum entropy method.
 """
 const PMaxEnt  = Dict{String,ADT}(
     "method"  => [missing, 1, :String, "How to determine the optimized α parameter"],
+    "stype"   => [missing, 1, :String, "Type of the entropy term"],
     "nalph"   => [missing, 1, :I64   , "Total number of the chosen α parameters"],
     "alpha"   => [missing, 1, :F64   , "Starting value for the α parameter"],
     "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
@@ -91,6 +92,7 @@ const PMaxEnt  = Dict{String,ADT}(
 # Default parameters for PMaxEnt
 const _PMaxEnt = Dict{String,Any}(
     "method"  => "chi2kink",
+    "stype"   => "sj",
     "nalph"   => 12,
     "alpha"   => 1e9,
     "ratio"   => 10.0,
