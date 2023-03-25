@@ -635,7 +635,7 @@ function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64})
     #f = root - 2.0 .* mec.model - A .* log.((root + A) ./ (2.0 .* mec.model))
 
     root = sqrt.(A .^ 2.0 + mec.model .^ 2.0) + mec.model
-    f = 2.0 + log(0.25) .- root +
+    f = 2.0 + log(0.25) .- (root ./ mec.model) +
         log.((root + A) ./ mec.model) +
         log.((root - A) ./ mec.model)
 
