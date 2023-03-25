@@ -2,7 +2,7 @@
 
 #
 # This example is taken from Phys. Rev. D 106, L051502 (2022)
-# One Breit-Wigner peaks
+# Resonance peak + Continuum spectral function
 #
 
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])
@@ -11,16 +11,38 @@ using Random
 using Printf
 using ACFlow
 
+heaviside(x::AbstractFloat) = ifelse(x < 0, zero(x), one(x))
+
+function ξ(ω, 𝑀, Δ)
+    return 1.0 / ( 1.0 + exp( (𝑀 ^ 2.0 - ω ^ 2.0) / (ω * Δ) ) )
+end
+
+function ρᵣ(ω, 𝐶, 𝑀, Γ)
+    return 𝐶 * ω ^ 2.0 / ( (ω ^ 2.0 / 𝑀 / Γ - 𝑀 / Γ) ^ 2.0 + 1.0 )
+end
+
+function ρₜ(ω, 𝐶, 𝑀, β)
+    𝑃₁ = 𝐶 * 3.0 * ω ^ 2.0 / 8.0 / π
+    𝑃₂ = heaviside(ω ^ 2.0 - 4.0 * 𝑀 ^ 2.0)
+    𝑃₃ = tanh(ω * β / 4.0)
+    𝑃₄ = sqrt(abs(1.0 - (2.0 * 𝑀 / ω) ^ 2.0))
+    𝑃₅ = 2.0 + (2.0 * 𝑀 / ω) ^ 2.0
+    return 𝑃₁ * 𝑃₂ * 𝑃₃ * 𝑃₄ * 𝑃₅
+end
+
 # Setup parameters
 wmin = +0.0  # Left boundary
-wmax = +10.0 # Right boundary
+wmax = +4.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
-niw  = 50    # Number of Matsubara frequencies
+niw  = 20    # Number of Matsubara frequencies
 ntau = 501   # Number of imaginary time points
 beta = 50.0  # Inverse temperature
-𝑀    = 2.00  # Parameters for Breit-Wigner model
-Γ    = 0.50
-𝐴    = 1.00
+𝑀ᵣ   = 0.10  # Parameters for model
+𝑀ₜ   = 0.05
+𝐶ᵣ   = 2.00
+𝐶ₜ   = 2.10
+Γ    = 0.03
+Δ    = 1.00
 
 #
 # For true spectrum
@@ -32,14 +54,14 @@ rmesh = collect(LinRange(wmin, wmax, nmesh))
 # Spectral function
 image = similar(rmesh)
 #
+rmesh[1] = 1e-8 # To avoid NaN
 for i in eachindex(rmesh)
-    B₁ = (𝑀 ^ 2.0 + Γ ^ 2.0 - rmesh[i] ^ 2.0) ^ 2.0
-    B₂ = 4.0 * (Γ ^ 2.0) * (rmesh[i] ^ 2.0)
-    image[i] = 4.0 * 𝐴 * Γ * rmesh[i] / (B₁ + B₂)
+    ρ₁ = ξ(rmesh[i], 𝑀ᵣ, Γ) * ρᵣ(rmesh[i], 𝐶ᵣ, 𝑀ᵣ, Γ) * (1.0 - ξ(rmesh[i], 𝑀ᵣ + Γ, Γ))
+    ρ₂ = ξ(rmesh[i], 𝑀ᵣ + Γ, Γ) * ρₜ(rmesh[i], 𝐶ₜ, 𝑀ₜ, beta)
+    image[i] = ρ₁ + ρ₂
 end
 #
-rmesh[1] = 1e-8 # To avoid NaN
-image = image ./ rmesh
+image = image ./ rmesh ./ rmesh ./ rmesh
 rmesh[1] = 0.0
 
 # Write spectral function
