@@ -730,6 +730,95 @@ function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64})
     return trapz(mec.mesh, f)
 end
 
+#=
+*Remarks* :
+
+**Posterior distribution of ``\alpha`` given the data ``\bar{G}``**
+
+Because 
+```math
+\begin{equation}
+\text{Pr}[\alpha | \bar{G}] =
+\text{Pr}[\alpha] \frac{e^Q}{Z_L Z_S}
+\frac{(2\pi)^{N/2}}{\sqrt{\det{[\alpha I + \Lambda]}}},
+\end{equation}
+```
+
+so
+```math
+\begin{equation}
+\log \text{Pr}[\alpha | \bar{G}] =
+\text{constant} + \log \text{Pr} [\alpha] +
+\frac{1}{2} \text{Tr} \log \left[\frac{\alpha I}{\alpha I + A}\right] +
+\alpha S - \frac{1}{2}\chi^2.
+\end{equation}
+```
+
+The defining equation for the classic `MaxEnt` equation reads:
+
+```math
+-2\alpha S = \text{Tr} \left(\frac{\Lambda}{\alpha I + \Lambda}\right).
+```
+
+The summation on the right hand side of the above equation is defined to
+be ``N_g``, the number of good measurements:
+
+```math
+\begin{equation}
+N_g = \text{Tr} \left(\frac{\Lambda}{\alpha I + \Lambda}\right).
+\end{equation}
+```
+
+If ``\lambda_i`` are the eigenvalues of ``\Lambda``, then
+
+```math
+\begin{equation}
+N_g = \sum_i \frac{\lambda_i}{\alpha + \lambda_i}.
+\end{equation}
+```
+
+**``\Lambda`` matrix**
+
+For standard case,
+
+```math
+\begin{equation}
+L = \frac{1}{2} \chi^2,
+\end{equation}
+```
+
+```math
+\begin{equation}
+\frac{\partial^2 L}{\partial A_i \partial A_j} =
+\left[K^{T} C^{-1} K\right]_{ij} =
+\sum_{kl} K_{ki} \left[C^{-1}\right]_{kl} K_{lj},
+\end{equation}
+```
+
+```math
+\begin{equation}
+\Lambda_{ij} = \sqrt{A_i}
+               \frac{\partial^2 L}{\partial A_i \partial A_j}
+               \sqrt{A_j}.
+\end{equation}
+```
+
+For positive-negative entropy case,
+
+```math
+\begin{equation}
+\Lambda_{ij} = \sqrt[4]{A^2_i + 4m^2}
+               \frac{\partial^2 L}{\partial A_i \partial A_j}
+               \sqrt[4]{A^2_j + 4m^2}.
+\end{equation}
+```
+**Reference:**
+
+[1] G. J. Kraberger, *et al.*, Phys. Rev. B **96**, 155128 (2017).
+
+[2] M. Jarrell, *et al.*, Phys. Rep. **269**, 133 (1996).
+=#
+
 """
     calc_bayes(mec::MaxEntContext,
                A::Vector{F64},
