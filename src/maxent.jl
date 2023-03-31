@@ -472,6 +472,11 @@ end
 =#
 
 #=
+```math
+\begin{equation}
+B_m = \sum^{N}_{n = 1} \frac{1}{\sigma^2_n}
+\end{equation}
+```
 =#
 
 """
