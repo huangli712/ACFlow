@@ -11,6 +11,7 @@
 
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
+using Printf
 using ACFlow
 
 function read_spectrum(fn::String = "Aout.data")
@@ -33,6 +34,14 @@ function read_spectrum(fn::String = "Aout.data")
     return mesh, image
 end
 
+function write_fmesh(fn::String = "fmesh.inp", fmesh::Vector{F64})
+    open(fn, "w") do fout
+        for i in eachindex(fmesh)
+            @printf(fout, "%8i %16.12f\n", i, fmesh[i])
+        end
+    end
+end
+
 function generate_mesh(mesh::Vector{F64}, image::Vector{F64})
     nfine = 100000
     Asum = cumsum(abs.(image))
@@ -42,8 +51,7 @@ function generate_mesh(mesh::Vector{F64}, image::Vector{F64})
     vmin = minimum(Asum)
     Amesh = collect(LinRange(vmin, vmax, nfine))
     fmesh = f.(Amesh)
-    @show fmesh
-    @show mesh
+    return fmesh
 end
 
 welcome()
