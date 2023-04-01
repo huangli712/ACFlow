@@ -625,7 +625,7 @@ Try to calculate very fine (dense) mesh in [wmin, wmax], which
 is used internally to represent the possible positions of poles.
 Note that this mesh could be non-uniform. If the file `fmesh.inp`
 exists, the code will try to load it to initialize the mesh. Or
-else the code will generate a linear mesh.
+else the code will generate a linear mesh automatically.
 
 See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
 """
