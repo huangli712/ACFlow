@@ -21,11 +21,14 @@ Try to read the spectral function from the present directory. It will
 return the spectrum and the corresponding real-axis mesh.
 """
 function read_spectrum(fn::String = "Aout.data")
+    # Get essential parameter from the configuration file
     nmesh = get_b("nmesh")
 
+    # Allocate memories for mesh and spectrum
     mesh = zeros(F64, nmesh)
     image = zeros(F64, nmesh)
 
+    # Extract the spectral data
     if isfile(fn)
         open(fn, "r") do fin
             for i = 1:nmesh
@@ -37,6 +40,7 @@ function read_spectrum(fn::String = "Aout.data")
         error("Sorry, $fn does not exist!")
     end
 
+    # Return the spectral data
     return mesh, image
 end
 
