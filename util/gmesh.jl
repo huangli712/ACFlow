@@ -34,7 +34,7 @@ function read_spectrum(fn::String = "Aout.data")
     return mesh, image
 end
 
-function write_fmesh(fn::String = "fmesh.inp", fmesh::Vector{F64})
+function write_fmesh(fmesh::Vector{F64}, fn::String = "fmesh.inp")
     open(fn, "w") do fout
         for i in eachindex(fmesh)
             @printf(fout, "%8i %16.12f\n", i, fmesh[i])
@@ -42,7 +42,7 @@ function write_fmesh(fn::String = "fmesh.inp", fmesh::Vector{F64})
     end
 end
 
-function generate_mesh(mesh::Vector{F64}, image::Vector{F64})
+function generate_fmesh(mesh::Vector{F64}, image::Vector{F64})
     nfine = 100000
     Asum = cumsum(abs.(image))
     f = LinearInterpolation(mesh, Asum)
@@ -58,6 +58,7 @@ welcome()
 overview()
 read_param()
 
-generate_mesh(read_spectrum()...)
+fmesh = generate_fmesh(read_spectrum()...)
+write_fmesh(fmesh, "test.inp")
 
 goodbye()
