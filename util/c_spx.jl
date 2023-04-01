@@ -1,4 +1,16 @@
 #!/usr/bin/env julia
+
+#
+# This script is used to examine the constrained stochastic pole
+# expansion method. It will try to fix the positions or amplitudes
+# of the poles, and then optimize the rest ones. It will launch
+# only 1 process.
+#
+# Usage:
+#
+#     $ c_spx.jl ac.toml
+#
+
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
 using Random
