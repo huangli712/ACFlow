@@ -624,14 +624,26 @@ end
 Try to calculate very fine (dense) linear mesh in [wmin, wmax], which
 is used internally to represent the possible positions of poles.
 
-See also: [`LinearMesh`](@ref).
+See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
 """
 function calc_fmesh(S::StochPXSolver)
     nfine = get_x("nfine")
     wmin = get_b("wmin")
     wmax = get_b("wmax")
 
-    fmesh = LinearMesh(nfine, wmin, wmax)
+    fn = "fmesh.inp"
+    if isfile(fn)
+        mesh = zeros(F64, nfine)
+        open(fn, "r") do fin
+            for i = 1:nfine
+                arr = line_to_array(fin)
+                mesh[i] = parse(F64, arr[2])
+            end
+        end
+        fmesh = DynamicMesh(mesh)
+    else
+        fmesh = LinearMesh(nfine, wmin, wmax)
+    end
 
     return fmesh
 end
