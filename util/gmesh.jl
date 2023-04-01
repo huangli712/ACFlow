@@ -14,6 +14,12 @@ push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 using Printf
 using ACFlow
 
+"""
+    read_spectrum(fn::String = "Aout.data")
+
+Try to read the spectral function from the present directory. It will
+return the spectrum and the corresponding real-axis mesh.
+"""
 function read_spectrum(fn::String = "Aout.data")
     nmesh = get_b("nmesh")
 
