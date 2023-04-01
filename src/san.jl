@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/01/21
+# Last modified: 2023/04/02
 #
 
 #=
@@ -586,16 +586,40 @@ end
     calc_fmesh(S::StochSKSolver)
 
 Try to calculate very fine (dense) linear mesh in [wmin, wmax], which
-is used internally to build the kernel function.
+is used internally to build the kernel function. Note that this mesh
+could be non-uniform. If the file `fmesh.inp` exists, the code will try
+to load it to initialize the mesh. Or else the code will generate a
+linear mesh automatically.
 
-See also: [`LinearMesh`](@ref).
+See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
 """
 function calc_fmesh(S::StochSKSolver)
     nfine = get_k("nfine")
     wmin = get_b("wmin")
     wmax = get_b("wmax")
 
-    fmesh = LinearMesh(nfine, wmin, wmax)
+    # Filename for the predefined mesh
+    # This file should contain at least `nfine` lines
+    fn = "fmesh.inp"
+
+    # If the file `fmesh.inp` exists, we will use it to build the mesh.
+    if isfile(fn)
+        mesh = zeros(F64, nfine)
+        #
+        open(fn, "r") do fin
+            for i = 1:nfine
+                arr = line_to_array(fin)
+                mesh[i] = parse(F64, arr[2])
+            end
+        end
+        #
+        fmesh = DynamicMesh(mesh)
+
+    # Or else we will return a linear mesh directly.
+    else
+        fmesh = LinearMesh(nfine, wmin, wmax)
+
+    end
 
     return fmesh
 end
