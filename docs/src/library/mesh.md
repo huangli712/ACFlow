@@ -25,16 +25,17 @@ LinearMesh
 TangentMesh
 LorentzMesh
 HalfLorentzMesh
+DynamicMesh
 ```
 
 ## Constructors
 
 ```@docs
 LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
-LinearMesh(mesh::Vector{F64})
 TangentMesh(nmesh::I64, wmin::F64, wmax::F64, 𝑝::F64 = 2.1)
 LorentzMesh(nmesh::I64, wmin::F64, wmax::F64, 𝑝::F64 = 0.01)
 HalfLorentzMesh(nmesh::I64, wmax::F64, 𝑝::F64 = 0.01)
+DynamicMesh(mesh::Vector{F64})
 ```
 
 ## Base.* Functions
