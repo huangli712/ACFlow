@@ -1,8 +1,8 @@
 #!/usr/bin/env julia
 
 #
-# This script is used to generate non-uniform mesh according to the
-# given spectral function. It will launch only 1 process.
+# This script is used to generate a non-uniform very dense mesh according
+# to the given spectral function. It will launch only 1 process.
 #
 # Usage:
 #
@@ -18,7 +18,7 @@ using ACFlow
     read_spectrum(fn::String = "Aout.data")
 
 Try to read the spectral function from the present directory. It will
-return the spectrum and the corresponding real-axis mesh.
+return the spectrum and the corresponding mesh in real axis.
 """
 function read_spectrum(fn::String = "Aout.data")
     # Get essential parameter from the configuration file
@@ -44,6 +44,11 @@ function read_spectrum(fn::String = "Aout.data")
     return mesh, image
 end
 
+"""
+    write_fmesh(fmesh::Vector{F64}, fn::String = "fmesh.inp")
+
+Write the generated mesh to the file `fmesh.inp`.
+"""
 function write_fmesh(fmesh::Vector{F64}, fn::String = "fmesh.inp")
     open(fn, "w") do fout
         for i in eachindex(fmesh)
@@ -52,6 +57,11 @@ function write_fmesh(fmesh::Vector{F64}, fn::String = "fmesh.inp")
     end
 end
 
+"""
+    generate_fmesh(mesh::Vector{F64}, image::Vector{F64})
+
+
+"""
 function generate_fmesh(mesh::Vector{F64}, image::Vector{F64})
     nfine = 100000
     Asum = cumsum(abs.(image))
