@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/13
+# Last modified: 2023/04/02
 #
 
 """
@@ -142,6 +142,7 @@ LinearMesh      -> Linear mesh.
 TangentMesh     -> Tangent mesh.
 LorentzMesh     -> Lorentzian mesh.
 HalfLorentzMesh -> Lorentzian mesh at half-positive axis.
+DynamicMesh     -> Dynamic (very fine) mesh for stochastic solvers.
 #
 AbstractMC      -> Abstract Monte Carlo engine.
 StochACMC       -> Monte Carlo engine used in the StochAC solver.
@@ -186,6 +187,7 @@ export LinearMesh
 export TangentMesh
 export LorentzMesh
 export HalfLorentzMesh
+export DynamicMesh
 #
 export AbstractMC
 export StochACMC
@@ -396,6 +398,7 @@ write_misfit      -> Write α-dependent χ².
 write_goodness    -> Write Θ-dependent χ².
 write_model       -> Write default model function.
 write_hamiltonian -> Write effective hamiltonian for StochAC solver.
+write_passed      -> Write indices of selected solutions StochOM and StochPX solvers.
 write_pole        -> Write pole's information for StochPX solver.
 write_probability -> Write Bayesian a-posteriori probability.
 write_statistics  -> Write statistics info. for StochAC/StochSK/StochOM/StochPX solver.
@@ -415,6 +418,7 @@ export write_misfit
 export write_goodness
 export write_model
 export write_hamiltonian
+export write_passed
 export write_pole
 export write_probability
 export write_statistics
