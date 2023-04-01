@@ -160,7 +160,9 @@ end
     DynamicMesh(mesh::Vector{F64})
 
 A constructor for the DynamicMesh struct, which is announced in
-`src/types.jl`.
+`src/types.jl`. The δ peaks in the stochastic analytical continuation
+or the poles in the stochastic pole expansion method should be placed
+in this mesh.
 
 See also: [`DynamicMesh`](@ref).
 """
