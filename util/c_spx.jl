@@ -22,7 +22,7 @@ function sample_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         try_move_s(t, MC, SE, SC)
     else
         try_move_p(t, MC, SE, SC)
-    end    
+    end
 end
 
 function sample_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
