@@ -587,8 +587,7 @@ init_mc        -> Create a StochACMC struct.
 init_element   -> Create a StochACElement struct.
 init_iodata    -> Preprocess the input data.
 #
-calc_fmesh     -> Build dense linear mesh in [wmin,wmax].
-calc_xmesh     -> Build dense linear mesh in [0,1].
+calc_fmesh     -> Build very dense mesh in [wmin,wmax].
 calc_phi       -> Calculate ϕ function.
 calc_delta     -> Precompute δ functions.
 calc_hamil     -> Calculate α-resolved Hc.
@@ -624,7 +623,6 @@ export init_element
 export init_iodata
 #
 export calc_fmesh
-export calc_xmesh
 export calc_phi
 export calc_delta
 export calc_hamil
@@ -666,7 +664,7 @@ init_mc        -> Create a StochSKMC struct.
 init_element   -> Create a StochSKElement struct.
 init_iodata    -> Preprocess the input data.
 #
-calc_fmesh     -> Build dense linear mesh in [wmin,wmax].
+calc_fmesh     -> Build very dense mesh in [wmin,wmax].
 calc_correlator-> Calculate correlator function from field configuration.
 calc_goodness  -> Calculate χ² function.
 calc_theta     -> Search optimal Θ.
