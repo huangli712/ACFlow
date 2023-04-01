@@ -60,17 +60,55 @@ end
 """
     generate_fmesh(mesh::Vector{F64}, image::Vector{F64})
 
-
+Try to generate a very dense and non-uniform mesh according to the given
+mesh and spectral function.
 """
 function generate_fmesh(mesh::Vector{F64}, image::Vector{F64})
-    nfine = 100000
-    Asum = cumsum(abs.(image))
-    f = LinearInterpolation(mesh, Asum)
+    # Get the analytical continuation solver
+    solver = get_b("solver")
 
+    # Get number of points from the configuration file
+    nfine = 10000
+    @cswitch solver begin
+        @case "MaxEnt"
+            sorry()
+            break
+
+        @case "StochAC"
+            nfine = get_a("nfine")
+            break
+
+        @case "StochSK"
+            nfine = get_k("nfine")
+            break
+
+        @case "StochOM"
+            sorry()
+            break
+
+        @case "StochPX"
+            nfine = get_x("nfine")
+            break
+
+        @default
+            sorry()
+            break
+    end
+
+    # Accumulate the spectrum, evaluate its maximum and minimum, and use
+    # them to create a very dense linear grid
+    Asum = cumsum(abs.(image))
     vmax = maximum(Asum)
     vmin = minimum(Asum)
     Amesh = collect(LinRange(vmin, vmax, nfine))
+
+    # Create the linear interpolator, y = mesh and x = Asum.
+    f = LinearInterpolation(mesh, Asum)
+
+    # Interpolate it. Now Amesh is the new x, and fmesh is the new y.
     fmesh = f.(Amesh)
+
+    # Return the generated mesh
     return fmesh
 end
 
@@ -78,7 +116,6 @@ welcome()
 overview()
 read_param()
 
-fmesh = generate_fmesh(read_spectrum()...)
-write_fmesh(fmesh, "test.inp")
+write_fmesh( generate_fmesh( read_spectrum()... ) )
 
 goodbye()
