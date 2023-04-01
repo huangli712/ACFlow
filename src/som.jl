@@ -273,7 +273,7 @@ function average(SC::StochOMContext)
     else
         write_passed(passed, dev_ave, αgood)
     end
-    
+
     return Aom
 end
 

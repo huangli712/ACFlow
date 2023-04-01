@@ -743,7 +743,7 @@ end
 
 **Posterior distribution of ``\alpha`` given the data ``\bar{G}``**
 
-Because 
+Because
 ```math
 \begin{equation}
 \text{Pr}[\alpha | \bar{G}] =
