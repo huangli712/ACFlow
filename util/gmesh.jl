@@ -95,8 +95,8 @@ function generate_fmesh(mesh::Vector{F64}, image::Vector{F64})
             break
     end
 
-    # Accumulate the spectrum, evaluate its maximum and minimum, and use
-    # them to create a very dense linear grid
+    # Accumulate the spectrum, evaluate its maximum and minimum, and then
+    # use them to create a very dense linear grid.
     Asum = cumsum(abs.(image))
     vmax = maximum(Asum)
     vmin = minimum(Asum)
