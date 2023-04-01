@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/10/13
+# Last modified: 2023/04/01
 #
 
 #=
@@ -25,29 +25,6 @@ function LinearMesh(nmesh::I64, wmin::F64, wmax::F64)
 
     mesh = collect(LinRange(wmin, wmax, nmesh))
     #
-    weight = (mesh[2:end] + mesh[1:end-1]) / 2.0
-    pushfirst!(weight, mesh[1])
-    push!(weight, mesh[end])
-    weight = diff(weight)
-
-    return LinearMesh(nmesh, wmax, wmin, mesh, weight)
-end
-
-"""
-    LinearMesh(mesh::Vector{F64})
-
-Create a LinearMesh struct from a standard Vector. Be careful, `mesh`
-must be equidistant.
-
-See also: [`LinearMesh`](@ref).
-"""
-function LinearMesh(mesh::Vector{F64})
-    nmesh = length(mesh)
-
-    wmin = mesh[1]
-    wmax = mesh[end]
-    @assert wmax > wmin
-
     weight = (mesh[2:end] + mesh[1:end-1]) / 2.0
     pushfirst!(weight, mesh[1])
     push!(weight, mesh[end])
@@ -176,6 +153,33 @@ function HalfLorentzMesh(nmesh::I64, wmax::F64, 𝑝::F64 = 0.01)
 end
 
 #=
+### *Struct : DynamicMesh*
+=#
+
+"""
+    DynamicMesh(mesh::Vector{F64})
+
+A constructor for the DynamicMesh struct, which is announced in
+`src/types.jl`.
+
+See also: [`DynamicMesh`](@ref).
+"""
+function DynamicMesh(mesh::Vector{F64})
+    nmesh = length(mesh)
+
+    wmin = mesh[1]
+    wmax = mesh[end]
+    @assert wmax > wmin
+
+    weight = (mesh[2:end] + mesh[1:end-1]) / 2.0
+    pushfirst!(weight, mesh[1])
+    push!(weight, mesh[end])
+    weight = diff(weight)
+
+    return DynamicMesh(nmesh, wmax, wmin, mesh, weight)
+end
+
+#=
 ### *Common Interface*
 =#
 
@@ -189,6 +193,7 @@ the basic operations for the following types of mesh:
 * TangentMesh
 * LorentzMesh
 * HalfLorentzMesh
+* DynamicMesh
 
 With the help of these functions, we can easily visit the mesh's elements.
 =#
