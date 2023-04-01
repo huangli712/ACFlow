@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/01/21
+# Last modified: 2023/04/02
 #
 
 #=
@@ -159,9 +159,8 @@ function init(S::StochACSolver, rd::RawData)
     kernel = make_kernel(fmesh, grid)
     println("Build default kernel: ", get_b("ktype"))
 
-    xmesh = calc_xmesh()
     ϕ = calc_phi(mesh, model)
-    Δ = calc_delta(xmesh, ϕ)
+    Δ = calc_delta(fmesh, ϕ)
     println("Precompute δ functions")
 
     # In order to accelerate the calculations, the singular space of the
@@ -533,23 +532,6 @@ function calc_fmesh(S::StochACSolver)
 end
 
 """
-    calc_xmesh()
-
-Try to calculate very fine (dense) linear mesh in [0, 1], which is used
-internally to build the δ functions.
-
-See also: [`calc_delta`](@ref).
-"""
-function calc_xmesh()
-    nfine = get_a("nfine")
-
-    _mesh = fill(1.0/nfine, nfine)
-    xmesh = cumsum(_mesh)
-
-    return xmesh
-end
-
-"""
     calc_phi(am::AbstractMesh, model::Vector{F64})
 
 Try to calculate ϕ(ω) function. `am` is the mesh for calculated spectrum,
@@ -563,24 +545,29 @@ function calc_phi(am::AbstractMesh, model::Vector{F64})
 end
 
 """
-    calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
+    calc_delta(fmesh::AbstractMesh, ϕ::Vector{F64})
 
-Precompute the δ functions. `xmesh` is a very dense linear mesh in [0, 1]
+Precompute the δ functions. `fmesh` is a very dense mesh in [wmin, wmax]
 and `ϕ` is the ϕ function.
 
-See also: [`calc_xmesh`](@ref), [`calc_phi`](@ref).
+See also: [`calc_phi`](@ref).
 """
-function calc_delta(xmesh::Vector{F64}, ϕ::Vector{F64})
+function calc_delta(fmesh::AbstractMesh, ϕ::Vector{F64})
     nmesh = length(ϕ)
-    nfine = length(xmesh)
-
+    #
+    nfine = length(fmesh)
+    wmax = fmesh.wmax
+    wmin = fmesh.wmin
+    #
     η₁ = 0.001
     η₂ = 0.001 ^ 2.0
 
     Δ = zeros(F64, nmesh, nfine)
     s = similar(ϕ)
     for i = 1:nfine
-        @. s = (ϕ - xmesh[i]) ^ 2.0 + η₂
+        # We should convert the mesh `fmesh` from [wmin,wmax] to [0,1]
+        𝑥 = (fmesh[i] - wmin) / (wmax - wmin)
+        @. s = (ϕ - 𝑥) ^ 2.0 + η₂
         @. Δ[:,i] = η₁ / s
     end
 
