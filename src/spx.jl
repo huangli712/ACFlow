@@ -635,6 +635,7 @@ function calc_fmesh(S::StochPXSolver)
     wmax = get_b("wmax")
 
     # Filename for the predefined mesh
+    # This file should contain at least `nfine` lines
     fn = "fmesh.inp"
 
     # If the file `fmesh.inp` exists, we will use it to build the mesh.
