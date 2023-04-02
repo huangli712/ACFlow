@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/01
+# Last modified: 2023/04/02
 #
 
 #=
@@ -621,11 +621,11 @@ end
 """
     calc_fmesh(S::StochPXSolver)
 
-Try to calculate very fine (dense) mesh in [wmin, wmax], which
-is used internally to represent the possible positions of poles.
-Note that this mesh could be non-uniform. If the file `fmesh.inp`
-exists, the code will try to load it to initialize the mesh. Or
-else the code will generate a linear mesh automatically.
+Try to calculate very fine (dense) mesh in [wmin, wmax], which is used
+internally to represent the possible positions of poles. Note that this
+mesh could be non-uniform. If the file `fmesh.inp` exists, the code will
+try to load it to initialize the mesh. Or else the code will generate
+a linear mesh automatically.
 
 See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
 """
@@ -964,6 +964,8 @@ end
 
 Try to implement the constrained stochastic pole expansion. This
 function will return a collection. It contains all the allowable indices.
+Be careful, the constrained stochastic pole expansion method is
+incompatible with the self-adaptive mesh.
 
 See also: [`StochPXSolver`](@ref).
 """
