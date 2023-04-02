@@ -516,11 +516,11 @@ end
 """
     calc_fmesh(S::StochACSolver)
 
-Try to calculate very fine (dense) linear mesh in [wmin, wmax], which
-is used internally to build the kernel function. Note that this mesh
-could be non-uniform. If the file `fmesh.inp` exists, the code will try
-to load it to initialize the mesh. Or else the code will generate a
-linear mesh automatically.
+Try to calculate very fine (dense) mesh in [wmin, wmax], which is used
+internally to build the kernel function. Note that this mesh could be
+non-uniform. If the file `fmesh.inp` exists, the code will try to load
+it to initialize the mesh. Or else the code will try to generate a linear
+mesh automatically.
 
 See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
 """
@@ -589,7 +589,7 @@ function calc_delta(fmesh::AbstractMesh, ϕ::Vector{F64})
     Δ = zeros(F64, nmesh, nfine)
     s = similar(ϕ)
     for i = 1:nfine
-        # We should convert the mesh `fmesh` from [wmin,wmax] to [0,1]
+        # We should convert the mesh `fmesh` from [wmin,wmax] to [0,1].
         𝑥 = (fmesh[i] - wmin) / (wmax - wmin)
         @. s = (ϕ - 𝑥) ^ 2.0 + η₂
         @. Δ[:,i] = η₁ / s
@@ -668,7 +668,8 @@ end
 
 Try to implement the constrained stochastic analytical continuation
 method. This function will return a collection. It contains all the
-allowable indices.
+allowable indices. Be careful, the constrained stochastic analytical
+continuation method is incompatible with the self-adaptive method.
 
 See also: [`StochACSolver`](@ref).
 """
