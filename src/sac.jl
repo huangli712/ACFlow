@@ -669,7 +669,7 @@ end
 Try to implement the constrained stochastic analytical continuation
 method. This function will return a collection. It contains all the
 allowable indices. Be careful, the constrained stochastic analytical
-continuation method is incompatible with the self-adaptive method.
+continuation method is incompatible with the self-adaptive mesh.
 
 See also: [`StochACSolver`](@ref).
 """
