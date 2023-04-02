@@ -92,7 +92,6 @@ init_mc(S::StochACSolver)
 init_element(S::StochACSolver, rng::AbstractRNG, allow::Vector{I64})
 init_iodata(S::StochACSolver, rd::RawData)
 calc_fmesh(S::StochACSolver)
-calc_xmesh
 calc_phi
 calc_delta
 calc_hamil
