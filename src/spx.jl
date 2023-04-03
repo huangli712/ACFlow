@@ -960,32 +960,30 @@ function calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
 end
 
 """
-    constraints(S::StochPXSolver)
+    constraints(S::StochPXSolver, fmesh::AbstractMesh)
 
 Try to implement the constrained stochastic pole expansion. This
 function will return a collection. It contains all the allowable indices.
 Be careful, the constrained stochastic pole expansion method is
-incompatible with the self-adaptive mesh.
+compatible with the self-adaptive mesh.
 
 See also: [`StochPXSolver`](@ref).
 """
-function constraints(S::StochPXSolver)
+function constraints(S::StochPXSolver, fmesh::AbstractMesh)
     exclude = get_b("exclude")
-    wmin = get_b("wmin")
-    wmax = get_b("wmax")
     nfine = get_x("nfine")
+    @assert nfine == length(fmesh)
 
     allow = I64[]
-    mesh = collect(LinRange(wmin, wmax, nfine))
 
-    # Go through the fine linear mesh and check each mesh point.
+    # Go through the fine mesh and check every mesh point.
     # Is is excluded ?
-    for i in eachindex(mesh)
+    for i in eachindex(fmesh)
         is_excluded = false
         #
         if !isa(exclude, Missing)
             for j in eachindex(exclude)
-                if exclude[j][1] ≤ mesh[i] ≤ exclude[j][2]
+                if exclude[j][1] ≤ fmesh[i] ≤ exclude[j][2]
                     is_excluded = true
                     break
                 end
