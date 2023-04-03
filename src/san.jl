@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/02
+# Last modified: 2023/04/04
 #
 
 #=
@@ -136,10 +136,6 @@ Initialize the StochSK solver and return the StochSKMC, StochSKElement,
 and StochSKContext structs.
 """
 function init(S::StochSKSolver, rd::RawData)
-    # Initialize possible constraints. The array allow contains all the
-    # possible indices for δ functions.
-    allow = constraints(S)
-
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
@@ -188,6 +184,10 @@ function init(S::StochSKSolver, rd::RawData)
     Θ = get_k("theta")
     Θvec = zeros(F64, get_k("nwarm"))
     println("Setup Θ parameter")
+
+    # Initialize possible constraints.
+    # The array allow contains all the possible indices for δ functions.
+    allow = constraints(S, fmesh)
 
     SC = StochSKContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, kernel, Aout,
                         χ², χ²min, χ²vec, Θ, Θvec)
@@ -674,31 +674,29 @@ function calc_theta(len::I64, SC::StochSKContext)
 end
 
 """
-    constraints(S::StochSKSolver)
+    constraints(S::StochSKSolver, fmesh::AbstractMesh)
 
 Try to implement the constrained stochastic analytical continuation
 method. This function will return a collection. It contains all the
-allowable indices.
+allowable indices. Be careful, `fmesh` should be a fine linear mesh.
 
 See also: [`StochSKSolver`](@ref).
 """
-function constraints(S::StochSKSolver)
+function constraints(S::StochSKSolver, fmesh::AbstractMesh)
     exclude = get_b("exclude")
-    wmin = get_b("wmin")
-    wmax = get_b("wmax")
     nfine = get_k("nfine")
+    @assert nfine == length(fmesh)
 
     allow = I64[]
-    mesh = collect(LinRange(wmin, wmax, nfine))
 
-    # Go through the fine linear mesh and check each mesh point.
+    # Go through the fine mesh and check every mesh point.
     # Is is excluded ?
-    for i in eachindex(mesh)
+    for i in eachindex(fmesh)
         is_excluded = false
         #
         if !isa(exclude, Missing)
             for j in eachindex(exclude)
-                if exclude[j][1] ≤ mesh[i] ≤ exclude[j][2]
+                if exclude[j][1] ≤ fmesh[i] ≤ exclude[j][2]
                     is_excluded = true
                     break
                 end
