@@ -132,6 +132,11 @@ Initialize the StochAC solver and return the StochACMC, StochACElement,
 and StochACContext structs.
 """
 function init(S::StochACSolver, rd::RawData)
+    # Initialize possible constraints.
+    # The array allow contains all the possible indices for δ functions.
+    fmesh = calc_fmesh(S)
+    allow = constraints(S, fmesh)
+
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
@@ -151,7 +156,6 @@ function init(S::StochACSolver, rd::RawData)
     model = make_model(mesh)
     println("Build default model: ", get_b("mtype"))
 
-    fmesh = calc_fmesh(S)
     kernel = make_kernel(fmesh, grid)
     println("Build default kernel: ", get_b("ktype"))
 
@@ -182,10 +186,6 @@ function init(S::StochACSolver, rd::RawData)
 
     αₗ = calc_alpha()
     println("Precompute α parameters")
-
-    # Initialize possible constraints.
-    # The array allow contains all the possible indices for δ functions.
-    allow = constraints(S, fmesh)
 
     SC = StochACContext(Gᵥ, σ¹, allow, grid, mesh, model,
                         kernel, Aout, Δ, hτ, Hα, Uα, αₗ)

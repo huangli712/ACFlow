@@ -136,6 +136,11 @@ Initialize the StochSK solver and return the StochSKMC, StochSKElement,
 and StochSKContext structs.
 """
 function init(S::StochSKSolver, rd::RawData)
+    # Initialize possible constraints.
+    # The array allow contains all the possible indices for δ functions.
+    fmesh = calc_fmesh(S)
+    allow = constraints(S, fmesh)
+
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
@@ -151,7 +156,6 @@ function init(S::StochSKSolver, rd::RawData)
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    fmesh = calc_fmesh(S)
     kernel = make_kernel(fmesh, grid)
     println("Build default kernel: ", get_b("ktype"))
 
@@ -184,10 +188,6 @@ function init(S::StochSKSolver, rd::RawData)
     Θ = get_k("theta")
     Θvec = zeros(F64, get_k("nwarm"))
     println("Setup Θ parameter")
-
-    # Initialize possible constraints.
-    # The array allow contains all the possible indices for δ functions.
-    allow = constraints(S, fmesh)
 
     SC = StochSKContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, kernel, Aout,
                         χ², χ²min, χ²vec, Θ, Θvec)

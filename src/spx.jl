@@ -139,6 +139,11 @@ Initialize the StochPX solver and return the StochPXMC, StochPXElement,
 and StochPXContext structs.
 """
 function init(S::StochPXSolver, rd::RawData)
+    # Initialize possible constraints.
+    # The array arrow contains all the possible indices for poles.
+    fmesh = calc_fmesh(S)
+    allow = constraints(S, fmesh)
+
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
@@ -156,7 +161,6 @@ function init(S::StochPXSolver, rd::RawData)
 
     # Prepare the kernel matrix Λ. It is used to speed up the simulation.
     # Note that Λ depends on the type of kernel.
-    fmesh = calc_fmesh(S)
     ktype = get_b("ktype")
     χ₀ = -Gᵥ[1]
     #
@@ -178,10 +182,6 @@ function init(S::StochPXSolver, rd::RawData)
     # consistent with the current Monte Carlo configuration fields.
     Gᵧ = calc_green(SE.P, SE.A, Λ)
     χ²[1] = calc_chi2(Gᵧ, Gᵥ)
-
-    # Initialize possible constraints.
-    # The array arrow contains all the possible indices for poles.
-    allow = constraints(S, fmesh)
 
     SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh,
                         Λ, Θ, χ²min, χ², Pᵥ, Aᵥ)
