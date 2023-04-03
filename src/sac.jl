@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/02
+# Last modified: 2023/04/04
 #
 
 #=
@@ -132,10 +132,6 @@ Initialize the StochAC solver and return the StochACMC, StochACElement,
 and StochACContext structs.
 """
 function init(S::StochACSolver, rd::RawData)
-    # Initialize possible constraints. The array allow contains all the
-    # possible indices for δ functions.
-    allow = constraints(S)
-
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
@@ -186,6 +182,10 @@ function init(S::StochACSolver, rd::RawData)
 
     αₗ = calc_alpha()
     println("Precompute α parameters")
+
+    # Initialize possible constraints.
+    # The array allow contains all the possible indices for δ functions.
+    allow = constraints(S, fmesh)
 
     SC = StochACContext(Gᵥ, σ¹, allow, grid, mesh, model,
                         kernel, Aout, Δ, hτ, Hα, Uα, αₗ)
@@ -519,7 +519,7 @@ end
 Try to calculate very fine (dense) mesh in [wmin, wmax], which is used
 internally to build the kernel function. Note that this mesh could be
 non-uniform. If the file `fmesh.inp` exists, the code will try to load
-it to initialize the mesh. Or else the code will try to generate a linear
+it to initialize the mesh. Or else the code will try to create a linear
 mesh automatically.
 
 See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
@@ -664,32 +664,30 @@ function calc_alpha()
 end
 
 """
-    constraints(S::StochACSolver)
+    constraints(S::StochACSolver, fmesh::AbstractMesh)
 
 Try to implement the constrained stochastic analytical continuation
 method. This function will return a collection. It contains all the
 allowable indices. Be careful, the constrained stochastic analytical
-continuation method is incompatible with the self-adaptive mesh.
+continuation method is compatible with the self-adaptive mesh.
 
 See also: [`StochACSolver`](@ref).
 """
-function constraints(S::StochACSolver)
+function constraints(S::StochACSolver, fmesh::AbstractMesh)
     exclude = get_b("exclude")
-    wmin = get_b("wmin")
-    wmax = get_b("wmax")
     nfine = get_a("nfine")
+    @assert nfine == length(fmesh)
 
     allow = I64[]
-    mesh = collect(LinRange(wmin, wmax, nfine))
 
-    # Go through the fine linear mesh and check each mesh point.
+    # Go through the fine mesh and check every mesh point.
     # Is is excluded ?
-    for i in eachindex(mesh)
+    for i in eachindex(fmesh)
         is_excluded = false
         #
         if !isa(exclude, Missing)
             for j in eachindex(exclude)
-                if exclude[j][1] ≤ mesh[i] ≤ exclude[j][2]
+                if exclude[j][1] ≤ fmesh[i] ≤ exclude[j][2]
                     is_excluded = true
                     break
                 end
