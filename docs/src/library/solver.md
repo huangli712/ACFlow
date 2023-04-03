@@ -97,7 +97,7 @@ calc_delta
 calc_hamil
 calc_htau
 calc_alpha
-constraints(S::StochACSolver)
+constraints(S::StochACSolver, fmesh::AbstractMesh)
 try_move_a(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 try_move_p(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 try_move_x(MC::StochACMC, SE::StochACElement, SC::StochACContext)
@@ -134,7 +134,7 @@ calc_fmesh(S::StochSKSolver)
 calc_correlator
 calc_goodness
 calc_theta
-constraints(S::StochSKSolver)
+constraints(S::StochSKSolver, fmesh::AbstractMesh)
 try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 try_move_q(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
@@ -217,7 +217,7 @@ calc_green(P::Vector{I64}, A::Vector{F64}, Λ::Array{F64,2})
 calc_green(P::Vector{I64}, A::Vector{F64}, mesh::AbstractMesh, fmesh::AbstractMesh)
 calc_green(P::Vector{I64}, A::Vector{F64}, mesh::AbstractMesh, fmesh::AbstractMesh, χ₀::F64, bsymm::Bool)
 calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
-constraints(S::StochPXSolver)
+constraints(S::StochPXSolver, fmesh::AbstractMesh)
 try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
