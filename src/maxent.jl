@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/03/30
+# Last modified: 2023/04/05
 #
 
 #=
@@ -472,11 +472,32 @@ end
 =#
 
 #=
+*Remarks* :
+
+Try to calculate some key variables by using the Einstein summation.
+
 ```math
 \begin{equation}
-B_m = \sum^{N}_{n = 1} \frac{1}{\sigma^2_n}
+B_m = \sum^{N}_{n = 1} \frac{1}{\sigma^2_n} \xi_m U_{nm} G_n,
 \end{equation}
 ```
+
+```math
+\begin{equation}
+W_{ml} = \sum_{pn} \frac{1}{\sigma^2_n}
+    U_{nm}\xi_m U_{np} \xi_p V_{lp} \Delta\omega_l D_l,
+\end{equation}
+```
+
+```math
+\begin{equation}
+W_{mli} = W_{ml} V_{li}.
+\end{equation}
+```
+
+Note that these variables do not depend on the spectral function
+``A(\omega)``, so they could be computed at advance to improve the
+computational efficiency.
 =#
 
 """
@@ -495,28 +516,40 @@ function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
                     K::Matrix{F64})
     offdiag = get_b("offdiag")
 
+    # Create singular value space
     U, V, S = make_singular_space(K)
 
+    # Evaluate sizes of the arrays
     nmesh = length(am)
-    weight = am.weight
     n_svd = length(S)
 
+    # Allocate memories
     W₂ = zeros(F64, n_svd, nmesh)
     W₃ = zeros(F64, n_svd, n_svd, nmesh)
     Bₘ = zeros(F64, n_svd)
     hess = zeros(F64, nmesh, nmesh)
 
+    # Get weight of the mesh, Δωₗ.
+    Δ = am.weight
+
+    # Compute Wₘₗ
+    # For the off-diagonal case, the model function Dₗ is considered
+    # explicitly in f_and_J_offdiag(). So it is not included in the
+    # expression.
     if offdiag
-        @einsum W₂[m,l] = σ²[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l]
+        @einsum W₂[m,l] = σ²[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * Δ[l]
     else
-        @einsum W₂[m,l] = σ²[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * weight[l] * D[l]
+        @einsum W₂[m,l] = σ²[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * Δ[l] * D[l]
     end
 
+    # Compute Wₘₗᵢ
     @einsum W₃[j,k,i] = W₂[j,i] * V[i,k]
 
+    # Compute Bₘ
     @einsum Bₘ[m] = S[m] * U[k,m] * σ²[k] * Gᵥ[k]
 
-    @einsum hess[i,j] = weight[i] * weight[j] * K[k,i] * K[k,j] * σ²[k]
+    # Compute the hessian matrix
+    @einsum hess[i,j] = Δ[i] * Δ[j] * K[k,i] * K[k,j] * σ²[k]
 
     return V, W₂, W₃, Bₘ, hess
 end
