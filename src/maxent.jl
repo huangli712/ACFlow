@@ -860,7 +860,7 @@ N_g = \sum_i \frac{\lambda_i}{\alpha + \lambda_i}.
 \end{equation}
 ```
 
-**``\Lambda`` matrix**
+**Hessian matrix**
 
 For standard case,
 
@@ -873,8 +873,8 @@ L = \frac{1}{2} \chi^2,
 ```math
 \begin{equation}
 \frac{\partial^2 L}{\partial A_i \partial A_j} =
-\left[K^{T} C^{-1} K\right]_{ij} =
-\sum_{kl} K_{ki} \left[C^{-1}\right]_{kl} K_{lj},
+    \left[K^{T} C^{-1} K\right]_{ij} =
+    x\sum_{kl} K_{ki} \left[C^{-1}\right]_{kl} K_{lj},
 \end{equation}
 ```
 
@@ -890,9 +890,9 @@ For positive-negative entropy case,
 
 ```math
 \begin{equation}
-\Lambda_{ij} = \sqrt[4]{A^2_i + 4m^2}
+\Lambda_{ij} = \sqrt[4]{A^2_i + 4m_i^2}
                \frac{\partial^2 L}{\partial A_i \partial A_j}
-               \sqrt[4]{A^2_j + 4m^2}.
+               \sqrt[4]{A^2_j + 4m_j^2}.
 \end{equation}
 ```
 **Reference:**
