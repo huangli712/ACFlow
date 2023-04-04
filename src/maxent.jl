@@ -86,7 +86,8 @@ function init(S::MaxEntSolver, rd::RawData)
     Vₛ, W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel)
     println("Precompute key coefficients")
 
-    return MaxEntContext(Gᵥ, σ², grid, mesh, model, kernel, hess, Vₛ, W₂, W₃, Bₘ)
+    return MaxEntContext(Gᵥ, σ², grid, mesh, model,
+                         kernel, hess, Vₛ, W₂, W₃, Bₘ)
 end
 
 """
@@ -677,6 +678,17 @@ For diagonal case,
 A_i = D_i \exp \left(\sum_m V_{im} u_m\right).
 \end{equation}
 ```
+
+---
+
+For off-diagonal case,
+
+```math
+\begin{equation}
+A_i = D_i \exp \left(\sum_m V_{im} u_m\right) -
+      D_i \exp \left(-\sum_m V_{im} u_m\right).
+\end{equation}
+```
 =#
 
 """
@@ -693,19 +705,6 @@ See also: [`svd_to_real_offdiag`](@ref).
 function svd_to_real(mec::MaxEntContext, u::Vector{F64})
     return mec.model .* exp.(mec.Vₛ * u)
 end
-
-#=
-*Remarks* :
-
-For off-diagonal case,
-
-```math
-\begin{equation}
-A_i = D_i \exp \left(\sum_m V_{im} u_m\right) -
-      D_i \exp \left(-\sum_m V_{im} u_m\right).
-\end{equation}
-```
-=#
 
 """
     svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
