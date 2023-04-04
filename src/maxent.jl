@@ -726,62 +726,36 @@ end
 #=
 *Remarks* :
 
-**Shannon–Jaynes Entropy**
+Shannon–Jaynes entropy
 
 ```math
 \begin{equation}
 S[A] = \int^{\infty}_0 d\omega
 \left[
-    A -
-    m -
+    A - m -
     A \log{\left(\frac{A}{m}\right)}
-\right]
+\right],
 \end{equation}
 ```
 
 ```math
 \begin{equation}
-A_{+} = \frac{\sqrt{A^2 + 4m^2} + A}{2}
-\end{equation}
-```
-
-```math
-\begin{equation}
-A_{-} = \frac{\sqrt{A^2 + 4m^2} - A}{2}
-\end{equation}
-```
-
-```math
-\begin{equation}
-S[A_{+},A_{-}] = \int^{+\infty}_0 d\omega
+S[A^{+},A^{-}] = \int^{+\infty}_0 d\omega
 \left[
-\sqrt{A^2 + 4m^2} - 2m -
-A\log{\left(\frac{\sqrt{A^2 + 4m^2} + A}{2m}\right)}
-\right]
+    \sqrt{A^2 + 4m^2} - 2m -
+    A\log{\left(\frac{\sqrt{A^2 + 4m^2} + A}{2m}\right)}
+\right].
 \end{equation}
 ```
 
-**Bayesian Reconstruction Entropy**
+Bayesian Reconstruction entropy
 
 ```math
 \begin{equation}
 S[A] = \int^{\infty}_0 d\omega
 \left[
-1 - \frac{A}{m} +
-\log{\left(\frac{A}{m}\right)}
-\right]
-\end{equation}
-```
-
-```math
-\begin{equation}
-A_{+} = \frac{\sqrt{A^2 + m^2} + m + A}{2}
-\end{equation}
-```
-
-```math
-\begin{equation}
-A_{-} = \frac{\sqrt{A^2 + m^2} + m - A}{2}
+    1 - \frac{A}{m} + \log{\left(\frac{A}{m}\right)}
+\right],
 \end{equation}
 ```
 
@@ -789,17 +763,11 @@ A_{-} = \frac{\sqrt{A^2 + m^2} + m - A}{2}
 \begin{equation}
 S[A_{+},A_{-}] = \int^{+\infty}_0 d\omega
 \left[
-2 - \frac{\sqrt{A^2 + m^2} + m}{m} +
-\log{\left(\frac{\sqrt{A^2 + m^2} + m}{2m}\right)}
-\right]
+    2 - \frac{\sqrt{A^2 + m^2} + m}{m} +
+    \log{\left(\frac{\sqrt{A^2 + m^2} + m}{2m}\right)}
+\right].
 \end{equation}
 ```
-
-**Reference:**
-
-[1] G. J. Kraberger, *et al.*, Phys. Rev. B **96**, 155128 (2017).
-
-[2] Y. Burnier, *et al.*, Phys. Rev. Lett. **111**, 182003 (2013).
 =#
 
 """
