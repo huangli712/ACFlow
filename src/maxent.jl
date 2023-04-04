@@ -874,7 +874,7 @@ L = \frac{1}{2} \chi^2,
 \begin{equation}
 \frac{\partial^2 L}{\partial A_i \partial A_j} =
     \left[K^{T} C^{-1} K\right]_{ij} =
-    x\sum_{kl} K_{ki} \left[C^{-1}\right]_{kl} K_{lj},
+    \sum_{kl} K_{ki} \left[C^{-1}\right]_{kl} K_{lj},
 \end{equation}
 ```
 
