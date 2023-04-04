@@ -669,6 +669,18 @@ function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
     return f, J
 end
 
+#=
+*Remarks* :
+
+For diagonal case,
+
+```math
+\begin{equation}
+A_i = D_i \exp \left(\sum_m V_{im} u_m\right).
+\end{equation}
+```
+=#
+
 """
     svd_to_real(mec::MaxEntContext, u::Vector{F64})
 
@@ -683,6 +695,19 @@ See also: [`svd_to_real_offdiag`](@ref).
 function svd_to_real(mec::MaxEntContext, u::Vector{F64})
     return mec.model .* exp.(mec.Vₛ * u)
 end
+
+#=
+*Remarks* :
+
+For off-diagonal case,
+
+```math
+\begin{equation}
+A_i = D_i \exp \left(\sum_m V_{im} u_m\right) -
+      D_i \exp \left(-\sum_m V_{im} u_m\right).
+\end{equation}
+```
+=#
 
 """
     svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
