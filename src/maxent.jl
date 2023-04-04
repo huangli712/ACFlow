@@ -554,6 +554,30 @@ function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
     return V, W₂, W₃, Bₘ, hess
 end
 
+#=
+*Remarks* :
+
+For diagonal case,
+
+```math
+\begin{equation}
+w_l = \exp \left(\sum_m V_{lm} u_m\right).
+\end{equation}
+```
+
+```math
+\begin{equation}
+f_m = \alpha u_m + \sum_l W_{ml} w_l - B_m.
+\end{equation}
+```
+
+```math
+\begin{equation}
+J_{mi} = \alpha \delta_{mi} + \sum_l W_{mli} w_l.
+\end{equation}
+```
+=#
+
 """
     f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
 
@@ -582,6 +606,32 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
 
     return f, J
 end
+
+#=
+*Remarks* :
+
+For off-diagonal case,
+
+```math
+\begin{equation}
+w_l = \exp \left(\sum_m V_{lm} u_m\right).
+\end{equation}
+```
+
+```math
+\begin{equation}
+f_m = \alpha u_m +
+      \sum_l W_{ml}\left(w_l - \frac{1}{w_l}\right) - B_m.
+\end{equation}
+```
+
+```math
+\begin{equation}
+J_{mi} = \alpha \delta_{mi} +
+         \sum_{l} W_{mli} \left(w_l + \frac{1}{w_l}\right).
+\end{equation}
+```
+=#
 
 """
     f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
