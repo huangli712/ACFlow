@@ -170,6 +170,8 @@ end
 Apply the historic algorithm to solve the analytical continuation problem.
 It choose α in a way that χ² ≈ N.
 
+For the historic algorithm, `alpha` is usually 10⁶, and `ratio` is 10.0.
+
 See also: [`MaxEntContext`](@ref).
 """
 function historic(mec::MaxEntContext)
@@ -219,6 +221,8 @@ is only a few steps away from 0 (= default model). And then we gradually
 decrease α, step by step moving away from the default model towards data
 fitting. Using `u_vec` as start for the next (smaller) α brings a great
 speedup into this procedure.
+
+For the classic algorithm, `alpha` is usually 10⁶, and `ratio` is 10.0.
 
 See also: [`MaxEntContext`](@ref).
 """
@@ -274,6 +278,8 @@ Apply the bryan algorithm to solve the analytical continuation problem.
 
 Bryan's maxent calculates an average of spectral functions, weighted by
 their Bayesian probability.
+
+For the bryan algorithm, `alpha` is usually 500, and `ratio` is 1.1.
 
 See also: [`MaxEntContext`](@ref).
 """
@@ -341,6 +347,9 @@ from which the optimal α is determined by
 and
 
 `alpha_opt = 10^x_opt`.
+
+For the chi2kink algorithm, `alpha` is usually 10⁹, `ratio` is 10.0, the
+number of alpha parameters is 12.
 
 See also: [`MaxEntContext`](@ref).
 """
