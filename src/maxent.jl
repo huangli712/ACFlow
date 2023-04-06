@@ -558,7 +558,7 @@ function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
     # Compute Bₘ
     @einsum Bₘ[m] = S[m] * U[k,m] * σ²[k] * Gᵥ[k]
 
-    # Compute the hessian matrix
+    # Compute the Hessian matrix
     @einsum hess[i,j] = Δ[i] * Δ[j] * K[k,i] * K[k,j] * σ²[k]
 
     return V, W₂, W₃, Bₘ, hess
