@@ -524,8 +524,6 @@ function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
                     am::AbstractMesh,
                     D::Vector{F64},
                     K::Matrix{F64})
-    offdiag = get_b("offdiag")
-
     # Create singular value space
     U, V, S = make_singular_space(K)
 
