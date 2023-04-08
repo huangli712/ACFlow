@@ -618,14 +618,28 @@ It returns `f`, value of the function whose zero we want to find, and
 See also: [`f_and_J_offdiag`](@ref).
 """
 function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
-    w = exp.(mec.Vₛ * u)
+    stype = get_m("stype")
 
     n_svd = length(mec.Bₘ)
-
     J = diagm([α for i = 1:n_svd])
-    for j = 1:n_svd
-        for i = 1:n_svd
-            J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], w)
+
+    if stype == "sj"
+        w = exp.(mec.Vₛ * u)
+        #
+        for j = 1:n_svd
+            for i = 1:n_svd
+                J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], w)
+            end
+        end
+    else
+        w = mec.Vₛ * u
+        w = 1.0 ./ (1.0 .- mec.model .* w)
+        𝑤 = w .* w .* mec.model
+        #
+        for j = 1:n_svd
+            for i = 1:n_svd
+                J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], 𝑤)
+            end
         end
     end
 
@@ -705,7 +719,14 @@ space vector that parametrizes the spectral function.
 See also: [`svd_to_real_offdiag`](@ref).
 """
 function svd_to_real(mec::MaxEntContext, u::Vector{F64})
-    return mec.model .* exp.(mec.Vₛ * u)
+    stype = get_m("stype")
+    #
+    if stype == "sj"
+        return mec.model .* exp.(mec.Vₛ * u)
+    else
+        w = mec.Vₛ * u
+        return mec.model ./ (1.0 .- mec.model .* w)
+    end
 end
 
 """
@@ -786,7 +807,7 @@ function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     if stype == "sj"
         f = A - mec.model - A .* (mec.Vₛ * u)
     else
-        f = 1.0 .- A ./ mec.model + (mec.Vₛ * u)
+        f = 1.0 .- A ./ mec.model + log.(A ./ mec.model)
     end
     #
     return trapz(mec.mesh, f)
