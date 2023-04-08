@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/05
+# Last modified: 2023/04/08
 #
 
 #=
@@ -543,14 +543,7 @@ function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
     Δ = am.weight
 
     # Compute Wₘₗ
-    # For the off-diagonal case, the model function Dₗ is considered
-    # explicitly in f_and_J_offdiag(). So it is not included in the
-    # expression.
-    if offdiag
-        @einsum W₂[m,l] = σ²[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * Δ[l]
-    else
-        @einsum W₂[m,l] = σ²[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * Δ[l] * D[l]
-    end
+    @einsum W₂[m,l] = σ²[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * Δ[l] * D[l]
 
     # Compute Wₘₗᵢ
     @einsum W₃[j,k,i] = W₂[j,i] * V[i,k]
@@ -658,21 +651,21 @@ See also: [`f_and_J`](@ref).
 function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
     w = exp.(mec.Vₛ * u)
 
-    a_plus = mec.model .* w
-    a_minus = mec.model ./ w
-    a1 = a_plus - a_minus
-    a2 = a_plus + a_minus
+    a⁺ = 1.0 .* w
+    a⁻ = 1.0 ./ w
+    a₁ = a⁺ - a⁻
+    a₂ = a⁺ + a⁻
 
     n_svd = length(mec.Bₘ)
 
     J = diagm([α for i = 1:n_svd])
     for j = 1:n_svd
         for i = 1:n_svd
-            J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], a2)
+            J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], a₂)
         end
     end
 
-    f = α * u + mec.W₂ * a1 - mec.Bₘ
+    f = α * u + mec.W₂ * a₁ - mec.Bₘ
 
     return f, J
 end
