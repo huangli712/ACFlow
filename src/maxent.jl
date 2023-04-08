@@ -495,7 +495,7 @@ B_m = \sum^{N}_{n = 1} \frac{1}{\sigma^2_n} \xi_m U_{nm} G_n,
 ```math
 \begin{equation}
 W_{ml} = \sum_{pn} \frac{1}{\sigma^2_n}
-    U_{nm}\xi_m U_{np} \xi_p V_{lp} \Delta\omega_l D_l,
+    U_{nm}\xi_m U_{np} \xi_p V_{lp} \Delta_l D_l,
 \end{equation}
 ```
 
