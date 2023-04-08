@@ -629,19 +629,21 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
                 J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], w)
             end
         end
+        #
+        f = α * u + mec.W₂ * w - mec.Bₘ
     else
         w = mec.Vₛ * u
-        w = 1.0 ./ (1.0 .- mec.model .* w)
+        w = 1.0 ./ (1.0 .+ mec.model .* w)
         𝑤 = w .* w .* mec.model
         #
         for j = 1:n_svd
             for i = 1:n_svd
-                J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], 𝑤)
+                J[i,j] = -J[i,j] - dot(mec.W₃[i,j,:], 𝑤)
             end
         end
+        #
+        f = -α * u + mec.W₂ * w - mec.Bₘ
     end
-
-    f = α * u + mec.W₂ * w - mec.Bₘ
 
     return f, J
 end
@@ -723,7 +725,7 @@ function svd_to_real(mec::MaxEntContext, u::Vector{F64})
         return mec.model .* exp.(mec.Vₛ * u)
     else
         w = mec.Vₛ * u
-        return mec.model ./ (1.0 .- mec.model .* w)
+        return mec.model ./ (1.0 .+ mec.model .* w)
     end
 end
 
@@ -805,7 +807,12 @@ function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     if stype == "sj"
         f = A - mec.model - A .* (mec.Vₛ * u)
     else
-        f = 1.0 .- A ./ mec.model + log.(A ./ mec.model)
+        𝑅 = A ./ mec.model
+        if any(x -> x < 0.0, 𝑅)
+            f = 1.0 .- 𝑅 + log.(abs.(𝑅))
+        else
+            f = 1.0 .- 𝑅 + log.(𝑅)
+        end
     end
     #
     return trapz(mec.mesh, f)
