@@ -633,16 +633,16 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
         f = α * u + mec.W₂ * w - mec.Bₘ
     else
         w = mec.Vₛ * u
-        w = 1.0 ./ (1.0 .- mec.model .* w)
-        𝑤 = w .* w .* mec.model
+        w₁ = 1.0 ./ (1.0 .- mec.model .* w)
+        w₂ = w₁ .* w₁ .* mec.model
         #
         for j = 1:n_svd
             for i = 1:n_svd
-                J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], 𝑤)
+                J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], w₂)
             end
         end
         #
-        f = α * u + mec.W₂ * w - mec.Bₘ
+        f = α * u + mec.W₂ * w₁ - mec.Bₘ
     end
 
     return f, J
@@ -690,7 +690,6 @@ function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
         a⁻ = 1.0 ./ (1.0 .+ mec.model .* w)
         a₁ = a⁺ - a⁻
         a₂ = (a⁺ .* a⁺ + a⁻ .* a⁻) .* mec.model
-        #
         #
         for j = 1:n_svd
             for i = 1:n_svd
@@ -742,7 +741,8 @@ function svd_to_real(mec::MaxEntContext, u::Vector{F64})
     stype = get_m("stype")
     #
     if stype == "sj"
-        return mec.model .* exp.(mec.Vₛ * u)
+        w = exp.(mec.Vₛ * u)
+        return mec.model .* w
     else
         w = mec.Vₛ * u
         return mec.model ./ (1.0 .- mec.model .* w)
@@ -763,12 +763,14 @@ function svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
     #
     if stype == "sj"
         w = exp.(mec.Vₛ * u)
-        return (mec.model .* w) - (mec.model ./ w)
+        w⁺ = w
+        w⁻ = 1.0 ./ w
+        return mec.model .* (w⁺ .- w⁻)
     else
         w = mec.Vₛ * u
         w⁺ = 1.0 ./ (1.0 .- mec.model .* w)
         w⁻ = 1.0 ./ (1.0 .+ mec.model .* w)
-        return mec.model .* (w⁺ - w⁻)
+        return mec.model .* (w⁺ .- w⁻)
     end
 end
 
