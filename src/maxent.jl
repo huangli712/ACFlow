@@ -663,23 +663,28 @@ This function is similar to `f_and_J`, but for offdiagonal elements.
 See also: [`f_and_J`](@ref).
 """
 function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
-    w = exp.(mec.Vₛ * u)
-
-    a⁺ = 1.0 .* w
-    a⁻ = 1.0 ./ w
-    a₁ = a⁺ - a⁻
-    a₂ = a⁺ + a⁻
+    stype = get_m("stype")
 
     n_svd = length(mec.Bₘ)
-
     J = diagm([α for i = 1:n_svd])
-    for j = 1:n_svd
-        for i = 1:n_svd
-            J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], a₂)
-        end
-    end
 
-    f = α * u + mec.W₂ * a₁ - mec.Bₘ
+    if stype == "sj"
+        w = exp.(mec.Vₛ * u)
+        #
+        a⁺ = 1.0 .* w
+        a⁻ = 1.0 ./ w
+        a₁ = a⁺ - a⁻
+        a₂ = a⁺ + a⁻
+        #
+        for j = 1:n_svd
+            for i = 1:n_svd
+                J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], a₂)
+            end
+        end
+        #
+        f = α * u + mec.W₂ * a₁ - mec.Bₘ
+    else
+    end
 
     return f, J
 end
@@ -739,8 +744,13 @@ element. It will return the spectral function.
 See also: [`svd_to_real`](@ref).
 """
 function svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
-    w = exp.(mec.Vₛ * u)
-    return (mec.model .* w) - (mec.model ./ w)
+    stype = get_m("stype")
+    #
+    if stype == "sj"
+        w = exp.(mec.Vₛ * u)
+        return (mec.model .* w) - (mec.model ./ w)
+    else
+    end
 end
 
 #=
