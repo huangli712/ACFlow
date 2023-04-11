@@ -684,6 +684,21 @@ function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
         #
         f = α * u + mec.W₂ * a₁ - mec.Bₘ
     else
+        w = mec.Vₛ * u
+        #
+        a⁺ = 1.0 ./ (1.0 .- mec.model .* w)
+        a⁻ = 1.0 ./ (1.0 .+ mec.model .* w)
+        a₁ = a⁺ - a⁻
+        a₂ = (a⁺ .* a⁺ + a⁻ .* a⁻) .* mec.model
+        #
+        #
+        for j = 1:n_svd
+            for i = 1:n_svd
+                J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], a₂)
+            end
+        end
+        #
+        f = α * u + mec.W₂ * a₁ - mec.Bₘ        
     end
 
     return f, J
@@ -750,6 +765,10 @@ function svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
         w = exp.(mec.Vₛ * u)
         return (mec.model .* w) - (mec.model ./ w)
     else
+        w = mec.Vₛ * u
+        w⁺ = 1.0 ./ (1.0 .- mec.model .* w)
+        w⁻ = 1.0 ./ (1.0 .+ mec.model .* w)
+        return mec.model .* (w⁺ - w⁻)
     end
 end
 
