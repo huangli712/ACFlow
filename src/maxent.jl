@@ -633,16 +633,16 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
         f = α * u + mec.W₂ * w - mec.Bₘ
     else
         w = mec.Vₛ * u
-        w = 1.0 ./ (1.0 .+ mec.model .* w)
+        w = 1.0 ./ (1.0 .- mec.model .* w)
         𝑤 = w .* w .* mec.model
         #
         for j = 1:n_svd
             for i = 1:n_svd
-                J[i,j] = -J[i,j] - dot(mec.W₃[i,j,:], 𝑤)
+                J[i,j] = J[i,j] + dot(mec.W₃[i,j,:], 𝑤)
             end
         end
         #
-        f = -α * u + mec.W₂ * w - mec.Bₘ
+        f = α * u + mec.W₂ * w - mec.Bₘ
     end
 
     return f, J
@@ -725,7 +725,7 @@ function svd_to_real(mec::MaxEntContext, u::Vector{F64})
         return mec.model .* exp.(mec.Vₛ * u)
     else
         w = mec.Vₛ * u
-        return mec.model ./ (1.0 .+ mec.model .* w)
+        return mec.model ./ (1.0 .- mec.model .* w)
     end
 end
 
