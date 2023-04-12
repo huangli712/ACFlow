@@ -178,6 +178,7 @@ Apply the historic algorithm to solve the analytical continuation problem.
 It choose α in a way that χ² ≈ N.
 
 For the historic algorithm, `alpha` is usually 10⁶, and `ratio` is 10.0.
+It is compatible with the Bayesian Reconstruction entropy.
 
 See also: [`MaxEntContext`](@ref).
 """
@@ -230,6 +231,7 @@ fitting. Using `u_vec` as start for the next (smaller) α brings a great
 speedup into this procedure.
 
 For the classic algorithm, `alpha` is usually 10⁶, and `ratio` is 10.0.
+It is incompatible with the Bayesian Reconstruction entropy.
 
 See also: [`MaxEntContext`](@ref).
 """
@@ -287,6 +289,7 @@ Bryan's maxent calculates an average of spectral functions, weighted by
 their Bayesian probability.
 
 For the bryan algorithm, `alpha` is usually 500, and `ratio` is 1.1.
+It is incompatible with the Bayesian Reconstruction entropy.
 
 See also: [`MaxEntContext`](@ref).
 """
@@ -356,7 +359,8 @@ and
 `alpha_opt = 10^x_opt`.
 
 For the chi2kink algorithm, `alpha` is usually 10⁹, `ratio` is 10.0, the
-number of alpha parameters is 12.
+number of alpha parameters is 12. It is compatible with the Bayesian
+Reconstruction entropy.
 
 See also: [`MaxEntContext`](@ref).
 """
