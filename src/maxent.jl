@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/08
+# Last modified: 2023/04/12
 #
 
 #=
@@ -97,7 +97,14 @@ Perform maximum entropy simulation with different algorithms. Now it
 supports the `historic`, `classic`, `bryan`, and `chi2kink` algorithms.
 """
 function run(mec::MaxEntContext)
+    stype = get_m("stype")
     method = get_m("method")
+
+    # Note that the Bayesian Reconstruction entropy is only compatible
+    # with the `historic` and `chi2kink` algorithms.
+    if stype == "br"
+        @assert method in ("historic", "chi2kink")
+    end
 
     @cswitch method begin
         @case "historic"
