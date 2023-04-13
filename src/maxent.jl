@@ -769,22 +769,21 @@ end
 #=
 *Remarks* :
 
-For diagonal case,
+For Shannon-Jaynes entropy,
 
 ```math
 \begin{equation}
-A_i = D_i \exp \left(\sum_m V_{im} u_m\right).
+A_l = D_l \exp \left(\sum_m V_{lm} u_m\right).
 \end{equation}
 ```
 
 ---
 
-For off-diagonal case,
+For Bayesian Reconstruction entropy,
 
 ```math
 \begin{equation}
-A_i = D_i \exp \left(\sum_m V_{im} u_m\right) -
-      D_i \exp \left(-\sum_m V_{im} u_m\right).
+A_l = \frac{D_l}{ 1 - D_l \sum_m V_{lm} u_m}.
 \end{equation}
 ```
 =#
@@ -811,6 +810,41 @@ function svd_to_real(mec::MaxEntContext, u::Vector{F64})
         return mec.model ./ (1.0 .- mec.model .* w)
     end
 end
+
+#=
+*Remarks* :
+
+For Shannon-Jaynes entropy,
+
+```math
+\begin{equation}
+A_l = D_l \exp \left(\sum_m V_{lm} u_m\right) -
+      D_l \exp \left(-\sum_m V_{lm} u_m\right).
+\end{equation}
+```
+
+---
+
+For Bayesian Reconstruction entropy,
+
+```math
+\begin{equation}
+w^+_l = \frac{1}{ 1 - D_l \sum_m V_{lm} u_m}.
+\end{equation}
+```
+
+```math
+\begin{equation}
+w^-_l = \frac{1}{ 1 + D_l \sum_m V_{lm} u_m}.
+\end{equation}
+```
+
+```math
+\begin{equation}
+A_l = D_l (w^+_l - w^-_l).
+\end{equation}
+```
+=#
 
 """
     svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
