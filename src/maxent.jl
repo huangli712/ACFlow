@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/12
+# Last modified: 2023/04/14
 #
 
 #=
@@ -101,7 +101,7 @@ function run(mec::MaxEntContext)
     method = get_m("method")
 
     # Note that the Bayesian Reconstruction entropy is only compatible
-    # with the `historic` and `chi2kink` algorithms.
+    # with the `historic` and `chi2kink` algorithms so far.
     if stype == "br"
         @assert method in ("historic", "chi2kink")
     end
@@ -495,7 +495,7 @@ end
 #=
 *Remarks* :
 
-Try to calculate some key variables by using the Einstein summation.
+Try to calculate some key variables by using the Einstein summation trick.
 
 ```math
 \begin{equation}
@@ -569,7 +569,7 @@ end
 #=
 *Remarks* :
 
-For diagonal case,
+For Shannon-Jaynes entropy,
 
 ```math
 \begin{equation}
@@ -591,25 +591,23 @@ J_{mi} = \alpha \delta_{mi} + \sum_l W_{mli} w_l.
 
 ---
 
-For off-diagonal case,
+For Bayesian Reconstruction entropy,
 
 ```math
 \begin{equation}
-w_l = \exp \left(\sum_m V_{lm} u_m\right).
+w_l = \frac{1}{1 - D_l \sum_m V_{lm} u_m}.
 \end{equation}
 ```
 
 ```math
 \begin{equation}
-f_m = \alpha u_m +
-      \sum_l W_{ml}\left(w_l - \frac{1}{w_l}\right) - B_m.
+f_m = \alpha u_m + \sum_l W_{ml} w_l - B_m.
 \end{equation}
 ```
 
 ```math
 \begin{equation}
-J_{mi} = \alpha \delta_{mi} +
-         \sum_{l} W_{mli} \left(w_l + \frac{1}{w_l}\right).
+J_{mi} = \alpha \delta_{mi} + \sum_l W_{mli} D_l w_l w_l.
 \end{equation}
 ```
 =#
@@ -658,6 +656,30 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
 
     return f, J
 end
+
+#=
+For off-diagonal case,
+
+```math
+\begin{equation}
+w_l = \exp \left(\sum_m V_{lm} u_m\right).
+\end{equation}
+```
+
+```math
+\begin{equation}
+f_m = \alpha u_m +
+      \sum_l W_{ml}\left(w_l - \frac{1}{w_l}\right) - B_m.
+\end{equation}
+```
+
+```math
+\begin{equation}
+J_{mi} = \alpha \delta_{mi} +
+         \sum_{l} W_{mli} \left(w_l + \frac{1}{w_l}\right).
+\end{equation}
+```
+=#
 
 """
     f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
