@@ -658,7 +658,9 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
 end
 
 #=
-For off-diagonal case,
+*Remarks* :
+
+For Shannon-Jaynes entropy,
 
 ```math
 \begin{equation}
@@ -677,6 +679,34 @@ f_m = \alpha u_m +
 \begin{equation}
 J_{mi} = \alpha \delta_{mi} +
          \sum_{l} W_{mli} \left(w_l + \frac{1}{w_l}\right).
+\end{equation}
+```
+
+---
+
+For Bayesian Reconstruction entropy,
+
+```math
+\begin{equation}
+w^+_l = \frac{1}{ 1 - D_l \sum_m V_{lm} u_m}.
+\end{equation}
+```
+
+```math
+\begin{equation}
+w^-_l = \frac{1}{ 1 + D_l \sum_m V_{lm} u_m}.
+\end{equation}
+```
+
+```math
+\begin{equation}
+f_m = \alpha u_m + \sum_l W_{ml} (w^+_l - w^-_l) - B_m.
+\end{equation}
+```
+
+```math
+\begin{equation}
+J_{mi} = \alpha \delta_{mi} + \sum_l W_{mli} D_l (w^+_l w^+_l + w^-_l w^-_l).
 \end{equation}
 ```
 =#
