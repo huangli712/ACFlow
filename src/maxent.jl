@@ -937,6 +937,7 @@ function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     else
         𝑅 = A ./ mec.model
         if any(x -> x < 0.0, 𝑅)
+            prompt("Negative spectrum occurs!")
             f = 1.0 .- 𝑅 + log.(abs.(𝑅))
         else
             f = 1.0 .- 𝑅 + log.(𝑅)
