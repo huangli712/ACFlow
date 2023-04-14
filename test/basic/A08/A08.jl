@@ -19,9 +19,9 @@ B = Dict{String,Any}(
     "finput" => "giw.11.data",
     "mtype"  => "gauss",
     "ngrid"  => 20,
-    "nmesh"  => 400,
-    "wmax"   => 4.0,
-    "wmin"   => -4.0,
+    "nmesh"  => 500,
+    "wmax"   => 5.0,
+    "wmin"   => -5.0,
     "beta"   => 40.0,
 )
 #
