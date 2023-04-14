@@ -555,7 +555,7 @@ function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
     @einsum W₂[m,l] = σ²[k] * U[k,m] * S[m] * U[k,n] * S[n] * V[l,n] * Δ[l] * D[l]
 
     # Compute Wₘₗᵢ
-    @einsum W₃[j,k,i] = W₂[j,i] * V[i,k]
+    @einsum W₃[m,k,l] = W₂[m,l] * V[l,k]
 
     # Compute Bₘ
     @einsum Bₘ[m] = S[m] * U[k,m] * σ²[k] * Gᵥ[k]
