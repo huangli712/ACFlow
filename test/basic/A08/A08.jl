@@ -28,8 +28,7 @@ B = Dict{String,Any}(
 # For [MaxEnt] block
 # See types.jl/_PMaxEnt for default setup
 S = Dict{String,Any}(
-    "stype"  => "br",
-    "method" => "bryan",
+    "stype"  => "sj",
     "nalph"  => 28,
     "alpha"  => 1e18,
 )
