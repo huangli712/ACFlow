@@ -100,11 +100,13 @@ function run(mec::MaxEntContext)
     stype = get_m("stype")
     method = get_m("method")
 
-    # Note that the Bayesian Reconstruction entropy is only compatible
-    # with the `historic` and `chi2kink` algorithms so far.
-    #if stype == "br"
-    #    @assert method in ("historic", "chi2kink")
-    #end
+    # Note that the Bayesian Reconstruction entropy is compatible with
+    # all the four algorithms so far.
+    if stype == "br"
+        prompt("Bayesian Reconstruction entropy is used!")
+    else
+        prompt("Shannon–Jaynes entropy is used!")
+    end
 
     @cswitch method begin
         @case "historic"
