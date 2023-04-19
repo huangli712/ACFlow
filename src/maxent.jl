@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/14
+# Last modified: 2023/04/18
 #
 
 #=
@@ -911,7 +911,7 @@ S[A] = \int^{\infty}_0 d\omega
 
 ```math
 \begin{equation}
-S[A_{+},A_{-}] = \int^{+\infty}_0 d\omega
+S[A^{+},A^{-}] = \int^{+\infty}_0 d\omega
 \left[
     2 - \frac{\sqrt{A^2 + m^2} + m}{m} +
     \log{\left(\frac{\sqrt{A^2 + m^2} + m}{2m}\right)}
@@ -973,7 +973,7 @@ end
 #=
 *Remarks* :
 
-**Posterior distribution of ``\alpha`` given the data ``\bar{G}``**
+**Posterior distribution of ``\alpha``**
 
 Because
 ```math
@@ -994,7 +994,7 @@ so
 \end{equation}
 ```
 
-The defining equation for the classic `MaxEnt` equation reads:
+The defining equation for the `classic MaxEnt` equation reads:
 
 ```math
 -2\alpha S = \text{Tr} \left(\frac{\Lambda}{\alpha I + \Lambda}\right).
@@ -1019,8 +1019,6 @@ N_g = \sum_i \frac{\lambda_i}{\alpha + \lambda_i}.
 
 **Hessian matrix**
 
-For standard case,
-
 ```math
 \begin{equation}
 L = \frac{1}{2} \chi^2,
@@ -1035,6 +1033,18 @@ L = \frac{1}{2} \chi^2,
 \end{equation}
 ```
 
+**``\Lambda`` matrix**
+
+For Shannon-Jaynes entropy,
+
+```math
+\begin{equation}
+\frac{\partial^2 S[A]}{\partial A_i \partial A_j} =
+-\frac{\delta_{ij}}{A_i} =
+-\frac{\delta_{ij}}{\sqrt{A_i A_j}},
+\end{equation}
+```
+
 ```math
 \begin{equation}
 \Lambda_{ij} = \sqrt{A_i}
@@ -1043,7 +1053,13 @@ L = \frac{1}{2} \chi^2,
 \end{equation}
 ```
 
-For positive-negative entropy case,
+```math
+\begin{equation}
+\frac{\partial^2 S[A^+,A^-]}{\partial A_i \partial A_j} =
+-\frac{\delta_{ij}}{\sqrt{A_i^2 + 4m_i^2}} =
+-\frac{\delta_{ij}}{\sqrt[4]{A_i^2 + 4m_i^2} \sqrt[4]{A_j^2 + 4m_j^2}}
+\end{equation}
+```
 
 ```math
 \begin{equation}
@@ -1052,6 +1068,11 @@ For positive-negative entropy case,
                \sqrt[4]{A^2_j + 4m_j^2}.
 \end{equation}
 ```
+
+---
+
+For Bayesian Reconstruction entropy,
+
 **Reference:**
 
 [1] G. J. Kraberger, *et al.*, Phys. Rev. B **96**, 155128 (2017).
