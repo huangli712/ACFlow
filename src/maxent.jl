@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/18
+# Last modified: 2023/04/20
 #
 
 #=
@@ -779,7 +779,7 @@ function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
             end
         end
         #
-        f = α * u + mec.W₂ * a₁ - mec.Bₘ        
+        f = α * u + mec.W₂ * a₁ - mec.Bₘ
     end
 
     return f, J
@@ -1080,7 +1080,7 @@ For Bayesian Reconstruction entropy,
 ```math
 \begin{equation}
 \frac{\partial^2 S[A]}{\partial A_i \partial A_j} =
--\delta_{ij} \frac{\Delta_i}{A^2_i} = 
+-\delta_{ij} \frac{\Delta_i}{A^2_i} =
 -\delta_{ij} \frac{\sqrt{\Delta_i \Delta_j}}{A_i A_j},
 \end{equation}
 ```
