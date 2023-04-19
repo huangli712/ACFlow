@@ -1041,8 +1041,8 @@ For Shannon-Jaynes entropy,
 ```math
 \begin{equation}
 \frac{\partial^2 S[A]}{\partial A_i \partial A_j} =
--\frac{\delta_{ij}}{A_i} =
--\frac{\delta_{ij}}{\sqrt{A_i A_j}},
+-\delta_{ij}\frac{\Delta_i}{A_i} =
+-\delta_{ij}\frac{\sqrt{\Delta_i \Delta_j}}{\sqrt{A_i A_j}},
 \end{equation}
 ```
 
@@ -1057,16 +1057,17 @@ For Shannon-Jaynes entropy,
 ```math
 \begin{equation}
 \frac{\partial^2 S[A^+,A^-]}{\partial A_i \partial A_j} =
--\frac{\delta_{ij}}{\sqrt{A_i^2 + 4m_i^2}} =
--\frac{\delta_{ij}}{\sqrt[4]{A_i^2 + 4m_i^2} \sqrt[4]{A_j^2 + 4m_j^2}}
+-\delta_{ij}\frac{\Delta_i}{\sqrt{A_i^2 + 4m_i^2}} =
+-\delta_{ij}\frac{\sqrt[4]{\Delta^2_i}\sqrt[4]{\Delta^2_j}}
+                 {\sqrt[4]{A_i^2 + 4m_i^2} \sqrt[4]{A_j^2 + 4m_j^2}},
 \end{equation}
 ```
 
 ```math
 \begin{equation}
-\Lambda_{ij} = \sqrt[4]{A^2_i + 4m_i^2}
+\Lambda_{ij} = \sqrt[4]{\frac{A^2_i + 4m_i^2}{\Delta^2_i}}
                \frac{\partial^2 L}{\partial A_i \partial A_j}
-               \sqrt[4]{A^2_j + 4m_j^2}.
+               \sqrt[4]{\frac{A^2_j + 4m_j^2}{\Delta^2_j}}.
 \end{equation}
 ```
 
