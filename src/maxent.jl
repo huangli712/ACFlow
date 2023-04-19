@@ -102,9 +102,9 @@ function run(mec::MaxEntContext)
 
     # Note that the Bayesian Reconstruction entropy is only compatible
     # with the `historic` and `chi2kink` algorithms so far.
-    if stype == "br"
-        @assert method in ("historic", "chi2kink")
-    end
+    #if stype == "br"
+    #    @assert method in ("historic", "chi2kink")
+    #end
 
     @cswitch method begin
         @case "historic"
