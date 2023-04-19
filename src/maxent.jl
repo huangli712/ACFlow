@@ -1086,6 +1086,8 @@ For Bayesian Reconstruction entropy,
 ```math
 \begin{equation}
 \Lambda_{ij} = \frac{A_i}{\sqrt{\Delta_i}}
+               \frac{\partial^2 L}{\partial A_i \partial A_j}
+               \frac{A_j}{\sqrt{\Delta_j}}.
 \end{equation}
 ```
 
