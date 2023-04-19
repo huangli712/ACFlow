@@ -1048,9 +1048,9 @@ For Shannon-Jaynes entropy,
 
 ```math
 \begin{equation}
-\Lambda_{ij} = \sqrt{A_i}
+\Lambda_{ij} = \sqrt{\frac{A_i}{\Delta_i}}
                \frac{\partial^2 L}{\partial A_i \partial A_j}
-               \sqrt{A_j}.
+               \sqrt{\frac{A_j}{\Delta_j}}.
 \end{equation}
 ```
 
@@ -1074,6 +1074,20 @@ For Shannon-Jaynes entropy,
 ---
 
 For Bayesian Reconstruction entropy,
+
+```math
+\begin{equation}
+\frac{\partial^2 S[A]}{\partial A_i \partial A_j} =
+-\delta_{ij} \frac{\Delta_i}{A^2_i} = 
+-\delta_{ij} \frac{\sqrt{\Delta_i \Delta_j}}{A_i A_j},
+\end{equation}
+```
+
+```math
+\begin{equation}
+\Lambda_{ij} = \frac{A_i}{\sqrt{\Delta_i}}
+\end{equation}
+```
 
 **Reference:**
 
