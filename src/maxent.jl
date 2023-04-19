@@ -519,6 +519,23 @@ W_{mli} = W_{ml} V_{li}.
 Note that these variables do not depend on the spectral function
 ``A(\omega)``, so they could be computed at advance to improve the
 computational efficiency.
+
+---
+
+The `hessian matrix` is also calculated here.
+
+```math
+\begin{equation}
+L = \frac{1}{2} \chi^2,
+\end{equation}
+```
+
+```math
+\begin{equation}
+\frac{\partial^2 L}{\partial A_i \partial A_j} =
+\sum_n \frac{K_{ni} \Delta_i K_{nj} \Delta_j}{\sigma^2_n}.
+\end{equation}
+```
 =#
 
 """
@@ -1014,22 +1031,6 @@ If ``\lambda_i`` are the eigenvalues of ``\Lambda``, then
 ```math
 \begin{equation}
 N_g = \sum_i \frac{\lambda_i}{\alpha + \lambda_i}.
-\end{equation}
-```
-
-**Hessian matrix**
-
-```math
-\begin{equation}
-L = \frac{1}{2} \chi^2,
-\end{equation}
-```
-
-```math
-\begin{equation}
-\frac{\partial^2 L}{\partial A_i \partial A_j} =
-    \left[K^{T} C^{-1} K\right]_{ij} =
-    \sum_{kl} K_{ki} \left[C^{-1}\right]_{kl} K_{lj},
 \end{equation}
 ```
 
