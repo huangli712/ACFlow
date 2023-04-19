@@ -1093,6 +1093,35 @@ For Bayesian Reconstruction entropy,
 \end{equation}
 ```
 
+```math
+\begin{equation}
+\frac{\partial^2 S[A^+,A^-]}{\partial A_i \partial A_j} =
+-\delta_{ij} X_{ij} Y_{ij}
+\end{equation}
+```
+
+```math
+\begin{equation}
+X_{ij} = \frac{\sqrt{2\Delta_i} \sqrt{2\Delta_j}}{
+        \left(\sqrt{A^2_i + m^2_i} + m_i + A_i\right)
+        \left(\sqrt{A^2_j + m^2_j} + m_j + A_j\right)
+    }
+\end{equation}
+```
+
+```math
+\begin{equation}
+Y_{ij} =
+    \frac{
+        \sqrt{A_i + \sqrt{A^2_i + m^2_i}}
+        \sqrt{A_j + \sqrt{A^2_j + m^2_j}}
+    }{
+        \sqrt[4]{A^2_i + m^2_i}
+        \sqrt[4]{A^2_j + m^2_j}
+    }
+\end{equation}
+```
+
 **Reference:**
 
 [1] G. J. Kraberger, *et al.*, Phys. Rev. B **96**, 155128 (2017).
