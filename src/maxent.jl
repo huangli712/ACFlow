@@ -1186,9 +1186,17 @@ See also: [`calc_bayes`](@ref).
 function calc_bayes_offdiag(mec::MaxEntContext,
                             A::Vector{F64},
                             S::F64, χ²::F64, α::F64)
+    stype = get_m("stype")
     mesh = mec.mesh
 
-    T = (( A .^ 2.0 + 4.0 * mec.model .* mec.model ) / (mesh.weight .^ 2.0)) .^ 0.25
+    if stype == "sj"
+        T = (( A .^ 2.0 + 4.0 * mec.model .^ 2.0 ) / (mesh.weight .^ 2.0)) .^ 0.25
+    else
+        R = sqrt.(A .^ 2.0 + mec.model .^ 2.0)
+        X = (R .+ mec.model .+ A) ./ sqrt.(2.0 * mesh.weight)
+        Y = sqrt.(R) ./ sqrt.(A .+ R)
+        T = X .* Y
+    end
     Λ = (T * T') .* mec.hess
 
     λ = eigvals(Hermitian(Λ))
