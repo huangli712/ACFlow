@@ -346,6 +346,19 @@ mutable struct FermionicImaginaryTimeGrid <: AbstractGrid
     τ :: Vector{F64}
 end
 
+"""
+    FermionicFragmentGrid
+
+Mutable struct. It represents part of the fermionic imaginary time grid.
+
+### Members
+
+* ntime -> Number of time slices.
+* β     -> Inverse temperature.
+* τ     -> Vector of grid points.
+
+See also: [`FermionicMatsubaraGrid`](@ref).
+"""
 mutable struct FermionicFragmentGrid <: AbstractGrid
     ntime :: I64
     β :: F64
@@ -385,6 +398,25 @@ Mutable struct. It represents the bosonic imaginary time grid.
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
 mutable struct BosonicImaginaryTimeGrid <: AbstractGrid
+    ntime :: I64
+    β :: F64
+    τ :: Vector{F64}
+end
+
+"""
+    BosonicFragmentGrid
+
+Mutable struct. It represents part of the bosonic imaginary time grid.
+
+### Members
+
+* ntime -> Number of time slices.
+* β     -> Inverse temperature.
+* τ     -> Vector of grid points.
+
+See also: [`BosonicMatsubaraGrid`](@ref).
+"""
+mutable struct BosonicFragmentGrid <: AbstractGrid
     ntime :: I64
     β :: F64
     τ :: Vector{F64}
