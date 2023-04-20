@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/03/25
+# Last modified: 2023/04/20
 #
 
 """
@@ -354,7 +354,7 @@ function chk_dict()
     @assert get_b("solver") in ("MaxEnt", "StochAC", "StochSK", "StochOM", "StochPX")
     @assert get_b("ktype") in ("fermi", "boson", "bsymm")
     @assert get_b("mtype") in ("flat", "gauss", "1gauss", "2gauss", "lorentz", "1lorentz", "2lorentz", "risedecay", "file")
-    @assert get_b("grid") in ("ftime", "btime", "ffreq", "bfreq")
+    @assert get_b("grid") in ("ftime", "fpart", "btime", "bpart", "ffreq", "bfreq")
     @assert get_b("mesh") in ("linear", "tangent", "lorentz", "halflorentz")
     @assert get_b("ngrid") ≥ 1
     @assert get_b("nmesh") ≥ 1
