@@ -103,9 +103,9 @@ function run(mec::MaxEntContext)
     # Note that the Bayesian Reconstruction entropy is compatible with
     # all the four algorithms so far.
     if stype == "br"
-        prompt("Bayesian Reconstruction entropy is used!")
+        println("Bayesian Reconstruction entropy is used!")
     else
-        prompt("Shannon–Jaynes entropy is used!")
+        println("Shannon–Jaynes entropy is used!")
     end
 
     @cswitch method begin
@@ -956,7 +956,9 @@ function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     else
         𝑅 = A ./ mec.model
         if any(x -> x < 0.0, 𝑅)
-            prompt("Negative spectrum occurs!")
+            @info "Negative spectrum occurs!"
+            @info "The results might be questionable."
+            @info "Perhaps you can switch to the Shannon–Jaynes entropy."
             f = 1.0 .- 𝑅 + log.(abs.(𝑅))
         else
             f = 1.0 .- 𝑅 + log.(𝑅)
