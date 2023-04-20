@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/01
+# Last modified: 2023/04/20
 #
 
 #=
@@ -341,6 +341,12 @@ Mutable struct. It represents the fermionic imaginary time grid.
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
 mutable struct FermionicImaginaryTimeGrid <: AbstractGrid
+    ntime :: I64
+    β :: F64
+    τ :: Vector{F64}
+end
+
+mutable struct FermionicFragmentGrid <: AbstractGrid
     ntime :: I64
     β :: F64
     τ :: Vector{F64}
