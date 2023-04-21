@@ -1212,7 +1212,8 @@ function calc_bayes_offdiag(mec::MaxEntContext,
     mesh = mec.mesh
 
     if stype == "sj"
-        T = (( A .^ 2.0 + 4.0 * mec.model .^ 2.0 ) / (mesh.weight .^ 2.0)) .^ 0.25
+        R = (A .^ 2.0 + 4.0 * mec.model .^ 2.0) ./ (mesh.weight .^ 2.0)
+        T = R .^ 0.25
     else
         R = sqrt.(A .^ 2.0 + mec.model .^ 2.0)
         X = (R .+ mec.model .+ A) ./ sqrt.(2.0 * mesh.weight)
