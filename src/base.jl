@@ -278,7 +278,7 @@ function read_data(only_real_part::Bool = true)
         @case "bfreq"
             if ktype == "boson"
                 return read_cmplx_data(finput, ngrid)
-            else
+            else # ktype == "bsymm"
                 return read_cmplx_data(finput, ngrid, only_real_part)
             end
             break
