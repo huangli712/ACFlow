@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/01/17
+# Last modified: 2023/04/21
 #
 
 #=
@@ -333,6 +333,29 @@ Try to build fermionic kernel function in imaginary time axis.
 See also: [`AbstractMesh`](@ref), [`FermionicImaginaryTimeGrid`](@ref).
 """
 function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
+    ntime = fg.ntime
+    nmesh = am.nmesh
+    β = fg.β
+
+    kernel = zeros(F64, ntime, nmesh)
+    for i = 1:nmesh
+        de = 1.0 + exp(-β * am[i])
+        for j = 1:ntime
+            kernel[j,i] = exp(-fg[j] * am[i]) / de
+        end
+    end
+
+    return kernel
+end
+
+"""
+    build_kernel(am::AbstractMesh, fg::FermionicFragmentGrid)
+
+Try to build fermionic kernel function in imaginary time axis.
+
+See also: [`AbstractMesh`](@ref), [`FermionicFragmentGrid`](@ref).
+"""
+function build_kernel(am::AbstractMesh, fg::FermionicFragmentGrid)
     ntime = fg.ntime
     nmesh = am.nmesh
     β = fg.β
