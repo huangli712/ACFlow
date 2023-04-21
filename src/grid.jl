@@ -616,6 +616,28 @@ function Base.eachindex(bg::BosonicFragmentGrid)
     eachindex(bg.τ)
 end
 
+"""
+    Base.firstindex(bg::BosonicFragmentGrid)
+
+Return the first index of a BosonicFragmentGrid struct.
+
+See also: [`BosonicFragmentGrid`](@ref).
+"""
+function Base.firstindex(bg::BosonicFragmentGrid)
+    firstindex(bg.τ)
+end
+
+"""
+    Base.lastindex(bg::BosonicFragmentGrid)
+
+Return the last index of a BosonicFragmentGrid struct.
+
+See also: [`BosonicFragmentGrid`](@ref).
+"""
+function Base.lastindex(bg::BosonicFragmentGrid)
+    lastindex(bg.τ)
+end
+
 #=
 ### *Struct : BosonicMatsubaraGrid*
 =#
