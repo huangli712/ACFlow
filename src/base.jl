@@ -530,7 +530,7 @@ function make_kernel(am::AbstractMesh, ag::AbstractGrid)
             break
 
         @case "bsymm"
-            @assert grid in ("btime", "bfreq")
+            @assert grid in ("btime", "bpart", "bfreq")
             return build_kernel_symm(am, ag)
             break
 
