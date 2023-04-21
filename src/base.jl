@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/03/06
+# Last modified: 2023/04/21
 #
 
 """
@@ -324,32 +324,42 @@ See also: [`RawData`](@ref), [`AbstractGrid`](@ref).
 function make_grid(rd::RawData)
     grid = get_b("grid")
     ngrid = get_b("ngrid")
+    β = get_b("beta")
+
     v = rd._grid
     @assert ngrid == length(v)
 
     _grid = nothing
     @cswitch grid begin
         @case "ftime"
-            β = v[end]
-            @assert abs(β - get_b("beta")) ≤ 1e-6
+            _β = v[end]
+            @assert abs(_β - β) ≤ 1e-6
             _grid = FermionicImaginaryTimeGrid(ngrid, β, v)
             break
 
         @case "btime"
-            β = v[end]
-            @assert abs(β - get_b("beta")) ≤ 1e-6
+            _β = v[end]
+            @assert abs(_β - β) ≤ 1e-6
             _grid = BosonicImaginaryTimeGrid(ngrid, β, v)
             break
 
+        @case "fpart"
+            _grid = FermionicFragmentGrid(β, v)
+            break
+
+        @case "bpart"
+            _grid = BosonicFragmentGrid(β, v)
+            break
+
         @case "ffreq"
-            β = 2.0 * π / (v[2] - v[1])
-            @assert abs(β - get_b("beta")) ≤ 1e-6
+            _β = 2.0 * π / (v[2] - v[1])
+            @assert abs(_β - β) ≤ 1e-6
             _grid = FermionicMatsubaraGrid(ngrid, β, v)
             break
 
         @case "bfreq"
-            β = 2.0 * π / (v[2] - v[1])
-            @assert abs(β - get_b("beta")) ≤ 1e-6
+            _β = 2.0 * π / (v[2] - v[1])
+            @assert abs(_β - β) ≤ 1e-6
             _grid = BosonicMatsubaraGrid(ngrid, β, v)
             break
 
