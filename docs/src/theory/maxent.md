@@ -36,13 +36,18 @@ In the maximum entropy method, the likelihood function ``P[\bar{G}|A]`` is assum
 \tilde{G}_i = \sum_j K_{ij} A_j.
 \end{equation}
 ```
-Here, ``L`` is number of imaginary time points, ``\sigma`` denotes the error bar (standard deviation) of ``\bar{G}(\tau)``. ``K_{ij}`` and ``A_j`` are discrete kernel and spectral functions, respectively. On the other hand, the prior probability ``P[A]`` is supposed to be in direct proportion to ``e^{\alpha S}``, where ``\alpha`` is a regulation parameter and ``S`` means entropy. Sometimes ``S`` is also known as the Kullback-Leibler distance. Its formula is as follows:
+Here, ``L`` is number of imaginary time points, ``\sigma`` denotes the error bar (standard deviation) of ``\bar{G}(\tau)``. ``K_{ij}`` and ``A_j`` are discrete kernel and spectral functions, respectively. On the other hand, the prior probability ``P[A]`` is supposed to be in direct proportion to ``e^{\alpha S}``, where ``\alpha`` is a regulation parameter and ``S`` means entropy. Sometimes ``S`` is also known as the Kullback-Leibler distance (or the Shannon-Jaynes entropy). Its formula is as follows:
 ```math
 \begin{equation}
 S= \int d\omega \left(A(\omega) - m(\omega) - A(\omega)\log\left[\frac{A(\omega)}{m(\omega)}\right]\right),
 \end{equation}
 ```
-where ``m(\omega)`` is the default model function.
+where ``m(\omega)`` is the default model function. The ACFlow toolkit also supports another kind of entropy, i.e., the Bayesian Reconstruction entropy. It reads:
+```math
+\begin{equation}
+S = \int d\omega \left(1 - \frac{A(\omega)}{m(\omega)} + \log \left[\frac{A(\omega)}{m(\omega)}\right]\right).
+\end{equation}
+```
 
 According to the Bayes's theorem, the posterior probability ``P[A|\bar{G}] \propto e^{Q}`` and
 ```math
