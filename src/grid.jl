@@ -668,6 +668,22 @@ function Base.getindex(bg::BosonicFragmentGrid, I::UnitRange{I64})
     return X
 end
 
+"""
+    rebuild(bg::BosonicFragmentGrid, ntime::I64, β::F64)
+
+Rebuild the BosonicFragmentGrid struct via new `ntime` and `β`
+parameters. Now its imaginary time points are continuous.
+
+See also: [`BosonicFragmentGrid`](@ref).
+"""
+function rebuild(bg::BosonicFragmentGrid, ntime::I64, β::F64)
+    @assert ntime ≥ 1
+    @assert β ≥ 0.0
+    bg.ntime = ntime
+    bg.β = β
+    bg.τ = collect(LinRange(0.0, bg.β, bg.ntime))
+end
+
 #=
 ### *Struct : BosonicMatsubaraGrid*
 =#
