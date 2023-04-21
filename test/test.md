@@ -96,7 +96,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
 
 ## Experimental tests
 
-The following tests are designed to test the newly developed StochPX solver (based on the stochastic pole expansion). Note that the `X` series are for the fermionic systems, the `Y` series are for the bosonic systems, and the `Q` series are for the lattice QCD data.
+The following tests are designed to test the newly developed `StochPX` solver (based on the `stochastic pole expansion` method) only. Note that the `X` series are for the fermionic systems, while the `Y` series are for the bosonic systems.
 
 * **future/X01**
     * Fermionic + Matsubara
@@ -273,6 +273,15 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * Sharp gap edges + broad tail
 
-* **Q01**
-* **Q02**
-* **Q03**
+## LQCD tests
+
+The following tests are designed to test the newly developed `StochPX` solver (based on the `stochastic pole expansion` method) for analytical continuation of the lattice QCD datasets.
+
+* **lqcd/Q01**
+    * Bosonic (symm) + Matsubara
+
+* **lqcd/Q02**
+    * Bosonic (symm) + Matsubara
+
+* **lqcd/Q03**
+    * Bosonic (symm) + Matsubara
