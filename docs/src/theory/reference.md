@@ -14,13 +14,13 @@
 
 [1] A. W. Sandvik, Stochastic method for analytic continuation of quantum monte carlo data, *Phys. Rev. B* **57**, 10287 (1998)
 
-[2] H. Shao, Y. Q. Qin, S. Capponi, S. Chesi, Z. Y. Meng, A. W. Sandvik, Nearly deconfined spinon excitations in the square-lattice spin-1/2 heisenberg antiferromagnet, *Phys. Rev. X* **7**, 041072 (2017).
+[2] K. S. D. Beach, Identifying the maximum entropy method as a special limit of stochastic analytic continuation, *arXiv:0403055* (2004).
 
-[3] H. Shao, A. W. Sandvik, Progress on stochastic analytic continuation of quantum monte carlo data, *arXiv:2202.09870* (2022).
+[3] A. W. Sandvik, Constrained sampling method for analytic continuation, *Phys. Rev. E* **94**, 063308 (2016).
 
-[4] A. W. Sandvik, Constrained sampling method for analytic continuation, *Phys. Rev. E* **94**, 063308 (2016).
+[4] H. Shao, Y. Q. Qin, S. Capponi, S. Chesi, Z. Y. Meng, A. W. Sandvik, Nearly deconfined spinon excitations in the square-lattice spin-1/2 heisenberg antiferromagnet, *Phys. Rev. X* **7**, 041072 (2017).
 
-[5] K. S. D. Beach, Identifying the maximum entropy method as a special limit of stochastic analytic continuation, *arXiv:0403055* (2004).
+[5] H. Shao, A. W. Sandvik, Progress on stochastic analytic continuation of quantum monte carlo data, *Phys. Rep.* **1003**, 1 (2023).
 
 *Stochastic optimization method*
 

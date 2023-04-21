@@ -64,7 +64,7 @@ Now the original analytical continuation problem becomes how to figure out the o
 \frac{\partial Q}{\partial A} \bigg|_{A = \hat{A}} = 0,
 \end{equation}
 ```
-where ``\hat{A}(\omega)`` is the optimal ``A(\omega)``. Eq.(8) can be easily solved by using standard Newton method. However, the obtained ``\hat{A}(\omega)`` is ``\alpha``-dependent. That is to say, for a given ``\alpha``, there is always a ``\hat{A}(\omega)`` that satisfies Eq.(8). So, new problem arises because we have to find out a way to generate the final spectral function from these ``\alpha``-resolved ``\hat{A}(\omega)``. Now there exist four algorithms, namely `historic`, `classic`, `bryan`, and `chi2kink`. Next we will introduce them one by one.
+where ``\hat{A}(\omega)`` is the optimal ``A(\omega)``. Eq.(9) can be easily solved by using standard Newton method. However, the obtained ``\hat{A}(\omega)`` is ``\alpha``-dependent. That is to say, for a given ``\alpha``, there is always a ``\hat{A}(\omega)`` that satisfies Eq.(9). So, new problem arises because we have to find out a way to generate the final spectral function from these ``\alpha``-resolved ``\hat{A}(\omega)``. Now there exist four algorithms, namely `historic`, `classic`, `bryan`, and `chi2kink`. Next we will introduce them one by one.
 
 ### Historic Algorithm
 
