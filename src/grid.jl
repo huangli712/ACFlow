@@ -550,6 +550,42 @@ function rebuild(bg::BosonicImaginaryTimeGrid, ntime::I64, β::F64)
 end
 
 #=
+### *Struct : BosonicFragmentGrid*
+=#
+
+"""
+    BosonicFragmentGrid(β::F64, τ::Vector{F64})
+
+A constructor for the BosonicFragmentGrid struct, which is defined
+in `src/types.jl`.
+
+See also: [`BosonicFragmentGrid`](@ref).
+"""
+function BosonicFragmentGrid(β::F64, τ::Vector{F64})
+    ntime = length(τ)
+    @assert ntime ≥ 1
+    @assert β ≥ 0.0
+    @assert all(x -> (0.0 ≤ x ≤ β), τ)
+    return BosonicFragmentGrid(ntime, β, τ)
+end
+
+"""
+    Base.length(bg::BosonicFragmentGrid)
+
+Return number of grid points in a BosonicFragmentGrid struct.
+
+See also: [`BosonicFragmentGrid`](@ref).
+"""
+function Base.length(bg::BosonicFragmentGrid)
+    bg.ntime
+end
+
+
+
+
+
+
+#=
 ### *Struct : BosonicMatsubaraGrid*
 =#
 
