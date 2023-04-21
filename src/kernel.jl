@@ -533,6 +533,33 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 end
 
 """
+    build_kernel_symm(am::AbstractMesh, bg::BosonicFragmentGrid)
+
+Try to build bosonic kernel function in imaginary time axis (just for
+correlator of Hermitian operator only).
+
+See also: [`AbstractMesh`](@ref), [`BosonicFragmentGrid`](@ref).
+"""
+function build_kernel_symm(am::AbstractMesh, bg::BosonicFragmentGrid)
+    ntime = bg.ntime
+    nmesh = am.nmesh
+    β = bg.β
+
+    kernel = zeros(F64, ntime, nmesh)
+    #
+    for i = 1:nmesh
+        r = am[i] / (1.0 - exp(-β * am[i]))
+        for j = 1:ntime
+            kernel[j,i] = r * (exp(-am[i] * bg[j]) + exp(-am[i] * (β - bg[j])))
+        end
+    end
+    #
+    @. kernel[:,1] = 2.0 / β
+
+    return kernel
+end
+
+"""
     build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 
 Try to build bosonic kernel function in Matsubara frequency axis (just
