@@ -444,6 +444,37 @@ function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
 end
 
 """
+    build_kernel(am::AbstractMesh, bg::BosonicFragmentGrid)
+
+Try to build bosonic kernel function in imaginary time axis.
+
+See also: [`AbstractMesh`](@ref), [`BosonicFragmentGrid`](@ref).
+"""
+function build_kernel(am::AbstractMesh, bg::BosonicFragmentGrid)
+    ntime = bg.ntime
+    nmesh = am.nmesh
+    β = bg.β
+
+    kernel = zeros(F64, ntime, nmesh)
+    #
+    for i = 1:nmesh
+        de = 1.0 - exp(-β * am[i])
+        for j = 1:ntime
+            kernel[j,i] = am[i] * exp(-bg[j] * am[i]) / de
+        end
+    end
+    #
+    # Be careful, am[1] is not 0.0! We have to find out where
+    # the zero point is in the real mesh.
+    _, zero_point = findmin(abs.(am.mesh))
+    if am[zero_point] == 0.0
+        @. kernel[:,zero_point] = 1.0 / β
+    end
+
+    return kernel
+end
+
+"""
     build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 
 Try to build bosonic kernel function in Matsubara frequency axis.
