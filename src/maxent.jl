@@ -1098,7 +1098,7 @@ For Bayesian Reconstruction entropy,
 ```math
 \begin{equation}
 \frac{\partial^2 S[A^+,A^-]}{\partial A_i \partial A_j} =
--\delta_{ij} X_{ij} Y_{ij}
+-\delta_{ij} X_{ij} Y_{ij},
 \end{equation}
 ```
 
@@ -1107,7 +1107,7 @@ For Bayesian Reconstruction entropy,
 X_{ij} = \frac{\sqrt{2\Delta_i} \sqrt{2\Delta_j}}{
         \left(\sqrt{A^2_i + m^2_i} + m_i + A_i\right)
         \left(\sqrt{A^2_j + m^2_j} + m_j + A_j\right)
-    }
+    },
 \end{equation}
 ```
 
@@ -1120,7 +1120,27 @@ Y_{ij} =
     }{
         \sqrt[4]{A^2_i + m^2_i}
         \sqrt[4]{A^2_j + m^2_j}
-    }
+    },
+\end{equation}
+```
+
+```math
+\begin{equation}
+\Lambda_{ij} = Z_i \frac{\partial^2 L}{\partial A_i \partial A_j} Z_j
+\end{equation}
+```
+
+```math
+\begin{equation}
+Z_i = \frac{\left(\sqrt{A^2_i + m^2_i} + m_i + A_i\right)}{\sqrt{2\Delta_i}}
+      \frac{\sqrt[4]{A^2_i + m^2_i}}{\sqrt{A_i + \sqrt{A^2_i + m^2_i}}}
+\end{equation}
+```
+
+```math
+\begin{equation}
+Z_j = \frac{\left(\sqrt{A^2_j + m^2_j} + m_j + A_j\right)}{\sqrt{2\Delta_j}}
+      \frac{\sqrt[4]{A^2_j + m^2_j}}{\sqrt{A_j + \sqrt{A^2_j + m^2_j}}}
 \end{equation}
 ```
 
