@@ -351,7 +351,8 @@ end
 """
     build_kernel(am::AbstractMesh, fg::FermionicFragmentGrid)
 
-Try to build fermionic kernel function in imaginary time axis.
+Try to build fermionic kernel function in imaginary time axis. Note that
+`fg` contains incomplete imaginary time data.
 
 See also: [`AbstractMesh`](@ref), [`FermionicFragmentGrid`](@ref).
 """
@@ -446,7 +447,8 @@ end
 """
     build_kernel(am::AbstractMesh, bg::BosonicFragmentGrid)
 
-Try to build bosonic kernel function in imaginary time axis.
+Try to build bosonic kernel function in imaginary time axis. Note that
+`bg` contains incomplete imaginary time data.
 
 See also: [`AbstractMesh`](@ref), [`BosonicFragmentGrid`](@ref).
 """
@@ -536,7 +538,8 @@ end
     build_kernel_symm(am::AbstractMesh, bg::BosonicFragmentGrid)
 
 Try to build bosonic kernel function in imaginary time axis (just for
-correlator of Hermitian operator only).
+correlator of Hermitian operator only). Note that `bg` contains
+incomplete imaginary time data.
 
 See also: [`AbstractMesh`](@ref), [`BosonicFragmentGrid`](@ref).
 """
