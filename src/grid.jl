@@ -580,7 +580,17 @@ function Base.length(bg::BosonicFragmentGrid)
     bg.ntime
 end
 
+"""
+    Base.iterate(bg::BosonicFragmentGrid)
 
+Advance the iterator of a BosonicFragmentGrid struct to obtain
+the next grid point.
+
+See also: [`BosonicFragmentGrid`](@ref).
+"""
+function Base.iterate(bg::BosonicFragmentGrid)
+    iterate(bg.τ)
+end
 
 
 
