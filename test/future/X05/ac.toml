@@ -5,7 +5,7 @@
 # 1. Copy solver.grn.dat to giw.data.
 # 2. Postprocess giw.data (Keep the first 20 lines, remove the 1st column).
 # 3. You can use the script gendata.jl to prepare giw.data as well.
-# 4. Execute ../../util/acrun.jl ac.toml.
+# 4. Execute ../../../util/acrun.jl ac.toml.
 #
 
 [BASE]
