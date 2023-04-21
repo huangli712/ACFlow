@@ -6,7 +6,7 @@
 
 The following ten tests are used to test the basic features of the ACFlow toolkit.
 
-* **A01**
+* **basic/A01**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink or bryan algorithm)
     * StochAC solver
@@ -16,7 +16,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
     * Linear mesh
     * Fixed error bar
 
-* **A02**
+* **basic/A02**
     * Bosonic (symm) + Matsubara
     * MaxEnt solver (chi2kink or bryan algorithm)
     * StochAC solver
@@ -26,7 +26,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
     * Half-Lorentzian mesh
     * Fixed error bar
 
-* **A03**
+* **basic/A03**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochOM solver
@@ -34,7 +34,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
     * Linear mesh
     * Script mode
 
-* **A04**
+* **basic/A04**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochOM solver
@@ -43,7 +43,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
     * Script mode
     * Fixed error bar
 
-* **A05**
+* **basic/A05**
     * Fermionic + Matsubara (Auxiliary Green's function)
     * MaxEnt solver (chi2kink algorithm + preblur)
     * StochOM solver
@@ -51,7 +51,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
     * Tangent mesh
     * Script mode
 
-* **A06**
+* **basic/A06**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm + preblur)
     * StochOM solver
@@ -59,7 +59,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
     * Lorentzian mesh
     * Fixed error bar
 
-* **A07**
+* **basic/A07**
     * Bosonic (symm) + Matsubara
     * MaxEnt solver (chi2kink algorithm + preblur)
     * StochOM solver
@@ -67,7 +67,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
     * Half-Lorentzian mesh
     * Fixed error bar
 
-* **A08**
+* **basic/A08**
     * Fermionic + Matsubara (Matrix-valued functions)
     * MaxEnt solver (chi2kink algorithm)
     * Gaussian model + File model
@@ -76,7 +76,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
     * Fixed error bar
     * MaxEntAux algorithm
 
-* **A09**
+* **basic/A09**
     * Fermionic + Imaginary time
     * MaxEnt solver (bryan algorithm)
     * StochAC solver (with constraints)
@@ -85,7 +85,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
     * Linear mesh
     * Fixed error bar
 
-* **A10**
+* **basic/A10**
     * Bosonic + Imaginary time
     * MaxEnt solver (chi2kink algorithm)
     * StochAC solver (with constraints)
@@ -98,7 +98,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
 
 The following tests are designed to test the newly developed StochPX solver (based on the stochastic pole expansion). Note that the `X` series are for the fermionic systems, the `Y` series are for the bosonic systems, and the `Q` series are for the lattice QCD data.
 
-* **X01**
+* **future/X01**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -107,7 +107,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * Two gaussian peaks + big gap
 
-* **X02**
+* **future/X02**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -117,7 +117,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Broad spectrum, two peaks
     * A clone of **A01**
 
-* **X03**
+* **future/X03**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochAC solver
@@ -129,7 +129,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * With sharp quasiparticle peak
 
-* **X04**
+* **future/X04**
     * Fermionic + Matsubara
     * Green's function
     * MaxEnt solver (chi2kink algorithm)
@@ -140,7 +140,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Sharp gap edges
     * A clone of **T03**
 
-* **X05**
+* **future/X05**
     * Fermionic + Matsubara
     * Green's function + Self-energy function
     * MaxEnt solver (chi2kink algorithm)
@@ -151,7 +151,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Script mode
     * A clone of **T01**
 
-* **X06**
+* **future/X06**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -160,7 +160,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * Single off-centered delta peak
 
-* **X07**
+* **future/X07**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochAC solver
@@ -172,7 +172,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **X08**
+* **future/X08**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver (with constraints)
@@ -181,7 +181,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **X09**
+* **future/X09**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -190,7 +190,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * Eight off-centered delta peaks
 
-* **Y01**
+* **future/Y01**
     * Bosonic + Matsubara (imaginary part = 0)
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -199,7 +199,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * Two gaussian peaks + big gap
 
-* **Y02**
+* **future/Y02**
     * Bosonic (symm) + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -208,7 +208,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * Two gaussian peaks + big gap
 
-* **Y03**
+* **future/Y03**
     * Bosonic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -217,7 +217,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * Two gaussian peaks + big gap
 
-* **Y04**
+* **future/Y04**
     * Bosonic + Matsubara (imaginary part = 0)
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -226,7 +226,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **Y05**
+* **future/Y05**
     * Bosonic (symm) + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -235,7 +235,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **Y06**
+* **future/Y06**
     * Bosonic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -244,7 +244,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **Y07**
+* **future/Y07**
     * Bosonic (symm) + Matsubara
     * Current-current correlation function
     * MaxEnt solver (chi2kink algorithm)
@@ -253,7 +253,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Half-Lorentzian mesh
     * Fixed error bar
 
-* **Y08**
+* **future/Y08**
     * Bosonic (symm) + Matsubara
     * Lindhard function on square lattice
     * MaxEnt solver (chi2kink algorithm)
@@ -263,7 +263,7 @@ The following tests are designed to test the newly developed StochPX solver (bas
     * Fixed error bar
     * Script mode
 
-* **Y09**
+* **future/Y09**
     * Bosonic (symm) + Matsubara
     * Green's function
     * MaxEnt solver (chi2kink algorithm)
