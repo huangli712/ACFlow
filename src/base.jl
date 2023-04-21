@@ -263,6 +263,14 @@ function read_data(only_real_part::Bool = true)
             return read_real_data(finput, ngrid)
             break
 
+        @case "fpart"
+            return read_real_data(finput, ngrid)
+            break
+
+        @case "bpart"
+            return read_real_data(finput, ngrid)
+            break
+
         @case "ffreq"
             return read_cmplx_data(finput, ngrid)
             break
