@@ -408,7 +408,7 @@ function chk_dict()
         # For StochOM solver
         @case "StochOM"
             push!(PA, PStochOM)
-            @assert get_b("grid") in ("btime", "ffreq", "bfreq")
+            @assert get_b("grid") in ("btime", "bpart", "ffreq", "bfreq")
             #
             @assert get_s("ntry")  ≥ 40
             @assert get_s("nstep") ≥ 1000
