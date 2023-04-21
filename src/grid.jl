@@ -592,8 +592,29 @@ function Base.iterate(bg::BosonicFragmentGrid)
     iterate(bg.τ)
 end
 
+"""
+    Base.iterate(bg::BosonicFragmentGrid, i::I64)
 
+Create an iterable object for visiting each index of a
+BosonicFragmentGrid struct.
 
+See also: [`BosonicFragmentGrid`](@ref).
+"""
+function Base.iterate(bg::BosonicFragmentGrid, i::I64)
+    iterate(bg.τ, i)
+end
+
+"""
+    Base.eachindex(bg::BosonicFragmentGrid)
+
+Create an iterable object for visiting each index of a
+BosonicFragmentGrid struct.
+
+See also: [`BosonicFragmentGrid`](@ref).
+"""
+function Base.eachindex(bg::BosonicFragmentGrid)
+    eachindex(bg.τ)
+end
 
 #=
 ### *Struct : BosonicMatsubaraGrid*
