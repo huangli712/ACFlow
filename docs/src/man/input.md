@@ -62,6 +62,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 |`method` | string  | ''chi2kink''| How to determine the optimized ``\alpha`` parameter? |
+|`stype`  | string  | ''sj''      | Type of the entropic factor. |
 |`nalph`  | integer | 12          | Total number of the used ``\alpha`` parameters. |
 |`alpha`  | float   | 1e9         | Starting value for the ``\alpha`` parameter. |
 |`ratio`  | float   | 10.0        | Scaling factor for the ``\alpha`` parameter. |
