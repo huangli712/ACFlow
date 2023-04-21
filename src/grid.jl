@@ -638,6 +638,36 @@ function Base.lastindex(bg::BosonicFragmentGrid)
     lastindex(bg.τ)
 end
 
+"""
+    Base.getindex(bg::BosonicFragmentGrid, ind::I64)
+
+Retrieve the value(s) stored at the given key or index within a
+BosonicFragmentGrid struct.
+
+See also: [`BosonicFragmentGrid`](@ref).
+"""
+function Base.getindex(bg::BosonicFragmentGrid, ind::I64)
+    @assert 1 ≤ ind ≤ bg.ntime
+    return bg.τ[ind]
+end
+
+"""
+    Base.getindex(bg::BosonicFragmentGrid, I::UnitRange{I64})
+
+Return a subset of a BosonicFragmentGrid struct as specified by `I`.
+
+See also: [`BosonicFragmentGrid`](@ref).
+"""
+function Base.getindex(bg::BosonicFragmentGrid, I::UnitRange{I64})
+    @assert checkbounds(Bool, bg.τ, I)
+    lI = length(I)
+    X = similar(bg.τ, lI)
+    if lI > 0
+        unsafe_copyto!(X, 1, bg.τ, first(I), lI)
+    end
+    return X
+end
+
 #=
 ### *Struct : BosonicMatsubaraGrid*
 =#
