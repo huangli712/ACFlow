@@ -177,10 +177,12 @@ Depth = 3
 >
 > * ftime
 > * btime
+> * fpart
+> * bpart
 > * ffreq
 > * bfreq
 >
-> Here, `ftime` means fermionic and imaginary time, `btime` means bosonic and imaginary time, `ffreq` means fermionic and Matsubara frequency, and `bfreq` means bosonic and Matsubara frequency.
+> Here, `ftime` means fermionic and imaginary time, `btime` means bosonic and imaginary time, `ffreq` means fermionic and Matsubara frequency, and `bfreq` means bosonic and Matsubara frequency. `fpart` means fermionic and imaginary time as well, but the grid of imaginary time might be incomplete. `bpart` is similar to `fpart`, but it is for the bosonic case.
 
 *Type:*
 
@@ -196,7 +198,7 @@ Depth = 3
 
 !!! warning
 
-    If the `StochOM` solver is employed, the `grid` parameter should not be "ftime".
+    If the `StochOM` solver is employed, the `grid` parameter should not be "ftime" or "fpart".
 
 !!! warning
 
@@ -439,6 +441,29 @@ Depth = 3
 *Comment:*
 
 > This parameter is mandatory. As for the underlying principles of these algorithms, please see [Maximum Entropy Method](@ref mem).
+
+### stype
+
+*Definition:*
+
+> Type of the entropic factor. The `MaxEnt` solver supports two schemes. They are
+>
+> * sj
+> * br
+>
+> Here, `sj` means the Shannon-Jaynes entropy, while `br` means the Bayesian Reconstruction entropy. Usually, the Shannon-Jaynes entropy is preferred.
+
+*Type:*
+
+> String.
+
+*Example:*
+
+> stype = "sj"
+
+*Comment:*
+
+> This parameter is mandatory. As for the underlying principles of these entropic factors, please see [Maximum Entropy Method](@ref mem).
 
 ### nalph
 
