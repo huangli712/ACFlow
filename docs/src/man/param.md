@@ -451,7 +451,7 @@ Depth = 3
 > * sj
 > * br
 >
-> Here, `sj` means the Shannon-Jaynes entropy, while `br` means the Bayesian Reconstruction entropy. Usually, the Shannon-Jaynes entropy is preferred.
+> Here, `sj` means the Shannon-Jaynes entropy, while `br` means the Bayesian Reconstruction entropy. Usually, the Shannon-Jaynes entropy is preferred, since with it the positivity of the generated spectrum is always guaranteed.
 
 *Type:*
 
