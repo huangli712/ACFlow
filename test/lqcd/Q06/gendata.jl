@@ -62,7 +62,6 @@ open("image.data", "w") do fout
         @printf(fout, "%20.16f %20.16f\n", rmesh[i], image[i])
     end
 end
-exit()
 
 #
 # For Matsubara frequency data
