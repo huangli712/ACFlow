@@ -40,7 +40,7 @@ beta = 50.0  # Inverse temperature
 𝑀ᵣ   = 0.10  # Parameters for model
 𝑀ₜ   = 0.05
 𝐶ᵣ   = 2.00
-𝐶ₜ   = 2.10
+𝐶ₜ   = 0.00
 Γ    = 0.06
 Δ    = 1.00
 
