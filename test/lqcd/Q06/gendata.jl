@@ -1,8 +1,8 @@
 #!/usr/bin/env julia
 
 #
-# This example is taken from Phys. Rev. D 106, L051502 (2022)
-# One Breit-Wigner peaks
+# This example is taken from arXiv:2112.02116.
+# Gaussian mixture model
 #
 
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])
@@ -13,14 +13,26 @@ using ACFlow
 
 # Setup parameters
 wmin = +0.0  # Left boundary
-wmax = +10.0 # Right boundary
+wmax = +20.0 # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 50    # Number of Matsubara frequencies
 ntau = 501   # Number of imaginary time points
-beta = 50.0  # Inverse temperature
-𝑀    = 2.00  # Parameters for Breit-Wigner model
-Γ    = 0.50
-𝐴    = 1.00
+beta = 10.0  # Inverse temperature
+𝑀₁   = 9.30  # Parameters for Gaussian mixture model
+𝑀₂   = 9.70
+𝑀₃   = 10.8
+𝑀₄   = 11.0
+𝑀₅   = 14.0
+Γ₁   = 0.002
+Γ₂   = 0.002
+Γ₃   = 0.004
+Γ₄   = 0.02
+Γ₅   = 0.10
+𝐴₁   = 1.00
+𝐴₂   = 0.80
+𝐴₃   = 0.60
+𝐴₄   = 0.40
+𝐴₅   = 0.20
 
 #
 # For true spectrum
@@ -33,9 +45,11 @@ rmesh = collect(LinRange(wmin, wmax, nmesh))
 image = similar(rmesh)
 #
 for i in eachindex(rmesh)
-    B₁ = (𝑀 ^ 2.0 + Γ ^ 2.0 - rmesh[i] ^ 2.0) ^ 2.0
-    B₂ = 4.0 * (Γ ^ 2.0) * (rmesh[i] ^ 2.0)
-    image[i] = 4.0 * 𝐴 * Γ * rmesh[i] / (B₁ + B₂)
+    image[i] =            𝐴₁ * exp(-(rmesh[i] - 𝑀₁) ^ 2.0 / Γ₁)
+    image[i] = image[i] + 𝐴₂ * exp(-(rmesh[i] - 𝑀₂) ^ 2.0 / Γ₂)
+    image[i] = image[i] + 𝐴₃ * exp(-(rmesh[i] - 𝑀₃) ^ 2.0 / Γ₃)
+    image[i] = image[i] + 𝐴₄ * exp(-(rmesh[i] - 𝑀₄) ^ 2.0 / Γ₄)
+    image[i] = image[i] + 𝐴₅ * exp(-(rmesh[i] - 𝑀₅) ^ 2.0 / Γ₅)
 end
 #
 rmesh[1] = 1e-8 # To avoid NaN
@@ -48,6 +62,7 @@ open("image.data", "w") do fout
         @printf(fout, "%20.16f %20.16f\n", rmesh[i], image[i])
     end
 end
+exit()
 
 #
 # For Matsubara frequency data
