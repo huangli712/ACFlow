@@ -35,4 +35,4 @@ npole  = 2000
 ntry   = 200
 nstep  = 100
 theta  = 1e+8
-eta    = 1e-3
+eta    = 1e-2
