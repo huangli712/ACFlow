@@ -279,9 +279,35 @@ The following tests are designed to test the newly developed `StochPX` solver (b
 
 * **lqcd/Q01**
     * Bosonic (symm) + Matsubara
+    * Breit-Wigner model
+    * MaxEnt solver
+    * StochPX solver
+    * Single peak
 
 * **lqcd/Q02**
     * Bosonic (symm) + Matsubara
+    * Breit-Wigner model
+    * MaxEnt solver
+    * StochPX solver
+    * Two peaks
 
 * **lqcd/Q03**
     * Bosonic (symm) + Matsubara
+    * Hadron spectral function
+    * MaxEnt solver
+    * StochPX solver
+    * Resonance peak + continuum function
+
+* **lqcd/Q04**
+    * Bosonic (symm) + Matsubara
+    * Hadron spectral function
+    * MaxEnt solver
+    * StochPX solver
+    * Resonance peak only
+
+* **lqcd/Q05**
+    * Bosonic (symm) + Matsubara
+    * Hadron spectral function
+    * MaxEnt solver
+    * StochPX solver
+    * Continuum function only
