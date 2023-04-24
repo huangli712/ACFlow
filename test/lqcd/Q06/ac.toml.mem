@@ -8,14 +8,14 @@
 
 [BASE]
 finput = "chiw.data"
-solver = "StochPX"
+solver = "MaxEnt"
 ktype  = "bsymm"
-mtype  = "flat"
+mtype  = "file"
 grid   = "bfreq"
 mesh   = "linear"
 ngrid  = 50
 nmesh  = 1001
-wmax   = 15.0
+wmax   = 10.0
 wmin   = 0.0
 beta   = 10.0
 offdiag = false
