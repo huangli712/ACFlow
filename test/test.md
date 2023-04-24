@@ -311,3 +311,10 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * MaxEnt solver
     * StochPX solver
     * Continuum function only
+
+* **lqcd/Q06**
+    * Bosonic (symm) + Matsubara
+    * Gaussian mixture model
+    * MaxEnt solver
+    * StochPX solver + self-adaptive mesh
+    * Three separated peaks
