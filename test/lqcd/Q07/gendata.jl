@@ -1,8 +1,8 @@
 #!/usr/bin/env julia
 
 #
-# This example is taken from arXiv:2112.02116.
-# Gaussian mixture model
+# This example is taken from Phys. Rev. D 87, 114019 (2013).
+# HTL Wilson line spectral function
 #
 
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])
@@ -88,40 +88,5 @@ open("chiw.data", "w") do fout
     for i in eachindex(chiw)
         z = chiw[i]
         @printf(fout, "%20.16f %20.16f %20.16f\n", iw[i], z, err[i])
-    end
-end
-
-#
-# For imaginary time data
-#
-
-# Imaginary time mesh
-tmesh = collect(LinRange(0, beta, ntau))
-
-# Noise
-seed = rand(1:100000000)
-rng = MersenneTwister(seed)
-noise_ampl = 1.0e-4
-noise = randn(rng, F64, ntau) * noise_ampl
-
-# Build green's function
-chit = zeros(F64, ntau)
-for i = 1:ntau
-    tw = exp.(-tmesh[i] * rmesh)
-    bw = exp.(-beta * rmesh)
-    btw = exp.(-(beta - tmesh[i]) * rmesh)
-    K = rmesh .* (tw .+ btw) ./ (1.0 .- bw)
-    K[1] = 2.0 / beta
-    global KA = K .* image
-    chit[i] = trapz(rmesh, KA) + noise[i]
-end
-
-# Build error
-err = ones(F64, ntau) * noise_ampl
-
-# Write green's function
-open("chit.data", "w") do fout
-    for i in eachindex(chit)
-        @printf(fout, "%16.12f %16.12f %16.12f\n", tmesh[i], chit[i], err[i])
     end
 end
