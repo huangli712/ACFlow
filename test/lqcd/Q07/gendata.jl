@@ -5,6 +5,8 @@
 # HTL Wilson line spectral function
 #
 # Note: Please change Araw1.inp to Araw2.inp in L28 to use another input.
+# Araw1.inp -> r = 0.066fm (Fig. 5)
+# Araw2.inp -> r = 0.466fm (Fig. 5)
 #
 
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])
