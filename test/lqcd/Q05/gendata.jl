@@ -34,7 +34,7 @@ end
 wmin = +0.0  # Left boundary
 wmax = +4.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
-niw  = 20    # Number of Matsubara frequencies
+niw  = 50    # Number of Matsubara frequencies
 ntau = 501   # Number of imaginary time points
 beta = 50.0  # Inverse temperature
 𝑀ᵣ   = 0.10  # Parameters for model
