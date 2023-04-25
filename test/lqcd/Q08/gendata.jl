@@ -1,10 +1,12 @@
 #!/usr/bin/env julia
 
 #
-# This example is taken from Phys. Rev. D 87, 114019 (2013).
-# HTL Wilson line spectral function
+# This example is taken from J. High Energ. Phys. 2014, 97 (2014). 
+# Bottomonium spectrum
 #
 # Note: Please change Araw1.inp to Araw2.inp in L28 to use another input.
+# Araw1.inp -> T = 201 MeV (Fig. 7)
+# Araw2.inp -> T = 201 MeV (Fig. 8)
 #
 
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])
@@ -16,9 +18,9 @@ using ACFlow
 
 # Setup parameters
 wmin = +0.0  # Left boundary
-wmax = +8.0  # Right boundary
+wmax = +16.  # Right boundary
 niw  = 50    # Number of Matsubara frequencies
-beta = 1.60  # Inverse temperature
+beta = 5.00  # Inverse temperature
 
 #
 # For true spectrum
