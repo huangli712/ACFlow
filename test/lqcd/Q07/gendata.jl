@@ -4,56 +4,36 @@
 # This example is taken from Phys. Rev. D 87, 114019 (2013).
 # HTL Wilson line spectral function
 #
+# Note: Please change Araw1.inp to Araw2.inp in L28 to use another input.
+#
 
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
+using DelimitedFiles
 using Random
 using Printf
 using ACFlow
 
 # Setup parameters
 wmin = +0.0  # Left boundary
-wmax = +10.  # Right boundary
-nmesh = 2001 # Number of real-frequency points
+wmax = +8.0  # Right boundary
 niw  = 50    # Number of Matsubara frequencies
-ntau = 501   # Number of imaginary time points
-beta = 10.0  # Inverse temperature
-𝑀₁   = 1.00  # Parameters for Gaussian mixture model
-𝑀₂   = 3.00
-𝑀₃   = 7.00
-Γ₁   = 0.01
-Γ₂   = 0.20
-Γ₃   = 2.00
-𝐴₁   = 1.00
-𝐴₂   = 0.20
-𝐴₃   = 0.10
+beta = 1.60  # Inverse temperature
 
 #
 # For true spectrum
 #
 
+# Read raw spectral function
+dlm = readdlm("Araw1.inp", F64)
+nmesh, _ = size(dlm)
+
 # Real frequency mesh
-rmesh = collect(LinRange(wmin, wmax, nmesh))
+rmesh = dlm[:,1]
 
 # Spectral function
-image = similar(rmesh)
-#
-for i in eachindex(rmesh)
-    image[i] =            𝐴₁ * exp(-(rmesh[i] - 𝑀₁) ^ 2.0 / Γ₁)
-    image[i] = image[i] + 𝐴₂ * exp(-(rmesh[i] - 𝑀₂) ^ 2.0 / Γ₂)
-    image[i] = image[i] + 𝐴₃ * exp(-(rmesh[i] - 𝑀₃) ^ 2.0 / Γ₃)
-end
-#
-rmesh[1] = 1e-8 # To avoid NaN
+image = dlm[:,2]
 image = image ./ rmesh
-rmesh[1] = 0.0
-
-# Write spectral function
-open("image.data", "w") do fout
-    for i in eachindex(image)
-        @printf(fout, "%20.16f %20.16f\n", rmesh[i], image[i])
-    end
-end
 
 #
 # For Matsubara frequency data
