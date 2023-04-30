@@ -14,32 +14,54 @@ niw  = 20    # Number of Matsubara frequencies
 beta = 40.0  # Inverse temperature
 ϵ₁   = 1.00  # Parameters for gaussian peaks
 ϵ₂   = 2.00
-ϵ₃   = -1.0
-ϵ₄   = -2.1
-A₁   = 0.50
-A₂   = 0.50
-A₃   = 0.50
-A₄   = 0.50
-Γ₁   = 0.20
-Γ₂   = 0.70
-Γ₃   = 0.25
-Γ₄   = 0.60
+A₁   = 1.00
+A₂   = 1.00
+η₁   = 1e-2
+η₂   = 1e-2
 
 # Real frequency mesh
-rmesh = collect(LinRange(wmin, wmax, nmesh))
+ω = collect(LinRange(wmin, wmax, nmesh))
 
-# Initial spectral function
-image1 = similar(rmesh)
-@. image1  = A₁ * exp(-(rmesh - ϵ₁) ^ 2.0 / (2.0 * Γ₁ ^ 2.0)) / (Γ₁ * sqrt(2.0 * π))
-@. image1 += A₂ * exp(-(rmesh - ϵ₂) ^ 2.0 / (2.0 * Γ₂ ^ 2.0)) / (Γ₂ * sqrt(2.0 * π))
+# Matsubara frequency mesh
+iωₙ = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
+
+# Initial green's function (in Matsubara axis)
+giw1 = zeros(C64, niw)
+for i in eachindex(giw1)
+    giw1[i] = (
+        A₁ / (iωₙ[i] * im - ϵ₁) + noise[i]
+    )
+end
 #
-image2 = similar(rmesh)
-@. image2  = A₃ * exp(-(rmesh - ϵ₃) ^ 2.0 / (2.0 * Γ₃ ^ 2.0)) / (Γ₃ * sqrt(2.0 * π))
-@. image2 += A₄ * exp(-(rmesh - ϵ₄) ^ 2.0 / (2.0 * Γ₄ ^ 2.0)) / (Γ₄ * sqrt(2.0 * π))
+giw2 = zeros(C64, niw)
+for i in eachindex(giw2)
+    giw2[i] = (
+        A₂ / (iωₙ[i] * im - ϵ₂) + noise[i]
+    )
+end
 #
-𝔸 = zeros(F64, (2,2,nmesh))
-𝔸[1,1,:] .= image1
-𝔸[2,2,:] .= image2
+𝔾iw = zeros(C64, (2,2,niw))
+𝔾iw[1,1,:] .= giw1
+𝔾iw[2,2,:] .= giw2
+
+# Initial green's function (in real axis)
+gre1 = zeros(C64, nmesh)
+for i in eachindex(gre1)
+    gre1[i] = (
+        A₁ / (ω[i] + η * im - ϵ₁)
+    )
+end
+#
+gre2 = zeros(C64, nmesh)
+for i in eachindex(gre2)
+    gre2[i] = (
+        A₂ / (ω[i] + η * im - ϵ₂)
+    )
+end
+#
+𝔾re = zeros(C64, (2,2,nmesh))
+𝔾re[1,1,:] .= gre1
+𝔾re[2,2,:] .= gre2
 
 # Rotate spectral function to generate non-diagonal element
 #
@@ -55,8 +77,7 @@ for w = 1:nmesh
     𝒜[:,:,w] = ℝ * 𝔸[:,:,w] * ℝ'
 end
 
-# Matsubara frequency mesh
-iw = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
+
 
 # Kernel function
 kernel = 1.0 ./ (im * reshape(iw, (niw,1)) .- reshape(rmesh, (1,nmesh)))
