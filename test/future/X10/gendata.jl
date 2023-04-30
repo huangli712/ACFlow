@@ -63,7 +63,7 @@ end
 𝔾re[1,1,:] .= gre1
 𝔾re[2,2,:] .= gre2
 
-# Rotate spectral function to generate non-diagonal element
+# Rotate green's function to generate non-diagonal element
 #
 # Set rotation angle
 θ = 0.1
@@ -71,26 +71,16 @@ end
 # Build rotation matrix
 ℝ = [cos(θ) sin(θ); -sin(θ) cos(θ)]
 #
-# Get final spectral function
-𝒜 = zeros(F64, (2,2,nmesh))
-for w = 1:nmesh
-    𝒜[:,:,w] = ℝ * 𝔸[:,:,w] * ℝ'
+# Get final green's function (in Matsubara axis)
+𝒢iw = zeros(C64, (2,2,niw))
+for w = 1:niw
+    𝒢iw[:,:,w] = ℝ * 𝔾iw[:,:,w] * ℝ'
 end
-
-
-
-# Kernel function
-kernel = 1.0 ./ (im * reshape(iw, (niw,1)) .- reshape(rmesh, (1,nmesh)))
-
-# Build green's function
-KA = reshape(kernel, (1,1,niw,nmesh)) .* reshape(𝒜, (2,2,1,nmesh))
-giw = zeros(C64, (2,2,niw))
-for i = 1:2
-    for j = 1:2
-        for w = 1:niw
-            giw[i,j,w] = trapz(rmesh, KA[i,j,w,:])
-        end
-    end
+#
+# Get final green's function (in real axis)
+𝒢re = zeros(C64, (2,2,nmesh))
+for w = 1:nmesh
+    𝒢re[:,:,w] = ℝ * 𝔾re[:,:,w] * ℝ'
 end
 
 # Build error
