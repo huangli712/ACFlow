@@ -8,13 +8,13 @@
 
 [BASE]
 finput = "giw.11.data"
-solver = "MaxEnt"
+solver = "StochPX"
 ktype  = "fermi"
-mtype  = "gauss"
+mtype  = "flat"
 grid   = "ffreq"
 mesh   = "linear"
 ngrid  = 20
-nmesh  = 500
+nmesh  = 501
 wmax   = 5.0
 wmin   = -5.0
 beta   = 40.0
@@ -31,8 +31,8 @@ blur   = -1.0
 [StochPX]
 method = "best"
 nfine  = 100000
-npole  = 8
-ntry   = 1000
-nstep  = 40000
+npole  = 1
+ntry   = 100
+nstep  = 1000
 theta  = 1e+6
 eta    = 1e-2
