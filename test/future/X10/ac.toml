@@ -1,5 +1,5 @@
 #
-# Test: X09
+# Test: X10
 #
 # 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or StochPX).
@@ -7,24 +7,24 @@
 #
 
 [BASE]
-finput = "giw.data"
-solver = "StochPX"
+finput = "giw.11.data"
+solver = "MaxEnt"
 ktype  = "fermi"
-mtype  = "flat"
+mtype  = "gauss"
 grid   = "ffreq"
 mesh   = "linear"
 ngrid  = 20
-nmesh  = 2001
-wmax   = 10.0
-wmin   = -10.0
-beta   = 20.0
+nmesh  = 500
+wmax   = 5.0
+wmin   = -5.0
+beta   = 40.0
 offdiag = false
 
 [MaxEnt]
 method = "chi2kink"
 stype  = "sj"
-nalph  = 12
-alpha  = 1e9
+nalph  = 15
+alpha  = 1e15
 ratio  = 10.0
 blur   = -1.0
 
