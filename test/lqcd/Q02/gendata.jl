@@ -15,7 +15,7 @@ using ACFlow
 wmin = +0.0  # Left boundary
 wmax = +10.0 # Right boundary
 nmesh = 2001 # Number of real-frequency points
-niw  = 50    # Number of Matsubara frequencies
+niw  = 100   # Number of Matsubara frequencies
 ntau = 501   # Number of imaginary time points
 beta = 50.0  # Inverse temperature
 𝑀₁   = 1.00  # Parameters for Breit-Wigner model
