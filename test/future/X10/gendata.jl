@@ -83,6 +83,9 @@ for w = 1:nmesh
     𝒢re[:,:,w] = ℝ * 𝔾re[:,:,w] * ℝ'
 end
 
+# Evaluate final spectral function
+𝒜 = -imag.(𝒢re) / π
+
 # Build error
 err = 1e-5
 
@@ -90,7 +93,7 @@ err = 1e-5
 # For diagonal part
 open("giw.11.data", "w") do fout
     for i = 1:niw
-        z = giw[1,1,i]
+        z = 𝒢iw[1,1,i]
         @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
     end
 end
@@ -98,7 +101,7 @@ end
 # For non-diagonal part
 open("giw.12.data", "w") do fout
     for i = 1:niw
-        z = giw[1,2,i]
+        z = 𝒢iw[1,2,i]
         @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
     end
 end
@@ -106,7 +109,7 @@ end
 # For non-diagonal part
 open("giw.21.data", "w") do fout
     for i = 1:niw
-        z = giw[2,1,i]
+        z = 𝒢iw[2,1,i]
         @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
     end
 end
@@ -114,7 +117,7 @@ end
 # For diagonal part
 open("giw.22.data", "w") do fout
     for i = 1:niw
-        z = giw[2,2,i]
+        z = 𝒢iw[2,2,i]
         @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
     end
 end
@@ -123,7 +126,7 @@ end
 # For auxiliary green's function
 open("giw.aux12.data", "w") do fout
     for i = 1:niw
-        z = giw[1,1,i] + giw[2,2,i] + 2 * giw[1,2,i]
+        z = 𝒢iw[1,1,i] + 𝒢iw[2,2,i] + 2 * 𝒢iw[1,2,i]
         @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
     end
 end
@@ -131,7 +134,7 @@ end
 # For auxiliary green's function
 open("giw.aux21.data", "w") do fout
     for i = 1:niw
-        z = giw[1,1,i] + giw[2,2,i] - 2 * giw[2,1,i]
+        z = 𝒢iw[1,1,i] + 𝒢iw[2,2,i] - 2 * 𝒢iw[2,1,i]
         @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
     end
 end
