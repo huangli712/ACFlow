@@ -56,14 +56,14 @@ end
 gre1 = zeros(C64, nmesh)
 for i in eachindex(gre1)
     gre1[i] = (
-        A₁ / (ω[i] + η * im - ϵ₁)
+        A₁ / (ω[i] + η₁ * im - ϵ₁)
     )
 end
 #
 gre2 = zeros(C64, nmesh)
 for i in eachindex(gre2)
     gre2[i] = (
-        A₂ / (ω[i] + η * im - ϵ₂)
+        A₂ / (ω[i] + η₂ * im - ϵ₂)
     )
 end
 #
@@ -102,7 +102,7 @@ err = 1e-5
 open("giw.11.data", "w") do fout
     for i = 1:niw
         z = 𝒢iw[1,1,i]
-        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iωₙ[i], real(z), imag(z), err)
     end
 end
 #
@@ -110,7 +110,7 @@ end
 open("giw.12.data", "w") do fout
     for i = 1:niw
         z = 𝒢iw[1,2,i]
-        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iωₙ[i], real(z), imag(z), err)
     end
 end
 #
@@ -118,7 +118,7 @@ end
 open("giw.21.data", "w") do fout
     for i = 1:niw
         z = 𝒢iw[2,1,i]
-        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iωₙ[i], real(z), imag(z), err)
     end
 end
 #
@@ -126,7 +126,7 @@ end
 open("giw.22.data", "w") do fout
     for i = 1:niw
         z = 𝒢iw[2,2,i]
-        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iωₙ[i], real(z), imag(z), err)
     end
 end
 #
@@ -135,7 +135,7 @@ end
 open("giw.aux12.data", "w") do fout
     for i = 1:niw
         z = 𝒢iw[1,1,i] + 𝒢iw[2,2,i] + 2 * 𝒢iw[1,2,i]
-        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iωₙ[i], real(z), imag(z), err)
     end
 end
 #
@@ -143,35 +143,35 @@ end
 open("giw.aux21.data", "w") do fout
     for i = 1:niw
         z = 𝒢iw[1,1,i] + 𝒢iw[2,2,i] - 2 * 𝒢iw[2,1,i]
-        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err)
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iωₙ[i], real(z), imag(z), err)
     end
 end
 
 # Write spectral function
 # For diagonal part
 open("image.11.data", "w") do fout
-    for i in eachindex(rmesh)
-        @printf(fout, "%20.16f %20.16f\n", rmesh[i], 𝒜[1,1,i])
+    for i in eachindex(ω)
+        @printf(fout, "%20.16f %20.16f\n", ω[i], 𝒜[1,1,i])
     end
 end
 #
 # For non-diagonal part
 open("image.12.data", "w") do fout
-    for i in eachindex(rmesh)
-        @printf(fout, "%20.16f %20.16f\n", rmesh[i], 𝒜[1,2,i])
+    for i in eachindex(ω)
+        @printf(fout, "%20.16f %20.16f\n", ω[i], 𝒜[1,2,i])
     end
 end
 #
 # For non-diagonal part
 open("image.21.data", "w") do fout
-    for i in eachindex(rmesh)
-        @printf(fout, "%20.16f %20.16f\n", rmesh[i], 𝒜[2,1,i])
+    for i in eachindex(ω)
+        @printf(fout, "%20.16f %20.16f\n", ω[i], 𝒜[2,1,i])
     end
 end
 #
 # For diagonal part
 open("image.22.data", "w") do fout
-    for i in eachindex(rmesh)
-        @printf(fout, "%20.16f %20.16f\n", rmesh[i], 𝒜[2,2,i])
+    for i in eachindex(ω)
+        @printf(fout, "%20.16f %20.16f\n", ω[i], 𝒜[2,2,i])
     end
 end
