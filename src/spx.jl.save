@@ -630,9 +630,9 @@ a linear mesh automatically.
 See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
 """
 function calc_fmesh(S::StochPXSolver)
-    nfine = get_x("nfine")
     wmin = get_b("wmin")
     wmax = get_b("wmax")
+    nfine = get_x("nfine")
 
     # Filename for the predefined mesh
     # This file should contain at least `nfine` lines
