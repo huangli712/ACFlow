@@ -593,9 +593,9 @@ the self-adaptive mesh.
 See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
 """
 function calc_fmesh(S::StochSKSolver)
-    nfine = get_k("nfine")
     wmin = get_b("wmin")
     wmax = get_b("wmax")
+    nfine = get_k("nfine")
 
     fmesh = LinearMesh(nfine, wmin, wmax)
 

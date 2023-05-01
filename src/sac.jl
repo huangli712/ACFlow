@@ -525,9 +525,9 @@ mesh automatically.
 See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
 """
 function calc_fmesh(S::StochACSolver)
-    nfine = get_a("nfine")
     wmin = get_b("wmin")
     wmax = get_b("wmax")
+    nfine = get_a("nfine")
 
     # Filename for the predefined mesh
     # This file should contain at least `nfine` lines
