@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/3/24
+# Last modified: 2023/5/02
 #
 
 #=
@@ -324,6 +324,7 @@ end
 """
     write_pole(Pᵥ::Vector{Vector{I64}},
                Aᵥ::Vector{Vector{F64}},
+               𝕊ᵥ::Vector{Vector{F64}},
                χ²::Vector{F64},
                fmesh::AbstractMesh)
 
@@ -332,6 +333,7 @@ only useful for the `StochPX` solver.
 """
 function write_pole(Pᵥ::Vector{Vector{I64}},
                     Aᵥ::Vector{Vector{F64}},
+                    𝕊ᵥ::Vector{Vector{F64}},
                     χ²::Vector{F64},
                     fmesh::AbstractMesh)
     ntry = length(Pᵥ)
@@ -341,7 +343,10 @@ function write_pole(Pᵥ::Vector{Vector{I64}},
             println(fout, "# Try: ", i, "  χ²: ", χ²[i])
             for j in eachindex(Pᵥ[i])
                 p = Pᵥ[i][j]
-                @printf(fout, "%4i %8i %16.12f %16.12f\n", j, p, fmesh[p], Aᵥ[i][j])
+                a = Aᵥ[i][j] 
+                s = 𝕊ᵥ[i][j]
+                f = fmesh[p]
+                @printf(fout, "%4i %8i %16.12f %6.2f %16.12f\n", j, p, f, s, a)
             end
             println(fout)
             println(fout)
