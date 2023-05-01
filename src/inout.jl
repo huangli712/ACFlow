@@ -346,7 +346,7 @@ function write_pole(Pᵥ::Vector{Vector{I64}},
                 a = Aᵥ[i][j] 
                 s = 𝕊ᵥ[i][j]
                 f = fmesh[p]
-                @printf(fout, "%4i %8i %16.12f %6.2f %16.12f\n", j, p, f, s, a)
+                @printf(fout, "%4i %8i %16.12f %16.12f %6.2f\n", j, p, f, a, s)
             end
             println(fout)
             println(fout)
