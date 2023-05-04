@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2022/12/04
+# Last modified: 2023/05/04
 #
 
 #=
@@ -144,7 +144,8 @@ positive half-axis, and vice versa.
 See also: [`AbstractMesh`](@ref).
 """
 function build_1gaussian_model(am::AbstractMesh, Γ::F64, s::F64)
-    model = exp.(-((am.mesh - s) / Γ) .^ 2.0) / (Γ * sqrt(π))
+    model = similar(am.mesh)
+    @. model = exp(-((am.mesh - s) / Γ) ^ 2.0) / (Γ * sqrt(π))
     norm = dot(am.weight, model)
     model = model ./ norm
     return model
