@@ -53,6 +53,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`wmin`    | float   | -5.0           | Left boundary (minimum value) of mesh. |
 |`beta`    | float   | 10.0           | Inverse temperature. |
 |`offdiag` | bool    | false          | Treat the off-diagonal part of matrix-valued function? |
+|`fwrite`  | bool    | N/A            | Are the analytical continuation results written into files? |
 |`pmodel`  | array   | N/A            | Additional parameters for customizing the default model. |
 |`pmesh`   | array   | N/A            | Additional parameters for customizing the mesh. |
 |`exclude` | array   | N/A            | Restriction of energy range of the spectrum. |
