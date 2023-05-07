@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/04
+# Last modified: 2023/05/07
 #
 
 #=
@@ -199,6 +199,11 @@ end
 Perform stochastic analytical continuation simulation, sequential version.
 """
 function run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Setup essential parameters
     nstep = get_a("nstep")
     output_per_steps = get_a("ndump")
@@ -224,7 +229,7 @@ function run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
             @printf("step = %9i ", iter)
             @printf("[progress = %3i]\n", prog)
             flush(stdout)
-            write_statistics(MC)
+            fwrite && write_statistics(MC)
         end
     end
 
@@ -251,6 +256,11 @@ function prun(S::StochACSolver,
     # Initialize random number generator again
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
 
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Setup essential parameters
     nstep = get_a("nstep")
     output_per_steps = get_a("ndump")
@@ -276,7 +286,7 @@ function prun(S::StochACSolver,
             @printf("step = %9i ", iter)
             @printf("[progress = %3i]\n", prog)
             flush(stdout)
-            myid() == 2 && write_statistics(MC)
+            myid() == 2 && fwrite && write_statistics(MC)
         end
     end
 
@@ -321,6 +331,11 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
         return @. p[1] * x + p[2]
     end
 
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Get dimensional parameters
     nmesh, nalph = size(Aout)
 
@@ -335,7 +350,7 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     println("Fitting parameters [a,b] are: [ $a, $b ]")
     println("Fitting parameters [c,d] are: [ $c, $d ]")
     println("Perhaps the optimal α is: ", aopt)
-    write_hamiltonian(SC.αₗ, Uα)
+    fwrite && write_hamiltonian(SC.αₗ, Uα)
 
     # Calculate final spectral function and write them
     Asum = zeros(F64, nmesh)
@@ -343,14 +358,14 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
         @. Asum = Asum + (Uα[i] - Uα[i+1]) * Aout[:,i]
     end
     @. Asum = Asum / (Uα[close] - Uα[end])
-    write_spectrum(SC.mesh, Asum)
-    write_spectrum(SC.mesh, SC.αₗ, Aout)
-    write_model(SC.mesh, SC.model)
+    fwrite && write_spectrum(SC.mesh, Asum)
+    fwrite && write_spectrum(SC.mesh, SC.αₗ, Aout)
+    fwrite && write_model(SC.mesh, SC.model)
 
     # Reproduce input data and write them
     kernel = make_kernel(SC.mesh, SC.grid)
     G = reprod(SC.mesh, kernel, Asum)
-    write_backward(SC.grid, G)
+    fwrite && write_backward(SC.grid, G)
 
     # Calculate full response function on real axis and write them
     if get_b("ktype") == "fermi"
@@ -358,7 +373,7 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     else
         _G = kramers(SC.mesh, Asum .* SC.mesh)
     end
-    write_complete(SC.mesh, _G)
+    fwrite && write_complete(SC.mesh, _G)
 
     return _G
 end
