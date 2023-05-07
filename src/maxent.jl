@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/20
+# Last modified: 2023/05/07
 #
 
 #=
@@ -136,27 +136,30 @@ while `svec` contains all the intermediate results (it is a vector of
 dictionary actually).
 """
 function last(mec::MaxEntContext, svec::Vector, sol::Dict)
+    fwrite = get_b("fwrite")
+    @echo fwrite
+
     # Write the spectral function
-    write_spectrum(mec.mesh, sol[:A])
+    fwrite && write_spectrum(mec.mesh, sol[:A])
 
     # Write the model function
-    write_model(mec.mesh, mec.model)
+    fwrite && write_model(mec.mesh, mec.model)
 
     # Write α-χ² data
     α_vec = map(x -> x[:α], svec)
     χ_vec = map(x -> x[:χ²], svec)
-    write_misfit(α_vec, χ_vec)
+    fwrite && write_misfit(α_vec, χ_vec)
 
     # Write P[α|A] for bryan algorithm
     if haskey(svec[end], :prob)
         p_vec = map(x -> x[:prob], svec)
-        write_probability(α_vec, p_vec)
+        fwrite && write_probability(α_vec, p_vec)
     end
 
     # Regenerate the input data and write them
     Aout = haskey(sol, :Araw) ? sol[:Araw] : sol[:A]
     G = reprod(mec.mesh, mec.kernel, Aout)
-    write_backward(mec.grid, G)
+    fwrite && write_backward(mec.grid, G)
 
     # Calculate full response function on real axis and write them
     if get_b("ktype") == "fermi"
@@ -164,7 +167,7 @@ function last(mec::MaxEntContext, svec::Vector, sol::Dict)
     else
         _G = kramers(mec.mesh, Aout .* mec.mesh)
     end
-    write_complete(mec.mesh, _G)
+    fwrite && write_complete(mec.mesh, _G)
 
     return _G
 end
