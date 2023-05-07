@@ -201,6 +201,11 @@ end
 Perform stochastic analytical continuation simulation, sequential version.
 """
 function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Setup essential parameters
     nstep = get_k("nstep")
     retry = get_k("retry")
@@ -234,7 +239,7 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
             @printf("step = %6i ", iter)
             @printf("[progress = %3i]\n", prog)
             flush(stdout)
-            write_statistics(MC)
+            fwrite && write_statistics(MC)
         end
     end
 
@@ -261,6 +266,11 @@ function prun(S::StochSKSolver,
     # Initialize random number generator again
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
 
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Setup essential parameters
     nstep = get_k("nstep")
     retry = get_k("retry")
@@ -294,7 +304,7 @@ function prun(S::StochSKSolver,
             @printf("step = %6i ", iter)
             @printf("[progress = %3i]\n", prog)
             flush(stdout)
-            myid() == 2 && write_statistics(MC)
+            myid() == 2 && fwrite && write_statistics(MC)
         end
     end
 
@@ -324,16 +334,21 @@ including final spectral function and reproduced correlator.
 function last(SC::StochSKContext,
               Asum::Vector{F64},
               χ²vec::Vector{F64}, Θvec::Vector{F64})
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Write final spectral function
-    write_spectrum(SC.mesh, Asum)
+    fwrite && write_spectrum(SC.mesh, Asum)
 
     # Write Θ-dependent goodness function
-    write_goodness(Θvec, χ²vec)
+    fwrite && write_goodness(Θvec, χ²vec)
 
     # Reproduce input data and write them
     kernel = make_kernel(SC.mesh, SC.grid)
     G = reprod(SC.mesh, kernel, Asum)
-    write_backward(SC.grid, G)
+    fwrite && write_backward(SC.grid, G)
 
     # Calculate full response function on real axis and write them
     if get_b("ktype") == "fermi"
@@ -341,7 +356,7 @@ function last(SC::StochSKContext,
     else
         _G = kramers(SC.mesh, Asum .* SC.mesh)
     end
-    write_complete(SC.mesh, _G)
+    fwrite && write_complete(SC.mesh, _G)
 
     return _G
 end
