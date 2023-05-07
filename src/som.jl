@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/03/24
+# Last modified: 2023/05/07
 #
 
 #=
@@ -160,6 +160,11 @@ end
 Perform stochastic optimization simulation, sequential version.
 """
 function run(MC::StochOMMC, SC::StochOMContext)
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Setup essential parameters
     ntry = get_s("ntry")
     nstep = get_s("nstep")
@@ -176,7 +181,7 @@ function run(MC::StochOMMC, SC::StochOMContext)
         SC.Cᵥ[l] = deepcopy(SE.C)
         @printf("try -> %6i (%6i) Δ -> %8.4e \n", l, ntry, SE.Δ)
         flush(stdout)
-        (l % 10 == 0) && write_statistics(MC)
+        l % 10 == 0 && fwrite && write_statistics(MC)
     end
 
     return average(SC)
@@ -202,6 +207,11 @@ function prun(S::StochOMSolver,
     # Initialize random number generator again
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
 
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Setup essential parameters
     ntry = get_s("ntry")
     nstep = get_s("nstep")
@@ -218,7 +228,7 @@ function prun(S::StochOMSolver,
         SC.Cᵥ[l] = deepcopy(SE.C)
         @printf("try -> %6i (%6i) Δ -> %8.4e \n", l, ntry, SE.Δ)
         flush(stdout)
-        (myid() == 2) && (l % 10 == 0) && write_statistics(MC)
+        myid() == 2 && l % 10 == 0 && fwrite && write_statistics(MC)
     end
 
     return average(SC)
@@ -231,6 +241,11 @@ Postprocess the collected results after the stochastic optimization
 simulations. It will generate the spectral functions.
 """
 function average(SC::StochOMContext)
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     nmesh = get_b("nmesh")
     ntry  = get_s("ntry")
 
@@ -269,9 +284,9 @@ function average(SC::StochOMContext)
 
     # Write indices of selected solutions
     if nworkers() > 1
-        myid() == 2 && write_passed(passed, dev_ave, αgood)
+        myid() == 2 && fwrite && write_passed(passed, dev_ave, αgood)
     else
-        write_passed(passed, dev_ave, αgood)
+        fwrite && write_passed(passed, dev_ave, αgood)
     end
 
     return Aom
@@ -284,13 +299,18 @@ It will process and write the calculated results by the StochOM solver,
 including final spectral function and reproduced correlator.
 """
 function last(SC::StochOMContext, Aout::Vector{F64})
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Write the spectral function
-    write_spectrum(SC.mesh, Aout)
+    fwrite && write_spectrum(SC.mesh, Aout)
 
     # Reproduce input data and write them
     kernel = make_kernel(SC.mesh, SC.grid)
     G = reprod(SC.mesh, kernel, Aout)
-    write_backward(SC.grid, G)
+    fwrite && write_backward(SC.grid, G)
 
     # Calculate full response function on real axis and write them
     if get_b("ktype") == "fermi"
@@ -298,7 +318,7 @@ function last(SC::StochOMContext, Aout::Vector{F64})
     else
         _G = kramers(SC.mesh, Aout .* SC.mesh)
     end
-    write_complete(SC.mesh, _G)
+    fwrite && write_complete(SC.mesh, _G)
 
     return _G
 end
