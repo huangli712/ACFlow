@@ -355,7 +355,7 @@ Depth = 3
 
 *Definition:*
 
-> Are the analytical continuation results written into external files? If it is false, then only the terminal output is retained and all the other outputs are disable.
+> Are the analytical continuation results written into external files? If it is false, then only the terminal output is retained and all the other outputs are disable. By default (if this parameter is missing or true), the files should be generated.
 
 *Type:*
 
