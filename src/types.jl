@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/21
+# Last modified: 2023/05/07
 #
 
 #=
@@ -53,6 +53,7 @@ const PBASE    = Dict{String,ADT}(
     "wmin"    => [missing, 1, :F64   , "Left boundary (minimum value) of output mesh"],
     "beta"    => [missing, 1, :F64   , "Inverse temperature"],
     "offdiag" => [missing, 1, :Bool  , "Is it the offdiagonal part in matrix-valued function"],
+    "foutput" => [missing, 0, :Bool  , "Are the analytical continuation results written into files"],     
     "pmodel"  => [missing, 0, :Array , "Additional parameters for customizing the model"],
     "pmesh"   => [missing, 0, :Array , "Additional parameters for customizing the mesh"],
     "exclude" => [missing, 0, :Array , "Restriction of the energy range of the spectrum"],
