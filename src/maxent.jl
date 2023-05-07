@@ -136,8 +136,10 @@ while `svec` contains all the intermediate results (it is a vector of
 dictionary actually).
 """
 function last(mec::MaxEntContext, svec::Vector, sol::Dict)
-    fwrite = get_b("fwrite")
-    @echo fwrite
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
 
     # Write the spectral function
     fwrite && write_spectrum(mec.mesh, sol[:A])
