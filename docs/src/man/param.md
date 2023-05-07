@@ -351,6 +351,24 @@ Depth = 3
 
     Now only the `MaxEnt` solver supports this parameter.
 
+### fwrite
+
+*Definition:*
+
+> Are the analytical continuation results written into external files? If it is false, then only the terminal output is retained and all the other outputs are disable.
+
+*Type:*
+
+> Bool.
+
+*Example:*
+
+> fwrite = false
+
+*Comment:*
+
+> This parameter is optional.
+
 ### [pmodel](@id pmodel)
 
 *Definition:*
