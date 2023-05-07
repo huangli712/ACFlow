@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/03
+# Last modified: 2023/05/02
 #
 
 #=
@@ -21,10 +21,12 @@ be sampled by Monte Carlo sweeping procedure.
 
 * P -> It means the positions of the poles.
 * A -> It means the weights / amplitudes of the poles.
+* 𝕊 -> It means the signs of the poles.
 """
 mutable struct StochPXElement
     P :: Vector{I64}
     A :: Vector{F64}
+    𝕊 :: Vector{F64}
 end
 
 """
@@ -47,6 +49,7 @@ Mutable struct. It is used within the StochPX solver only.
 * χ²     -> Vector of goodness function.
 * Pᵥ     -> Vector of poles' positions.
 * Aᵥ     -> Vector of poles' amplitudes.
+* 𝕊ᵥ     -> Vector of poles' signs.
 """
 mutable struct StochPXContext
     Gᵥ    :: Vector{F64}
@@ -62,6 +65,7 @@ mutable struct StochPXContext
     χ²    :: Vector{F64}
     Pᵥ    :: Vector{Vector{I64}}
     Aᵥ    :: Vector{Vector{F64}}
+    𝕊ᵥ    :: Vector{Vector{F64}}
 end
 
 #=
@@ -176,15 +180,15 @@ function init(S::StochPXSolver, rd::RawData)
     end
 
     # Prepare some key variables
-    Θ, χ²min, χ², Pᵥ, Aᵥ = init_context(S)
+    Θ, χ²min, χ², Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S)
 
     # We have to make sure that the starting Gᵧ and χ² (i.e. χ²[1]) are
     # consistent with the current Monte Carlo configuration fields.
-    Gᵧ = calc_green(SE.P, SE.A, Λ)
+    Gᵧ = calc_green(SE.P, SE.A, SE.𝕊, Λ)
     χ²[1] = calc_chi2(Gᵧ, Gᵥ)
 
     SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh,
-                        Λ, Θ, χ²min, χ², Pᵥ, Aᵥ)
+                        Λ, Θ, χ²min, χ², Pᵥ, Aᵥ, 𝕊ᵥ)
 
     return MC, SE, SC
 end
@@ -218,21 +222,27 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         reset_context(t, SE, SC)
 
         # Apply simulated annealing algorithm
+        #@show "before:", SE.A, SC.𝕊ᵥ[t]
         for _ = 1:nstep
             sample(t, MC, SE, SC)
         end
+        #@show "after:", SE.A, SC.𝕊ᵥ[t]
+        #( t == 2 ) && error()
 
         # Write Monte Carlo statistics
         write_statistics(MC)
 
-        # Update χ²[t] to be consistent with SC.Pᵥ[t] and SC.Aᵥ[t]
+        # Update χ²[t] to be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
         SC.χ²[t] = SC.χ²min
         @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²min)
         flush(stdout)
+        @show SE.A, SE.P, SE.𝕊
+        @show SC.Aᵥ[t], SC.Pᵥ[t], SC.𝕊ᵥ[t]
+        #error()
     end
 
     # Write pole expansion coefficients
-    write_pole(SC.Pᵥ, SC.Aᵥ, SC.χ², SC.fmesh)
+    write_pole(SC.Pᵥ, SC.Aᵥ, SC.𝕊ᵥ, SC.χ², SC.fmesh)
 
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
@@ -288,14 +298,14 @@ function prun(S::StochPXSolver,
         # Write Monte Carlo statistics
         myid() == 2 && write_statistics(MC)
 
-        # Update χ²[t] to be consistent with SC.Pᵥ[t] and SC.Aᵥ[t]
+        # Update χ²[t] to be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
         SC.χ²[t] = SC.χ²min
         @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²min)
         flush(stdout)
     end
 
     # Write pole expansion coefficients
-    myid() == 2 && write_pole(SC.Pᵥ, SC.Aᵥ, SC.χ², SC.fmesh)
+    myid() == 2 && write_pole(SC.Pᵥ, SC.Aᵥ, SC.𝕊ᵥ, SC.χ², SC.fmesh)
 
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
@@ -328,17 +338,17 @@ function average(SC::StochPXContext)
         χ₀ = -SC.Gᵥ[1]
 
         if     ktype == "fermi"
-            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh)
+            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.mesh, SC.fmesh)
         #
         elseif ktype == "boson"
-            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh, χ₀, false)
+            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.mesh, SC.fmesh, χ₀, false)
         #
         elseif ktype == "bsymm"
-            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.mesh, SC.fmesh, χ₀, true)
+            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.mesh, SC.fmesh, χ₀, true)
         #
         end
 
-        Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.Λ)
+        Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.Λ)
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, SC.χ²[p])
     #
     # Collect the `good` solutions and calculate their average.
@@ -361,18 +371,18 @@ function average(SC::StochPXContext)
         for i = 1:ntry
             if SC.χ²[i] < chi2_med / αgood
                 if     ktype == "fermi"
-                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh)
+                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.mesh, SC.fmesh)
                 #
                 elseif ktype == "boson"
-                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh, χ₀, false)
+                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.mesh, SC.fmesh, χ₀, false)
                 #
                 elseif ktype == "bsymm"
-                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.mesh, SC.fmesh, χ₀, true)
+                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.mesh, SC.fmesh, χ₀, true)
                 #
                 end
                 @. Gout = Gout + G
                 #
-                G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.Λ)
+                G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.Λ)
                 @. Gᵣ = Gᵣ + G
                 #
                 # Increase the counter
@@ -401,12 +411,18 @@ function average(SC::StochPXContext)
 end
 
 """
-    last(SC::StochPXContext, Aout::Vector{F64}, Gout::Vector{C64}, Gᵣ::Vector{F64})
+    last(SC::StochPXContext,
+         Aout::Vector{F64},
+         Gout::Vector{C64},
+         Gᵣ::Vector{F64})
 
 It will write the calculated results by the StochPX solver, including
 final spectral function and reproduced correlator.
 """
-function last(SC::StochPXContext, Aout::Vector{F64}, Gout::Vector{C64}, Gᵣ::Vector{F64})
+function last(SC::StochPXContext,
+              Aout::Vector{F64},
+              Gout::Vector{C64},
+              Gᵣ::Vector{F64})
     # Write the spectral function
     write_spectrum(SC.mesh, Aout)
 
@@ -448,12 +464,13 @@ end
 """
     measure(t::I64, SE::StochPXElement, SC::StochPXContext)
 
-Store Monte Carlo field configurations (positions and amplitudes of many
-poles) for the t-th attempt.
+Store Monte Carlo field configurations (positions, amplitudes, and signs
+of many poles) for the `t`-th attempt.
 """
 function measure(t::I64, SE::StochPXElement, SC::StochPXContext)
     @. SC.Pᵥ[t] = SE.P
     @. SC.Aᵥ[t] = SE.A
+    @. SC.𝕊ᵥ[t] = SE.𝕊
 end
 
 #=
@@ -473,10 +490,13 @@ function init_mc(S::StochPXSolver)
     #
     Sacc = 0
     Stry = 0
+    #
     Pacc = 0
     Ptry = 0
+    #
     Aacc = 0
     Atry = 0
+    #
     Xacc = 0
     Xtry = 0
 
@@ -494,16 +514,40 @@ return a StochPXElement object.
 See also: [`StochPXElement`](@ref).
 """
 function init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
+    offdiag = get_b("offdiag")
     npole = get_x("npole")
 
-    P = rand(rng, allow, npole)
-    A = rand(rng, F64, npole)
+    if offdiag
+        # We just assume that the numbers of poles for the positive and
+        # negative parts are equal.
+        @assert iseven(npole)
 
-    # We have to make sure ∑ᵢ Aᵢ = 1
-    s = sum(A)
-    @. A = A / s
+        P = rand(rng, allow, npole)
+        A₊ = rand(rng, F64, npole ÷ 2)
+        A₋ = rand(rng, F64, npole ÷ 2)
+        𝕊₊ = ones(F64, npole ÷ 2)
+        𝕊₋ = ones(F64, npole ÷ 2) * (-1.0)
 
-    SE = StochPXElement(P, A)
+        # We have to make sure ∑ᵢ Aᵢ = 1
+        s = sum(A₊)
+        @. A₊ = A₊ / s
+        s = sum(A₋)
+        @. A₋ = A₋ / s
+
+        # Merge positive and negative parts
+        A = vcat(A₊, A₋)
+        𝕊 = vcat(𝕊₊, 𝕊₋)
+    else
+        P = rand(rng, allow, npole)
+        A = rand(rng, F64, npole)
+        𝕊 = ones(F64, npole)
+
+        # We have to make sure ∑ᵢ Aᵢ = 1
+        s = sum(A)
+        @. A = A / s
+    end
+
+    SE = StochPXElement(P, A, 𝕊)
 
     return SE
 end
@@ -540,12 +584,14 @@ function init_context(S::StochPXSolver)
 
     Pᵥ = Vector{I64}[]
     Aᵥ = Vector{F64}[]
+    𝕊ᵥ = Vector{F64}[]
     for _ = 1:ntry
         push!(Pᵥ,  ones(I64, npole))
         push!(Aᵥ, zeros(F64, npole))
+        push!(𝕊ᵥ, zeros(F64, npole))
     end
 
-    return Θ, χ²min, χ², Pᵥ, Aᵥ
+    return Θ, χ²min, χ², Pᵥ, Aᵥ, 𝕊ᵥ
 end
 
 """
@@ -568,37 +614,104 @@ end
     reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
 
 Reset the Monte Carlo field configurations (i.e. positions and amplitudes
-of the poles).
+of the poles). Note that the signs of the poles should not be changed.
 """
 function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
+    offdiag = get_b("offdiag")
     npole = get_x("npole")
-    if npole ≤ 5
-        if 4 ≤ npole ≤ 5
-            nselect = 2
+
+    # For off-diagonal elements
+    if offdiag
+        # The number of poles must be even.
+        # Here, `hpole` means half number of poles.
+        hpole = npole ÷ 2
+
+        # How many poles that should be changed
+        if hpole ≤ 5
+            if 4 ≤ hpole ≤ 5
+                hselect = 2
+            else
+                hselect = 1
+            end
         else
-            nselect = 1
+            hselect = hpole ÷ 5
         end
-    else
-        nselect = ceil(I64, npole / 5)
-    end
-    @assert nselect ≤ npole
+        @assert hselect ≤ hpole
 
-    selected = rand(rng, 1:npole, nselect)
-    unique!(selected)
-    nselect = length(selected)
+        # Which poles that should be changed
+        selected₊ = rand(rng, 1:hpole, hselect)
+        unique!(selected₊)
+        hselect₊ = length(selected₊)
+        #
+        selected₋ = rand(rng, hpole+1:npole, hselect)
+        unique!(selected₋)
+        hselect₋ = length(selected₋)
+        @show hselect₊, selected₊, hselect₋, selected₋
 
-    if rand(rng) < 0.5
-        P = rand(rng, allow, nselect)
-        @. SE.P[selected] = P
+        # Change poles' positions
+        if rand(rng) < 0.9
+            P₊ = rand(rng, allow, hselect₊)
+            @. SE.P[selected₊] = P₊
+            #
+            P₋ = rand(rng, allow, hselect₋)
+            @. SE.P[selected₋] = P₋
+            @show P₊, P₋
+        # Change poles' amplitudes
+        else
+            # For positive-weight poles
+            A₁₊ = SE.A[selected₊]
+            s₁₊ = sum(A₁₊)
+            #
+            A₂₊ = rand(rng, F64, hselect₊)
+            s₂₊ = sum(A₂₊)
+            @. A₂₊ = A₂₊ / s₂₊ * s₁₊
+            #
+            @. SE.A[selected₊] = A₂₊
+
+            # For negative-weight poles
+            A₁₋ = SE.A[selected₋]
+            s₁₋ = sum(A₁₋)
+            #
+            A₂₋ = rand(rng, F64, hselect₋)
+            s₂₋ = sum(A₂₋)
+            @. A₂₋ = A₂₋ / s₂₋ * s₁₋
+            #
+            @. SE.A[selected₋] = A₂₋
+        end
+    # For diagonal elements
     else
-        A₁ = SE.A[selected]
-        s₁ = sum(A₁)
-        #
-        A₂ = rand(rng, F64, nselect)
-        s₂ = sum(A₂)
-        @. A₂ = A₂ / s₂ * s₁
-        #
-        @. SE.A[selected] = A₂
+        # How many poles that should be changed
+        if npole ≤ 5
+            if 4 ≤ npole ≤ 5
+                nselect = 2
+            else
+                nselect = 1
+            end
+        else
+            nselect = npole ÷ 5
+        end
+        @assert nselect ≤ npole
+
+        # Which poles that should be changed
+        selected = rand(rng, 1:npole, nselect)
+        unique!(selected)
+        nselect = length(selected)
+
+        # Change poles' positions
+        if rand(rng) < 0.5
+            P = rand(rng, allow, nselect)
+            @. SE.P[selected] = P
+        # Change poles' amplitudes
+        else
+            A₁ = SE.A[selected]
+            s₁ = sum(A₁)
+            #
+            A₂ = rand(rng, F64, nselect)
+            s₂ = sum(A₂)
+            @. A₂ = A₂ / s₂ * s₁
+            #
+            @. SE.A[selected] = A₂
+        end
     end
 end
 
@@ -609,7 +722,7 @@ Recalculate imaginary frequency green's function and goodness-of-fit
 function by new Monte Carlo field configurations for the t-th attempts.
 """
 function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
-    Gᵧ = calc_green(SE.P, SE.A, SC.Λ)
+    Gᵧ = calc_green(SE.P, SE.A, SE.𝕊, SC.Λ)
     χ² = calc_chi2(Gᵧ, SC.Gᵥ)
 
     @. SC.Gᵧ = Gᵧ
@@ -808,14 +921,20 @@ function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh)
 end
 
 """
-    calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh, χ₀::F64, bsymm::Bool)
+    calc_lambda(grid::AbstractGrid,
+                fmesh::AbstractMesh,
+                χ₀::F64,
+                bsymm::Bool)
 
 Precompute the kernel matrix Λ. Here, `χ₀` is actually -G(iωₙ = 0). And
 the argument `bsymm` is used to distinguish two different bosonic kernels.
 If `bsymm` is false, it means that the kernel is `boson`. If `bsymm` is
 true, the kernel is `bsymm`. This function is for the bosonic systems.
 """
-function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh, χ₀::F64, bsymm::Bool)
+function calc_lambda(grid::AbstractGrid,
+                     fmesh::AbstractMesh,
+                     χ₀::F64,
+                     bsymm::Bool)
     ngrid = get_b("ngrid")
     nfine = get_x("nfine")
 
@@ -865,17 +984,21 @@ end
 """
     calc_green(P::Vector{I64},
                A::Vector{F64},
+               𝕊::Vector{F64},
                Λ::Array{F64,2})
 
 Reconstruct green's function at imaginary axis by the pole expansion.
 """
-function calc_green(P::Vector{I64}, A::Vector{F64}, Λ::Array{F64,2})
+function calc_green(P::Vector{I64},
+                    A::Vector{F64},
+                    𝕊::Vector{F64},
+                    Λ::Array{F64,2})
     # Note that here `ngrid` is equal to 2 × ngrid sometimes.
     ngrid, _ = size(Λ)
 
     G = zeros(F64, ngrid)
     for i = 1:ngrid
-        G[i] = dot(A, Λ[i,P])
+        G[i] = dot(A .* 𝕊, Λ[i,P])
     end
 
     return G
@@ -884,6 +1007,7 @@ end
 """
     calc_green(P::Vector{I64},
                A::Vector{F64},
+               𝕊::Vector{F64},
                mesh::AbstractMesh,
                fmesh::AbstractMesh)
 
@@ -892,6 +1016,7 @@ for the fermionic systems only.
 """
 function calc_green(P::Vector{I64},
                     A::Vector{F64},
+                    𝕊::Vector{F64},
                     mesh::AbstractMesh,
                     fmesh::AbstractMesh)
     η = get_x("eta")
@@ -900,7 +1025,7 @@ function calc_green(P::Vector{I64},
     iωₙ = mesh.mesh .+ im * η
     G = zeros(C64, nmesh)
     for i in eachindex(mesh)
-        G[i] = sum( @. A / (iωₙ[i] - fmesh.mesh[P]) )
+        G[i] = sum( @. (A * 𝕊) / (iωₙ[i] - fmesh.mesh[P]) )
     end
 
     return G
@@ -909,6 +1034,7 @@ end
 """
     calc_green(P::Vector{I64},
                A::Vector{F64},
+               𝕊::Vector{F64},
                mesh::AbstractMesh,
                fmesh::AbstractMesh, χ₀::F64, bsymm::Bool)
 
@@ -920,6 +1046,7 @@ It is for the bosonic systems only.
 """
 function calc_green(P::Vector{I64},
                     A::Vector{F64},
+                    𝕊::Vector{F64},
                     mesh::AbstractMesh,
                     fmesh::AbstractMesh, χ₀::F64, bsymm::Bool)
     η = get_x("eta")
@@ -928,13 +1055,13 @@ function calc_green(P::Vector{I64},
     iωₙ = mesh.mesh .+ im * η
     G = zeros(C64, nmesh)
     if bsymm == false
-        _A = A .* χ₀ .* fmesh.mesh[P]
+        _A = A .* 𝕊 .* χ₀ .* fmesh.mesh[P]
         for i in eachindex(mesh)
             G[i] = sum( @. _A / (iωₙ[i] - fmesh.mesh[P]) )
         end
     #
     else
-        _A = A .* χ₀ .* fmesh.mesh[P] .* 0.5
+        _A = A .* 𝕊 .* χ₀ .* fmesh.mesh[P] .* 0.5
         for i in eachindex(mesh)
             G₊ = sum( @. _A / (iωₙ[i] - fmesh.mesh[P]) )
             G₋ = sum( @. _A / (iωₙ[i] + fmesh.mesh[P]) )
@@ -1010,7 +1137,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
     nfine = get_x("nfine")
     npole = get_x("npole")
-    move_window = ceil(I64, nfine / 100)
+    move_window = nfine ÷ 100
 
     # It is used to save the change of green's function
     δG = zeros(F64, ngrid)
@@ -1024,6 +1151,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
         # Try to change position of the s pole
         Aₛ = SE.A[s]
+        𝕊ₛ = SE.𝕊[s]
         #
         δP = rand(MC.rng, 1:move_window)
         #
@@ -1040,7 +1168,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         # Calculate change of green's function
         Λ₁ = view(SC.Λ, :, P₁)
         Λ₂ = view(SC.Λ, :, P₂)
-        @. δG = Aₛ * (Λ₂ - Λ₁)
+        @. δG = 𝕊ₛ * Aₛ * (Λ₂ - Λ₁)
 
         # Calculate new green's function and goodness-of-fit function
         @. Gₙ = δG + SC.Gᵧ
@@ -1064,6 +1192,7 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
             # Save optimal solution
             if χ² < SC.χ²min
+                #println("move_s")
                 SC.χ²min = χ²
                 measure(t, SE, SC)
             end
@@ -1083,7 +1212,8 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
     npole = get_x("npole")
-    #
+
+    # Sanity check
     if npole == 1
         return
     end
@@ -1096,6 +1226,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     for _ = 1:npole
 
         # Select two poles randomly
+        # The two poles should not be the same.
         s₁ = 1
         s₂ = 1
         while s₁ == s₂
@@ -1110,6 +1241,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
             P₃ = rand(MC.rng, SC.allow)
         end
         A₁ = SE.A[s₁]
+        𝕊₁ = SE.𝕊[s₁]
         #
         # Try to change position of the s₂ pole
         P₂ = SE.P[s₂]
@@ -1118,13 +1250,14 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
             P₄ = rand(MC.rng, SC.allow)
         end
         A₂ = SE.A[s₂]
+        𝕊₂ = SE.𝕊[s₂]
 
         # Calculate change of green's function
         Λ₁ = view(SC.Λ, :, P₁)
         Λ₂ = view(SC.Λ, :, P₂)
         Λ₃ = view(SC.Λ, :, P₃)
         Λ₄ = view(SC.Λ, :, P₄)
-        @. δG = A₁ * (Λ₃ - Λ₁) + A₂ * (Λ₄ - Λ₂)
+        @. δG = 𝕊₁ * A₁ * (Λ₃ - Λ₁) + 𝕊₂ * A₂ * (Λ₄ - Λ₂)
 
         # Calculate new green's function and goodness-of-fit function
         @. Gₙ = δG + SC.Gᵧ
@@ -1149,6 +1282,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
             # Save optimal solution
             if χ² < SC.χ²min
+                #println("move_p")
                 SC.χ²min = χ²
                 measure(t, SE, SC)
             end
@@ -1167,10 +1301,18 @@ See also: [`try_move_x`](@ref).
 function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
+    offdiag = get_b("offdiag")
     npole = get_x("npole")
-    #
-    if npole == 1
-        return
+
+    # Sanity check
+    if offdiag
+        if npole ≤ 3
+            return
+        end
+    else
+        if npole == 1
+            return
+        end
     end
 
     # It is used to save the change of green's function
@@ -1183,10 +1325,14 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         # Select two poles randomly
         s₁ = 1
         s₂ = 1
-        while s₁ == s₂
+        #
+        while ( s₁ == s₂ ) || ( SE.𝕊[s₁] != SE.𝕊[s₂] )
             s₁ = rand(MC.rng, 1:npole)
             s₂ = rand(MC.rng, 1:npole)
         end
+        #
+        @assert s₁ != s₂
+        @assert SE.𝕊[s₁] == SE.𝕊[s₂]
 
         # Try to change amplitudes of the two poles, but their sum is kept.
         P₁ = SE.P[s₁]
@@ -1195,6 +1341,8 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         A₂ = SE.A[s₂]
         A₃ = 0.0
         A₄ = 0.0
+        𝕊₁ = SE.𝕊[s₁]
+        𝕊₂ = SE.𝕊[s₂]
         while true
             δA = rand(MC.rng) * (A₁ + A₂) - A₁
             A₃ = A₁ + δA
@@ -1208,7 +1356,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         # Calculate change of green's function
         Λ₁ = view(SC.Λ, :, P₁)
         Λ₂ = view(SC.Λ, :, P₂)
-        @. δG = (A₃ - A₁) * Λ₁ + (A₄ - A₂) * Λ₂
+        @. δG = 𝕊₁ * (A₃ - A₁) * Λ₁ + 𝕊₂ * (A₄ - A₂) * Λ₂
 
         # Calculate new green's function and goodness-of-fit function
         @. Gₙ = δG + SC.Gᵧ
@@ -1233,6 +1381,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
             # Save optimal solution
             if χ² < SC.χ²min
+                #println("move_a")
                 SC.χ²min = χ²
                 measure(t, SE, SC)
             end
@@ -1251,10 +1400,18 @@ See also: [`try_move_a`](@ref).
 function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
+    offdiag = get_b("offdiag")
     npole = get_x("npole")
-    #
-    if npole == 1
-        return
+
+    # Sanity check
+    if offdiag
+        if npole ≤ 3
+            return
+        end
+    else
+        if npole == 1
+            return
+        end
     end
 
     # It is used to save the change of green's function
@@ -1267,10 +1424,14 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         # Select two poles randomly
         s₁ = 1
         s₂ = 1
-        while s₁ == s₂
+        #
+        while ( s₁ == s₂ ) || ( SE.𝕊[s₁] != SE.𝕊[s₂] )
             s₁ = rand(MC.rng, 1:npole)
             s₂ = rand(MC.rng, 1:npole)
         end
+        #
+        @assert s₁ != s₂
+        @assert SE.𝕊[s₁] == SE.𝕊[s₂]
 
         # Try to swap amplitudes of the two poles, but their sum is kept.
         P₁ = SE.P[s₁]
@@ -1279,11 +1440,13 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         A₂ = SE.A[s₂]
         A₃ = A₂
         A₄ = A₁
+        𝕊₁ = SE.𝕊[s₁]
+        𝕊₂ = SE.𝕊[s₂]
 
         # Calculate change of green's function
         Λ₁ = view(SC.Λ, :, P₁)
         Λ₂ = view(SC.Λ, :, P₂)
-        @. δG = (A₃ - A₁) * Λ₁ + (A₄ - A₂) * Λ₂
+        @. δG = 𝕊₁ * (A₃ - A₁) * Λ₁ + 𝕊₂ * (A₄ - A₂) * Λ₂
 
         # Calculate new green's function and goodness-of-fit function
         @. Gₙ = δG + SC.Gᵧ
@@ -1308,6 +1471,7 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
             # Save optimal solution
             if χ² < SC.χ²min
+                # println("move_x")
                 SC.χ²min = χ²
                 measure(t, SE, SC)
             end
