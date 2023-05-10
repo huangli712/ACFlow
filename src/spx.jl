@@ -199,6 +199,11 @@ end
 Perform stochastic pole expansion simulation, sequential version.
 """
 function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
@@ -227,7 +232,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         end
 
         # Write Monte Carlo statistics
-        write_statistics(MC)
+        fwrite && write_statistics(MC)
 
         # Update χ²[t] to be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
         SC.χ²[t] = SC.χ²min
@@ -236,7 +241,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     end
 
     # Write pole expansion coefficients
-    write_pole(SC.Pᵥ, SC.Aᵥ, SC.𝕊ᵥ, SC.χ², SC.fmesh)
+    fwrite && write_pole(SC.Pᵥ, SC.Aᵥ, SC.𝕊ᵥ, SC.χ², SC.fmesh)
 
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
@@ -262,6 +267,11 @@ function prun(S::StochPXSolver,
     # Initialize random number generator again
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
 
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
@@ -290,7 +300,7 @@ function prun(S::StochPXSolver,
         end
 
         # Write Monte Carlo statistics
-        myid() == 2 && write_statistics(MC)
+        myid() == 2 && fwrite && write_statistics(MC)
 
         # Update χ²[t] to be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
         SC.χ²[t] = SC.χ²min
@@ -299,7 +309,7 @@ function prun(S::StochPXSolver,
     end
 
     # Write pole expansion coefficients
-    myid() == 2 && write_pole(SC.Pᵥ, SC.Aᵥ, SC.𝕊ᵥ, SC.χ², SC.fmesh)
+    myid() == 2 && fwrite && write_pole(SC.Pᵥ, SC.Aᵥ, SC.𝕊ᵥ, SC.χ², SC.fmesh)
 
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
@@ -313,6 +323,11 @@ simulations. It will generate the spectral functions, real frequency
 green's function, and imaginary frequency green's function.
 """
 function average(SC::StochPXContext)
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Setup essential parameters
     ktype = get_b("ktype")
     nmesh = get_b("nmesh")
@@ -394,9 +409,9 @@ function average(SC::StochPXContext)
         #
         # Write indices of selected solutions
         if nworkers() > 1
-            myid() == 2 && write_passed(passed, chi2_med, αgood)
+            myid() == 2 && fwrite && write_passed(passed, chi2_med, αgood)
         else
-            write_passed(passed, chi2_med, αgood)
+            fwrite && write_passed(passed, chi2_med, αgood)
         end
     #
     end
@@ -417,14 +432,19 @@ function last(SC::StochPXContext,
               Aout::Vector{F64},
               Gout::Vector{C64},
               Gᵣ::Vector{F64})
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Write the spectral function
-    write_spectrum(SC.mesh, Aout)
+    fwrite && write_spectrum(SC.mesh, Aout)
 
     # Reproduce input data and write them
-    write_backward(SC.grid, Gᵣ)
+    fwrite && write_backward(SC.grid, Gᵣ)
 
     # Write full response function on real axis
-    write_complete(SC.mesh, Gout)
+    fwrite && write_complete(SC.mesh, Gout)
 end
 
 #=
