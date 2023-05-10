@@ -1133,7 +1133,6 @@ Change the position of one randomly selected pole.
 See also: [`try_move_p`](@ref).
 """
 function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
-    #println("in S")
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
     nfine = get_x("nfine")
@@ -1193,7 +1192,6 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
             # Save optimal solution
             if χ² < SC.χ²min
-                #println("move_s")
                 SC.χ²min = χ²
                 measure(t, SE, SC)
             end
@@ -1210,7 +1208,6 @@ Change the positions of two randomly selected poles.
 See also: [`try_move_s`](@ref).
 """
 function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
-    #println("in P")
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
     npole = get_x("npole")
@@ -1284,7 +1281,6 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
             # Save optimal solution
             if χ² < SC.χ²min
-                #println("move_p")
                 SC.χ²min = χ²
                 measure(t, SE, SC)
             end
