@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/02
+# Last modified: 2023/05/10
 #
 
 #=
@@ -205,9 +205,12 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
     # Warmup the Monte Carlo engine
     println("Start thermalization...")
+    @show SC.χ²min
     for _ = 1:nstep
         sample(1, MC, SE, SC)
     end
+    @show SC.χ²min
+    #error()
 
     # Sample and collect data
     println("Start stochastic sampling...")
@@ -227,10 +230,11 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
             sample(t, MC, SE, SC)
         end
         #@show "after:", SE.A, SC.𝕊ᵥ[t]
-        #( t == 2 ) && error()
+        #( t == 4 ) && error()
 
         # Write Monte Carlo statistics
         write_statistics(MC)
+        #error()
 
         # Update χ²[t] to be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
         SC.χ²[t] = SC.χ²min
@@ -446,7 +450,7 @@ simulated annealing algorithm. Here, `t` means the t-th attempt.
 function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Try to change positions of poles
     if rand(MC.rng) < 0.5
-        if rand(MC.rng) < 0.9
+        if rand(MC.rng) < 0.5
             try_move_s(t, MC, SE, SC)
         else
             try_move_p(t, MC, SE, SC)
@@ -456,7 +460,7 @@ function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         if rand(MC.rng) < 0.5
             try_move_a(t, MC, SE, SC)
         else
-            try_move_x(t, MC, SE, SC)
+            #try_move_x(t, MC, SE, SC)
         end
     end
 end
@@ -486,6 +490,9 @@ See also: [`StochPXMC`](@ref).
 """
 function init_mc(S::StochPXSolver)
     seed = rand(1:100000000)
+    #seed = 6746999
+    @show seed
+    
     rng = MersenneTwister(seed)
     #
     Sacc = 0
@@ -602,10 +609,13 @@ Reset the counters in StochPXMC struct.
 function reset_mc(MC::StochPXMC)
     MC.Sacc = 0
     MC.Stry = 0
+    #
     MC.Pacc = 0
     MC.Ptry = 0
+    #
     MC.Aacc = 0
     MC.Atry = 0
+    #
     MC.Xacc = 0
     MC.Xtry = 0
 end
@@ -1133,6 +1143,7 @@ Change the position of one randomly selected pole.
 See also: [`try_move_p`](@ref).
 """
 function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    #println("in S")
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
     nfine = get_x("nfine")
@@ -1209,6 +1220,7 @@ Change the positions of two randomly selected poles.
 See also: [`try_move_s`](@ref).
 """
 function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    #println("in P")
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
     npole = get_x("npole")
@@ -1299,6 +1311,7 @@ Change the amplitudes of two randomly selected poles.
 See also: [`try_move_x`](@ref).
 """
 function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    #println("in A")
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
     offdiag = get_b("offdiag")
@@ -1306,9 +1319,10 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
     # Sanity check
     if offdiag
-        if npole ≤ 3
-            return
-        end
+        #if npole ≤ 3
+        #    return
+        #end
+        @assert true
     else
         if npole == 1
             return
@@ -1326,13 +1340,15 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         s₁ = 1
         s₂ = 1
         #
-        while ( s₁ == s₂ ) || ( SE.𝕊[s₁] != SE.𝕊[s₂] )
+        #println("hh")
+        while ( s₁ == s₂ ) #|| ( SE.𝕊[s₁] != SE.𝕊[s₂] )
             s₁ = rand(MC.rng, 1:npole)
             s₂ = rand(MC.rng, 1:npole)
         end
+        #println("hh")
         #
         @assert s₁ != s₂
-        @assert SE.𝕊[s₁] == SE.𝕊[s₂]
+        #@assert SE.𝕊[s₁] == SE.𝕊[s₂]
 
         # Try to change amplitudes of the two poles, but their sum is kept.
         P₁ = SE.P[s₁]
@@ -1343,15 +1359,37 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         A₄ = 0.0
         𝕊₁ = SE.𝕊[s₁]
         𝕊₂ = SE.𝕊[s₂]
-        while true
-            δA = rand(MC.rng) * (A₁ + A₂) - A₁
-            A₃ = A₁ + δA
-            A₄ = A₂ - δA
 
-            if A₃ > 0 && A₄ > 0
-                break
+        if 𝕊₁ == 𝕊₂
+            while true
+                δA = rand(MC.rng) * (A₁ + A₂) - A₁
+                A₃ = A₁ + δA
+                A₄ = A₂ - δA
+
+                if 1.0 > A₃ > 0.0 && 1.0 > A₄ > 0
+                    break
+                end
+            end
+        else
+            while true
+                δA = rand(MC.rng) * (A₁ + A₂) - A₁
+                if rand(MC.rng) > 0.5
+                    δA = δA * (+1.0)
+                else
+                    δA = δA * (-1.0)
+                end
+                A₃ = (𝕊₁ * A₁ + δA) / 𝕊₁
+                A₄ = (𝕊₂ * A₂ - δA) / 𝕊₂
+
+                #@show A₁, A₂, A₃, A₄, δA, 𝕊₁, 𝕊₂
+                if 1.0 > A₃ > 0.0 && 1.0 > A₄ > 0
+                    break
+                end
             end
         end
+        #@show A₁, A₂, A₃, A₄, 𝕊₁, 𝕊₂
+        
+        #error()
 
         # Calculate change of green's function
         Λ₁ = view(SC.Λ, :, P₁)
@@ -1398,6 +1436,7 @@ Exchange the amplitudes of two randomly selected poles.
 See also: [`try_move_a`](@ref).
 """
 function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    #println("in X")
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
     offdiag = get_b("offdiag")
@@ -1408,6 +1447,7 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         if npole ≤ 3
             return
         end
+        #@assert true
     else
         if npole == 1
             return
@@ -1442,11 +1482,15 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         A₄ = A₁
         𝕊₁ = SE.𝕊[s₁]
         𝕊₂ = SE.𝕊[s₂]
+        #𝕊₃ = 𝕊₂
+        #𝕊₄ = 𝕊₁
 
         # Calculate change of green's function
         Λ₁ = view(SC.Λ, :, P₁)
         Λ₂ = view(SC.Λ, :, P₂)
         @. δG = 𝕊₁ * (A₃ - A₁) * Λ₁ + 𝕊₂ * (A₄ - A₂) * Λ₂
+        #@. δG = (𝕊₃ * A₃ - 𝕊₁ * A₁) * Λ₁ + (𝕊₄ * A₄ - 𝕊₂ * A₂) * Λ₂
+
 
         # Calculate new green's function and goodness-of-fit function
         @. Gₙ = δG + SC.Gᵧ
@@ -1459,6 +1503,9 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
             # Update Monte Carlo configuration
             SE.A[s₁] = A₃
             SE.A[s₂] = A₄
+
+            #SE.𝕊[s₁] = 𝕊₃
+            #SE.𝕊[s₂] = 𝕊₄
 
             # Update reconstructed green's function
             @. SC.Gᵧ = Gₙ
