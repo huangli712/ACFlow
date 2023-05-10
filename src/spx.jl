@@ -1297,22 +1297,13 @@ Change the amplitudes of two randomly selected poles.
 See also: [`try_move_x`](@ref).
 """
 function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
-    #println("in A")
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
-    offdiag = get_b("offdiag")
     npole = get_x("npole")
 
     # Sanity check
-    if offdiag
-        #if npole ≤ 3
-        #    return
-        #end
-        @assert true
-    else
-        if npole == 1
-            return
-        end
+    if npole == 1
+        return
     end
 
     # It is used to save the change of green's function
@@ -1323,18 +1314,13 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     for _ = 1:npole
 
         # Select two poles randomly
+        # The two poles should not be the same.
         s₁ = 1
         s₂ = 1
-        #
-        #println("hh")
-        while ( s₁ == s₂ ) #|| ( SE.𝕊[s₁] != SE.𝕊[s₂] )
+        while s₁ == s₂
             s₁ = rand(MC.rng, 1:npole)
             s₂ = rand(MC.rng, 1:npole)
         end
-        #println("hh")
-        #
-        @assert s₁ != s₂
-        #@assert SE.𝕊[s₁] == SE.𝕊[s₂]
 
         # Try to change amplitudes of the two poles, but their sum is kept.
         P₁ = SE.P[s₁]
