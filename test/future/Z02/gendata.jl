@@ -12,12 +12,18 @@ wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 20    # Number of Matsubara frequencies
 beta = 40.0  # Inverse temperature
-ϵ₁   = 2.00  # Parameters for gaussian peaks
-ϵ₂   = -2.0
-A₁   = 1.00
-A₂   = 1.00
+ϵ₁   = 1.50  # Parameters for gaussian peaks
+ϵ₂   = -1.5
+ϵ₃   = 0.50
+ϵ₄   = -0.5
+A₁   = 0.50
+A₂   = 0.50
+A₃   = 0.50
+A₄   = 0.50
 η₁   = 1e-2
 η₂   = 1e-2
+η₃   = 1e-2
+η₄   = 1e-2
 
 # Real frequency mesh
 ω = collect(LinRange(wmin, wmax, nmesh))
@@ -37,14 +43,14 @@ noise = noise_abs .* exp.(noise_phase * im)
 giw1 = zeros(C64, niw)
 for i in eachindex(giw1)
     giw1[i] = (
-        A₁ / (iωₙ[i] * im - ϵ₁) + noise[i]
+        A₁ / (iωₙ[i] * im - ϵ₁) + A₃ / (iωₙ[i] * im - ϵ₃) + noise[i]
     )
 end
 #
 giw2 = zeros(C64, niw)
 for i in eachindex(giw2)
     giw2[i] = (
-        A₂ / (iωₙ[i] * im - ϵ₂) + noise[i]
+        A₂ / (iωₙ[i] * im - ϵ₂) + A₄ / (iωₙ[i] * im - ϵ₄) + noise[i]
     )
 end
 #
@@ -56,14 +62,14 @@ end
 gre1 = zeros(C64, nmesh)
 for i in eachindex(gre1)
     gre1[i] = (
-        A₁ / (ω[i] + η₁ * im - ϵ₁)
+        A₁ / (ω[i] + η₁ * im - ϵ₁) + A₃ / (ω[i] + η₃ * im - ϵ₃)
     )
 end
 #
 gre2 = zeros(C64, nmesh)
 for i in eachindex(gre2)
     gre2[i] = (
-        A₂ / (ω[i] + η₂ * im - ϵ₂)
+        A₂ / (ω[i] + η₂ * im - ϵ₂) + A₄ / (ω[i] + η₄ * im - ϵ₄)
     )
 end
 #
