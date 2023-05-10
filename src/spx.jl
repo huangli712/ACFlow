@@ -1399,7 +1399,6 @@ Exchange the amplitudes of two randomly selected poles.
 See also: [`try_move_a`](@ref).
 """
 function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
-    #println("in X")
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
     offdiag = get_b("offdiag")
@@ -1410,7 +1409,6 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         if npole ≤ 3
             return
         end
-        #@assert true
     else
         if npole == 1
             return
@@ -1425,16 +1423,14 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
     for _ = 1:npole
 
         # Select two poles randomly
+        # The positions of the two poles are different,
+        # but their signs should be the same.
         s₁ = 1
         s₂ = 1
-        #
         while ( s₁ == s₂ ) || ( SE.𝕊[s₁] != SE.𝕊[s₂] )
             s₁ = rand(MC.rng, 1:npole)
             s₂ = rand(MC.rng, 1:npole)
         end
-        #
-        @assert s₁ != s₂
-        @assert SE.𝕊[s₁] == SE.𝕊[s₂]
 
         # Try to swap amplitudes of the two poles, but their sum is kept.
         P₁ = SE.P[s₁]
@@ -1445,15 +1441,11 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         A₄ = A₁
         𝕊₁ = SE.𝕊[s₁]
         𝕊₂ = SE.𝕊[s₂]
-        #𝕊₃ = 𝕊₂
-        #𝕊₄ = 𝕊₁
 
         # Calculate change of green's function
         Λ₁ = view(SC.Λ, :, P₁)
         Λ₂ = view(SC.Λ, :, P₂)
         @. δG = 𝕊₁ * (A₃ - A₁) * Λ₁ + 𝕊₂ * (A₄ - A₂) * Λ₂
-        #@. δG = (𝕊₃ * A₃ - 𝕊₁ * A₁) * Λ₁ + (𝕊₄ * A₄ - 𝕊₂ * A₂) * Λ₂
-
 
         # Calculate new green's function and goodness-of-fit function
         @. Gₙ = δG + SC.Gᵧ
@@ -1467,9 +1459,6 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
             SE.A[s₁] = A₃
             SE.A[s₂] = A₄
 
-            #SE.𝕊[s₁] = 𝕊₃
-            #SE.𝕊[s₂] = 𝕊₄
-
             # Update reconstructed green's function
             @. SC.Gᵧ = Gₙ
 
@@ -1481,7 +1470,6 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
             # Save optimal solution
             if χ² < SC.χ²min
-                # println("move_x")
                 SC.χ²min = χ²
                 measure(t, SE, SC)
             end
