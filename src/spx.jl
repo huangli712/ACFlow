@@ -1344,16 +1344,11 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
             end
         else
             while true
-                δA = rand(MC.rng) * (A₁ + A₂) - A₁
-                if rand(MC.rng) > 0.5
-                    δA = δA * (+1.0)
-                else
-                    δA = δA * (-1.0)
-                end
+                _δA = rand(MC.rng) * (A₁ + A₂) - A₁
+                δA = rand(MC.rng) > 0.5 ? _δA * (+1.0) : _δA * (-1.0)
                 A₃ = (𝕊₁ * A₁ + δA) / 𝕊₁
                 A₄ = (𝕊₂ * A₂ - δA) / 𝕊₂
 
-                #@show A₁, A₂, A₃, A₄, δA, 𝕊₁, 𝕊₂
                 if 1.0 > A₃ > 0.0 && 1.0 > A₄ > 0
                     break
                 end
