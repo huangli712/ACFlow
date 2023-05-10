@@ -1338,7 +1338,7 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
                 A₃ = A₁ + δA
                 A₄ = A₂ - δA
 
-                if 1.0 > A₃ > 0.0 && 1.0 > A₄ > 0
+                if 1.0 > A₃ > 0.0 && 1.0 > A₄ > 0.0
                     break
                 end
             end
@@ -1349,14 +1349,11 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
                 A₃ = (𝕊₁ * A₁ + δA) / 𝕊₁
                 A₄ = (𝕊₂ * A₂ - δA) / 𝕊₂
 
-                if 1.0 > A₃ > 0.0 && 1.0 > A₄ > 0
+                if 1.0 > A₃ > 0.0 && 1.0 > A₄ > 0.0
                     break
                 end
             end
         end
-        #@show A₁, A₂, A₃, A₄, 𝕊₁, 𝕊₂
-        
-        #error()
 
         # Calculate change of green's function
         Λ₁ = view(SC.Λ, :, P₁)
@@ -1386,7 +1383,6 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 
             # Save optimal solution
             if χ² < SC.χ²min
-                #println("move_a")
                 SC.χ²min = χ²
                 measure(t, SE, SC)
             end
