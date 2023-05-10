@@ -1,5 +1,5 @@
 #
-# Test: X10
+# Test: Z01
 #
 # 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or StochPX).
@@ -8,7 +8,7 @@
 
 [BASE]
 finput = "giw.12.data"
-solver = "StochPX"
+solver = "MaxEnt"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
@@ -29,10 +29,10 @@ ratio  = 10.0
 blur   = -1.0
 
 [StochPX]
-method = "best"
+method = "mean"
 nfine  = 100000
-npole  = 4
-ntry   = 100
-nstep  = 10000
-theta  = 1e+6
-eta    = 1e-2
+npole  = 2000
+ntry   = 2000
+nstep  = 100
+theta  = 1e+8
+eta    = 1e-3
