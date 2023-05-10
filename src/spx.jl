@@ -205,12 +205,9 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
     # Warmup the Monte Carlo engine
     println("Start thermalization...")
-    @show SC.χ²min
     for _ = 1:nstep
         sample(1, MC, SE, SC)
     end
-    @show SC.χ²min
-    #error()
 
     # Sample and collect data
     println("Start stochastic sampling...")
@@ -225,24 +222,17 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         reset_context(t, SE, SC)
 
         # Apply simulated annealing algorithm
-        #@show "before:", SE.A, SC.𝕊ᵥ[t]
         for _ = 1:nstep
             sample(t, MC, SE, SC)
         end
-        #@show "after:", SE.A, SC.𝕊ᵥ[t]
-        #( t == 4 ) && error()
 
         # Write Monte Carlo statistics
         write_statistics(MC)
-        #error()
 
         # Update χ²[t] to be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
         SC.χ²[t] = SC.χ²min
         @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²min)
         flush(stdout)
-        @show SE.A, SE.P, SE.𝕊
-        @show SC.Aᵥ[t], SC.Pᵥ[t], SC.𝕊ᵥ[t]
-        #error()
     end
 
     # Write pole expansion coefficients
@@ -450,7 +440,7 @@ simulated annealing algorithm. Here, `t` means the t-th attempt.
 function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Try to change positions of poles
     if rand(MC.rng) < 0.5
-        if rand(MC.rng) < 0.5
+        if rand(MC.rng) < 0.9
             try_move_s(t, MC, SE, SC)
         else
             try_move_p(t, MC, SE, SC)
@@ -460,7 +450,7 @@ function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         if rand(MC.rng) < 0.5
             try_move_a(t, MC, SE, SC)
         else
-            #try_move_x(t, MC, SE, SC)
+            try_move_x(t, MC, SE, SC)
         end
     end
 end
@@ -490,9 +480,6 @@ See also: [`StochPXMC`](@ref).
 """
 function init_mc(S::StochPXSolver)
     seed = rand(1:100000000)
-    #seed = 6746999
-    @show seed
-    
     rng = MersenneTwister(seed)
     #
     Sacc = 0
@@ -528,12 +515,14 @@ function init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
         # We just assume that the numbers of poles for the positive and
         # negative parts are equal.
         @assert iseven(npole)
+        hpole = npole ÷ 2
 
+        # Initialize P, A, and 𝕊
         P = rand(rng, allow, npole)
-        A₊ = rand(rng, F64, npole ÷ 2)
-        A₋ = rand(rng, F64, npole ÷ 2)
-        𝕊₊ = ones(F64, npole ÷ 2)
-        𝕊₋ = ones(F64, npole ÷ 2) * (-1.0)
+        A₊ = rand(rng, F64, hpole)
+        A₋ = rand(rng, F64, hpole)
+        𝕊₊ = ones(F64, hpole)
+        𝕊₋ = ones(F64, hpole) * (-1.0)
 
         # We have to make sure ∑ᵢ Aᵢ = 1
         s = sum(A₊)
@@ -545,6 +534,7 @@ function init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
         A = vcat(A₊, A₋)
         𝕊 = vcat(𝕊₊, 𝕊₋)
     else
+        # Initialize P, A, and 𝕊
         P = rand(rng, allow, npole)
         A = rand(rng, F64, npole)
         𝕊 = ones(F64, npole)
@@ -649,14 +639,15 @@ function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
         @assert hselect ≤ hpole
 
         # Which poles that should be changed
+        # For poles that with positive weights
         selected₊ = rand(rng, 1:hpole, hselect)
         unique!(selected₊)
         hselect₊ = length(selected₊)
         #
+        # For poles that with negative weights
         selected₋ = rand(rng, hpole+1:npole, hselect)
         unique!(selected₋)
         hselect₋ = length(selected₋)
-        @show hselect₊, selected₊, hselect₋, selected₋
 
         # Change poles' positions
         if rand(rng) < 0.9
@@ -665,7 +656,6 @@ function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
             #
             P₋ = rand(rng, allow, hselect₋)
             @. SE.P[selected₋] = P₋
-            @show P₊, P₋
         # Change poles' amplitudes
         else
             # For positive-weight poles
