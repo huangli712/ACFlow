@@ -416,6 +416,146 @@ function rebuild(fg::FermionicMatsubaraGrid, nfreq::I64, β::F64)
 end
 
 #=
+### *Struct : FermionicFragmentMatsubaraGrid*
+=#
+
+"""
+    FermionicFragmentMatsubaraGrid(nfreq::I64, β::F64)
+
+A constructor for the FermionicFragmentMatsubaraGrid struct, which is
+defined in `src/types.jl`. The Matsubara grid is from input.
+
+See also: [`FermionicFragmentMatsubaraGrid`](@ref).
+"""
+function FermionicFragmentMatsubaraGrid(β::F64, ω::Vector{F64})
+    nfreq = length(ω)
+    @assert nfreq ≥ 1
+    @assert β ≥ 0.0
+    wmin = π / β
+    wmax = (2 * nfreq - 1) * π / β
+    @assert all(x -> (wmin ≤ x ≤ wmax * 2.0), ω)
+    return FermionicFragmentMatsubaraGrid(nfreq, β, ω)
+end
+
+"""
+    Base.length(fg::FermionicFragmentMatsubaraGrid)
+
+Return number of grid points in a FermionicFragmentMatsubaraGrid struct.
+
+See also: [`FermionicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.length(fg::FermionicFragmentMatsubaraGrid)
+    fg.nfreq
+end
+
+"""
+    Base.iterate(fg::FermionicFragmentMatsubaraGrid)
+
+Advance the iterator of a FermionicFragmentMatsubaraGrid struct to obtain
+the next grid point.
+
+See also: [`FermionicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.iterate(fg::FermionicFragmentMatsubaraGrid)
+    iterate(fg.ω)
+end
+
+"""
+    Base.iterate(fg::FermionicFragmentMatsubaraGrid, i::I64)
+
+Create an iterable object for visiting each index of a
+FermionicFragmentMatsubaraGrid struct.
+
+See also: [`FermionicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.iterate(fg::FermionicFragmentMatsubaraGrid, i::I64)
+    iterate(fg.ω, i)
+end
+
+"""
+    Base.eachindex(fg::FermionicFragmentMatsubaraGrid)
+
+Create an iterable object for visiting each index of a
+FermionicFragmentMatsubaraGrid struct.
+
+See also: [`FermionicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.eachindex(fg::FermionicFragmentMatsubaraGrid)
+    eachindex(fg.ω)
+end
+
+"""
+    Base.firstindex(fg::FermionicFragmentMatsubaraGrid)
+
+Return the first index of a FermionicFragmentMatsubaraGrid struct.
+
+See also: [`FermionicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.firstindex(fg::FermionicFragmentMatsubaraGrid)
+    firstindex(fg.ω)
+end
+
+"""
+    Base.lastindex(fg::FermionicFragmentMatsubaraGrid)
+
+Return the last index of a FermionicFragmentMatsubaraGrid struct.
+
+See also: [`FermionicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.lastindex(fg::FermionicFragmentMatsubaraGrid)
+    lastindex(fg.ω)
+end
+
+"""
+    Base.getindex(fg::FermionicFragmentMatsubaraGrid, ind::I64)
+
+Retrieve the value(s) stored at the given key or index within a
+FermionicFragmentMatsubaraGrid struct.
+
+See also: [`FermionicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.getindex(fg::FermionicFragmentMatsubaraGrid, ind::I64)
+    @assert 1 ≤ ind ≤ fg.nfreq
+    return fg.ω[ind]
+end
+
+"""
+    Base.getindex(fg::FermionicFragmentMatsubaraGrid, I::UnitRange{I64})
+
+Return a subset of a FermionicFragmentMatsubaraGrid struct as specified by `I`.
+
+See also: [`FermionicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.getindex(fg::FermionicFragmentMatsubaraGrid, I::UnitRange{I64})
+    @assert checkbounds(Bool, fg.ω, I)
+    lI = length(I)
+    X = similar(fg.ω, lI)
+    if lI > 0
+        unsafe_copyto!(X, 1, fg.ω, first(I), lI)
+    end
+    return X
+end
+
+"""
+    rebuild(fg::FermionicFragmentMatsubaraGrid, nfreq::I64, β::F64)
+
+Rebuild the FermionicFragmentMatsubaraGrid struct via new `nfreq` and `β`
+parameters.
+
+See also: [`FermionicFragmentMatsubaraGrid`](@ref).
+"""
+function rebuild(fg::FermionicFragmentMatsubaraGrid, nfreq::I64, β::F64)
+    @assert nfreq ≥ 1
+    @assert β ≥ 0.0
+    fg.nfreq = nfreq
+    fg.β = β
+    resize!(fg.ω, nfreq)
+    for n = 1:nfreq
+        fg.ω[n] = (2 * n - 1) * π / fg.β
+    end
+end
+
+#=
 ### *Struct : BosonicImaginaryTimeGrid*
 =#
 
