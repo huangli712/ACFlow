@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/21
+# Last modified: 2023/05/12
 #
 
 """
@@ -133,11 +133,13 @@ GreenData       -> Preprocessed input data.
 #
 AbstractGrid    -> Abstract mesh for input data.
 FermionicImaginaryTimeGrid -> Grid in fermionic imaginary time axis.
-FermionicFragmentGrid -> Grid in fermionic imaginary time axis.
+FermionicFragmentTimeGrid -> Grid in fermionic imaginary time axis.
 FermionicMatsubaraGrid -> Grid in fermionic Matsubara frequency axis.
+FermionicFragmentMatsubaraGrid -> Grid in fermionic Matsubara frequency axis.
 BosonicImaginaryTimeGrid -> Grid in bosonic imaginary time axis.
-BosonicFragmentGrid -> Grid in bosonic imaginary time axis.
+BosonicFragmentTimeGrid -> Grid in bosonic imaginary time axis.
 BosonicMatsubaraGrid -> Grid in bosonic Matsubara frequency axis.
+BosonicFragmentMatsubaraGrid -> Grid in bosonic Matsubara frequency axis.
 #
 AbstractMesh    -> Abstract grid for calculated spectral function.
 LinearMesh      -> Linear mesh.
@@ -180,11 +182,13 @@ export GreenData
 #
 export AbstractGrid
 export FermionicImaginaryTimeGrid
-export FermionicFragmentGrid
+export FermionicFragmentTimeGrid
 export FermionicMatsubaraGrid
+export FermionicFragmentMatsubaraGrid
 export BosonicImaginaryTimeGrid
-export BosonicFragmentGrid
+export BosonicFragmentTimeGrid
 export BosonicMatsubaraGrid
+export BosonicFragmentMatsubaraGrid
 #
 export AbstractMesh
 export LinearMesh
