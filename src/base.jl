@@ -318,13 +318,17 @@ function make_data(rd::RawData)
     val = rd.value
     err = rd.error
 
-    if grid == "ffreq" || ( grid == "bfreq" && ktype == "boson" )
+    if grid == "ffreq" || ( grid == "bfreq" && ktype == "boson" ) ||
+       grid == "ffrag" || ( grid == "bfrag" && ktype == "boson" )
         value = vcat(real(val), imag(val))
         error = vcat(real(err), imag(err))
         covar = error .^ 2.0
         _data = GreenData(value, error, covar)
         return _data
     else # grid == "bfreq" && ktype == "bsymm"
+         # grid == "bfrag" && ktype == "bsymm"
+         # grid == "ftime" || grid == "fpart"
+         # grid == "btime" || grid == "bpart"
         value = real(val)
         error = real(err)
         covar = error .^ 2.0
@@ -357,18 +361,18 @@ function make_grid(rd::RawData)
             _grid = FermionicImaginaryTimeGrid(ngrid, β, v)
             break
 
+        @case "fpart"
+            _grid = FermionicFragmentTimeGrid(β, v)
+            break
+
         @case "btime"
             _β = v[end]
             @assert abs(_β - β) ≤ 1e-6
             _grid = BosonicImaginaryTimeGrid(ngrid, β, v)
             break
 
-        @case "fpart"
-            _grid = FermionicFragmentGrid(β, v)
-            break
-
         @case "bpart"
-            _grid = BosonicFragmentGrid(β, v)
+            _grid = BosonicFragmentTimeGrid(β, v)
             break
 
         @case "ffreq"
@@ -377,10 +381,18 @@ function make_grid(rd::RawData)
             _grid = FermionicMatsubaraGrid(ngrid, β, v)
             break
 
+        @case "ffrag"
+            _grid = FermionicFragmentMatsubaraGrid(β, v)
+            break
+
         @case "bfreq"
             _β = 2.0 * π / (v[2] - v[1])
             @assert abs(_β - β) ≤ 1e-6
             _grid = BosonicMatsubaraGrid(ngrid, β, v)
+            break
+        
+        @case "bfrag"
+            _grid = BosonicFragmentMatsubaraGrid(β, v)
             break
 
         @default
