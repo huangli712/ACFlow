@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/21
+# Last modified: 2023/05/12
 #
 
 """
@@ -259,11 +259,11 @@ function read_data(only_real_part::Bool = true)
             return read_real_data(finput, ngrid)
             break
 
-        @case "btime"
+        @case "fpart"
             return read_real_data(finput, ngrid)
             break
 
-        @case "fpart"
+        @case "btime"
             return read_real_data(finput, ngrid)
             break
 
@@ -275,7 +275,19 @@ function read_data(only_real_part::Bool = true)
             return read_cmplx_data(finput, ngrid)
             break
 
+        @case "ffrag"
+            return read_cmplx_data(finput, ngrid)
+            break
+
         @case "bfreq"
+            if ktype == "boson"
+                return read_cmplx_data(finput, ngrid)
+            else # ktype == "bsymm"
+                return read_cmplx_data(finput, ngrid, only_real_part)
+            end
+            break
+
+        @case "bfrag"
             if ktype == "boson"
                 return read_cmplx_data(finput, ngrid)
             else # ktype == "bsymm"
