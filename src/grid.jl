@@ -420,7 +420,7 @@ end
 =#
 
 """
-    FermionicFragmentMatsubaraGrid(nfreq::I64, β::F64)
+    FermionicFragmentMatsubaraGrid(β::F64, ω::Vector{F64})
 
 A constructor for the FermionicFragmentMatsubaraGrid struct, which is
 defined in `src/types.jl`. The Matsubara grid is from input.
@@ -953,6 +953,146 @@ parameters.
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
 function rebuild(bg::BosonicMatsubaraGrid, nfreq::I64, β::F64)
+    @assert nfreq ≥ 1
+    @assert β ≥ 0.0
+    bg.nfreq = nfreq
+    bg.β = β
+    resize!(bg.ω, nfreq)
+    for n = 1:nfreq
+        bg.ω[n] = (2 * n - 2) * π / bg.β
+    end
+end
+
+#=
+### *Struct : BosonicFragmentMatsubaraGrid*
+=#
+
+"""
+    BosonicFragmentMatsubaraGrid(β::F64, ω::Vector{F64})
+
+A constructor for the BosonicFragmentMatsubaraGrid struct, which is
+defined in `src/types.jl`. The Matsubara grid is from input.
+
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
+"""
+function BosonicFragmentMatsubaraGrid(β::F64, ω::Vector{F64})
+    nfreq = length(ω)
+    @assert nfreq ≥ 1
+    @assert β ≥ 0.0
+    wmin = 0.0
+    wmax = (2 * nfreq - 2) * π / β
+    @assert all(x -> (wmin ≤ x ≤ wmax * 2.0), ω)
+    return BosonicFragmentMatsubaraGrid(nfreq, β, ω)
+end
+
+"""
+    Base.length(bg::BosonicFragmentMatsubaraGrid)
+
+Return number of grid points in a BosonicFragmentMatsubaraGrid struct.
+
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.length(bg::BosonicFragmentMatsubaraGrid)
+    bg.nfreq
+end
+
+"""
+    Base.iterate(bg::BosonicFragmentMatsubaraGrid)
+
+Advance the iterator of a BosonicFragmentMatsubaraGrid struct to obtain
+the next grid point.
+
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.iterate(bg::BosonicFragmentMatsubaraGrid)
+    iterate(bg.ω)
+end
+
+"""
+    Base.iterate(bg::BosonicFragmentMatsubaraGrid, i::I64)
+
+Create an iterable object for visiting each index of a
+BosonicFragmentMatsubaraGrid struct.
+
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.iterate(bg::BosonicFragmentMatsubaraGrid, i::I64)
+    iterate(bg.ω, i)
+end
+
+"""
+    Base.eachindex(bg::BosonicFragmentMatsubaraGrid)
+
+Create an iterable object for visiting each index of a
+BosonicFragmentMatsubaraGrid struct.
+
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.eachindex(bg::BosonicFragmentMatsubaraGrid)
+    eachindex(bg.ω)
+end
+
+"""
+    Base.firstindex(bg::BosonicFragmentMatsubaraGrid)
+
+Return the first index of a BosonicFragmentMatsubaraGrid struct.
+
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.firstindex(bg::BosonicFragmentMatsubaraGrid)
+    firstindex(bg.ω)
+end
+
+"""
+    Base.lastindex(bg::BosonicFragmentMatsubaraGrid)
+
+Return the last index of a BosonicFragmentMatsubaraGrid struct.
+
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.lastindex(bg::BosonicFragmentMatsubaraGrid)
+    lastindex(bg.ω)
+end
+
+"""
+    Base.getindex(bg::BosonicFragmentMatsubaraGrid, ind::I64)
+
+Retrieve the value(s) stored at the given key or index within a
+BosonicFragmentMatsubaraGrid struct.
+
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.getindex(bg::BosonicFragmentMatsubaraGrid, ind::I64)
+    @assert 1 ≤ ind ≤ bg.nfreq
+    return bg.ω[ind]
+end
+
+"""
+    Base.getindex(bg::BosonicFragmentMatsubaraGrid, I::UnitRange{I64})
+
+Return a subset of a BosonicFragmentMatsubaraGrid struct as specified by `I`.
+
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.getindex(bg::BosonicFragmentMatsubaraGrid, I::UnitRange{I64})
+    @assert checkbounds(Bool, bg.ω, I)
+    lI = length(I)
+    X = similar(bg.ω, lI)
+    if lI > 0
+        unsafe_copyto!(X, 1, bg.ω, first(I), lI)
+    end
+    return X
+end
+
+"""
+    rebuild(bg::BosonicFragmentMatsubaraGrid, nfreq::I64, β::F64)
+
+Rebuild the BosonicFragmentMatsubaraGrid struct via new `nfreq` and `β`
+parameters.
+
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
+"""
+function rebuild(bg::BosonicFragmentMatsubaraGrid, nfreq::I64, β::F64)
     @assert nfreq ≥ 1
     @assert β ≥ 0.0
     bg.nfreq = nfreq
