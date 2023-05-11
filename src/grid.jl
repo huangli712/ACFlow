@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/21
+# Last modified: 2023/05/12
 #
 
 #=
@@ -142,115 +142,115 @@ function rebuild(fg::FermionicImaginaryTimeGrid, ntime::I64, β::F64)
 end
 
 #=
-### *Struct : FermionicFragmentGrid*
+### *Struct : FermionicFragmentTimeGrid*
 =#
 
 """
-    FermionicFragmentGrid(β::F64, τ::Vector{F64})
+    FermionicFragmentTimeGrid(β::F64, τ::Vector{F64})
 
-A constructor for the FermionicFragmentGrid struct, which is defined
+A constructor for the FermionicFragmentTimeGrid struct, which is defined
 in `src/types.jl`.
 
-See also: [`FermionicFragmentGrid`](@ref).
+See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-function FermionicFragmentGrid(β::F64, τ::Vector{F64})
+function FermionicFragmentTimeGrid(β::F64, τ::Vector{F64})
     ntime = length(τ)
     @assert ntime ≥ 1
     @assert β ≥ 0.0
     @assert all(x -> (0.0 ≤ x ≤ β), τ)
-    return FermionicFragmentGrid(ntime, β, τ)
+    return FermionicFragmentTimeGrid(ntime, β, τ)
 end
 
 """
-    Base.length(fg::FermionicFragmentGrid)
+    Base.length(fg::FermionicFragmentTimeGrid)
 
-Return number of grid points in a FermionicFragmentGrid struct.
+Return number of grid points in a FermionicFragmentTimeGrid struct.
 
-See also: [`FermionicFragmentGrid`](@ref).
+See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-function Base.length(fg::FermionicFragmentGrid)
+function Base.length(fg::FermionicFragmentTimeGrid)
     fg.ntime
 end
 
 """
-    Base.iterate(fg::FermionicFragmentGrid)
+    Base.iterate(fg::FermionicFragmentTimeGrid)
 
-Advance the iterator of a FermionicFragmentGrid struct to obtain
+Advance the iterator of a FermionicFragmentTimeGrid struct to obtain
 the next grid point.
 
-See also: [`FermionicFragmentGrid`](@ref).
+See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-function Base.iterate(fg::FermionicFragmentGrid)
+function Base.iterate(fg::FermionicFragmentTimeGrid)
     iterate(fg.τ)
 end
 
 """
-    Base.iterate(fg::FermionicFragmentGrid, i::I64)
+    Base.iterate(fg::FermionicFragmentTimeGrid, i::I64)
 
-This is the key method that allows a FermionicFragmentGrid struct
+This is the key method that allows a FermionicFragmentTimeGrid struct
 to be iterated, yielding a sequences of grid points.
 
-See also: [`FermionicFragmentGrid`](@ref).
+See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-function Base.iterate(fg::FermionicFragmentGrid, i::I64)
+function Base.iterate(fg::FermionicFragmentTimeGrid, i::I64)
     iterate(fg.τ, i)
 end
 
 """
-    Base.eachindex(fg::FermionicFragmentGrid)
+    Base.eachindex(fg::FermionicFragmentTimeGrid)
 
 Create an iterable object for visiting each index of a
-FermionicFragmentGrid struct.
+FermionicFragmentTimeGrid struct.
 
-See also: [`FermionicFragmentGrid`](@ref).
+See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-function Base.eachindex(fg::FermionicFragmentGrid)
+function Base.eachindex(fg::FermionicFragmentTimeGrid)
     eachindex(fg.τ)
 end
 
 """
-    Base.firstindex(fg::FermionicFragmentGrid)
+    Base.firstindex(fg::FermionicFragmentTimeGrid)
 
-Return the first index of a FermionicFragmentGrid struct.
+Return the first index of a FermionicFragmentTimeGrid struct.
 
-See also: [`FermionicFragmentGrid`](@ref).
+See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-function Base.firstindex(fg::FermionicFragmentGrid)
+function Base.firstindex(fg::FermionicFragmentTimeGrid)
     firstindex(fg.τ)
 end
 
 """
-    Base.lastindex(fg::FermionicFragmentGrid)
+    Base.lastindex(fg::FermionicFragmentTimeGrid)
 
-Return the last index of a FermionicFragmentGrid struct.
+Return the last index of a FermionicFragmentTimeGrid struct.
 
-See also: [`FermionicFragmentGrid`](@ref).
+See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-function Base.lastindex(fg::FermionicFragmentGrid)
+function Base.lastindex(fg::FermionicFragmentTimeGrid)
     lastindex(fg.τ)
 end
 
 """
-    Base.getindex(fg::FermionicFragmentGrid, ind::I64)
+    Base.getindex(fg::FermionicFragmentTimeGrid, ind::I64)
 
 Retrieve the value(s) stored at the given key or index within a
-FermionicFragmentGrid struct.
+FermionicFragmentTimeGrid struct.
 
-See also: [`FermionicFragmentGrid`](@ref).
+See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-function Base.getindex(fg::FermionicFragmentGrid, ind::I64)
+function Base.getindex(fg::FermionicFragmentTimeGrid, ind::I64)
     @assert 1 ≤ ind ≤ fg.ntime
     return fg.τ[ind]
 end
 
 """
-    Base.getindex(fg::FermionicFragmentGrid, I::UnitRange{I64})
+    Base.getindex(fg::FermionicFragmentTimeGrid, I::UnitRange{I64})
 
-Return a subset of a FermionicFragmentGrid struct as specified by `I`.
+Return a subset of a FermionicFragmentTimeGrid struct as specified by `I`.
 
-See also: [`FermionicFragmentGrid`](@ref).
+See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-function Base.getindex(fg::FermionicFragmentGrid, I::UnitRange{I64})
+function Base.getindex(fg::FermionicFragmentTimeGrid, I::UnitRange{I64})
     @assert checkbounds(Bool, fg.τ, I)
     lI = length(I)
     X = similar(fg.τ, lI)
@@ -261,14 +261,14 @@ function Base.getindex(fg::FermionicFragmentGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild(fg::FermionicFragmentGrid, ntime::I64, β::F64)
+    rebuild(fg::FermionicFragmentTimeGrid, ntime::I64, β::F64)
 
-Rebuild the FermionicFragmentGrid struct via new `ntime` and `β`
+Rebuild the FermionicFragmentTimeGrid struct via new `ntime` and `β`
 parameters. Now its imaginary time points are continuous.
 
-See also: [`FermionicFragmentGrid`](@ref).
+See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-function rebuild(fg::FermionicFragmentGrid, ntime::I64, β::F64)
+function rebuild(fg::FermionicFragmentTimeGrid, ntime::I64, β::F64)
     @assert ntime ≥ 1
     @assert β ≥ 0.0
     fg.ntime = ntime
@@ -550,115 +550,115 @@ function rebuild(bg::BosonicImaginaryTimeGrid, ntime::I64, β::F64)
 end
 
 #=
-### *Struct : BosonicFragmentGrid*
+### *Struct : BosonicFragmentTimeGrid*
 =#
 
 """
-    BosonicFragmentGrid(β::F64, τ::Vector{F64})
+    BosonicFragmentTimeGrid(β::F64, τ::Vector{F64})
 
-A constructor for the BosonicFragmentGrid struct, which is defined
+A constructor for the BosonicFragmentTimeGrid struct, which is defined
 in `src/types.jl`.
 
-See also: [`BosonicFragmentGrid`](@ref).
+See also: [`BosonicFragmentTimeGrid`](@ref).
 """
-function BosonicFragmentGrid(β::F64, τ::Vector{F64})
+function BosonicFragmentTimeGrid(β::F64, τ::Vector{F64})
     ntime = length(τ)
     @assert ntime ≥ 1
     @assert β ≥ 0.0
     @assert all(x -> (0.0 ≤ x ≤ β), τ)
-    return BosonicFragmentGrid(ntime, β, τ)
+    return BosonicFragmentTimeGrid(ntime, β, τ)
 end
 
 """
-    Base.length(bg::BosonicFragmentGrid)
+    Base.length(bg::BosonicFragmentTimeGrid)
 
-Return number of grid points in a BosonicFragmentGrid struct.
+Return number of grid points in a BosonicFragmentTimeGrid struct.
 
-See also: [`BosonicFragmentGrid`](@ref).
+See also: [`BosonicFragmentTimeGrid`](@ref).
 """
-function Base.length(bg::BosonicFragmentGrid)
+function Base.length(bg::BosonicFragmentTimeGrid)
     bg.ntime
 end
 
 """
-    Base.iterate(bg::BosonicFragmentGrid)
+    Base.iterate(bg::BosonicFragmentTimeGrid)
 
-Advance the iterator of a BosonicFragmentGrid struct to obtain
+Advance the iterator of a BosonicFragmentTimeGrid struct to obtain
 the next grid point.
 
-See also: [`BosonicFragmentGrid`](@ref).
+See also: [`BosonicFragmentTimeGrid`](@ref).
 """
-function Base.iterate(bg::BosonicFragmentGrid)
+function Base.iterate(bg::BosonicFragmentTimeGrid)
     iterate(bg.τ)
 end
 
 """
-    Base.iterate(bg::BosonicFragmentGrid, i::I64)
+    Base.iterate(bg::BosonicFragmentTimeGrid, i::I64)
 
 Create an iterable object for visiting each index of a
-BosonicFragmentGrid struct.
+BosonicFragmentTimeGrid struct.
 
-See also: [`BosonicFragmentGrid`](@ref).
+See also: [`BosonicFragmentTimeGrid`](@ref).
 """
-function Base.iterate(bg::BosonicFragmentGrid, i::I64)
+function Base.iterate(bg::BosonicFragmentTimeGrid, i::I64)
     iterate(bg.τ, i)
 end
 
 """
-    Base.eachindex(bg::BosonicFragmentGrid)
+    Base.eachindex(bg::BosonicFragmentTimeGrid)
 
 Create an iterable object for visiting each index of a
-BosonicFragmentGrid struct.
+BosonicFragmentTimeGrid struct.
 
-See also: [`BosonicFragmentGrid`](@ref).
+See also: [`BosonicFragmentTimeGrid`](@ref).
 """
-function Base.eachindex(bg::BosonicFragmentGrid)
+function Base.eachindex(bg::BosonicFragmentTimeGrid)
     eachindex(bg.τ)
 end
 
 """
-    Base.firstindex(bg::BosonicFragmentGrid)
+    Base.firstindex(bg::BosonicFragmentTimeGrid)
 
-Return the first index of a BosonicFragmentGrid struct.
+Return the first index of a BosonicFragmentTimeGrid struct.
 
-See also: [`BosonicFragmentGrid`](@ref).
+See also: [`BosonicFragmentTimeGrid`](@ref).
 """
-function Base.firstindex(bg::BosonicFragmentGrid)
+function Base.firstindex(bg::BosonicFragmentTimeGrid)
     firstindex(bg.τ)
 end
 
 """
-    Base.lastindex(bg::BosonicFragmentGrid)
+    Base.lastindex(bg::BosonicFragmentTimeGrid)
 
-Return the last index of a BosonicFragmentGrid struct.
+Return the last index of a BosonicFragmentTimeGrid struct.
 
-See also: [`BosonicFragmentGrid`](@ref).
+See also: [`BosonicFragmentTimeGrid`](@ref).
 """
-function Base.lastindex(bg::BosonicFragmentGrid)
+function Base.lastindex(bg::BosonicFragmentTimeGrid)
     lastindex(bg.τ)
 end
 
 """
-    Base.getindex(bg::BosonicFragmentGrid, ind::I64)
+    Base.getindex(bg::BosonicFragmentTimeGrid, ind::I64)
 
 Retrieve the value(s) stored at the given key or index within a
-BosonicFragmentGrid struct.
+BosonicFragmentTimeGrid struct.
 
-See also: [`BosonicFragmentGrid`](@ref).
+See also: [`BosonicFragmentTimeGrid`](@ref).
 """
-function Base.getindex(bg::BosonicFragmentGrid, ind::I64)
+function Base.getindex(bg::BosonicFragmentTimeGrid, ind::I64)
     @assert 1 ≤ ind ≤ bg.ntime
     return bg.τ[ind]
 end
 
 """
-    Base.getindex(bg::BosonicFragmentGrid, I::UnitRange{I64})
+    Base.getindex(bg::BosonicFragmentTimeGrid, I::UnitRange{I64})
 
-Return a subset of a BosonicFragmentGrid struct as specified by `I`.
+Return a subset of a BosonicFragmentTimeGrid struct as specified by `I`.
 
-See also: [`BosonicFragmentGrid`](@ref).
+See also: [`BosonicFragmentTimeGrid`](@ref).
 """
-function Base.getindex(bg::BosonicFragmentGrid, I::UnitRange{I64})
+function Base.getindex(bg::BosonicFragmentTimeGrid, I::UnitRange{I64})
     @assert checkbounds(Bool, bg.τ, I)
     lI = length(I)
     X = similar(bg.τ, lI)
@@ -669,14 +669,14 @@ function Base.getindex(bg::BosonicFragmentGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild(bg::BosonicFragmentGrid, ntime::I64, β::F64)
+    rebuild(bg::BosonicFragmentTimeGrid, ntime::I64, β::F64)
 
-Rebuild the BosonicFragmentGrid struct via new `ntime` and `β`
+Rebuild the BosonicFragmentTimeGrid struct via new `ntime` and `β`
 parameters. Now its imaginary time points are continuous.
 
-See also: [`BosonicFragmentGrid`](@ref).
+See also: [`BosonicFragmentTimeGrid`](@ref).
 """
-function rebuild(bg::BosonicFragmentGrid, ntime::I64, β::F64)
+function rebuild(bg::BosonicFragmentTimeGrid, ntime::I64, β::F64)
     @assert ntime ≥ 1
     @assert β ≥ 0.0
     bg.ntime = ntime
