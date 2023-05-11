@@ -13,7 +13,7 @@ nmesh = 2001 # Number of real-frequency points
 niw  = 20    # Number of Matsubara frequencies
 beta = 40.0  # Inverse temperature
 ϵ₁   = 2.00  # Parameters for gaussian peaks
-ϵ₂   = -2.0
+ϵ₂   = -1.0
 A₁   = 0.50
 A₂   = 0.50
 Γ₁   = 0.50
@@ -25,11 +25,13 @@ rmesh = collect(LinRange(wmin, wmax, nmesh))
 # Initial spectral function
 image1 = similar(rmesh)
 @. image1  = A₁ * exp(-(rmesh - ϵ₁) ^ 2.0 / (2.0 * Γ₁ ^ 2.0)) / (Γ₁ * sqrt(2.0 * π))
-image1 = image1 ./ trapz(rmesh, image1)
+@. image1  = image1 + A₁ * exp(-(rmesh + ϵ₁) ^ 2.0 / (2.0 * Γ₁ ^ 2.0)) / (Γ₁ * sqrt(2.0 * π))
+#image1 = image1 ./ trapz(rmesh, image1)
 #
 image2 = similar(rmesh)
 @. image2  = A₂ * exp(-(rmesh - ϵ₂) ^ 2.0 / (2.0 * Γ₂ ^ 2.0)) / (Γ₂ * sqrt(2.0 * π))
-image2 = image2 ./ trapz(rmesh, image2)
+@. image2  = image2 + A₂ * exp(-(rmesh + ϵ₂) ^ 2.0 / (2.0 * Γ₂ ^ 2.0)) / (Γ₂ * sqrt(2.0 * π))
+#image2 = image2 ./ trapz(rmesh, image2)
 #
 𝔸 = zeros(F64, (2,2,nmesh))
 𝔸[1,1,:] .= image1

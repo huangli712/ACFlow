@@ -8,7 +8,7 @@
 
 [BASE]
 finput = "giw.12.data"
-solver = "MaxEnt"
+solver = "StochPX"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
@@ -23,16 +23,16 @@ offdiag = true
 [MaxEnt]
 method = "chi2kink"
 stype  = "sj"
-nalph  = 15
+nalph  = 18
 alpha  = 1e15
 ratio  = 10.0
 blur   = -1.0
 
 [StochPX]
-method = "mean"
+method = "best"
 nfine  = 100000
-npole  = 2000
-ntry   = 2000
+npole  = 200
+ntry   = 10
 nstep  = 100
 theta  = 1e+8
 eta    = 1e-3
