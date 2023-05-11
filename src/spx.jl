@@ -210,9 +210,12 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
     # Warmup the Monte Carlo engine
     println("Start thermalization...")
+    @show sum(SE.𝕊 .* SE.A)
     for _ = 1:nstep
         sample(1, MC, SE, SC)
     end
+    @show sum(SE.𝕊 .* SE.A)
+    #error()
 
     # Sample and collect data
     println("Start stochastic sampling...")
@@ -733,6 +736,8 @@ function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
             @. SE.A[selected] = A₂
         end
     end
+
+    @show sum(SE.𝕊 .* SE.A)
 end
 
 """
