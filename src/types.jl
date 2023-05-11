@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/08
+# Last modified: 2023/05/12
 #
 
 #=
@@ -339,7 +339,7 @@ Mutable struct. It represents the fermionic imaginary time grid.
 * β     -> Inverse temperature.
 * τ     -> Vector of grid points.
 
-See also: [`FermionicMatsubaraGrid`](@ref).
+See also: [`FermionicFragmentTimeGrid`](@ref).
 """
 mutable struct FermionicImaginaryTimeGrid <: AbstractGrid
     ntime :: I64
@@ -348,7 +348,7 @@ mutable struct FermionicImaginaryTimeGrid <: AbstractGrid
 end
 
 """
-    FermionicFragmentGrid
+    FermionicFragmentTimeGrid
 
 Mutable struct. It represents part of the fermionic imaginary time grid.
 
@@ -358,9 +358,9 @@ Mutable struct. It represents part of the fermionic imaginary time grid.
 * β     -> Inverse temperature.
 * τ     -> Vector of grid points.
 
-See also: [`FermionicMatsubaraGrid`](@ref).
+See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
-mutable struct FermionicFragmentGrid <: AbstractGrid
+mutable struct FermionicFragmentTimeGrid <: AbstractGrid
     ntime :: I64
     β :: F64
     τ :: Vector{F64}
@@ -377,9 +377,28 @@ Mutable struct. It represents the fermionic Matsubara frequency grid.
 * β     -> Inverse temperature.
 * ω     -> Vector of grid points.
 
-See also: [`FermionicImaginaryTimeGrid`](@ref).
+See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
 mutable struct FermionicMatsubaraGrid <: AbstractGrid
+    nfreq :: I64
+    β :: F64
+    ω :: Vector{F64}
+end
+
+"""
+    FermionicFragmentMatsubaraGrid
+
+Mutable struct. It represents part of the fermionic Matsubara frequency grid.
+
+### Members
+
+* nfreq -> Number of Matsubara frequency points.
+* β     -> Inverse temperature.
+* ω     -> Vector of grid points.
+
+See also: [`FermionicMatsubaraGrid`](@ref).
+"""
+mutable struct FermionicFragmentMatsubaraGrid <: AbstractGrid
     nfreq :: I64
     β :: F64
     ω :: Vector{F64}
@@ -396,7 +415,7 @@ Mutable struct. It represents the bosonic imaginary time grid.
 * β     -> Inverse temperature.
 * τ     -> Vector of grid points.
 
-See also: [`BosonicMatsubaraGrid`](@ref).
+See also: [`BosonicFragmentTimeGrid`](@ref).
 """
 mutable struct BosonicImaginaryTimeGrid <: AbstractGrid
     ntime :: I64
@@ -405,7 +424,7 @@ mutable struct BosonicImaginaryTimeGrid <: AbstractGrid
 end
 
 """
-    BosonicFragmentGrid
+    BosonicFragmentTimeGrid
 
 Mutable struct. It represents part of the bosonic imaginary time grid.
 
@@ -415,9 +434,9 @@ Mutable struct. It represents part of the bosonic imaginary time grid.
 * β     -> Inverse temperature.
 * τ     -> Vector of grid points.
 
-See also: [`BosonicMatsubaraGrid`](@ref).
+See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
-mutable struct BosonicFragmentGrid <: AbstractGrid
+mutable struct BosonicFragmentTimeGrid <: AbstractGrid
     ntime :: I64
     β :: F64
     τ :: Vector{F64}
@@ -434,9 +453,28 @@ Mutable struct. It represents the bosonic Matsubara frequency grid.
 * β     -> Inverse temperature.
 * ω     -> Vector of grid points.
 
-See also: [`BosonicImaginaryTimeGrid`](@ref).
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
 mutable struct BosonicMatsubaraGrid <: AbstractGrid
+    nfreq :: I64
+    β :: F64
+    ω :: Vector{F64}
+end
+
+"""
+    BosonicFragmentMatsubaraGrid
+
+Mutable struct. It represents part of the bosonic Matsubara frequency grid.
+
+### Members
+
+* nfreq -> Number of Matsubara frequency points.
+* β     -> Inverse temperature.
+* ω     -> Vector of grid points.
+
+See also: [`BosonicMatsubaraGrid`](@ref).
+"""
+mutable struct BosonicFragmentMatsubaraGrid <: AbstractGrid
     nfreq :: I64
     β :: F64
     ω :: Vector{F64}
