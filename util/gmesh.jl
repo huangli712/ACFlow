@@ -41,7 +41,7 @@ function read_spectrum(fn::String = "Aout.data")
     end
 
     # Return the spectral data
-    return mesh, image
+    return mesh, abs.(image)
 end
 
 """
