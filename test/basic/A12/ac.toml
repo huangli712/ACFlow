@@ -5,7 +5,7 @@
 # 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK or StochOM).
 # 2. Change the [MaxEnt] -> method (chi2kink or bryan).
 # 3. Execute ../../../util/acrun.jl ac.toml.
-# 4. Please remove some lines in giw.data.
+# 4. Please remove some lines in chiw.data.
 # 5. Change [BASE] -> ngrid.
 # 6. Repeat step 3.
 #
