@@ -176,13 +176,15 @@ Depth = 3
 > This parameter specifies the grid's type for input data in imaginary axis. Now the ACFlow toolkit supports the following choices:
 >
 > * ftime
-> * btime
 > * fpart
+> * btime
 > * bpart
 > * ffreq
+> * ffrag
 > * bfreq
+> * bfrag
 >
-> Here, `ftime` means fermionic and imaginary time, `btime` means bosonic and imaginary time, `ffreq` means fermionic and Matsubara frequency, and `bfreq` means bosonic and Matsubara frequency. `fpart` means fermionic and imaginary time as well, but the grid of imaginary time might be incomplete. `bpart` is similar to `fpart`, but it is for the bosonic case.
+> Here, `ftime` means fermionic and imaginary time, `btime` means bosonic and imaginary time, `ffreq` means fermionic and Matsubara frequency, and `bfreq` means bosonic and Matsubara frequency. `fpart` means fermionic and imaginary time as well, but the grid of imaginary time might be incomplete. `bpart` is similar to `fpart`, but it is for the bosonic case. `ffrag` means fermionic and Matsubara frequency as well, but the grid of Matsubara frequency might be incomplete. `bfrag` is similar to `ffrag`, but it is for the bosonic case.
 
 *Type:*
 
@@ -194,7 +196,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory. It must be compatible with the `ktype` parameter. See also [`ngrid`](@ref ngrid).
+> This parameter is mandatory. It must be compatible with the `ktype` parameter. If grid is "bfrag", the first Matsubara frequency point, i.e. ``i\omega_0 = 0``, should be kept. See also [`ngrid`](@ref ngrid).
 
 !!! warning
 
@@ -202,7 +204,7 @@ Depth = 3
 
 !!! warning
 
-    If the `StochPX` solver is employed, the `grid` parameter should be "ffreq" or "bfreq".
+    If the `StochPX` solver is employed, the `grid` parameter should be "ffreq", "ffrag", "bfreq", or "bfrag".
 
 ### [mesh](@id mesh)
 
