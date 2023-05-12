@@ -4,7 +4,7 @@
 
 ## Standard tests
 
-The following ten tests are used to test the basic features of the ACFlow toolkit.
+The following tweleve tests are used to test the basic features of the ACFlow toolkit.
 
 * **basic/A01**
     * Fermionic + Matsubara
@@ -98,6 +98,28 @@ The following ten tests are used to test the basic features of the ACFlow toolki
     * Rise-And-Decay model + Flat model
     * Half-Lorentzian mesh
     * Fixed error bar
+
+* **basic/A11**
+    * Fermionic + Matsubara (incomplete data)
+    * MaxEnt solver (chi2kink or bryan algorithm)
+    * StochAC solver
+    * StochSK solver
+    * StochOM solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * A clone of **A01**
+
+* **basic/A12**
+    * Bosonic (symm) + Matsubara (incomplete data)
+    * MaxEnt solver (chi2kink or bryan algorithm)
+    * StochAC solver
+    * StochSK solver
+    * StochOM solver
+    * Flat model
+    * Half-Lorentzian mesh
+    * Fixed error bar
+    * A clone of **A02**
 
 ## Experimental tests
 
