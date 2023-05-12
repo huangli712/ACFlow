@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/10
+# Last modified: 2023/05/12
 #
 
 #=
@@ -210,12 +210,9 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
     # Warmup the Monte Carlo engine
     println("Start thermalization...")
-    @show sum(SE.𝕊 .* SE.A)
     for _ = 1:nstep
         sample(1, MC, SE, SC)
     end
-    @show sum(SE.𝕊 .* SE.A)
-    #error()
 
     # Sample and collect data
     println("Start stochastic sampling...")
@@ -541,7 +538,10 @@ function init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
         hpole = npole ÷ 2
 
         # Initialize P, A, and 𝕊
-        P = rand(rng, allow, npole)
+        allow₊ = filter(x -> x > 0.0, allow)
+        allow₋ = filter(x -> x < 0.0, allow)
+        P₊ = rand(rng, allow₊, hpole)
+        P₋ = rand(rng, allow₋, hpole)
         A₊ = rand(rng, F64, hpole)
         A₋ = rand(rng, F64, hpole)
         𝕊₊ = ones(F64, hpole)
@@ -554,6 +554,7 @@ function init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
         @. A₋ = A₋ / s
 
         # Merge positive and negative parts
+        P = vcat(P₊, P₋)
         A = vcat(A₊, A₋)
         𝕊 = vcat(𝕊₊, 𝕊₋)
     else
@@ -567,7 +568,7 @@ function init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
         @. A = A / s
     end
 
-    SE = StochPXElement(P, A, 𝕊)
+    SE = StochPXElement(abs.(P), A, 𝕊)
 
     return SE
 end
@@ -674,11 +675,13 @@ function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
 
         # Change poles' positions
         if rand(rng) < 0.9
-            P₊ = rand(rng, allow, hselect₊)
-            @. SE.P[selected₊] = P₊
+            allow₊ = filter(x -> x > 0.0, allow)
+            P₊ = rand(rng, allow₊, hselect₊)
+            @. SE.P[selected₊] = abs.(P₊)
             #
-            P₋ = rand(rng, allow, hselect₋)
-            @. SE.P[selected₋] = P₋
+            allow₋ = filter(x -> x < 0.0, allow)
+            P₋ = rand(rng, allow₋, hselect₋)
+            @. SE.P[selected₋] = abs.(P₋)
         # Change poles' amplitudes
         else
             # For positive-weight poles
@@ -737,7 +740,6 @@ function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
         end
     end
 
-    @show sum(SE.𝕊 .* SE.A)
 end
 
 """
@@ -1122,11 +1124,13 @@ compatible with the self-adaptive mesh.
 See also: [`StochPXSolver`](@ref).
 """
 function constraints(S::StochPXSolver, fmesh::AbstractMesh)
+    offdiag = get_b("offdiag")
     exclude = get_b("exclude")
     nfine = get_x("nfine")
     @assert nfine == length(fmesh)
 
     allow = I64[]
+    unallow = I64[]
 
     # Go through the fine mesh and check every mesh point.
     # Is is excluded ?
@@ -1144,7 +1148,13 @@ function constraints(S::StochPXSolver, fmesh::AbstractMesh)
         #
         if !is_excluded
             push!(allow, i)
+        else
+            push!(unallow, -i)
         end
+    end
+
+    if offdiag
+        append!(allow, unallow)
     end
 
     return allow
@@ -1188,7 +1198,11 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
             P₂ = P₁ - δP
         end
         #
-        !(P₂ in SC.allow) && continue
+        if 𝕊ₛ > 0.0
+            !(+P₂ in SC.allow) && continue
+        else
+            !(-P₂ in SC.allow) && continue
+        end
 
         # Calculate change of green's function
         Λ₁ = view(SC.Λ, :, P₁)
@@ -1259,22 +1273,24 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         end
 
         # Try to change position of the s₁ pole
-        P₁ = SE.P[s₁]
-        P₃ = P₁
-        while P₃ == P₁
-            P₃ = rand(MC.rng, SC.allow)
-        end
         A₁ = SE.A[s₁]
         𝕊₁ = SE.𝕊[s₁]
+        P₁ = SE.P[s₁]
+        P₃ = P₁
+        while P₃ == P₁ || sign(P₃) != sign(𝕊₁) 
+            P₃ = rand(MC.rng, SC.allow)
+        end
+        P₃ = abs(P₃)
         #
         # Try to change position of the s₂ pole
-        P₂ = SE.P[s₂]
-        P₄ = P₂
-        while P₄ == P₂
-            P₄ = rand(MC.rng, SC.allow)
-        end
         A₂ = SE.A[s₂]
         𝕊₂ = SE.𝕊[s₂]
+        P₂ = SE.P[s₂]
+        P₄ = P₂
+        while P₄ == P₂ || sign(P₄) != sign(𝕊₂)
+            P₄ = rand(MC.rng, SC.allow)
+        end
+        P₄ = abs(P₄)
 
         # Calculate change of green's function
         Λ₁ = view(SC.Λ, :, P₁)
