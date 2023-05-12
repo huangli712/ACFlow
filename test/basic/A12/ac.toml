@@ -1,10 +1,13 @@
 #
-# Test: A02
+# Test: A12
 #
 # 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK or StochOM).
 # 2. Change the [MaxEnt] -> method (chi2kink or bryan).
 # 3. Execute ../../../util/acrun.jl ac.toml.
+# 4. Please remove some lines in giw.data.
+# 5. Change [BASE] -> ngrid.
+# 6. Repeat step 3.
 #
 
 [BASE]
@@ -12,7 +15,7 @@ finput = "chiw.data"
 solver = "MaxEnt"
 ktype  = "bsymm"
 mtype  = "flat"
-grid   = "bfreq"
+grid   = "bfrag"
 mesh   = "halflorentz"
 ngrid  = 10
 nmesh  = 501
