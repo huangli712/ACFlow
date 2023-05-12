@@ -28,6 +28,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
 
 * **basic/A03**
     * Fermionic + Matsubara
+    * Realistic self-energy function
     * MaxEnt solver (chi2kink algorithm)
     * StochOM solver
     * Two-Lorentzians model
@@ -36,6 +37,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
 
 * **basic/A04**
     * Fermionic + Matsubara
+    * Realistic Green's function
     * MaxEnt solver (chi2kink algorithm)
     * StochOM solver
     * Gaussian model
@@ -45,6 +47,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
 
 * **basic/A05**
     * Fermionic + Matsubara (Auxiliary Green's function)
+    * Realistic self-energy function
     * MaxEnt solver (chi2kink algorithm + preblur)
     * StochOM solver
     * Gaussian model
@@ -68,13 +71,14 @@ The following ten tests are used to test the basic features of the ACFlow toolki
     * Fixed error bar
 
 * **basic/A08**
-    * Fermionic + Matsubara (Matrix-valued functions)
+    * Fermionic + Matsubara
+    * Matrix-valued Green's functions
     * MaxEnt solver (chi2kink algorithm)
     * Gaussian model + File model
     * Linear mesh
     * Script mode
     * Fixed error bar
-    * MaxEntAux algorithm
+    * MaxEntAux algorithm + Direct algorithm
 
 * **basic/A09**
     * Fermionic + Imaginary time
@@ -87,6 +91,7 @@ The following ten tests are used to test the basic features of the ACFlow toolki
 
 * **basic/A10**
     * Bosonic + Imaginary time
+    * Current-current correlation function
     * MaxEnt solver (chi2kink algorithm)
     * StochAC solver (with constraints)
     * StochSK solver (with constraints)
