@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/12
+# Last modified: 2023/05/13
 #
 
 """
@@ -408,6 +408,7 @@ function chk_dict()
         # For StochOM solver
         @case "StochOM"
             push!(PA, PStochOM)
+            # It does not support fermionic imaginary time data.
             @assert get_b("grid") in ("btime", "bpart", "ffreq", "ffrag", "bfreq", "bfrag")
             #
             @assert get_s("ntry")  ≥ 40
@@ -420,6 +421,7 @@ function chk_dict()
         # For StochPX solver
         @case "StochPX"
             push!(PA, PStochPX)
+            # It does not support imaginary time data.
             @assert get_b("grid") in ("ffreq", "ffrag", "bfreq", "bfrag")
             #
             @assert get_x("method") in ("best", "mean")
