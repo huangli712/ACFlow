@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/07
+# Last modified: 2023/05/13
 #
 
 #=
@@ -963,7 +963,7 @@ function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
         if any(x -> x < 0.0, 𝑅)
             @info "Negative spectrum occurs!"
             @info "The results might be questionable."
-            @info "Perhaps you can switch to the Shannon–Jaynes entropy."
+            @info "Perhaps you should switch to the Shannon–Jaynes entropy."
             f = 1.0 .- 𝑅 + log.(abs.(𝑅))
         else
             f = 1.0 .- 𝑅 + log.(𝑅)
