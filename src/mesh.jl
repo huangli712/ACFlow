@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/21
+# Last modified: 2023/05/13
 #
 
 #=
@@ -197,7 +197,7 @@ the basic operations for the following types of mesh:
 * HalfLorentzMesh
 * DynamicMesh
 
-With the help of these functions, we can easily visit the mesh's elements.
+With the help of these functions, we can easily access the mesh's elements.
 =#
 
 """
