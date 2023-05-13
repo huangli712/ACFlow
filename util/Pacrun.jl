@@ -2,8 +2,8 @@
 
 #
 # This script is used to start analytical continuation simulations.
-# It will launch only 8 processes. Please fix line (14) to change
-# the number of used processors.
+# By default it will launch only 8 processes. Please fix line (14)
+# to change the number of used processors.
 #
 # Usage:
 #
