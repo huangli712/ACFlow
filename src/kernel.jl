@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/12
+# Last modified: 2023/05/13
 #
 
 #=
@@ -676,6 +676,8 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
                     B² = (bmesh[k] - am[i]) ^ 2.0; I₂[k] = -2.0 * B² / (B² + g²)
                 end
                 if i == 1 && j == 1 # Perhaps we should check am[i] and bg[j] here!
+                    @assert am[i] == 0.0
+                    @assert bg[j] == 0.0
                     I₁ .= -2.0
                     I₂ .= -2.0
                 end
@@ -730,6 +732,8 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicFragmentMatsubaraGrid)
                     B² = (bmesh[k] - am[i]) ^ 2.0; I₂[k] = -2.0 * B² / (B² + g²)
                 end
                 if i == 1 && j == 1 # Perhaps we should check am[i] and bg[j] here!
+                    @assert am[i] == 0.0
+                    @assert bg[j] == 0.0
                     I₁ .= -2.0
                     I₂ .= -2.0
                 end
