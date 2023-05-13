@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/04
+# Last modified: 2023/05/13
 #
 
 #=
@@ -17,7 +17,7 @@ and the `StochPX` solver (based on the stochastic pole expansion method)
 do not need any default model functions. However, the `StochAC` solver
 (based on the stochastic analytical continuation method as well) only
 supports the `flat` default model function. The users can use the `mtype`
-parameter to choose which default model should be used.
+parameter to customize the default model that should be used.
 
 These default model functions are summaried as follows.
 
@@ -96,7 +96,7 @@ m(ω) = Γ\omega^2 \exp{(-\Gamma\omega)},\quad \omega \ge 0
 \end{equation}
 ```
 
-Be careful, ``\Gamma``, ``\omega_1``, and ``\omega_2`` are all model parameters.
+Be careful, ``\Gamma``, ``\omega_1``, and ``\omega_2`` are the model parameters.
 Their default values are defined in `make_model()`, but you can modified
 them according to the `pmodel` parameter.
 
@@ -241,12 +241,15 @@ end
 
 Try to read a model function from external file (specified by `fn`). Note
 that the mesh used to generate the model function must be compatible with
-`am`. In addition, the model function will not be normalized.
+`am`. In addition, the model function will be normalized automatically.
 
 See also: [`AbstractMesh`](@ref).
 """
 function build_file_model(am::AbstractMesh, fn::String)
+    # Allocate memory
     model = zeros(F64, length(am))
+    #
+    # Read model function
     open(fn, "r") do fin
         for i in eachindex(model)
             arr = parse.(F64, line_to_array(fin)[1:2])
@@ -255,6 +258,11 @@ function build_file_model(am::AbstractMesh, fn::String)
             model[i] = arr[2]
         end
     end
+    #
+    # Normalize model function
+    norm = dot(am.weight, model)
+    model = model ./ norm
+
     return model
 end
 
