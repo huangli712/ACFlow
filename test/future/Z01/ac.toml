@@ -19,6 +19,7 @@ wmax   = 5.0
 wmin   = -5.0
 beta   = 40.0
 offdiag = true
+exclude = [[0.0,5.0]]
 
 [MaxEnt]
 method = "chi2kink"
@@ -29,10 +30,10 @@ ratio  = 10.0
 blur   = -1.0
 
 [StochPX]
-method = "best"
+method = "mean"
 nfine  = 100000
-npole  = 200
-ntry   = 10
-nstep  = 100
+npole  = 2000
+ntry   = 1000
+nstep  = 400
 theta  = 1e+8
-eta    = 1e-3
+eta    = 1e-2
