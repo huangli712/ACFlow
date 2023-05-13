@@ -264,7 +264,7 @@ end
     rebuild(fg::FermionicFragmentTimeGrid, ntime::I64, β::F64)
 
 Rebuild the FermionicFragmentTimeGrid struct via new `ntime` and `β`
-parameters. Now its imaginary time points are continuous.
+parameters. Now its imaginary time points are continuous and complete.
 
 See also: [`FermionicFragmentTimeGrid`](@ref).
 """
@@ -540,7 +540,7 @@ end
     rebuild(fg::FermionicFragmentMatsubaraGrid, nfreq::I64, β::F64)
 
 Rebuild the FermionicFragmentMatsubaraGrid struct via new `nfreq` and `β`
-parameters.
+parameters. Now its Matsubara frequency points are continuous and complete.
 
 See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
@@ -812,7 +812,7 @@ end
     rebuild(bg::BosonicFragmentTimeGrid, ntime::I64, β::F64)
 
 Rebuild the BosonicFragmentTimeGrid struct via new `ntime` and `β`
-parameters. Now its imaginary time points are continuous.
+parameters. Now its imaginary time points are continuous and complete.
 
 See also: [`BosonicFragmentTimeGrid`](@ref).
 """
@@ -1088,7 +1088,7 @@ end
     rebuild(bg::BosonicFragmentMatsubaraGrid, nfreq::I64, β::F64)
 
 Rebuild the BosonicFragmentMatsubaraGrid struct via new `nfreq` and `β`
-parameters.
+parameters. Now its Matsubara frequency points are continuous and complete.
 
 See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
