@@ -29,7 +29,7 @@ into them.
 
 **Preliminary Knowledge: Imaginary-Time Green's Function**
 
-The single-particle imaginary-time Green's function reads,
+The single-particle imaginary time Green's function reads,
 
 ```math
 \begin{equation}
@@ -59,7 +59,7 @@ G_{B}(\tau + \beta) = G_{B}(\tau).
 
 **Preliminary Knowledge: Fourier Transformation**
 
-The imaginary-time Green's function ``G(\tau)`` and Matsubara Green's
+The imaginary time Green's function ``G(\tau)`` and Matsubara Green's
 function ``G(i\omega_n)`` are connected by the Fourier transformation
 and inverse Fourier transformation:
 
@@ -84,7 +84,7 @@ fermions and bosons, respectively.
 
 **For Fermionic Green's Functions**
 
-In imaginary-time axis, we have
+In imaginary time axis, we have
 
 ```math
 \begin{equation}
@@ -127,7 +127,7 @@ subtracted from ``\Sigma(i\omega_n)`` beforehand.
 
 **For Bosonic Green's Functions**
 
-In imaginary-time axis, we have
+In imaginary time axis, we have
 
 ```math
 \begin{equation}
@@ -225,7 +225,7 @@ and the transverse spin susceptibility
 
 **For Correlator of Hermitian Operator**
 
-In imaginary-time axis, we have
+In imaginary time axis, we have
 
 ```math
 \begin{equation}

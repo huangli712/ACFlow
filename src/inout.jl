@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/09
+# Last modified: 2023/05/13
 #
 
 #=
@@ -14,8 +14,8 @@
 """
     read_real_data(finput::AbstractString, ngrid::I64)
 
-Read input data. This function is used for imaginary-time data. The input
-file should contain three columns. The first column is the imaginary-time
+Read input data. This function is used for imaginary time data. The input
+file should contain three columns. The first column is the imaginary time
 grid, the second column is the value, the third column is the standard
 deviation σ. Here, `ngrid` specifies the number of grid points.
 
