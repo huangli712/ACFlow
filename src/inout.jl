@@ -141,7 +141,7 @@ end
     write_spectrum(am::AbstractMesh, Aout::Vector{F64})
 
 Write spectrum A(ω) to `Aout.data`. The grid is defined in `am`, and
-the spectrum is contained in `Aout`.
+the spectral data are contained in `Aout`.
 """
 function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
     @assert length(am) == length(Aout)
@@ -328,8 +328,8 @@ end
                χ²::Vector{F64},
                fmesh::AbstractMesh)
 
-Write poles' positions and amplitudes to `pole.data`. This function is
-only useful for the `StochPX` solver.
+Write positions, amplitudes, and signs of poles to `pole.data`. This
+function is only useful for the `StochPX` solver.
 """
 function write_pole(Pᵥ::Vector{Vector{I64}},
                     Aᵥ::Vector{Vector{F64}},
