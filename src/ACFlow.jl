@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/12
+# Last modified: 2023/05/13
 #
 
 """
@@ -133,20 +133,20 @@ GreenData       -> Preprocessed input data.
 #
 AbstractGrid    -> Abstract mesh for input data.
 FermionicImaginaryTimeGrid -> Grid in fermionic imaginary time axis.
-FermionicFragmentTimeGrid -> Grid in fermionic imaginary time axis.
+FermionicFragmentTimeGrid -> Grid in fermionic imaginary time axis (incomplete).
 FermionicMatsubaraGrid -> Grid in fermionic Matsubara frequency axis.
-FermionicFragmentMatsubaraGrid -> Grid in fermionic Matsubara frequency axis.
+FermionicFragmentMatsubaraGrid -> Grid in fermionic Matsubara frequency axis (incomplete).
 BosonicImaginaryTimeGrid -> Grid in bosonic imaginary time axis.
-BosonicFragmentTimeGrid -> Grid in bosonic imaginary time axis.
+BosonicFragmentTimeGrid -> Grid in bosonic imaginary time axis (incomplete).
 BosonicMatsubaraGrid -> Grid in bosonic Matsubara frequency axis.
-BosonicFragmentMatsubaraGrid -> Grid in bosonic Matsubara frequency axis.
+BosonicFragmentMatsubaraGrid -> Grid in bosonic Matsubara frequency axis (incomplete).
 #
 AbstractMesh    -> Abstract grid for calculated spectral function.
 LinearMesh      -> Linear mesh.
 TangentMesh     -> Tangent mesh.
 LorentzMesh     -> Lorentzian mesh.
 HalfLorentzMesh -> Lorentzian mesh at half-positive axis.
-DynamicMesh     -> Dynamic (very fine) mesh for stochastic solvers.
+DynamicMesh     -> Dynamic (very fine) mesh for stochastic-like solvers.
 #
 AbstractMC      -> Abstract Monte Carlo engine.
 StochACMC       -> Monte Carlo engine used in the StochAC solver.
@@ -407,7 +407,7 @@ write_goodness    -> Write Θ-dependent χ².
 write_model       -> Write default model function.
 write_hamiltonian -> Write effective hamiltonian for StochAC solver.
 write_passed      -> Write indices of selected solutions StochOM and StochPX solvers.
-write_pole        -> Write pole's information for StochPX solver.
+write_pole        -> Write details of generated poles for StochPX solver.
 write_probability -> Write Bayesian a-posteriori probability.
 write_statistics  -> Write statistics info. for StochAC/StochSK/StochOM/StochPX solver.
 ```
