@@ -1,8 +1,12 @@
 #!/usr/bin/env julia
 
 #
-# This script is used to generate a non-uniform very dense mesh according
-# to the given spectral function. It will launch only 1 process.
+# This script is used to generate a non-uniform and very dense mesh
+# according to the given spectral function `Aout.data`. The mesh will
+# be stored in `fmesh.inp`. The stochastic analytical continuation and
+# the stochastic pole expansion can utilize this mesh to capture the
+# fine structure of the spectrum automatically. This script will launch
+# only 1 process.
 #
 # Usage:
 #
@@ -41,6 +45,8 @@ function read_spectrum(fn::String = "Aout.data")
     end
 
     # Return the spectral data
+    # For bosonic systems and matrix-valued Green's functions, the spectra
+    # could exhibit negative weights.
     return mesh, abs.(image)
 end
 
@@ -102,11 +108,11 @@ function generate_fmesh(mesh::Vector{F64}, image::Vector{F64})
     vmin = minimum(Asum)
     Amesh = collect(LinRange(vmin, vmax, nfine))
 
-    # Create the linear interpolator, y = mesh and x = Asum.
-    f = LinearInterpolation(mesh, Asum)
+    # Create the linear interpolator, 𝑦 = mesh and 𝑥 = Asum.
+    𝑓 = LinearInterpolation(mesh, Asum)
 
-    # Interpolate it. Now Amesh is the new x, and fmesh is the new y.
-    fmesh = f.(Amesh)
+    # Interpolate it. Now Amesh is the new 𝑥, and fmesh is the new 𝑦.
+    fmesh = 𝑓.(Amesh)
 
     # Return the generated mesh
     return fmesh
