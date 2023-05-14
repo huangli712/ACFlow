@@ -541,6 +541,11 @@ function init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
         @assert iseven(npole)
         hpole = npole ÷ 2
 
+        # We have to make sure that both negative weights and positive
+        # weights are allowed for the generated poles.
+        @assert any(x -> x > 0.0, allow)
+        @assert any(x -> x < 0.0, allow)
+
         # Initialize P, A, and 𝕊
         allow₊ = filter(x -> x > 0.0, allow)
         allow₋ = filter(x -> x < 0.0, allow)
