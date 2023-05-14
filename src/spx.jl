@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/12
+# Last modified: 2023/05/15
 #
 
 #=
@@ -16,6 +16,10 @@
 
 Mutable struct. It is used to record the field configurations, which will
 be sampled by Monte Carlo sweeping procedure.
+
+For the off-diagonal elements of the matrix-valued green's function, the
+signs of the poles (𝕊) could be negative (-1.0). However, for the other
+cases, 𝕊 is always positive (+1.0).
 
 ### Members
 
