@@ -273,7 +273,7 @@ Depth = 3
 
 > This parameter is mandatory. See also [`mesh`](@ref mesh).
 
-### wmax
+### [wmax](@id wmax)
 
 *Definition:*
 
@@ -291,7 +291,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### wmin
+### [wmin](@id wmin)
 
 *Definition:*
 
@@ -313,7 +313,7 @@ Depth = 3
 
     If the `ktype = "bsymm"`, the `wmin` parameter should be 0.0. In other words, the spectral density is defined on the half positive axis.
 
-### beta
+### [beta](@id beta)
 
 *Definition:*
 
@@ -331,7 +331,7 @@ Depth = 3
 
 > This parameter is mandatory. This parameter must be compatible with the input data and grid. Specifically, for the imaginary time axis, the last grid point should be ``\beta``. As for the Matsubara frequency axis, the difference between two successive grid points should be ``\pi/\beta``.
 
-### offdiag
+### [offdiag](@id offdiag)
 
 *Definition:*
 
@@ -347,13 +347,13 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory. This parameter is useful for the `MaxEnt` solver only.
+> This parameter is mandatory. This parameter is useful for the `MaxEnt` and `StochPX` solvers only.
 
 !!! warning
 
-    Now only the `MaxEnt` solver supports this parameter.
+    Now only the `MaxEnt` and `StochPX` solvers supports this parameter. On the other hand, the `MaxEntAux` algorithm works always for the solvers that don't support this parameter.
 
-### fwrite
+### [fwrite](@id fwrite)
 
 *Definition:*
 
@@ -409,11 +409,11 @@ Depth = 3
 
 > This parameter is optional. The default values for ``f_1`` and `cut` are 2.1 and 0.01, respectively. See also [`mesh`](@ref mesh).
 
-### exclude
+### [exclude](@id exclude)
 
 *Definition:*
 
-> Restriction of the energy range of the calculated spectral functions. This features is implemented by the `StochAC`, `StochSK`, `StochOM`, and `StochPX` solvers. In these solvers, the ``\delta`` or `box` functions, which are used to mimic the spectral functions, are restricted to live out of the given energy ranges. For example, `exclude = [8.0,16.0]` means that the energy range `[8.0,16.0]` is strictly forbidden.
+> Restriction of the energy range of the calculated spectral functions. This features is implemented by the `StochAC`, `StochSK`, `StochOM`, and `StochPX` solvers. In these solvers, the ``\delta`` or `box` functions, which are used to mimic the spectral functions, are restricted to live out of the given energy ranges. For example, `exclude = [[8.0,16.0]]` means that the energy range `[8.0,16.0]` is strictly forbidden.
 
 *Type:*
 
@@ -425,7 +425,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is optional. If you are using the `MaxEnt` solver, this parameter will be ignored.
+> This parameter is optional. If you are using the `MaxEnt` solver, this parameter will be ignored. If solver = `StochPX` and offdiag = true, this parameter is mandatory. In this case, it is used to restrict the regions that the poles with positive weights can survive (or equivalently, the regions that the poles with negative weights can survice are also determined). For example, if exclude = [[-3.0,3.0]], wmin = -5.0, and wmax = 5.0, then the regions for poles with negative weights are [-3.0,3.0], while the regions for poles with positive weights are [-5.0,-3.0] U [3.0,5.0].
 
 ## [MaxEnt] Block
 

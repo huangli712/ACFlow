@@ -8,11 +8,12 @@ Now the ACFlow toolkit supports four analytical continuation methods as introduc
 * `StochOM`
 * `StochPX`
 
-Just as their names suggested, the `MaxEnt` solver implements the maximum entropy method. The `StochAC` and `StochSK` solvers implement the K. S. D. Beach's algorithm and A. W. Sandvik's algorithm of the stochastic analytical continuation, respectively. The `StochOM` solver implements the stochastic optimization method. The `StochPX` solver implements the stochastic pole expansion method. The ACFlow toolkit also provides a convenient library, which can be used to prepare and carry out analytical continuation calculations flexibly. The major features of the present ACFlow toolkit (*v1.3.0* and above) are summarized in **Table 1**.
+Just as their names suggested, the `MaxEnt` solver implements the maximum entropy method. The `StochAC` and `StochSK` solvers implement the K. S. D. Beach's algorithm and A. W. Sandvik's algorithm of the stochastic analytical continuation, respectively. The `StochOM` solver implements the stochastic optimization method. The `StochPX` solver implements the stochastic pole expansion method. The ACFlow toolkit also provides a convenient library, which can be used to prepare and carry out analytical continuation calculations flexibly. The major features of the present ACFlow toolkit (*v1.5.0* and above) are summarized in **Table 1**.
 
 | Features | MaxEnt | StochAC | StochSK | StochOM | StochPX |
 | :------- | :----: | :-----: | :-----: | :-----: | :-----: |
-|Matrix-valued Green's function | Y | N | N | N | N |
+|Matrix-valued Green's function | Y | N | N | N | Y |
+|Fragment input grid            | Y | Y | Y | Y | Y |
 |Imaginary time grid            | Y | Y | Y | Y | N |
 |Matsubara frequency grid       | Y | Y | Y | Y | Y |
 |Linear mesh                    | Y | Y | Y | Y | Y |
@@ -21,6 +22,7 @@ Just as their names suggested, the `MaxEnt` solver implements the maximum entrop
 |Bosonic kernel                 | Y | Y | Y | Y | Y |
 |Self-defined model function    | Y | N | N | N | N |
 |Constrained analytical continuation | N | Y | Y | Y | Y |
+|Self-adaptive parameterization | N | Y | N | N | Y |
 |Regeneration of input data     | Y | Y | Y | Y | Y |
 |Kramers-Kronig transformation  | Y | Y | Y | Y | Y |
 |Parallel computing             | N | Y | Y | Y | Y |
@@ -35,4 +37,4 @@ In **Table 1**, `Y` means yes while `N` means no. `Interactive mode`, `Script mo
 
 !!! info
 
-    Note that analytical continuation problem is a hotspot in computational physics and many-body physics all the time. Many efforts have been devoted to solve it in recent years. Noticeable achievements include maximum quantum entropy method, Nevanlinna analytical continuation, blocked-mode sampling and grid point sampling in stochastic analytical continuation, constrained stochastic analytical continuation, machine learning assisted analytical continuation, and so on. We would like to incorporate these new progresses into the ACFlow toolkit in the near future. BTW, contriibutions from the other users are always welcomed.
+    Note that analytical continuation problem is a hotspot in computational physics and many-body physics all the time. Many efforts have been devoted to solve it in recent years. Noticeable achievements include maximum quantum entropy method, Nevanlinna analytical continuation, blocked-mode sampling and grid point sampling in stochastic analytical continuation, constrained stochastic analytical continuation, machine learning assisted analytical continuation, and so on. We would like to incorporate these new progresses into the ACFlow toolkit in the near future. BTW, contributions from the other users are always welcomed.
