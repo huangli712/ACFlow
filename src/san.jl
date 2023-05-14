@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/04/04
+# Last modified: 2023/05/14
 #
 
 #=
@@ -16,6 +16,10 @@
 
 Mutable struct. It is used to record the field configurations, which will
 be sampled by Monte Carlo sweeping procedure.
+
+In the present implementation of StochSK solver, the amplitudes of the δ
+functions are fixed. But in principles, they could be sampled in the Monte
+Carlo procedure.
 
 ### Members
 
