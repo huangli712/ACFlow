@@ -304,7 +304,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fermionic + Matsubara
     * Matrix-valued Green's functions
     * MaxEnt solver (chi2kink algorithm)
-    * StochPX solver
+    * StochPX solver + self-adaptive mesh
     * Gaussian model + File model
     * Linear mesh
     * Script mode
@@ -316,7 +316,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fermionic + Matsubara
     * Matrix-valued Green's functions
     * MaxEnt solver (chi2kink algorithm)
-    * StochPX solver
+    * StochPX solver + self-adaptive mesh
     * Gaussian model + File model
     * Linear mesh
     * Script mode
@@ -374,12 +374,12 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Bosonic (symm) + Matsubara
     * Bottomonium spectral functions
     * MaxEnt solver
-    * StochPX solver
+    * StochPX solver + self-adaptive mesh
     * Very large gap + multiple peaks at high energy
 
 * **lqcd/Q08**
     * Bosonic (symm) + Matsubara
     * Bottomonium spectral functions
     * MaxEnt solver
-    * StochPX solver
+    * StochPX solver + self-adaptive mesh
     * Very large gap + multiple peaks at high energy
