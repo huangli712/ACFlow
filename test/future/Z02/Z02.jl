@@ -17,7 +17,7 @@ welcome()
 # See types.jl/_PBASE for default setup
 B = Dict{String,Any}(
     "finput" => "giw.11.data",
-    "mtype"  => "gauss",
+    "mtype"  => "flat",
     "ngrid"  => 20,
     "nmesh"  => 501,
     "wmax"   => 5.0,
@@ -29,8 +29,8 @@ B = Dict{String,Any}(
 # See types.jl/_PMaxEnt for default setup
 S = Dict{String,Any}(
     "stype"  => "sj",
-    "nalph"  => 28,
-    "alpha"  => 1e18,
+    "nalph"  => 14,
+    "alpha"  => 1e15,
 )
 #
 setup_param(B, S)
@@ -135,14 +135,14 @@ end
 # See types.jl/_PBASE for default setup
 B = Dict{String,Any}(
     "finput" => "giw.12.data",
-    "mtype"  => "file",
+    "mtype"  => "flat",
     "offdiag"=> true,
 )
 #
 # For [MaxEnt] block
 # See types.jl/_PMaxEnt for default setup
 S = Dict{String,Any}(
-    "nalph"  => 30,
+    "nalph"  => 14,
     "alpha"  => 1e15,
 )
 #
@@ -164,14 +164,14 @@ cp("repr.data", "repr.12.data", force = true)
 # See types.jl/_PBASE for default setup
 B = Dict{String,Any}(
     "finput" => "giw.21.data",
-    "mtype"  => "file",
+    "mtype"  => "flat",
     "offdiag"=> true,
 )
 #
 # For [MaxEnt] block
 # See types.jl/_PMaxEnt for default setup
 S = Dict{String,Any}(
-    "nalph"  => 30,
+    "nalph"  => 14,
     "alpha"  => 1e15,
 )
 #
