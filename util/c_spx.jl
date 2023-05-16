@@ -110,7 +110,18 @@ function reset_element_a(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElemen
     @. SE.A[selected] = A₂
 end
 
+"""
+    run_p(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+
+Perform stochastic pole expansion simulation, sequential version.
+Only the positions of poles are updated.
+"""
 function run_p(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
@@ -139,22 +150,33 @@ function run_p(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         end
 
         # Write Monte Carlo statistics
-        write_statistics(MC)
+        fwrite && write_statistics(MC)
 
-        # Update χ²[t] to be consistent with SC.Pᵥ[t] and SC.Aᵥ[t]
+        # Update χ²[t] to be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
         SC.χ²[t] = SC.χ²min
         @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²min)
         flush(stdout)
     end
 
     # Write pole expansion coefficients
-    write_pole(SC.Pᵥ, SC.Aᵥ, SC.χ², SC.fmesh)
+    fwrite && write_pole(SC.Pᵥ, SC.Aᵥ, SC.𝕊ᵥ, SC.χ², SC.fmesh)
 
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
 end
 
+"""
+    run_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+
+Perform stochastic pole expansion simulation, sequential version.
+Only the amplitudes of poles are updated.
+"""
 function run_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    # By default, we should write the analytical continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     # Setup essential parameters
     ntry = get_x("ntry")
     nstep = get_x("nstep")
@@ -183,16 +205,16 @@ function run_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         end
 
         # Write Monte Carlo statistics
-        write_statistics(MC)
+        fwrite && write_statistics(MC)
 
-        # Update χ²[t] to be consistent with SC.Pᵥ[t] and SC.Aᵥ[t]
+        # Update χ²[t] to be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
         SC.χ²[t] = SC.χ²min
         @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²min)
         flush(stdout)
     end
 
     # Write pole expansion coefficients
-    write_pole(SC.Pᵥ, SC.Aᵥ, SC.χ², SC.fmesh)
+    fwrite && write_pole(SC.Pᵥ, SC.Aᵥ, SC.𝕊ᵥ, SC.χ², SC.fmesh)
 
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
