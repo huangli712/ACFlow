@@ -659,7 +659,7 @@ function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
         # Here, `hpole` means half number of poles.
         hpole = npole ÷ 2
 
-        # How many poles that should be changed
+        # How many poles should be changed
         if hpole ≤ 5
             if 4 ≤ hpole ≤ 5
                 hselect = 2
@@ -671,7 +671,7 @@ function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
         end
         @assert hselect ≤ hpole
 
-        # Which poles that should be changed
+        # Which poles should be changed
         # For poles that with positive weights
         selected₊ = rand(rng, 1:hpole, hselect)
         unique!(selected₊)
@@ -715,7 +715,7 @@ function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
         end
     # For diagonal elements
     else
-        # How many poles that should be changed
+        # How many poles should be changed
         if npole ≤ 5
             if 4 ≤ npole ≤ 5
                 nselect = 2
@@ -727,7 +727,7 @@ function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
         end
         @assert nselect ≤ npole
 
-        # Which poles that should be changed
+        # Which poles should be changed
         selected = rand(rng, 1:npole, nselect)
         unique!(selected)
         nselect = length(selected)
