@@ -4,7 +4,8 @@
 # This script is used to examine the constrained stochastic pole
 # expansion method. It will try to fix the positions or amplitudes
 # of the poles, and then optimize the rest ones. It will launch
-# only 1 process.
+# only 1 process. Note that this script does not support matrix-valued
+# green's function.
 #
 # Usage:
 #
@@ -17,6 +18,11 @@ using Random
 using Printf
 using ACFlow
 
+"""
+    sample_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+
+Try to sample the positions of poles only.
+"""
 function sample_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     if rand(MC.rng) < 0.9
         try_move_s(t, MC, SE, SC)
@@ -25,6 +31,11 @@ function sample_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     end
 end
 
+"""
+    sample_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+
+Try to sample the amplitudes of poles only.
+"""
 function sample_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     if rand(MC.rng) < 0.5
         try_move_a(t, MC, SE, SC)
@@ -33,8 +44,15 @@ function sample_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     end
 end
 
+"""
+    reset_element_p(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
+
+Reset the positions of poles.
+"""
 function reset_element_p(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
     npole = get_x("npole")
+
+    # How many poles should be changed
     if npole ≤ 5
         if 4 ≤ npole ≤ 5
             nselect = 2
@@ -42,20 +60,29 @@ function reset_element_p(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElemen
             nselect = 1
         end
     else
-        nselect = ceil(I64, npole / 5)
+        nselect = npole ÷ 5
     end
     @assert nselect ≤ npole
-    #
+
+    # Which poles should be changed
     selected = rand(rng, 1:npole, nselect)
     unique!(selected)
     nselect = length(selected)
 
+    # Change poles' positions
     P = rand(rng, allow, nselect)
     @. SE.P[selected] = P
 end
 
+"""
+    reset_element_a(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
+
+Reset the amplitudes of poles.
+"""
 function reset_element_a(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
     npole = get_x("npole")
+
+    # How many poles should be changed
     if npole ≤ 5
         if 4 ≤ npole ≤ 5
             nselect = 2
@@ -63,14 +90,16 @@ function reset_element_a(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElemen
             nselect = 1
         end
     else
-        nselect = ceil(I64, npole / 5)
+        nselect = npole ÷ 5
     end
     @assert nselect ≤ npole
-    #
+
+    # Which poles should be changed
     selected = rand(rng, 1:npole, nselect)
     unique!(selected)
     nselect = length(selected)
 
+    # Change poles' amplitudes
     A₁ = SE.A[selected]
     s₁ = sum(A₁)
     #
