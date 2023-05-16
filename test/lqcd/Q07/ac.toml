@@ -1,5 +1,5 @@
 #
-# Test: Q07
+# Test: Q08
 #
 # 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or StochPX).
@@ -15,9 +15,9 @@ grid   = "bfreq"
 mesh   = "linear"
 ngrid  = 50
 nmesh  = 1001
-wmax   = 8.0
+wmax   = 16.0
 wmin   = 0.0
-beta   = 1.6
+beta   = 5.0
 offdiag = false
 
 [MaxEnt]
