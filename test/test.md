@@ -304,14 +304,25 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fermionic + Matsubara
     * Matrix-valued Green's functions
     * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
     * Gaussian model + File model
     * Linear mesh
     * Script mode
     * Fixed error bar
+    * Multiple gaussian peaks
     * MaxEntAux algorithm + Direct algorithm
 
 * **future/Z02**
-
+    * Fermionic + Matsubara
+    * Matrix-valued Green's functions
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
+    * Gaussian model + File model
+    * Linear mesh
+    * Script mode
+    * Fixed error bar
+    * Multiple delta peaks
+    * MaxEntAux algorithm + Direct algorithm
 
 ## LQCD tests
 
