@@ -372,10 +372,10 @@ The following tests are designed to test the newly developed `StochPX` solver (b
 
 * **lqcd/Q07**
     * Bosonic (symm) + Matsubara
-    * HTL Wilson line spectral functions
+    * Bottomonium spectral functions
     * MaxEnt solver
     * StochPX solver
-    * Single sharp peak at intermediate energy
+    * Very large gap + multiple peaks at high energy
 
 * **lqcd/Q08**
     * Bosonic (symm) + Matsubara
