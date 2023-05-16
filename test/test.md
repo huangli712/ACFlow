@@ -309,7 +309,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Linear mesh
     * Script mode
     * Fixed error bar
-    * Multiple gaussian peaks
+    * Two gaussian peaks
     * MaxEntAux algorithm + Direct algorithm
 
 * **future/Z02**
@@ -321,7 +321,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Linear mesh
     * Script mode
     * Fixed error bar
-    * Multiple delta peaks
+    * Four delta peaks
     * MaxEntAux algorithm + Direct algorithm
 
 ## LQCD tests
