@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 
 #
-# This example is taken from J. High Energ. Phys. 2014, 97 (2014). 
+# This example is taken from J. High Energ. Phys. 2014, 97 (2014).
 # Bottomonium spectrum
 #
 # Araw.inp -> T = 201 MeV (Fig. 8)
