@@ -4,7 +4,7 @@
 
 ## Standard tests
 
-The following tweleve tests are used to test the basic features of the ACFlow toolkit.
+The following twelve tests are used to test the basic features of the ACFlow toolkit.
 
 * **basic/A01**
     * Fermionic + Matsubara
@@ -299,6 +299,19 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Linear mesh
     * Fixed error bar
     * Sharp gap edges + broad tail
+
+* **future/Z01**
+    * Fermionic + Matsubara
+    * Matrix-valued Green's functions
+    * MaxEnt solver (chi2kink algorithm)
+    * Gaussian model + File model
+    * Linear mesh
+    * Script mode
+    * Fixed error bar
+    * MaxEntAux algorithm + Direct algorithm
+
+* **future/Z02**
+
 
 ## LQCD tests
 
