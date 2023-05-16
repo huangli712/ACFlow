@@ -4,9 +4,7 @@
 # This example is taken from J. High Energ. Phys. 2014, 97 (2014). 
 # Bottomonium spectrum
 #
-# Note: Please change Araw1.inp to Araw2.inp in L28 to use another input.
-# Araw1.inp -> T = 201 MeV (Fig. 7)
-# Araw2.inp -> T = 201 MeV (Fig. 8)
+# Araw.inp -> T = 201 MeV (Fig. 7)
 #
 
 push!(LOAD_PATH, ENV["ACFLOW_HOME"])
@@ -27,7 +25,7 @@ beta = 5.00  # Inverse temperature
 #
 
 # Read raw spectral function
-dlm = readdlm("Araw1.inp", F64)
+dlm = readdlm("Araw.inp", F64)
 nmesh, _ = size(dlm)
 
 # Real frequency mesh
