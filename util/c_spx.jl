@@ -220,6 +220,13 @@ function run_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     return average(SC)
 end
 
+"""
+    solve_p()
+
+    Solve the analytical continuation problem by the stochastic
+    pole expansion. Note that the amplitudes of poles are fixed.
+    The positions of poles are optimized.
+"""
 function solve_p()
     npole = get_x("npole")
 
@@ -229,11 +236,23 @@ function solve_p()
     println("[ StochPX ]")
     MC, SE, SC = init(S, rd)
 
+    # Setup the amplitudes of poles
     @. SE.A = 1.0 / npole
     reset_context(1, SE, SC)
 
     Aout, Gout, Gᵣ = run_p(MC, SE, SC)
     ACFlow.last(SC, Aout, Gout, Gᵣ)
+end
+
+"""
+    solve_p()
+
+    Solve the analytical continuation problem by the stochastic
+    pole expansion. Note that the positions of poles are fixed.
+    The amplitudes of poles are optimized.
+"""
+function solve_a()
+    # to be done
 end
 
 welcome()
