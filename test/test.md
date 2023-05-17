@@ -333,14 +333,14 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Breit-Wigner model
     * MaxEnt solver
     * StochPX solver
-    * Single peak
+    * Single broad peak
 
 * **lqcd/Q02**
     * Bosonic (symm) + Matsubara
     * Breit-Wigner model
     * MaxEnt solver
     * StochPX solver
-    * Two peaks
+    * Two broad peaks
 
 * **lqcd/Q03**
     * Bosonic (symm) + Matsubara
