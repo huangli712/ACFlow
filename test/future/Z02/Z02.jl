@@ -22,7 +22,7 @@ B = Dict{String,Any}(
     "nmesh"  => 501,
     "wmax"   => 5.0,
     "wmin"   => -5.0,
-    "beta"   => 40.0,
+    "beta"   => 20.0,
 )
 #
 # For [MaxEnt] block
