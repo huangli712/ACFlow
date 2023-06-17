@@ -15,18 +15,18 @@ using ACFlow
 wmin = +0.0  # Left boundary
 wmax = +10.  # Right boundary
 nmesh = 2001 # Number of real-frequency points
-niw  = 50    # Number of Matsubara frequencies
+niw  = 100   # Number of Matsubara frequencies
 ntau = 501   # Number of imaginary time points
-beta = 10.0  # Inverse temperature
-𝑀₁   = 1.00  # Parameters for Gaussian mixture model
-𝑀₂   = 3.00
-𝑀₃   = 7.00
+beta = 50.0  # Inverse temperature
+𝑀₁   = 0.50  # Parameters for Gaussian mixture model
+𝑀₂   = 2.50
+𝑀₃   = 6.50
 Γ₁   = 0.01
 Γ₂   = 0.20
-Γ₃   = 2.00
+Γ₃   = 1.50
 𝐴₁   = 1.00
-𝐴₂   = 0.20
-𝐴₃   = 0.10
+𝐴₂   = 0.40
+𝐴₃   = 0.20
 
 #
 # For true spectrum
