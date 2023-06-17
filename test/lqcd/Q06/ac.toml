@@ -13,11 +13,11 @@ ktype  = "bsymm"
 mtype  = "flat"
 grid   = "bfreq"
 mesh   = "linear"
-ngrid  = 50
+ngrid  = 100
 nmesh  = 1001
 wmax   = 10.0
 wmin   = 0.0
-beta   = 10.0
+beta   = 50.0
 offdiag = false
 
 [MaxEnt]
