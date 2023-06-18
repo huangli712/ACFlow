@@ -13,8 +13,6 @@
 using Distributed
 addprocs(8)
 
-@everywhere push!(LOAD_PATH, ENV["ACFLOW_HOME"])
-
 @everywhere using ACFlow
 
 welcome()

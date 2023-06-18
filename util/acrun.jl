@@ -9,8 +9,6 @@
 #     $ acrun.jl ac.toml
 #
 
-push!(LOAD_PATH, ENV["ACFLOW_HOME"])
-
 using ACFlow
 
 welcome()
