@@ -1,7 +1,5 @@
 #!/usr/bin/env julia
 
-push!(LOAD_PATH, ENV["ACFLOW_HOME"])
-
 using DelimitedFiles
 using Printf
 using ACFlow
