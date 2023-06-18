@@ -5,8 +5,6 @@
 # Two Breit-Wigner peaks
 #
 
-push!(LOAD_PATH, ENV["ACFLOW_HOME"])
-
 using Random
 using Printf
 using ACFlow

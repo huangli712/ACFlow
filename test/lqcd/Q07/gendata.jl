@@ -7,8 +7,6 @@
 # Araw.inp -> T = 201 MeV (Fig. 7)
 #
 
-push!(LOAD_PATH, ENV["ACFLOW_HOME"])
-
 using DelimitedFiles
 using Random
 using Printf

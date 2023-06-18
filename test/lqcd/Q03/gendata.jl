@@ -5,8 +5,6 @@
 # Resonance peak + Continuum spectral function
 #
 
-push!(LOAD_PATH, ENV["ACFLOW_HOME"])
-
 using Random
 using Printf
 using ACFlow
