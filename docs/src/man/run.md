@@ -69,7 +69,7 @@ It is limited by the available computational resources. A minimal PBS script is 
 #PBS -l nodes=1:ppn=9
 #PBS -q score
 ...
-acflow/util/Pacrun.jl ac.toml > nohup.dat 2>&1 # Please fix Pacrun.jl's path.
+/home/your_home/acflow/util/Pacrun.jl ac.toml > nohup.dat 2>&1 # Please fix Pacrun.jl's path.
 ```
 
 It is used to submit parallel jobs to computer clusters. Be careful, in order to maintain load balancing, the number of allocated CPUs should be larger than the number of parallel workers.
