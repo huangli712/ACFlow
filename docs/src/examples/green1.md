@@ -7,7 +7,7 @@
     * Imaginary time Green's function
     * Current-current correlation function
 
-    within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/test/T*` folders.
+    within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/tutor/T*` folders.
 
 # Matsubara Green's Function
 
