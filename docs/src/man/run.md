@@ -49,7 +49,7 @@ Noted that the `acrun.jl` script runs sequentially, while the `Pacrun.jl` script
 
 ## Parallel calculations
 
-Besides the `MaxEnt` solver, the computational efficiencies of the `StochAC`, `StochSK`, and `StochOM` solvers are rather low. So, these solvers are parallelized to accelerate the analytic continuation simulations. The ACFlow toolkit provides a script, namely `Pacrun.jl`, to drive parallel calculations. Now the users should specify the number of parallel workers in this script:
+Besides the `MaxEnt` solver, the computational efficiencies of the `StochAC`, `StochSK`, `StochOM`, and `StochPX` solvers are rather low. So, these solvers are parallelized to accelerate the analytic continuation simulations. The ACFlow toolkit provides a script, namely `Pacrun.jl`, to drive parallel calculations. Now the users should specify the number of parallel workers in this script:
 
 ```julia
 #!/usr/bin/env julia
