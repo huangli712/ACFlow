@@ -52,4 +52,4 @@ https://huangli712.github.io/projects/acflow/index.html
 
 ## Tests and Examples
 
-Forty tests and four tutorials are also shipped with the ACFlow toolkit. Their source codes are placed in the `acflow/test` and the `acflow/tutor` folders. See `acflow/test/test.md` and `acflow/tutor/tutor.md` for more details.
+Forty tests and four tutorials are also shipped with the ACFlow toolkit. The source codes for internal tests are placed in the `acflow/test` folder, while those for tutorials are saved in the `acflow/tutor` folder. See `acflow/test/test.md` and `acflow/tutor/tutor.md` for more details.
