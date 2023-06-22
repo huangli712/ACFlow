@@ -4,7 +4,7 @@ The input files for the ACFlow toolkit can be divided into two groups: data file
 
 ## Data Files
 
-The input data should be store in CSV-like text files. For imaginary time Green's function, the data file should contain three columns. They represent ``\tau``, ``\bar{G}(\tau)``, and standard deviation of ``\bar{G}(\tau)``. For fermionic Matsubara Green's function, the data file should contain five columns. They represent ``\omega_n``, Re``G(i\omega_n)``, Im``G(i\omega_n)``, standard deviation of Re``G(i\omega_n)``, and standard deviation of Im``G(i\omega_n)``. For bosonic correlation function ``\chi(i\omega_n)``, the data file should contain three columns. They represent ``\omega_n``, Re``\chi(i\omega_n)``, and standard deviation of Re``\chi(i\omega_n)``.
+The input data should be stored in some text-based files, which adopt the space-separated data format. For imaginary time Green's function, the data file should contain three columns. They represent ``\tau``, ``\bar{G}(\tau)``, and standard deviation of ``\bar{G}(\tau)``. For fermionic Matsubara Green's function, the data file should contain five columns. They represent ``\omega_n``, Re``G(i\omega_n)``, Im``G(i\omega_n)``, standard deviation of Re``G(i\omega_n)``, and standard deviation of Im``G(i\omega_n)``. For bosonic correlation function ``\chi(i\omega_n)``, the data file should contain three columns. They represent ``\omega_n``, Re``\chi(i\omega_n)``, and standard deviation of Re``\chi(i\omega_n)``.
 
 ## Configuration Files
 
