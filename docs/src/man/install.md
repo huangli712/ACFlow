@@ -18,7 +18,7 @@ julia> using Pkg
 julia> Pkg.add(url = "/home/your_home/acflow/")
 ```
 
-Here, `Pkg` is Julia's built-in package manager, and `/home/your\_home/acflow` is assumed to be the root directory of the ACFlow toolkit. In practice, the users can use the `Pkg` package to install the ACFlow toolkit from its github repository directly:
+Here, `Pkg` is Julia's built-in package manager, and `/home/your_home/acflow` is assumed to be the root directory of the ACFlow toolkit. In practice, the users can use the `Pkg` package to install the ACFlow toolkit from its github repository directly:
 
 ```julia-repl
 julia> using Pkg
@@ -42,3 +42,17 @@ $ julia make.jl
 ```
 
 After a few seconds, the documentation is built and saved in the `acflow/docs/build` directory if everything is OK. The home page of the documentation is `acflow/docs/build/index.html`. The users can open it with any web browsers.
+
+!!! info
+
+    Sometimes in offline environment, the package manager is disable. At this time, we should setup the environment variable `ACFLOW_HOME` as follows:
+
+    ```shell
+    export ACFLOW_HOME=/home/your_home/acflow/src
+    ```
+
+    And then plug the following code in front of your Julia's scripts:
+
+    ```julia
+    push!(LOAD_PATH, ENV["ACFLOW_HOME"])
+    ```
