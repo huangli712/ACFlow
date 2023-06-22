@@ -48,7 +48,7 @@ After a few seconds, the documentation is built and saved in the `acflow/docs/bu
     Sometimes in offline environment, the package manager is disable. At this time, we should setup the environment variable `ACFLOW_HOME` as follows:
 
     ```shell
-    export ACFLOW_HOME=/home/your_home/acflow/src
+    $ export ACFLOW_HOME=/home/your_home/acflow/src
     ```
 
     And then plug the following code in front of your Julia's scripts:
