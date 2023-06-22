@@ -2,16 +2,11 @@
 
 The ACFlow toolkit is designed to be flexible and easy-to-use. It provides three running modes to facilitate analytical continuation calculations, namely the interactive, script, and standard modes.
 
-!!! warning
-
-    The environment variable `ACFLOW_HOME` must be set at advance.
-
 ## Interactive Mode
 
 With the ACFlow toolkit, the users can configure and carry out analytical continuation simulations interactively in Julia's REPL (Read-Eval-Print Loop) environment. For example,
 
 ```julia-repl
-julia> push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 julia> using ACFlow
 julia> setup_args("ac.toml")
 julia> read_param()
@@ -26,8 +21,6 @@ The core functionalities of the ACFlow toolkit are exposed to the users via a si
 
 ```julia
 #!/usr/bin/env julia
-
-push!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
 using ACFlow
 
