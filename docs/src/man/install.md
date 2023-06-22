@@ -1,6 +1,6 @@
 # [Installation](@id install)
 
-It is an easy task to install the ACFlow toolkit. First, since it is written in pure Julia language, it is necessary to install the Julia runtime environment at first. The newest version of Julia is always preferred (version > 1.60). Since the core codes only rely on Julia's built-in standard library, no the third-party packages are needed. Second, just download source codes of the ACFlow toolkit from its github repository. It should be a compressed file, such as `acflow.zip` or `acflow.tar.gz`. Please uncompress it in your favorite directory by using the following commands:
+It is an easy task to install the ACFlow toolkit. First, since it is written in pure Julia language, it is necessary to install the Julia runtime environment in advance. The newest version of Julia is always preferred (version > 1.60). Because the core codes only rely on Julia's built-in standard library, no the third-party packages are needed. Second, just download source codes of the ACFlow toolkit from its github repository. It should be a compressed file, such as `acflow.zip` or `acflow.tar.gz`. Please uncompress it in your favorite directory by using the following commands:
 
 ```shell
 $ unzip acflow.zip
@@ -11,13 +11,28 @@ or
 $ tar xvfz acflow.tar.gz
 ```
 
-Third, the users have to announce a new environment variable `ACFLOW_HOME`. Supposed that the root directory of the ACFLow toolkit is `/home/your_home/acflow`, then `ACFLOW_HOME` should be declared as follows:
+Third, please input the following commands in Julia's REPL (Read-Eval-Print Loop) environment:
 
-```shell
-$ export ACFLOW_HOME=/home/your_home/acflow/src
+```julia-repl
+julia> using Pkg
+julia> Pkg.add(url = "/home/your_home/acflow/")
 ```
 
-Finally, in order to generate the documentation, the users should type the following commands in the terminal:
+Here, `Pkg` is Julia's built-in package manager, and `/home/your\_home/acflow` is assumed to be the root directory of the ACFlow toolkit. In practice, the users can use the `Pkg` package to install the ACFlow toolkit from its github repository directly:
+
+```julia-repl
+julia> using Pkg
+julia> Pkg.add(url = "https://github.com/huangli712/ACFlow")
+```
+
+So the second step is optional. Furthermore, if the installed ACFlow toolkit is outdated, the users can use the following commands to upgrade ACFlow:
+
+```julia-repl
+julia> using Pkg
+julia> Pkg.update("ACFlow")
+```
+
+Finally, in order to generate the documentation, please type the following commands in the terminal:
 
 ```shell
 $ pwd
