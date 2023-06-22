@@ -56,3 +56,5 @@ After a few seconds, the documentation is built and saved in the `acflow/docs/bu
     ```julia
     push!(LOAD_PATH, ENV["ACFLOW_HOME"])
     ```
+
+    Or else Julia won't find the ACFlow package.
