@@ -1,5 +1,9 @@
 # Stochastic Pole Expansion
 
+!!! warning
+
+    The StochPX solver is experimental. Please use it at your own risk.
+
 ## Stochastic optimization
 
 Supposed that the input Matsubara Green's function is ``\mathcal{G}(i\omega_n)``, where ``n =`` 1, 2, ``\cdots``, ``N_{\omega}``, the objective of analytic continuation is to fit the (possibly noisy and incomplete) Matsubara data into the pole representation under some constraints. In mathematical language, we should solve the following multivariate optimization problem:
