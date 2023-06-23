@@ -40,4 +40,4 @@ where ``c`` is a constant of order 1, ``\chi^{2}_{\text{min}}`` is the minimum v
 
 ## Relevant parameters
 
-See [[StochAC] Block](@ref stochac_block)
+See [[StochSK] Block](@ref stochsk_block)

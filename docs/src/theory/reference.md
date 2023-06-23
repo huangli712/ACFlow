@@ -29,3 +29,9 @@
 [1] A. S. Mishchenko, N. V. Prokof’ev, A. Sakamoto, B. V. Svistunov, Diagrammatic quantum monte carlo study of the frohlich polaron, *Phys. Rev. B* **62**, 6317 (2000).
 
 [2] I. Krivenko, M. Harland, Triqs/som: Implementation of the stochastic optimization method for analytic continuation, *Comput. Phys. Commun.* **239**, 166 (2019).
+
+*Stochastic pole expansion*
+
+---
+
+[1] Li Huang, Shuang Liang, Stochastic pole expansion method, *to be submitted* (2023).

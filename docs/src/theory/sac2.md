@@ -191,4 +191,4 @@ The weight of the candidate spectral function ``A`` is given by the likelihood f
 
 ## Relevant parameters
 
-See [[StochSK] Block](@ref stochsk_block)
+See [[StochAC] Block](@ref stochac_block)
