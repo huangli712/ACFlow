@@ -70,28 +70,36 @@ K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega}.
 ### Bosonic correlators
 
 The spectral density $A(\omega)$ obeys the following constraint: $\text{sign}(\omega) A(\omega) \ge 0$. Thus, it is more convenient to define a new function $\tilde{A}(\omega)$ where $\tilde{A}(\omega) = A(\omega)/\omega$. Clearly, $\tilde{A}(\omega)$ is always positive definite. As a result Eq.~(\ref{eq:gtau}) and Eq.~(\ref{eq:giw}) can be rewritten as:
+```math
 \begin{equation}
 G(\tau) = \int^{+\infty}_{-\infty} d\omega~
     K(\tau,\omega)\tilde{A}(\omega),
 \end{equation}
+```
 and
+```math
 \begin{equation}
-\label{eq:spectral_b}
 G(i\omega_n) = \int^{+\infty}_{-\infty} d\omega~
     K(\omega_n,\omega) \tilde{A}(\omega),
 \end{equation}
+```
 respectively. Now the bosonic kernel $K(\tau,\omega)$ becomes:
+```math
 \begin{equation}
 K(\tau,\omega) = \frac{\omega e^{-\tau\omega}}{1 - e^{-\beta\omega}}.
 \end{equation}
+```
 Especially, $K(\tau,0) = 1/\beta$. As for $K(\omega_n,\omega)$, its expression is:
+```math
 \begin{equation}
-\label{eq:kernel_b}
 K(\omega_n,\omega) = \frac{\omega}{i\omega_n - \omega}.
 \end{equation}
+```
 Especially, $K(0,0) = -1$. Besides the bosonic Green's function, typical correlator of this kind includes the transverse spin susceptibility $\chi_{+-}(\tau) = \langle S_{+}(\tau) S_{-}(0) \rangle$, where $S_{+} = S_x + iS_y$ and $S_{-} = S_x - i S_y$.
 
-\emph{Bosonic correlators of Hermitian operators}. There is a special case of the previous observable kind with $c = c^{\dagger}$. Here, $A(\omega)$ becomes an odd function, and equivalently, $\tilde{A}(\omega)$ is an even function [i.e., $\tilde{A}(\omega) = \tilde{A}(-\omega)$]. Therefore the limits of integrations in Eq.~(\ref{eq:gtau}) and Eq.~(\ref{eq:giw}) are reduced from $(-\infty,\infty)$ to $(0,\infty)$. So the two equations can be transformed into:
+### Bosonic correlators of Hermitian operators
+
+There is a special case of the previous observable kind with $c = c^{\dagger}$. Here, $A(\omega)$ becomes an odd function, and equivalently, $\tilde{A}(\omega)$ is an even function [i.e., $\tilde{A}(\omega) = \tilde{A}(-\omega)$]. Therefore the limits of integrations in Eq.~(\ref{eq:gtau}) and Eq.~(\ref{eq:giw}) are reduced from $(-\infty,\infty)$ to $(0,\infty)$. So the two equations can be transformed into:
 \begin{equation}
 G(\tau) = \int^{+\infty}_{0} d\omega~
     K(\tau,\omega)\tilde{A}(\omega),
