@@ -155,42 +155,50 @@ Here, $A_{\gamma}$ and $P_{\gamma}$ mean the amplitude and location of the $\gam
 ### Fermionic correlators
 
 For fermionic systems, the pole representation for Matsubara Green's function can be recast as:
+```math
 \begin{equation}
-\label{eq:pole_f}
 G(i\omega_n) = \sum^{N_p}_{\gamma = 1} \Xi(\omega_n, P_{\gamma}) A_{\gamma}.
 \end{equation}
-Here, $\Xi$ is the kernel matrix. It is evaluated by:
+```
+Here, ``\Xi`` is the kernel matrix. It is evaluated by:
+```math
 \begin{equation}
-\label{eq:xi_f}
 \Xi(\omega_n, \omega) = \frac{1}{i\omega_n - \omega}.
 \end{equation}
-Note that $A_{\gamma}$ and $P_{\gamma}$ should satisfy the following constraints:
+```
+Note that ``A_{\gamma}`` and ``P_{\gamma}`` should satisfy the following constraints:
+```math
 \begin{equation}
-\label{eq:sum_rule_f}
 \forall \gamma, 0 \le A_{\gamma} \le 1, \sum_{\gamma} A_{\gamma} = 1, P_{\gamma} \in \mathbb{R}.
 \end{equation}
+```
 
 ### Bosonic correlators
 
 For bosonic systems, the pole representation for Matsubara Green's function can be defined as follows:
+```math
 \begin{equation}
-\label{eq:pole_b}
 G(i\omega_n) = \sum^{N_p}_{\gamma=1} \Xi(\omega_n, P_{\gamma}) \tilde{A}_{\gamma}.
 \end{equation}
-Here, $\Xi$ is evaluated by:
+```
+Here, ``\Xi`` is evaluated by:
+```math
 \begin{equation}
-\label{eq:xi_b}
 \Xi(\omega_n, \omega) = \frac{G_0 \omega}{i\omega_n - \omega},
 \end{equation}
+```
 where $G_{0} = -G(i\omega_n = 0)$, which should be a positive real number. Be careful, $\Xi(0,\omega) = -G_0$. $\tilde{A}_{\gamma}$ is the renormalized amplitude of the $\gamma$-th pole:
+```math
 \begin{equation}
 \tilde{A}_{\gamma} = \frac{A_{\gamma}}{G_0 P_{\gamma}}.
 \end{equation}
+```
 Note that $\tilde{A}_{\gamma}$ and $P_{\gamma}$ should satisfy the following constraints:
+```math
 \begin{equation}
-\label{eq:sum_rule_b}
 \forall \gamma, 0 \le \tilde{A}_{\gamma} \le 1, \sum_{\gamma} \tilde{A}_{\gamma} = 1, P_{\gamma} \in \mathbb{R}.
 \end{equation}
+```
 
 ### Bosonic correlators of Hermitian operators
 
