@@ -1006,7 +1006,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-## [StochPX] Block
+## [[StochPX] Block](@id stochpx_block)
 
 !!! note
 
