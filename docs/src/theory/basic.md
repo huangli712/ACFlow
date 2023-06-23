@@ -99,7 +99,7 @@ Especially, ``K(0,0) = -1``. Besides the bosonic Green's function, typical corre
 
 ### Bosonic correlators of Hermitian operators
 
-There is a special case of the previous observable kind with ``c = c^{\dagger}``. Here, ``A(\omega)`` becomes an odd function, and equivalently, ``\tilde{A}(\omega)`` is an even function [i.e., ``\tilde{A}(\omega) = \tilde{A}(-\omega)``]. Therefore the limits of integrations in Eq.(4) and Eq.(5) are reduced from ``(-\infty,\infty)`` to ``(0,\infty)``. So the two equations can be transformed into:
+There is a special case of the previous observable kind with ``d = d^{\dagger}``. Here, ``A(\omega)`` becomes an odd function, and equivalently, ``\tilde{A}(\omega)`` is an even function [i.e., ``\tilde{A}(\omega) = \tilde{A}(-\omega)``]. Therefore the limits of integrations in Eq.(4) and Eq.(5) are reduced from ``(-\infty,\infty)`` to ``(0,\infty)``. So the two equations can be transformed into:
 ```math
 \begin{equation}
 G(\tau) = \int^{+\infty}_{0} d\omega~
@@ -227,6 +227,8 @@ Especially, ``\Xi(0,0) = -G_0``. The renormalized weight ``\tilde{A}_{\gamma}`` 
 \end{equation}
 ```
 The constraints for ``\tilde{A}_{\gamma}`` and ``P_{\gamma}`` are also defined in Eq.(26).
+
+### Matrix-valued Green's functions
 
 As for the off-diagonal cases (``a \neq b``), it is lightly to prove that ``\sum_{\gamma} A_{\gamma} = 0``. It implies that there exist poles with negative weights. Hence we can split the poles into two groups according to the signs of their amplitudes. The Matsubara Green's function can be expressed as follows:
 ```math
