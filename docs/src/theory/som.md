@@ -86,3 +86,7 @@ p(\mathcal{C} \to \mathcal{C}') = \left(\frac{D[A_{\mathcal{C}}]}{D[A_{\mathcal{
 ```
 
 As compared to the maximum entropy method, the likelihood function, entropic term, and model function are absent in the stochastic optimization method. As compared to the stochastic analytical continuation, there are no adjustable parameters, such as ``\Theta`` in Sandvik's algorithm and ``\alpha`` in Beach's algorithm. Thus, the simulated results of the stochastic optimization method are less affected by artificial parameters.
+
+## Relevant parameters
+
+See [[StochOM] Block](@ref stochom_block)

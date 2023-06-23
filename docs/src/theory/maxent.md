@@ -113,3 +113,7 @@ This algorithm was proposed by Bergeron and Tremblay recently. The first step is
 \end{equation}
 ```
 where ``a``, ``b``, ``c``, and ``d`` are fitting parameters. Then the optimal ``\alpha`` is approximated by ``10^{c-f/d}``, where ``f`` is an empirical constant (The favorite value of ``f`` lies in ``[2,2.5]``).
+
+## Relevant parameters
+
+See [[MaxEnt] Block](@ref maxent_block)

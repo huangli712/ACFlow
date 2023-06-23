@@ -255,3 +255,7 @@ and
 \sum^{N^{-}_p}_{\gamma = 1} A^{-}_{\gamma} = 0.
 \end{equation}
 ```
+
+## Relevant parameters
+
+See [[BASE] Block](@ref base_block)

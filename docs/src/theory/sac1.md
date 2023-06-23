@@ -37,3 +37,7 @@ where ``K`` is the kernel function as defined above. Then make a plot of ``S`` w
 \end{equation}
 ```
 where ``c`` is a constant of order 1, ``\chi^{2}_{\text{min}}`` is the minimum value of ``\chi^{2}`` at given ``\Theta``. Note that ``\chi^{2}_{\text{min}}`` can be obtained in a simulated annealing process to very low ``\Theta``.
+
+## Relevant parameters
+
+See [[StochAC] Block](@ref stochac_block)

@@ -188,3 +188,7 @@ Neither of the Sandvik's and Beach's algorithms needs extra entropic term to reg
 \end{equation}
 ```
 The weight of the candidate spectral function ``A`` is given by the likelihood function ``P[A|\bar{G}]``. Eq.(20) can be viewed as likelihood functions in stochastic analytical continuation.
+
+## Relevant parameters
+
+See [[StochSK] Block](@ref stochsk_block)

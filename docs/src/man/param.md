@@ -11,7 +11,7 @@ Pages = ["param.md"]
 Depth = 3
 ```
 
-## [BASE] Block
+## [[BASE] Block](@id base_block)
 
 !!! note
 
@@ -427,7 +427,7 @@ Depth = 3
 
 > This parameter is optional. If you are using the `MaxEnt` solver, this parameter will be ignored. If solver = `StochPX` and offdiag = true, this parameter is mandatory. In this case, it is used to restrict the regions that the poles with positive weights can survive (or equivalently, the regions that the poles with negative weights can survice are also determined). For example, if exclude = [[-3.0,3.0]], wmin = -5.0, and wmax = 5.0, then the regions for poles with negative weights are [-3.0,3.0], while the regions for poles with positive weights are [-5.0,-3.0] U [3.0,5.0].
 
-## [MaxEnt] Block
+## [[MaxEnt] Block](@id maxent_block)
 
 !!! note
 
@@ -557,7 +557,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-## [StochAC] Block
+## [[StochAC] Block](@id stochac_block)
 
 !!! note
 
@@ -711,7 +711,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-## [StochSK] Block
+## [[StochSK] Block](@id stochsk_block)
 
 !!! note
 
@@ -888,7 +888,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-## [StochOM] Block
+## [[StochOM] Block](@id stochom_block)
 
 !!! note
 
