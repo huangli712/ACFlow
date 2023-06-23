@@ -42,7 +42,7 @@ The two equations denote the spectral representation of Green's function. We not
 
 ### Fermionic correlators
 
-The spectral density ``A(\omega)`` is defined on ``(-\infty,\infty)``. It is positive definite, i.e., ``A(\omega) \ge 0``. Eq.~(4) and Eq.~(5) can be reformulated as:
+The spectral density ``A(\omega)`` is defined on ``(-\infty,\infty)``. It is positive definite, i.e., ``A(\omega) \ge 0``. Eq.(4) and Eq.(5) can be reformulated as:
 ```math
 \begin{equation}
 G(\tau) = \int^{+\infty}_{-\infty} d\omega~K(\tau,\omega) A(\omega),
@@ -69,7 +69,7 @@ K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega}.
 
 ### Bosonic correlators
 
-The spectral density ``A(\omega)`` obeys the following constraint: ``\text{sign}(\omega) A(\omega) \ge 0``. Thus, it is more convenient to define a new function ``\tilde{A}(\omega)`` where ``\tilde{A}(\omega) = A(\omega)/\omega``. Clearly, ``\tilde{A}(\omega)`` is always positive definite. As a result Eq.~(4) and Eq.~(5) can be rewritten as:
+The spectral density ``A(\omega)`` obeys the following constraint: ``\text{sign}(\omega) A(\omega) \ge 0``. Thus, it is more convenient to define a new function ``\tilde{A}(\omega)`` where ``\tilde{A}(\omega) = A(\omega)/\omega``. Clearly, ``\tilde{A}(\omega)`` is always positive definite. As a result Eq.(4) and Eq.(5) can be rewritten as:
 ```math
 \begin{equation}
 G(\tau) = \int^{+\infty}_{-\infty} d\omega~
@@ -99,7 +99,7 @@ Especially, ``K(0,0) = -1``. Besides the bosonic Green's function, typical corre
 
 ### Bosonic correlators of Hermitian operators
 
-There is a special case of the previous observable kind with ``c = c^{\dagger}``. Here, ``A(\omega)`` becomes an odd function, and equivalently, ``\tilde{A}(\omega)`` is an even function [i.e., ``\tilde{A}(\omega) = \tilde{A}(-\omega)``]. Therefore the limits of integrations in Eq.~(4) and Eq.~(5) are reduced from ``(-\infty,\infty)`` to ``(0,\infty)``. So the two equations can be transformed into:
+There is a special case of the previous observable kind with ``c = c^{\dagger}``. Here, ``A(\omega)`` becomes an odd function, and equivalently, ``\tilde{A}(\omega)`` is an even function [i.e., ``\tilde{A}(\omega) = \tilde{A}(-\omega)``]. Therefore the limits of integrations in Eq.(4) and Eq.(5) are reduced from ``(-\infty,\infty)`` to ``(0,\infty)``. So the two equations can be transformed into:
 ```math
 \begin{equation}
 G(\tau) = \int^{+\infty}_{0} d\omega~
@@ -130,4 +130,4 @@ Especially, ``K(0,0) = -2``. Perhaps the longitudinal spin susceptibility ``\chi
 
 As mentioned above, the kernel function is quite strange. The values of ``K(\tau,\omega)`` could change by tens of orders of magnitude. Especially, at large positive and negative frequencies, ``K(\tau,\omega)`` is exponentially small. It implies that at large ``|\omega|`` the features of ``A(\omega)`` depend upon the fine structures of ``G(\tau)``. However, the ``G(\tau)`` data provided by QMC simulations are always fluctuant and noisy. Tiny deviations in ``G(\tau)`` from its expected values can lead to enormous changes in ``A(\omega)``. Thus, analytical continuation is often characterized as an ill-posed problem.
 
-In principle, for incomplete and noise ``G(\tau)`` or ``G(i\omega_n)``, the number of spectral functions ``A(\omega)`` that satisfy Eq.(11) and Eq.(12) is infinite. So the question becomes which ``A(\omega)`` should be chosen. Now there are two different strategies to solve this problem. The first one is to choose the most likely ``A(\omega)``. The second one is to evaluate the average of all the candidate spectral functions.
+In principle, for incomplete and noise ``G(\tau)`` or ``G(i\omega_n)``, the number of spectral functions ``A(\omega)`` that satisfy Eq.(4) and Eq.(5) is infinite. So the question becomes which ``A(\omega)`` should be chosen. Now there are two different strategies to solve this problem. The first one is to choose the most likely ``A(\omega)``. The second one is to evaluate the average of all the candidate spectral functions.
