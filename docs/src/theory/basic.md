@@ -99,7 +99,7 @@ Especially, ``K(0,0) = -1``. Besides the bosonic Green's function, typical corre
 
 ### Bosonic correlators of Hermitian operators
 
-There is a special case of the previous observable kind with $c = c^{\dagger}$. Here, $A(\omega)$ becomes an odd function, and equivalently, ``\tilde{A}(\omega)`` is an even function [i.e., ``\tilde{A}(\omega) = \tilde{A}(-\omega)``]. Therefore the limits of integrations in Eq.~(4) and Eq.~(5) are reduced from ``(-\infty,\infty)`` to ``(0,\infty)``. So the two equations can be transformed into:
+There is a special case of the previous observable kind with ``c = c^{\dagger}``. Here, ``A(\omega)`` becomes an odd function, and equivalently, ``\tilde{A}(\omega)`` is an even function [i.e., ``\tilde{A}(\omega) = \tilde{A}(-\omega)``]. Therefore the limits of integrations in Eq.~(4) and Eq.~(5) are reduced from ``(-\infty,\infty)`` to ``(0,\infty)``. So the two equations can be transformed into:
 ```math
 \begin{equation}
 G(\tau) = \int^{+\infty}_{0} d\omega~
