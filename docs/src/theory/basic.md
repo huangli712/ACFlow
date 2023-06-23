@@ -21,59 +21,28 @@ G(\tau) = \frac{1}{\beta} \sum_n e^{i\omega_n \tau} G(i\omega_n).
 ```
 Here, ``\beta`` means the inverse temperature (``\beta \equiv 1/T``) and ``\omega_n`` is the Matsubara frequency. Note that ``\omega_n`` is equal to ``(2n + 1) \pi / \beta`` for fermions and ``2n\pi/ \beta`` for bosons (``n`` is an integer).
 
-## [Spectral Density](@id spectrum)
+## [Spectral representation](@id spectrum)
 
-Clearly, neither ``G(\tau)`` nor ``G(i\omega_n)`` can be observed experimentally. We have to extract dynamical response function, i.e., the spectral density ``A(\omega)``, from them. ``A(\omega)`` is indeed an observable quantity. It is related to ``G(\tau)`` via the following Laplace transformation:
+Supposed that the spectral density of the single-particle Green's function is ``A(\omega)``, then we have:
 ```math
 \begin{equation}
-G(\tau) = \int^{+\infty}_{-\infty} d\omega \frac{e^{-\tau\omega}}{1 \pm e^{-\beta\omega}} A(\omega),
+G(\tau) = \int^{+\infty}_{-\infty} d\omega
+          \frac{e^{-\tau\omega}}{1 \pm e^{-\beta\omega}}
+          A(\omega),
 \end{equation}
 ```
-where +(-) in the denominator is for fermionic (bosonic) system. ``G(i\omega_n)`` and ``A(\omega)`` manifest similar relation:
+with the positive (negative) sign for fermionic (bosonic) operators. Similarly,
 ```math
 \begin{equation}
-G(i\omega_n) = \int^{+\infty}_{-\infty} d\omega' \frac{A(\omega')}{i\omega_n - \omega'}.
+G(i\omega_n) = \int^{+\infty}_{-\infty} d\omega
+               \frac{1}{i\omega_n - \omega} A(\omega).
 \end{equation}
 ```
-It is obvious that Eq.(4) and Eq.(5) are indeed special forms of the Fredholm integral equation of the first kind. So, the central problem of analytical continuation is to search optimal ``A(\omega)`` for given ``G(\tau)`` or ``G(i\omega_n)``.
+The two equations denote the spectral representation of Green's function. We notice that the SPX method, as well as the other analytic continuation methods that are classified as ASM, are closely related to the spectral representation. Next we would like to make further discussions about this representation for the fermionic and bosonic correlators.  
 
-Sometimes the spectral density ``A(\omega)`` is called as spectral function in the references. It is tied to the imaginary part of real frequency Green's function ``G(\omega)``:
-```math
-\begin{equation}
-A(\omega) = -\frac{1}{\pi} \rm{Im}G(\omega).
-\end{equation}
-```
-From Im``G(\omega)``, Re``G(\omega)`` could be calculated via the Kramers-Kronig transformation:
-```math
-\begin{equation}
-\mathrm{Re} G(\omega) = \frac{1}{\pi} \mathcal{P}
-  \int_{-\infty}^{\infty} d\omega'~
-  \frac{\mathrm{Im} G(\omega')}{\omega'-\omega},
-\end{equation}
-```
-where ``\mathcal{P}`` means Cauchy principal value. Besides Eq.(4) and Eq.(5), ``A(\omega)`` has to obey some additional constraints or sum-rules. For fermionic systems, the spectral functions must be positive:
-```math
-\begin{equation}
-A(\omega) \ge 0.
-\end{equation}
-```
-While for bosonic systems, the above condition turns into:
-```math
-\begin{equation}
-\text{sign}(\omega) A(\omega) \ge 0.
-\end{equation}
-```
-In addition, the spectral function ``A(\omega)`` is always bounded,
-```math
-\begin{equation}
-\int^{+\infty}_{-\infty} d\omega~A(\omega) < \infty.
-\end{equation}
-```
-It can be utilized to normalize the final spectral function.
+### Fermionic correlators
 
-## Kernel functions
-
-Eq.(4) and Eq.(5) can be reformulated as follows:
+The spectral density ``A(\omega)`` is defined on ``(-\infty,\infty)``. It is positive definite, i.e., ``A(\omega) \ge 0``. Eq.~(4) and Eq.~(5) can be reformulated as:
 ```math
 \begin{equation}
 G(\tau) = \int^{+\infty}_{-\infty} d\omega~K(\tau,\omega) A(\omega),
@@ -85,19 +54,66 @@ and
 G(i\omega_n) = \int^{+\infty}_{-\infty} d\omega~K(\omega_n,\omega) A(\omega),
 \end{equation}
 ```
-where ``K(\tau,\omega)`` and ``K(\omega_n, \omega)`` are the so-called kernel functions. Their definitions are as follows:
+respectively. The kernel functions ``K(\tau,\omega)`` and ``K(\omega_n,\omega)`` are defined as follows:
 ```math
 \begin{equation}
-K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 \pm e^{-\beta\omega}},
+K(\tau,\omega) = \frac{e^{-\tau\omega}}{1 + e^{-\beta\omega}},
 \end{equation}
 ```
 and
 ```math
 \begin{equation}
-K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega},
+K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega}.
 \end{equation}
 ```
-where +(-) in the denominator of Eq.(13) stands for fermions (bosons).
+
+### Bosonic correlators
+
+The spectral density $A(\omega)$ obeys the following constraint: $\text{sign}(\omega) A(\omega) \ge 0$. Thus, it is more convenient to define a new function $\tilde{A}(\omega)$ where $\tilde{A}(\omega) = A(\omega)/\omega$. Clearly, $\tilde{A}(\omega)$ is always positive definite. As a result Eq.~(\ref{eq:gtau}) and Eq.~(\ref{eq:giw}) can be rewritten as:
+\begin{equation}
+G(\tau) = \int^{+\infty}_{-\infty} d\omega~
+    K(\tau,\omega)\tilde{A}(\omega),
+\end{equation}
+and
+\begin{equation}
+\label{eq:spectral_b}
+G(i\omega_n) = \int^{+\infty}_{-\infty} d\omega~
+    K(\omega_n,\omega) \tilde{A}(\omega),
+\end{equation}
+respectively. Now the bosonic kernel $K(\tau,\omega)$ becomes:
+\begin{equation}
+K(\tau,\omega) = \frac{\omega e^{-\tau\omega}}{1 - e^{-\beta\omega}}.
+\end{equation}
+Especially, $K(\tau,0) = 1/\beta$. As for $K(\omega_n,\omega)$, its expression is:
+\begin{equation}
+\label{eq:kernel_b}
+K(\omega_n,\omega) = \frac{\omega}{i\omega_n - \omega}.
+\end{equation}
+Especially, $K(0,0) = -1$. Besides the bosonic Green's function, typical correlator of this kind includes the transverse spin susceptibility $\chi_{+-}(\tau) = \langle S_{+}(\tau) S_{-}(0) \rangle$, where $S_{+} = S_x + iS_y$ and $S_{-} = S_x - i S_y$.
+
+\emph{Bosonic correlators of Hermitian operators}. There is a special case of the previous observable kind with $c = c^{\dagger}$. Here, $A(\omega)$ becomes an odd function, and equivalently, $\tilde{A}(\omega)$ is an even function [i.e., $\tilde{A}(\omega) = \tilde{A}(-\omega)$]. Therefore the limits of integrations in Eq.~(\ref{eq:gtau}) and Eq.~(\ref{eq:giw}) are reduced from $(-\infty,\infty)$ to $(0,\infty)$. So the two equations can be transformed into:
+\begin{equation}
+G(\tau) = \int^{+\infty}_{0} d\omega~
+    K(\tau,\omega)\tilde{A}(\omega),
+\end{equation}
+and
+\begin{equation}
+\label{eq:spectral_h}
+G(i\omega_n) = \int^{+\infty}_{0} d\omega~
+    K(\omega_n,\omega) \tilde{A}(\omega),
+\end{equation}
+respectively. The corresponding $K(\tau,\omega)$ reads:
+\begin{equation}
+\label{eq:kernel_h_t}
+K(\tau,\omega) = \frac{\omega \left[e^{-\tau\omega} + e^{-(\beta - \tau)\omega}\right]}
+                      {1 - e^{-\beta\omega}}.
+\end{equation}
+Especially, $K(\tau,0) = 2 / \beta$. And $K(\omega_n,\omega)$ becomes:
+\begin{equation}
+\label{eq:kernel_h}
+K(\omega_n, \omega) = \frac{-2\omega^2}{\omega_n^2 + \omega^2}.
+\end{equation}
+Especially, $K(0,0) = -2$. Perhaps the longitudinal spin susceptibility $\chi_{zz}(\tau) = \langle S_z(\tau) S_z(0) \rangle$ and the charge susceptibility $\chi_{ch}(\tau) = \langle N(\tau) N(0) \rangle$ are the most widely used observables of this kind.
 
 As mentioned above, the kernel function is quite strange. The values of ``K(\tau,\omega)`` could change by tens of orders of magnitude. Especially, at large positive and negative frequencies, ``K(\tau,\omega)`` is exponentially small. It implies that at large ``|\omega|`` the features of ``A(\omega)`` depend upon the fine structures of ``G(\tau)``. However, the ``G(\tau)`` data provided by QMC simulations are always fluctuant and noisy. Tiny deviations in ``G(\tau)`` from its expected values can lead to enormous changes in ``A(\omega)``. Thus, analytical continuation is often characterized as an ill-posed problem.
 
