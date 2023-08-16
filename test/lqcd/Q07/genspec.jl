@@ -13,13 +13,13 @@ using ACFlow
 # Setup parameters
 wmin = +9.0  # Left boundary
 wmax = +16.  # Right boundary
-nmesh = 2001 # Number of real-frequency points
+nmesh = 1001 # Number of real-frequency points
 𝑀₁   = 9.60  # Parameters for Gaussian mixture model
 𝑀₂   = 11.5
 Γ₁   = 0.01
-Γ₂   = 0.20
-𝐴₁   = 1.00
-𝐴₂   = 0.40
+Γ₂   = 5.00
+𝐴₁   = 5.00
+𝐴₂   = 1.80
 
 # Real frequency mesh
 rmesh = collect(LinRange(wmin, wmax, nmesh))
