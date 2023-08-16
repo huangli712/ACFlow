@@ -4,6 +4,13 @@
 # Well, this script will generate a pseudo-spectrum, which is then used
 # to create a nonlinear mesh for the StochPX solver.
 #
+# Note that the parameters used to construct the pseudo-spectrum are just
+# inspired by the analytic continuation results obtained by the MaxEnt
+# and the NAC (using the Nevanlinna.jl package) methods.
+#
+# (1) Try to generate a pseudo-spectrum by `julia genspec.jl`.
+#
+# (2) Try to create a nonlinear mesh by `../../../util/gmesh.jl ac.toml`
 #
 
 using Random
