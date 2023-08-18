@@ -34,4 +34,4 @@
 
 ---
 
-[1] Li Huang, Shuang Liang, Stochastic pole expansion method, *to be submitted* (2023).
+[1] Li Huang, Shuang Liang, Stochastic pole expansion method, *arXiv:2307.11324* (2023).
