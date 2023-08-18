@@ -1,6 +1,6 @@
 # References
 
-*Maximum entropy method*
+**Maximum entropy method**
 
 ---
 
@@ -8,7 +8,7 @@
 
 [2] M. Jarrell, J. Gubernatis, Bayesian inference and the analytic continuation of imaginary-time quantum monte carlo data, *Phys. Rep.* **269**, 133 (1996).
 
-*Stochastic analytical continuation*
+**Stochastic analytical continuation**
 
 ---
 
@@ -22,7 +22,7 @@
 
 [5] H. Shao, A. W. Sandvik, Progress on stochastic analytic continuation of quantum monte carlo data, *Phys. Rep.* **1003**, 1 (2023).
 
-*Stochastic optimization method*
+**Stochastic optimization method**
 
 ---
 
@@ -30,7 +30,7 @@
 
 [2] I. Krivenko, M. Harland, Triqs/som: Implementation of the stochastic optimization method for analytic continuation, *Comput. Phys. Commun.* **239**, 166 (2019).
 
-*Stochastic pole expansion*
+**Stochastic pole expansion**
 
 ---
 
