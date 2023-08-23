@@ -55,7 +55,7 @@ image = similar(rmesh)
 rmesh[1] = 1e-8 # To avoid NaN
 for i in eachindex(rmesh)
     ρ₁ = ξ(rmesh[i], 𝑀ᵣ, Γ) * ρᵣ(rmesh[i], 𝐶ᵣ, 𝑀ᵣ, Γ) * (1.0 - ξ(rmesh[i], 𝑀ᵣ + Γ, Γ))
-    ρ₂ = ξ(rmesh[i], 𝑀ᵣ + Γ, Γ) * ρₜ(rmesh[i], 𝐶ₜ, 𝑀ₜ, beta)
+    ρ₂ = ξ(rmesh[i], 𝑀ₜ + Γ, Γ) * ρₜ(rmesh[i], 𝐶ₜ, 𝑀ₜ, beta)
     image[i] = ρ₁ + ρ₂
 end
 #
