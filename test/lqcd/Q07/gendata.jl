@@ -1,8 +1,11 @@
 #!/usr/bin/env julia
 
 #
-# This example is taken from J. High Energ. Phys. 2014, 97 (2014).
-# Bottomonium spectrum
+# This example is taken from J. High Energ. Phys. 07, 097 (2014).
+# 
+# The bottomonium spectrum at finite temperature from Nf = 2 + 1 lattice QCD
+#
+# G. Aarts, et al.
 #
 # Araw.inp -> T = 201 MeV (Fig. 7)
 #
