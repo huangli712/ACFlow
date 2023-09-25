@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/25
+# Last modified: 2023/09/26
 #
 
 #=
@@ -264,6 +264,14 @@ It represents the analytic continuation solver that implements the
 stochastic pole expansion.
 """
 struct StochPXSolver <: AbstractSolver end
+
+"""
+    NevanACSolver
+
+It represents the analytic continuation solver that implements the
+Nevanlinna analytical continuation.
+"""
+struct NevanACSolver <: AbstractSolver end
 
 #=
 ### *Customized Structs* : *Input Data*
