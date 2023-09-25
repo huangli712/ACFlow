@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/25
+# Last modified: 2023/09/26
 #
 
 """
@@ -21,6 +21,7 @@ Nowadays the ACFlow toolkit supports the following algorithms:
 * Stochastic Analytical Continuation (`StochAC` and `StochSK` solvers)
 * Stochastic Optimization Method (`StochOM` solver)
 * Stochastic Pole eXpansion (`StochPX` solver, `experimental`)
+* Nevanlinna Analytical Continuation (`NevanAC` solver, `experimental`)
 
 More algorithms will be implemented in the future.
 
