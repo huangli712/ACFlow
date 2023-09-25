@@ -4,13 +4,13 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/13
+# Last modified: 2023/09/25
 #
 
 """
     ACFlow
 
-ACFlow is a modern software toolkit for solving the many-body analytical
+ACFlow is a modern software toolkit for solving the many-body analytic
 continuation problem. It is usually used to convert the single-particle
 or two-particle correlators from imaginary axis to real axis. Now this
 toolkit is under heavy development. **PLEASE USE IT AT YOUR OWN RISK**.
@@ -582,8 +582,8 @@ StochACElement -> A struct that contains Monte Carlo field configurations.
 StochACContext -> Essential struct for the StochAC solver.
 #
 solve          -> Wrapper function for the StochAC solver.
-init           -> Initialize stochastic analytical continuation simulation.
-run (prun)     -> Perform stochastic analytical continuation simulation.
+init           -> Initialize stochastic analytic continuation simulation.
+run (prun)     -> Perform stochastic analytic continuation simulation.
 average        -> Evaluate the averaged results.
 last           -> Postprocess the calculated results and write them.
 #
@@ -658,8 +658,8 @@ StochSKElement -> A struct that contains Monte Carlo field configurations.
 StochSKContext -> Essential struct for the StochSK solver.
 #
 solve          -> Wrapper function for the StochSK solver.
-init           -> Initialize stochastic analytical continuation simulation.
-run (prun)     -> Perform stochastic analytical continuation simulation.
+init           -> Initialize stochastic analytic continuation simulation.
+run (prun)     -> Perform stochastic analytic continuation simulation.
 average        -> Evaluate the averaged results.
 last           -> Postprocess the calculated results and write them.
 #
@@ -894,7 +894,7 @@ To provide basic workflow for the users of the ACFlow toolkit.
 *Members* :
 
 ```text
-solve       -> Select solver to solve the analytical continuation problem.
+solve       -> Select solver to solve the analytic continuation problem.
 #
 reprod      -> Try to generate the input data via calculated spectrum.
 kramers     -> Calculate real part of response function.

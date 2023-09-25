@@ -4,13 +4,13 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/12
+# Last modified: 2023/09/25
 #
 
 """
     solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T})
 
-Solve the analytical continuation problem. The arguments `grid`, `Gval`,
+Solve the analytic continuation problem. The arguments `grid`, `Gval`,
 and `Gerr` are the grid, value, and error bar, respectively.
 """
 function solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T}) where {T}
@@ -20,7 +20,7 @@ end
 """
     solve(grid::Vector{F64}, Gval::Vector{T}, err::T)
 
-Solve the analytical continuation problem. The arguments `grid`, `Gval`,
+Solve the analytic continuation problem. The arguments `grid`, `Gval`,
 and `err` are the grid, value, and error bar, respectively.
 """
 function solve(grid::Vector{F64}, Gval::Vector{T}, err::T) where {T}
@@ -32,7 +32,7 @@ end
 """
     solve(grid::Vector{F64}, Gval::Vector{T})
 
-Solve the analytical continuation problem. The arguments `grid` and `Gval`
+Solve the analytic continuation problem. The arguments `grid` and `Gval`
 are the grid and value, respectively. Furthermore, the error bar is set to
 a fixed value `1.0e-4`.
 """
@@ -50,7 +50,7 @@ end
 """
     solve(rd::RawData)
 
-Solve the analytical continuation problem. The input data are encapsulated
+Solve the analytic continuation problem. The input data are encapsulated
 in a `Rawdata` struct.
 
 See also: [`RawData`](@ref).
@@ -178,7 +178,7 @@ end
 
 Setup the configuration dictionaries via function call. Here `C` contains
 parameters for general setup, while `S` contains parameters for selected
-analytical continuation solver. If `reset` is true, then the configuration
+analytic continuation solver. If `reset` is true, then the configuration
 dictionaries will be reset to their default values at first. Later, `C`
 `S` will be used to customized the dictionaries further.
 
@@ -306,7 +306,7 @@ end
 
 Convert `RawData` struct to `GreenData` struct. Note that `RawData` is
 provided by the users directly, while `GreenData` is more suitable for
-various analytical continuation solvers and algorithms. Note that the
+various analytic continuation solvers and algorithms. Note that the
 `GreenData` struct is accessed and manipulated by this code internally,
 while the `RawData` struct is exposed to the users.
 

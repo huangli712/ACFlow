@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/07
+# Last modified: 2023/09/25
 #
 
 #=
@@ -80,7 +80,7 @@ end
 """
     solve(S::StochOMSolver, rd::RawData)
 
-Solve the analytical continuation problem by the stochastic optimization
+Solve the analytic continuation problem by the stochastic optimization
 method.
 """
 function solve(S::StochOMSolver, rd::RawData)
@@ -160,7 +160,7 @@ end
 Perform stochastic optimization simulation, sequential version.
 """
 function run(MC::StochOMMC, SC::StochOMContext)
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -207,7 +207,7 @@ function prun(S::StochOMSolver,
     # Initialize random number generator again
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
 
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -241,7 +241,7 @@ Postprocess the collected results after the stochastic optimization
 simulations. It will generate the spectral functions.
 """
 function average(SC::StochOMContext)
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -299,7 +299,7 @@ It will process and write the calculated results by the StochOM solver,
 including final spectral function and reproduced correlator.
 """
 function last(SC::StochOMContext, Aout::Vector{F64})
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false

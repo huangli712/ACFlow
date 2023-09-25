@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/13
+# Last modified: 2023/09/25
 #
 
 #=
@@ -42,7 +42,7 @@ Dictionary for configuration parameters: general setup.
 """
 const PBASE    = Dict{String,ADT}(
     "finput"  => [missing, 1, :String, "Filename for input data"],
-    "solver"  => [missing, 1, :String, "Solver for the analytical continuation problem"],
+    "solver"  => [missing, 1, :String, "Solver for the analytic continuation problem"],
     "ktype"   => [missing, 1, :String, "Type of kernel function"],
     "mtype"   => [missing, 1, :String, "Type of default model function"],
     "grid"    => [missing, 1, :String, "Grid for input data (imaginary axis)"],
@@ -53,7 +53,7 @@ const PBASE    = Dict{String,ADT}(
     "wmin"    => [missing, 1, :F64   , "Left boundary (minimum value) of output mesh"],
     "beta"    => [missing, 1, :F64   , "Inverse temperature"],
     "offdiag" => [missing, 1, :Bool  , "Is it the offdiagonal part in matrix-valued function"],
-    "fwrite"  => [missing, 0, :Bool  , "Are the analytical continuation results written into files"],
+    "fwrite"  => [missing, 0, :Bool  , "Are the analytic continuation results written into files"],
     "pmodel"  => [missing, 0, :Array , "Additional parameters for customizing the model"],
     "pmesh"   => [missing, 0, :Array , "Additional parameters for customizing the mesh"],
     "exclude" => [missing, 0, :Array , "Restriction of the energy range of the spectrum"],
@@ -104,7 +104,7 @@ const _PMaxEnt = Dict{String,Any}(
     PStochAC
 
 Dictionary for configuration parameters:
-the stochastic analytical continuation method (K. S. D. Beach's version).
+the stochastic analytic continuation method (K. S. D. Beach's version).
 """
 const PStochAC = Dict{String,ADT}(
     "nfine"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
@@ -133,7 +133,7 @@ const _PStochAC= Dict{String,Any}(
     PStochSK
 
 Dictionary for configuration parameters:
-the stochastic analytical continuation method (A. W. Sandvik's version).
+the stochastic analytic continuation method (A. W. Sandvik's version).
 """
 const PStochSK = Dict{String,ADT}(
     "method"  => [missing, 1, :String, "How to determine the optimized Θ parameter"],
@@ -219,7 +219,7 @@ const _PStochPX = Dict{String,Any}(
 """
     AbstractSolver
 
-An abstract type representing the solver for analytical continuation
+An abstract type representing the solver for analytic continuation
 problem. It is used to build the internal type system. All the other
 solvers are its sub-types.
 """
@@ -228,7 +228,7 @@ abstract type AbstractSolver end
 """
     MaxEntSolver
 
-It represents the analytical continuation solver that implements the
+It represents the analytic continuation solver that implements the
 maximum entropy method.
 """
 struct MaxEntSolver <: AbstractSolver end
@@ -236,23 +236,23 @@ struct MaxEntSolver <: AbstractSolver end
 """
     StochACSolver
 
-It represents the analytical continuation solver that implements the
-stochastic analytical continuation method (K. S. D. Beach's version).
+It represents the analytic continuation solver that implements the
+stochastic analytic continuation method (K. S. D. Beach's version).
 """
 struct StochACSolver <: AbstractSolver end
 
 """
     StochSKSolver
 
-It represents the analytical continuation solver that implements the
-stochastic analytical continuation method (A. W. Sandvik's version).
+It represents the analytic continuation solver that implements the
+stochastic analytic continuation method (A. W. Sandvik's version).
 """
 struct StochSKSolver <: AbstractSolver end
 
 """
     StochOMSolver
 
-It represents the analytical continuation solver that implements the
+It represents the analytic continuation solver that implements the
 stochastic optimization method.
 """
 struct StochOMSolver <: AbstractSolver end
@@ -260,7 +260,7 @@ struct StochOMSolver <: AbstractSolver end
 """
     StochPXSolver
 
-It represents the analytical continuation solver that implements the
+It represents the analytic continuation solver that implements the
 stochastic pole expansion.
 """
 struct StochPXSolver <: AbstractSolver end

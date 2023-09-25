@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/06/19
+# Last modified: 2023/09/25
 #
 
 #=
@@ -252,7 +252,7 @@ end
 Print the goodbye messages to the screen.
 """
 function goodbye()
-    println("The analytical continuation problem is solved successfully.")
+    println("The analytic continuation problem is solved successfully.")
     println("Current Time : ", Dates.format(now(), "yyyy-mm-dd / HH:MM:SS"))
     #
     flush(stdout)

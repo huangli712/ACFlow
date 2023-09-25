@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/07
+# Last modified: 2023/09/25
 #
 
 #=
@@ -71,7 +71,7 @@ end
 """
     solve(S::StochACSolver, rd::RawData)
 
-Solve the analytical continuation problem by the stochastic analytical
+Solve the analytic continuation problem by the stochastic analytic
 continuation algorithm (K. S. D. Beach's version).
 """
 function solve(S::StochACSolver, rd::RawData)
@@ -196,10 +196,10 @@ end
 """
     run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
-Perform stochastic analytical continuation simulation, sequential version.
+Perform stochastic analytic continuation simulation, sequential version.
 """
 function run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -242,7 +242,7 @@ end
          p2::Dict{String,Vector{Any}},
          MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
-Perform stochastic analytical continuation simulation, parallel version.
+Perform stochastic analytic continuation simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochAC, respectively.
 """
 function prun(S::StochACSolver,
@@ -256,7 +256,7 @@ function prun(S::StochACSolver,
     # Initialize random number generator again
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
 
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -296,7 +296,7 @@ end
 """
     average(step::F64, SC::StochACContext)
 
-Postprocess the results generated during the stochastic analytical
+Postprocess the results generated during the stochastic analytic
 continuation simulations. It will calculate the spectral functions, and
 internal energies.
 """
@@ -331,7 +331,7 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
         return @. p[1] * x + p[2]
     end
 
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -681,9 +681,9 @@ end
 """
     constraints(S::StochACSolver, fmesh::AbstractMesh)
 
-Try to implement the constrained stochastic analytical continuation
+Try to implement the constrained stochastic analytic continuation
 method. This function will return a collection. It contains all the
-allowable indices. Be careful, the constrained stochastic analytical
+allowable indices. Be careful, the constrained stochastic analytic
 continuation method is compatible with the self-adaptive mesh.
 
 See also: [`StochACSolver`](@ref).

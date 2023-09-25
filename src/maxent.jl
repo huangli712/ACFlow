@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/13
+# Last modified: 2023/09/25
 #
 
 #=
@@ -50,7 +50,7 @@ end
 """
     solve(S::MaxEntSolver, rd::RawData)
 
-Solve the analytical continuation problem by the maximum entropy method.
+Solve the analytic continuation problem by the maximum entropy method.
 """
 function solve(S::MaxEntSolver, rd::RawData)
     println("[ MaxEnt ]")
@@ -131,12 +131,12 @@ end
     last(mec::MaxEntContext, svec::Vector, sol::Dict)
 
 Postprocess the results generated during the maximum entropy simulations.
-Here `sol` is the final solution for the analytical continuation problem,
+Here `sol` is the final solution for the analytic continuation problem,
 while `svec` contains all the intermediate results (it is a vector of
 dictionary actually).
 """
 function last(mec::MaxEntContext, svec::Vector, sol::Dict)
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -181,7 +181,7 @@ end
 """
     historic(mec::MaxEntContext)
 
-Apply the historic algorithm to solve the analytical continuation problem.
+Apply the historic algorithm to solve the analytic continuation problem.
 It choose α in a way that χ² ≈ N.
 
 For the historic algorithm, `alpha` is usually 10⁶, and `ratio` is 10.0.
@@ -227,7 +227,7 @@ end
 """
     classic(mec::MaxEntContext)
 
-Apply the classic algorithm to solve the analytical continuation problem.
+Apply the classic algorithm to solve the analytic continuation problem.
 
 Classic algorithm uses Bayes statistics to approximately determine the
 most probable value of α. We always start at a large value of α, where
@@ -290,7 +290,7 @@ end
 """
     bryan(mec::MaxEntContext)
 
-Apply the bryan algorithm to solve the analytical continuation problem.
+Apply the bryan algorithm to solve the analytic continuation problem.
 
 Bryan's maxent calculates an average of spectral functions, weighted by
 their Bayesian probability.
@@ -349,7 +349,7 @@ end
 """
     chi2kink(mec::MaxEntContext)
 
-Apply the chi2kink algorithm to solve the analytical continuation problem.
+Apply the chi2kink algorithm to solve the analytic continuation problem.
 
 We start with an optimization at a large value of α, where we should get
 only the default model. And then, α is decreased step-by-step, until the

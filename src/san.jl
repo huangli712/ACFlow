@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/14
+# Last modified: 2023/09/25
 #
 
 #=
@@ -77,7 +77,7 @@ end
 """
     solve(S::StochSKSolver, rd::RawData)
 
-Solve the analytical continuation problem by the stochastic analytical
+Solve the analytic continuation problem by the stochastic analytic
 continuation algorithm (A. W. Sandvik's version).
 """
 function solve(S::StochSKSolver, rd::RawData)
@@ -202,10 +202,10 @@ end
 """
     run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
-Perform stochastic analytical continuation simulation, sequential version.
+Perform stochastic analytic continuation simulation, sequential version.
 """
 function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -256,7 +256,7 @@ end
          p2::Dict{String,Vector{Any}},
          MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
-Perform stochastic analytical continuation simulation, parallel version.
+Perform stochastic analytic continuation simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochSK, respectively.
 """
 function prun(S::StochSKSolver,
@@ -270,7 +270,7 @@ function prun(S::StochSKSolver,
     # Initialize random number generator again
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
 
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -318,7 +318,7 @@ end
 """
     average(step::F64, SC::StochSKContext)
 
-Postprocess the results generated during the stochastic analytical
+Postprocess the results generated during the stochastic analytic
 continuation simulations. It will generate the spectral functions.
 """
 function average(step::F64, SC::StochSKContext)
@@ -338,7 +338,7 @@ including final spectral function and reproduced correlator.
 function last(SC::StochSKContext,
               Asum::Vector{F64},
               χ²vec::Vector{F64}, Θvec::Vector{F64})
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -606,7 +606,7 @@ end
 
 Try to calculate very fine (dense) linear mesh in [wmin, wmax], which
 is used internally to build the kernel function. Note that the stochastic
-analytical continuation method (A. W. Sandvik's version) does not support
+analytic continuation method (A. W. Sandvik's version) does not support
 the self-adaptive mesh.
 
 See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
@@ -695,7 +695,7 @@ end
 """
     constraints(S::StochSKSolver, fmesh::AbstractMesh)
 
-Try to implement the constrained stochastic analytical continuation
+Try to implement the constrained stochastic analytic continuation
 method. This function will return a collection. It contains all the
 allowable indices. Be careful, `fmesh` should be a fine linear mesh.
 

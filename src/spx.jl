@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/15
+# Last modified: 2023/09/25
 #
 
 #=
@@ -79,7 +79,7 @@ end
 """
     solve(S::StochPXSolver, rd::RawData)
 
-Solve the analytical continuation problem by the stochastic
+Solve the analytic continuation problem by the stochastic
 pole expansion. Note that this solver is still `experimental`.
 """
 function solve(S::StochPXSolver, rd::RawData)
@@ -203,7 +203,7 @@ end
 Perform stochastic pole expansion simulation, sequential version.
 """
 function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -271,7 +271,7 @@ function prun(S::StochPXSolver,
     # Initialize random number generator again
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)
 
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -327,7 +327,7 @@ simulations. It will generate the spectral functions, real frequency
 green's function, and imaginary frequency green's function.
 """
 function average(SC::StochPXContext)
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -436,7 +436,7 @@ function last(SC::StochPXContext,
               Aout::Vector{F64},
               Gout::Vector{C64},
               Gᵣ::Vector{F64})
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
