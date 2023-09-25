@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 
 #
-# This script is used to start analytical continuation simulations.
+# This script is used to start analytic continuation simulations.
 # By default it will launch only 8 processes. Please fix line (14)
 # to change the number of used processors.
 #

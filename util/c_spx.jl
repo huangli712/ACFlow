@@ -115,7 +115,7 @@ Perform stochastic pole expansion simulation, sequential version.
 Only the positions of poles are updated.
 """
 function run_p(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
@@ -170,7 +170,7 @@ Perform stochastic pole expansion simulation, sequential version.
 Only the amplitudes of poles are updated.
 """
 function run_a(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
-    # By default, we should write the analytical continuation results
+    # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
