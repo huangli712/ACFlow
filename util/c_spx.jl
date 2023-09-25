@@ -221,9 +221,9 @@ end
 """
     solve_p()
 
-    Solve the analytical continuation problem by the stochastic
-    pole expansion. Note that the amplitudes of poles are fixed.
-    The positions of poles are optimized.
+Solve the analytic continuation problem by the stochastic pole expansion.
+Note that the amplitudes of poles are fixed. The positions of poles are
+optimized.
 """
 function solve_p()
     npole = get_x("npole")
@@ -243,11 +243,11 @@ function solve_p()
 end
 
 """
-    solve_p()
+    solve_a()
 
-    Solve the analytical continuation problem by the stochastic
-    pole expansion. Note that the positions of poles are fixed.
-    The amplitudes of poles are optimized.
+Solve the analytic continuation problem by the stochastic pole expansion.
+Note that the positions of poles are fixed. The amplitudes of poles are
+optimized.
 """
 function solve_a()
     # to be done
