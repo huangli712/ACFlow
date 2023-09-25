@@ -3,7 +3,7 @@
 #
 # This script is used to generate a non-uniform and very dense mesh
 # according to the given spectral function `Aout.data`. The mesh will
-# be stored in `fmesh.inp`. The stochastic analytical continuation and
+# be stored in `fmesh.inp`. The stochastic analytic continuation and
 # the stochastic pole expansion can utilize this mesh to capture the
 # fine structure of the spectrum automatically. This script will launch
 # only 1 process.
@@ -68,7 +68,7 @@ Try to generate a very dense and non-uniform mesh according to the given
 mesh and spectral function.
 """
 function generate_fmesh(mesh::Vector{F64}, image::Vector{F64})
-    # Get the analytical continuation solver
+    # Get the analytic continuation solver
     solver = get_b("solver")
 
     # Get number of points from the configuration file
