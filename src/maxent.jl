@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/25
+# Last modified: 2023/09/26
 #
 
 #=
@@ -445,10 +445,10 @@ function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool
     offdiag = get_b("offdiag")
 
     if offdiag
-        solution, call = newton(f_and_J_offdiag, us, mec, α)
+        solution, call = newton(f_and_J_od, us, mec, α)
         u = copy(solution)
-        A = svd_to_real_offdiag(mec, solution)
-        S = calc_entropy_offdiag(mec, A)
+        A = svd_to_real_od(mec, solution)
+        S = calc_entropy_od(mec, A)
     else
         solution, call = newton(f_and_J, us, mec, α)
         u = copy(solution)
@@ -471,7 +471,7 @@ function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool
 
     if use_bayes
         if offdiag
-            ng, tr, conv, prob = calc_bayes_offdiag(mec, A, S, χ², α)
+            ng, tr, conv, prob = calc_bayes_od(mec, A, S, χ², α)
         else
             ng, tr, conv, prob = calc_bayes(mec, A, S, χ², α)
         end
@@ -646,7 +646,7 @@ and `α` is a (positive) weight factor of the entropy.
 It returns `f`, value of the function whose zero we want to find, and
 `J`, jacobian at the current position.
 
-See also: [`f_and_J_offdiag`](@ref).
+See also: [`f_and_J_od`](@ref).
 """
 function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
     stype = get_m("stype")
@@ -736,7 +736,7 @@ J_{mi} = \alpha \delta_{mi} + \sum_l W_{mli} D_l (w^+_l w^+_l + w^-_l w^-_l).
 =#
 
 """
-    f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
+    f_and_J_od(u::Vector{F64}, mec::MaxEntContext, α::F64)
 
 This function evaluates the function whose root we want to find. Here
 `u` is a singular space vector that parametrizes the spectral function,
@@ -749,7 +749,7 @@ This function is similar to `f_and_J`, but for offdiagonal elements.
 
 See also: [`f_and_J`](@ref).
 """
-function f_and_J_offdiag(u::Vector{F64}, mec::MaxEntContext, α::F64)
+function f_and_J_od(u::Vector{F64}, mec::MaxEntContext, α::F64)
     stype = get_m("stype")
 
     n_svd = length(mec.Bₘ)
@@ -821,7 +821,7 @@ by `A(ω) = D(ω) eⱽᵘ`, where `D(ω)` is the default model `V` is the matrix
 from the singular value decomposition. The argument `u` means a singular
 space vector that parametrizes the spectral function.
 
-See also: [`svd_to_real_offdiag`](@ref).
+See also: [`svd_to_real_od`](@ref).
 """
 function svd_to_real(mec::MaxEntContext, u::Vector{F64})
     stype = get_m("stype")
@@ -871,7 +871,7 @@ A_l = D_l (w^+_l - w^-_l).
 =#
 
 """
-    svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
+    svd_to_real_od(mec::MaxEntContext, u::Vector{F64})
 
 Go from singular value space to real space. It will transform the singular
 space vector `u` into real-frequency space in the case of an offdiagonal
@@ -879,7 +879,7 @@ element. It will return the spectral function.
 
 See also: [`svd_to_real`](@ref).
 """
-function svd_to_real_offdiag(mec::MaxEntContext, u::Vector{F64})
+function svd_to_real_od(mec::MaxEntContext, u::Vector{F64})
     stype = get_m("stype")
     #
     if stype == "sj"
@@ -951,7 +951,7 @@ It computes entropy for positive definite spectral function. Here the
 arguments `A` means spectral function and `u` means a singular space
 vector that parametrizes the spectral function.
 
-See also: [`calc_entropy_offdiag`](@ref).
+See also: [`calc_entropy_od`](@ref).
 """
 function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     stype = get_m("stype")
@@ -974,14 +974,14 @@ function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
 end
 
 """
-    calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64})
+    calc_entropy_od(mec::MaxEntContext, A::Vector{F64})
 
 It compute *positive-negative entropy* for spectral function with norm 0.
 Here the argument `A` means spectral function.
 
 See also: [`calc_entropy`](@ref).
 """
-function calc_entropy_offdiag(mec::MaxEntContext, A::Vector{F64})
+function calc_entropy_od(mec::MaxEntContext, A::Vector{F64})
     stype = get_m("stype")
     #
     if stype == "sj"
@@ -1168,7 +1168,7 @@ a-posteriori probability (`log_prob`) for `α` after optimization of `A`.
 Here, `A` is the spectral function, `S` the entropy, `χ²` the deviation,
 and `α` weight factor of the entropy.
 
-See also: [`calc_bayes_offdiag`](@ref).
+See also: [`calc_bayes_od`](@ref).
 """
 function calc_bayes(mec::MaxEntContext,
                     A::Vector{F64},
@@ -1195,9 +1195,9 @@ function calc_bayes(mec::MaxEntContext,
 end
 
 """
-    calc_bayes_offdiag(mec::MaxEntContext,
-                       A::Vector{F64},
-                       S::F64, χ²::F64, α::F64)
+    calc_bayes_od(mec::MaxEntContext,
+                  A::Vector{F64},
+                  S::F64, χ²::F64, α::F64)
 
 It calculates Bayesian convergence criterion (`ng`, `tr`, and `conv`) for
 classic maxent (maximum of probablility distribution) and then Bayesian
@@ -1210,9 +1210,9 @@ It is just a offdiagonal version of `calc_bayes()`.
 
 See also: [`calc_bayes`](@ref).
 """
-function calc_bayes_offdiag(mec::MaxEntContext,
-                            A::Vector{F64},
-                            S::F64, χ²::F64, α::F64)
+function calc_bayes_od(mec::MaxEntContext,
+                       A::Vector{F64},
+                       S::F64, χ²::F64, α::F64)
     stype = get_m("stype")
     mesh = mec.mesh
 
