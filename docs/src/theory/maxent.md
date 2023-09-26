@@ -1,6 +1,6 @@
 # [Maximum Entropy Method](@id mem)
 
-Perhaps the maximum entropy method is the most frequently used approach for analytical continuation problems because of its high computational efficiency. Next, we will discuss the basic principles and several variants of it.
+Perhaps the maximum entropy method is the most frequently used approach for analytic continuation problems because of its high computational efficiency. Next, we will discuss the basic principles and several variants of it.
 
 ## Bayesian Inference
 
@@ -10,7 +10,7 @@ Bayes's theorem is the cornerstone of the maximum entropy method. Given two even
 P[a|b]P[b] = P[b|a]P[a],
 \end{equation}
 ```
-where ``P[a]`` is the probability of event ``a``, ``P[a|b]`` is the conditional probability of event ``a`` with given event ``b``. In the scenario of analytical continuation problem, ``\bar{G}(\tau)`` and ``A(\omega)`` are treated as two events, where ``\bar{G}(\tau)`` denotes the measured value of ``G(\tau)``. So the best solution for ``A(\omega)`` is of course the one that maximizes ``P[A|\bar{G}]``, which is called the posterior probability. According to the Bayes's theorem, we get
+where ``P[a]`` is the probability of event ``a``, ``P[a|b]`` is the conditional probability of event ``a`` with given event ``b``. In the scenario of analytic continuation problem, ``\bar{G}(\tau)`` and ``A(\omega)`` are treated as two events, where ``\bar{G}(\tau)`` denotes the measured value of ``G(\tau)``. So the best solution for ``A(\omega)`` is of course the one that maximizes ``P[A|\bar{G}]``, which is called the posterior probability. According to the Bayes's theorem, we get
 ```math
 \begin{equation}
 P[A|\bar{G}] = \frac{P[\bar{G}|A]P[A]}{P[\bar{G}]},
@@ -58,7 +58,7 @@ Q = \alpha S - \frac{\chi^2}{2}.
 
 ## Various Algorithms
 
-Now the original analytical continuation problem becomes how to figure out the optimal ``A(\omega)`` that maximizes ``Q``. In other words, we have to solve the following equation:
+Now the original analytic continuation problem becomes how to figure out the optimal ``A(\omega)`` that maximizes ``Q``. In other words, we have to solve the following equation:
 ```math
 \begin{equation}
 \frac{\partial Q}{\partial A} \bigg|_{A = \hat{A}} = 0,

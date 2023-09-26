@@ -8,7 +8,7 @@
 
 [2] M. Jarrell, J. Gubernatis, Bayesian inference and the analytic continuation of imaginary-time quantum monte carlo data, *Phys. Rep.* **269**, 133 (1996).
 
-**Stochastic analytical continuation**
+**Stochastic analytic continuation**
 
 ---
 

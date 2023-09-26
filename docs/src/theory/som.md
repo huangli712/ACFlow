@@ -1,6 +1,6 @@
 # Stochastic Optimization Method
 
-A. O. Mishchenko *et al.* proposed the stochastic optimization method. Though it looks like the stochastic analytical continuation, their differences are quite apparent. The stochastic optimization method does not need any likelihood function or Boltzmann distribution to weight the candidate spectral functions. It generates a lot of spectral functions through Monte Carlo samplings. For each candidate spectral function, the deviation ``D`` between the reconstructed Green's function ``\tilde{G}`` and original Green's function ``\bar{G}`` is measured. Those spectral functions with small deviations ``D`` are selected and averaged. Such that the desired spectral function is obtained.
+A. O. Mishchenko *et al.* proposed the stochastic optimization method. Though it looks like the stochastic analytic continuation, their differences are quite apparent. The stochastic optimization method does not need any likelihood function or Boltzmann distribution to weight the candidate spectral functions. It generates a lot of spectral functions through Monte Carlo samplings. For each candidate spectral function, the deviation ``D`` between the reconstructed Green's function ``\tilde{G}`` and original Green's function ``\bar{G}`` is measured. Those spectral functions with small deviations ``D`` are selected and averaged. Such that the desired spectral function is obtained.
 
 ## Deviation Function
 
@@ -44,7 +44,7 @@ Clearly, the larger ``\alpha_{\text{good}}`` is, the more spectral functions are
 
 ## Rectangle Representation
 
-Similar to the stochastic analytical continuation, the stochastic optimization method usually employs a few rectangle functions to parameterize the spectral function:
+Similar to the stochastic analytic continuation, the stochastic optimization method usually employs a few rectangle functions to parameterize the spectral function:
 ```math
 \begin{equation}
 A(\omega) = \sum_i R_{\{c_i, w_i, h_i\}} (\omega),
@@ -85,7 +85,7 @@ p(\mathcal{C} \to \mathcal{C}') = \left(\frac{D[A_{\mathcal{C}}]}{D[A_{\mathcal{
 \end{equation}
 ```
 
-As compared to the maximum entropy method, the likelihood function, entropic term, and model function are absent in the stochastic optimization method. As compared to the stochastic analytical continuation, there are no adjustable parameters, such as ``\Theta`` in Sandvik's algorithm and ``\alpha`` in Beach's algorithm. Thus, the simulated results of the stochastic optimization method are less affected by artificial parameters.
+As compared to the maximum entropy method, the likelihood function, entropic term, and model function are absent in the stochastic optimization method. As compared to the stochastic analytic continuation, there are no adjustable parameters, such as ``\Theta`` in Sandvik's algorithm and ``\alpha`` in Beach's algorithm. Thus, the simulated results of the stochastic optimization method are less affected by artificial parameters.
 
 ## Relevant parameters
 
