@@ -101,6 +101,19 @@ const _PMaxEnt = Dict{String,Any}(
 )
 
 """
+    PNevanAC
+
+Dictionary for configuration parameters:
+the Nevanlinna analytical continuation method.
+"""
+const PNevanAC = Dict{String,ADT}(
+)
+
+# Default parameters for PNevanAC
+const _PNevanAC = Dict{String,Any}(
+)
+
+"""
     PStochAC
 
 Dictionary for configuration parameters:
