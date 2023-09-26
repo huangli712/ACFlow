@@ -1,6 +1,6 @@
 !!! info
 
-    In order to demonstrate usefulness of the ACFlow toolkit, four examples are illustrated in this section. These examples cover typical application scenarios of the ACFlow toolkit, including analytical continuations of
+    In order to demonstrate usefulness of the ACFlow toolkit, four examples are illustrated in this section. These examples cover typical application scenarios of the ACFlow toolkit, including analytic continuations of
 
     * Matsubara self-energy function
     * Matsubara Green's function
@@ -56,7 +56,7 @@ Sh = 1.0
 @. Sinp = Sinp - Sh
 ```
 
-Next, the computational parameters are encapsulated into two dictionaries. The dict `B` is for the `[BASE]` block, while the dict `S` is for the `MaxEnt` solver. Then the `setup_param()` function is called, so that these parameters take effect. Here, the `MatEnt` solver is employed to tackle the analytical continuation problem. But the other stochastic sampling solvers are also applicable. The default model function is gaussian. The mesh for spectral density is non-uniform (A tangent mesh). The number of used ``\alpha`` parameters is 15, and the optimal ``\alpha`` parameter is determined by the ``\chi^2``kink algorithm.
+Next, the computational parameters are encapsulated into two dictionaries. The dict `B` is for the `[BASE]` block, while the dict `S` is for the `MaxEnt` solver. Then the `setup_param()` function is called, so that these parameters take effect. Here, the `MatEnt` solver is employed to tackle the analytic continuation problem. But the other stochastic sampling solvers are also applicable. The default model function is gaussian. The mesh for spectral density is non-uniform (A tangent mesh). The number of used ``\alpha`` parameters is 15, and the optimal ``\alpha`` parameter is determined by the ``\chi^2``kink algorithm.
 
 ```julia
 # Setup parameters
@@ -86,7 +86,7 @@ S = Dict{String,Any}(
 setup_param(B, S)
 ```
 
-It is quite easy to start the analytical continuation calculation. Just call the `solve()` function and pass the grid, input data, and error bar data to it. The return values of this function call are real frequency mesh, spectral density, and reconstructed Matsubara self-energy function.
+It is quite easy to start the analytic continuation calculation. Just call the `solve()` function and pass the grid, input data, and error bar data to it. The return values of this function call are real frequency mesh, spectral density, and reconstructed Matsubara self-energy function.
 
 ```julia
 # Call the solver
@@ -115,4 +115,4 @@ The calculated results are displayed in **Fig.1**. **Fig.1(a)** and **(b)** show
 
 ![T_E1.png](../assets/T_E1.png)
 
-**Figure 1 |** Analytical continuation of Matsubara self-energy function by using the maximum entropy method. (a) Real part of real frequency self-energy function. (b) Imaginary part of real frequency self-energy function. (c) ``\chi^{2}`` as a function of ``\alpha``. The vertical bar indicates the optimal ``\alpha`` parameter chosen by the `chi2kink` algorithm. (d) Reproduced and original data for imaginary part of the Matsubara self-energy functions.
+**Figure 1 |** Analytic continuation of Matsubara self-energy function by using the maximum entropy method. (a) Real part of real frequency self-energy function. (b) Imaginary part of real frequency self-energy function. (c) ``\chi^{2}`` as a function of ``\alpha``. The vertical bar indicates the optimal ``\alpha`` parameter chosen by the `chi2kink` algorithm. (d) Reproduced and original data for imaginary part of the Matsubara self-energy functions.
