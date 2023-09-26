@@ -2,7 +2,7 @@
 
 *Define various solvers for the ACFlow toolkit.*
 
-Now the ACFlow toolkit supports five analytical continuation solvers. They are:
+Now the ACFlow toolkit supports five analytic continuation solvers. They are:
 
 * `MaxEnt` (Maximum Entropy Method, see `maxent.jl`)
 * `StochAC` (Stochastic Analytical Continuations, see `sac.jl`)
