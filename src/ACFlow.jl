@@ -18,7 +18,7 @@ toolkit is under heavy development. **PLEASE USE IT AT YOUR OWN RISK**.
 Nowadays the ACFlow toolkit supports the following algorithms:
 
 * Maximum Entropy Method (`MaxEnt` solver)
-* Stochastic Analytical Continuation (`StochAC` and `StochSK` solvers)
+* Stochastic Analytic Continuation (`StochAC` and `StochSK` solvers)
 * Stochastic Optimization Method (`StochOM` solver)
 * Stochastic Pole eXpansion (`StochPX` solver)
 * Nevanlinna Analytical Continuation (`NevanAC` solver, `experimental`)
@@ -509,7 +509,7 @@ export make_gauss_peaks
 #=
 *Summary* :
 
-To implement the MaxEnt solver for analytically continuation problem.
+To implement the MaxEnt solver for analytic continuation problem.
 
 *Members* :
 
@@ -574,7 +574,7 @@ export calc_chi2
 #=
 *Summary* :
 
-To implement the NevanAC solver for analytically continuation problem.
+To implement the NevanAC solver for analytic continuation problem.
 
 *Members* :
 
@@ -593,7 +593,7 @@ include("nac.jl")
 #=
 *Summary* :
 
-To implement the StochAC solver for analytically continuation problem.
+To implement the StochAC solver for analytic continuation problem.
 
 *Members* :
 
@@ -669,7 +669,7 @@ export try_move_x
 #=
 *Summary* :
 
-To implement the StochSK solver for analytically continuation problem.
+To implement the StochSK solver for analytic continuation problem.
 
 *Members* :
 
@@ -743,7 +743,7 @@ export try_move_q
 #=
 *Summary* :
 
-To implement the StochOM solver for analytically continuation problem.
+To implement the StochOM solver for analytic continuation problem.
 
 *Members* :
 
@@ -827,7 +827,7 @@ export Pdx
 #=
 *Summary* :
 
-To implement the StochPX solver for analytically continuation problem.
+To implement the StochPX solver for analytic continuation problem.
 
 *Members* :
 
