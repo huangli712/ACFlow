@@ -39,7 +39,7 @@ Depth = 3
 
 *Definition:*
 
-> This parameter specifies the solvers that used to solve the analytical continuation problem. Now the ACFlow toolkit supports five different solvers. They are as follows:
+> This parameter specifies the solvers that used to solve the analytic continuation problem. Now the ACFlow toolkit supports five different solvers. They are as follows:
 >
 > * MaxEnt
 > * StochAC
@@ -49,9 +49,9 @@ Depth = 3
 >
 > Here, `MaxEnt` means the maximum entropy method. The `MaxEnt` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file.
 >
->`StochAC` means the stochastic analytical continuation method (K. S. D. Beach's algorithm). The `StochAC` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochAC"`, then the `[StochAC]` block must be available in the configuration file.
+>`StochAC` means the stochastic analytic continuation method (K. S. D. Beach's algorithm). The `StochAC` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochAC"`, then the `[StochAC]` block must be available in the configuration file.
 >
-> `StochSK` means the stochastic analytical continuation method (A. W. Sandvik's algorithm). The `StochSK` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochSK"`, then the `[StochSK]` block must be available in the configuration file.
+> `StochSK` means the stochastic analytic continuation method (A. W. Sandvik's algorithm). The `StochSK` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochSK"`, then the `[StochSK]` block must be available in the configuration file.
 >
 > `StochOM` means the stochastic optimization method. The `StochOM` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochOM"`, then the `[StochOM]` block must be available in the configuration file.
 >
@@ -59,7 +59,7 @@ Depth = 3
 
 !!! warning
 
-    For the `StochOM` solver, if the correlators are defined in imaginary time axis, they must be bosonic. In other words, the `StochOM` solver does not support analytical continuation of fermionic imaginary time correlation function.
+    For the `StochOM` solver, if the correlators are defined in imaginary time axis, they must be bosonic. In other words, the `StochOM` solver does not support analytic continuation of fermionic imaginary time correlation function.
 
 *Type:*
 
@@ -153,7 +153,7 @@ Depth = 3
 >
 > Besides `flat` and `file`, all the other model functions need additional parameters to customize them (Of course, the ACFlow toolkit will supplement default parameters). The parameters can be specified by the [`pmodel`](@ref pmodel) parameter.
 >
-> Especially, if `mtype = "file"`, then the default model function is encoded in `model.inp`. ACFlow will read this file and initialize the default model function automatically. Be careful, the mesh for this model function must be consistent with the one used in the analytical continuation calculations.
+> Especially, if `mtype = "file"`, then the default model function is encoded in `model.inp`. ACFlow will read this file and initialize the default model function automatically. Be careful, the mesh for this model function must be consistent with the one used in the analytic continuation calculations.
 >
 > As for detailed formula for these models, please refer to the comments in `src/model.jl`.
 
@@ -357,7 +357,7 @@ Depth = 3
 
 *Definition:*
 
-> Are the analytical continuation results written into external files? If it is false, then only the terminal output is retained and all the other outputs are disable. By default (if this parameter is missing or true), the files should be generated.
+> Are the analytic continuation results written into external files? If it is false, then only the terminal output is retained and all the other outputs are disable. By default (if this parameter is missing or true), the files should be generated.
 
 *Type:*
 
@@ -730,7 +730,7 @@ Depth = 3
 > * chi2min
 > * chi2kink
 >
-> Usually, the `chi2min` algorithm is preferred. This algorithm is suggested by Shao and Sandvik *et al*. See [Stochastic Analytical Continuation 1](@ref san) for more details.
+> Usually, the `chi2min` algorithm is preferred. This algorithm is suggested by Shao and Sandvik *et al*. See [Stochastic Analytic Continuation 1](@ref san) for more details.
 
 *Type:*
 

@@ -37,12 +37,12 @@ method = "mean"
 ...
 ```
 
-In the `[BASE]` block, the analytical continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]` blocks are used to customize the corresponding analytical continuation solvers further. In **Table 1**-**Table 6**, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please see [Parameters](@ref param).
+In the `[BASE]` block, the analytic continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]` blocks are used to customize the corresponding analytic continuation solvers further. In **Table 1**-**Table 6**, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please see [Parameters](@ref param).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 |`finput`  | string  | ''green.data'' | Filename for input data. |
-|`solver`  | string  | ''MaxEnt''     | Solver for the analytical continuation problem. |
+|`solver`  | string  | ''MaxEnt''     | Solver for the analytic continuation problem. |
 |`ktype`   | string  | ''fermi''      | Type of kernel function. |
 |`mtype`   | string  | ''flat''       | Type of default model function. |
 |`grid`    | string  | ''ffreq''      | Grid for input data (imaginary axis). |
@@ -53,7 +53,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`wmin`    | float   | -5.0           | Left boundary (minimum value) of mesh. |
 |`beta`    | float   | 10.0           | Inverse temperature. |
 |`offdiag` | bool    | false          | Treat the off-diagonal part of matrix-valued function? |
-|`fwrite`  | bool    | N/A            | Are the analytical continuation results written into files? |
+|`fwrite`  | bool    | N/A            | Are the analytic continuation results written into files? |
 |`pmodel`  | array   | N/A            | Additional parameters for customizing the default model. |
 |`pmesh`   | array   | N/A            | Additional parameters for customizing the mesh. |
 |`exclude` | array   | N/A            | Restriction of energy range of the spectrum. |
@@ -82,7 +82,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`alpha`  | float   | 1.0         | Starting value for the ``\alpha`` parameter. |
 |`ratio`  | float   | 1.2         | Scaling factor for the ``\alpha`` parameter. |
 
-**Table 3 |** Possible input parameters for the `[StochAC]` block, which are used to configure the solver based on the stochastic analytical continuation (Beach's algorithm).
+**Table 3 |** Possible input parameters for the `[StochAC]` block, which are used to configure the solver based on the stochastic analytic continuation (Beach's algorithm).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -96,7 +96,7 @@ In the `[BASE]` block, the analytical continuation problem is defined. The solve
 |`theta`  | float   | 1e6         | Starting value for the ``\Theta`` parameter. |
 |`ratio`  | float   | 0.9         | Scaling factor for the ``\Theta`` parameter. |
 
-**Table 4 |** Possible input parameters for the `[StochSK]` block, which are used to configure the solver based on the stochastic analytical continuation (Sandvik's algorithm).
+**Table 4 |** Possible input parameters for the `[StochSK]` block, which are used to configure the solver based on the stochastic analytic continuation (Sandvik's algorithm).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

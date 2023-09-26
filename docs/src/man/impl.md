@@ -2,7 +2,7 @@
 
 ## Powered by Julia
 
-The ACFlow toolkit is developed with pure Julia language. Thanks to powerful type system and multiple dispatch paradigm of the Julia language, the five different analytical continuation solvers are integrated into an united software architecture. Redundant codes are greatly reduced. It is quite easy to implement new analytical continuation solver or add new features to the existing solvers if necessary. Distributed computing is a built-in feature of Julia. So, it is straightforward to realize parallel calculations in the ACFlow toolkit. Now except for the `MaxEnt` solver, all the other solvers are parallelized.
+The ACFlow toolkit is developed with pure Julia language. Thanks to powerful type system and multiple dispatch paradigm of the Julia language, the five different analytic continuation solvers are integrated into an united software architecture. Redundant codes are greatly reduced. It is quite easy to implement new analytic continuation solver or add new features to the existing solvers if necessary. Distributed computing is a built-in feature of Julia. So, it is straightforward to realize parallel calculations in the ACFlow toolkit. Now except for the `MaxEnt` solver, all the other solvers are parallelized.
 
 ## Code Repository
 
@@ -20,13 +20,13 @@ The source codes of the ACFlow toolkit are placed in the `acflow/src` folder. Th
 | :------- | :---------- |
 | `ACFlow.jl` | Entry of the ACFlow module. |
 | `maxent.jl` | Maximum entropy method. |
-| `sac.jl`    | Stochastic analytical continuation (K. S. D. Beach's algorithm). |
-| `san.jl`    | Stochastic analytical continuation (A. W. Sandvik's algorithm). |
+| `sac.jl`    | Stochastic analytic continuation (K. S. D. Beach's algorithm). |
+| `san.jl`    | Stochastic analytic continuation (A. W. Sandvik's algorithm). |
 | `som.jl`    | Stochastic optimization method. |
 | `spx.jl`    | Stochastic pole expansion. |
 | `global.jl` | Numerical and physical constants. |
 | `types.jl`  | Basic data structures and computational parameters. |
-| `base.jl`   | Driver for analytical continuation simulation. |
+| `base.jl`   | Driver for analytic continuation simulation. |
 | `inout.jl`  | Read input data and write calculated results. |
 | `config.jl` | Parse configuration file and extract computational parameters. |
 | `math.jl`   | Root finding, numerical integration, interpolation, Einstein summation, and curve fitting. |
@@ -40,7 +40,7 @@ The source codes of the ACFlow toolkit are placed in the `acflow/src` folder. Th
 
 !!! note
 
-    There are two more scripts (`acrun.jl` and `Pacrun.jl`) in the `acflow/util` folder. They are used to launch the analytical continuation tasks.
+    There are two more scripts (`acrun.jl` and `Pacrun.jl`) in the `acflow/util` folder. They are used to launch the analytic continuation tasks.
 
 ## Documentation
 
