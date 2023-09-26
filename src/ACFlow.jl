@@ -529,13 +529,13 @@ optimizer     -> Optimize the non-linear equation.
 #
 precompute    -> Precompute some key coefficients.
 f_and_J       -> Define the function that need to be optimized.
-f_and_J_offdiag -> Define the function that need to be optimized (offdiag version).
+f_and_J_od    -> Define the function that need to be optimized (offdiag version).
 svd_to_real   -> From singular to real space.
-svd_to_real_offdiag -> From singular to real space (offdiag version).
+svd_to_real_od-> From singular to real space (offdiag version).
 calc_entropy  -> Calculate entropy.
-calc_entropy_offdiag -> Calculate entropy (offdiag version).
+calc_entropy_od -> Calculate entropy (offdiag version).
 calc_bayes    -> Calculate Bayesian probability.
-calc_bayes_offdiag -> Calculate Bayesian probability (offdiag version).
+calc_bayes_od -> Calculate Bayesian probability (offdiag version).
 calc_chi2     -> Calculate χ² function.
 ```
 =#
@@ -558,14 +558,22 @@ export optimizer
 #
 export precompute
 export f_and_J
-export f_and_J_offdiag
+export f_and_J_od
 export svd_to_real
-export svd_to_real_offdiag
+export svd_to_real_od
 export calc_entropy
-export calc_entropy_offdiag
+export calc_entropy_od
 export calc_bayes
-export calc_bayes_offdiag
+export calc_bayes_od
 export calc_chi2
+
+#=
+### *Includes And Exports* : *nac.jl*
+=#
+
+#
+include("nac.jl")
+#
 
 #=
 ### *Includes And Exports* : *sac.jl*
