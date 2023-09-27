@@ -299,6 +299,29 @@ function calc_phis(imags::ImagDomainData{T})::Vector{Complex{T}} where {T<:Real}
     return phis
 end
 
+function calc_abcd(imags::ImagDomainData{T}, 
+                   reals::RealDomainData{T}, 
+                   phis::Vector{Complex{T}}
+                   )::Array{Complex{T},3} where {T<:Real}
+    abcd = Array{Complex{T}}(undef, 2, 2, reals.N_real) 
+
+    for i in 1:reals.N_real
+        result = Matrix{Complex{T}}(I, 2, 2) 
+        z::Complex{T} = reals.freq[i]
+        for j in 1:imags.N_imag
+            prod = Array{Complex{T}}(undef, 2, 2)
+            prod[1,1] = (z - imags.freq[j]) / (z - conj(imags.freq[j]))
+            prod[1,2] = phis[j]
+            prod[2,1] = conj(phis[j])*(z - imags.freq[j]) / (z - conj(imags.freq[j]))
+            prod[2,2] = one(T)
+            result *= prod
+        end
+
+        abcd[:,:,i] .= result
+    end
+    return abcd
+end
+
 function solve(S::NevanACSolver, rd::RawData)
     N_real    = 1000  #demension of array of output
     omega_max = 10.0  #energy cutoff of real axis
