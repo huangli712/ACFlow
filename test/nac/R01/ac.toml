@@ -8,7 +8,7 @@
 
 [BASE]
 finput = "giw.data"
-solver = "StochPX"
+solver = "NevanAC"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
