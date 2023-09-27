@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/25
+# Last modified: 2023/09/27
 #
 
 """
@@ -51,7 +51,8 @@ end
     solve(rd::RawData)
 
 Solve the analytic continuation problem. The input data are encapsulated
-in a `Rawdata` struct.
+in a `Rawdata` struct. This function call is the actual interface to the
+desired analytic continuation solvers.
 
 See also: [`RawData`](@ref).
 """
@@ -62,6 +63,10 @@ function solve(rd::RawData)
     @cswitch solver begin
         @case "MaxEnt"
             return solve(MaxEntSolver(),  rd)
+            break
+
+        @case "NevanAC"
+            return solve(NevanACSolver(), rd)
             break
 
         @case "StochAC"
@@ -185,13 +190,14 @@ dictionaries will be reset to their default values at first. Later, `C`
 See also: [`read_param`](@ref), [`rev_dict`](@ref).
 """
 function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = true)
-    # _PBASE, _PMaxEnt, _PStochAC, _PStochSK, _PStochOM, and _PStochPX
-    # contain the default parameters. If reset is true, they will be used
-    # to update the PBASE, PMaxEnt, PStochAC, PStochSK, PStochOM, and
-    # PStochPX dictionaries, respectively.
+    # _PBASE, _PMaxEnt, _PNevanAC, _PStochAC, _PStochSK, _PStochOM, and
+    # _PStochPX contain the default parameters. If reset is true, they
+    # will be used to update the PBASE, PMaxEnt, PNevanAC, PStochAC,
+    # PStochSK, PStochOM, and PStochPX dictionaries, respectively.
     reset && begin
         rev_dict(_PBASE)
         rev_dict(MaxEntSolver(),   _PMaxEnt)
+        rev_dict(NevanACSolver(), _PNevanAC)
         rev_dict(StochACSolver(), _PStochAC)
         rev_dict(StochSKSolver(), _PStochSK)
         rev_dict(StochOMSolver(), _PStochOM)
@@ -204,6 +210,10 @@ function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = tru
     @cswitch solver begin
         @case "MaxEnt"
             rev_dict(MaxEntSolver(),  S)
+            break
+
+        @case "NevanAC"
+            rev_dict(NevanACSolver(), S)
             break
 
         @case "StochAC"
