@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/26
+# Last modified: 2023/09/27
 #
 
 """
@@ -18,10 +18,10 @@ toolkit is under heavy development. **PLEASE USE IT AT YOUR OWN RISK**.
 Nowadays the ACFlow toolkit supports the following algorithms:
 
 * Maximum Entropy Method (`MaxEnt` solver)
+* Nevanlinna Analytical Continuation (`NevanAC` solver, `experimental`)
 * Stochastic Analytic Continuation (`StochAC` and `StochSK` solvers)
 * Stochastic Optimization Method (`StochOM` solver)
 * Stochastic Pole eXpansion (`StochPX` solver)
-* Nevanlinna Analytical Continuation (`NevanAC` solver, `experimental`)
 
 More algorithms will be implemented in the future.
 
@@ -116,6 +116,7 @@ ADT             -> Customized type.
 #
 PBASE           -> Dict for general setup.
 PMaxEnt         -> Dict for MaxEnt solver.
+PNevanAC        -> Dict for NevanAC solver.
 PStochAC        -> Dict for StochAC solver.
 PStochSK        -> Dict for StochSK solver.
 PStochOM        -> Dict for StochOM solver.
@@ -123,6 +124,7 @@ PStochPX        -> Dict for StochPX solver.
 #
 AbstractSolver  -> Abstract AC solver.
 MaxEntSolver    -> It represents the MaxEnt solver.
+NevanACSolver   -> It represents the NevanAC solver.
 StochACSolver   -> It represents the StochAC solver.
 StochSKSolver   -> It represents the StochSK solver.
 StochOMSolver   -> It represents the StochOM solver.
@@ -165,6 +167,7 @@ export ADT
 #
 export PBASE
 export PMaxEnt
+export PNevanAC
 export PStochAC
 export PStochSK
 export PStochOM
@@ -172,6 +175,7 @@ export PStochPX
 #
 export AbstractSolver
 export MaxEntSolver
+export NevanACSolver
 export StochACSolver
 export StochSKSolver
 export StochOMSolver
