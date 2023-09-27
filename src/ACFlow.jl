@@ -361,17 +361,24 @@ They are stored in external files (case.toml) or dictionaries.
 *Members* :
 
 ```text
-inp_toml -> Parse case.toml, return raw configuration information.
-fil_dict -> Fill dicts for configuration parameters.
-rev_dict -> Update dicts for configuration parameters.
-chk_dict -> Check dicts for configuration parameters.
-_v       -> Verify dict's values.
-get_b    -> Extract value from dict (PBASE dict), return raw value.
-get_m    -> Extract value from dict (PMaxEnt dict), return raw value.
-get_a    -> Extract value from dict (PStochAC dict), return raw value.
-get_k    -> Extract value from dict (PStochSK dict), return raw value.
-get_s    -> Extract value from dict (PStochOM dict), return raw value.
-get_x    -> Extract value from dict (PStochPX dict), return raw value.
+inp_toml   -> Parse case.toml, return raw configuration information.
+fil_dict   -> Fill dicts for configuration parameters.
+rev_dict_b -> Update dict (PBASE) for configuration parameters.
+rev_dict_m -> Update dict (PMaxEnt) for configuration parameters.
+rev_dict_n -> Update dict (PNevanAC) for configuration parameters.
+rev_dict_a -> Update dict (PStochAC) for configuration parameters.
+rev_dict_k -> Update dict (PStochSK) for configuration parameters.
+rev_dict_s -> Update dict (PStochOM) for configuration parameters.
+rev_dict_x -> Update dict (PStochPX) for configuration parameters.
+chk_dict   -> Check dicts for configuration parameters.
+_v         -> Verify dict's values.
+get_b      -> Extract value from dict (PBASE dict), return raw value.
+get_m      -> Extract value from dict (PMaxEnt dict), return raw value.
+get_n      -> Extract value from dict (PNevanAC dict), return raw value.
+get_a      -> Extract value from dict (PStochAC dict), return raw value.
+get_k      -> Extract value from dict (PStochSK dict), return raw value.
+get_s      -> Extract value from dict (PStochOM dict), return raw value.
+get_x      -> Extract value from dict (PStochPX dict), return raw value.
 ```
 =#
 
