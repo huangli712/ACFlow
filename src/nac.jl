@@ -272,6 +272,30 @@ function calc_abcd(imags::ImagDomainData{T},
     return abcd
 end
 
+function check_causality(hardy_matrix::Array{Complex{T},2},
+                         ab_coeff::Vector{Complex{S}};
+                         verbose::Bool=false
+                         )::Bool where {S<:Real, T<:Real}
+
+    param = hardy_matrix*ab_coeff
+
+    max_theta = findmax(abs.(param))[1]
+    if max_theta <= 1.0
+        if verbose
+           println("max_theta=",max_theta)
+           println("hardy optimization was success.")
+        end
+        causality = true
+    else
+        if verbose
+          println("max_theta=",max_theta)
+          println("hardy optimization was failure.")
+        end
+        causality = false
+    end
+    return causality
+end
+
 function hardy_basis(z::Complex{T}, k::Int64) where {T<:Real}
     w = (z-im)/(z+im)
     0.5*im*(w^(k+1)-w^k)/(sqrt(pi))
