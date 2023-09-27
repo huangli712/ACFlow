@@ -364,6 +364,28 @@ function calc_H_min(sol::NevanlinnaSolver{T},)::Nothing where {T<:Real}
     end
 end
 
+function calc_functional(
+                    sol::NevanlinnaSolver{T},
+                    H::Int64, 
+                    ab_coeff::Vector{Complex{S}}, 
+                    hardy_matrix::Array{Complex{T},2};
+                    )::Float64 where {S<:Real, T<:Real}
+
+    param = hardy_matrix*ab_coeff
+
+    theta = (sol.abcd[1,1,:].* param .+ sol.abcd[1,2,:]) ./ (sol.abcd[2,1,:].*param .+ sol.abcd[2,2,:])
+    green = im * (one(T) .+ theta) ./ (one(T) .- theta)
+    A = Float64.(imag(green)./pi)
+
+    tot_int = integrate(sol.reals.freq, A)
+    second_der = integrate_squared_second_deriv(sol.reals.freq, A) 
+
+    max_theta = findmax(abs.(param))[1]
+    func = abs(sol.reals.sum_rule-tot_int)^2 + sol.lambda*second_der
+
+    return func
+end
+
 function hardy_optim!(
                 sol::NevanlinnaSolver{T},
                 H::Int64,

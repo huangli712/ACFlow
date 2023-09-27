@@ -47,6 +47,8 @@ module ACFlow
 =#
 
 using Optim #Nevanlinna
+using Zygote
+
 using Distributed
 using LinearAlgebra
 using Statistics
