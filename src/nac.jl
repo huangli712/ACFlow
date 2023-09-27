@@ -322,6 +322,17 @@ function calc_abcd(imags::ImagDomainData{T},
     return abcd
 end
 
+function calc_hardy_matrix(reals::RealDomainData{T}, 
+                           H::Int64
+                           )::Array{Complex{T}, 2} where {T<:Real}
+    hardy_matrix = Array{Complex{T}}(undef, reals.N_real, 2*H)
+    for k in 1:H
+        hardy_matrix[:,2*k-1] .=      hardy_basis.(reals.freq,k-1)
+        hardy_matrix[:,2*k]   .= conj(hardy_basis.(reals.freq,k-1))
+    end
+    return hardy_matrix
+end
+
 function solve(S::NevanACSolver, rd::RawData)
     N_real    = 1000  #demension of array of output
     omega_max = 10.0  #energy cutoff of real axis
