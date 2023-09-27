@@ -46,7 +46,7 @@ module ACFlow
 ### *Using Standard Libraries*
 =#
 
-#using Nevanlinna
+using Optim #Nevanlinna
 using Distributed
 using LinearAlgebra
 using Statistics
