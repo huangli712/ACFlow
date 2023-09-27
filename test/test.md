@@ -123,29 +123,19 @@ The following twelve tests are used to test the basic features of the ACFlow too
 
 ## Experimental tests
 
-The following tests are designed to test the newly developed `NevanAC` solver (based on the `Nevanlinna analytical continuation` method) only.
+The following tests are designed to test the newly developed `NevanAC` solver (based on the `Nevanlinna analytical continuation` method) and the `StochPX` solver (based on the `stochastic pole expansion` method) only. Note that the `X` series are for the fermionic systems, the `Y` series are for the bosonic systems, and the `Z` series are for the matrix-valued Green's functions.
 
-* **nac/R01**
+* **future/X01**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * NevanAC solver
-    * Flat model
-    * Linear mesh
-    * Fixed error bar
-    * Two gaussian peaks + big gap
-
-The following tests are designed to test the newly developed `StochPX` solver (based on the `stochastic pole expansion` method) only. Note that the `X` series are for the fermionic systems, the `Y` series are for the bosonic systems, and the `Z` series are for the matrix-valued Green's functions.
-
-* **pole/X01**
-    * Fermionic + Matsubara
-    * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
     * Flat model
     * Linear mesh
     * Fixed error bar
     * Two gaussian peaks + big gap
 
-* **pole/X02**
+* **future/X02**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -155,7 +145,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Broad spectrum, two peaks
     * A clone of **A01**
 
-* **pole/X03**
+* **future/X03**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochAC solver
@@ -167,7 +157,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * With sharp quasiparticle peak
 
-* **pole/X04**
+* **future/X04**
     * Fermionic + Matsubara
     * Green's function
     * MaxEnt solver (chi2kink algorithm)
@@ -178,7 +168,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Sharp gap edges
     * A clone of **T03**
 
-* **pole/X05**
+* **future/X05**
     * Fermionic + Matsubara
     * Green's function + Self-energy function
     * MaxEnt solver (chi2kink algorithm)
@@ -189,7 +179,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Script mode
     * A clone of **T01**
 
-* **pole/X06**
+* **future/X06**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -198,7 +188,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * Single off-centered delta peak
 
-* **pole/X07**
+* **future/X07**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochAC solver
@@ -210,7 +200,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **pole/X08**
+* **future/X08**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver (with constraints)
@@ -219,7 +209,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **pole/X09**
+* **future/X09**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -228,7 +218,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * Eight off-centered delta peaks
 
-* **pole/Y01**
+* **future/Y01**
     * Bosonic + Matsubara (imaginary part = 0)
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -237,7 +227,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * Two gaussian peaks + big gap
 
-* **pole/Y02**
+* **future/Y02**
     * Bosonic (symm) + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -246,7 +236,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * Two gaussian peaks + big gap
 
-* **pole/Y03**
+* **future/Y03**
     * Bosonic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -255,7 +245,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * Two gaussian peaks + big gap
 
-* **pole/Y04**
+* **future/Y04**
     * Bosonic + Matsubara (imaginary part = 0)
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -264,7 +254,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **pole/Y05**
+* **future/Y05**
     * Bosonic (symm) + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -273,7 +263,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **pole/Y06**
+* **future/Y06**
     * Bosonic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -282,7 +272,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **pole/Y07**
+* **future/Y07**
     * Bosonic (symm) + Matsubara
     * Current-current correlation function
     * MaxEnt solver (chi2kink algorithm)
@@ -291,7 +281,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Half-Lorentzian mesh
     * Fixed error bar
 
-* **pole/Y08**
+* **future/Y08**
     * Bosonic (symm) + Matsubara
     * Lindhard function on square lattice
     * MaxEnt solver (chi2kink algorithm)
@@ -301,7 +291,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * Script mode
 
-* **pole/Y09**
+* **future/Y09**
     * Bosonic (symm) + Matsubara
     * Green's function
     * MaxEnt solver (chi2kink algorithm)
@@ -311,7 +301,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * Sharp gap edges + broad tail
 
-* **pole/Z01**
+* **future/Z01**
     * Fermionic + Matsubara
     * Matrix-valued Green's functions
     * MaxEnt solver (chi2kink algorithm)
@@ -323,7 +313,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Two gaussian peaks
     * MaxEntAux algorithm + Direct algorithm
 
-* **pole/Z02**
+* **future/Z02**
     * Fermionic + Matsubara
     * Matrix-valued Green's functions
     * MaxEnt solver (chi2kink algorithm)
