@@ -123,19 +123,29 @@ The following twelve tests are used to test the basic features of the ACFlow too
 
 ## Experimental tests
 
-The following tests are designed to test the newly developed `NevanAC` solver (based on the `Nevanlinna analytical continuation` method) and the `StochPX` solver (based on the `stochastic pole expansion` method) only. Note that the `X` series are for the fermionic systems, the `Y` series are for the bosonic systems, and the `Z` series are for the matrix-valued Green's functions.
+The following tests are designed to test the newly developed `NevanAC` solver (based on the `Nevanlinna analytical continuation` method) only.
 
-* **future/X01**
+* **nac/X01**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * NevanAC solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Two gaussian peaks + big gap
+
+The following tests are designed to test the newly developed `StochPX` solver (based on the `stochastic pole expansion` method) only. Note that the `X` series are for the fermionic systems, the `Y` series are for the bosonic systems, and the `Z` series are for the matrix-valued Green's functions.
+
+* **pole/X01**
+    * Fermionic + Matsubara
+    * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
     * Flat model
     * Linear mesh
     * Fixed error bar
     * Two gaussian peaks + big gap
 
-* **future/X02**
+* **pole/X02**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -145,7 +155,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Broad spectrum, two peaks
     * A clone of **A01**
 
-* **future/X03**
+* **pole/X03**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochAC solver
@@ -157,7 +167,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Fixed error bar
     * With sharp quasiparticle peak
 
-* **future/X04**
+* **pole/X04**
     * Fermionic + Matsubara
     * Green's function
     * MaxEnt solver (chi2kink algorithm)
@@ -168,7 +178,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Sharp gap edges
     * A clone of **T03**
 
-* **future/X05**
+* **pole/X05**
     * Fermionic + Matsubara
     * Green's function + Self-energy function
     * MaxEnt solver (chi2kink algorithm)
@@ -179,7 +189,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Script mode
     * A clone of **T01**
 
-* **future/X06**
+* **pole/X06**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -188,7 +198,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Fixed error bar
     * Single off-centered delta peak
 
-* **future/X07**
+* **pole/X07**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochAC solver
@@ -200,7 +210,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **future/X08**
+* **pole/X08**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver (with constraints)
@@ -209,7 +219,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **future/X09**
+* **pole/X09**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -218,7 +228,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Fixed error bar
     * Eight off-centered delta peaks
 
-* **future/Y01**
+* **pole/Y01**
     * Bosonic + Matsubara (imaginary part = 0)
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -227,7 +237,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Fixed error bar
     * Two gaussian peaks + big gap
 
-* **future/Y02**
+* **pole/Y02**
     * Bosonic (symm) + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -236,7 +246,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Fixed error bar
     * Two gaussian peaks + big gap
 
-* **future/Y03**
+* **pole/Y03**
     * Bosonic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -245,7 +255,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Fixed error bar
     * Two gaussian peaks + big gap
 
-* **future/Y04**
+* **pole/Y04**
     * Bosonic + Matsubara (imaginary part = 0)
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -254,7 +264,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **future/Y05**
+* **pole/Y05**
     * Bosonic (symm) + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -263,7 +273,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **future/Y06**
+* **pole/Y06**
     * Bosonic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * StochPX solver
@@ -272,7 +282,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Fixed error bar
     * Four off-centered delta peaks
 
-* **future/Y07**
+* **pole/Y07**
     * Bosonic (symm) + Matsubara
     * Current-current correlation function
     * MaxEnt solver (chi2kink algorithm)
@@ -281,7 +291,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Half-Lorentzian mesh
     * Fixed error bar
 
-* **future/Y08**
+* **pole/Y08**
     * Bosonic (symm) + Matsubara
     * Lindhard function on square lattice
     * MaxEnt solver (chi2kink algorithm)
@@ -291,7 +301,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Fixed error bar
     * Script mode
 
-* **future/Y09**
+* **pole/Y09**
     * Bosonic (symm) + Matsubara
     * Green's function
     * MaxEnt solver (chi2kink algorithm)
@@ -301,7 +311,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Fixed error bar
     * Sharp gap edges + broad tail
 
-* **future/Z01**
+* **pole/Z01**
     * Fermionic + Matsubara
     * Matrix-valued Green's functions
     * MaxEnt solver (chi2kink algorithm)
@@ -313,7 +323,7 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Two gaussian peaks
     * MaxEntAux algorithm + Direct algorithm
 
-* **future/Z02**
+* **pole/Z02**
     * Fermionic + Matsubara
     * Matrix-valued Green's functions
     * MaxEnt solver (chi2kink algorithm)
