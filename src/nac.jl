@@ -7,9 +7,6 @@
 # Last modified: 2023/09/27
 #
 
-push!(LOAD_PATH, "/home/lihuang/Downloads/Nevanlinna.jl-main/src")
-using Nevanlinna
-
 function solve(S::NevanACSolver, rd::RawData)
     N_real    = 1000  #demension of array of output
     omega_max = 10.0  #energy cutoff of real axis
@@ -27,7 +24,13 @@ function solve(S::NevanACSolver, rd::RawData)
 
     dlm = readdlm("gw.data")
     @show size(dlm)
-    exit(-1)
+    @. input_smpl = dlm[:,1] * im
+    @. input_gw = dlm[:,2] + dlm[:,3] * im
     wo_sol = Nevanlinna.NevanlinnaSolver(input_smpl, input_gw, N_real, omega_max, eta, sum_rule, H_max, iter_tol, lambda, verbose=true)
-    exit(-1)
+
+    open("twopeak_wo_opt.dat","w") do f
+        for i in 1:wo_sol.reals.N_real
+            println(f, "$(Float64(real.(wo_sol.reals.freq[i])))",  "\t", "$(Float64(imag.(wo_sol.reals.val[i]/pi)))")
+        end
+    end
 end
