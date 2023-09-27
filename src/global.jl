@@ -98,7 +98,7 @@ const APC = Complex{BigFloat}
 Alias of Integer and Float types (32 bit).
 Here `R` means Real.
 
-See also: [`N32`](@ref), [`N64`](@ref).
+See also: [`N32`](@ref), [`N64`](@ref), [`APN`](@ref).
 """
 const R32 = Union{I32,F32}
 
@@ -108,7 +108,7 @@ const R32 = Union{I32,F32}
 Alias of Integer and Float types (64 bit).
 Here `R` means Real.
 
-See also: [`N32`](@ref), [`N64`](@ref).
+See also: [`N32`](@ref), [`N64`](@ref), [`APN`](@ref).
 """
 const R64 = Union{I64,F64}
 
@@ -118,7 +118,7 @@ const R64 = Union{I64,F64}
 Alias of Integer and Float types (Arbitrary Precision).
 Here `R` means Real.
 
-See also: [`N32`](@ref), [`N64`](@ref).
+See also: [`N32`](@ref), [`N64`](@ref), [`APN`](@ref).
 """
 const APR = Union{API,APF}
 
@@ -128,7 +128,7 @@ const APR = Union{API,APF}
 Alias of Integer, Float, and Complex types (32 bit).
 Here `N` means Number.
 
-See also: [`R32`](@ref), [`R64`](@ref).
+See also: [`R32`](@ref), [`R64`](@ref), [`APR`](@ref).
 """
 const N32 = Union{I32,F32,C32}
 
@@ -138,7 +138,7 @@ const N32 = Union{I32,F32,C32}
 Alias of Integer, Float, and Complex types (64 bit).
 Here `N` means Number.
 
-See also: [`R32`](@ref), [`R64`](@ref).
+See also: [`R32`](@ref), [`R64`](@ref), [`APR`](@ref).
 """
 const N64 = Union{I64,F64,C64}
 
@@ -148,7 +148,7 @@ const N64 = Union{I64,F64,C64}
 Alias of Integer, Float, and Complex types (Arbitrary Precision).
 Here `N` means Number.
 
-See also: [`R32`](@ref), [`R64`](@ref).
+See also: [`R32`](@ref), [`R64`](@ref), [`APR`](@ref).
 """
 const APN = Union{API,APF,APC}
 
