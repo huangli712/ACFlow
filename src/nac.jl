@@ -322,6 +322,11 @@ function calc_abcd(imags::ImagDomainData{T},
     return abcd
 end
 
+function hardy_basis(z::Complex{T}, k::Int64) where {T<:Real}
+    w = (z-im)/(z+im)
+    0.5*im*(w^(k+1)-w^k)/(sqrt(pi))
+end
+
 function calc_hardy_matrix(reals::RealDomainData{T}, 
                            H::Int64
                            )::Array{Complex{T}, 2} where {T<:Real}
