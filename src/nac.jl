@@ -296,6 +296,20 @@ function check_causality(hardy_matrix::Array{Complex{T},2},
     return causality
 end
 
+function evaluation!(sol::NevanlinnaSolver{T};
+                     verbose::Bool=false
+                    )::Bool where {T<:Real}
+
+    causality = check_causality(sol.hardy_matrix, sol.ab_coeff, verbose=verbose)
+    if causality
+        param = sol.hardy_matrix*sol.ab_coeff
+        theta = (sol.abcd[1,1,:].* param .+ sol.abcd[1,2,:]) ./ (sol.abcd[2,1,:].*param .+ sol.abcd[2,2,:])
+        sol.reals.val .= im * (one(T) .+ theta) ./ (one(T) .- theta)
+    end
+
+    return causality
+end
+
 function hardy_basis(z::Complex{T}, k::Int64) where {T<:Real}
     w = (z-im)/(z+im)
     0.5*im*(w^(k+1)-w^k)/(sqrt(pi))
