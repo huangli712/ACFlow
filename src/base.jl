@@ -187,7 +187,7 @@ analytic continuation solver. If `reset` is true, then the configuration
 dictionaries will be reset to their default values at first. Later, `C`
 `S` will be used to customized the dictionaries further.
 
-See also: [`read_param`](@ref), [`rev_dict`](@ref).
+See also: [`read_param`](@ref).
 """
 function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = true)
     # _PBASE, _PMaxEnt, _PNevanAC, _PStochAC, _PStochSK, _PStochOM, and
@@ -195,41 +195,41 @@ function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = tru
     # will be used to update the PBASE, PMaxEnt, PNevanAC, PStochAC,
     # PStochSK, PStochOM, and PStochPX dictionaries, respectively.
     reset && begin
-        rev_dict(_PBASE)
-        rev_dict(MaxEntSolver(),   _PMaxEnt)
-        rev_dict(NevanACSolver(), _PNevanAC)
-        rev_dict(StochACSolver(), _PStochAC)
-        rev_dict(StochSKSolver(), _PStochSK)
-        rev_dict(StochOMSolver(), _PStochOM)
-        rev_dict(StochPXSolver(), _PStochPX)
+        rev_dict_b(_PBASE)
+        rev_dict_m(MaxEntSolver(),   _PMaxEnt)
+        rev_dict_n(NevanACSolver(), _PNevanAC)
+        rev_dict_a(StochACSolver(), _PStochAC)
+        rev_dict_k(StochSKSolver(), _PStochSK)
+        rev_dict_s(StochOMSolver(), _PStochOM)
+        rev_dict_x(StochPXSolver(), _PStochPX)
     end
 
-    rev_dict(C)
+    rev_dict_b(C)
     #
     solver = get_b("solver")
     @cswitch solver begin
         @case "MaxEnt"
-            rev_dict(MaxEntSolver(),  S)
+            rev_dict_m(MaxEntSolver(),  S)
             break
 
         @case "NevanAC"
-            rev_dict(NevanACSolver(), S)
+            rev_dict_n(NevanACSolver(), S)
             break
 
         @case "StochAC"
-            rev_dict(StochACSolver(), S)
+            rev_dict_a(StochACSolver(), S)
             break
 
         @case "StochSK"
-            rev_dict(StochSKSolver(), S)
+            rev_dict_k(StochSKSolver(), S)
             break
 
         @case "StochOM"
-            rev_dict(StochOMSolver(), S)
+            rev_dict_s(StochOMSolver(), S)
             break
 
         @case "StochPX"
-            rev_dict(StochPXSolver(), S)
+            rev_dict_x(StochPXSolver(), S)
             break
 
         @default

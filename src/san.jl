@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/25
+# Last modified: 2023/09/27
 #
 
 #=
@@ -264,8 +264,8 @@ function prun(S::StochSKSolver,
               p2::Dict{String,Vector{Any}},
               MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Revise parameteric dicts
-    rev_dict(p1)
-    rev_dict(S, p2)
+    rev_dict_b(p1)
+    rev_dict_k(S, p2)
 
     # Initialize random number generator again
     MC.rng = MersenneTwister(rand(1:10000) * myid() + 1981)

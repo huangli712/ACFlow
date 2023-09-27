@@ -380,11 +380,18 @@ include("config.jl")
 #
 export inp_toml
 export fil_dict
-export rev_dict
+export rev_dict_b
+export rev_dict_m
+export rev_dict_n
+export rev_dict_a
+export rev_dict_k
+export rev_dict_s
+export rev_dict_x
 export chk_dict
 export _v
 export get_b
 export get_m
+export get_n
 export get_a
 export get_k
 export get_s
