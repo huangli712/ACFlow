@@ -13,6 +13,49 @@ struct ImagDomainData{T<:Real}
     val   ::Array{Complex{T},1} #The values of negative of Green function
 end
 
+function ImagDomainData(wn     ::Array{Complex{T},1},
+                        gw     ::Array{Complex{T},1},
+                        N_imag ::Int64;
+                        verbose::Bool = false
+                        )::ImagDomainData{T} where {T<:Real}
+
+    val  = Array{Complex{T}}(undef, N_imag) 
+    freq = Array{Complex{T}}(undef, N_imag) 
+    
+    for i in 1:N_imag
+        freq[i] = wn[i]
+        val[i]  = (-gw[i] - im) / (-gw[i] + im) 
+    end
+    
+    Pick = Array{Complex{T}}(undef, N_imag, N_imag)
+    
+    for j in 1:N_imag
+        for i in 1:N_imag
+            freq_i = (freq[i] - im) / (freq[i] + im)
+            freq_j = (freq[j] - im) / (freq[j] + im)
+            nom = one(T) - val[i] * conj(val[j])
+            den = one(T) - freq_i * conj(freq_j)
+            Pick[i,j] = nom / den
+        end
+        Pick[j,j] += T(1e-250)
+    end
+    
+    success = issuccess(cholesky(Pick,check = false))
+    
+    if verbose
+        if success
+            println("Pick matrix is positive semi-definite.")
+        else
+            println("Pick matrix is non positive semi-definite matrix in Schur method.")
+        end
+    end
+    
+    freq = reverse(freq)
+    val  = reverse(val)
+    
+    return ImagDomainData(N_imag, freq, val)
+end
+
 struct RealDomainData{T<:Real}
     N_real  ::Int64               #The number of mesh in real axis
     w_max   ::Float64             #The energy cutoff of real axis
@@ -95,6 +138,106 @@ function NevanlinnaSolver(
     end
 
     return sol
+end
+
+function calc_opt_N_imag(N      ::Int64,
+                         wn     ::Array{Complex{T},1},
+                         gw     ::Array{Complex{T},1};
+                         verbose::Bool=false
+                         )::Int64 where {T<:Real}
+    @assert N == length(wn)
+    @assert N == length(gw)
+
+    freq = (wn  .- im) ./ (wn  .+ im)
+    val  = (-gw .- im) ./ (-gw .+ im)
+
+    k::Int64 = 0
+    success::Bool = true
+
+    while success
+        k += 1
+        Pick = Array{Complex{T}}(undef, k, k)
+
+        for j in 1:k
+            for i in 1:k
+                num = one(T) - val[i]  * conj(val[j])
+                den = one(T) - freq[i] * conj(freq[j])
+                Pick[i,j] = num / den
+            end
+
+            Pick[j,j] += T(1e-250)
+        end
+
+        success = issuccess(cholesky(Pick,check = false))
+
+        if k == N
+            break
+        end
+    end
+
+    if verbose
+        if !(success)
+            println("N_imag is setted as $(k-1)")
+        else
+            println("N_imag is setted as $(N)")
+        end
+    end
+
+    if !(success)
+        return (k-1)
+    else
+        return (N)
+    end
+end
+
+function calc_opt_N_imag(N      ::Int64,
+                         wn     ::Array{Complex{T},1},
+                         gw     ::Array{Complex{T},1};
+                         verbose::Bool=false
+                         )::Int64 where {T<:Real}
+    @assert N == length(wn)
+    @assert N == length(gw)
+
+    freq = (wn  .- im) ./ (wn  .+ im)
+    val  = (-gw .- im) ./ (-gw .+ im)
+
+    k::Int64 = 0
+    success::Bool = true
+
+    while success
+        k += 1
+        Pick = Array{Complex{T}}(undef, k, k)
+
+        for j in 1:k
+            for i in 1:k
+                num = one(T) - val[i]  * conj(val[j])
+                den = one(T) - freq[i] * conj(freq[j])
+                Pick[i,j] = num / den
+            end
+
+            Pick[j,j] += T(1e-250)
+        end
+
+        success = issuccess(cholesky(Pick,check = false))
+
+        if k == N
+            break
+        end
+    end
+
+    if verbose
+        if !(success)
+            println("N_imag is setted as $(k-1)")
+        else
+            println("N_imag is setted as $(N)")
+        end
+    end
+
+    if !(success)
+        return (k-1)
+    else
+        return (N)
+    end
 end
 
 function solve(S::NevanACSolver, rd::RawData)
