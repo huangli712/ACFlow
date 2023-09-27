@@ -123,6 +123,17 @@ The following twelve tests are used to test the basic features of the ACFlow too
 
 ## Experimental tests
 
+The following tests are designed to test the newly developed `NevanAC` solver (based on the `Nevanlinna analytical continuation` method) only.
+
+* **nac/R01**
+    * Fermionic + Matsubara
+    * MaxEnt solver (chi2kink algorithm)
+    * NevanAC solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Two gaussian peaks + big gap
+
 The following tests are designed to test the newly developed `StochPX` solver (based on the `stochastic pole expansion` method) only. Note that the `X` series are for the fermionic systems, the `Y` series are for the bosonic systems, and the `Z` series are for the matrix-valued Green's functions.
 
 * **pole/X01**
