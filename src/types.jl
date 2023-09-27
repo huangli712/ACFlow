@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/26
+# Last modified: 2023/09/27
 #
 
 #=
@@ -107,10 +107,22 @@ Dictionary for configuration parameters:
 the Nevanlinna analytical continuation method.
 """
 const PNevanAC = Dict{String,ADT}(
+    "pick"    => [missing, 1, :Bool  , "Check the Pick criterion or not"],
+    "hardy"   => [missing, 1, :Bool  , "Perform Hardy basis optimization or not"],
+    "hmax"    => [missing, 1, :I64   , "Upper cut off of Hardy order"],
+    "hmin"    => [missing, 1, :I64   , "Lower cut off of Hardy order"],
+    "lambda"  => [missing, 1, :F64   , "Regulation parameter for Hardy basis optimization"],
+    "eta"     => [missing, 1, :F64   , "Tiny distance from the real axis"],
 )
 
 # Default parameters for PNevanAC
-const _PNevanAC = Dict{String,Any}(
+const _PNevanAC= Dict{String,Any}(
+    "pick"    => false,
+    "hardy"   => false,
+    "hmax"    => 50,
+    "hmin"    => 1,
+    "lambda"  => 1e-4,
+    "eta"     => 1e-2,
 )
 
 """
@@ -189,7 +201,7 @@ const PStochOM = Dict{String,ADT}(
 )
 
 # Default parameters for PStochOM
-const _PStochOM = Dict{String,Any}(
+const _PStochOM= Dict{String,Any}(
     "ntry"    => 2000,
     "nstep"   => 1000,
     "nbox"    => 100,
@@ -215,7 +227,7 @@ const PStochPX = Dict{String,ADT}(
 )
 
 # Default parameters for PStochPX
-const _PStochPX = Dict{String,Any}(
+const _PStochPX= Dict{String,Any}(
     "method"  => "mean",
     "nfine"   => 100000,
     "npole"   => 200,
@@ -245,6 +257,14 @@ It represents the analytic continuation solver that implements the
 maximum entropy method.
 """
 struct MaxEntSolver <: AbstractSolver end
+
+"""
+    NevanACSolver
+
+It represents the analytic continuation solver that implements the
+Nevanlinna analytical continuation.
+"""
+struct NevanACSolver <: AbstractSolver end
 
 """
     StochACSolver
@@ -277,14 +297,6 @@ It represents the analytic continuation solver that implements the
 stochastic pole expansion.
 """
 struct StochPXSolver <: AbstractSolver end
-
-"""
-    NevanACSolver
-
-It represents the analytic continuation solver that implements the
-Nevanlinna analytical continuation.
-"""
-struct NevanACSolver <: AbstractSolver end
 
 #=
 ### *Customized Structs* : *Input Data*
