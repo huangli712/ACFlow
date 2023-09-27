@@ -65,6 +65,41 @@ struct RealDomainData{T<:Real}
     val     ::Array{Complex{T},1} #The values of negative of retarded Green function
 end
 
+function RealDomainData(N_real  ::Int64,
+                        w_max   ::Float64,
+                        eta     ::Float64,
+                        sum_rule::Float64
+                        ;
+                        T::Type=BigFloat,
+                        small_omega::Float64 = 1e-5,
+                        mesh::Symbol=:linear
+                        )::RealDomainData{T}
+
+    if mesh === :linear
+        val = Array{Complex{T}}(collect(LinRange(-w_max, w_max, N_real)))
+        freq = val .+ eta * im
+        return RealDomainData(N_real, w_max, eta, sum_rule, freq, val)
+    elseif mesh === :log
+        half_N = N_real ÷ 2
+        mesh = exp.(LinRange(log.(small_omega), log.(w_max), half_N))
+        val = Array{Complex{T}}([reverse(-mesh); mesh])
+        freq = val .+ eta * im
+        return RealDomainData(N_real, w_max, eta, sum_rule, freq, val)
+    elseif mesh === :test
+        val  = Array{Complex{T}}(undef, N_real) 
+        freq = Array{Complex{T}}(undef, N_real) 
+        inter::T = big(2.0*w_max) / (N_real-1)
+        temp ::T = big(-w_max)
+        freq[1] = -big(w_max) + big(eta)*im
+        for i in 2:N_real
+            temp += inter
+            freq[i] = temp + big(eta)*im
+        end
+        return RealDomainData(N_real, w_max, eta, sum_rule, freq, val)
+    else
+        throw(ArgumentError("Invalid mesh"))
+    end
+end
 mutable struct NevanlinnaSolver{T<:Real}
     imags::ImagDomainData{T}          #imaginary domain data
     reals::RealDomainData{T}          #real domain data
