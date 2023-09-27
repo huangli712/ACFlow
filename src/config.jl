@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/13
+# Last modified: 2023/09/27
 #
 
 """
@@ -53,7 +53,8 @@ end
     fil_dict(cfg::Dict{String,Any})
 
 Transfer configurations from dict `cfg` to internal dicts (including
-`PBASE`, `PMaxEnt`, `PStochAC`, `PStochSK`, and `PStochOM` etc).
+`PBASE`, `PMaxEnt`, `PNevanAC`, `PStochAC`, `PStochSK`, `PStochOM` and
+`PStochPX` etc).
 """
 function fil_dict(cfg::Dict{String,Any})
     # For BASE block
@@ -72,6 +73,18 @@ function fil_dict(cfg::Dict{String,Any})
         for key in keys(MaxEnt)
             if haskey(PMaxEnt, key)
                 PMaxEnt[key][1] = MaxEnt[key]
+            else
+                error("Sorry, $key is not supported currently")
+            end
+        end
+    end
+
+    # For NevanAC block
+    if haskey(cfg, "NevanAC")
+        NevanAC = cfg["NevanAC"]
+        for key in keys(NevanAC)
+            if haskey(PNevanAC, key)
+                PNevanAC[key][1] = NevanAC[key]
             else
                 error("Sorry, $key is not supported currently")
             end
@@ -197,6 +210,42 @@ function rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Vector{Any}})
         end
     end
     foreach(x -> _v(x.first, x.second), PMaxEnt)
+end
+
+"""
+    rev_dict(S::NevanACSolver, NevanAC::Dict{String,Any})
+
+Setup the configuration dictionary: `PNevanAC`.
+
+See also: [`PNevanAC`](@ref).
+"""
+function rev_dict(S::NevanACSolver, NevanAC::Dict{String,Any})
+    for key in keys(NevanAC)
+        if haskey(PNevanAC, key)
+            PNevanAC[key][1] = NevanAC[key]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+    foreach(x -> _v(x.first, x.second), PNevanAC)
+end
+
+"""
+    rev_dict(S::NevanACSolver, NevanAC::Dict{String,Vector{Any}})
+
+Setup the configuration dictionary: `PNevanAC`.
+
+See also: [`PNevanAC`](@ref).
+"""
+function rev_dict(S::NevanACSolver, NevanAC::Dict{String,Vector{Any}})
+    for key in keys(NevanAC)
+        if haskey(PNevanAC, key)
+            PNevanAC[key][1] = NevanAC[key][1]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+    foreach(x -> _v(x.first, x.second), PNevanAC)
 end
 
 """
@@ -351,7 +400,7 @@ Validate the correctness and consistency of configurations.
 See also: [`fil_dict`](@ref), [`_v`](@ref).
 """
 function chk_dict()
-    @assert get_b("solver") in ("MaxEnt", "StochAC", "StochSK", "StochOM", "StochPX")
+    @assert get_b("solver") in ("MaxEnt", "NevanAC", "StochAC", "StochSK", "StochOM", "StochPX")
     @assert get_b("ktype") in ("fermi", "boson", "bsymm")
     @assert get_b("mtype") in ("flat", "gauss", "1gauss", "2gauss", "lorentz", "1lorentz", "2lorentz", "risedecay", "file")
     @assert get_b("grid") in ("ftime", "fpart", "btime", "bpart", "ffreq", "ffrag", "bfreq", "bfrag")
@@ -373,6 +422,18 @@ function chk_dict()
             @assert get_m("nalph") ≥ 1
             @assert get_m("alpha") > 0.0
             @assert get_m("ratio") > 0.0
+            break
+
+        # For NevanAC solver
+        @case "NevanAC"
+            push!(PA, PNevanAC)
+            # It does not support imaginary time data.
+            @assert get_b("grid") in ("ffreq", "ffrag", "bfreq", "bfrag")
+            #
+            @assert get_n("hmax")  ≥ get_n("hmin")
+            @assert get_n("hmin")  ≥ 1
+            @assert get_n("alpha") ≥ 1e-8
+            @assert get_n("eta")   ≥ 1e-8
             break
 
         # For StochAC solver
@@ -485,6 +546,21 @@ See also: [`PMaxEnt`](@ref).
         PMaxEnt[key][1]
     else
         error("Sorry, PMaxEnt does not contain key: $key")
+    end
+end
+
+"""
+    get_n(key::String)
+
+Extract configurations from dict: PNevanAC.
+
+See also: [`PNevanAC`](@ref).
+"""
+@inline function get_n(key::String)
+    if haskey(PNevanAC, key)
+        PNevanAC[key][1]
+    else
+        error("Sorry, PNevanAC does not contain key: $key")
     end
 end
 
