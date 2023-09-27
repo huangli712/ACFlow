@@ -141,13 +141,13 @@ function fil_dict(cfg::Dict{String,Any})
 end
 
 """
-    rev_dict(BASE::Dict{String,Any})
+    rev_dict_b(BASE::Dict{String,Any})
 
 Setup the configuration dictionary: `PBASE`.
 
 See also: [`PBASE`](@ref).
 """
-function rev_dict(BASE::Dict{String,Any})
+function rev_dict_b(BASE::Dict{String,Any})
     for key in keys(BASE)
         if haskey(PBASE, key)
             PBASE[key][1] = BASE[key]
@@ -159,13 +159,13 @@ function rev_dict(BASE::Dict{String,Any})
 end
 
 """
-    rev_dict(BASE::Dict{String,Vector{Any}})
+    rev_dict_b(BASE::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PBASE`.
 
 See also: [`PBASE`](@ref).
 """
-function rev_dict(BASE::Dict{String,Vector{Any}})
+function rev_dict_b(BASE::Dict{String,Vector{Any}})
     for key in keys(BASE)
         if haskey(PBASE, key)
             PBASE[key][1] = BASE[key][1]
@@ -177,13 +177,13 @@ function rev_dict(BASE::Dict{String,Vector{Any}})
 end
 
 """
-    rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
+    rev_dict_m(S::MaxEntSolver, MaxEnt::Dict{String,Any})
 
 Setup the configuration dictionary: `PMaxEnt`.
 
 See also: [`PMaxEnt`](@ref).
 """
-function rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
+function rev_dict_m(S::MaxEntSolver, MaxEnt::Dict{String,Any})
     for key in keys(MaxEnt)
         if haskey(PMaxEnt, key)
             PMaxEnt[key][1] = MaxEnt[key]
@@ -195,13 +195,13 @@ function rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Any})
 end
 
 """
-    rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Vector{Any}})
+    rev_dict_m(S::MaxEntSolver, MaxEnt::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PMaxEnt`.
 
 See also: [`PMaxEnt`](@ref).
 """
-function rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Vector{Any}})
+function rev_dict_m(S::MaxEntSolver, MaxEnt::Dict{String,Vector{Any}})
     for key in keys(MaxEnt)
         if haskey(PMaxEnt, key)
             PMaxEnt[key][1] = MaxEnt[key][1]
@@ -213,13 +213,13 @@ function rev_dict(S::MaxEntSolver, MaxEnt::Dict{String,Vector{Any}})
 end
 
 """
-    rev_dict(S::NevanACSolver, NevanAC::Dict{String,Any})
+    rev_dict_n(S::NevanACSolver, NevanAC::Dict{String,Any})
 
 Setup the configuration dictionary: `PNevanAC`.
 
 See also: [`PNevanAC`](@ref).
 """
-function rev_dict(S::NevanACSolver, NevanAC::Dict{String,Any})
+function rev_dict_n(S::NevanACSolver, NevanAC::Dict{String,Any})
     for key in keys(NevanAC)
         if haskey(PNevanAC, key)
             PNevanAC[key][1] = NevanAC[key]
@@ -231,13 +231,13 @@ function rev_dict(S::NevanACSolver, NevanAC::Dict{String,Any})
 end
 
 """
-    rev_dict(S::NevanACSolver, NevanAC::Dict{String,Vector{Any}})
+    rev_dict_n(S::NevanACSolver, NevanAC::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PNevanAC`.
 
 See also: [`PNevanAC`](@ref).
 """
-function rev_dict(S::NevanACSolver, NevanAC::Dict{String,Vector{Any}})
+function rev_dict_n(S::NevanACSolver, NevanAC::Dict{String,Vector{Any}})
     for key in keys(NevanAC)
         if haskey(PNevanAC, key)
             PNevanAC[key][1] = NevanAC[key][1]
@@ -249,13 +249,13 @@ function rev_dict(S::NevanACSolver, NevanAC::Dict{String,Vector{Any}})
 end
 
 """
-    rev_dict(S::StochACSolver, StochAC::Dict{String,Any})
+    rev_dict_a(S::StochACSolver, StochAC::Dict{String,Any})
 
 Setup the configuration dictionary: `PStochAC`.
 
 See also: [`PStochAC`](@ref).
 """
-function rev_dict(S::StochACSolver, StochAC::Dict{String,Any})
+function rev_dict_a(S::StochACSolver, StochAC::Dict{String,Any})
     for key in keys(StochAC)
         if haskey(PStochAC, key)
             PStochAC[key][1] = StochAC[key]
@@ -267,13 +267,13 @@ function rev_dict(S::StochACSolver, StochAC::Dict{String,Any})
 end
 
 """
-    rev_dict(S::StochACSolver, StochAC::Dict{String,Vector{Any}})
+    rev_dict_a(S::StochACSolver, StochAC::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PStochAC`.
 
 See also: [`PStochAC`](@ref).
 """
-function rev_dict(S::StochACSolver, StochAC::Dict{String,Vector{Any}})
+function rev_dict_a(S::StochACSolver, StochAC::Dict{String,Vector{Any}})
     for key in keys(StochAC)
         if haskey(PStochAC, key)
             PStochAC[key][1] = StochAC[key][1]
@@ -285,13 +285,13 @@ function rev_dict(S::StochACSolver, StochAC::Dict{String,Vector{Any}})
 end
 
 """
-    rev_dict(S::StochSKSolver, StochSK::Dict{String,Any})
+    rev_dict_k(S::StochSKSolver, StochSK::Dict{String,Any})
 
 Setup the configuration dictionary: `PStochSK`.
 
 See also: [`PStochSK`](@ref).
 """
-function rev_dict(S::StochSKSolver, StochSK::Dict{String,Any})
+function rev_dict_k(S::StochSKSolver, StochSK::Dict{String,Any})
     for key in keys(StochSK)
         if haskey(PStochSK, key)
             PStochSK[key][1] = StochSK[key]
@@ -303,13 +303,13 @@ function rev_dict(S::StochSKSolver, StochSK::Dict{String,Any})
 end
 
 """
-    rev_dict(S::StochSKSolver, StochSK::Dict{String,Vector{Any}})
+    rev_dict_k(S::StochSKSolver, StochSK::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PStochSK`.
 
 See also: [`PStochSK`](@ref).
 """
-function rev_dict(S::StochSKSolver, StochSK::Dict{String,Vector{Any}})
+function rev_dict_k(S::StochSKSolver, StochSK::Dict{String,Vector{Any}})
     for key in keys(StochSK)
         if haskey(PStochSK, key)
             PStochSK[key][1] = StochSK[key][1]
@@ -321,13 +321,13 @@ function rev_dict(S::StochSKSolver, StochSK::Dict{String,Vector{Any}})
 end
 
 """
-    rev_dict(S::StochOMSolver, StochOM::Dict{String,Any})
+    rev_dict_s(S::StochOMSolver, StochOM::Dict{String,Any})
 
 Setup the configuration dictionary: `PStochOM`.
 
 See also: [`PStochOM`](@ref).
 """
-function rev_dict(S::StochOMSolver, StochOM::Dict{String,Any})
+function rev_dict_s(S::StochOMSolver, StochOM::Dict{String,Any})
     for key in keys(StochOM)
         if haskey(PStochOM, key)
             PStochOM[key][1] = StochOM[key]
@@ -339,13 +339,13 @@ function rev_dict(S::StochOMSolver, StochOM::Dict{String,Any})
 end
 
 """
-    rev_dict(S::StochOMSolver, StochOM::Dict{String,Vector{Any}})
+    rev_dict_s(S::StochOMSolver, StochOM::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PStochOM`.
 
 See also: [`PStochOM`](@ref).
 """
-function rev_dict(S::StochOMSolver, StochOM::Dict{String,Vector{Any}})
+function rev_dict_s(S::StochOMSolver, StochOM::Dict{String,Vector{Any}})
     for key in keys(StochOM)
         if haskey(PStochOM, key)
             PStochOM[key][1] = StochOM[key][1]
@@ -357,13 +357,13 @@ function rev_dict(S::StochOMSolver, StochOM::Dict{String,Vector{Any}})
 end
 
 """
-    rev_dict(S::StochPXSolver, StochPX::Dict{String,Any})
+    rev_dict_x(S::StochPXSolver, StochPX::Dict{String,Any})
 
 Setup the configuration dictionary: `PStochPX`.
 
 See also: [`PStochPX`](@ref).
 """
-function rev_dict(S::StochPXSolver, StochPX::Dict{String,Any})
+function rev_dict_x(S::StochPXSolver, StochPX::Dict{String,Any})
     for key in keys(StochPX)
         if haskey(PStochPX, key)
             PStochPX[key][1] = StochPX[key]
@@ -375,13 +375,13 @@ function rev_dict(S::StochPXSolver, StochPX::Dict{String,Any})
 end
 
 """
-    rev_dict(S::StochPXSolver, StochPX::Dict{String,Vector{Any}})
+    rev_dict_x(S::StochPXSolver, StochPX::Dict{String,Vector{Any}})
 
 Setup the configuration dictionary: `PStochPX`.
 
 See also: [`PStochPX`](@ref).
 """
-function rev_dict(S::StochPXSolver, StochPX::Dict{String,Vector{Any}})
+function rev_dict_x(S::StochPXSolver, StochPX::Dict{String,Vector{Any}})
     for key in keys(StochPX)
         if haskey(PStochPX, key)
             PStochPX[key][1] = StochPX[key][1]
