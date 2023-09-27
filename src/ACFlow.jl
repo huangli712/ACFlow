@@ -589,6 +589,7 @@ To implement the NevanAC solver for analytic continuation problem.
 #
 include("nac.jl")
 #
+export solve
 
 #=
 ### *Includes And Exports* : *sac.jl*
