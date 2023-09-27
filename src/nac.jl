@@ -423,6 +423,14 @@ function hardy_optim!(
     return causality, (Optim.converged(res))
 end
 
+function integrate(x::AbstractVector, y::AbstractVector)
+    N = length(x)
+    dx = view(x, 2:N) .- view(x, 1:(N-1))
+    y_forward = view(y, 2:N)
+    y_backward = view(y, 1:(N-1))
+    return sum(0.5 * (y_forward .+ y_backward) .* dx)
+end
+
 function solve(S::NevanACSolver, rd::RawData)
     N_real    = 1000  #demension of array of output
     omega_max = 10.0  #energy cutoff of real axis
