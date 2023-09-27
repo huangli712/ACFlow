@@ -111,7 +111,7 @@ const PNevanAC = Dict{String,ADT}(
     "hardy"   => [missing, 1, :Bool  , "Perform Hardy basis optimization or not"],
     "hmax"    => [missing, 1, :I64   , "Upper cut off of Hardy order"],
     "hmin"    => [missing, 1, :I64   , "Lower cut off of Hardy order"],
-    "lambda"  => [missing, 1, :F64   , "Regulation parameter for Hardy basis optimization"],
+    "alpha"   => [missing, 1, :F64   , "Regulation parameter for Hardy basis optimization"],
     "eta"     => [missing, 1, :F64   , "Tiny distance from the real axis"],
 )
 
@@ -121,7 +121,7 @@ const _PNevanAC= Dict{String,Any}(
     "hardy"   => false,
     "hmax"    => 50,
     "hmin"    => 1,
-    "lambda"  => 1e-4,
+    "alpha"   => 1e-4,
     "eta"     => 1e-2,
 )
 
