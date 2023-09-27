@@ -275,6 +275,30 @@ function calc_opt_N_imag(N      ::Int64,
     end
 end
 
+function calc_phis(imags::ImagDomainData{T})::Vector{Complex{T}} where {T<:Real}
+    phis  = Array{Complex{T}}(undef, imags.N_imag) 
+    abcds = Array{Complex{T}}(undef, 2, 2, imags.N_imag) 
+    phis[1] = imags.val[1]
+    
+    for i in 1:imags.N_imag
+        view(abcds,:,:,i) .= Matrix{Complex{T}}(I, 2, 2)
+    end
+    
+    for j in 1:imags.N_imag-1
+        for k in j+1:imags.N_imag
+            prod = Array{Complex{T}}(undef, 2, 2) 
+            prod[1,1] = (imags.freq[k] - imags.freq[j]) / (imags.freq[k] - conj(imags.freq[j]))
+            prod[1,2] = phis[j]
+            prod[2,1] = conj(phis[j]) * (imags.freq[k] - imags.freq[j]) / (imags.freq[k] - conj(imags.freq[j]))
+            prod[2,2] = one(T)
+            view(abcds,:,:,k) .= view(abcds,:,:,k)*prod
+        end
+        phis[j+1] = (-abcds[2,2,j+1]*imags.val[j+1] + abcds[1,2,j+1]) / (abcds[2,1,j+1]*imags.val[j+1] - abcds[1,1,j+1])
+    end
+    
+    return phis
+end
+
 function solve(S::NevanACSolver, rd::RawData)
     N_real    = 1000  #demension of array of output
     omega_max = 10.0  #energy cutoff of real axis
