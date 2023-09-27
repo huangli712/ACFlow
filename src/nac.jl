@@ -338,6 +338,32 @@ function calc_hardy_matrix(reals::RealDomainData{T},
     return hardy_matrix
 end
 
+function calc_H_min(sol::NevanlinnaSolver{T},)::Nothing where {T<:Real}
+    H_bound::Int64 = 50
+    for iH in 1:H_bound
+        if sol.verbose
+            println("H=$(iH)")
+        end
+        zero_ab_coeff = zeros(ComplexF64, 2*iH)
+
+        causality, optim = hardy_optim!(sol, iH, zero_ab_coeff, iter_tol=sol.ini_iter_tol)
+
+        #break if we find optimal H in which causality is preserved and optimize is successful
+        if causality && optim
+            sol.H_min = sol.H
+            break
+        end
+
+        if isdefined(Main, :IJulia)
+            Main.IJulia.stdio_bytes[] = 0
+        end
+
+        if iH == H_bound
+            error("H_min does not exist")
+        end
+    end
+end
+
 function solve(S::NevanACSolver, rd::RawData)
     N_real    = 1000  #demension of array of output
     omega_max = 10.0  #energy cutoff of real axis
