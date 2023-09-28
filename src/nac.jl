@@ -4,13 +4,13 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/27
+# Last modified: 2023/09/29
 #
 
 struct ImagDomainData{T<:Real}
-    N_imag::Int64               #The number of points used in Nevanlinna algorithm
-    freq  ::Array{Complex{T},1} #The values of Matsubara frequencies
-    val   ::Array{Complex{T},1} #The values of negative of Green function
+    N_imag:: Int64               # The number of points used in Nevanlinna algorithm
+    freq  :: Vector{Complex{T}}  # The values of Matsubara frequencies
+    val   :: Vector{Complex{T}}  # The values of negative of Green function
 end
 
 function ImagDomainData(wn     ::Array{Complex{T},1},
