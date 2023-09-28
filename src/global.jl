@@ -120,7 +120,7 @@ Here `R` means Real.
 
 See also: [`N32`](@ref), [`N64`](@ref), [`APN`](@ref).
 """
-const APR = Union{API,APF,R32,R64}
+const APR = Union{API,APF}
 
 """
     N32
@@ -150,7 +150,7 @@ Here `N` means Number.
 
 See also: [`R32`](@ref), [`R64`](@ref), [`APR`](@ref).
 """
-const APN = Union{API,APF,APC,N32,N64}
+const APN = Union{API,APF,APC}
 
 #=
 ### *Global Constants* : *Literal Strings*

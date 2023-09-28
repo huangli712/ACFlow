@@ -1004,7 +1004,13 @@ function _precompile()
 
             # Extract the signature of the function
             # Actually, `types` is a Core.SimpleVector.
-            types = typeof(fun).name.mt.defs.sig.types
+            types = nothing
+            try
+                types = typeof(fun).name.mt.defs.sig.types
+            catch
+                @printf("Function %15s (#%3i) is skipped.\r", str, cf)
+                continue
+            end
 
             # Convert `types` from SimpleVector into Tuple
             # If length(types) is 1, the method is without arguments.
