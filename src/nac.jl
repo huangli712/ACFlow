@@ -100,6 +100,7 @@ function RealDomainData(N_real  ::Int64,
         throw(ArgumentError("Invalid mesh"))
     end
 end
+
 mutable struct NevanlinnaSolver{T<:Real}
     imags::ImagDomainData{T}          #imaginary domain data
     reals::RealDomainData{T}          #real domain data
@@ -144,7 +145,7 @@ function NevanlinnaSolver(
     @show N_imag
 
     if pick_check
-        opt_N_imag =  calc_opt_N_imag(N_imag, wn, gw, verbose=verbose)
+        opt_N_imag =  calc_Nopt(wn, gw)
     else 
         opt_N_imag = N_imag
     end
@@ -175,13 +176,8 @@ function NevanlinnaSolver(
     return sol
 end
 
-function calc_opt_N_imag(N      ::Int64,
-                         wn     ::Array{Complex{T},1},
-                         gw     ::Array{Complex{T},1};
-                         verbose::Bool=false
-                         )::Int64 where {T<:Real}
-    @assert N == length(wn)
-    @assert N == length(gw)
+function calc_Nopt(wn::Array{Complex{T},1}, gw::Array{Complex{T},1})::Int64 where {T<:Real}
+    N = length(wn)
 
     freq = (wn  .- im) ./ (wn  .+ im)
     val  = (-gw .- im) ./ (-gw .+ im)
@@ -210,14 +206,14 @@ function calc_opt_N_imag(N      ::Int64,
         end
     end
 
-    if verbose
-        if !(success)
-            println("N_imag is setted as $(k-1)")
-        else
-            println("N_imag is setted as $(N)")
-        end
+    if !(success)
+        println("N_imag is setted as $(k-1)")
+    else
+        println("N_imag is setted as $(N)")
     end
 
+    @show success, k-1, N
+    exit()
     if !(success)
         return (k-1)
     else
