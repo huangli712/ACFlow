@@ -47,7 +47,7 @@ function RealDomainData(N_real  ::Int64,
                         T::Type=BigFloat,
                         small_omega::Float64 = 1e-5,
                         mesh::Symbol=:linear
-                        )::RealDomainData{T}
+                        )::RealDomainData
 
     if mesh === :linear
         val = Array{Complex{T}}(collect(LinRange(-w_max, w_max, N_real)))
@@ -77,7 +77,7 @@ end
 
 mutable struct NevanlinnaSolver{T<:Real}
     imags::ImagDomainData          #imaginary domain data
-    reals::RealDomainData{T}          #real domain data
+    reals::RealDomainData          #real domain data
     phis::Vector{Complex{T}}          #phis in schur algorithm
     abcd::Array{Complex{T},3}         #continued fractions
     H_max::Int64                      #upper cut off of H
@@ -216,10 +216,10 @@ function calc_phis(imags::ImagDomainData)
 end
 
 function calc_abcd(imags::ImagDomainData, 
-                   reals::RealDomainData{T}, 
+                   reals::RealDomainData, 
                    phis::Vector{Complex{T}}
                    )::Array{Complex{T},3} where {T<:Real}
-    abcd = Array{Complex{T}}(undef, 2, 2, reals.N_real) 
+    abcd = Array{APC}(undef, 2, 2, reals.N_real) 
 
     for i in 1:reals.N_real
         result = Matrix{Complex{T}}(I, 2, 2) 
@@ -281,10 +281,8 @@ function hardy_basis(z::Complex{T}, k::Int64) where {T<:Real}
     0.5*im*(w^(k+1)-w^k)/(sqrt(pi))
 end
 
-function calc_hardy_matrix(reals::RealDomainData{T}, 
-                           H::Int64
-                           )::Array{Complex{T}, 2} where {T<:Real}
-    hardy_matrix = Array{Complex{T}}(undef, reals.N_real, 2*H)
+function calc_hardy_matrix(reals::RealDomainData, H::I64)
+    hardy_matrix = Array{APC}(undef, reals.N_real, 2*H)
     for k in 1:H
         hardy_matrix[:,2*k-1] .=      hardy_basis.(reals.freq,k-1)
         hardy_matrix[:,2*k]   .= conj(hardy_basis.(reals.freq,k-1))
