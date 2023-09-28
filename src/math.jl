@@ -154,15 +154,16 @@ end
 """
     trapz(x::AbstractVector{S},
           y::AbstractVector{T},
-          linear::Bool = false) where {S<:N64, T<:N64}
+          linear::Bool = false) where {S<:APN, T<:APN}
 
 Perform numerical integration by using the composite trapezoidal rule.
+Note that it supports arbitrary precision via BigFloat.
 
 See also: [`simpson`](@ref).
 """
 function trapz(x::AbstractVector{S},
                y::AbstractVector{T},
-               linear::Bool = false) where {S<:Number, T<:Number}
+               linear::Bool = false) where {S<:APN, T<:APN}
     # For linear mesh
     if linear
         h = x[2] - x[1]
