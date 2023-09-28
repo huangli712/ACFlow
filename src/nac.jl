@@ -212,8 +212,6 @@ function calc_Nopt(wn::Array{Complex{T},1}, gw::Array{Complex{T},1})::Int64 wher
         println("N_imag is setted as $(N)")
     end
 
-    @show success, k-1, N
-    exit()
     if !(success)
         return (k-1)
     else
