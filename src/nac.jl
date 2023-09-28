@@ -203,22 +203,16 @@ function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
 
     k = 0
     success = true
-
     while success && k ≤ N
         k += 1
         success = calc_pick(k, val, freq)
     end
 
-    @show "hahaha"
-    if !(success)
-        println("N_imag is setted as $(k-1)")
-    else
-        println("N_imag is setted as $(N)")
-    end
-
     if !success
+        println("N_imag is setted as $(k-1)")
         return k-1
     else
+        println("N_imag is setted as $(N)")
         return N
     end
 end
