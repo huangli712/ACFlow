@@ -162,7 +162,7 @@ See also: [`simpson`](@ref).
 """
 function trapz(x::AbstractVector{S},
                y::AbstractVector{T},
-               linear::Bool = false) where {S<:N64, T<:N64}
+               linear::Bool = false) where {S<:Number, T<:Number}
     # For linear mesh
     if linear
         h = x[2] - x[1]
@@ -171,11 +171,10 @@ function trapz(x::AbstractVector{S},
     # For non-equidistant mesh
     else
         len = length(x)
-        value = 0.0
-        for i = 1:len-1
-            value = value + (y[i] + y[i+1]) * (x[i+1] - x[i])
-        end
-        value = value / 2.0
+        dx = view(x, 2:len) .- view(x, 1:(len-1))
+        y_forward = view(y, 2:len)
+        y_backward = view(y, 1:(len-1))
+        value = sum(0.5 * (y_forward .+ y_backward) .* dx)
     end
 
     return value
