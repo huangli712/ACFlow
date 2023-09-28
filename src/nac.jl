@@ -184,21 +184,18 @@ function calc_phis(imags::ImagDomainData)
     return phis
 end
 
-function calc_abcd(imags::ImagDomainData, 
-                   reals::RealDomainData, 
-                   phis::Vector{Complex{T}}
-                   )::Array{Complex{T},3} where {T<:Real}
+function calc_abcd(imags::ImagDomainData, reals::RealDomainData, phis::Vector{APC})
     abcd = Array{APC}(undef, 2, 2, reals.N_real) 
 
     for i in 1:reals.N_real
-        result = Matrix{Complex{T}}(I, 2, 2) 
-        z::Complex{T} = reals.freq[i]
+        result = Matrix{APC}(I, 2, 2) 
+        z::APC = reals.freq[i]
         for j in 1:imags.Nopt
-            prod = Array{Complex{T}}(undef, 2, 2)
+            prod = Array{APC}(undef, 2, 2)
             prod[1,1] = (z - imags.freq[j]) / (z - conj(imags.freq[j]))
             prod[1,2] = phis[j]
             prod[2,1] = conj(phis[j])*(z - imags.freq[j]) / (z - conj(imags.freq[j]))
-            prod[2,2] = one(T)
+            prod[2,2] = one(APC)
             result *= prod
         end
 
