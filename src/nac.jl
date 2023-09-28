@@ -192,16 +192,16 @@ function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
 end
 
 function calc_phis(imags::ImagDomainData)
-    phis  = Array{APC}(undef, imags.N_imag) 
-    abcds = Array{APC}(undef, 2, 2, imags.N_imag) 
+    phis  = Array{APC}(undef, imags.Nopt) 
+    abcds = Array{APC}(undef, 2, 2, imags.Nopt) 
     phis[1] = imags.val[1]
     
-    for i in 1:imags.N_imag
+    for i in 1:imags.Nopt
         view(abcds,:,:,i) .= Matrix{APC}(I, 2, 2)
     end
     
-    for j in 1:imags.N_imag-1
-        for k in j+1:imags.N_imag
+    for j in 1:imags.Nopt-1
+        for k in j+1:imags.Nopt
             prod = Array{APC}(undef, 2, 2) 
             prod[1,1] = (imags.freq[k] - imags.freq[j]) / (imags.freq[k] - conj(imags.freq[j]))
             prod[1,2] = phis[j]
@@ -224,7 +224,7 @@ function calc_abcd(imags::ImagDomainData,
     for i in 1:reals.N_real
         result = Matrix{Complex{T}}(I, 2, 2) 
         z::Complex{T} = reals.freq[i]
-        for j in 1:imags.N_imag
+        for j in 1:imags.Nopt
             prod = Array{Complex{T}}(undef, 2, 2)
             prod[1,1] = (z - imags.freq[j]) / (z - conj(imags.freq[j]))
             prod[1,2] = phis[j]
