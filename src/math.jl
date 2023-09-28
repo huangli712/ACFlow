@@ -138,25 +138,31 @@ end
 =#
 
 """
-    trapz(x::AbstractMesh, y::AbstractVector{T})
+    trapz(x::AbstractMesh,
+          y::AbstractVector{T}) where {T<:N64}
 
 Perform numerical integration by using the composite trapezoidal rule.
 
 See also: [`simpson`](@ref).
 """
-function trapz(x::AbstractMesh, y::AbstractVector{T} where T)
+function trapz(x::AbstractMesh,
+               y::AbstractVector{T}) where {T<:N64}
     value = dot(x.weight, y)
     return value
 end
 
 """
-    trapz(x::Vector{F64}, y::Vector{T}, linear::Bool = false)
+    trapz(x::AbstractVector{S},
+          y::AbstractVector{T},
+          linear::Bool = false) where {S<:N64, T<:N64}
 
 Perform numerical integration by using the composite trapezoidal rule.
 
 See also: [`simpson`](@ref).
 """
-function trapz(x::Vector{F64}, y::Vector{T} where T, linear::Bool = false)
+function trapz(x::AbstractVector{S},
+               y::AbstractVector{T},
+               linear::Bool = false) where {S<:N64, T<:N64}
     # For linear mesh
     if linear
         h = x[2] - x[1]
