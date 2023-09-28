@@ -365,7 +365,7 @@ function calc_functional(
     green = im * (one(T) .+ theta) ./ (one(T) .- theta)
     A = Float64.(imag(green)./pi)
 
-    tot_int = integrate(sol.reals.freq, A)
+    tot_int = trapz(sol.reals.freq, A)
     second_der = integrate_squared_second_deriv(sol.reals.freq, A) 
 
     max_theta = findmax(abs.(param))[1]
@@ -441,16 +441,7 @@ function integrate_squared_second_deriv(x::AbstractVector, y::AbstractVector)
     sd = second_deriv(x, y)
 
     x_sd = view(x, 2:(N-1))
-    #@show typeof(x_sd), typeof(x)
     return trapz(x_sd, abs.(sd) .^ 2)
-end
-
-function integrate(x::AbstractVector, y::AbstractVector)
-    N = length(x)
-    dx = view(x, 2:N) .- view(x, 1:(N-1))
-    y_forward = view(y, 2:N)
-    y_backward = view(y, 1:(N-1))
-    return sum(0.5 * (y_forward .+ y_backward) .* dx)
 end
 
 function solve(S::NevanACSolver, rd::RawData)
