@@ -7,10 +7,10 @@
 # Last modified: 2023/09/29
 #
 
-struct ImagDomainData{T<:Real}
-    N_imag:: Int64               # The number of points used in Nevanlinna algorithm
-    freq  :: Vector{Complex{T}}  # The values of Matsubara frequencies
-    val   :: Vector{Complex{T}}  # The values of negative of Green function
+struct ImagDomainData
+    N_imag :: I64         # The number of points used in Nevanlinna algorithm
+    freq   :: Vector{APC} # The values of Matsubara frequencies
+    val    :: Vector{APC} # The values of negative of Green function
 end
 
 function ImagDomainData(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
@@ -31,10 +31,10 @@ function ImagDomainData(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
 end
 
 struct RealDomainData{T<:Real}
-    N_real  ::Int64               #The number of mesh in real axis
-    w_max   ::Float64             #The energy cutoff of real axis
-    eta     ::Float64             #The paramer. The retarded Green function is evaluated at omega+i*eta
-    sum_rule::Float64             #The value of sum of spectral function
+    N_real  ::I64               #The number of mesh in real axis
+    w_max   ::F64             #The energy cutoff of real axis
+    eta     ::F64             #The paramer. The retarded Green function is evaluated at omega+i*eta
+    sum_rule::F64             #The value of sum of spectral function
     freq    ::Array{Complex{T},1} #The values of frequencies of retarded Green function
     val     ::Array{Complex{T},1} #The values of negative of retarded Green function
 end
@@ -76,7 +76,7 @@ function RealDomainData(N_real  ::Int64,
 end
 
 mutable struct NevanlinnaSolver{T<:Real}
-    imags::ImagDomainData{T}          #imaginary domain data
+    imags::ImagDomainData          #imaginary domain data
     reals::RealDomainData{T}          #real domain data
     phis::Vector{Complex{T}}          #phis in schur algorithm
     abcd::Array{Complex{T},3}         #continued fractions
@@ -191,22 +191,22 @@ function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
     end
 end
 
-function calc_phis(imags::ImagDomainData{T})::Vector{Complex{T}} where {T<:Real}
-    phis  = Array{Complex{T}}(undef, imags.N_imag) 
-    abcds = Array{Complex{T}}(undef, 2, 2, imags.N_imag) 
+function calc_phis(imags::ImagDomainData)
+    phis  = Array{APC}(undef, imags.N_imag) 
+    abcds = Array{APC}(undef, 2, 2, imags.N_imag) 
     phis[1] = imags.val[1]
     
     for i in 1:imags.N_imag
-        view(abcds,:,:,i) .= Matrix{Complex{T}}(I, 2, 2)
+        view(abcds,:,:,i) .= Matrix{APC}(I, 2, 2)
     end
     
     for j in 1:imags.N_imag-1
         for k in j+1:imags.N_imag
-            prod = Array{Complex{T}}(undef, 2, 2) 
+            prod = Array{APC}(undef, 2, 2) 
             prod[1,1] = (imags.freq[k] - imags.freq[j]) / (imags.freq[k] - conj(imags.freq[j]))
             prod[1,2] = phis[j]
             prod[2,1] = conj(phis[j]) * (imags.freq[k] - imags.freq[j]) / (imags.freq[k] - conj(imags.freq[j]))
-            prod[2,2] = one(T)
+            prod[2,2] = one(APC)
             view(abcds,:,:,k) .= view(abcds,:,:,k)*prod
         end
         phis[j+1] = (-abcds[2,2,j+1]*imags.val[j+1] + abcds[1,2,j+1]) / (abcds[2,1,j+1]*imags.val[j+1] - abcds[1,1,j+1])
@@ -215,7 +215,7 @@ function calc_phis(imags::ImagDomainData{T})::Vector{Complex{T}} where {T<:Real}
     return phis
 end
 
-function calc_abcd(imags::ImagDomainData{T}, 
+function calc_abcd(imags::ImagDomainData, 
                    reals::RealDomainData{T}, 
                    phis::Vector{Complex{T}}
                    )::Array{Complex{T},3} where {T<:Real}
