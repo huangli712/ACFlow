@@ -62,8 +62,8 @@ mutable struct NevanlinnaSolver
 end
 
 function NevanlinnaSolver(
-                  wn          ::Vector{Complex{T}},
-                  gw          ::Vector{Complex{T}},
+                  wn          ::Vector{APC},
+                  gw          ::Vector{APC},
                   N_real      ::Int64,
                   w_max       ::Float64,
                   eta         ::Float64,
@@ -77,7 +77,7 @@ function NevanlinnaSolver(
                   optimization::Bool=true,
                   ini_iter_tol::Int64=500,
                   ham_option  ::Bool=false #option for using in Hamburger moment problem
-                  )::NevanlinnaSolver where {T<:Real}
+                  )::NevanlinnaSolver
 
     if N_real%2 == 1
         error("N_real must be even number!")
