@@ -276,7 +276,7 @@ function evaluation!(sol::NevanlinnaSolver{T};
     return causality
 end
 
-function hardy_basis(z::Complex{T}, k::Int64) where {T<:Real}
+function hardy_basis(z::APC, k::I64)
     w = (z-im)/(z+im)
     0.5*im*(w^(k+1)-w^k)/(sqrt(pi))
 end
