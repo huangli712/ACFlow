@@ -45,19 +45,19 @@ function RealDomainData(N_real::I64, w_max::F64, eta::F64, sum_rule::F64)
     return RealDomainData(N_real, w_max, eta, sum_rule, freq, val)
 end
 
-mutable struct NevanlinnaSolver{T<:Real}
-    imags::ImagDomainData          #imaginary domain data
-    reals::RealDomainData          #real domain data
-    phis::Vector{APC}          #phis in schur algorithm
-    abcd::Array{APC,3}         #continued fractions
-    H_max::I64                      #upper cut off of H
-    H_min::I64                      #lower cut off of H
-    H::I64                          #current value of H
-    ab_coeff::Vector{C64}      #current solution for H
-    hardy_matrix::Array{Complex{T},2} #hardy_matrix for H
-    iter_tol::I64                   #upper bound of iteration
-    lambda::F64                   #regularization parameter for second derivative term
-    ini_iter_tol::I64               #upper bound of iteration for H_min
+mutable struct NevanlinnaSolver
+    imags::ImagDomainData      # imaginary domain data
+    reals::RealDomainData      # real domain data
+    phis::Vector{APC}          # phis in schur algorithm
+    abcd::Array{APC,3}         # continued fractions
+    H_max::I64                 # upper cut off of H
+    H_min::I64                 # lower cut off of H
+    H::I64                     # current value of H
+    ab_coeff::Vector{C64}      # current solution for H
+    hardy_matrix::Array{APC,2} # hardy_matrix for H
+    iter_tol::I64              # upper bound of iteration
+    lambda::F64                # regularization parameter for second derivative term
+    ini_iter_tol::I64          # upper bound of iteration for H_min
     verbose::Bool                       
 end
 
@@ -77,7 +77,7 @@ function NevanlinnaSolver(
                   optimization::Bool=true,
                   ini_iter_tol::Int64=500,
                   ham_option  ::Bool=false #option for using in Hamburger moment problem
-                  )::NevanlinnaSolver{T} where {T<:Real}
+                  )::NevanlinnaSolver where {T<:Real}
 
     if N_real%2 == 1
         error("N_real must be even number!")
@@ -231,15 +231,13 @@ function check_causality(hardy_matrix::Array{Complex{T},2},
     return causality
 end
 
-function evaluation!(sol::NevanlinnaSolver{T};
-                     verbose::Bool=false
-                    )::Bool where {T<:Real}
+function evaluation!(sol::NevanlinnaSolver; verbose::Bool=false)::Bool
 
     causality = check_causality(sol.hardy_matrix, sol.ab_coeff, verbose=verbose)
     if causality
         param = sol.hardy_matrix*sol.ab_coeff
         theta = (sol.abcd[1,1,:].* param .+ sol.abcd[1,2,:]) ./ (sol.abcd[2,1,:].*param .+ sol.abcd[2,2,:])
-        sol.reals.val .= im * (one(T) .+ theta) ./ (one(T) .- theta)
+        sol.reals.val .= im * (one(APC) .+ theta) ./ (one(APC) .- theta)
     end
 
     return causality
@@ -259,7 +257,7 @@ function calc_hardy_matrix(reals::RealDomainData, H::I64)
     return hardy_matrix
 end
 
-function calc_H_min(sol::NevanlinnaSolver{T},)::Nothing where {T<:Real}
+function calc_H_min(sol::NevanlinnaSolver,)::Nothing
     H_bound::Int64 = 50
     for iH in 1:H_bound
         if sol.verbose
@@ -286,7 +284,7 @@ function calc_H_min(sol::NevanlinnaSolver{T},)::Nothing where {T<:Real}
 end
 
 function calc_functional(
-                    sol::NevanlinnaSolver{T},
+                    sol::NevanlinnaSolver,
                     H::Int64, 
                     ab_coeff::Vector{Complex{S}}, 
                     hardy_matrix::Array{Complex{T},2};
@@ -308,11 +306,11 @@ function calc_functional(
 end
 
 function hardy_optim!(
-                sol::NevanlinnaSolver{T},
+                sol::NevanlinnaSolver,
                 H::Int64,
                 ab_coeff::Array{ComplexF64,1};
                 iter_tol::Int64=sol.iter_tol,
-                )::Tuple{Bool, Bool} where {T<:Real}
+                )::Tuple{Bool, Bool}
 
     loc_hardy_matrix = calc_hardy_matrix(sol.reals, H)
 
