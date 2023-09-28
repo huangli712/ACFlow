@@ -39,40 +39,10 @@ struct RealDomainData
     val     ::Vector{APC} # The values of negative of retarded Green function
 end
 
-function RealDomainData(N_real  ::Int64,
-                        w_max   ::Float64,
-                        eta     ::Float64,
-                        sum_rule::Float64
-                        ;
-                        T::Type=BigFloat,
-                        small_omega::Float64 = 1e-5,
-                        mesh::Symbol=:linear
-                        )::RealDomainData
-
-    if mesh === :linear
-        val = Array{Complex{T}}(collect(LinRange(-w_max, w_max, N_real)))
-        freq = val .+ eta * im
-        return RealDomainData(N_real, w_max, eta, sum_rule, freq, val)
-    elseif mesh === :log
-        half_N = N_real ÷ 2
-        mesh = exp.(LinRange(log.(small_omega), log.(w_max), half_N))
-        val = Array{Complex{T}}([reverse(-mesh); mesh])
-        freq = val .+ eta * im
-        return RealDomainData(N_real, w_max, eta, sum_rule, freq, val)
-    elseif mesh === :test
-        val  = Array{Complex{T}}(undef, N_real) 
-        freq = Array{Complex{T}}(undef, N_real) 
-        inter::T = big(2.0*w_max) / (N_real-1)
-        temp ::T = big(-w_max)
-        freq[1] = -big(w_max) + big(eta)*im
-        for i in 2:N_real
-            temp += inter
-            freq[i] = temp + big(eta)*im
-        end
-        return RealDomainData(N_real, w_max, eta, sum_rule, freq, val)
-    else
-        throw(ArgumentError("Invalid mesh"))
-    end
+function RealDomainData(N_real::I64, w_max::F64, eta::F64, sum_rule::F64)
+    val = Array{APC}(collect(LinRange(-w_max, w_max, N_real)))
+    freq = val .+ eta * im
+    return RealDomainData(N_real, w_max, eta, sum_rule, freq, val)
 end
 
 mutable struct NevanlinnaSolver{T<:Real}
@@ -106,7 +76,6 @@ function NevanlinnaSolver(
                   pick_check  ::Bool=true,
                   optimization::Bool=true,
                   ini_iter_tol::Int64=500,
-                  mesh        ::Symbol=:linear,
                   ham_option  ::Bool=false #option for using in Hamburger moment problem
                   )::NevanlinnaSolver{T} where {T<:Real}
 
@@ -126,7 +95,7 @@ function NevanlinnaSolver(
     @show opt_N_imag
 
     imags = ImagDomainData(wn, gw, opt_N_imag)
-    reals = RealDomainData(N_real, w_max, eta, sum_rule, T=T, mesh=mesh)
+    reals = RealDomainData(N_real, w_max, eta, sum_rule)
 
     phis = calc_phis(imags)
     abcd = calc_abcd(imags, reals, phis)
