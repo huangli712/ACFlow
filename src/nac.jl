@@ -64,20 +64,20 @@ end
 function NevanlinnaSolver(
                   wn          ::Vector{APC},
                   gw          ::Vector{APC},
-                  N_real      ::Int64,
-                  w_max       ::Float64,
-                  eta         ::Float64,
-                  sum_rule    ::Float64,
-                  H_max       ::Int64,
-                  iter_tol    ::Int64,
-                  lambda      ::Float64
+                  N_real      ::I64,
+                  w_max       ::F64,
+                  eta         ::F64,
+                  sum_rule    ::F64,
+                  H_max       ::I64,
+                  iter_tol    ::I64,
+                  lambda      ::F64
                   ;
                   verbose     ::Bool=false,
                   pick_check  ::Bool=true,
                   optimization::Bool=true,
-                  ini_iter_tol::Int64=500,
+                  ini_iter_tol::I64=500,
                   ham_option  ::Bool=false #option for using in Hamburger moment problem
-                  )::NevanlinnaSolver
+                  )
 
     if N_real%2 == 1
         error("N_real must be even number!")
