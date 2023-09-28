@@ -176,47 +176,50 @@ function NevanlinnaSolver(
     return sol
 end
 
+function calc_mobius(z::Vector{APC})
+    _z = similar(z)
+    @. _z = (z - im) / (z + im)
+    return _z
+end
+
+function calc_pick(k::I64, λ::Vector{APC}, ℎ::Vector{APC})
+    pick = zeros(APC, k, k)
+    for j = 1:k
+        for i = 1:k
+            num = one(APC) - λ[i] * conj(λ[j])
+            den = one(APC) - ℎ[i] * conj(ℎ[j])
+            pick[i,j] = num / den
+        end
+        pick[j,j] += APC(1e-250)
+    end
+    return issuccess(cholesky(pick, check = false))
+end
+
 function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
     N = length(wn)
 
-    freq = (wn  .- im) ./ (wn  .+ im)
-    val  = (-gw .- im) ./ (-gw .+ im)
+    freq = calc_mobius(wn)
+    val = calc_mobius(-gw)
 
     k = 0
     success = true
 
-    Pick = Array{APC}(undef, N, N)
-    while success
+    while success && k ≤ N
         k += 1
-
-        for j in 1:k
-            for i in 1:k
-                num = one(APC) - val[i]  * conj(val[j])
-                den = one(APC) - freq[i] * conj(freq[j])
-                Pick[i,j] = num / den
-            end
-
-            Pick[j,j] += APC(1e-250)
-        end
-
-        success = issuccess(cholesky(Pick[1:k,1:k],check = false))
-
-        if k == N
-            break
-        end
+        success = calc_pick(k, val, freq)
     end
 
-    @show "haha"
+    @show "hahaha"
     if !(success)
         println("N_imag is setted as $(k-1)")
     else
         println("N_imag is setted as $(N)")
     end
 
-    if !(success)
-        return (k-1)
+    if !success
+        return k-1
     else
-        return (N)
+        return N
     end
 end
 
