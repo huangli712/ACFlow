@@ -8,9 +8,9 @@
 #
 
 struct ImagDomainData
-    N_imag :: I64         # The number of points used in Nevanlinna algorithm
-    freq   :: Vector{APC} # The values of Matsubara frequencies
-    val    :: Vector{APC} # The values of negative of Green function
+    Nopt :: I64         # The number of points used in Nevanlinna algorithm
+    freq :: Vector{APC} # The values of Matsubara frequencies
+    val  :: Vector{APC} # The values of negative of Green function
 end
 
 function ImagDomainData(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
