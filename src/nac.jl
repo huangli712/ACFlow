@@ -145,7 +145,7 @@ function NevanlinnaSolver(
     @show N_imag
 
     if pick_check
-        opt_N_imag =  calc_Nopt(wn, gw)
+        @time opt_N_imag =  calc_Nopt(wn, gw)
     else 
         opt_N_imag = N_imag
     end
@@ -176,36 +176,37 @@ function NevanlinnaSolver(
     return sol
 end
 
-function calc_Nopt(wn::Array{Complex{T},1}, gw::Array{Complex{T},1})::Int64 where {T<:Real}
+function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
     N = length(wn)
 
     freq = (wn  .- im) ./ (wn  .+ im)
     val  = (-gw .- im) ./ (-gw .+ im)
 
-    k::Int64 = 0
-    success::Bool = true
+    k = 0
+    success = true
 
+    Pick = Array{APC}(undef, N, N)
     while success
         k += 1
-        Pick = Array{Complex{T}}(undef, k, k)
 
         for j in 1:k
             for i in 1:k
-                num = one(T) - val[i]  * conj(val[j])
-                den = one(T) - freq[i] * conj(freq[j])
+                num = one(APC) - val[i]  * conj(val[j])
+                den = one(APC) - freq[i] * conj(freq[j])
                 Pick[i,j] = num / den
             end
 
-            Pick[j,j] += T(1e-250)
+            Pick[j,j] += APC(1e-250)
         end
 
-        success = issuccess(cholesky(Pick,check = false))
+        success = issuccess(cholesky(Pick[1:k,1:k],check = false))
 
         if k == N
             break
         end
     end
 
+    @show "haha"
     if !(success)
         println("N_imag is setted as $(k-1)")
     else
