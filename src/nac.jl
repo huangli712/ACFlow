@@ -48,16 +48,16 @@ end
 mutable struct NevanlinnaSolver{T<:Real}
     imags::ImagDomainData          #imaginary domain data
     reals::RealDomainData          #real domain data
-    phis::Vector{Complex{T}}          #phis in schur algorithm
-    abcd::Array{Complex{T},3}         #continued fractions
-    H_max::Int64                      #upper cut off of H
-    H_min::Int64                      #lower cut off of H
-    H::Int64                          #current value of H
-    ab_coeff::Vector{ComplexF64}      #current solution for H
+    phis::Vector{APC}          #phis in schur algorithm
+    abcd::Array{APC,3}         #continued fractions
+    H_max::I64                      #upper cut off of H
+    H_min::I64                      #lower cut off of H
+    H::I64                          #current value of H
+    ab_coeff::Vector{C64}      #current solution for H
     hardy_matrix::Array{Complex{T},2} #hardy_matrix for H
-    iter_tol::Int64                   #upper bound of iteration
-    lambda::Float64                   #regularization parameter for second derivative term
-    ini_iter_tol::Int64               #upper bound of iteration for H_min
+    iter_tol::I64                   #upper bound of iteration
+    lambda::F64                   #regularization parameter for second derivative term
+    ini_iter_tol::I64               #upper bound of iteration for H_min
     verbose::Bool                       
 end
 
