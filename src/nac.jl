@@ -282,7 +282,7 @@ function hardy_basis(z::APC, k::I64)
 end
 
 function calc_hardy_matrix(reals::RealDomainData, H::I64)
-    hardy_matrix = Array{APC}(undef, reals.N_real, 2*H)
+    hardy_matrix = zeros(APC, reals.N_real, 2*H)
     for k in 1:H
         hardy_matrix[:,2*k-1] .=      hardy_basis.(reals.freq,k-1)
         hardy_matrix[:,2*k]   .= conj(hardy_basis.(reals.freq,k-1))
