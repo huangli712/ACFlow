@@ -13,47 +13,21 @@ struct ImagDomainData{T<:Real}
     val   :: Vector{Complex{T}}  # The values of negative of Green function
 end
 
-function ImagDomainData(wn     ::Array{Complex{T},1},
-                        gw     ::Array{Complex{T},1},
-                        N_imag ::Int64;
-                        verbose::Bool = false
-                        )::ImagDomainData{T} where {T<:Real}
+function ImagDomainData(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
+    freq = calc_mobius(wn[1:Nopt])
+    val = calc_mobius(-gw[1:Nopt])
 
-    val  = Array{Complex{T}}(undef, N_imag) 
-    freq = Array{Complex{T}}(undef, N_imag) 
-    
-    for i in 1:N_imag
-        freq[i] = wn[i]
-        val[i]  = (-gw[i] - im) / (-gw[i] + im) 
+    success = calc_pick(Nopt, val, freq)
+    if success
+        println("Pick matrix is positive semi-definite.")
+    else
+        println("Pick matrix is non positive semi-definite matrix in Schur method.")
     end
     
-    Pick = Array{Complex{T}}(undef, N_imag, N_imag)
-    
-    for j in 1:N_imag
-        for i in 1:N_imag
-            freq_i = (freq[i] - im) / (freq[i] + im)
-            freq_j = (freq[j] - im) / (freq[j] + im)
-            nom = one(T) - val[i] * conj(val[j])
-            den = one(T) - freq_i * conj(freq_j)
-            Pick[i,j] = nom / den
-        end
-        Pick[j,j] += T(1e-250)
-    end
-    
-    success = issuccess(cholesky(Pick,check = false))
-    
-    if verbose
-        if success
-            println("Pick matrix is positive semi-definite.")
-        else
-            println("Pick matrix is non positive semi-definite matrix in Schur method.")
-        end
-    end
-    
-    freq = reverse(freq)
+    freq = reverse(wn[1:Nopt])
     val  = reverse(val)
     
-    return ImagDomainData(N_imag, freq, val)
+    return ImagDomainData(Nopt, freq, val)
 end
 
 struct RealDomainData{T<:Real}
