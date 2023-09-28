@@ -30,13 +30,13 @@ function ImagDomainData(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
     return ImagDomainData(Nopt, freq, val)
 end
 
-struct RealDomainData{T<:Real}
-    N_real  ::I64               #The number of mesh in real axis
-    w_max   ::F64             #The energy cutoff of real axis
-    eta     ::F64             #The paramer. The retarded Green function is evaluated at omega+i*eta
-    sum_rule::F64             #The value of sum of spectral function
-    freq    ::Array{Complex{T},1} #The values of frequencies of retarded Green function
-    val     ::Array{Complex{T},1} #The values of negative of retarded Green function
+struct RealDomainData
+    N_real  ::I64         # The number of mesh in real axis
+    w_max   ::F64         # The energy cutoff of real axis
+    eta     ::F64         # The paramer. The retarded Green function is evaluated at omega+i*eta
+    sum_rule::F64         # The value of sum of spectral function
+    freq    ::Vector{APC} # The values of frequencies of retarded Green function
+    val     ::Vector{APC} # The values of negative of retarded Green function
 end
 
 function RealDomainData(N_real  ::Int64,
