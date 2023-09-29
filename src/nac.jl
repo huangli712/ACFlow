@@ -39,7 +39,6 @@ end
 function RealDomainData(N_real::I64)
     eta = get_n("eta")
     w_max = get_b("wmax")
-    @show eta
     val = Array{APC}(collect(LinRange(-w_max, w_max, N_real)))
     freq = val .+ eta * im
     return RealDomainData(N_real, freq, val)
