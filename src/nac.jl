@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/29
+# Last modified: 2023/09/30
 #
 
 struct ImagDomainData
@@ -29,7 +29,6 @@ function ImagDomainData(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
 end
 
 struct RealDomainData
-    N_real  ::I64         # The number of mesh in real axis
     freq    ::Vector{APC} # The values of frequencies of retarded Green function
     val     ::Vector{APC} # The values of negative of retarded Green function
 end
@@ -39,7 +38,8 @@ function RealDomainData(N_real::I64)
     w_max = get_b("wmax")
     val = Array{APC}(collect(LinRange(-w_max, w_max, N_real)))
     freq = val .+ eta * im
-    return RealDomainData(N_real, freq, val)
+    @show N_real, length(freq)
+    return RealDomainData(freq, val)
 end
 
 mutable struct NevanlinnaSolver
@@ -177,9 +177,10 @@ end
 
 function calc_abcd(imags::ImagDomainData, reals::RealDomainData, phis::Vector{APC})
     Nopt = length(imags.freq)
-    abcd = zeros(APC, 2, 2, reals.N_real)
+    N_real = length(reals.freq)
+    abcd = zeros(APC, 2, 2, N_real)
 
-    for i in 1:reals.N_real
+    for i in 1:N_real
         result = Matrix{APC}(I, 2, 2) 
         z::APC = reals.freq[i]
         for j in 1:Nopt
@@ -229,7 +230,8 @@ function hardy_basis(z::APC, k::I64)
 end
 
 function calc_hardy_matrix(reals::RealDomainData, H::I64)
-    hardy_matrix = zeros(APC, reals.N_real, 2*H)
+    N_real = length(reals.freq)
+    hardy_matrix = zeros(APC, N_real, 2*H)
     for k in 1:H
         hardy_matrix[:,2*k-1] .=      hardy_basis.(reals.freq,k-1)
         hardy_matrix[:,2*k]   .= conj(hardy_basis.(reals.freq,k-1))
@@ -366,8 +368,8 @@ function solve(S::NevanACSolver, rd::RawData)
     wo_sol = NevanlinnaSolver(input_smpl, input_gw, N_real, H_max, iter_tol)
 
     open("twopeak_wo_opt.dat","w") do f
-        for i in 1:wo_sol.reals.N_real
-            println(f, "$(Float64(real.(wo_sol.reals.freq[i])))",  "\t", "$(Float64(imag.(wo_sol.reals.val[i]/pi)))")
+        for i in 1:N_real
+            println(f, "$(F64(real.(wo_sol.reals.freq[i])))",  "\t", "$(F64(imag.(wo_sol.reals.val[i]/pi)))")
         end
     end
 end
