@@ -8,7 +8,6 @@
 #
 
 struct ImagDomainData
-    Nopt :: I64         # The number of points used in Nevanlinna algorithm
     freq :: Vector{APC} # The values of Matsubara frequencies
     val  :: Vector{APC} # The values of negative of Green function
 end
@@ -26,8 +25,7 @@ function ImagDomainData(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
     
     freq = reverse(wn[1:Nopt])
     val  = reverse(val)
-    
-    return ImagDomainData(Nopt, freq, val)
+    return ImagDomainData(freq, val)
 end
 
 struct RealDomainData
@@ -153,16 +151,17 @@ function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
 end
 
 function calc_phis(imags::ImagDomainData)
-    phis  = Array{APC}(undef, imags.Nopt) 
-    abcds = Array{APC}(undef, 2, 2, imags.Nopt) 
+    Nopt = length(imags.freq)
+    phis  = Array{APC}(undef, Nopt) 
+    abcds = Array{APC}(undef, 2, 2, Nopt) 
     phis[1] = imags.val[1]
     
-    for i in 1:imags.Nopt
+    for i in 1:Nopt
         view(abcds,:,:,i) .= Matrix{APC}(I, 2, 2)
     end
     
-    for j in 1:imags.Nopt-1
-        for k in j+1:imags.Nopt
+    for j in 1:Nopt-1
+        for k in j+1:Nopt
             prod = Array{APC}(undef, 2, 2) 
             prod[1,1] = (imags.freq[k] - imags.freq[j]) / (imags.freq[k] - conj(imags.freq[j]))
             prod[1,2] = phis[j]
@@ -177,12 +176,13 @@ function calc_phis(imags::ImagDomainData)
 end
 
 function calc_abcd(imags::ImagDomainData, reals::RealDomainData, phis::Vector{APC})
+    Nopt = length(imags.freq)
     abcd = zeros(APC, 2, 2, reals.N_real)
 
     for i in 1:reals.N_real
         result = Matrix{APC}(I, 2, 2) 
         z::APC = reals.freq[i]
-        for j in 1:imags.Nopt
+        for j in 1:Nopt
             ∏ = zeros(APC, 2, 2)
             ∏[1,1] = (z - imags.freq[j]) / (z - conj(imags.freq[j]))
             ∏[1,2] = phis[j]
