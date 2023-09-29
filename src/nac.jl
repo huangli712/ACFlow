@@ -286,18 +286,18 @@ end
 
 function hardy_optim!(
                 sol::NevanlinnaSolver,
-                H::Int64,
-                ab_coeff::Array{ComplexF64,1};
+                H::I64,
+                ab_coeff::Vector{C64};
                 iter_tol::I64=sol.iter_tol,
                 )::Tuple{Bool, Bool}
 
     loc_hardy_matrix = calc_hardy_matrix(sol.reals, H)
 
-    function functional(x::Vector{ComplexF64})::Float64
+    function functional(x::Vector{C64})::F64
         return calc_functional(sol, H, x, loc_hardy_matrix)
     end
 
-    function jacobian(J::Vector{ComplexF64}, x::Vector{ComplexF64})
+    function jacobian(J::Vector{C64}, x::Vector{C64})
         J .= gradient(functional, x)[1] 
     end
 
