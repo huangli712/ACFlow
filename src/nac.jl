@@ -32,17 +32,17 @@ end
 
 struct RealDomainData
     N_real  ::I64         # The number of mesh in real axis
-    w_max   ::F64         # The energy cutoff of real axis
     freq    ::Vector{APC} # The values of frequencies of retarded Green function
     val     ::Vector{APC} # The values of negative of retarded Green function
 end
 
-function RealDomainData(N_real::I64, w_max::F64)
+function RealDomainData(N_real::I64)
     eta = get_n("eta")
+    w_max = get_b("wmax")
     @show eta
     val = Array{APC}(collect(LinRange(-w_max, w_max, N_real)))
     freq = val .+ eta * im
-    return RealDomainData(N_real, w_max, freq, val)
+    return RealDomainData(N_real, freq, val)
 end
 
 mutable struct NevanlinnaSolver
@@ -64,7 +64,6 @@ function NevanlinnaSolver(
                   wn          ::Vector{APC},
                   gw          ::Vector{APC},
                   N_real      ::I64,
-                  w_max       ::F64,
                   H_max       ::I64,
                   iter_tol    ::I64,
                   lambda      ::F64
@@ -91,7 +90,7 @@ function NevanlinnaSolver(
     @show opt_N_imag
 
     imags = ImagDomainData(wn, gw, opt_N_imag)
-    reals = RealDomainData(N_real, w_max)
+    reals = RealDomainData(N_real)
 
     phis = calc_phis(imags)
     abcd = calc_abcd(imags, reals, phis)
@@ -288,7 +287,6 @@ function hardy_optim!(
                 ab_coeff::Vector{C64};
                 iter_tol::I64=sol.iter_tol,
                 )::Tuple{Bool, Bool}
-
     loc_hardy_matrix = calc_hardy_matrix(sol.reals, H)
 
     function functional(x::Vector{C64})::F64
@@ -354,7 +352,6 @@ end
 
 function solve(S::NevanACSolver, rd::RawData)
     N_real    = 1000  #demension of array of output
-    omega_max = 10.0  #energy cutoff of real axis
     H_max     = 12    #cutoff of Hardy basis
     lambda    = 1e-4  #regularization parameter
     iter_tol  = 1000  #upper bound of iteration
@@ -369,7 +366,7 @@ function solve(S::NevanACSolver, rd::RawData)
     @show size(dlm)
     @. input_smpl = dlm[:,1] * im
     @. input_gw = dlm[:,2] + dlm[:,3] * im
-    wo_sol = NevanlinnaSolver(input_smpl, input_gw, N_real, omega_max, H_max, iter_tol, lambda)
+    wo_sol = NevanlinnaSolver(input_smpl, input_gw, N_real, H_max, iter_tol, lambda)
 
     open("twopeak_wo_opt.dat","w") do f
         for i in 1:wo_sol.reals.N_real
