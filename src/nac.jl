@@ -58,7 +58,6 @@ mutable struct NevanlinnaSolver
     iter_tol::I64              # upper bound of iteration
     lambda::F64                # regularization parameter for second derivative term
     ini_iter_tol::I64          # upper bound of iteration for H_min
-    verbose::Bool                       
 end
 
 function NevanlinnaSolver(
@@ -72,7 +71,6 @@ function NevanlinnaSolver(
                   iter_tol    ::I64,
                   lambda      ::F64
                   ;
-                  verbose     ::Bool=false,
                   pick_check  ::Bool=true,
                   optimization::Bool=true,
                   ini_iter_tol::I64=500,
@@ -104,7 +102,7 @@ function NevanlinnaSolver(
     ab_coeff = zeros(ComplexF64, 2*H_min)
     hardy_matrix = calc_hardy_matrix(reals, H_min)
 
-    sol = NevanlinnaSolver(imags, reals, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, lambda, ini_iter_tol, verbose)
+    sol = NevanlinnaSolver(imags, reals, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, lambda, ini_iter_tol)
 
     if ham_option
         return sol
@@ -205,32 +203,26 @@ function calc_abcd(imags::ImagDomainData, reals::RealDomainData, phis::Vector{AP
 end
 
 function check_causality(hardy_matrix::Array{Complex{T},2},
-                         ab_coeff::Vector{Complex{S}};
-                         verbose::Bool=false
-                         )::Bool where {S<:Real, T<:Real}
+                         ab_coeff::Vector{Complex{S}})::Bool where {S<:Real, T<:Real}
 
     param = hardy_matrix*ab_coeff
 
     max_theta = findmax(abs.(param))[1]
     if max_theta <= 1.0
-        if verbose
-           println("max_theta=",max_theta)
-           println("hardy optimization was success.")
-        end
+        println("max_theta=",max_theta)
+        println("hardy optimization was success.")
         causality = true
     else
-        if verbose
-          println("max_theta=",max_theta)
-          println("hardy optimization was failure.")
-        end
+        println("max_theta=",max_theta)
+        println("hardy optimization was failure.")
         causality = false
     end
     return causality
 end
 
-function evaluation!(sol::NevanlinnaSolver; verbose::Bool=false)::Bool
+function evaluation!(sol::NevanlinnaSolver)::Bool
 
-    causality = check_causality(sol.hardy_matrix, sol.ab_coeff, verbose=verbose)
+    causality = check_causality(sol.hardy_matrix, sol.ab_coeff)
     if causality
         param = sol.hardy_matrix*sol.ab_coeff
         theta = (sol.abcd[1,1,:].* param .+ sol.abcd[1,2,:]) ./ (sol.abcd[2,1,:].*param .+ sol.abcd[2,2,:])
@@ -257,9 +249,7 @@ end
 function calc_H_min(sol::NevanlinnaSolver,)::Nothing
     H_bound::Int64 = 50
     for iH in 1:H_bound
-        if sol.verbose
-            println("H=$(iH)")
-        end
+        println("H=$(iH)")
         zero_ab_coeff = zeros(ComplexF64, 2*iH)
 
         causality, optim = hardy_optim!(sol, iH, zero_ab_coeff, iter_tol=sol.ini_iter_tol)
@@ -321,19 +311,19 @@ function hardy_optim!(
 
     res = optimize(functional, jacobian, ab_coeff, BFGS(), 
                    Optim.Options(iterations = iter_tol,
-                                 show_trace = sol.verbose))
+                                 show_trace = true))
     
-    if  !(Optim.converged(res)) && sol.verbose
+    if  !(Optim.converged(res))
         println("Faild to optimize!")
     end
     
-    causality = check_causality(loc_hardy_matrix, Optim.minimizer(res), verbose=sol.verbose)
+    causality = check_causality(loc_hardy_matrix, Optim.minimizer(res))
 
     if causality && (Optim.converged(res))
         sol.H = H
         sol.ab_coeff = Optim.minimizer(res)
         sol.hardy_matrix = loc_hardy_matrix
-        evaluation!(sol, verbose=false)
+        evaluation!(sol)
     end
     
     return causality, (Optim.converged(res))
@@ -391,7 +381,7 @@ function solve(S::NevanACSolver, rd::RawData)
     @show size(dlm)
     @. input_smpl = dlm[:,1] * im
     @. input_gw = dlm[:,2] + dlm[:,3] * im
-    wo_sol = NevanlinnaSolver(input_smpl, input_gw, N_real, omega_max, eta, sum_rule, H_max, iter_tol, lambda, verbose=true)
+    wo_sol = NevanlinnaSolver(input_smpl, input_gw, N_real, omega_max, eta, sum_rule, H_max, iter_tol, lambda)
 
     open("twopeak_wo_opt.dat","w") do f
         for i in 1:wo_sol.reals.N_real
