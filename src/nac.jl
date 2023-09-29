@@ -202,9 +202,7 @@ function calc_abcd(imags::ImagDomainData, reals::RealDomainData, phis::Vector{AP
     return abcd
 end
 
-function check_causality(hardy_matrix::Array{Complex{T},2},
-                         ab_coeff::Vector{C64})::Bool where {T<:Real}
-
+function check_causality(hardy_matrix::Array{APC,2}, ab_coeff::Vector{C64})
     param = hardy_matrix*ab_coeff
 
     max_theta = findmax(abs.(param))[1]
@@ -220,8 +218,7 @@ function check_causality(hardy_matrix::Array{Complex{T},2},
     return causality
 end
 
-function evaluation!(sol::NevanlinnaSolver)::Bool
-
+function evaluation!(sol::NevanlinnaSolver)
     causality = check_causality(sol.hardy_matrix, sol.ab_coeff)
     if causality
         param = sol.hardy_matrix*sol.ab_coeff
@@ -250,7 +247,7 @@ function calc_H_min(sol::NevanlinnaSolver,)::Nothing
     H_bound::Int64 = 50
     for iH in 1:H_bound
         println("H=$(iH)")
-        zero_ab_coeff = zeros(ComplexF64, 2*iH)
+        zero_ab_coeff = zeros(C64, 2*iH)
 
         causality, optim = hardy_optim!(sol, iH, zero_ab_coeff, iter_tol=sol.ini_iter_tol)
 
@@ -270,18 +267,13 @@ function calc_H_min(sol::NevanlinnaSolver,)::Nothing
     end
 end
 
-function calc_functional(
-                    sol::NevanlinnaSolver,
-                    H::Int64, 
-                    ab_coeff::Vector{Complex{S}}, 
-                    hardy_matrix::Array{Complex{T},2};
-                    )::Float64 where {S<:Real, T<:Real}
+function calc_functional(sol::NevanlinnaSolver, H::Int64, ab_coeff::Vector{C64}, hardy_matrix::Array{APC,2})
 
     param = hardy_matrix*ab_coeff
 
     theta = (sol.abcd[1,1,:].* param .+ sol.abcd[1,2,:]) ./ (sol.abcd[2,1,:].*param .+ sol.abcd[2,2,:])
-    green = im * (one(T) .+ theta) ./ (one(T) .- theta)
-    A = Float64.(imag(green)./pi)
+    green = im * (one(APC) .+ theta) ./ (one(APC) .- theta)
+    A = F64.(imag(green)./pi)
 
     tot_int = trapz(sol.reals.freq, A)
     second_der = integrate_squared_second_deriv(sol.reals.freq, A) 
@@ -296,7 +288,7 @@ function hardy_optim!(
                 sol::NevanlinnaSolver,
                 H::Int64,
                 ab_coeff::Array{ComplexF64,1};
-                iter_tol::Int64=sol.iter_tol,
+                iter_tol::I64=sol.iter_tol,
                 )::Tuple{Bool, Bool}
 
     loc_hardy_matrix = calc_hardy_matrix(sol.reals, H)
