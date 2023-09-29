@@ -183,18 +183,18 @@ function calc_phis(imags::ImagDomainData)
 end
 
 function calc_abcd(imags::ImagDomainData, reals::RealDomainData, phis::Vector{APC})
-    abcd = Array{APC}(undef, 2, 2, reals.N_real) 
+    abcd = zeros(APC, 2, 2, reals.N_real)
 
     for i in 1:reals.N_real
         result = Matrix{APC}(I, 2, 2) 
         z::APC = reals.freq[i]
         for j in 1:imags.Nopt
-            prod = Array{APC}(undef, 2, 2)
-            prod[1,1] = (z - imags.freq[j]) / (z - conj(imags.freq[j]))
-            prod[1,2] = phis[j]
-            prod[2,1] = conj(phis[j])*(z - imags.freq[j]) / (z - conj(imags.freq[j]))
-            prod[2,2] = one(APC)
-            result *= prod
+            ∏ = zeros(APC, 2, 2)
+            ∏[1,1] = (z - imags.freq[j]) / (z - conj(imags.freq[j]))
+            ∏[1,2] = phis[j]
+            ∏[2,1] = conj(phis[j])*(z - imags.freq[j]) / (z - conj(imags.freq[j]))
+            ∏[2,2] = one(APC)
+            result *= ∏
         end
 
         abcd[:,:,i] .= result
@@ -203,7 +203,7 @@ function calc_abcd(imags::ImagDomainData, reals::RealDomainData, phis::Vector{AP
 end
 
 function check_causality(hardy_matrix::Array{Complex{T},2},
-                         ab_coeff::Vector{Complex{S}})::Bool where {S<:Real, T<:Real}
+                         ab_coeff::Vector{C64})::Bool where {T<:Real}
 
     param = hardy_matrix*ab_coeff
 
