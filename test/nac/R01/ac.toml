@@ -15,8 +15,8 @@ grid   = "ffreq"
 mesh   = "linear"
 ngrid  = 10
 nmesh  = 501
-wmax   = 5.0
-wmin   = -5.0
+wmax   = 10.0
+wmin   = -10.0
 beta   = 10.0
 offdiag = false
 
@@ -34,4 +34,4 @@ hardy  = false
 hmax   = 12
 hmin   = 1
 alpha  = 1e-4
-eta    = 1e-2
+eta    = 1e-3

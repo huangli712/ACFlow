@@ -1,22 +1,19 @@
 #!/usr/bin/env julia
 
-push!(LOAD_PATH, "/home/lihuang/yun/devel/acflow/src")
+push!(LOAD_PATH, "/home/lihuang/Downloads/ACFlow-1.6.2/src")
+
 using Random
 using Printf
 using ACFlow
 
 # Setup parameters
-wmin = -5.0  # Left boundary
-wmax = +5.0  # Right boundary
+wmin = -10.0 # Left boundary
+wmax = +10.0 # Right boundary
 nmesh = 2001 # Number of real-frequency points
-niw  = 10    # Number of Matsubara frequencies
-beta = 10.0  # Inverse temperature
-ϵ₁   = 2.50  # Parameters for gaussian peaks
-ϵ₂   = -2.5
-A₁   = 0.50
-A₂   = 0.50
-Γ₁   = 0.50
-Γ₂   = 0.50
+niw  = 50    # Number of Matsubara frequencies
+beta = 20.0  # Inverse temperature
+ϵ    = 0.50  # Parameters for gaussian peaks
+Γ    = 1.00
 
 # Real frequency mesh
 rmesh = collect(LinRange(wmin, wmax, nmesh))
@@ -24,8 +21,7 @@ rmesh = collect(LinRange(wmin, wmax, nmesh))
 # Spectral function
 image = similar(rmesh)
 #
-@. image  = A₁ * exp(-(rmesh - ϵ₁) ^ 2.0 / (2.0 * Γ₁ ^ 2.0))
-@. image += A₂ * exp(-(rmesh - ϵ₂) ^ 2.0 / (2.0 * Γ₂ ^ 2.0))
+@. image = exp(-(rmesh - ϵ) ^ 2.0 / (2.0 * Γ ^ 2.0))
 #
 image = image ./ trapz(rmesh, image)
 
@@ -36,9 +32,8 @@ iw = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
 noise_ampl = 1.0e-4
-noise_abs = randn(rng, F64, niw) * noise_ampl
-noise_phase = rand(rng, niw) * 2.0 * π
-noise = noise_abs .* exp.(noise_phase * im)
+noise = randn(rng, F64, niw) + im * randn(rng, F64, niw)
+noise = noise_ampl * noise / sqrt(2.0)
 
 # Kernel function
 kernel = 1.0 ./ (im * reshape(iw, (niw,1)) .- reshape(rmesh, (1,nmesh)))
