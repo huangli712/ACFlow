@@ -77,7 +77,7 @@ function NevanlinnaSolver(
     mesh = make_mesh(T = APF)
     Gout = zeros(APC, N_real)
 
-    phis = calc_phis(imags)
+    phis = calc_phis(imags, grid)
     abcd = calc_abcd(imags, mesh, phis)
 
     H_min::Int64 = 1
@@ -140,7 +140,7 @@ function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
     end
 end
 
-function calc_phis(imags::ImagDomainData)
+function calc_phis(imags::ImagDomainData, grid::AbstractGrid)
     Nopt = length(imags.freq)
     phis  = Array{APC}(undef, Nopt) 
     abcds = Array{APC}(undef, 2, 2, Nopt) 
@@ -153,7 +153,7 @@ function calc_phis(imags::ImagDomainData)
     for j in 1:Nopt-1
         for k in j+1:Nopt
             prod = Array{APC}(undef, 2, 2) 
-            prod[1,1] = (imags.freq[k] - imags.freq[j]) / (imags.freq[k] - conj(imags.freq[j]))
+            prod[1,1] = (grid[k] * im - imags.freq[j]) / (imags.freq[k] - conj(imags.freq[j]))
             prod[1,2] = phis[j]
             prod[2,1] = conj(phis[j]) * (imags.freq[k] - imags.freq[j]) / (imags.freq[k] - conj(imags.freq[j]))
             prod[2,2] = one(APC)
