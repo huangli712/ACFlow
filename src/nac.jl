@@ -17,7 +17,7 @@ mutable struct NevanlinnaSolver
     H_max::I64                 # upper cut off of H
     H_min::I64                 # lower cut off of H
     H::I64                     # current value of H
-    ab_coeff::Vector{C64}      # current solution for H
+    ab_coeff :: Vector{C64}      # current solution for H
     ℋ :: Array{APC,2}          # hardy_matrix for H
     iter_tol::I64              # upper bound of iteration
     ini_iter_tol::I64          # upper bound of iteration for H_min
@@ -61,10 +61,10 @@ function NevanlinnaSolver(
     𝒜 = calc_abcd(grid, mesh, Φ)
 
     H_min::Int64 = 1
-    ab_coeff = zeros(ComplexF64, 2*H_min)
+    𝑎𝑏 = zeros(C64, 2*H_min)
     ℋ = calc_hardy_matrix(mesh, H_min)
 
-    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, Φ, 𝒜, H_max, H_min, H_min, ab_coeff, ℋ, iter_tol, ini_iter_tol)
+    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, Φ, 𝒜, H_max, H_min, H_min, 𝑎𝑏, ℋ, iter_tol, ini_iter_tol)
 
     if ham_option
         return sol
@@ -211,7 +211,7 @@ end
 function evaluation!(sol::NevanlinnaSolver)
     causality = check_causality(sol.ℋ, sol.ab_coeff)
     if causality
-        param = sol.ℋ *sol.ab_coeff
+        param = sol.ℋ * sol.ab_coeff
         theta = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
         sol.Gout .= im * (one(APC) .+ theta) ./ (one(APC) .- theta)
     end
