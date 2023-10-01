@@ -165,7 +165,7 @@ function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
 end
 
 function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
-    Nopt = length(grid)
+    ngrid = length(grid)
     nmesh = length(mesh)
 
     abcd = zeros(APC, 2, 2, nmesh)
@@ -174,7 +174,7 @@ function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     for i in 1:nmesh
         result = Matrix{APC}(I, 2, 2) 
         z::APC = mesh[i] + im * eta
-        for j in 1:Nopt
+        for j in 1:ngrid
             ∏ = zeros(APC, 2, 2)
             ∏[1,1] = (z - grid[j] * im) / (z - conj(grid[j] * im))
             ∏[1,2] = Φ[j]
