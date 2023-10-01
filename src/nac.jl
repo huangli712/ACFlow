@@ -78,7 +78,7 @@ function NevanlinnaSolver(
     Gout = zeros(APC, N_real)
 
     phis = calc_phis(imags, grid)
-    abcd = calc_abcd(imags, mesh, phis)
+    abcd = calc_abcd(imags, grid, mesh, phis)
 
     H_min::Int64 = 1
     ab_coeff = zeros(ComplexF64, 2*H_min)
@@ -165,8 +165,8 @@ function calc_phis(imags::ImagDomainData, grid::AbstractGrid)
     return phis
 end
 
-function calc_abcd(imags::ImagDomainData, mesh::AbstractMesh, phis::Vector{APC})
-    Nopt = length(imags.freq)
+function calc_abcd(imags::ImagDomainData, grid::AbstractGrid, mesh::AbstractMesh, phis::Vector{APC})
+    Nopt = length(grid)
     N_real = length(mesh)
     abcd = zeros(APC, 2, 2, N_real)
     eta::APF = get_n("eta")
