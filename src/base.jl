@@ -366,7 +366,7 @@ function make_grid(rd::RawData; T::DataType = F64)
     _grid = nothing
     @cswitch grid begin
         @case "ftime"
-            _β::T = v[end]
+            _β = v[end]
             @assert abs(_β - β) ≤ 1e-6
             _grid = FermionicImaginaryTimeGrid(ngrid, β, v)
             break
@@ -376,7 +376,7 @@ function make_grid(rd::RawData; T::DataType = F64)
             break
 
         @case "btime"
-            _β::T = v[end]
+            _β = v[end]
             @assert abs(_β - β) ≤ 1e-6
             _grid = BosonicImaginaryTimeGrid(ngrid, β, v)
             break
@@ -386,7 +386,7 @@ function make_grid(rd::RawData; T::DataType = F64)
             break
 
         @case "ffreq"
-            _β::T = 2.0 * π / (v[2] - v[1])
+            _β = 2.0 * π / (v[2] - v[1])
             @assert abs(_β - β) ≤ 1e-6
             _grid = FermionicMatsubaraGrid(ngrid, β, v)
             break
@@ -396,7 +396,7 @@ function make_grid(rd::RawData; T::DataType = F64)
             break
 
         @case "bfreq"
-            _β::T = 2.0 * π / (v[2] - v[1])
+            _β = 2.0 * π / (v[2] - v[1])
             @assert abs(_β - β) ≤ 1e-6
             _grid = BosonicMatsubaraGrid(ngrid, β, v)
             break
