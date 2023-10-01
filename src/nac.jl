@@ -25,8 +25,6 @@ function NevanlinnaSolver(
                   gw          ::Vector{APC},
                   N_real      ::I64,
                   ;
-                  pick_check  ::Bool=true,
-                  optimization::Bool=true,
                   ham_option  ::Bool=false #option for using in Hamburger moment problem
 )
     if N_real%2 == 1
@@ -37,7 +35,8 @@ function NevanlinnaSolver(
     N_imag = length(wn) 
     @show N_imag
 
-    if pick_check
+    pick = get_n("pick")
+    if pick
         @time opt_N_imag =  calc_Nopt(wn, gw)
     else 
         opt_N_imag = N_imag
@@ -63,8 +62,9 @@ function NevanlinnaSolver(
     if ham_option
         return sol
     end
-    
-    if optimization
+
+    hardy = get_n("hardy")
+    if hardy
         calc_H_min(sol)
     else
         evaluation!(sol)
