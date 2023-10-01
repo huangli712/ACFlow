@@ -9,8 +9,9 @@
 #     $ acrun.jl ac.toml
 #
 
-push!(LOAD_PATH, "/home/lihuang/yun/devel/acflow/src")
+#push!(LOAD_PATH, "/home/lihuang/yun/devel/acflow/src")
 #push!(LOAD_PATH, "/home/lihuang/Downloads/ACFlow-1.6.2/src")
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/ACFlow/src")
 using ACFlow
 
 welcome()
