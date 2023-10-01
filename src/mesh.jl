@@ -127,7 +127,7 @@ function HalfLorentzMesh(nmesh::I64, wmax::T, 𝑝::T = 0.01) where {T}
     @assert wmax > 0.0
     @assert 1.0 > 𝑝 > 0.0
 
-    wmin = 0.0
+    wmin::T = 0.0
     temp = zeros(T, nmesh)
     mesh = zeros(T, nmesh)
 
