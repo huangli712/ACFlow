@@ -8,16 +8,16 @@
 #
 
 mutable struct NevanlinnaSolver
-    Gᵥ :: Vector{APC}
-    grid :: AbstractGrid
-    mesh :: AbstractMesh
-    Gout::Vector{APC}
-    Φ :: Vector{APC}           # Φ in schur algorithm
-    𝒜 ::Array{APC,3}           # continued fractions
-    H_min::I64                 # lower cut off of H
-    H::I64                     # current value of H
-    𝑎𝑏 :: Vector{C64}          # current solution for H
-    ℋ :: Array{APC,2}          # hardy_matrix for H
+    Gᵥ    :: Vector{APC}
+    grid  :: AbstractGrid
+    mesh  :: AbstractMesh
+    Φ     :: Vector{APC}           # Φ in schur algorithm
+    𝒜     :: Array{APC,3}          # continued fractions
+    ℋ     :: Array{APC,2}          # hardy_matrix for H
+    𝑎𝑏    :: Vector{C64}          # current solution for H
+    H_min :: I64                 # lower cut off of H
+    H     :: I64                     # current value of H
+    Gout  :: Vector{APC}
 end
 
 function NevanlinnaSolver(wn::Vector{APC}, gw::Vector{APC}, N_real::I64)
@@ -51,7 +51,7 @@ function NevanlinnaSolver(wn::Vector{APC}, gw::Vector{APC}, N_real::I64)
     𝑎𝑏 = zeros(C64, 2*H_min)
     ℋ = calc_hardy_matrix(mesh, H_min)
 
-    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, Φ, 𝒜, H_min, H_min, 𝑎𝑏, ℋ)
+    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, H_min, H_min, Gout)
 
     hardy = get_n("hardy")
     if hardy
