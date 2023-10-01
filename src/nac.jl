@@ -76,7 +76,7 @@ function init(S::NevanACSolver, rd::RawData)
 
     H_min::Int64 = 1
     𝑎𝑏 = zeros(C64, 2*H_min)
-    ℋ = calc_hardy_matrix(mesh, H_min)
+    ℋ = calc_hmatrix(mesh, H_min)
 
     sol = NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, H_min, H_min, Gout)
 
@@ -213,6 +213,25 @@ function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     return 𝒜
 end
 
+function calc_hbasis(z::APC, k::I64)
+    w = ( z - im ) / ( z + im )
+    return 0.5 * im * ( w^(k+1) - w^k ) / sqrt(pi)
+end
+
+function calc_hmatrix(mesh::AbstractMesh, H::I64)
+    eta::APF = get_n("eta")
+    nmesh = length(mesh)
+    𝑚 = mesh.mesh .+ eta * im
+
+    ℋ = zeros(APC, nmesh, 2*H)
+    for k = 1:H
+        ℋ[:,2*k-1] .=      calc_hbasis.(𝑚,k-1)
+        ℋ[:,2*k]   .= conj(calc_hbasis.(𝑚,k-1))
+    end
+
+    return ℋ
+end
+
 function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     param = ℋ * 𝑎𝑏
 
@@ -239,25 +258,6 @@ function evaluation!(sol::NevanACContext)
     end
 
     return causality
-end
-
-function hardy_basis(z::APC, k::I64)
-    w = (z-im)/(z+im)
-    0.5*im*(w^(k+1)-w^k)/(sqrt(pi))
-end
-
-function calc_hardy_matrix(mesh::AbstractMesh, H::I64)
-    eta::APF = get_n("eta")
-    nmesh = length(mesh)
-    𝑚 = mesh.mesh .+ eta * im
-
-    ℋ = zeros(APC, nmesh, 2*H)
-    for k = 1:H
-        ℋ[:,2*k-1] .=      hardy_basis.(𝑚,k-1)
-        ℋ[:,2*k]   .= conj(hardy_basis.(𝑚,k-1))
-    end
-
-    return ℋ
 end
 
 function calc_H_min(sol::NevanACContext)
@@ -301,7 +301,7 @@ function calc_functional(sol::NevanACContext, H::Int64, 𝑎𝑏::Vector{C64}, �
 end
 
 function hardy_optim!(sol::NevanACContext, H::I64, 𝑎𝑏::Vector{C64})::Tuple{Bool, Bool}
-    ℋₗ = calc_hardy_matrix(sol.mesh, H)
+    ℋₗ = calc_hmatrix(sol.mesh, H)
 
     function functional(x::Vector{C64})::F64
         return calc_functional(sol, H, x, ℋₗ)
