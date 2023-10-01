@@ -417,7 +417,9 @@ end
     make_mesh(; T::DataType = F64)
 
 Try to generate an uniform (linear) or non-uniform (non-linear) mesh for
-the spectral function in real axis.
+the spectral function in real axis. Notice that it supports arbitrary
+precision mesh. By default, the precision is F64. One can specify the
+precision by the argument `T`.
 
 See also: [`LinearMesh`](@ref), [`TangentMesh`](@ref), [`LorentzMesh`](@ref).
 """
