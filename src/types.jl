@@ -545,12 +545,12 @@ Mutable struct. A linear and uniform mesh.
 
 See also: [`TangentMesh`](@ref).
 """
-mutable struct LinearMesh <: AbstractMesh
+mutable struct LinearMesh{T} <: AbstractMesh
     nmesh :: I64
-    wmax :: F64
-    wmin :: F64
-    mesh :: Vector{F64}
-    weight :: Vector{F64}
+    wmax :: T
+    wmin :: T
+    mesh :: Vector{T}
+    weight :: Vector{T}
 end
 
 """
