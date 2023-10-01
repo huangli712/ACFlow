@@ -12,13 +12,13 @@ mutable struct NevanlinnaSolver
     grid :: AbstractGrid
     mesh :: AbstractMesh
     Gout::Vector{APC}
-    Φ :: Vector{APC}            # Φ in schur algorithm
-    𝒜 ::Array{APC,3}         # continued fractions
+    Φ :: Vector{APC}           # Φ in schur algorithm
+    𝒜 ::Array{APC,3}           # continued fractions
     H_max::I64                 # upper cut off of H
     H_min::I64                 # lower cut off of H
     H::I64                     # current value of H
     ab_coeff::Vector{C64}      # current solution for H
-    hardy_matrix::Array{APC,2} # hardy_matrix for H
+    ℋ :: Array{APC,2}          # hardy_matrix for H
     iter_tol::I64              # upper bound of iteration
     ini_iter_tol::I64          # upper bound of iteration for H_min
 end
@@ -62,9 +62,9 @@ function NevanlinnaSolver(
 
     H_min::Int64 = 1
     ab_coeff = zeros(ComplexF64, 2*H_min)
-    hardy_matrix = calc_hardy_matrix(mesh, H_min)
+    ℋ = calc_hardy_matrix(mesh, H_min)
 
-    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, Φ, 𝒜, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
+    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, Φ, 𝒜, H_max, H_min, H_min, ab_coeff, ℋ, iter_tol, ini_iter_tol)
 
     if ham_option
         return sol
@@ -192,8 +192,8 @@ function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     return 𝒜
 end
 
-function check_causality(hardy_matrix::Array{APC,2}, ab_coeff::Vector{C64})
-    param = hardy_matrix*ab_coeff
+function check_causality(ℋ::Array{APC,2}, ab_coeff::Vector{C64})
+    param = ℋ * ab_coeff
 
     max_theta = findmax(abs.(param))[1]
     if max_theta <= 1.0
@@ -209,9 +209,9 @@ function check_causality(hardy_matrix::Array{APC,2}, ab_coeff::Vector{C64})
 end
 
 function evaluation!(sol::NevanlinnaSolver)
-    causality = check_causality(sol.hardy_matrix, sol.ab_coeff)
+    causality = check_causality(sol.ℋ, sol.ab_coeff)
     if causality
-        param = sol.hardy_matrix*sol.ab_coeff
+        param = sol.ℋ *sol.ab_coeff
         theta = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
         sol.Gout .= im * (one(APC) .+ theta) ./ (one(APC) .- theta)
     end
@@ -226,14 +226,14 @@ end
 
 function calc_hardy_matrix(am::AbstractMesh, H::I64)
     N_real = length(am)
-    hardy_matrix = zeros(APC, N_real, 2*H)
+    ℋ = zeros(APC, N_real, 2*H)
     eta::APF = get_n("eta")
     freq = am.mesh .+ eta * im
     for k in 1:H
-        hardy_matrix[:,2*k-1] .=      hardy_basis.(freq,k-1)
-        hardy_matrix[:,2*k]   .= conj(hardy_basis.(freq,k-1))
+        ℋ[:,2*k-1] .=      hardy_basis.(freq,k-1)
+        ℋ[:,2*k]   .= conj(hardy_basis.(freq,k-1))
     end
-    return hardy_matrix
+    return ℋ
 end
 
 function calc_H_min(sol::NevanlinnaSolver,)::Nothing
@@ -260,8 +260,8 @@ function calc_H_min(sol::NevanlinnaSolver,)::Nothing
     end
 end
 
-function calc_functional(sol::NevanlinnaSolver, H::Int64, ab_coeff::Vector{C64}, hardy_matrix::Array{APC,2})
-    param = hardy_matrix*ab_coeff
+function calc_functional(sol::NevanlinnaSolver, H::Int64, ab_coeff::Vector{C64}, ℋ::Array{APC,2})
+    param = ℋ * ab_coeff
 
     theta = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
     green = im * (one(APC) .+ theta) ./ (one(APC) .- theta)
@@ -282,10 +282,10 @@ function hardy_optim!(
                 ab_coeff::Vector{C64};
                 iter_tol::I64=sol.iter_tol,
                 )::Tuple{Bool, Bool}
-    loc_hardy_matrix = calc_hardy_matrix(sol.mesh, H)
+    ℋₗ = calc_hardy_matrix(sol.mesh, H)
 
     function functional(x::Vector{C64})::F64
-        return calc_functional(sol, H, x, loc_hardy_matrix)
+        return calc_functional(sol, H, x, ℋₗ)
     end
 
     function jacobian(J::Vector{C64}, x::Vector{C64})
@@ -300,12 +300,12 @@ function hardy_optim!(
         println("Faild to optimize!")
     end
     
-    causality = check_causality(loc_hardy_matrix, Optim.minimizer(res))
+    causality = check_causality(ℋₗ, Optim.minimizer(res))
 
     if causality && (Optim.converged(res))
         sol.H = H
         sol.ab_coeff = Optim.minimizer(res)
-        sol.hardy_matrix = loc_hardy_matrix
+        sol.ℋ = ℋₗ
         evaluation!(sol)
     end
     
