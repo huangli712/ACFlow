@@ -73,7 +73,7 @@ function NevanlinnaSolver(
 
     imags = ImagDomainData(wn, gw, opt_N_imag)
     β::APF = 100.0
-    grid = FermionicMatsubaraGrid(N_imag, β, reverse(imag.(wn[1:opt_N_imag])))
+    grid = FermionicMatsubaraGrid(opt_N_imag, β, reverse(imag.(wn[1:opt_N_imag])))
     mesh = make_mesh(T = APF)
     Gout = zeros(APC, N_real)
 
@@ -155,7 +155,7 @@ function calc_phis(imags::ImagDomainData, grid::AbstractGrid)
             prod = Array{APC}(undef, 2, 2) 
             prod[1,1] = (grid[k] * im - grid[j] * im) / (grid[k] * im - conj(grid[j] * im))
             prod[1,2] = phis[j]
-            prod[2,1] = conj(phis[j]) * (imags.freq[k] - imags.freq[j]) / (imags.freq[k] - conj(imags.freq[j]))
+            prod[2,1] = conj(phis[j]) * (grid[k] * im - grid[j] * im) / (grid[k] * im- conj(grid[j] * im))
             prod[2,2] = one(APC)
             view(abcds,:,:,k) .= view(abcds,:,:,k)*prod
         end
