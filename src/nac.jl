@@ -20,13 +20,7 @@ mutable struct NevanlinnaSolver
     ℋ :: Array{APC,2}          # hardy_matrix for H
 end
 
-function NevanlinnaSolver(
-                  wn          ::Vector{APC},
-                  gw          ::Vector{APC},
-                  N_real      ::I64,
-                  ;
-                  ham_option  ::Bool=false #option for using in Hamburger moment problem
-)
+function NevanlinnaSolver(wn::Vector{APC}, gw::Vector{APC}, N_real::I64)
     if N_real%2 == 1
         error("N_real must be even number!")
     end
@@ -58,10 +52,6 @@ function NevanlinnaSolver(
     ℋ = calc_hardy_matrix(mesh, H_min)
 
     sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, Φ, 𝒜, H_min, H_min, 𝑎𝑏, ℋ)
-
-    if ham_option
-        return sol
-    end
 
     hardy = get_n("hardy")
     if hardy
@@ -335,9 +325,7 @@ end
 
 function solve(S::NevanACSolver, rd::RawData)
     N_real    = 1000  #demension of array of output
-
     setprecision(128)
-
     input_smpl = zeros(Complex{BigFloat},52)
     input_gw = zeros(Complex{BigFloat},52)
 
