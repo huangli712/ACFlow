@@ -11,12 +11,12 @@ mutable struct NevanACContext
     Gᵥ    :: Vector{APC}
     grid  :: AbstractGrid
     mesh  :: AbstractMesh
-    Φ     :: Vector{APC}           # Φ in schur algorithm
-    𝒜     :: Array{APC,3}          # continued fractions
-    ℋ     :: Array{APC,2}          # hardy_matrix for H
-    𝑎𝑏    :: Vector{C64}          # current solution for H
-    H_min :: I64                 # lower cut off of H
-    H     :: I64                     # current value of H
+    Φ     :: Vector{APC}      # Φ in schur algorithm
+    𝒜     :: Array{APC,3}     # continued fractions
+    ℋ     :: Array{APC,2}     # hardy_matrix for H
+    𝑎𝑏    :: Vector{C64}      # current solution for H
+    H_min :: I64              # lower cut off of H
+    H     :: I64              # current value of H
     Gout  :: Vector{APC}
 end
 
