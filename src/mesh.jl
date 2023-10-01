@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/25
+# Last modified: 2023/10/01
 #
 
 #=
@@ -182,6 +182,32 @@ function DynamicMesh(mesh::Vector{F64})
 end
 
 #=
+### *Struct : ArbitraryPrecisionMesh*
+=#
+
+"""
+    ArbitraryPrecisionMesh(am::AbstractMesh)
+
+A constructor for the ArbitraryPrecisionMesh struct, which is announced
+in `src/types.jl`. Note that such a mesh is designed for the NevanAC
+solver only.
+
+See also: [`ArbitraryPrecisionMesh`](@ref).
+"""
+function ArbitraryPrecisionMesh(am::AbstractMesh)
+    nmesh = am.nmesh
+    wmax = am.wmax
+    wmin = am.wmin
+
+    mesh = zeros(APF, nmesh)
+    @. mesh = am.mesh
+    weight = zeros(APF, nmesh)
+    @. weight = am.weight
+
+    return ArbitraryPrecisionMesh(nmesh, wmax, wmin, mesh, weight)
+end
+
+#=
 ### *Common Interface*
 =#
 
@@ -196,6 +222,7 @@ the basic operations for the following types of mesh:
 * LorentzMesh
 * HalfLorentzMesh
 * DynamicMesh
+* ArbitraryPrecisionMesh
 
 With the help of these functions, we can easily access the mesh's elements.
 =#
