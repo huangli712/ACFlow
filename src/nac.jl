@@ -14,10 +14,9 @@ mutable struct NevanlinnaSolver
     Gout::Vector{APC}
     Φ :: Vector{APC}           # Φ in schur algorithm
     𝒜 ::Array{APC,3}           # continued fractions
-    H_max::I64                 # upper cut off of H
     H_min::I64                 # lower cut off of H
     H::I64                     # current value of H
-    𝑎𝑏 :: Vector{C64}      # current solution for H
+    𝑎𝑏 :: Vector{C64}          # current solution for H
     ℋ :: Array{APC,2}          # hardy_matrix for H
     iter_tol::I64              # upper bound of iteration
     ini_iter_tol::I64          # upper bound of iteration for H_min
@@ -27,7 +26,6 @@ function NevanlinnaSolver(
                   wn          ::Vector{APC},
                   gw          ::Vector{APC},
                   N_real      ::I64,
-                  H_max       ::I64,
                   iter_tol    ::I64,
                   ;
                   pick_check  ::Bool=true,
@@ -64,7 +62,7 @@ function NevanlinnaSolver(
     𝑎𝑏 = zeros(C64, 2*H_min)
     ℋ = calc_hardy_matrix(mesh, H_min)
 
-    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, Φ, 𝒜, H_max, H_min, H_min, 𝑎𝑏, ℋ, iter_tol, ini_iter_tol)
+    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, Φ, 𝒜, H_min, H_min, 𝑎𝑏, ℋ, iter_tol, ini_iter_tol)
 
     if ham_option
         return sol
@@ -292,6 +290,7 @@ function hardy_optim!(
         J .= gradient(functional, x)[1] 
     end
 
+    @show iter_tol
     res = optimize(functional, jacobian, 𝑎𝑏, BFGS(), 
                    Optim.Options(iterations = iter_tol,
                                  show_trace = true))
@@ -347,7 +346,6 @@ end
 
 function solve(S::NevanACSolver, rd::RawData)
     N_real    = 1000  #demension of array of output
-    H_max     = 12    #cutoff of Hardy basis
     iter_tol  = 1000  #upper bound of iteration
 
     T = BigFloat
@@ -360,7 +358,7 @@ function solve(S::NevanACSolver, rd::RawData)
     @show size(dlm), typeof(dlm)
     @. input_smpl = dlm[:,1] * im
     @. input_gw = dlm[:,2] + dlm[:,3] * im
-    wo_sol = NevanlinnaSolver(input_smpl, input_gw, N_real, H_max, iter_tol)
+    wo_sol = NevanlinnaSolver(input_smpl, input_gw, N_real, iter_tol)
 
     open("twopeak_wo_opt.dat","w") do f
         for i in 1:N_real
