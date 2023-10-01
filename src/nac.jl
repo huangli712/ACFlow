@@ -17,7 +17,7 @@ mutable struct NevanlinnaSolver
     H_max::I64                 # upper cut off of H
     H_min::I64                 # lower cut off of H
     H::I64                     # current value of H
-    ab_coeff :: Vector{C64}      # current solution for H
+    𝑎𝑏 :: Vector{C64}      # current solution for H
     ℋ :: Array{APC,2}          # hardy_matrix for H
     iter_tol::I64              # upper bound of iteration
     ini_iter_tol::I64          # upper bound of iteration for H_min
@@ -192,8 +192,8 @@ function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     return 𝒜
 end
 
-function check_causality(ℋ::Array{APC,2}, ab_coeff::Vector{C64})
-    param = ℋ * ab_coeff
+function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
+    param = ℋ * 𝑎𝑏
 
     max_theta = findmax(abs.(param))[1]
     if max_theta <= 1.0
@@ -209,9 +209,9 @@ function check_causality(ℋ::Array{APC,2}, ab_coeff::Vector{C64})
 end
 
 function evaluation!(sol::NevanlinnaSolver)
-    causality = check_causality(sol.ℋ, sol.ab_coeff)
+    causality = check_causality(sol.ℋ, sol.𝑎𝑏)
     if causality
-        param = sol.ℋ * sol.ab_coeff
+        param = sol.ℋ * sol.𝑎𝑏
         theta = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
         sol.Gout .= im * (one(APC) .+ theta) ./ (one(APC) .- theta)
     end
@@ -240,9 +240,9 @@ function calc_H_min(sol::NevanlinnaSolver,)::Nothing
     H_bound::Int64 = 50
     for iH in 1:H_bound
         println("H=$(iH)")
-        zero_ab_coeff = zeros(C64, 2*iH)
+        zero_𝑎𝑏 = zeros(C64, 2*iH)
 
-        causality, optim = hardy_optim!(sol, iH, zero_ab_coeff, iter_tol=sol.ini_iter_tol)
+        causality, optim = hardy_optim!(sol, iH, zero_𝑎𝑏, iter_tol=sol.ini_iter_tol)
 
         #break if we find optimal H in which causality is preserved and optimize is successful
         if causality && optim
@@ -260,8 +260,8 @@ function calc_H_min(sol::NevanlinnaSolver,)::Nothing
     end
 end
 
-function calc_functional(sol::NevanlinnaSolver, H::Int64, ab_coeff::Vector{C64}, ℋ::Array{APC,2})
-    param = ℋ * ab_coeff
+function calc_functional(sol::NevanlinnaSolver, H::Int64, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
+    param = ℋ * 𝑎𝑏
 
     theta = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
     green = im * (one(APC) .+ theta) ./ (one(APC) .- theta)
@@ -279,7 +279,7 @@ end
 function hardy_optim!(
                 sol::NevanlinnaSolver,
                 H::I64,
-                ab_coeff::Vector{C64};
+                𝑎𝑏::Vector{C64};
                 iter_tol::I64=sol.iter_tol,
                 )::Tuple{Bool, Bool}
     ℋₗ = calc_hardy_matrix(sol.mesh, H)
@@ -292,7 +292,7 @@ function hardy_optim!(
         J .= gradient(functional, x)[1] 
     end
 
-    res = optimize(functional, jacobian, ab_coeff, BFGS(), 
+    res = optimize(functional, jacobian, 𝑎𝑏, BFGS(), 
                    Optim.Options(iterations = iter_tol,
                                  show_trace = true))
     
@@ -304,7 +304,7 @@ function hardy_optim!(
 
     if causality && (Optim.converged(res))
         sol.H = H
-        sol.ab_coeff = Optim.minimizer(res)
+        sol.𝑎𝑏 = Optim.minimizer(res)
         sol.ℋ = ℋₗ
         evaluation!(sol)
     end
