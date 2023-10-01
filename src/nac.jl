@@ -95,8 +95,9 @@ function run(nac::NevanACContext)
 end
 
 function last(nac::NevanACContext)
+    nmesh = length(nac.Gout)
     open("twopeak_wo_opt.dat","w") do f
-        for i in 1:N_real
+        for i in 1:nmesh
             println(f, "$(F64(nac.mesh[i]))",  "\t", "$(F64(imag.(nac.Gout[i]/pi)))")
         end
     end
