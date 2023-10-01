@@ -141,21 +141,6 @@ function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
     end
 end
 
-function test_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
-    freq = calc_mobius(wn[1:Nopt])
-    val = calc_mobius(-gw[1:Nopt])
-
-    success = calc_pick(Nopt, val, freq)
-    if success
-        println("Pick matrix is positive semi-definite.")
-    else
-        println("Pick matrix is non positive semi-definite matrix in Schur method.")
-    end
-    
-    freq = reverse(wn[1:Nopt])
-    val  = reverse(val)
-end
-
 function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
     Nopt = length(grid)
 
@@ -361,4 +346,19 @@ function integrate_squared_second_deriv(x::AbstractVector, y::AbstractVector)
 
     x_sd = view(x, 2:(N-1))
     return trapz(x_sd, abs.(sd) .^ 2)
+end
+
+function test_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
+    freq = calc_mobius(wn[1:Nopt])
+    val = calc_mobius(-gw[1:Nopt])
+
+    success = calc_pick(Nopt, val, freq)
+    if success
+        println("Pick matrix is positive semi-definite.")
+    else
+        println("Pick matrix is non positive semi-definite matrix in Schur method.")
+    end
+    
+    freq = reverse(wn[1:Nopt])
+    val  = reverse(val)
 end
