@@ -617,7 +617,7 @@ be defined on positive half-axis only.
 
 See also: [`LorentzMesh`](@ref).
 """
-mutable struct HalfLorentzMesh <: AbstractMesh
+mutable struct HalfLorentzMesh{T} <: AbstractMesh
     nmesh :: I64
     wmax :: T
     wmin :: T
@@ -644,7 +644,7 @@ describing the spectral functions.
 
 See also: [`LinearMesh`](@ref).
 """
-mutable struct DynamicMesh <: AbstractMesh
+mutable struct DynamicMesh{T} <: AbstractMesh
     nmesh :: I64
     wmax :: T
     wmin :: T
