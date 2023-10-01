@@ -313,8 +313,8 @@ abstract type AbstractData end
 """
     RawData
 
-Mutable struct. It represent the raw input data. The datatype of raw data
-may be float or complex.
+Mutable struct. It represent the raw input data. The datatype `T` of raw
+data may be `Float64` or `ComplexF64`.
 
 ### Members
 
@@ -333,7 +333,8 @@ end
 """
     GreenData
 
-Mutable struct. It represents the preprocessed input data.
+Mutable struct. It represents the preprocessed input data. Note that it
+should support arbitrary precision via `T`
 
 ### Members
 
@@ -343,10 +344,10 @@ Mutable struct. It represents the preprocessed input data.
 
 See also: [`RawData`](@ref).
 """
-mutable struct GreenData <: AbstractData
-    value :: Vector{F64}
-    error :: Vector{F64}
-    covar :: Vector{F64}
+mutable struct GreenData{T} <: AbstractData
+    value :: Vector{T}
+    error :: Vector{T}
+    covar :: Vector{T}
 end
 
 #=
@@ -374,10 +375,10 @@ Mutable struct. It represents the fermionic imaginary time grid.
 
 See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-mutable struct FermionicImaginaryTimeGrid <: AbstractGrid
+mutable struct FermionicImaginaryTimeGrid{T} <: AbstractGrid
     ntime :: I64
-    β :: F64
-    τ :: Vector{F64}
+    β :: T
+    τ :: Vector{T}
 end
 
 """
@@ -394,10 +395,10 @@ In other words, the grid might be fragmentary。
 
 See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
-mutable struct FermionicFragmentTimeGrid <: AbstractGrid
+mutable struct FermionicFragmentTimeGrid{T} <: AbstractGrid
     ntime :: I64
-    β :: F64
-    τ :: Vector{F64}
+    β :: T
+    τ :: Vector{T}
 end
 
 """
@@ -413,10 +414,10 @@ Mutable struct. It represents the fermionic Matsubara frequency grid.
 
 See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
-mutable struct FermionicMatsubaraGrid <: AbstractGrid
+mutable struct FermionicMatsubaraGrid{T} <: AbstractGrid
     nfreq :: I64
-    β :: F64
-    ω :: Vector{F64}
+    β :: T
+    ω :: Vector{T}
 end
 
 """
@@ -433,10 +434,10 @@ grid. In other words, the grid might be fragmentary。
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
-mutable struct FermionicFragmentMatsubaraGrid <: AbstractGrid
+mutable struct FermionicFragmentMatsubaraGrid{T} <: AbstractGrid
     nfreq :: I64
-    β :: F64
-    ω :: Vector{F64}
+    β :: T
+    ω :: Vector{T}
 end
 
 """
@@ -452,10 +453,10 @@ Mutable struct. It represents the bosonic imaginary time grid.
 
 See also: [`BosonicFragmentTimeGrid`](@ref).
 """
-mutable struct BosonicImaginaryTimeGrid <: AbstractGrid
+mutable struct BosonicImaginaryTimeGrid{T} <: AbstractGrid
     ntime :: I64
-    β :: F64
-    τ :: Vector{F64}
+    β :: T
+    τ :: Vector{T}
 end
 
 """
@@ -472,10 +473,10 @@ In other words, the grid might be fragmentary。
 
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
-mutable struct BosonicFragmentTimeGrid <: AbstractGrid
+mutable struct BosonicFragmentTimeGrid{T} <: AbstractGrid
     ntime :: I64
-    β :: F64
-    τ :: Vector{F64}
+    β :: T
+    τ :: Vector{T}
 end
 
 """
@@ -491,10 +492,10 @@ Mutable struct. It represents the bosonic Matsubara frequency grid.
 
 See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
-mutable struct BosonicMatsubaraGrid <: AbstractGrid
+mutable struct BosonicMatsubaraGrid{T} <: AbstractGrid
     nfreq :: I64
-    β :: F64
-    ω :: Vector{F64}
+    β :: T
+    ω :: Vector{T}
 end
 
 """
@@ -512,10 +513,10 @@ frequency point should be present (ωₙ ≡ 0.0).
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
-mutable struct BosonicFragmentMatsubaraGrid <: AbstractGrid
+mutable struct BosonicFragmentMatsubaraGrid{T} <: AbstractGrid
     nfreq :: I64
-    β :: F64
-    ω :: Vector{F64}
+    β :: T
+    ω :: Vector{T}
 end
 
 #=
