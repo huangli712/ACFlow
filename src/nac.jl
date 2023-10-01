@@ -29,6 +29,7 @@ function ImagDomainData(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
 end
 
 mutable struct NevanlinnaSolver
+    grid::AbstractGrid
     imags::ImagDomainData      # imaginary domain data
     mesh::AbstractMesh
     Gout::Vector{APC}
@@ -71,6 +72,8 @@ function NevanlinnaSolver(
     @show opt_N_imag
 
     imags = ImagDomainData(wn, gw, opt_N_imag)
+    β::APF = 100.0
+    grid = FermionicMatsubaraGrid(N_imag, β, reverse(imag.(wn[1:opt_N_imag])))
     mesh = make_mesh(T = APF)
     Gout = zeros(APC, N_real)
 
@@ -81,7 +84,7 @@ function NevanlinnaSolver(
     ab_coeff = zeros(ComplexF64, 2*H_min)
     hardy_matrix = calc_hardy_matrix(mesh, H_min)
 
-    sol = NevanlinnaSolver(imags, mesh, Gout, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
+    sol = NevanlinnaSolver(grid, imags, mesh, Gout, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
 
     if ham_option
         return sol
@@ -350,7 +353,7 @@ function solve(S::NevanACSolver, rd::RawData)
     input_gw = zeros(Complex{BigFloat},52)
 
     dlm = readdlm("gw.data")
-    @show size(dlm)
+    @show size(dlm), typeof(dlm)
     @. input_smpl = dlm[:,1] * im
     @. input_gw = dlm[:,2] + dlm[:,3] * im
     wo_sol = NevanlinnaSolver(input_smpl, input_gw, N_real, H_max, iter_tol)
