@@ -86,19 +86,14 @@ function NevanlinnaSolver(
 
     imags = ImagDomainData(wn, gw, opt_N_imag)
     reals = RealDomainData(N_real)
-
     mesh = make_mesh(T = APF)
-    for i = 1:N_real
-        @show reals.freq[i], mesh[i]
-    end
-    exit(-1)
 
     phis = calc_phis(imags)
-    abcd = calc_abcd(imags, reals, phis)
+    abcd = calc_abcd(imags, mesh, phis)
 
     H_min::Int64 = 1
     ab_coeff = zeros(ComplexF64, 2*H_min)
-    hardy_matrix = calc_hardy_matrix(reals, H_min)
+    hardy_matrix = calc_hardy_matrix(mesh, H_min)
 
     sol = NevanlinnaSolver(imags, reals, mesh, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
 
@@ -181,14 +176,15 @@ function calc_phis(imags::ImagDomainData)
     return phis
 end
 
-function calc_abcd(imags::ImagDomainData, reals::RealDomainData, phis::Vector{APC})
+function calc_abcd(imags::ImagDomainData, mesh::AbstractMesh, phis::Vector{APC})
     Nopt = length(imags.freq)
-    N_real = length(reals.freq)
+    N_real = length(mesh)
     abcd = zeros(APC, 2, 2, N_real)
+    eta::APF = get_n("eta")
 
     for i in 1:N_real
         result = Matrix{APC}(I, 2, 2) 
-        z::APC = reals.freq[i]
+        z::APC = mesh[i] + im * eta
         for j in 1:Nopt
             ∏ = zeros(APC, 2, 2)
             ∏[1,1] = (z - imags.freq[j]) / (z - conj(imags.freq[j]))
@@ -235,12 +231,14 @@ function hardy_basis(z::APC, k::I64)
     0.5*im*(w^(k+1)-w^k)/(sqrt(pi))
 end
 
-function calc_hardy_matrix(reals::RealDomainData, H::I64)
-    N_real = length(reals.freq)
+function calc_hardy_matrix(am::AbstractMesh, H::I64)
+    N_real = length(am)
     hardy_matrix = zeros(APC, N_real, 2*H)
+    eta::APF = get_n("eta")
+    freq = am.mesh .+ eta * im
     for k in 1:H
-        hardy_matrix[:,2*k-1] .=      hardy_basis.(reals.freq,k-1)
-        hardy_matrix[:,2*k]   .= conj(hardy_basis.(reals.freq,k-1))
+        hardy_matrix[:,2*k-1] .=      hardy_basis.(freq,k-1)
+        hardy_matrix[:,2*k]   .= conj(hardy_basis.(freq,k-1))
     end
     return hardy_matrix
 end
@@ -293,7 +291,7 @@ function hardy_optim!(
                 ab_coeff::Vector{C64};
                 iter_tol::I64=sol.iter_tol,
                 )::Tuple{Bool, Bool}
-    loc_hardy_matrix = calc_hardy_matrix(sol.reals, H)
+    loc_hardy_matrix = calc_hardy_matrix(sol.mesh, H)
 
     function functional(x::Vector{C64})::F64
         return calc_functional(sol, H, x, loc_hardy_matrix)
