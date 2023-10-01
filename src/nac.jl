@@ -36,9 +36,8 @@ function solve(S::NevanACSolver, rd::RawData)
     init(S, rd)
 end
 
-function init(S::NevanACContext, rd::RawData)
-
-    N_real = 1000  #demension of array of output
+function init(S::NevanACSolver, rd::RawData)
+    N_real = 1000
     setprecision(128)
 
     wn = zeros(Complex{BigFloat},52)
