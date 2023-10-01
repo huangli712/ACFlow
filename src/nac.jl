@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/30
+# Last modified: 2023/10/01
 #
 
 struct ImagDomainData
@@ -34,8 +34,8 @@ struct RealDomainData
 end
 
 function RealDomainData(N_real::I64)
-    eta = get_n("eta")
-    w_max = get_b("wmax")
+    eta::APF = get_n("eta")
+    w_max::APF = get_b("wmax")
     val = Array{APC}(collect(LinRange(-w_max, w_max, N_real)))
     freq = val .+ eta * im
     return RealDomainData(freq, val)
@@ -44,6 +44,7 @@ end
 mutable struct NevanlinnaSolver
     imags::ImagDomainData      # imaginary domain data
     reals::RealDomainData      # real domain data
+    mesh::AbstractMesh
     phis::Vector{APC}          # phis in schur algorithm
     abcd::Array{APC,3}         # continued fractions
     H_max::I64                 # upper cut off of H
@@ -86,6 +87,12 @@ function NevanlinnaSolver(
     imags = ImagDomainData(wn, gw, opt_N_imag)
     reals = RealDomainData(N_real)
 
+    mesh = make_mesh(T = APF)
+    for i = 1:N_real
+        @show reals.freq[i], mesh[i]
+    end
+    exit(-1)
+
     phis = calc_phis(imags)
     abcd = calc_abcd(imags, reals, phis)
 
@@ -93,7 +100,7 @@ function NevanlinnaSolver(
     ab_coeff = zeros(ComplexF64, 2*H_min)
     hardy_matrix = calc_hardy_matrix(reals, H_min)
 
-    sol = NevanlinnaSolver(imags, reals, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
+    sol = NevanlinnaSolver(imags, reals, mesh, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
 
     if ham_option
         return sol
