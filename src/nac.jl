@@ -103,10 +103,16 @@ function last(nac::NevanACContext)
     end
 end
 
+function precompute()
+end
+
 function calc_mobius(z::Vector{APC})
     _z = similar(z)
     @. _z = (z - im) / (z + im)
     return _z
+end
+
+function calc_inv_mobius()
 end
 
 function calc_pick(k::I64, λ::Vector{APC}, ℎ::Vector{APC})
