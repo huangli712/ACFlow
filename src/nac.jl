@@ -7,21 +7,6 @@
 # Last modified: 2023/10/01
 #
 
-function test_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
-    freq = calc_mobius(wn[1:Nopt])
-    val = calc_mobius(-gw[1:Nopt])
-
-    success = calc_pick(Nopt, val, freq)
-    if success
-        println("Pick matrix is positive semi-definite.")
-    else
-        println("Pick matrix is non positive semi-definite matrix in Schur method.")
-    end
-    
-    freq = reverse(wn[1:Nopt])
-    val  = reverse(val)
-end
-
 mutable struct NevanlinnaSolver
     Gᵥ::Vector{APC}
     grid::AbstractGrid
@@ -133,6 +118,21 @@ function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
         println("N_imag is setted as $(N)")
         return N
     end
+end
+
+function test_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
+    freq = calc_mobius(wn[1:Nopt])
+    val = calc_mobius(-gw[1:Nopt])
+
+    success = calc_pick(Nopt, val, freq)
+    if success
+        println("Pick matrix is positive semi-definite.")
+    else
+        println("Pick matrix is non positive semi-definite matrix in Schur method.")
+    end
+    
+    freq = reverse(wn[1:Nopt])
+    val  = reverse(val)
 end
 
 function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
