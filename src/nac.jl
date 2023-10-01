@@ -20,6 +20,25 @@ mutable struct NevanACContext
     Gout  :: Vector{APC}
 end
 
+function solve(S::NevanACSolver, rd::RawData)
+    N_real    = 1000  #demension of array of output
+    setprecision(128)
+    input_smpl = zeros(Complex{BigFloat},52)
+    input_gw = zeros(Complex{BigFloat},52)
+
+    dlm = readdlm("gw.data")
+    @show size(dlm), typeof(dlm)
+    @. input_smpl = dlm[:,1] * im
+    @. input_gw = dlm[:,2] + dlm[:,3] * im
+    wo_sol = init(input_smpl, input_gw, N_real)
+
+    open("twopeak_wo_opt.dat","w") do f
+        for i in 1:N_real
+            println(f, "$(F64(wo_sol.mesh[i]))",  "\t", "$(F64(imag.(wo_sol.Gout[i]/pi)))")
+        end
+    end
+end
+
 function init(wn::Vector{APC}, gw::Vector{APC}, N_real::I64)
     if N_real%2 == 1
         error("N_real must be even number!")
@@ -61,6 +80,12 @@ function init(wn::Vector{APC}, gw::Vector{APC}, N_real::I64)
     end
 
     return sol
+end
+
+function run()
+end
+
+function last()
 end
 
 function calc_mobius(z::Vector{APC})
@@ -321,23 +346,4 @@ function integrate_squared_second_deriv(x::AbstractVector, y::AbstractVector)
 
     x_sd = view(x, 2:(N-1))
     return trapz(x_sd, abs.(sd) .^ 2)
-end
-
-function solve(S::NevanACSolver, rd::RawData)
-    N_real    = 1000  #demension of array of output
-    setprecision(128)
-    input_smpl = zeros(Complex{BigFloat},52)
-    input_gw = zeros(Complex{BigFloat},52)
-
-    dlm = readdlm("gw.data")
-    @show size(dlm), typeof(dlm)
-    @. input_smpl = dlm[:,1] * im
-    @. input_gw = dlm[:,2] + dlm[:,3] * im
-    wo_sol = init(input_smpl, input_gw, N_real)
-
-    open("twopeak_wo_opt.dat","w") do f
-        for i in 1:N_real
-            println(f, "$(F64(wo_sol.mesh[i]))",  "\t", "$(F64(imag.(wo_sol.Gout[i]/pi)))")
-        end
-    end
 end
