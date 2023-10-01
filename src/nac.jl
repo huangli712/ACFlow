@@ -12,8 +12,8 @@ mutable struct NevanlinnaSolver
     grid :: AbstractGrid
     mesh :: AbstractMesh
     Gout::Vector{APC}
-    Φ ::Vector{APC}            # Φ in schur algorithm
-    abcd::Array{APC,3}         # continued fractions
+    Φ :: Vector{APC}            # Φ in schur algorithm
+    𝒜 ::Array{APC,3}         # continued fractions
     H_max::I64                 # upper cut off of H
     H_min::I64                 # lower cut off of H
     H::I64                     # current value of H
@@ -58,13 +58,13 @@ function NevanlinnaSolver(
     reverse!(Gᵥ)
 
     Φ = calc_phis(grid, Gᵥ)
-    abcd = calc_abcd(grid, mesh, Φ)
+    𝒜 = calc_abcd(grid, mesh, Φ)
 
     H_min::Int64 = 1
     ab_coeff = zeros(ComplexF64, 2*H_min)
     hardy_matrix = calc_hardy_matrix(mesh, H_min)
 
-    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, Φ, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
+    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, Φ, 𝒜, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
 
     if ham_option
         return sol
@@ -212,7 +212,7 @@ function evaluation!(sol::NevanlinnaSolver)
     causality = check_causality(sol.hardy_matrix, sol.ab_coeff)
     if causality
         param = sol.hardy_matrix*sol.ab_coeff
-        theta = (sol.abcd[1,1,:].* param .+ sol.abcd[1,2,:]) ./ (sol.abcd[2,1,:].*param .+ sol.abcd[2,2,:])
+        theta = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
         sol.Gout .= im * (one(APC) .+ theta) ./ (one(APC) .- theta)
     end
 
@@ -263,7 +263,7 @@ end
 function calc_functional(sol::NevanlinnaSolver, H::Int64, ab_coeff::Vector{C64}, hardy_matrix::Array{APC,2})
     param = hardy_matrix*ab_coeff
 
-    theta = (sol.abcd[1,1,:].* param .+ sol.abcd[1,2,:]) ./ (sol.abcd[2,1,:].*param .+ sol.abcd[2,2,:])
+    theta = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
     green = im * (one(APC) .+ theta) ./ (one(APC) .- theta)
     A = F64.(imag(green)./pi)
 
