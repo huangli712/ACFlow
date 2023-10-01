@@ -28,22 +28,8 @@ function ImagDomainData(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
     return ImagDomainData(freq, val)
 end
 
-struct RealDomainData
-    freq    ::Vector{APC} # The values of frequencies of retarded Green function
-    val     ::Vector{APC} # The values of negative of retarded Green function
-end
-
-function RealDomainData(N_real::I64)
-    eta::APF = get_n("eta")
-    w_max::APF = get_b("wmax")
-    val = Array{APC}(collect(LinRange(-w_max, w_max, N_real)))
-    freq = val .+ eta * im
-    return RealDomainData(freq, val)
-end
-
 mutable struct NevanlinnaSolver
     imags::ImagDomainData      # imaginary domain data
-    reals::RealDomainData      # real domain data
     mesh::AbstractMesh
     Gout::Vector{APC}
     phis::Vector{APC}          # phis in schur algorithm
@@ -68,8 +54,7 @@ function NevanlinnaSolver(
                   optimization::Bool=true,
                   ini_iter_tol::I64=500,
                   ham_option  ::Bool=false #option for using in Hamburger moment problem
-                  )
-
+)
     if N_real%2 == 1
         error("N_real must be even number!")
     end
@@ -86,7 +71,6 @@ function NevanlinnaSolver(
     @show opt_N_imag
 
     imags = ImagDomainData(wn, gw, opt_N_imag)
-    reals = RealDomainData(N_real)
     mesh = make_mesh(T = APF)
     Gout = zeros(APC, N_real)
 
@@ -97,7 +81,7 @@ function NevanlinnaSolver(
     ab_coeff = zeros(ComplexF64, 2*H_min)
     hardy_matrix = calc_hardy_matrix(mesh, H_min)
 
-    sol = NevanlinnaSolver(imags, reals, mesh, Gout, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
+    sol = NevanlinnaSolver(imags, mesh, Gout, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
 
     if ham_option
         return sol
@@ -270,24 +254,19 @@ function calc_H_min(sol::NevanlinnaSolver,)::Nothing
 end
 
 function calc_functional(sol::NevanlinnaSolver, H::Int64, ab_coeff::Vector{C64}, hardy_matrix::Array{APC,2})
-
     param = hardy_matrix*ab_coeff
 
     theta = (sol.abcd[1,1,:].* param .+ sol.abcd[1,2,:]) ./ (sol.abcd[2,1,:].*param .+ sol.abcd[2,2,:])
     green = im * (one(APC) .+ theta) ./ (one(APC) .- theta)
     A = F64.(imag(green)./pi)
 
-    #tot_int = trapz(sol.reals.freq, A)
     tot_int = trapz(sol.mesh, A)
-    #second_der = integrate_squared_second_deriv(sol.reals.freq, A) 
     second_der = integrate_squared_second_deriv(sol.mesh.mesh, A) 
 
-    max_theta = findmax(abs.(param))[1]
     alpha = get_n("alpha")
     func = abs(1.0-tot_int)^2 + alpha*second_der
 
-    @show typeof(func), func
-    return F64(func)
+    return func
 end
 
 function hardy_optim!(
