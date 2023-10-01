@@ -226,6 +226,7 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
         println("hardy optimization was failure.")
         causality = false
     end
+
     return causality
 end
 
@@ -245,15 +246,17 @@ function hardy_basis(z::APC, k::I64)
     0.5*im*(w^(k+1)-w^k)/(sqrt(pi))
 end
 
-function calc_hardy_matrix(am::AbstractMesh, H::I64)
-    N_real = length(am)
-    ℋ = zeros(APC, N_real, 2*H)
+function calc_hardy_matrix(mesh::AbstractMesh, H::I64)
     eta::APF = get_n("eta")
-    freq = am.mesh .+ eta * im
-    for k in 1:H
-        ℋ[:,2*k-1] .=      hardy_basis.(freq,k-1)
-        ℋ[:,2*k]   .= conj(hardy_basis.(freq,k-1))
+    nmesh = length(mesh)
+    𝑚 = mesh.mesh .+ eta * im
+
+    ℋ = zeros(APC, nmesh, 2*H)
+    for k = 1:H
+        ℋ[:,2*k-1] .=      hardy_basis.(𝑚,k-1)
+        ℋ[:,2*k]   .= conj(hardy_basis.(𝑚,k-1))
     end
+
     return ℋ
 end
 
