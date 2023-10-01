@@ -7,7 +7,7 @@
 # Last modified: 2023/10/01
 #
 
-mutable struct NevanlinnaSolver
+mutable struct NevanACContext
     Gᵥ    :: Vector{APC}
     grid  :: AbstractGrid
     mesh  :: AbstractMesh
@@ -20,7 +20,7 @@ mutable struct NevanlinnaSolver
     Gout  :: Vector{APC}
 end
 
-function NevanlinnaSolver(wn::Vector{APC}, gw::Vector{APC}, N_real::I64)
+function init(wn::Vector{APC}, gw::Vector{APC}, N_real::I64)
     if N_real%2 == 1
         error("N_real must be even number!")
     end
@@ -51,7 +51,7 @@ function NevanlinnaSolver(wn::Vector{APC}, gw::Vector{APC}, N_real::I64)
     𝑎𝑏 = zeros(C64, 2*H_min)
     ℋ = calc_hardy_matrix(mesh, H_min)
 
-    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, H_min, H_min, Gout)
+    sol = NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, H_min, H_min, Gout)
 
     hardy = get_n("hardy")
     if hardy
@@ -192,7 +192,7 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
-function evaluation!(sol::NevanlinnaSolver)
+function evaluation!(sol::NevanACContext)
     causality = check_causality(sol.ℋ, sol.𝑎𝑏)
     if causality
         param = sol.ℋ * sol.𝑎𝑏
@@ -220,7 +220,7 @@ function calc_hardy_matrix(am::AbstractMesh, H::I64)
     return ℋ
 end
 
-function calc_H_min(sol::NevanlinnaSolver,)::Nothing
+function calc_H_min(sol::NevanACContext)
     H_bound::Int64 = 50
     for iH in 1:H_bound
         println("H=$(iH)")
@@ -244,7 +244,7 @@ function calc_H_min(sol::NevanlinnaSolver,)::Nothing
     end
 end
 
-function calc_functional(sol::NevanlinnaSolver, H::Int64, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
+function calc_functional(sol::NevanACContext, H::Int64, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
     param = ℋ * 𝑎𝑏
 
     theta = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
@@ -260,7 +260,7 @@ function calc_functional(sol::NevanlinnaSolver, H::Int64, 𝑎𝑏::Vector{C64},
     return func
 end
 
-function hardy_optim!(sol::NevanlinnaSolver, H::I64, 𝑎𝑏::Vector{C64})::Tuple{Bool, Bool}
+function hardy_optim!(sol::NevanACContext, H::I64, 𝑎𝑏::Vector{C64})::Tuple{Bool, Bool}
     ℋₗ = calc_hardy_matrix(sol.mesh, H)
 
     function functional(x::Vector{C64})::F64
@@ -333,7 +333,7 @@ function solve(S::NevanACSolver, rd::RawData)
     @show size(dlm), typeof(dlm)
     @. input_smpl = dlm[:,1] * im
     @. input_gw = dlm[:,2] + dlm[:,3] * im
-    wo_sol = NevanlinnaSolver(input_smpl, input_gw, N_real)
+    wo_sol = init(input_smpl, input_gw, N_real)
 
     open("twopeak_wo_opt.dat","w") do f
         for i in 1:N_real
