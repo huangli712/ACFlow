@@ -312,7 +312,7 @@ function read_data(only_real_part::Bool = true)
 end
 
 """
-    make_data(rd::RawData)
+    make_data(rd::RawData; T::DataType = F64)
 
 Convert `RawData` struct to `GreenData` struct. Note that `RawData` is
 provided by the users directly, while `GreenData` is more suitable for
@@ -322,7 +322,7 @@ while the `RawData` struct is exposed to the users.
 
 See also: [`RawData`](@ref), [`GreenData`](@ref).
 """
-function make_data(rd::RawData)
+function make_data(rd::RawData; T::DataType = F64)
     ktype = get_b("ktype")
     grid = get_b("grid")
     val = rd.value
@@ -330,8 +330,8 @@ function make_data(rd::RawData)
 
     if grid == "ffreq" || ( grid == "bfreq" && ktype == "boson" ) ||
        grid == "ffrag" || ( grid == "bfrag" && ktype == "boson" )
-        value = vcat(real(val), imag(val))
-        error = vcat(real(err), imag(err))
+        value = T.( vcat(real(val), imag(val)) )
+        error = T.( vcat(real(err), imag(err)) )
         covar = error .^ 2.0
         _data = GreenData(value, error, covar)
         return _data
@@ -339,8 +339,8 @@ function make_data(rd::RawData)
          # grid == "bfrag" && ktype == "bsymm"
          # grid == "ftime" || grid == "fpart"
          # grid == "btime" || grid == "bpart"
-        value = real(val)
-        error = real(err)
+        value = T.( real(val) )
+        error = T.( real(err) )
         covar = error .^ 2.0
         _data = GreenData(value, error, covar)
         return _data
