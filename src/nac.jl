@@ -8,11 +8,11 @@
 #
 
 mutable struct NevanlinnaSolver
-    Gᵥ::Vector{APC}
-    grid::AbstractGrid
-    mesh::AbstractMesh
+    Gᵥ :: Vector{APC}
+    grid :: AbstractGrid
+    mesh :: AbstractMesh
     Gout::Vector{APC}
-    phis::Vector{APC}          # phis in schur algorithm
+    Φ ::Vector{APC}            # Φ in schur algorithm
     abcd::Array{APC,3}         # continued fractions
     H_max::I64                 # upper cut off of H
     H_min::I64                 # lower cut off of H
@@ -57,14 +57,14 @@ function NevanlinnaSolver(
     Gᵥ = calc_mobius(-gw[1:opt_N_imag])
     reverse!(Gᵥ)
 
-    phis = calc_phis(grid, Gᵥ)
-    abcd = calc_abcd(grid, mesh, phis)
+    Φ = calc_phis(grid, Gᵥ)
+    abcd = calc_abcd(grid, mesh, Φ)
 
     H_min::Int64 = 1
     ab_coeff = zeros(ComplexF64, 2*H_min)
     hardy_matrix = calc_hardy_matrix(mesh, H_min)
 
-    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
+    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, Φ, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
 
     if ham_option
         return sol
