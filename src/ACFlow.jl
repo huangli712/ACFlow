@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/27
+# Last modified: 2023/10/01
 #
 
 """
@@ -153,6 +153,7 @@ TangentMesh     -> Tangent mesh.
 LorentzMesh     -> Lorentzian mesh.
 HalfLorentzMesh -> Lorentzian mesh at half-positive axis.
 DynamicMesh     -> Dynamic (very fine) mesh for stochastic-like solvers.
+ArbitraryPrecisionMesh -> A special mesh for NevanACSolver.
 #
 AbstractMC      -> Abstract Monte Carlo engine.
 StochACMC       -> Monte Carlo engine used in the StochAC solver.
@@ -204,6 +205,7 @@ export TangentMesh
 export LorentzMesh
 export HalfLorentzMesh
 export DynamicMesh
+export ArbitraryPrecisionMesh
 #
 export AbstractMC
 export StochACMC
