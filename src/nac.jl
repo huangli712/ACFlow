@@ -18,19 +18,15 @@ mutable struct NevanlinnaSolver
     H::I64                     # current value of H
     𝑎𝑏 :: Vector{C64}          # current solution for H
     ℋ :: Array{APC,2}          # hardy_matrix for H
-    iter_tol::I64              # upper bound of iteration
-    ini_iter_tol::I64          # upper bound of iteration for H_min
 end
 
 function NevanlinnaSolver(
                   wn          ::Vector{APC},
                   gw          ::Vector{APC},
                   N_real      ::I64,
-                  iter_tol    ::I64,
                   ;
                   pick_check  ::Bool=true,
                   optimization::Bool=true,
-                  ini_iter_tol::I64=500,
                   ham_option  ::Bool=false #option for using in Hamburger moment problem
 )
     if N_real%2 == 1
@@ -62,7 +58,7 @@ function NevanlinnaSolver(
     𝑎𝑏 = zeros(C64, 2*H_min)
     ℋ = calc_hardy_matrix(mesh, H_min)
 
-    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, Φ, 𝒜, H_min, H_min, 𝑎𝑏, ℋ, iter_tol, ini_iter_tol)
+    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, Φ, 𝒜, H_min, H_min, 𝑎𝑏, ℋ)
 
     if ham_option
         return sol
@@ -240,7 +236,7 @@ function calc_H_min(sol::NevanlinnaSolver,)::Nothing
         println("H=$(iH)")
         zero_𝑎𝑏 = zeros(C64, 2*iH)
 
-        causality, optim = hardy_optim!(sol, iH, zero_𝑎𝑏, iter_tol=sol.ini_iter_tol)
+        causality, optim = hardy_optim!(sol, iH, zero_𝑎𝑏)
 
         #break if we find optimal H in which causality is preserved and optimize is successful
         if causality && optim
@@ -274,12 +270,7 @@ function calc_functional(sol::NevanlinnaSolver, H::Int64, 𝑎𝑏::Vector{C64},
     return func
 end
 
-function hardy_optim!(
-                sol::NevanlinnaSolver,
-                H::I64,
-                𝑎𝑏::Vector{C64};
-                iter_tol::I64=sol.iter_tol,
-                )::Tuple{Bool, Bool}
+function hardy_optim!(sol::NevanlinnaSolver, H::I64, 𝑎𝑏::Vector{C64})::Tuple{Bool, Bool}
     ℋₗ = calc_hardy_matrix(sol.mesh, H)
 
     function functional(x::Vector{C64})::F64
@@ -290,10 +281,8 @@ function hardy_optim!(
         J .= gradient(functional, x)[1] 
     end
 
-    @show iter_tol
     res = optimize(functional, jacobian, 𝑎𝑏, BFGS(), 
-                   Optim.Options(iterations = iter_tol,
-                                 show_trace = true))
+                   Optim.Options(iterations = 500, show_trace = true))
     
     if  !(Optim.converged(res))
         println("Faild to optimize!")
@@ -346,9 +335,7 @@ end
 
 function solve(S::NevanACSolver, rd::RawData)
     N_real    = 1000  #demension of array of output
-    iter_tol  = 1000  #upper bound of iteration
 
-    T = BigFloat
     setprecision(128)
 
     input_smpl = zeros(Complex{BigFloat},52)
@@ -358,7 +345,7 @@ function solve(S::NevanACSolver, rd::RawData)
     @show size(dlm), typeof(dlm)
     @. input_smpl = dlm[:,1] * im
     @. input_gw = dlm[:,2] + dlm[:,3] * im
-    wo_sol = NevanlinnaSolver(input_smpl, input_gw, N_real, iter_tol)
+    wo_sol = NevanlinnaSolver(input_smpl, input_gw, N_real)
 
     open("twopeak_wo_opt.dat","w") do f
         for i in 1:N_real
