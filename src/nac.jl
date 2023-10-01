@@ -153,7 +153,7 @@ function calc_phis(imags::ImagDomainData, grid::AbstractGrid)
     for j in 1:Nopt-1
         for k in j+1:Nopt
             prod = Array{APC}(undef, 2, 2) 
-            prod[1,1] = (grid[k] * im - imags.freq[j]) / (imags.freq[k] - conj(imags.freq[j]))
+            prod[1,1] = (grid[k] * im - grid[j] * im) / (grid[k] * im - conj(grid[j] * im))
             prod[1,2] = phis[j]
             prod[2,1] = conj(phis[j]) * (imags.freq[k] - imags.freq[j]) / (imags.freq[k] - conj(imags.freq[j]))
             prod[2,2] = one(APC)
