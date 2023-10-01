@@ -537,7 +537,7 @@ Mutable struct. A linear and uniform mesh.
 
 ### Members
 
-* nmesh  -> Number of mesh points
+* nmesh  -> Number of mesh points.
 * wmax   -> Right boundary (maximum value).
 * wmin   -> Left boundary (minimum value).
 * mesh   -> Mesh itself.
@@ -561,7 +561,7 @@ be defined on both negative and positive half-axis.
 
 ### Members
 
-* nmesh  -> Number of mesh points
+* nmesh  -> Number of mesh points.
 * wmax   -> Right boundary (maximum value).
 * wmin   -> Left boundary (minimum value).
 * mesh   -> Mesh itself.
@@ -585,7 +585,7 @@ be defined on both negative and positive half-axis.
 
 ### Members
 
-* nmesh  -> Number of mesh points
+* nmesh  -> Number of mesh points.
 * wmax   -> Right boundary (maximum value).
 * wmin   -> Left boundary (minimum value).
 * mesh   -> Mesh itself.
@@ -609,7 +609,7 @@ be defined on positive half-axis only.
 
 ### Members
 
-* nmesh  -> Number of mesh points
+* nmesh  -> Number of mesh points.
 * wmax   -> Right boundary (maximum value).
 * wmin   -> Left boundary (minimum value). It must be 0.0.
 * mesh   -> Mesh itself.
@@ -636,7 +636,7 @@ describing the spectral functions.
 
 ### Members
 
-* nmesh  -> Number of mesh points
+* nmesh  -> Number of mesh points.
 * wmax   -> Right boundary (maximum value).
 * wmin   -> Left boundary (minimum value).
 * mesh   -> Mesh itself.
@@ -650,6 +650,29 @@ mutable struct DynamicMesh <: AbstractMesh
     wmin :: F64
     mesh :: Vector{F64}
     weight :: Vector{F64}
+end
+
+"""
+    ArbitraryPrecisionMesh
+
+Mutable struct. It defines a mesh for the NevanACSolver.
+
+### Members
+
+* nmesh  -> Number of mesh points.
+* wmax   -> Right boundary (maximum value).
+* wmin   -> Left boundary (minimum value).
+* mesh   -> Mesh itself.
+* weight -> Precomputed integration weights (composite trapezoidal rule).
+
+See also: [`NevanACSolver`](@ref).
+"""
+mutable struct ArbitraryPrecisionMesh <: AbstractMesh
+    nmesh :: I64
+    wmax :: F64
+    wmin :: F64
+    mesh :: Vector{APF}
+    weight :: Vector{APF}
 end
 
 #=
