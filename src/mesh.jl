@@ -182,32 +182,6 @@ function DynamicMesh(mesh::Vector{F64})
 end
 
 #=
-### *Struct : ArbitraryPrecisionMesh*
-=#
-
-"""
-    ArbitraryPrecisionMesh(am::AbstractMesh)
-
-A constructor for the ArbitraryPrecisionMesh struct, which is announced
-in `src/types.jl`. Note that such a mesh is designed for the NevanAC
-solver only.
-
-See also: [`ArbitraryPrecisionMesh`](@ref).
-"""
-function ArbitraryPrecisionMesh(am::AbstractMesh)
-    nmesh = am.nmesh
-    wmax = am.wmax
-    wmin = am.wmin
-
-    mesh = zeros(APF, nmesh)
-    @. mesh = am.mesh
-    weight = zeros(APF, nmesh)
-    @. weight = am.weight
-
-    return ArbitraryPrecisionMesh(nmesh, wmax, wmin, mesh, weight)
-end
-
-#=
 ### *Common Interface*
 =#
 
