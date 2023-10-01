@@ -140,23 +140,25 @@ function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
 
     Φ = zeros(APC, Nopt) 
     𝒜 = zeros(APC, 2, 2, Nopt)
+    ∏ = zeros(APC, 2, 2)
+    𝑔 = grid.ω * im
 
-    Φ[1] = Gᵥ[1]
-    
     for i in 1:Nopt
         view(𝒜,:,:,i) .= Matrix{APC}(I, 2, 2)
     end
-    
+
+    Φ[1] = Gᵥ[1]
     for j in 1:Nopt-1
         for k in j+1:Nopt
-            ∏ = Array{APC}(undef, 2, 2)
-            ∏[1,1] = (grid[k] * im - grid[j] * im) / (grid[k] * im - conj(grid[j] * im))
+            ∏[1,1] = ( 𝑔[k] - 𝑔[j] ) / ( 𝑔[k] - conj(𝑔[j]) )
             ∏[1,2] = Φ[j]
-            ∏[2,1] = conj(Φ[j]) * (grid[k] * im - grid[j] * im) / (grid[k] * im- conj(grid[j] * im))
+            ∏[2,1] = conj(Φ[j]) * ( 𝑔[k] - 𝑔[j] ) / ( 𝑔[k] - conj(𝑔[j]) )
             ∏[2,2] = one(APC)
             view(𝒜,:,:,k) .= view(𝒜,:,:,k) * ∏
         end
-        Φ[j+1] = (-𝒜[2,2,j+1] * Gᵥ[j+1] + 𝒜[1,2,j+1]) / (𝒜[2,1,j+1] * Gᵥ[j+1] - 𝒜[1,1,j+1])
+        num = 𝒜[1,2,j+1] - 𝒜[2,2,j+1] * Gᵥ[j+1]
+        den = 𝒜[2,1,j+1] * Gᵥ[j+1] - 𝒜[1,1,j+1]
+        Φ[j+1] = num / den
     end
 
     return Φ
