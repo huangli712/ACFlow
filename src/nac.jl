@@ -45,6 +45,7 @@ mutable struct NevanlinnaSolver
     imags::ImagDomainData      # imaginary domain data
     reals::RealDomainData      # real domain data
     mesh::AbstractMesh
+    Gout::Vector{APC}
     phis::Vector{APC}          # phis in schur algorithm
     abcd::Array{APC,3}         # continued fractions
     H_max::I64                 # upper cut off of H
@@ -87,6 +88,7 @@ function NevanlinnaSolver(
     imags = ImagDomainData(wn, gw, opt_N_imag)
     reals = RealDomainData(N_real)
     mesh = make_mesh(T = APF)
+    Gout = zeros(APC, N_real)
 
     phis = calc_phis(imags)
     abcd = calc_abcd(imags, mesh, phis)
@@ -95,7 +97,7 @@ function NevanlinnaSolver(
     ab_coeff = zeros(ComplexF64, 2*H_min)
     hardy_matrix = calc_hardy_matrix(mesh, H_min)
 
-    sol = NevanlinnaSolver(imags, reals, mesh, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
+    sol = NevanlinnaSolver(imags, reals, mesh, Gout, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
 
     if ham_option
         return sol
@@ -220,7 +222,7 @@ function evaluation!(sol::NevanlinnaSolver)
     if causality
         param = sol.hardy_matrix*sol.ab_coeff
         theta = (sol.abcd[1,1,:].* param .+ sol.abcd[1,2,:]) ./ (sol.abcd[2,1,:].*param .+ sol.abcd[2,2,:])
-        sol.reals.val .= im * (one(APC) .+ theta) ./ (one(APC) .- theta)
+        sol.Gout .= im * (one(APC) .+ theta) ./ (one(APC) .- theta)
     end
 
     return causality
@@ -373,7 +375,7 @@ function solve(S::NevanACSolver, rd::RawData)
 
     open("twopeak_wo_opt.dat","w") do f
         for i in 1:N_real
-            println(f, "$(F64(real.(wo_sol.reals.freq[i])))",  "\t", "$(F64(imag.(wo_sol.reals.val[i]/pi)))")
+            println(f, "$(F64(real.(wo_sol.reals.freq[i])))",  "\t", "$(F64(imag.(wo_sol.Gout[i]/pi)))")
         end
     end
 end
