@@ -165,27 +165,31 @@ function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
 end
 
 function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
+    eta::APF = get_n("eta")
+
     ngrid = length(grid)
     nmesh = length(mesh)
 
-    abcd = zeros(APC, 2, 2, nmesh)
-    eta::APF = get_n("eta")
+    𝒜 = zeros(APC, 2, 2, nmesh)
+    𝑔 = grid.ω * im
+    𝑚 = mesh.mesh .+ im * eta
 
     for i in 1:nmesh
-        result = Matrix{APC}(I, 2, 2) 
-        z::APC = mesh[i] + im * eta
+        result = Matrix{APC}(I, 2, 2)
+        𝑧 = 𝑚[i]
         for j in 1:ngrid
             ∏ = zeros(APC, 2, 2)
-            ∏[1,1] = (z - grid[j] * im) / (z - conj(grid[j] * im))
+            ∏[1,1] = ( 𝑧 - 𝑔[j] ) / ( 𝑧 - conj(𝑔[j]) )
             ∏[1,2] = Φ[j]
-            ∏[2,1] = conj(Φ[j])*(z - grid[j] * im) / (z - conj(grid[j] * im))
+            ∏[2,1] = conj(Φ[j]) * ( 𝑧 - 𝑔[j] ) / ( 𝑧 - conj(𝑔[j]) )
             ∏[2,2] = one(APC)
             result *= ∏
         end
 
-        abcd[:,:,i] .= result
+        𝒜[:,:,i] .= result
     end
-    return abcd
+
+    return 𝒜
 end
 
 function check_causality(hardy_matrix::Array{APC,2}, ab_coeff::Vector{C64})
