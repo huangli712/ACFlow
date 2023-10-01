@@ -32,10 +32,12 @@ end
 =#
 
 function solve(S::NevanACSolver, rd::RawData)
-    init()
+    println("[ NevanAC ]")
+    init(S, rd)
 end
 
-function init()
+function init(S::NevanACContext, rd::RawData)
+
     N_real = 1000  #demension of array of output
     setprecision(128)
 
