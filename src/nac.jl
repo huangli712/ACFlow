@@ -72,7 +72,7 @@ function NevanlinnaSolver(
     Gᵥ = calc_mobius(-gw[1:opt_N_imag])
     reverse!(Gᵥ)
 
-    phis = calc_phis(Gᵥ, grid)
+    phis = calc_phis(grid, Gᵥ)
     abcd = calc_abcd(grid, mesh, phis)
 
     H_min::Int64 = 1
@@ -135,29 +135,31 @@ function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
     end
 end
 
-function calc_phis(Gᵥ::Vector{APC}, grid::AbstractGrid)
+function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
     Nopt = length(grid)
-    phis  = Array{APC}(undef, Nopt) 
-    abcds = Array{APC}(undef, 2, 2, Nopt) 
-    phis[1] = Gᵥ[1]
+
+    Φ = zeros(APC, Nopt) 
+    𝒜 = zeros(APC, 2, 2, Nopt)
+
+    Φ[1] = Gᵥ[1]
     
     for i in 1:Nopt
-        view(abcds,:,:,i) .= Matrix{APC}(I, 2, 2)
+        view(𝒜,:,:,i) .= Matrix{APC}(I, 2, 2)
     end
     
     for j in 1:Nopt-1
         for k in j+1:Nopt
-            prod = Array{APC}(undef, 2, 2) 
-            prod[1,1] = (grid[k] * im - grid[j] * im) / (grid[k] * im - conj(grid[j] * im))
-            prod[1,2] = phis[j]
-            prod[2,1] = conj(phis[j]) * (grid[k] * im - grid[j] * im) / (grid[k] * im- conj(grid[j] * im))
-            prod[2,2] = one(APC)
-            view(abcds,:,:,k) .= view(abcds,:,:,k)*prod
+            ∏ = Array{APC}(undef, 2, 2)
+            ∏[1,1] = (grid[k] * im - grid[j] * im) / (grid[k] * im - conj(grid[j] * im))
+            ∏[1,2] = Φ[j]
+            ∏[2,1] = conj(Φ[j]) * (grid[k] * im - grid[j] * im) / (grid[k] * im- conj(grid[j] * im))
+            ∏[2,2] = one(APC)
+            view(𝒜,:,:,k) .= view(𝒜,:,:,k) * ∏
         end
-        phis[j+1] = (-abcds[2,2,j+1]*Gᵥ[j+1] + abcds[1,2,j+1]) / (abcds[2,1,j+1]*Gᵥ[j+1] - abcds[1,1,j+1])
+        Φ[j+1] = (-𝒜[2,2,j+1] * Gᵥ[j+1] + 𝒜[1,2,j+1]) / (𝒜[2,1,j+1] * Gᵥ[j+1] - 𝒜[1,1,j+1])
     end
-    
-    return phis
+
+    return Φ
 end
 
 function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, phis::Vector{APC})
