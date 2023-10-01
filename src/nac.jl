@@ -7,6 +7,13 @@
 # Last modified: 2023/10/01
 #
 
+#=
+### *Customized Structs* : *NevanAC Solver*
+=#
+
+"""
+    NevanACContext
+"""
 mutable struct NevanACContext
     Gᵥ    :: Vector{APC}
     grid  :: AbstractGrid
@@ -20,26 +27,26 @@ mutable struct NevanACContext
     Gout  :: Vector{APC}
 end
 
+#=
+### *Global Drivers*
+=#
+
 function solve(S::NevanACSolver, rd::RawData)
-    N_real    = 1000  #demension of array of output
+    init()
+end
+
+function init()
+    N_real = 1000  #demension of array of output
     setprecision(128)
-    input_smpl = zeros(Complex{BigFloat},52)
-    input_gw = zeros(Complex{BigFloat},52)
+
+    wn = zeros(Complex{BigFloat},52)
+    gw = zeros(Complex{BigFloat},52)
 
     dlm = readdlm("gw.data")
     @show size(dlm), typeof(dlm)
-    @. input_smpl = dlm[:,1] * im
-    @. input_gw = dlm[:,2] + dlm[:,3] * im
-    wo_sol = init(input_smpl, input_gw, N_real)
+    @. wn = dlm[:,1] * im
+    @. gw = dlm[:,2] + dlm[:,3] * im
 
-    open("twopeak_wo_opt.dat","w") do f
-        for i in 1:N_real
-            println(f, "$(F64(wo_sol.mesh[i]))",  "\t", "$(F64(imag.(wo_sol.Gout[i]/pi)))")
-        end
-    end
-end
-
-function init(wn::Vector{APC}, gw::Vector{APC}, N_real::I64)
     if N_real%2 == 1
         error("N_real must be even number!")
     end
@@ -79,7 +86,11 @@ function init(wn::Vector{APC}, gw::Vector{APC}, N_real::I64)
         evaluation!(sol)
     end
 
-    return sol
+    open("twopeak_wo_opt.dat","w") do f
+        for i in 1:N_real
+            println(f, "$(F64(sol.mesh[i]))",  "\t", "$(F64(imag.(sol.Gout[i]/pi)))")
+        end
+    end
 end
 
 function run()
