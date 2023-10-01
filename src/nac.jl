@@ -7,12 +7,7 @@
 # Last modified: 2023/10/01
 #
 
-struct ImagDomainData
-    freq :: Vector{APC} # The values of Matsubara frequencies
-    val  :: Vector{APC} # The values of negative of Green function
-end
-
-function ImagDomainData(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
+function test_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
     freq = calc_mobius(wn[1:Nopt])
     val = calc_mobius(-gw[1:Nopt])
 
@@ -25,12 +20,11 @@ function ImagDomainData(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
     
     freq = reverse(wn[1:Nopt])
     val  = reverse(val)
-    return ImagDomainData(freq, val)
 end
 
 mutable struct NevanlinnaSolver
+    Gᵥ::Vector{APC}
     grid::AbstractGrid
-    imags::ImagDomainData      # imaginary domain data
     mesh::AbstractMesh
     Gout::Vector{APC}
     phis::Vector{APC}          # phis in schur algorithm
@@ -71,20 +65,21 @@ function NevanlinnaSolver(
     end
     @show opt_N_imag
 
-    imags = ImagDomainData(wn, gw, opt_N_imag)
     β::APF = 100.0
     grid = FermionicMatsubaraGrid(opt_N_imag, β, reverse(imag.(wn[1:opt_N_imag])))
     mesh = make_mesh(T = APF)
     Gout = zeros(APC, N_real)
+    Gᵥ = calc_mobius(-gw[1:opt_N_imag])
+    reverse!(Gᵥ)
 
-    phis = calc_phis(imags, grid)
+    phis = calc_phis(Gᵥ, grid)
     abcd = calc_abcd(grid, mesh, phis)
 
     H_min::Int64 = 1
     ab_coeff = zeros(ComplexF64, 2*H_min)
     hardy_matrix = calc_hardy_matrix(mesh, H_min)
 
-    sol = NevanlinnaSolver(grid, imags, mesh, Gout, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
+    sol = NevanlinnaSolver(Gᵥ, grid, mesh, Gout, phis, abcd, H_max, H_min, H_min, ab_coeff, hardy_matrix, iter_tol, ini_iter_tol)
 
     if ham_option
         return sol
@@ -140,11 +135,11 @@ function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
     end
 end
 
-function calc_phis(imags::ImagDomainData, grid::AbstractGrid)
+function calc_phis(Gᵥ::Vector{APC}, grid::AbstractGrid)
     Nopt = length(grid)
     phis  = Array{APC}(undef, Nopt) 
     abcds = Array{APC}(undef, 2, 2, Nopt) 
-    phis[1] = imags.val[1]
+    phis[1] = Gᵥ[1]
     
     for i in 1:Nopt
         view(abcds,:,:,i) .= Matrix{APC}(I, 2, 2)
@@ -159,7 +154,7 @@ function calc_phis(imags::ImagDomainData, grid::AbstractGrid)
             prod[2,2] = one(APC)
             view(abcds,:,:,k) .= view(abcds,:,:,k)*prod
         end
-        phis[j+1] = (-abcds[2,2,j+1]*imags.val[j+1] + abcds[1,2,j+1]) / (abcds[2,1,j+1]*imags.val[j+1] - abcds[1,1,j+1])
+        phis[j+1] = (-abcds[2,2,j+1]*Gᵥ[j+1] + abcds[1,2,j+1]) / (abcds[2,1,j+1]*Gᵥ[j+1] - abcds[1,1,j+1])
     end
     
     return phis
