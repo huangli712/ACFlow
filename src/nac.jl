@@ -78,7 +78,7 @@ function NevanlinnaSolver(
     Gout = zeros(APC, N_real)
 
     phis = calc_phis(imags, grid)
-    abcd = calc_abcd(imags, grid, mesh, phis)
+    abcd = calc_abcd(grid, mesh, phis)
 
     H_min::Int64 = 1
     ab_coeff = zeros(ComplexF64, 2*H_min)
@@ -165,7 +165,7 @@ function calc_phis(imags::ImagDomainData, grid::AbstractGrid)
     return phis
 end
 
-function calc_abcd(imags::ImagDomainData, grid::AbstractGrid, mesh::AbstractMesh, phis::Vector{APC})
+function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, phis::Vector{APC})
     Nopt = length(grid)
     N_real = length(mesh)
     abcd = zeros(APC, 2, 2, N_real)
@@ -176,9 +176,9 @@ function calc_abcd(imags::ImagDomainData, grid::AbstractGrid, mesh::AbstractMesh
         z::APC = mesh[i] + im * eta
         for j in 1:Nopt
             ∏ = zeros(APC, 2, 2)
-            ∏[1,1] = (z - imags.freq[j]) / (z - conj(imags.freq[j]))
+            ∏[1,1] = (z - grid[j] * im) / (z - conj(grid[j] * im))
             ∏[1,2] = phis[j]
-            ∏[2,1] = conj(phis[j])*(z - imags.freq[j]) / (z - conj(imags.freq[j]))
+            ∏[2,1] = conj(phis[j])*(z - grid[j] * im) / (z - conj(grid[j] * im))
             ∏[2,2] = one(APC)
             result *= ∏
         end
