@@ -569,12 +569,12 @@ be defined on both negative and positive half-axis.
 
 See also: [`LinearMesh`](@ref).
 """
-mutable struct TangentMesh <: AbstractMesh
+mutable struct TangentMesh{T} <: AbstractMesh
     nmesh :: I64
-    wmax :: F64
-    wmin :: F64
-    mesh :: Vector{F64}
-    weight :: Vector{F64}
+    wmax :: T
+    wmin :: T
+    mesh :: Vector{T}
+    weight :: Vector{T}
 end
 
 """
@@ -593,12 +593,12 @@ be defined on both negative and positive half-axis.
 
 See also: [`HalfLorentzMesh`](@ref).
 """
-mutable struct LorentzMesh <: AbstractMesh
+mutable struct LorentzMesh{T} <: AbstractMesh
     nmesh :: I64
-    wmax :: F64
-    wmin :: F64
-    mesh :: Vector{F64}
-    weight :: Vector{F64}
+    wmax :: T
+    wmin :: T
+    mesh :: Vector{T}
+    weight :: Vector{T}
 end
 
 """
@@ -619,10 +619,10 @@ See also: [`LorentzMesh`](@ref).
 """
 mutable struct HalfLorentzMesh <: AbstractMesh
     nmesh :: I64
-    wmax :: F64
-    wmin :: F64
-    mesh :: Vector{F64}
-    weight :: Vector{F64}
+    wmax :: T
+    wmin :: T
+    mesh :: Vector{T}
+    weight :: Vector{T}
 end
 
 """
@@ -646,10 +646,10 @@ See also: [`LinearMesh`](@ref).
 """
 mutable struct DynamicMesh <: AbstractMesh
     nmesh :: I64
-    wmax :: F64
-    wmin :: F64
-    mesh :: Vector{F64}
-    weight :: Vector{F64}
+    wmax :: T
+    wmin :: T
+    mesh :: Vector{T}
+    weight :: Vector{T}
 end
 
 #=
