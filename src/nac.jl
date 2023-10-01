@@ -277,13 +277,16 @@ function calc_functional(sol::NevanlinnaSolver, H::Int64, ab_coeff::Vector{C64},
     green = im * (one(APC) .+ theta) ./ (one(APC) .- theta)
     A = F64.(imag(green)./pi)
 
-    tot_int = trapz(sol.reals.freq, A)
-    second_der = integrate_squared_second_deriv(sol.reals.freq, A) 
+    #tot_int = trapz(sol.reals.freq, A)
+    tot_int = trapz(sol.mesh, A)
+    #second_der = integrate_squared_second_deriv(sol.reals.freq, A) 
+    second_der = integrate_squared_second_deriv(sol.mesh.mesh, A) 
 
     max_theta = findmax(abs.(param))[1]
     alpha = get_n("alpha")
     func = abs(1.0-tot_int)^2 + alpha*second_der
 
+    @show typeof(func), func
     return func
 end
 
@@ -375,7 +378,7 @@ function solve(S::NevanACSolver, rd::RawData)
 
     open("twopeak_wo_opt.dat","w") do f
         for i in 1:N_real
-            println(f, "$(F64(real.(wo_sol.reals.freq[i])))",  "\t", "$(F64(imag.(wo_sol.Gout[i]/pi)))")
+            println(f, "$(F64(wo_sol.mesh[i]))",  "\t", "$(F64(imag.(wo_sol.Gout[i]/pi)))")
         end
     end
 end
