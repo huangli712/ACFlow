@@ -414,21 +414,21 @@ function make_grid(rd::RawData)
 end
 
 """
-    make_mesh()
+    make_mesh(; T::DataType = F64)
 
 Try to generate an uniform (linear) or non-uniform (non-linear) mesh for
 the spectral function in real axis.
 
 See also: [`LinearMesh`](@ref), [`TangentMesh`](@ref), [`LorentzMesh`](@ref).
 """
-function make_mesh()
+function make_mesh(; T::DataType = F64)
     # Predefined parameters for mesh generation
     #
     # Note that the parameters `f1` and `cut` are only for the generation
     # of the non-uniform mesh.
     #
-    f1 = 2.1
-    cut = 0.01
+    f1::T = 2.1
+    cut::T = 0.01
 
     # Setup parameters according to case.toml
     pmesh = get_b("pmesh")
@@ -443,8 +443,8 @@ function make_mesh()
     # Get essential parameters
     nmesh = get_b("nmesh")
     mesh = get_b("mesh")
-    wmax = get_b("wmax")
-    wmin = get_b("wmin")
+    wmax::T = get_b("wmax")
+    wmin::T = get_b("wmin")
 
     # Try to generate the required mesh
     @cswitch mesh begin
