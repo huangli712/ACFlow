@@ -33,7 +33,9 @@ end
 
 function solve(S::NevanACSolver, rd::RawData)
     println("[ NevanAC ]")
-    init(S, rd)
+    nac = init(S, rd)
+    run(nac)
+    last(nac)
 end
 
 function init(S::NevanACSolver, rd::RawData)
@@ -78,26 +80,26 @@ function init(S::NevanACSolver, rd::RawData)
     𝑎𝑏 = zeros(C64, 2*H_min)
     ℋ = calc_hmatrix(mesh, H_min)
 
-    sol = NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, H_min, H_min, Gout)
+    nac = NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, H_min, H_min, Gout)
 
+    return nac
+end
+
+function run(nac::NevanACContext)
     hardy = get_n("hardy")
     if hardy
-        calc_H_min(sol)
+        calc_H_min(nac)
     else
-        evaluation!(sol)
+        evaluation!(nac)
     end
+end
 
+function last(nac::NevanACContext)
     open("twopeak_wo_opt.dat","w") do f
         for i in 1:N_real
-            println(f, "$(F64(sol.mesh[i]))",  "\t", "$(F64(imag.(sol.Gout[i]/pi)))")
+            println(f, "$(F64(nac.mesh[i]))",  "\t", "$(F64(imag.(nac.Gout[i]/pi)))")
         end
     end
-end
-
-function run()
-end
-
-function last()
 end
 
 function calc_mobius(z::Vector{APC})
