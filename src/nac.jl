@@ -141,7 +141,7 @@ function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
 end
 
 function calc_phis(imags::ImagDomainData, grid::AbstractGrid)
-    Nopt = length(imags.freq)
+    Nopt = length(grid)
     phis  = Array{APC}(undef, Nopt) 
     abcds = Array{APC}(undef, 2, 2, Nopt) 
     phis[1] = imags.val[1]
