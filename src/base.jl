@@ -348,25 +348,25 @@ function make_data(rd::RawData)
 end
 
 """
-    make_grid(rd::RawData)
+    make_grid(rd::RawData; T::DataType = F64)
 
 Extract grid for input data from a `RawData` struct. It will return a
 sub-type of the AbstractGrid struct.
 
 See also: [`RawData`](@ref), [`AbstractGrid`](@ref).
 """
-function make_grid(rd::RawData)
+function make_grid(rd::RawData; T::DataType = F64)
     grid = get_b("grid")
     ngrid = get_b("ngrid")
-    β = get_b("beta")
+    β::T = get_b("beta")
 
-    v = rd._grid
+    v = T.(rd._grid)
     @assert ngrid == length(v)
 
     _grid = nothing
     @cswitch grid begin
         @case "ftime"
-            _β = v[end]
+            _β::T = v[end]
             @assert abs(_β - β) ≤ 1e-6
             _grid = FermionicImaginaryTimeGrid(ngrid, β, v)
             break
@@ -376,7 +376,7 @@ function make_grid(rd::RawData)
             break
 
         @case "btime"
-            _β = v[end]
+            _β::T = v[end]
             @assert abs(_β - β) ≤ 1e-6
             _grid = BosonicImaginaryTimeGrid(ngrid, β, v)
             break
@@ -386,7 +386,7 @@ function make_grid(rd::RawData)
             break
 
         @case "ffreq"
-            _β = 2.0 * π / (v[2] - v[1])
+            _β::T = 2.0 * π / (v[2] - v[1])
             @assert abs(_β - β) ≤ 1e-6
             _grid = FermionicMatsubaraGrid(ngrid, β, v)
             break
@@ -396,7 +396,7 @@ function make_grid(rd::RawData)
             break
 
         @case "bfreq"
-            _β = 2.0 * π / (v[2] - v[1])
+            _β::T = 2.0 * π / (v[2] - v[1])
             @assert abs(_β - β) ≤ 1e-6
             _grid = BosonicMatsubaraGrid(ngrid, β, v)
             break
