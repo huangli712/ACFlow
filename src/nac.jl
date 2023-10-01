@@ -287,7 +287,7 @@ function calc_functional(sol::NevanlinnaSolver, H::Int64, ab_coeff::Vector{C64},
     func = abs(1.0-tot_int)^2 + alpha*second_der
 
     @show typeof(func), func
-    return func
+    return F64(func)
 end
 
 function hardy_optim!(
