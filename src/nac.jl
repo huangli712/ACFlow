@@ -42,6 +42,8 @@ end
 ### *Global Drivers*
 =#
 
+"""
+"""
 function solve(S::NevanACSolver, rd::RawData)
     println("[ NevanAC ]")
     nac = init(S, rd)
@@ -49,6 +51,8 @@ function solve(S::NevanACSolver, rd::RawData)
     last(nac)
 end
 
+"""
+"""
 function init(S::NevanACSolver, rd::RawData)
     setprecision(128)
 
@@ -81,6 +85,8 @@ function init(S::NevanACSolver, rd::RawData)
     return nac
 end
 
+"""
+"""
 function run(nac::NevanACContext)
     hardy = get_n("hardy")
     if hardy
@@ -88,6 +94,8 @@ function run(nac::NevanACContext)
     end
 end
 
+"""
+"""
 function last(nac::NevanACContext)
     gout = evaluation(nac)
     nmesh = length(gout)
