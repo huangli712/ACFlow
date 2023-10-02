@@ -280,6 +280,9 @@ function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     return 𝒜
 end
 
+function calc_theta()
+end
+
 function calc_hbasis(z::APC, k::I64)
     w = ( z - im ) / ( z + im )
     return 0.5 * im * ( w^(k+1) - w^k ) / sqrt(pi)
@@ -374,7 +377,7 @@ function hardy_optim!(sol::NevanACContext, H::I64, 𝑎𝑏::Vector{C64})::Tuple
         sol.H = H
         sol.𝑎𝑏 = Optim.minimizer(res)
         sol.ℋ = ℋₗ
-        evaluation!(sol)
+        #evaluation!(sol)
     end
     
     return causality, (Optim.converged(res))
