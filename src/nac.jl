@@ -36,7 +36,6 @@ mutable struct NevanACContext
     𝑎𝑏    :: Vector{C64}      # current solution for H
     H_min :: I64              # lower cut off of H
     H     :: I64              # current value of H
-    Gout  :: Vector{APC}
 end
 
 #=
@@ -81,7 +80,6 @@ function init(S::NevanACSolver, rd::RawData)
     β::APF = 100.0
     grid = FermionicMatsubaraGrid(opt_N_imag, β, reverse(imag.(wn[1:opt_N_imag])))
     mesh = make_mesh(T = APF)
-    Gout = zeros(APC, N_real)
     Gᵥ = calc_mobius(-gw[1:opt_N_imag])
     reverse!(Gᵥ)
 
@@ -92,7 +90,7 @@ function init(S::NevanACSolver, rd::RawData)
     𝑎𝑏 = zeros(C64, 2*H_min)
     ℋ = calc_hmatrix(mesh, H_min)
 
-    nac = NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, H_min, H_min, Gout)
+    nac = NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, H_min, H_min)
 
     return nac
 end
@@ -105,11 +103,11 @@ function run(nac::NevanACContext)
 end
 
 function last(nac::NevanACContext)
-    evaluation!(nac)
-    nmesh = length(nac.Gout)
+    gout = evaluation(nac)
+    nmesh = length(gout)
     open("twopeak_wo_opt.dat","w") do f
         for i in 1:nmesh
-            println(f, "$(F64(nac.mesh[i]))",  "\t", "$(F64(imag.(nac.Gout[i]/pi)))")
+            println(f, "$(F64(nac.mesh[i]))",  "\t", "$(F64(imag.(gout[i]/pi)))")
         end
     end
 end
@@ -301,15 +299,15 @@ function calc_hmatrix(mesh::AbstractMesh, H::I64)
     return ℋ
 end
 
-function evaluation!(sol::NevanACContext)
+function evaluation(sol::NevanACContext)
     causality = check_causality(sol.ℋ, sol.𝑎𝑏)
-    if causality
-        param = sol.ℋ * sol.𝑎𝑏
-        θ = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
-        sol.Gout = calc_inv_mobius(θ)
-    end
+    @assert causality
 
-    return causality
+    param = sol.ℋ * sol.𝑎𝑏
+    θ = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
+    gout = calc_inv_mobius(θ)
+
+    return gout
 end
 
 function calc_H_min(sol::NevanACContext)
