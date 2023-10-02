@@ -122,7 +122,7 @@ end
 #=
 *Remarks* :
 
-**Mobius Transformation**
+**Mobius transformation**
 
 ```math
 \begin{equation}
@@ -132,7 +132,7 @@ z \mapsto \frac{z - i}{z + i}
 
 ---
 
-**Inverse Mobius Transformation**
+**Inverse Mobius transformation**
 
 ```math
 \begin{equation}
@@ -142,7 +142,7 @@ z \mapsto i \frac{1 + z}{1 - z}
 
 ---
 
-**Pick Matrix**
+**Pick matrix**
 
 ```math
 \begin{equation}
@@ -150,6 +150,17 @@ z \mapsto i \frac{1 + z}{1 - z}
 \left[
     \frac{1-\lambda_i \lambda^*_j}{1-h(Y_i)h(Y_j)^*}
 \right]_{i,j}
+\end{equation}
+```
+
+---
+
+**Hardy basis**
+
+```math
+\begin{equation}
+f^k(z) = \frac{1}{\sqrt{\pi}(z + i)}
+    \left( \frac{z - i}{z + i} \right)^k
 \end{equation}
 ```
 
