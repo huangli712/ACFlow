@@ -62,7 +62,6 @@ function init(S::NevanACSolver, rd::RawData)
     else
         opt_N_imag = N_imag
     end
-    @show opt_N_imag
 
     β::APF = 100.0
     grid = FermionicMatsubaraGrid(opt_N_imag, β, reverse(imag.(wn[1:opt_N_imag])))
