@@ -290,7 +290,7 @@ end
     calc_hmatrix(mesh::AbstractMesh, H::I64)
 
 Try to calculate ``[f^k(z), f^k(z)^*]`` for 0 ≤ 𝑘 ≤ 𝐻-1, which is
-called the hardy matrix and is used to evaluate θ.
+called the hardy matrix (ℋ) and is used to evaluate θ.
 """
 function calc_hmatrix(mesh::AbstractMesh, H::I64)
     eta::APF = get_n("eta")
@@ -307,15 +307,21 @@ function calc_hmatrix(mesh::AbstractMesh, H::I64)
     return ℋ
 end
 
-function calc_theta()
+function calc_theta(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
+    θₘ₊₁ = ℋ * 𝑎𝑏
+    num = 𝒜[1,1,:] .* θₘ₊₁ .+ 𝒜[1,2,:]
+    den = 𝒜[2,1,:] .* θₘ₊₁ .+ 𝒜[2,2,:]
+    θ = num ./ den
+    return θ
 end
 
 function evaluation(sol::NevanACContext)
     causality = check_causality(sol.ℋ, sol.𝑎𝑏)
     @assert causality
 
-    param = sol.ℋ * sol.𝑎𝑏
-    θ = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
+    #param = sol.ℋ * sol.𝑎𝑏
+    #θ = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
+    θ = calc_theta(sol.𝒜, sol.ℋ, sol.𝑎𝑏)
     gout = calc_inv_mobius(θ)
 
     return gout
