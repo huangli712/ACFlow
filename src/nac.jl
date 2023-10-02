@@ -213,20 +213,20 @@ end
     
 """
 function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
-    Nopt = length(grid)
+    ngrid = length(grid)
 
-    Φ = zeros(APC, Nopt) 
-    𝒜 = zeros(APC, 2, 2, Nopt)
+    Φ = zeros(APC, ngrid) 
+    𝒜 = zeros(APC, 2, 2, ngrid)
     ∏ = zeros(APC, 2, 2)
     𝑔 = grid.ω * im
 
-    for i in 1:Nopt
+    for i = 1:ngrid
         view(𝒜,:,:,i) .= Matrix{APC}(I, 2, 2)
     end
 
     Φ[1] = Gᵥ[1]
-    for j in 1:Nopt-1
-        for k in j+1:Nopt
+    for j = 1:ngrid-1
+        for k = j+1:ngrid
             ∏[1,1] = ( 𝑔[k] - 𝑔[j] ) / ( 𝑔[k] - conj(𝑔[j]) )
             ∏[1,2] = Φ[j]
             ∏[2,1] = conj(Φ[j]) * ∏[1,1]
