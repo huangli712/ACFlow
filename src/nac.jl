@@ -268,11 +268,18 @@ end
 function calc_theta()
 end
 
+"""
+    calc_hbasis(z::APC, k::I64)
+
+Try to calculate the Hardy basis ``f^k(z)``.
+"""
 function calc_hbasis(z::APC, k::I64)
     w = ( z - im ) / ( z + im )
-    return 0.5 * im * ( w^(k+1) - w^k ) / sqrt(pi)
+    return 1.0 / ( sqrt(π) * (z + im) ) * w^k
 end
 
+"""
+"""
 function calc_hmatrix(mesh::AbstractMesh, H::I64)
     eta::APF = get_n("eta")
     nmesh = length(mesh)
