@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/01
+# Last modified: 2023/10/03
 #
 
 #=
@@ -126,14 +126,14 @@ function Base.getindex(fg::FermionicImaginaryTimeGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild(fg::FermionicImaginaryTimeGrid, ntime::I64, β::T) where {T}
+    rebuild!(fg::FermionicImaginaryTimeGrid, ntime::I64, β::T) where {T}
 
 Rebuild the FermionicImaginaryTimeGrid struct via new `ntime` and `β`
 parameters.
 
 See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
-function rebuild(fg::FermionicImaginaryTimeGrid, ntime::I64, β::T) where {T}
+function rebuild!(fg::FermionicImaginaryTimeGrid, ntime::I64, β::T) where {T}
     @assert ntime ≥ 1
     @assert β ≥ 0.0
     fg.ntime = ntime
@@ -261,14 +261,14 @@ function Base.getindex(fg::FermionicFragmentTimeGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild(fg::FermionicFragmentTimeGrid, ntime::I64, β::T) where {T}
+    rebuild!(fg::FermionicFragmentTimeGrid, ntime::I64, β::T) where {T}
 
 Rebuild the FermionicFragmentTimeGrid struct via new `ntime` and `β`
 parameters. Now its imaginary time points are continuous and complete.
 
 See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-function rebuild(fg::FermionicFragmentTimeGrid, ntime::I64, β::T) where {T}
+function rebuild!(fg::FermionicFragmentTimeGrid, ntime::I64, β::T) where {T}
     @assert ntime ≥ 1
     @assert β ≥ 0.0
     fg.ntime = ntime
@@ -397,14 +397,14 @@ function Base.getindex(fg::FermionicMatsubaraGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild(fg::FermionicMatsubaraGrid, nfreq::I64, β::T) where {T}
+    rebuild!(fg::FermionicMatsubaraGrid, nfreq::I64, β::T) where {T}
 
 Rebuild the FermionicMatsubaraGrid struct via new `nfreq` and `β`
 parameters.
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
-function rebuild(fg::FermionicMatsubaraGrid, nfreq::I64, β::T) where {T}
+function rebuild!(fg::FermionicMatsubaraGrid, nfreq::I64, β::T) where {T}
     @assert nfreq ≥ 1
     @assert β ≥ 0.0
     fg.nfreq = nfreq
@@ -413,6 +413,9 @@ function rebuild(fg::FermionicMatsubaraGrid, nfreq::I64, β::T) where {T}
     for n = 1:nfreq
         fg.ω[n] = (2 * n - 1) * π / fg.β
     end
+end
+
+function reverse!()
 end
 
 #=
@@ -537,14 +540,14 @@ function Base.getindex(fg::FermionicFragmentMatsubaraGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild(fg::FermionicFragmentMatsubaraGrid, nfreq::I64, β::T) where {T}
+    rebuild!(fg::FermionicFragmentMatsubaraGrid, nfreq::I64, β::T) where {T}
 
 Rebuild the FermionicFragmentMatsubaraGrid struct via new `nfreq` and `β`
 parameters. Now its Matsubara frequency points are continuous and complete.
 
 See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
-function rebuild(fg::FermionicFragmentMatsubaraGrid, nfreq::I64, β::T) where {T}
+function rebuild!(fg::FermionicFragmentMatsubaraGrid, nfreq::I64, β::T) where {T}
     @assert nfreq ≥ 1
     @assert β ≥ 0.0
     fg.nfreq = nfreq
@@ -674,14 +677,14 @@ function Base.getindex(bg::BosonicImaginaryTimeGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild(bg::BosonicImaginaryTimeGrid, ntime::I64, β::T) where {T}
+    rebuild!(bg::BosonicImaginaryTimeGrid, ntime::I64, β::T) where {T}
 
 Rebuild the BosonicImaginaryTimeGrid struct via new `ntime` and `β`
 parameters.
 
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
-function rebuild(bg::BosonicImaginaryTimeGrid, ntime::I64, β::T) where {T}
+function rebuild!(bg::BosonicImaginaryTimeGrid, ntime::I64, β::T) where {T}
     @assert ntime ≥ 1
     @assert β ≥ 0.0
     bg.ntime = ntime
@@ -809,14 +812,14 @@ function Base.getindex(bg::BosonicFragmentTimeGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild(bg::BosonicFragmentTimeGrid, ntime::I64, β::T) where {T}
+    rebuild!(bg::BosonicFragmentTimeGrid, ntime::I64, β::T) where {T}
 
 Rebuild the BosonicFragmentTimeGrid struct via new `ntime` and `β`
 parameters. Now its imaginary time points are continuous and complete.
 
 See also: [`BosonicFragmentTimeGrid`](@ref).
 """
-function rebuild(bg::BosonicFragmentTimeGrid, ntime::I64, β::T) where {T}
+function rebuild!(bg::BosonicFragmentTimeGrid, ntime::I64, β::T) where {T}
     @assert ntime ≥ 1
     @assert β ≥ 0.0
     bg.ntime = ntime
@@ -945,14 +948,14 @@ function Base.getindex(bg::BosonicMatsubaraGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild(bg::BosonicMatsubaraGrid, nfreq::I64, β::T) where {T}
+    rebuild!(bg::BosonicMatsubaraGrid, nfreq::I64, β::T) where {T}
 
 Rebuild the BosonicMatsubaraGrid struct via new `nfreq` and `β`
 parameters.
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
-function rebuild(bg::BosonicMatsubaraGrid, nfreq::I64, β::T) where {T}
+function rebuild!(bg::BosonicMatsubaraGrid, nfreq::I64, β::T) where {T}
     @assert nfreq ≥ 1
     @assert β ≥ 0.0
     bg.nfreq = nfreq
@@ -1085,14 +1088,14 @@ function Base.getindex(bg::BosonicFragmentMatsubaraGrid, I::UnitRange{I64})
 end
 
 """
-    rebuild(bg::BosonicFragmentMatsubaraGrid, nfreq::I64, β::T) where {T}
+    rebuild!(bg::BosonicFragmentMatsubaraGrid, nfreq::I64, β::T) where {T}
 
 Rebuild the BosonicFragmentMatsubaraGrid struct via new `nfreq` and `β`
 parameters. Now its Matsubara frequency points are continuous and complete.
 
 See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
-function rebuild(bg::BosonicFragmentMatsubaraGrid, nfreq::I64, β::T) where {T}
+function rebuild!(bg::BosonicFragmentMatsubaraGrid, nfreq::I64, β::T) where {T}
     @assert nfreq ≥ 1
     @assert β ≥ 0.0
     bg.nfreq = nfreq
