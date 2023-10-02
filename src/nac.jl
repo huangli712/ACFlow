@@ -233,8 +233,8 @@ end
 """
     calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
 
-Try to calculate the coefficients matrix abcd (here it is called 𝒜) via
-Eq.(8) in Fei's NAC paper, which is then used to calculate θ.
+Try to calculate the coefficients matrix abcd (here it is called 𝒜),
+which is then used to calculate θ. See Eq.(8) in Fei's NAC paper.
 """
 function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     eta::APF = get_n("eta")
