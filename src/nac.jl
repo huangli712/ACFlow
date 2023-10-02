@@ -276,9 +276,6 @@ function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     return 𝒜
 end
 
-function calc_theta()
-end
-
 """
     calc_hbasis(z::APC, k::I64)
 
@@ -308,6 +305,9 @@ function calc_hmatrix(mesh::AbstractMesh, H::I64)
     end
 
     return ℋ
+end
+
+function calc_theta()
 end
 
 function evaluation(sol::NevanACContext)
