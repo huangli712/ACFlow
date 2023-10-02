@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/01
+# Last modified: 2023/10/02
 #
 
 #=
@@ -13,6 +13,18 @@
 
 """
     NevanACContext
+
+Mutable struct. It is used within the NevanAC solver only.
+
+### Members
+
+* Gᵥ   -> Input data for correlator.
+* grid -> Grid for input data.
+* mesh -> Mesh for output spectrum.
+* Φ    ->  
+* 𝒜    ->
+* ℋ    ->
+* 𝑎𝑏   ->
 """
 mutable struct NevanACContext
     Gᵥ    :: Vector{APC}
@@ -20,7 +32,7 @@ mutable struct NevanACContext
     mesh  :: AbstractMesh
     Φ     :: Vector{APC}      # Φ in schur algorithm
     𝒜     :: Array{APC,3}     # continued fractions
-    ℋ     :: Array{APC,2}     # hardy_matrix for H
+    ℋ     :: Array{APC,2}     # hardy matrix for H
     𝑎𝑏    :: Vector{C64}      # current solution for H
     H_min :: I64              # lower cut off of H
     H     :: I64              # current value of H
