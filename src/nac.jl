@@ -289,8 +289,8 @@ end
 """
     calc_hmatrix(mesh::AbstractMesh, H::I64)
 
-Try to calculate ``[f^k(z), f^k(z)^*]`` for ``k \in [0, H-1]``, which is
-called the hardy matrix and is used to evaluate ``\theta_{M+1}``.
+Try to calculate ``[f^k(z), f^k(z)^*]`` for 0 ≤ 𝑘 ≤ 𝐻-1, which is
+called the hardy matrix and is used to evaluate θ.
 """
 function calc_hmatrix(mesh::AbstractMesh, H::I64)
     eta::APF = get_n("eta")
