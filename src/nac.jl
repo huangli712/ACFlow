@@ -199,30 +199,6 @@ function calc_pick(k::I64, λ::Vector{APC}, ℎ::Vector{APC})
     return issuccess(cholesky(pick, check = false))
 end
 
-"""
-"""
-function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
-    N = length(wn)
-
-    freq = calc_mobius(wn)
-    val = calc_mobius(-gw)
-
-    k = 0
-    success = true
-    while success && k ≤ N
-        k += 1
-        success = calc_pick(k, val, freq)
-    end
-
-    if !success
-        println("N_imag is setted as $(k-1)")
-        return k-1
-    else
-        println("N_imag is setted as $(N)")
-        return N
-    end
-end
-
 function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
     Nopt = length(grid)
 
@@ -311,6 +287,30 @@ function evaluation(sol::NevanACContext)
     gout = calc_inv_mobius(θ)
 
     return gout
+end
+
+"""
+"""
+function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
+    N = length(wn)
+
+    freq = calc_mobius(wn)
+    val = calc_mobius(-gw)
+
+    k = 0
+    success = true
+    while success && k ≤ N
+        k += 1
+        success = calc_pick(k, val, freq)
+    end
+
+    if !success
+        println("N_imag is setted as $(k-1)")
+        return k-1
+    else
+        println("N_imag is setted as $(N)")
+        return N
+    end
 end
 
 function calc_H_min(sol::NevanACContext)
