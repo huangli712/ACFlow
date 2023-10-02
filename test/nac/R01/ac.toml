@@ -29,8 +29,8 @@ ratio  = 10.0
 blur   = -1.0
 
 [NevanAC]
-pick   = false
-hardy  = false
+pick   = true
+hardy  = true
 hmax   = 12
 hmin   = 1
 alpha  = 1e-4
