@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/01
+# Last modified: 2023/10/03
 #
 
 """
@@ -320,14 +320,14 @@ To implement various grids for the input data.
 *Members* :
 
 ```text
-rebuild -> Rebuild the grid.
+rebuild! -> Rebuild the grid.
 ```
 =#
 
 #
 include("grid.jl")
 #
-export rebuild
+export rebuild!
 
 #=
 ### *Includes And Exports* : *mesh.jl*
