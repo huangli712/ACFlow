@@ -101,12 +101,11 @@ function run(nac::NevanACContext)
     hardy = get_n("hardy")
     if hardy
         calc_H_min(nac)
-    else
-        evaluation!(nac)
     end
 end
 
 function last(nac::NevanACContext)
+    evaluation!(nac)
     nmesh = length(nac.Gout)
     open("twopeak_wo_opt.dat","w") do f
         for i in 1:nmesh
