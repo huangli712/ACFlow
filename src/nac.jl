@@ -115,16 +115,55 @@ function last(nac::NevanACContext)
     end
 end
 
+#=
+### *Service Functions*
+=#
+
 function precompute()
 end
 
+#=
+*Remarks* :
+
+**Mobius Transformation**
+
+```math
+\begin{equation}
+z \mapsto \frac{z - i}{z + i}
+\end{equation}
+```
+
+---
+
+**Inverse Mobius Transformation**
+
+```math
+\begin{equation}
+z \mapsto i \frac{1 + z}{1 - z}
+\end{equation}
+```
+=#
+
+"""
+    calc_mobius(z::Vector{APC})
+
+A direct Mobius transformation.
+"""
 function calc_mobius(z::Vector{APC})
     _z = similar(z)
     @. _z = (z - im) / (z + im)
     return _z
 end
 
-function calc_inv_mobius()
+"""
+    calc_inv_mobius(z::Vector{APC})
+
+An inverse Mobius transformation. 
+"""
+function calc_inv_mobius(z::Vector{APC})
+    _z = similar(z)
+    @. _z = im * (one(APC) + z) / (one(APC) - z)
+    return _z
 end
 
 function calc_pick(k::I64, λ::Vector{APC}, ℎ::Vector{APC})
