@@ -52,21 +52,18 @@ end
 function init(S::NevanACSolver, rd::RawData)
     setprecision(128)
 
-    wn = zeros(APC, 52)
-    gw = zeros(APC, 52)
+    N_imag = 52
+    wn = zeros(APC, N_imag)
+    gw = zeros(APC, N_imag)
 
     dlm = readdlm("gw.data")
     @show size(dlm), typeof(dlm)
     @. wn = dlm[:,1] * im
     @. gw = dlm[:,2] + dlm[:,3] * im
 
-    @assert length(wn) == length(gw)
-    N_imag = length(wn) 
-    @show N_imag
-
     pick = get_n("pick")
     if pick
-        @time opt_N_imag =  calc_Nopt(wn, gw)
+        opt_N_imag =  calc_Nopt(wn, gw)
     else 
         opt_N_imag = N_imag
     end
