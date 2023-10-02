@@ -166,8 +166,30 @@ function calc_inv_mobius(z::Vector{APC})
     return _z
 end
 
+#=
+*Remarks* :
+
+**Pick Matrix**
+
+```math
+\begin{equation}
+\mathcal{P} = 
+\left[
+    \frac{1-\lambda_i \lambda^*_j}{1-h(Y_i)h(Y_j)^*}
+\right]_{i,j}
+\end{equation}
+```
+=#
+
+"""
+    calc_pick(k::I64, λ::Vector{APC}, ℎ::Vector{APC})
+
+Try to calculate the Pick matrix, anc check whether it is a positive
+semidefinite matrix. See Eq.(5) in Fei's NAC paper.
+"""
 function calc_pick(k::I64, λ::Vector{APC}, ℎ::Vector{APC})
     pick = zeros(APC, k, k)
+
     for j = 1:k
         for i = 1:k
             num = one(APC) - λ[i] * conj(λ[j])
@@ -176,9 +198,12 @@ function calc_pick(k::I64, λ::Vector{APC}, ℎ::Vector{APC})
         end
         pick[j,j] += APC(1e-250)
     end
+
     return issuccess(cholesky(pick, check = false))
 end
 
+"""
+"""
 function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
     N = length(wn)
 
