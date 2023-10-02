@@ -199,6 +199,9 @@ function calc_pick(k::I64, λ::Vector{APC}, ℎ::Vector{APC})
     return issuccess(cholesky(pick, check = false))
 end
 
+"""
+    
+"""
 function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
     Nopt = length(grid)
 
@@ -228,6 +231,8 @@ function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
     return Φ
 end
 
+"""
+"""
 function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     eta::APF = get_n("eta")
 
