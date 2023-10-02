@@ -88,7 +88,7 @@ function init(S::NevanACSolver, rd::RawData)
 
     H_min::Int64 = 1
     𝑎𝑏 = zeros(C64, 2*H_min)
-    ℋ = calc_hmatrix(mesh, H_min)
+    @timev ℋ = calc_hmatrix(mesh, H_min)
 
     nac = NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, H_min, H_min)
 
@@ -290,16 +290,21 @@ function calc_hbasis(z::APC, k::I64)
 end
 
 """
+    calc_hmatrix(mesh::AbstractMesh, H::I64)
+
+Try to calculate ``[f^k(z), f^k(z)^*]`` for ``k \in [0, H-1]``, which is
+called the hardy matrix and is used to evaluate ``\theta_{M+1}``.
 """
 function calc_hmatrix(mesh::AbstractMesh, H::I64)
     eta::APF = get_n("eta")
     nmesh = length(mesh)
-    𝑚 = mesh.mesh .+ eta * im
 
+    𝑚 = mesh.mesh .+ eta * im
     ℋ = zeros(APC, nmesh, 2*H)
+
     for k = 1:H
-        ℋ[:,2*k-1] .=      calc_hbasis.(𝑚,k-1)
-        ℋ[:,2*k]   .= conj(calc_hbasis.(𝑚,k-1))
+        ℋ[:,2*k-1] .= calc_hbasis.(𝑚,k-1)
+        ℋ[:,2*k]   .= conj(ℋ[:,2*k-1])
     end
 
     return ℋ
