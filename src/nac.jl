@@ -52,21 +52,9 @@ end
 function init(S::NevanACSolver, rd::RawData)
     setprecision(128)
 
-    N_imag = 52
-    wn = zeros(APC, N_imag)
-    gw = zeros(APC, N_imag)
-
-    #dlm = readdlm("gw.data")
-    #@show size(dlm), typeof(dlm)
-    #@. wn = dlm[:,1] * im
-    #@. gw = dlm[:,2] + dlm[:,3] * im
-
-    #for i = 1:N_imag
-    #    @show rd.value[i], gw[i]
-    #end
-
-    @. wn = rd._grid * im
-    @. gw = rd.value
+    wn = APC.(rd._grid * im)
+    gw = APC.(rd.value)
+    N_imag = length(wn)
 
     pick = get_n("pick")
     if pick
