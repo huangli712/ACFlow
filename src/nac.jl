@@ -277,23 +277,6 @@ function calc_hmatrix(mesh::AbstractMesh, H::I64)
     return ℋ
 end
 
-function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
-    param = ℋ * 𝑎𝑏
-
-    max_theta = findmax(abs.(param))[1]
-    if max_theta <= 1.0
-        println("max_theta=",max_theta)
-        println("hardy optimization was success.")
-        causality = true
-    else
-        println("max_theta=",max_theta)
-        println("hardy optimization was failure.")
-        causality = false
-    end
-
-    return causality
-end
-
 function evaluation!(sol::NevanACContext)
     causality = check_causality(sol.ℋ, sol.𝑎𝑏)
     if causality
@@ -421,4 +404,21 @@ function test_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
     
     freq = reverse(wn[1:Nopt])
     val  = reverse(val)
+end
+
+function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
+    param = ℋ * 𝑎𝑏
+
+    max_theta = findmax(abs.(param))[1]
+    if max_theta <= 1.0
+        println("max_theta=",max_theta)
+        println("hardy optimization was success.")
+        causality = true
+    else
+        println("max_theta=",max_theta)
+        println("hardy optimization was failure.")
+        causality = false
+    end
+
+    return causality
 end
