@@ -326,6 +326,8 @@ function calc_theta(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64}
     return θ
 end
 
+"""
+"""
 function evaluation(sol::NevanACContext)
     causality = check_causality(sol.ℋ, sol.𝑎𝑏)
     @assert causality
