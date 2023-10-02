@@ -84,7 +84,7 @@ function init(S::NevanACSolver, rd::RawData)
     reverse!(Gᵥ)
 
     Φ = calc_phis(grid, Gᵥ)
-    𝒜 = calc_abcd(grid, mesh, Φ)
+    @timev 𝒜 = calc_abcd(grid, mesh, Φ)
 
     H_min::Int64 = 1
     𝑎𝑏 = zeros(C64, 2*H_min)
@@ -139,6 +139,20 @@ z \mapsto \frac{z - i}{z + i}
 z \mapsto i \frac{1 + z}{1 - z}
 \end{equation}
 ```
+
+---
+
+**Pick Matrix**
+
+```math
+\begin{equation}
+\mathcal{P} = 
+\left[
+    \frac{1-\lambda_i \lambda^*_j}{1-h(Y_i)h(Y_j)^*}
+\right]_{i,j}
+\end{equation}
+```
+
 =#
 
 """
@@ -162,21 +176,6 @@ function calc_inv_mobius(z::Vector{APC})
     @. _z = im * (one(APC) + z) / (one(APC) - z)
     return _z
 end
-
-#=
-*Remarks* :
-
-**Pick Matrix**
-
-```math
-\begin{equation}
-\mathcal{P} = 
-\left[
-    \frac{1-\lambda_i \lambda^*_j}{1-h(Y_i)h(Y_j)^*}
-\right]_{i,j}
-\end{equation}
-```
-=#
 
 """
     calc_pick(k::I64, λ::Vector{APC}, ℎ::Vector{APC})
@@ -232,6 +231,10 @@ function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
 end
 
 """
+    calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
+
+Try to calculate the coefficients matrix abcd (here it is called 𝒜) via
+Eq.(8) in Fei's NAC paper, which is then used to calculate θ.
 """
 function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     eta::APF = get_n("eta")
@@ -239,18 +242,19 @@ function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     ngrid = length(grid)
     nmesh = length(mesh)
 
-    𝒜 = zeros(APC, 2, 2, nmesh)
     𝑔 = grid.ω * im
     𝑚 = mesh.mesh .+ im * eta
+
+    𝒜 = zeros(APC, 2, 2, nmesh)
+    ∏ = zeros(APC, 2, 2)
 
     for i in 1:nmesh
         result = Matrix{APC}(I, 2, 2)
         𝑧 = 𝑚[i]
         for j in 1:ngrid
-            ∏ = zeros(APC, 2, 2)
             ∏[1,1] = ( 𝑧 - 𝑔[j] ) / ( 𝑧 - conj(𝑔[j]) )
             ∏[1,2] = Φ[j]
-            ∏[2,1] = conj(Φ[j]) * ( 𝑧 - 𝑔[j] ) / ( 𝑧 - conj(𝑔[j]) )
+            ∏[2,1] = conj(Φ[j]) * ∏[1,1]
             ∏[2,2] = one(APC)
             result *= ∏
         end
