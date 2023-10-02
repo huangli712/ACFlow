@@ -328,6 +328,8 @@ rebuild! -> Rebuild the grid.
 include("grid.jl")
 #
 export rebuild!
+export resize!
+export reverse!
 
 #=
 ### *Includes And Exports* : *mesh.jl*

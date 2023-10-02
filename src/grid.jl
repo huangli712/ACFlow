@@ -415,12 +415,13 @@ function rebuild!(fg::FermionicMatsubaraGrid, nfreq::I64, β::T) where {T}
     end
 end
 
-function resize!(fg::FermionicMatsubaraGrid, nfreq::I64)
+function Base.resize!(fg::FermionicMatsubaraGrid, nfreq::I64)
     @assert fg.nfreq ≥ nfreq
+    fg.nfreq = nfreq
     resize!(fg.ω, nfreq)
 end
 
-function reverse!(fg::FermionicMatsubaraGrid)
+function Base.reverse!(fg::FermionicMatsubaraGrid)
     reverse!(fg.ω)
 end
 

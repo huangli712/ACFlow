@@ -67,8 +67,12 @@ function init(S::NevanACSolver, rd::RawData)
         opt_N_imag = N_imag
     end
 
-    β::APF = 100.0
+    β::APF = get_b("beta")
     grid = FermionicMatsubaraGrid(opt_N_imag, β, reverse(imag.(wn[1:opt_N_imag])))
+    grid1 = FermionicMatsubaraGrid(N_imag, β, imag.(wn))
+    resize!(grid1, opt_N_imag)
+    @show grid.ω, grid.nfreq
+    @show grid1.ω, grid1.nfreq
     mesh = make_mesh(T = APF)
     Gᵥ = calc_mobius(-gw[1:opt_N_imag])
     reverse!(Gᵥ)
