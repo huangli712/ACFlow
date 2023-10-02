@@ -50,20 +50,15 @@ function solve(S::NevanACSolver, rd::RawData)
 end
 
 function init(S::NevanACSolver, rd::RawData)
-    N_real = 1000
     setprecision(128)
 
-    wn = zeros(Complex{BigFloat},52)
-    gw = zeros(Complex{BigFloat},52)
+    wn = zeros(APC, 52)
+    gw = zeros(APC, 52)
 
     dlm = readdlm("gw.data")
     @show size(dlm), typeof(dlm)
     @. wn = dlm[:,1] * im
     @. gw = dlm[:,2] + dlm[:,3] * im
-
-    if N_real%2 == 1
-        error("N_real must be even number!")
-    end
 
     @assert length(wn) == length(gw)
     N_imag = length(wn) 
