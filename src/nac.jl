@@ -83,12 +83,12 @@ function init(S::NevanACSolver, rd::RawData)
     Gᵥ = calc_mobius(-gw[1:opt_N_imag])
     reverse!(Gᵥ)
 
-    Φ = calc_phis(grid, Gᵥ)
-    @timev 𝒜 = calc_abcd(grid, mesh, Φ)
+    @timev Φ = calc_phis(grid, Gᵥ)
+    𝒜 = calc_abcd(grid, mesh, Φ)
 
     H_min::Int64 = 1
     𝑎𝑏 = zeros(C64, 2*H_min)
-    @timev ℋ = calc_hmatrix(mesh, H_min)
+    ℋ = calc_hmatrix(mesh, H_min)
 
     nac = NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, H_min, H_min)
 
@@ -229,7 +229,7 @@ function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
         for k in j+1:Nopt
             ∏[1,1] = ( 𝑔[k] - 𝑔[j] ) / ( 𝑔[k] - conj(𝑔[j]) )
             ∏[1,2] = Φ[j]
-            ∏[2,1] = conj(Φ[j]) * ( 𝑔[k] - 𝑔[j] ) / ( 𝑔[k] - conj(𝑔[j]) )
+            ∏[2,1] = conj(Φ[j]) * ∏[1,1]
             ∏[2,2] = one(APC)
             view(𝒜,:,:,k) .= view(𝒜,:,:,k) * ∏
         end
@@ -245,7 +245,7 @@ end
     calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
 
 Try to calculate the coefficients matrix abcd (here it is called 𝒜),
-which is then used to calculate θ. See Eq.(8) in Fei's NAC paper.
+which is then used to calculate θ. See Eq. (8) in Fei's NAC paper.
 """
 function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     eta::APF = get_n("eta")
@@ -312,7 +312,7 @@ end
 
 Try to calculate the contractive function θ(z). 𝒜 is the coefficients
 matrix abcd, ℋ is the Hardy matrix, and 𝑎𝑏 are complex coefficients
-for expanding θₘ₊₁. See Eq.(7) in Fei's NAC paper.
+for expanding θₘ₊₁. See Eq. (7) in Fei's NAC paper.
 """
 function calc_theta(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     # Well, we should calculate θₘ₊₁ at first.
