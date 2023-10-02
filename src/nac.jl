@@ -75,7 +75,7 @@ function init(S::NevanACSolver, rd::RawData)
     Gᵥ = calc_mobius(-gw[1:opt_N_imag])
     reverse!(Gᵥ)
 
-    @timev Φ = calc_phis(grid, Gᵥ)
+    Φ = calc_phis(grid, Gᵥ)
     𝒜 = calc_abcd(grid, mesh, Φ)
 
     H_min::Int64 = 1
