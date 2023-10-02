@@ -298,8 +298,8 @@ function evaluation!(sol::NevanACContext)
     causality = check_causality(sol.ℋ, sol.𝑎𝑏)
     if causality
         param = sol.ℋ * sol.𝑎𝑏
-        theta = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
-        sol.Gout .= im * (one(APC) .+ theta) ./ (one(APC) .- theta)
+        θ = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
+        sol.Gout = calc_inv_mobius(θ)
     end
 
     return causality
