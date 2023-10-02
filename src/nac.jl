@@ -56,15 +56,22 @@ function init(S::NevanACSolver, rd::RawData)
     wn = zeros(APC, N_imag)
     gw = zeros(APC, N_imag)
 
-    dlm = readdlm("gw.data")
-    @show size(dlm), typeof(dlm)
-    @. wn = dlm[:,1] * im
-    @. gw = dlm[:,2] + dlm[:,3] * im
+    #dlm = readdlm("gw.data")
+    #@show size(dlm), typeof(dlm)
+    #@. wn = dlm[:,1] * im
+    #@. gw = dlm[:,2] + dlm[:,3] * im
+
+    #for i = 1:N_imag
+    #    @show rd.value[i], gw[i]
+    #end
+
+    @. wn = rd._grid * im
+    @. gw = rd.value
 
     pick = get_n("pick")
     if pick
         opt_N_imag =  calc_Nopt(wn, gw)
-    else 
+    else
         opt_N_imag = N_imag
     end
     @show opt_N_imag
