@@ -56,6 +56,9 @@ function solve(S::NevanACSolver, rd::RawData)
 end
 
 """
+    init(S::NevanACSolver, rd::RawData)
+
+Initialize the NevanAC solver and return a NevanACContext struct.
 """
 function init(S::NevanACSolver, rd::RawData)
     setprecision(128)
