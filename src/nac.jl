@@ -73,12 +73,14 @@ function init(S::NevanACSolver, rd::RawData)
         Nopt = length(wn)
     end
 
+    Gᵥ = calc_mobius(-gw[1:Nopt])
+    reverse!(Gᵥ)
+
     grid = make_grid(rd, T = APF)
     resize!(grid, Nopt)
     reverse!(grid)
+
     mesh = make_mesh(T = APF)
-    Gᵥ = calc_mobius(-gw[1:Nopt])
-    reverse!(Gᵥ)
 
     Φ, 𝒜, ℋ, 𝑎𝑏 = precompute(grid, mesh, Gᵥ)
 
