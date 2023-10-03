@@ -21,20 +21,21 @@ Mutable struct. It is used within the NevanAC solver only.
 * Gᵥ   -> Input data for correlator.
 * grid -> Grid for input data.
 * mesh -> Mesh for output spectrum.
-* Φ    ->  
-* 𝒜    ->
-* ℋ    ->
-* 𝑎𝑏   ->
+* Φ    -> ϕ in Schur algorithm.
+* 𝒜    -> Coefficients matrix abcd in Schur algorithm.
+* ℋ    -> Hardy matrix for Hardy basis optimization.
+* 𝑎𝑏   -> Coefficients matrix for expanding θ with Hardy basis.
+* Hopt -> Optimal value of H.
 """
 mutable struct NevanACContext
-    Gᵥ    :: Vector{APC}
-    grid  :: AbstractGrid
-    mesh  :: AbstractMesh
-    Φ     :: Vector{APC}      # Φ in schur algorithm
-    𝒜     :: Array{APC,3}     # continued fractions
-    ℋ     :: Array{APC,2}     # hardy matrix for H
-    𝑎𝑏    :: Vector{C64}      # current solution for H
-    H     :: I64              # current value of H
+    Gᵥ   :: Vector{APC}
+    grid :: AbstractGrid
+    mesh :: AbstractMesh
+    Φ    :: Vector{APC}
+    𝒜    :: Array{APC,3}
+    ℋ    :: Array{APC,2}
+    𝑎𝑏   :: Vector{C64}
+    Hopt :: I64
 end
 
 #=
