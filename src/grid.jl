@@ -442,33 +442,6 @@ function Base.reverse!(fg::FermionicMatsubaraGrid)
     reverse!(fg.ω)
 end
 
-"""
-    Base.resize!(bg::BosonicFragmentMatsubaraGrid, nfreq::I64)
-
-Reduce the size of the bosonic fragment Matsubara grid. Note that
-`nfreq` should be smaller than or equal to `bg.nfreq`. This function
-is called by the NevanAC solver only.
-
-See also: [`BosonicFragmentMatsubaraGrid`](@ref).
-"""
-function Base.resize!(bg::BosonicFragmentMatsubaraGrid, nfreq::I64)
-    @assert bg.nfreq ≥ nfreq
-    bg.nfreq = nfreq
-    resize!(bg.ω, nfreq)
-end
-
-"""
-    Base.reverse!(fg::BosonicFragmentMatsubaraGrid)
-
-Reverse the bosonic fragment Matsubara grid. This function is called
-by the NevanAC solver only.
-
-See also: [`BosonicFragmentMatsubaraGrid`](@ref).
-"""
-function Base.reverse!(bg::BosonicFragmentMatsubaraGrid)
-    reverse!(bg.ω)
-end
-
 #=
 ### *Struct : FermionicFragmentMatsubaraGrid*
 =#
@@ -1209,4 +1182,31 @@ function rebuild!(bg::BosonicFragmentMatsubaraGrid, nfreq::I64, β::T) where {T}
     for n = 1:nfreq
         bg.ω[n] = (2 * n - 2) * π / bg.β
     end
+end
+
+"""
+    Base.resize!(bg::BosonicFragmentMatsubaraGrid, nfreq::I64)
+
+Reduce the size of the bosonic fragment Matsubara grid. Note that
+`nfreq` should be smaller than or equal to `bg.nfreq`. This function
+is called by the NevanAC solver only.
+
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.resize!(bg::BosonicFragmentMatsubaraGrid, nfreq::I64)
+    @assert bg.nfreq ≥ nfreq
+    bg.nfreq = nfreq
+    resize!(bg.ω, nfreq)
+end
+
+"""
+    Base.reverse!(bg::BosonicFragmentMatsubaraGrid)
+
+Reverse the bosonic fragment Matsubara grid. This function is called
+by the NevanAC solver only.
+
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
+"""
+function Base.reverse!(bg::BosonicFragmentMatsubaraGrid)
+    reverse!(bg.ω)
 end
