@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/02
+# Last modified: 2023/10/04
 #
 
 #=
@@ -34,7 +34,6 @@ mutable struct NevanACContext
     𝒜     :: Array{APC,3}     # continued fractions
     ℋ     :: Array{APC,2}     # hardy matrix for H
     𝑎𝑏    :: Vector{C64}      # current solution for H
-    H_min :: I64              # lower cut off of H
     H     :: I64              # current value of H
 end
 
@@ -77,11 +76,10 @@ function init(S::NevanACSolver, rd::RawData)
     Φ = calc_phis(grid, Gᵥ)
     𝒜 = calc_abcd(grid, mesh, Φ)
 
-    H_min::Int64 = 1
-    𝑎𝑏 = zeros(C64, 2*H_min)
-    ℋ = calc_hmatrix(mesh, H_min)
+    𝑎𝑏 = zeros(C64, 2)
+    ℋ = calc_hmatrix(mesh, 1)
 
-    nac = NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, H_min, H_min)
+    nac = NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, 1)
 
     return nac
 end
@@ -365,18 +363,13 @@ function calc_H_min(sol::NevanACContext)
 
         causality, optim = hardy_optim!(sol, iH, zero_𝑎𝑏)
 
-        #break if we find optimal H in which causality is preserved and optimize is successful
+        # break if we find optimal H in which causality is preserved and optimize is successful
         if causality && optim
-            sol.H_min = sol.H
             break
         end
 
-        if isdefined(Main, :IJulia)
-            Main.IJulia.stdio_bytes[] = 0
-        end
-
         if iH == H_bound
-            error("H_min does not exist")
+            error("An optimal H does not exist")
         end
     end
 end
@@ -421,7 +414,6 @@ function hardy_optim!(sol::NevanACContext, H::I64, 𝑎𝑏::Vector{C64})::Tuple
         sol.H = H
         sol.𝑎𝑏 = Optim.minimizer(res)
         sol.ℋ = ℋₗ
-        #evaluation!(sol)
     end
     
     return causality, (Optim.converged(res))
