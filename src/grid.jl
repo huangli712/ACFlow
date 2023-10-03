@@ -425,6 +425,16 @@ function Base.reverse!(fg::FermionicMatsubaraGrid)
     reverse!(fg.ω)
 end
 
+function Base.resize!(bg::BosonicMatsubaraGrid, nfreq::I64)
+    @assert bg.nfreq ≥ nfreq
+    bg.nfreq = nfreq
+    resize!(bg.ω, nfreq)
+end
+
+function Base.reverse!(bg::BosonicMatsubaraGrid)
+    reverse!(bg.ω)
+end
+
 #=
 ### *Struct : FermionicFragmentMatsubaraGrid*
 =#
