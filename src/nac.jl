@@ -81,11 +81,7 @@ function init(S::NevanACSolver, rd::RawData)
     Gᵥ = calc_mobius(-gw[1:opt_N_imag])
     reverse!(Gᵥ)
 
-    Φ = calc_phis(grid, Gᵥ)
-    𝒜 = calc_abcd(grid, mesh, Φ)
-
-    𝑎𝑏 = zeros(C64, 2)
-    ℋ = calc_hmatrix(mesh, 1)
+    Φ, 𝒜, ℋ, 𝑎𝑏 = precompute(grid, mesh, Gᵥ)
 
     nac = NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, 1)
 
@@ -117,7 +113,16 @@ end
 ### *Service Functions*
 =#
 
-function precompute()
+"""
+"""
+function precompute(grid::AbstractGrid, mesh::AbstractMesh, Gᵥ::Vector{APC})
+    Φ = calc_phis(grid, Gᵥ)
+    𝒜 = calc_abcd(grid, mesh, Φ)
+
+    ℋ = calc_hmatrix(mesh, 1)
+    𝑎𝑏 = zeros(C64, 2)
+
+    return Φ, 𝒜, ℋ, 𝑎𝑏
 end
 
 #=
@@ -419,7 +424,7 @@ function hardy_optim!(sol::NevanACContext, H::I64, 𝑎𝑏::Vector{C64})::Tuple
     causality = check_causality(ℋₗ, Optim.minimizer(res))
 
     if causality && (Optim.converged(res))
-        sol.H = H
+        sol.Hopt = H
         sol.𝑎𝑏 = Optim.minimizer(res)
         sol.ℋ = ℋₗ
     end
