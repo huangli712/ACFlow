@@ -43,6 +43,10 @@ end
 =#
 
 """
+    solve(S::NevanACSolver, rd::RawData)
+
+Solve the analytic continuation problem by the Nevanlinna analytical
+continuation method.
 """
 function solve(S::NevanACSolver, rd::RawData)
     println("[ NevanAC ]")
