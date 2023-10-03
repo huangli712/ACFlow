@@ -13,11 +13,11 @@ ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
 mesh   = "linear"
-ngrid  = 10
+ngrid  = 52
 nmesh  = 1000
 wmax   = 10.0
 wmin   = -10.0
-beta   = 10.0
+beta   = 100.0
 offdiag = false
 
 [MaxEnt]
