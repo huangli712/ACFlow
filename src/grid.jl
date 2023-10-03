@@ -415,22 +415,56 @@ function rebuild!(fg::FermionicMatsubaraGrid, nfreq::I64, β::T) where {T}
     end
 end
 
+"""
+    Base.resize!(fg::FermionicMatsubaraGrid, nfreq::I64)
+
+Reduce the size of the fermionic Matsubara grid. Note that `nfreq` should
+be smaller than or equal to `fg.nfreq`. This function is called by the
+NevanAC solver only.
+
+See also: [`FermionicMatsubaraGrid`](@ref).
+"""
 function Base.resize!(fg::FermionicMatsubaraGrid, nfreq::I64)
     @assert fg.nfreq ≥ nfreq
     fg.nfreq = nfreq
     resize!(fg.ω, nfreq)
 end
 
+"""
+    Base.reverse!(fg::FermionicMatsubaraGrid)
+
+Reverse the fermionic Matsubara grid. This function is called by the
+NevanAC solver only.
+
+See also: [`FermionicMatsubaraGrid`](@ref).
+"""
 function Base.reverse!(fg::FermionicMatsubaraGrid)
     reverse!(fg.ω)
 end
 
+"""
+    Base.resize!(bg::BosonicMatsubaraGrid, nfreq::I64)
+
+Reduce the size of the bosonic Matsubara grid. Note that `nfreq` should
+be smaller than or equal to `bg.nfreq`. This function is called by the
+NevanAC solver only.
+
+See also: [`BosonicMatsubaraGrid`](@ref).
+"""
 function Base.resize!(bg::BosonicMatsubaraGrid, nfreq::I64)
     @assert bg.nfreq ≥ nfreq
     bg.nfreq = nfreq
     resize!(bg.ω, nfreq)
 end
 
+"""
+    Base.reverse!(bg::BosonicMatsubaraGrid)
+
+Reverse the bosonic Matsubara grid. This function is called by the
+NevanAC solver only.
+
+See also: [`FermionicMatsubaraGrid`](@ref).
+"""
 function Base.reverse!(bg::BosonicMatsubaraGrid)
     reverse!(bg.ω)
 end
