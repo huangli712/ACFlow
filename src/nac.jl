@@ -65,20 +65,19 @@ function init(S::NevanACSolver, rd::RawData)
 
     wn = APC.(rd._grid * im)
     gw = APC.(rd.value)
-    N_imag = length(wn)
 
     pick = get_n("pick")
     if pick
-        opt_N_imag =  calc_Nopt(wn, gw)
+        Nopt = calc_Nopt(wn, gw)
     else
-        opt_N_imag = N_imag
+        Nopt = length(wn)
     end
 
     grid = make_grid(rd, T = APF)
-    resize!(grid, opt_N_imag)
+    resize!(grid, Nopt)
     reverse!(grid)
     mesh = make_mesh(T = APF)
-    Gᵥ = calc_mobius(-gw[1:opt_N_imag])
+    Gᵥ = calc_mobius(-gw[1:Nopt])
     reverse!(Gᵥ)
 
     Φ, 𝒜, ℋ, 𝑎𝑏 = precompute(grid, mesh, Gᵥ)
