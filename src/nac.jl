@@ -63,14 +63,17 @@ Initialize the NevanAC solver and return a NevanACContext struct.
 function init(S::NevanACSolver, rd::RawData)
     setprecision(128)
 
+    ωₙ = APC.(rd._grid * im)
+    Gₙ = APC.(rd.value)
+
     pick = get_n("pick")
     if pick
-        Nopt = calc_Nopt(APC.(rd._grid * im), APC.(rd.value))
+        Nopt = calc_Nopt(ωₙ, Gₙ)
     else
-        Nopt = length(rd._grid)
+        Nopt = length(ωₙ)
     end
 
-    Gᵥ = calc_mobius(-APC.(gw[1:Nopt]))
+    Gᵥ = calc_mobius(-Gₙ[1:Nopt])
     reverse!(Gᵥ)
 
     grid = make_grid(rd, T = APF)
