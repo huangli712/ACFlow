@@ -78,22 +78,22 @@ function init(S::NevanACSolver, rd::RawData)
         Nopt = length(ωₙ)
     end
 
-    # Prepera input Green's function.
+    # Prepera input Green's function
     Gᵥ = calc_mobius(-Gₙ[1:Nopt])
     reverse!(Gᵥ)
     println("Postprocess input data: ", length(Gᵥ), " points")
 
-    # Prepare grid.
+    # Prepare grid
     grid = make_grid(rd, T = APF)
     resize!(grid, Nopt)
     reverse!(grid)
     println("Build grid for input data: ", length(grid), " points")
 
-    # Prepare mesh.
+    # Prepare mesh
     mesh = make_mesh(T = APF)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    # Prepare key matrices to accelerate the computation.
+    # Prepare key matrices to accelerate the computation
     Φ, 𝒜, ℋ, 𝑎𝑏 = precompute(grid, mesh, Gᵥ)
     println("Precompute key matrices")
 
