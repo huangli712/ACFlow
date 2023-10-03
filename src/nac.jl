@@ -61,11 +61,16 @@ end
 Initialize the NevanAC solver and return a NevanACContext struct.
 """
 function init(S::NevanACSolver, rd::RawData)
+    # Setup precision. Note that the NAC method is quite sensitive to
+    # the float point precision.
     setprecision(128)
 
+    # Convert the input data to APC, i.e., Complex{BigFloat}.
     ωₙ = APC.(rd._grid * im)
     Gₙ = APC.(rd.value)
 
+    # Evaluate the optimal value for the size of the input data.
+    # Here we apply the Pick criterion.
     pick = get_n("pick")
     if pick
         Nopt = calc_Nopt(ωₙ, Gₙ)
@@ -73,20 +78,26 @@ function init(S::NevanACSolver, rd::RawData)
         Nopt = length(ωₙ)
     end
 
+    # Prepera input Green's function.
     Gᵥ = calc_mobius(-Gₙ[1:Nopt])
     reverse!(Gᵥ)
+    println("Postprocess input data: ", length(Gᵥ), " points")
 
+    # Prepare grid.
     grid = make_grid(rd, T = APF)
     resize!(grid, Nopt)
     reverse!(grid)
+    println("Build grid for input data: ", length(grid), " points")
 
+    # Prepare mesh.
     mesh = make_mesh(T = APF)
+    println("Build mesh for spectrum: ", length(mesh), " points")
 
+    # Prepare key matrices to accelerate the computation.
     Φ, 𝒜, ℋ, 𝑎𝑏 = precompute(grid, mesh, Gᵥ)
+    println("Precompute key matrices")
 
-    nac = NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, 1)
-
-    return nac
+    return NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, 1)
 end
 
 """
