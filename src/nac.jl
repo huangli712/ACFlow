@@ -97,6 +97,7 @@ function init(S::NevanACSolver, rd::RawData)
 end
 
 """
+    run(nac::NevanACContext)
 """
 function run(nac::NevanACContext)
     hardy = get_n("hardy")
@@ -106,6 +107,7 @@ function run(nac::NevanACContext)
 end
 
 """
+    last(nac::NevanACContext)
 """
 function last(nac::NevanACContext)
     gout = evaluation(nac)
