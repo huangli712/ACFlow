@@ -211,7 +211,8 @@ end
 """
     calc_mobius(z::Vector{APC})
 
-A direct Mobius transformation.
+A direct Mobius transformation. It maps `z` from ``\overline{\mathcal{C}^{+}}``
+to ``\overline{\mathcal{D}}``.
 """
 function calc_mobius(z::Vector{APC})
     _z = similar(z)
@@ -222,7 +223,8 @@ end
 """
     calc_inv_mobius(z::Vector{APC})
 
-An inverse Mobius transformation. 
+An inverse Mobius transformation. It maps `z` from ``\overline{\mathcal{D}}``
+to ``\overline{\mathcal{C}^{+}}``.
 """
 function calc_inv_mobius(z::Vector{APC})
     _z = similar(z)
