@@ -161,7 +161,21 @@ See `calc_inv_mobius()`.
 \end{equation}
 ```
 
-See `calc_pick()`.
+See `calc_pick()`. Here, ``Y_i`` is the *i*th Matsubara frequency, ``C_i``
+is the value of ``\mathcal{NG}`` at ``Y_i``, and ``\lambda_i`` is the
+value of ``\theta`` at ``Y_i``:
+
+```math
+\begin{equation}
+\lambda_i = \theta(Y_i) = \frac{C_i - i}{C_i + i},
+\end{equation}
+```
+
+```math
+\begin{equation}
+h(Y_i) = \frac{Y_i - i}{Y_i + i}.
+\end{equation}
+```
 
 ---
 
