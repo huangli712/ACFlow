@@ -90,7 +90,7 @@ function init(S::NevanACSolver, rd::RawData)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
     # Precompute key quantities to accelerate the computation
-    Φ, 𝒜, ℋ, 𝑎𝑏 = precompute(grid, mesh, Gᵥ)
+    Φ, 𝒜, ℋ, 𝑎𝑏 = precompute(Gᵥ, grid, mesh)
     println("Precompute key matrices")
 
     return NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, 1)
@@ -120,18 +120,6 @@ end
 #=
 ### *Service Functions*
 =#
-
-"""
-"""
-function precompute(grid::AbstractGrid, mesh::AbstractMesh, Gᵥ::Vector{APC})
-    Φ = calc_phis(grid, Gᵥ)
-    𝒜 = calc_abcd(grid, mesh, Φ)
-
-    ℋ = calc_hmatrix(mesh, 1)
-    𝑎𝑏 = zeros(C64, 2)
-
-    return Φ, 𝒜, ℋ, 𝑎𝑏
-end
 
 #=
 *Remarks* :
@@ -179,6 +167,24 @@ f^k(z) = \frac{1}{\sqrt{\pi}(z + i)}
 ```
 
 =#
+
+"""
+    precompute(Gᵥ::Vector{APC},
+               grid::AbstractGrid,
+               mesh::AbstractMesh)
+
+"""
+function precompute(Gᵥ::Vector{APC},
+                    grid::AbstractGrid,
+                    mesh::AbstractMesh)
+    Φ = calc_phis(grid, Gᵥ)
+    𝒜 = calc_abcd(grid, mesh, Φ)
+
+    ℋ = calc_hmatrix(mesh, 1)
+    𝑎𝑏 = zeros(C64, 2)
+
+    return Φ, 𝒜, ℋ, 𝑎𝑏
+end
 
 """
     calc_mobius(z::Vector{APC})
