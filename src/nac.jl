@@ -128,9 +128,11 @@ end
 
 ```math
 \begin{equation}
-z \mapsto \frac{z - i}{z + i}
+z \mapsto \frac{z - i}{z + i}.
 \end{equation}
 ```
+
+See `calc_mobius()`.
 
 ---
 
@@ -138,9 +140,11 @@ z \mapsto \frac{z - i}{z + i}
 
 ```math
 \begin{equation}
-z \mapsto i \frac{1 + z}{1 - z}
+z \mapsto i \frac{1 + z}{1 - z}.
 \end{equation}
 ```
+
+See `calc_inv_mobius()`.
 
 ---
 
@@ -151,9 +155,11 @@ z \mapsto i \frac{1 + z}{1 - z}
 \mathcal{P} = 
 \left[
     \frac{1-\lambda_i \lambda^*_j}{1-h(Y_i)h(Y_j)^*}
-\right]_{i,j}
+\right]_{i,j}.
 \end{equation}
 ```
+
+See `calc_pick()`.
 
 ---
 
@@ -162,9 +168,21 @@ z \mapsto i \frac{1 + z}{1 - z}
 ```math
 \begin{equation}
 f^k(z) = \frac{1}{\sqrt{\pi}(z + i)}
-    \left( \frac{z - i}{z + i} \right)^k
+    \left( \frac{z - i}{z + i} \right)^k.
 \end{equation}
 ```
+
+See `calc_hbasis()` and `calc_hmatrix()`.
+
+---
+
+**Expanding ``\theta_{M+1}`` using Hardy basis**
+
+```math
+\theta_{M+1} = \sum^{H}_{k=0} \left[a_k f^k(z) + b_k f^k(z)^*\right]
+```
+
+See `calc_theta()`.
 
 =#
 
@@ -173,6 +191,8 @@ f^k(z) = \frac{1}{\sqrt{\pi}(z + i)}
                grid::AbstractGrid,
                mesh::AbstractMesh)
 
+Precompute some key quantities. Here `Gᵥ` is input data, `grid` is the
+grid for input data, and `mesh` is the mesh for output spectrum.
 """
 function precompute(Gᵥ::Vector{APC},
                     grid::AbstractGrid,
@@ -310,7 +330,7 @@ end
     calc_hmatrix(mesh::AbstractMesh, H::I64)
 
 Try to calculate ``[f^k(z), f^k(z)^*]`` for 0 ≤ 𝑘 ≤ 𝐻-1, which is
-called the hardy matrix (ℋ) and is used to evaluate θ.
+called the hardy matrix (ℋ) and is used to evaluate ``\theta_{M+1}``.
 """
 function calc_hmatrix(mesh::AbstractMesh, H::I64)
     eta::APF = get_n("eta")
