@@ -110,10 +110,16 @@ end
     last(nac::NevanACContext)
 """
 function last(nac::NevanACContext)
+    # By default, we should write the analytic continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
     gout = evaluation(nac)
-    nmesh = length(gout)
+
     Aout = F64.(imag.(gout) ./ π)
-    write_spectrum(nac.mesh, Aout)
+    fwrite && write_spectrum(nac.mesh, Aout)
+    fwrite && write_complete(nac.mesh, C64.(gout))
 end
 
 #=
