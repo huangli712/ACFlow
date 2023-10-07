@@ -197,9 +197,11 @@ grid for input data, and `mesh` is the mesh for output spectrum.
 function precompute(Gᵥ::Vector{APC},
                     grid::AbstractGrid,
                     mesh::AbstractMesh)
+    # Evaluate ϕ and `abcd` matrices
     Φ = calc_phis(grid, Gᵥ)
     𝒜 = calc_abcd(grid, mesh, Φ)
 
+    # Allocate memory for evaluating θ
     ℋ = calc_hmatrix(mesh, 1)
     𝑎𝑏 = zeros(C64, 2)
 
