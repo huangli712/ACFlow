@@ -236,7 +236,7 @@ end
     calc_pick(k::I64, ℎ::Vector{APC}, λ::Vector{APC})
 
 Try to calculate the Pick matrix, anc check whether it is a positive
-semidefinite matrix. See Eq.(5) in Fei's NAC paper.
+semidefinite matrix. See Eq. (5) in Fei's NAC paper.
 """
 function calc_pick(k::I64, ℎ::Vector{APC}, λ::Vector{APC})
     pick = zeros(APC, k, k)
@@ -256,7 +256,7 @@ function calc_pick(k::I64, ℎ::Vector{APC}, λ::Vector{APC})
 end
 
 """
-    
+    calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
 """
 function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
     ngrid = length(grid)
