@@ -131,7 +131,7 @@ function last(nac::NevanACContext)
     kernel = make_kernel(nac.mesh, nac.grid)
     G = reprod(nac.mesh, kernel, Aout)
     fwrite && write_backward(nac.grid, G)
-    
+    @show typeof(Aout), typeof(_G), typeof(kernel)
     return Aout, _G
 end
 
