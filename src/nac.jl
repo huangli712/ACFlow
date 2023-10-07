@@ -241,6 +241,7 @@ semidefinite matrix. See Eq.(5) in Fei's NAC paper.
 function calc_pick(k::I64, ℎ::Vector{APC}, λ::Vector{APC})
     pick = zeros(APC, k, k)
 
+    # Calculate the Pick matrix
     for j = 1:k
         for i = 1:k
             num = one(APC) - λ[i] * conj(λ[j])
@@ -250,6 +251,7 @@ function calc_pick(k::I64, ℎ::Vector{APC}, λ::Vector{APC})
         pick[j,j] += APC(1e-250)
     end
 
+    # Cholesky decomposition
     return issuccess(cholesky(pick, check = false))
 end
 
