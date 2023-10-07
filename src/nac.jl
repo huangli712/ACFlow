@@ -112,11 +112,8 @@ end
 function last(nac::NevanACContext)
     gout = evaluation(nac)
     nmesh = length(gout)
-    open("twopeak_wo_opt.dat","w") do f
-        for i in 1:nmesh
-            println(f, "$(F64(nac.mesh[i]))",  "\t", "$(F64(imag.(gout[i]/pi)))")
-        end
-    end
+    Aout = F64.(imag.(gout) ./ π)
+    write_spectrum(nac.mesh, Aout)
 end
 
 #=
