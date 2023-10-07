@@ -52,8 +52,8 @@ function solve(S::NevanACSolver, rd::RawData)
     println("[ NevanAC ]")
     nac = init(S, rd)
     run(nac)
-    last(nac)
-    #return nac.mesh.mesh
+    Aout, Gout = last(nac)
+    return nac.mesh.mesh, Aout, Gout
 end
 
 """
@@ -132,7 +132,7 @@ function last(nac::NevanACContext)
     G = reprod(nac.mesh, kernel, Aout)
     fwrite && write_backward(nac.grid, G)
     
-    return _G
+    return Aout, _G
 end
 
 #=
