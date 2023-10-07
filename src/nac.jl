@@ -118,6 +118,10 @@ function last(nac::NevanACContext)
     gout = evaluation(nac)
 
     Aout = F64.(imag.(gout) ./ π)
+
+    kernel = make_kernel(nac.mesh, nac.grid)
+    G = reprod(nac.mesh, kernel, Aout)
+    fwrite && write_backward(nac.grid, G)
     fwrite && write_spectrum(nac.mesh, Aout)
     fwrite && write_complete(nac.mesh, C64.(gout))
 end
