@@ -203,12 +203,12 @@ function calc_inv_mobius(z::Vector{APC})
 end
 
 """
-    calc_pick(k::I64, λ::Vector{APC}, ℎ::Vector{APC})
+    calc_pick(k::I64, ℎ::Vector{APC}, λ::Vector{APC})
 
 Try to calculate the Pick matrix, anc check whether it is a positive
 semidefinite matrix. See Eq.(5) in Fei's NAC paper.
 """
-function calc_pick(k::I64, λ::Vector{APC}, ℎ::Vector{APC})
+function calc_pick(k::I64, ℎ::Vector{APC}, λ::Vector{APC})
     pick = zeros(APC, k, k)
 
     for j = 1:k
@@ -360,23 +360,29 @@ points are actually used in the analytic continuation simulations) via
 the Pick criterion.
 """
 function calc_noptim(ωₙ::Vector{APC}, Gₙ::Vector{APC})
+    # Get size of input data
     ngrid = length(ωₙ)
 
+    # Check whether the Pick criterion is applied 
     pick = get_n("pick")
     if !pick
         return ngrid
     end
 
-    freq = calc_mobius(ωₙ)
-    val = calc_mobius(-Gₙ)
+    # Apply invertible Mobius transformation. We actually work at
+    # the \bar{𝒟} space.
+    𝓏 = calc_mobius(ωₙ)
+    𝒢 = calc_mobius(-Gₙ)
 
+    # Find the optimal value of k until the Pick criterion is violated
     k = 0
     success = true
     while success && k ≤ ngrid
         k += 1
-        success = calc_pick(k, val, freq)
+        success = calc_pick(k, 𝓏, 𝒢)
     end
 
+    # Return the optimal value for the size of input data
     if !success
         println("The size of input data is optimized to $(k-1)")
         return k - 1
