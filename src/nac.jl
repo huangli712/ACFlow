@@ -70,26 +70,26 @@ function init(S::NevanACSolver, rd::RawData)
     ωₙ = APC.(rd._grid * im)
     Gₙ = APC.(rd.value)
 
-    # Evaluate the optimal value for the size of the input data.
-    # Here we apply the Pick criterion.
-    Nopt = calc_noptim(ωₙ, Gₙ)
+    # Evaluate the optimal value for the size of input data.
+    # Here we just apply the Pick criterion.
+    ngrid = calc_noptim(ωₙ, Gₙ)
 
-    # Prepera input Green's function
-    Gᵥ = calc_mobius(-Gₙ[1:Nopt])
+    # Prepera input data
+    Gᵥ = calc_mobius(-Gₙ[1:ngrid])
     reverse!(Gᵥ)
     println("Postprocess input data: ", length(Gᵥ), " points")
 
-    # Prepare grid
+    # Prepare grid for input data
     grid = make_grid(rd, T = APF)
-    resize!(grid, Nopt)
+    resize!(grid, ngrid)
     reverse!(grid)
     println("Build grid for input data: ", length(grid), " points")
 
-    # Prepare mesh
+    # Prepare mesh for output spectrum
     mesh = make_mesh(T = APF)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    # Prepare key matrices to accelerate the computation
+    # Precompute key quantities to accelerate the computation
     Φ, 𝒜, ℋ, 𝑎𝑏 = precompute(grid, mesh, Gᵥ)
     println("Precompute key matrices")
 
