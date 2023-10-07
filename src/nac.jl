@@ -53,6 +53,7 @@ function solve(S::NevanACSolver, rd::RawData)
     nac = init(S, rd)
     run(nac)
     last(nac)
+    #return nac.mesh.mesh
 end
 
 """
@@ -61,8 +62,8 @@ end
 Initialize the NevanAC solver and return a NevanACContext struct.
 """
 function init(S::NevanACSolver, rd::RawData)
-    # Setup precision. Note that the NAC method is quite sensitive to
-    # the float point precision.
+    # Setup numerical precision. Note that the NAC method is extremely
+    # sensitive to the float point precision.
     setprecision(128)
 
     # Convert the input data to APC, i.e., Complex{BigFloat}.
@@ -71,12 +72,7 @@ function init(S::NevanACSolver, rd::RawData)
 
     # Evaluate the optimal value for the size of the input data.
     # Here we apply the Pick criterion.
-    pick = get_n("pick")
-    if pick
-        Nopt = calc_Nopt(ωₙ, Gₙ)
-    else
-        Nopt = length(ωₙ)
-    end
+    Nopt = calc_noptim(ωₙ, Gₙ)
 
     # Prepera input Green's function
     Gᵥ = calc_mobius(-Gₙ[1:Nopt])
@@ -357,26 +353,36 @@ function evaluation(sol::NevanACContext)
 end
 
 """
-"""
-function calc_Nopt(wn::Vector{APC}, gw::Vector{APC})
-    N = length(wn)
+    calc_noptim(ωₙ::Vector{APC}, Gₙ::Vector{APC})
 
-    freq = calc_mobius(wn)
-    val = calc_mobius(-gw)
+Evaluate the optimal value for the size of input data (how may frequency
+points are actually used in the analytic continuation simulations) via
+the Pick criterion.
+"""
+function calc_noptim(ωₙ::Vector{APC}, Gₙ::Vector{APC})
+    ngrid = length(ωₙ)
+
+    pick = get_n("pick")
+    if !pick
+        return ngrid
+    end
+
+    freq = calc_mobius(ωₙ)
+    val = calc_mobius(-Gₙ)
 
     k = 0
     success = true
-    while success && k ≤ N
+    while success && k ≤ ngrid
         k += 1
         success = calc_pick(k, val, freq)
     end
 
     if !success
-        println("N_imag is setted as $(k-1)")
-        return k-1
+        println("The size of input data is optimized to $(k-1)")
+        return k - 1
     else
-        println("N_imag is setted as $(N)")
-        return N
+        println("The size of input data is optimized to $(ngrid)")
+        return ngrid
     end
 end
 
