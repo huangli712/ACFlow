@@ -132,6 +132,7 @@ z \mapsto \frac{z - i}{z + i}.
 \end{equation}
 ```
 
+It maps `z` from ``\overline{\mathcal{C}^{+}}`` to ``\overline{\mathcal{D}}``.
 See `calc_mobius()`.
 
 ---
@@ -144,6 +145,7 @@ z \mapsto i \frac{1 + z}{1 - z}.
 \end{equation}
 ```
 
+It maps `z` from ``\overline{\mathcal{D}}`` to ``\overline{\mathcal{C}^{+}}``.
 See `calc_inv_mobius()`.
 
 ---
@@ -211,8 +213,7 @@ end
 """
     calc_mobius(z::Vector{APC})
 
-A direct Mobius transformation. It maps `z` from ``\overline{\mathcal{C}^{+}}``
-to ``\overline{\mathcal{D}}``.
+A direct Mobius transformation.
 """
 function calc_mobius(z::Vector{APC})
     _z = similar(z)
@@ -223,8 +224,7 @@ end
 """
     calc_inv_mobius(z::Vector{APC})
 
-An inverse Mobius transformation. It maps `z` from ``\overline{\mathcal{D}}``
-to ``\overline{\mathcal{C}^{+}}``.
+An inverse Mobius transformation.
 """
 function calc_inv_mobius(z::Vector{APC})
     _z = similar(z)
