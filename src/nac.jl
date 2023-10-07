@@ -108,6 +108,9 @@ end
 
 """
     last(nac::NevanACContext)
+
+Postprocess the results generated during the Nevanlinna analytical
+continuation simulations.
 """
 function last(nac::NevanACContext)
     # By default, we should write the analytic continuation results
@@ -115,15 +118,20 @@ function last(nac::NevanACContext)
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
 
-    gout = evaluation(nac)
+    # Calculate full response function on real axis and write them
+    _G = evaluation(nac)
+    fwrite && write_complete(nac.mesh, C64.(-_G))
 
-    Aout = F64.(imag.(gout) ./ π)
+    # Calculate and write the spectral function
+    Aout = F64.(imag.(_G) ./ π)
+    fwrite && write_spectrum(nac.mesh, Aout)
 
+    # Regenerate the input data and write them
     kernel = make_kernel(nac.mesh, nac.grid)
     G = reprod(nac.mesh, kernel, Aout)
     fwrite && write_backward(nac.grid, G)
-    fwrite && write_spectrum(nac.mesh, Aout)
-    fwrite && write_complete(nac.mesh, C64.(gout))
+    
+    return _G
 end
 
 #=
