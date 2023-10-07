@@ -90,7 +90,7 @@ function init(S::NevanACSolver, rd::RawData)
     println("Build mesh for spectrum: ", length(mesh), " points")
 
     # Precompute key quantities to accelerate the computation
-    Φ, 𝒜, ℋ, 𝑎𝑏 = precompute(Gᵥ, grid, mesh)
+    Φ, 𝒜, ℋ, 𝑎𝑏 = precompute(grid, mesh, Gᵥ)
     println("Precompute key matrices")
 
     return NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, 1)
@@ -187,16 +187,16 @@ See `calc_theta()`.
 =#
 
 """
-    precompute(Gᵥ::Vector{APC},
-               grid::AbstractGrid,
-               mesh::AbstractMesh)
+    precompute(grid::AbstractGrid,
+               mesh::AbstractMesh,
+               Gᵥ::Vector{APC})
 
 Precompute some key quantities. Here `Gᵥ` is input data, `grid` is the
 grid for input data, and `mesh` is the mesh for output spectrum.
 """
-function precompute(Gᵥ::Vector{APC},
-                    grid::AbstractGrid,
-                    mesh::AbstractMesh)
+function precompute(grid::AbstractGrid,
+                    mesh::AbstractMesh,
+                    Gᵥ::Vector{APC})
     # Evaluate ϕ and `abcd` matrices
     Φ = calc_phis(grid, Gᵥ)
     𝒜 = calc_abcd(grid, mesh, Φ)
