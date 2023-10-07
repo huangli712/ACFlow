@@ -101,7 +101,7 @@ end
 function run(nac::NevanACContext)
     hardy = get_n("hardy")
     if hardy
-        calc_H_min(nac)
+        calc_hoptim(nac)
     end
 end
 
@@ -424,7 +424,7 @@ function calc_noptim(ωₙ::Vector{APC}, Gₙ::Vector{APC})
     end
 end
 
-function calc_H_min(sol::NevanACContext)
+function calc_hoptim(sol::NevanACContext)
     H_bound::Int64 = 50
     for iH in 1:H_bound
         println("H=$(iH)")
