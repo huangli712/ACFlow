@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/03
+# Last modified: 2023/10/07
 #
 
 """
@@ -539,27 +539,27 @@ To implement the MaxEnt solver for analytic continuation problem.
 ```text
 MaxEntContext -> Essential struct for the MaxEnt solver.
 #
-solve         -> Wrapper function for the MaxEnt solver.
-init          -> Initialize maximum entropy simulation.
-run           -> Perform maximum entropy simulation.
-last          -> Postprocess the calculated results and write them.
+solve           -> Wrapper function for the MaxEnt solver.
+init            -> Initialize maximum entropy simulation.
+run             -> Perform maximum entropy simulation.
+last            -> Postprocess the calculated results and write them.
 #
-historic      -> historic algorithm.
-classic       -> Classic algorithm.
-bryan         -> Bryan algorithm.
-chi2kink      -> Chi2kink algorithm.
-optimizer     -> Optimize the non-linear equation.
+historic        -> historic algorithm.
+classic         -> Classic algorithm.
+bryan           -> Bryan algorithm.
+chi2kink        -> Chi2kink algorithm.
+optimizer       -> Optimize the non-linear equation.
 #
-precompute    -> Precompute some key coefficients.
-f_and_J       -> Define the function that need to be optimized.
-f_and_J_od    -> Define the function that need to be optimized (offdiag version).
-svd_to_real   -> From singular to real space.
-svd_to_real_od-> From singular to real space (offdiag version).
-calc_entropy  -> Calculate entropy.
+precompute      -> Precompute some key coefficients.
+f_and_J         -> Define the function that need to be optimized.
+f_and_J_od      -> Define the function that need to be optimized (offdiag version).
+svd_to_real     -> From singular to real space.
+svd_to_real_od  -> From singular to real space (offdiag version).
+calc_entropy    -> Calculate entropy.
 calc_entropy_od -> Calculate entropy (offdiag version).
-calc_bayes    -> Calculate Bayesian probability.
-calc_bayes_od -> Calculate Bayesian probability (offdiag version).
-calc_chi2     -> Calculate χ² function.
+calc_bayes      -> Calculate Bayesian probability.
+calc_bayes_od   -> Calculate Bayesian probability (offdiag version).
+calc_chi2       -> Calculate χ² function.
 ```
 =#
 
@@ -1024,7 +1024,7 @@ function _precompile()
             # Precompile them one by one
             #println(i, " -> ", str, " -> ", length(types), " -> ", T)
             precompile(fun, T)
-            @printf("Function %15s (#%3i) is compiled.\r", str, cf)
+            @printf("Function %24s (#%4i) is compiled.\r", str, cf)
         end
     end
 
