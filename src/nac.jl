@@ -119,9 +119,9 @@ function last(nac::NevanACContext)
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
 
     # Calculate full response function on real axis and write them
-    # Note that _G is actually 𝑁G.
-    _G = evaluation(nac)
-    fwrite && write_complete(nac.mesh, C64.(-_G))
+    # Note that _G is actually 𝑁G, so there is a `-` symbol.
+    _G = C64.(evaluation(nac))
+    fwrite && write_complete(nac.mesh, -_G)
 
     # Calculate and write the spectral function
     Aout = F64.(imag.(_G) ./ π)
@@ -131,7 +131,7 @@ function last(nac::NevanACContext)
     kernel = make_kernel(nac.mesh, nac.grid)
     G = reprod(nac.mesh, kernel, Aout)
     fwrite && write_backward(nac.grid, G)
-    @show typeof(Aout), typeof(_G), typeof(kernel)
+
     return Aout, _G
 end
 
