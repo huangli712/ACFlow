@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/07
+# Last modified: 2023/10/08
 #
 
 #=
@@ -98,6 +98,8 @@ end
 
 """
     run(nac::NevanACContext)
+
+Perform Hardy basis optimization to smooth the spectrum.
 """
 function run(nac::NevanACContext)
     hardy = get_n("hardy")
