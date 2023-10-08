@@ -199,6 +199,47 @@ h(Y_i) = \frac{Y_i - i}{Y_i + i}.
 
 ---
 
+**Φ vector**
+
+At first, we have
+
+```math
+\begin{equation}
+\phi_{\alpha} = \theta_{\alpha}(Y_{\alpha}).
+\end{equation}
+```
+
+So
+
+```math
+\begin{equation}
+\phi_1 = \theta_1 (Y_1),
+\end{equation}
+```
+
+```math
+\begin{equation}
+\begin{pmatrix}
+a_{\beta} & b_{\beta} \\
+c_{\beta} & d_{\beta}
+\end{pmatrix}
+= \prod^{\beta-1}_{\alpha=1}
+\begin{pmatrix}
+\frac{Y_{\beta}-Y_{\alpha}}{Y_{\beta}-Y^*_{\alpha}} & \phi_{\alpha} \\
+\phi^*_{\alpha}\frac{Y_{\beta} - Y_{\alpha}}{Y_{\beta} - Y^*_{\alpha}} & 1
+\end{pmatrix},
+\end{equation}
+```
+
+```math
+\begin{equation}
+\phi_{\beta} =
+\frac{-d_{\beta}\theta(Y_{\beta}) + b_{\beta}}{c_{\beta}\theta(Y_{\beta}) - \alpha_{\beta}}
+\end{equation}
+```
+
+---
+
 **Hardy basis**
 
 ```math
@@ -291,6 +332,8 @@ end
 
 """
     calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
+
+
 """
 function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
     ngrid = length(grid)
