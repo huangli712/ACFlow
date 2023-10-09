@@ -492,11 +492,11 @@ end
 
 """
 """
-function evaluation(sol::NevanACContext)
-    causality = check_causality(sol.ℋ, sol.𝑎𝑏)
+function evaluation(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
+    causality = check_causality(ℋ, 𝑎𝑏)
     @assert causality
 
-    θ = calc_theta(sol.𝒜, sol.ℋ, sol.𝑎𝑏)
+    θ = calc_theta(𝒜, ℋ, 𝑎𝑏)
     gout = calc_inv_mobius(θ)
 
     return gout
