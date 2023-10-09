@@ -581,14 +581,14 @@ end
 """
 function hardy_optimize!(nac::NevanACContext, H::I64)
     function 𝑓(x::Vector{C64})::F64
-        return smooth_norm(nac, ℋₗ, x)
+        return smooth_norm(nac, ℋ, x)
     end
 
     function 𝐽(J::Vector{C64}, x::Vector{C64})
         J .= gradient(𝑓, x)[1]
     end
 
-    ℋₗ = calc_hmatrix(nac.mesh, H)
+    ℋ = calc_hmatrix(nac.mesh, H)
     𝑎𝑏 = zeros(C64, 2*H)
 
     res = optimize(𝑓, 𝐽, 𝑎𝑏, BFGS(), 
@@ -598,12 +598,12 @@ function hardy_optimize!(nac::NevanACContext, H::I64)
         println("Faild to optimize!")
     end
     
-    causality = check_causality(ℋₗ, Optim.minimizer(res))
+    causality = check_causality(ℋ, Optim.minimizer(res))
 
     if causality && (Optim.converged(res))
         nac.hopt = H
         nac.𝑎𝑏 = Optim.minimizer(res)
-        nac.ℋ = ℋₗ
+        nac.ℋ = ℋ
     end
     
     return causality, (Optim.converged(res))
