@@ -577,22 +577,20 @@ end
 """
 """
 function calc_hopt!(nac::NevanACContext)
-    𝑎𝑏  = copy(nac.𝑎𝑏)
+    for h = nac.hmin + 1:get_n("hmax")
+        println("H = $h")
 
-    for iH in nac.hmin:get_n("hmax")
-        println("H = $(iH)")
+        ℋ = calc_hmatrix(nac.mesh, h)
+        𝑎𝑏  = copy(nac.𝑎𝑏)
+        push!(𝑎𝑏, 0.0+0.0*im)
+        push!(𝑎𝑏, 0.0+0.0*im)
 
-        ℋ = calc_hmatrix(nac.mesh, iH)
-        causality, optim = hardy_optimize!(nac, ℋ, 𝑎𝑏, iH)
+        causality, optim = hardy_optimize!(nac, ℋ, 𝑎𝑏, h)
 
         # break if we face instability of optimization
         if !(causality && optim)
             break
         end
-
-        𝑎𝑏  = copy(nac.𝑎𝑏)
-        push!(𝑎𝑏, 0.0+0.0*im)
-        push!(𝑎𝑏, 0.0+0.0*im)
     end
 end
 
@@ -695,12 +693,12 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
 
     max_theta = findmax(abs.(param))[1]
     if max_theta <= 1.0
-        println("max_theta=",max_theta)
-        println("hardy optimization was success.")
+        println("max_theta = ",max_theta)
+        println("Hardy optimization was success.")
         causality = true
     else
-        println("max_theta=",max_theta)
-        println("hardy optimization was failure.")
+        println("max_theta = ",max_theta)
+        println("Hardy optimization was failure.")
         causality = false
     end
 
