@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/27
+# Last modified: 2023/10/09r
 #
 
 """
@@ -430,8 +430,7 @@ function chk_dict()
             # It does not support imaginary time data.
             @assert get_b("grid") in ("ffreq", "ffrag", "bfreq", "bfrag")
             #
-            @assert get_n("hmax")  ≥ get_n("hmin")
-            @assert get_n("hmin")  ≥ 1
+            @assert get_n("hmax")  ≥ 10
             @assert get_n("alpha") ≥ 1e-8
             @assert get_n("eta")   ≥ 1e-8
             break

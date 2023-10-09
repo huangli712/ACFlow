@@ -106,8 +106,8 @@ Perform Hardy basis optimization to smooth the spectrum.
 function run(nac::NevanACContext)
     hardy = get_n("hardy")
     if hardy
-        calc_hmin(nac)
-        calc_hopt()
+        calc_hmin!(nac)
+        calc_hopt!()
     end
 end
 
@@ -574,7 +574,7 @@ end
 
 """
 """
-function calc_hopt()
+function calc_hopt!()
 end
 
 function hardy_optimize!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
@@ -599,7 +599,7 @@ function hardy_optimize!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
     causality = check_causality(ℋₗ, Optim.minimizer(res))
 
     if causality && (Optim.converged(res))
-        sol.Hopt = H
+        sol.hopt = H
         sol.𝑎𝑏 = Optim.minimizer(res)
         sol.ℋ = ℋₗ
     end
