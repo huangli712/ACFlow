@@ -454,12 +454,15 @@ Try to calculate ``[f^k(z), f^k(z)^*]`` for 0 ≤ 𝑘 ≤ 𝐻-1, which is
 called the hardy matrix (ℋ) and is used to evaluate ``\theta_{M+1}``.
 """
 function calc_hmatrix(mesh::AbstractMesh, H::I64)
+    # Build real axis
     eta::APF = get_n("eta")
-    nmesh = length(mesh)
-
     𝑚 = mesh.mesh .+ eta * im
+
+    # Allocate memory for the Hardy matrix
+    nmesh = length(mesh)
     ℋ = zeros(APC, nmesh, 2*H)
 
+    # Build the Hardy matrix
     for k = 1:H
         ℋ[:,2*k-1] .= calc_hbasis.(𝑚,k-1)
         ℋ[:,2*k]   .= conj(ℋ[:,2*k-1])
