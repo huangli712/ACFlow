@@ -480,7 +480,7 @@ function calc_theta(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64}
     # Well, we should calculate θₘ₊₁ at first.
     θₘ₊₁ = ℋ * 𝑎𝑏
 
-    # Then we evaluate θ according Eq.(7)
+    # Then we evaluate θ according Eq. (7)
     num = 𝒜[1,1,:] .* θₘ₊₁ .+ 𝒜[1,2,:]
     den = 𝒜[2,1,:] .* θₘ₊₁ .+ 𝒜[2,2,:]
     θ = num ./ den
@@ -579,9 +579,9 @@ end
 
 """
 """
-function hardy_optimize!(nac::NevanACContext, H::I64)::Tuple{Bool, Bool}
+function hardy_optimize!(nac::NevanACContext, H::I64)
     function 𝑓(x::Vector{C64})::F64
-        return smooth_norm(nac, x, ℋₗ)
+        return smooth_norm(nac, ℋₗ, x)
     end
 
     function 𝐽(J::Vector{C64}, x::Vector{C64})
@@ -611,7 +611,7 @@ end
 
 """
 """
-function smooth_norm(nac::NevanACContext, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
+function smooth_norm(nac::NevanACContext, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     α = get_n("alpha")
 
     _G = calc_green(nac.𝒜, ℋ, 𝑎𝑏)
