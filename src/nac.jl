@@ -644,7 +644,7 @@ function integrate_squared_second_deriv(x::AbstractVector, y::AbstractVector)
     return trapz(x_sd, abs.(sd) .^ 2)
 end
 
-function test_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
+function check_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
     freq = calc_mobius(wn[1:Nopt])
     val = calc_mobius(-gw[1:Nopt])
 
