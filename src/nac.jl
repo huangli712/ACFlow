@@ -122,7 +122,7 @@ function last(nac::NevanACContext)
 
     # Calculate full response function on real axis and write them
     # Note that _G is actually 𝑁G, so there is a `-` symbol.
-    _G = C64.(evaluation(nac))
+    _G = C64.(evaluation(nac.𝒜, nac.ℋ, nac.𝑎𝑏))
     fwrite && write_complete(nac.mesh, -_G)
 
     # Calculate and write the spectral function
