@@ -545,9 +545,16 @@ function calc_noptim(ωₙ::Vector{APC}, Gₙ::Vector{APC})
 end
 
 """
+    calc_hoptim(sol::NevanACContext)
+
+Try to perform Hardy basis optimization. Such that the Hardy matrix ℋ
+and the corresponding coefficients 𝑎𝑏 are updated. They are used to
+calculate θ, which is then back transformed to generate smooth G (i.e.,
+the spectrum) at real axis.
 """
 function calc_hoptim(sol::NevanACContext)
     hmax = get_n("hmax")
+
     for h in 1:hmax
         println("H = $h")
         zero_𝑎𝑏 = zeros(C64, 2*h)
