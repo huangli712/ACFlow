@@ -543,7 +543,7 @@ function calc_noptim(ωₙ::Vector{APC}, Gₙ::Vector{APC})
 end
 
 """
-    calc_hmin!(sol::NevanACContext)
+    calc_hmin!(nac::NevanACContext)
 
 Try to perform Hardy basis optimization. Such that the Hardy matrix ℋ
 and the corresponding coefficients 𝑎𝑏 are updated. They are used to
@@ -552,19 +552,19 @@ the spectrum) at real axis.
 
 This function will determine the minimal value of H.
 """
-function calc_hmin!(sol::NevanACContext)
+function calc_hmin!(nac::NevanACContext)
     hmax = get_n("hmax")
 
     h = 1
     while h ≤ hmax
         println("H = $h")
 
-        causality, optim = hardy_optimize!(sol, h)
+        causality, optim = hardy_optimize!(nac, h)
 
         # break if we find optimal H in which causality is preserved
         # and optimize is successful
         if causality && optim
-            sol.hmin = h
+            nac.hmin = h
             break
         else
             h = h + 1
@@ -577,16 +577,16 @@ end
 function calc_hopt!()
 end
 
-function hardy_optimize!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
+function hardy_optimize!(nac::NevanACContext, H::I64)::Tuple{Bool, Bool}
     function 𝑓(x::Vector{C64})::F64
-        return smooth_norm(sol, x, ℋₗ)
+        return smooth_norm(nac, x, ℋₗ)
     end
 
     function 𝐽(J::Vector{C64}, x::Vector{C64})
         J .= gradient(𝑓, x)[1]
     end
 
-    ℋₗ = calc_hmatrix(sol.mesh, H)
+    ℋₗ = calc_hmatrix(nac.mesh, H)
     𝑎𝑏 = zeros(C64, 2*H)
 
     res = optimize(𝑓, 𝐽, 𝑎𝑏, BFGS(), 
@@ -599,9 +599,9 @@ function hardy_optimize!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
     causality = check_causality(ℋₗ, Optim.minimizer(res))
 
     if causality && (Optim.converged(res))
-        sol.hopt = H
-        sol.𝑎𝑏 = Optim.minimizer(res)
-        sol.ℋ = ℋₗ
+        nac.hopt = H
+        nac.𝑎𝑏 = Optim.minimizer(res)
+        nac.ℋ = ℋₗ
     end
     
     return causality, (Optim.converged(res))
@@ -609,14 +609,14 @@ end
 
 """
 """
-function smooth_norm(sol::NevanACContext, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
+function smooth_norm(nac::NevanACContext, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
     α = get_n("alpha")
 
-    _G = calc_green(sol.𝒜, ℋ, 𝑎𝑏)
+    _G = calc_green(nac.𝒜, ℋ, 𝑎𝑏)
     A = F64.(imag.(_G) ./ π)
 
-    tot_int = trapz(sol.mesh, A)
-    second_der = integrate_squared_second_deriv(sol.mesh.mesh, A) 
+    tot_int = trapz(nac.mesh, A)
+    second_der = integrate_squared_second_deriv(nac.mesh.mesh, A) 
 
     func = abs(1.0-tot_int)^2 + α*second_der
 
