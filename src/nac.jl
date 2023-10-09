@@ -246,7 +246,16 @@ See `calc_phis()`.
 
 ---
 
-**𝒜 matrix**
+**Contractive function θ(z)**
+
+```math
+\begin{equation}
+\theta(z)[z; θ_{M+1}(z)] =
+\frac{a(z)\theta_{M+1}(z) + b(z)}{c(z)\theta_{M+1}(z) + d(z)}
+\end{equation}
+```
+
+where
 
 ```math
 \begin{equation}
@@ -262,7 +271,7 @@ c(z) & d(z)
 \end{equation}
 ```
 
-See `calc_abcd()`.
+See `calc_abcd()` and `calc_theta()`.
 
 ---
 
