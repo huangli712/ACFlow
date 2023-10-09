@@ -555,7 +555,7 @@ function calc_hoptim(sol::NevanACContext)
     while h ≤ hmax
         println("H = $h")
 
-        causality, optim = hardy_optim!(sol, h)
+        causality, optim = hardy_optimize!(sol, h)
 
         # break if we find optimal H in which causality is preserved
         # and optimize is successful
@@ -567,21 +567,7 @@ function calc_hoptim(sol::NevanACContext)
     end
 end
 
-function calc_loss(sol::NevanACContext, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
-    α = get_n("alpha")
-
-    _G = calc_green(sol.𝒜, ℋ, 𝑎𝑏)
-    A = F64.(imag.(_G) ./ π)
-
-    tot_int = trapz(sol.mesh, A)
-    second_der = integrate_squared_second_deriv(sol.mesh.mesh, A) 
-
-    func = abs(1.0-tot_int)^2 + α*second_der
-
-    return func
-end
-
-function hardy_optim!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
+function hardy_optimize!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
     ℋₗ = calc_hmatrix(sol.mesh, H)
     𝑎𝑏 = zeros(C64, 2*H)
 
@@ -609,6 +595,22 @@ function hardy_optim!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
     end
     
     return causality, (Optim.converged(res))
+end
+
+"""
+"""
+function calc_loss(sol::NevanACContext, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
+    α = get_n("alpha")
+
+    _G = calc_green(sol.𝒜, ℋ, 𝑎𝑏)
+    A = F64.(imag.(_G) ./ π)
+
+    tot_int = trapz(sol.mesh, A)
+    second_der = integrate_squared_second_deriv(sol.mesh.mesh, A) 
+
+    func = abs(1.0-tot_int)^2 + α*second_der
+
+    return func
 end
 
 """
