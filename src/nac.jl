@@ -326,9 +326,7 @@ end
 A direct Mobius transformation.
 """
 function calc_mobius(z::Vector{APC})
-    _z = similar(z)
-    @. _z = (z - im) / (z + im)
-    return _z
+    return @. (z - im) / (z + im)
 end
 
 """
@@ -337,9 +335,7 @@ end
 An inverse Mobius transformation.
 """
 function calc_inv_mobius(z::Vector{APC})
-    _z = similar(z)
-    @. _z = im * (one(APC) + z) / (one(APC) - z)
-    return _z
+    return @. im * (one(APC) + z) / (one(APC) - z)
 end
 
 """
@@ -572,10 +568,11 @@ function calc_hoptim(sol::NevanACContext)
 end
 
 function calc_loss(sol::NevanACContext, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
-    #theta = calc_theta(sol.𝒜, ℋ, 𝑎𝑏)
-
+    theta = calc_theta(sol.𝒜, ℋ, 𝑎𝑏)
     #green = im * (one(APC) .+ theta) ./ (one(APC) .- theta)
-    green = calc_green(sol.𝒜, ℋ, 𝑎𝑏)
+    green = calc_inv_mobius(theta)
+    #green = calc_green(sol.𝒜, ℋ, 𝑎𝑏)
+
     A = F64.(imag(green)./pi)
 
     tot_int = trapz(sol.mesh, A)
