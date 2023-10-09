@@ -32,6 +32,5 @@ blur   = -1.0
 pick   = true
 hardy  = true
 hmax   = 12
-hmin   = 1
 alpha  = 1e-4
 eta    = 1e-3
