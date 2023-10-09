@@ -25,7 +25,8 @@ Mutable struct. It is used within the NevanAC solver only.
 * 𝒜    -> Coefficients matrix `abcd` in Schur algorithm.
 * ℋ    -> Hardy matrix for Hardy basis optimization.
 * 𝑎𝑏   -> Coefficients matrix for expanding `θ` with Hardy basis.
-* Hopt -> Optimal value of H, the order of Hardy basis functions.
+* hmin -> Minimal value of H, the order of Hardy basis functions.
+* hopt -> Optimal value of H, the order of Hardy basis functions.
 """
 mutable struct NevanACContext
     Gᵥ   :: Vector{APC}
@@ -35,7 +36,8 @@ mutable struct NevanACContext
     𝒜    :: Array{APC,3}
     ℋ    :: Array{APC,2}
     𝑎𝑏   :: Vector{C64}
-    Hopt :: I64
+    hmin :: I64
+    hopt :: I64
 end
 
 #=
