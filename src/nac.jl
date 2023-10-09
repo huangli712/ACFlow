@@ -544,20 +544,22 @@ function calc_noptim(ωₙ::Vector{APC}, Gₙ::Vector{APC})
     end
 end
 
+"""
+"""
 function calc_hoptim(sol::NevanACContext)
-    H_bound::Int64 = 50
-    for iH in 1:H_bound
-        println("H=$(iH)")
-        zero_𝑎𝑏 = zeros(C64, 2*iH)
+    hmax = get_n("hmax")
+    for h in 1:hmax
+        println("H = $h")
+        zero_𝑎𝑏 = zeros(C64, 2*h)
 
-        causality, optim = hardy_optim!(sol, iH, zero_𝑎𝑏)
+        causality, optim = hardy_optim!(sol, h, zero_𝑎𝑏)
 
         # break if we find optimal H in which causality is preserved and optimize is successful
         if causality && optim
             break
         end
 
-        if iH == H_bound
+        if h == hmax
             error("An optimal H does not exist")
         end
     end
