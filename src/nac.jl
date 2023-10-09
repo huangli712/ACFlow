@@ -557,9 +557,8 @@ function calc_hoptim(sol::NevanACContext)
 
     for h in 1:hmax
         println("H = $h")
-        zero_𝑎𝑏 = zeros(C64, 2*h)
 
-        causality, optim = hardy_optim!(sol, h, zero_𝑎𝑏)
+        causality, optim = hardy_optim!(sol, h)
 
         # break if we find optimal H in which causality is preserved
         # and optimize is successful
@@ -589,8 +588,9 @@ function calc_functional(sol::NevanACContext, H::Int64, 𝑎𝑏::Vector{C64}, �
     return func
 end
 
-function hardy_optim!(sol::NevanACContext, H::I64, 𝑎𝑏::Vector{C64})::Tuple{Bool, Bool}
+function hardy_optim!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
     ℋₗ = calc_hmatrix(sol.mesh, H)
+    𝑎𝑏 = zeros(C64, 2*H)
 
     function functional(x::Vector{C64})::F64
         return calc_functional(sol, H, x, ℋₗ)
