@@ -107,7 +107,7 @@ function run(nac::NevanACContext)
     hardy = get_n("hardy")
     if hardy
         calc_hmin!(nac)
-        calc_hopt!()
+        calc_hopt!(nac)
     end
 end
 
@@ -576,7 +576,24 @@ end
 
 """
 """
-function calc_hopt!()
+function calc_hopt!(nac::NevanACContext)
+    𝑎𝑏  = copy(nac.𝑎𝑏)
+
+    for iH in nac.hmin:get_n("hmax")
+        println("H = $(iH)")
+
+        ℋ = calc_hmatrix(nac.mesh, iH)
+        causality, optim = hardy_optimize!(nac, ℋ, 𝑎𝑏, iH)
+
+        # break if we face instability of optimization
+        if !(causality && optim)
+            break
+        end
+
+        𝑎𝑏  = copy(nac.𝑎𝑏)
+        push!(𝑎𝑏, 0.0+0.0*im)
+        push!(𝑎𝑏, 0.0+0.0*im)
+    end
 end
 
 """
