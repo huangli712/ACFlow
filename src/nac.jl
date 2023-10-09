@@ -95,7 +95,7 @@ function init(S::NevanACSolver, rd::RawData)
     Φ, 𝒜, ℋ, 𝑎𝑏 = precompute(grid, mesh, Gᵥ)
     println("Precompute key matrices")
 
-    return NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, 1)
+    return NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, 1, 1)
 end
 
 """
@@ -106,7 +106,8 @@ Perform Hardy basis optimization to smooth the spectrum.
 function run(nac::NevanACContext)
     hardy = get_n("hardy")
     if hardy
-        calc_hoptim(nac)
+        calc_hmin(nac)
+        calc_hopt()
     end
 end
 
@@ -297,7 +298,6 @@ See `calc_hbasis()` and `calc_hmatrix()`.
 ```
 
 See `calc_theta()`.
-
 =#
 
 """
@@ -543,14 +543,16 @@ function calc_noptim(ωₙ::Vector{APC}, Gₙ::Vector{APC})
 end
 
 """
-    calc_hoptim(sol::NevanACContext)
+    calc_hmin!(sol::NevanACContext)
 
 Try to perform Hardy basis optimization. Such that the Hardy matrix ℋ
 and the corresponding coefficients 𝑎𝑏 are updated. They are used to
 calculate θ, which is then back transformed to generate smooth G (i.e.,
 the spectrum) at real axis.
+
+This function will determine the minimal value of H.
 """
-function calc_hoptim(sol::NevanACContext)
+function calc_hmin!(sol::NevanACContext)
     hmax = get_n("hmax")
 
     h = 1
@@ -562,11 +564,17 @@ function calc_hoptim(sol::NevanACContext)
         # break if we find optimal H in which causality is preserved
         # and optimize is successful
         if causality && optim
+            sol.hmin = h
             break
         else
             h = h + 1
         end
     end
+end
+
+"""
+"""
+function calc_hopt()
 end
 
 function hardy_optimize!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
