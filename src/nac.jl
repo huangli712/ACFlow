@@ -21,7 +21,7 @@ Mutable struct. It is used within the NevanAC solver only.
 * Gᵥ   -> Input data for correlator.
 * grid -> Grid for input data.
 * mesh -> Mesh for output spectrum.
-* Φ    -> `ϕ` vector in Schur algorithm.
+* Φ    -> `Φ` vector in Schur algorithm.
 * 𝒜    -> Coefficients matrix `abcd` in Schur algorithm.
 * ℋ    -> Hardy matrix for Hardy basis optimization.
 * 𝑎𝑏   -> Coefficients matrix for expanding `θ` with Hardy basis.
@@ -181,9 +181,9 @@ See `calc_inv_mobius()`.
 \end{equation}
 ```
 
-See `calc_pick()`. Here, ``Y_i`` is the *i*th Matsubara frequency, ``C_i``
-is the value of ``\mathcal{NG}`` at ``Y_i``, and ``\lambda_i`` is the
-value of ``\theta`` at ``Y_i``:
+Here, ``Y_i`` is the *i*th Matsubara frequency, ``C_i`` is the value of
+``\mathcal{NG}`` at ``Y_i``, and ``\lambda_i`` is the value of ``\theta``
+at ``Y_i``:
 
 ```math
 \begin{equation}
@@ -196,6 +196,8 @@ value of ``\theta`` at ``Y_i``:
 h(Y_i) = \frac{Y_i - i}{Y_i + i}.
 \end{equation}
 ```
+
+See `calc_pick()`.
 
 ---
 
@@ -219,6 +221,15 @@ So
 
 ```math
 \begin{equation}
+\phi_{\beta} =
+\frac{-d_{\beta}\theta(Y_{\beta}) + b_{\beta}}{c_{\beta}\theta(Y_{\beta}) - \alpha_{\beta}}
+\end{equation}
+```
+
+where
+
+```math
+\begin{equation}
 \begin{pmatrix}
 a_{\beta} & b_{\beta} \\
 c_{\beta} & d_{\beta}
@@ -228,13 +239,6 @@ c_{\beta} & d_{\beta}
 \frac{Y_{\beta}-Y_{\alpha}}{Y_{\beta}-Y^*_{\alpha}} & \phi_{\alpha} \\
 \phi^*_{\alpha}\frac{Y_{\beta} - Y_{\alpha}}{Y_{\beta} - Y^*_{\alpha}} & 1
 \end{pmatrix},
-\end{equation}
-```
-
-```math
-\begin{equation}
-\phi_{\beta} =
-\frac{-d_{\beta}\theta(Y_{\beta}) + b_{\beta}}{c_{\beta}\theta(Y_{\beta}) - \alpha_{\beta}}
 \end{equation}
 ```
 
