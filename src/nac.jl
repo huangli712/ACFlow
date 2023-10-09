@@ -585,15 +585,15 @@ function hardy_optim!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
     ℋₗ = calc_hmatrix(sol.mesh, H)
     𝑎𝑏 = zeros(C64, 2*H)
 
-    function functional(x::Vector{C64})::F64
+    function 𝑓(x::Vector{C64})::F64
         return calc_loss(sol, x, ℋₗ)
     end
 
-    function jacobian(J::Vector{C64}, x::Vector{C64})
+    function 𝐽(J::Vector{C64}, x::Vector{C64})
         J .= gradient(functional, x)[1] 
     end
 
-    res = optimize(functional, jacobian, 𝑎𝑏, BFGS(), 
+    res = optimize(𝑓, 𝐽, 𝑎𝑏, BFGS(), 
                    Optim.Options(iterations = 500, show_trace = true))
     
     if  !(Optim.converged(res))
