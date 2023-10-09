@@ -572,7 +572,7 @@ function hardy_optimize!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
     𝑎𝑏 = zeros(C64, 2*H)
 
     function 𝑓(x::Vector{C64})::F64
-        return calc_loss(sol, x, ℋₗ)
+        return smooth_norm(sol, x, ℋₗ)
     end
 
     function 𝐽(J::Vector{C64}, x::Vector{C64})
@@ -599,7 +599,7 @@ end
 
 """
 """
-function calc_loss(sol::NevanACContext, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
+function smooth_norm(sol::NevanACContext, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
     α = get_n("alpha")
 
     _G = calc_green(sol.𝒜, ℋ, 𝑎𝑏)
