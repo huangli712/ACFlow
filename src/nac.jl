@@ -368,20 +368,23 @@ end
 """
     calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
 
-
+Try to calculate the Φ vector, which is used to calculate the 𝒜 matrix.
 """
 function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
     ngrid = length(grid)
 
+    # Allocate memory
     Φ = zeros(APC, ngrid) 
     𝒜 = zeros(APC, 2, 2, ngrid)
     ∏ = zeros(APC, 2, 2)
     𝑔 = grid.ω * im
 
+    # Initialize the `abcd` matrix
     for i = 1:ngrid
-        view(𝒜,:,:,i) .= Matrix{APC}(I, 2, 2)
+        𝒜[:,:,i] .= Matrix{APC}(I, 2, 2)
     end
 
+    # Evaluate Φ using recursive algorithm
     Φ[1] = Gᵥ[1]
     for j = 1:ngrid-1
         for k = j+1:ngrid
