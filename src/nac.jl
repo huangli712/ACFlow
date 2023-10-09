@@ -555,7 +555,8 @@ the spectrum) at real axis.
 function calc_hoptim(sol::NevanACContext)
     hmax = get_n("hmax")
 
-    for h in 1:hmax
+    h = 1
+    while h ≤ hmax
         println("H = $h")
 
         causality, optim = hardy_optim!(sol, h)
@@ -564,10 +565,8 @@ function calc_hoptim(sol::NevanACContext)
         # and optimize is successful
         if causality && optim
             break
-        end
-
-        if h == hmax
-            error("An optimal H does not exist")
+        else
+            h = h + 1
         end
     end
 end
