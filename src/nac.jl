@@ -498,9 +498,6 @@ transform. Here, `𝒜` (`abcd` matrix), `ℋ` (Hardy matrix), and `𝑎𝑏` ar
 used to evaluate θ.
 """
 function calc_green(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
-    causality = check_causality(ℋ, 𝑎𝑏)
-    @assert causality
-
     θ = calc_theta(𝒜, ℋ, 𝑎𝑏)
     gout = calc_inv_mobius(θ)
 
@@ -661,6 +658,7 @@ end
 
 function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     param = ℋ * 𝑎𝑏
+    @show typeof(param), size(ℋ), size(𝑎𝑏), size(param)
 
     max_theta = findmax(abs.(param))[1]
     if max_theta <= 1.0
