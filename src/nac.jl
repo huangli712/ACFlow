@@ -572,12 +572,10 @@ function calc_hoptim(sol::NevanACContext)
 end
 
 function calc_loss(sol::NevanACContext, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
-    #param = ℋ * 𝑎𝑏
+    #theta = calc_theta(sol.𝒜, ℋ, 𝑎𝑏)
 
-    #theta = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
-    theta = calc_theta(sol.𝒜, ℋ, 𝑎𝑏)
-
-    green = im * (one(APC) .+ theta) ./ (one(APC) .- theta)
+    #green = im * (one(APC) .+ theta) ./ (one(APC) .- theta)
+    green = calc_green(sol.𝒜, ℋ, 𝑎𝑏)
     A = F64.(imag(green)./pi)
 
     tot_int = trapz(sol.mesh, A)
