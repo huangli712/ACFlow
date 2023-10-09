@@ -577,6 +577,8 @@ end
 function calc_hopt!()
 end
 
+"""
+"""
 function hardy_optimize!(nac::NevanACContext, H::I64)::Tuple{Bool, Bool}
     function 𝑓(x::Vector{C64})::F64
         return smooth_norm(nac, x, ℋₗ)
