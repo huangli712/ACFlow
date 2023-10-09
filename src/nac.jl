@@ -561,7 +561,8 @@ function calc_hoptim(sol::NevanACContext)
 
         causality, optim = hardy_optim!(sol, h, zero_𝑎𝑏)
 
-        # break if we find optimal H in which causality is preserved and optimize is successful
+        # break if we find optimal H in which causality is preserved
+        # and optimize is successful
         if causality && optim
             break
         end
