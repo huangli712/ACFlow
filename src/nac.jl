@@ -590,7 +590,7 @@ function hardy_optim!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
     end
 
     function 𝐽(J::Vector{C64}, x::Vector{C64})
-        J .= gradient(functional, x)[1] 
+        J .= gradient(𝑓, x)[1]
     end
 
     res = optimize(𝑓, 𝐽, 𝑎𝑏, BFGS(), 
