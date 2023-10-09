@@ -420,10 +420,10 @@ function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     𝒜 = zeros(APC, 2, 2, nmesh)
     ∏ = zeros(APC, 2, 2)
 
-    for i in 1:nmesh
+    for i = 1:nmesh
         result = Matrix{APC}(I, 2, 2)
         𝑧 = 𝑚[i]
-        for j in 1:ngrid
+        for j = 1:ngrid
             ∏[1,1] = ( 𝑧 - 𝑔[j] ) / ( 𝑧 - conj(𝑔[j]) )
             ∏[1,2] = Φ[j]
             ∏[2,1] = conj(Φ[j]) * ∏[1,1]
