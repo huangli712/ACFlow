@@ -559,7 +559,9 @@ function calc_hmin!(nac::NevanACContext)
     while h ≤ hmax
         println("H = $h")
 
-        causality, optim = hardy_optimize!(nac, h)
+        ℋ = calc_hmatrix(nac.mesh, h)
+        𝑎𝑏 = zeros(C64, 2*h)
+        causality, optim = hardy_optimize!(nac, ℋ, 𝑎𝑏, h)
 
         # break if we find optimal H in which causality is preserved
         # and optimize is successful
@@ -579,7 +581,7 @@ end
 
 """
 """
-function hardy_optimize!(nac::NevanACContext, H::I64)
+function hardy_optimize!(nac::NevanACContext, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64}, H::I64)
     function 𝑓(x::Vector{C64})::F64
         return smooth_norm(nac, ℋ, x)
     end
@@ -587,9 +589,6 @@ function hardy_optimize!(nac::NevanACContext, H::I64)
     function 𝐽(J::Vector{C64}, x::Vector{C64})
         J .= gradient(𝑓, x)[1]
     end
-
-    ℋ = calc_hmatrix(nac.mesh, H)
-    𝑎𝑏 = zeros(C64, 2*H)
 
     res = optimize(𝑓, 𝐽, 𝑎𝑏, BFGS(), 
                    Optim.Options(iterations = 500, show_trace = true))
