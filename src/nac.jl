@@ -582,8 +582,8 @@ function calc_hopt!(nac::NevanACContext)
 
         ℋ = calc_hmatrix(nac.mesh, h)
         𝑎𝑏  = copy(nac.𝑎𝑏)
-        push!(𝑎𝑏, 0.0+0.0*im)
-        push!(𝑎𝑏, 0.0+0.0*im)
+        push!(𝑎𝑏, zero(C64))
+        push!(𝑎𝑏, zero(C64))
 
         causality, optim = hardy_optimize!(nac, ℋ, 𝑎𝑏, h)
 
