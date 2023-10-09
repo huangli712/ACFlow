@@ -311,7 +311,7 @@ function precompute(grid::AbstractGrid,
                     Gᵥ::Vector{APC})
     # Evaluate ϕ and `abcd` matrices
     Φ = calc_phis(grid, Gᵥ)
-    𝒜 = calc_abcd(grid, mesh, Φ)
+    @timev 𝒜 = calc_abcd(grid, mesh, Φ)
 
     # Allocate memory for evaluating θ
     ℋ = calc_hmatrix(mesh, 1)
