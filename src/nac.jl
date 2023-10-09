@@ -242,6 +242,28 @@ c_{\beta} & d_{\beta}
 \end{equation}
 ```
 
+See `calc_phis()`.
+
+---
+
+**𝒜 matrix**
+
+```math
+\begin{equation}
+\begin{pmatrix}
+a(z) & b(z) \\
+c(z) & d(z) 
+\end{pmatrix}
+= \prod^{M}_{j=1}
+\begin{pmatrix}
+\frac{z - Y_j}{z - Y^*_j} & \phi_j \\
+\phi^*_j \frac{z - Y_j}{z - Y^*_j} & 1
+\end{pmatrix}
+\end{equation}
+```
+
+See `calc_abcd()`.
+
 ---
 
 **Hardy basis**
