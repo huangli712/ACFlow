@@ -491,6 +491,11 @@ function calc_theta(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64}
 end
 
 """
+    calc_green(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
+
+θ is back transformed to a Nevanlinna interpolant via the inverse Mobius
+transform. Here, `𝒜` (`abcd` matrix), `ℋ` (Hardy matrix), and `𝑎𝑏` are
+used to evaluate θ.
 """
 function calc_green(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     causality = check_causality(ℋ, 𝑎𝑏)
