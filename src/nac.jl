@@ -568,9 +568,6 @@ function calc_hoptim(sol::NevanACContext)
 end
 
 function hardy_optimize!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
-    ℋₗ = calc_hmatrix(sol.mesh, H)
-    𝑎𝑏 = zeros(C64, 2*H)
-
     function 𝑓(x::Vector{C64})::F64
         return smooth_norm(sol, x, ℋₗ)
     end
@@ -578,6 +575,9 @@ function hardy_optimize!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
     function 𝐽(J::Vector{C64}, x::Vector{C64})
         J .= gradient(𝑓, x)[1]
     end
+
+    ℋₗ = calc_hmatrix(sol.mesh, H)
+    𝑎𝑏 = zeros(C64, 2*H)
 
     res = optimize(𝑓, 𝐽, 𝑎𝑏, BFGS(), 
                    Optim.Options(iterations = 500, show_trace = true))
