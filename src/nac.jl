@@ -571,10 +571,12 @@ function calc_hoptim(sol::NevanACContext)
     end
 end
 
-function calc_functional(sol::NevanACContext, H::Int64, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
-    param = ℋ * 𝑎𝑏
+function calc_loss(sol::NevanACContext, 𝑎𝑏::Vector{C64}, ℋ::Array{APC,2})
+    #param = ℋ * 𝑎𝑏
 
-    theta = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
+    #theta = (sol.𝒜[1,1,:].* param .+ sol.𝒜[1,2,:]) ./ (sol.𝒜[2,1,:].*param .+ sol.𝒜[2,2,:])
+    theta = calc_theta(sol.𝒜, ℋ, 𝑎𝑏)
+
     green = im * (one(APC) .+ theta) ./ (one(APC) .- theta)
     A = F64.(imag(green)./pi)
 
@@ -592,7 +594,7 @@ function hardy_optim!(sol::NevanACContext, H::I64)::Tuple{Bool, Bool}
     𝑎𝑏 = zeros(C64, 2*H)
 
     function functional(x::Vector{C64})::F64
-        return calc_functional(sol, H, x, ℋₗ)
+        return calc_loss(sol, x, ℋₗ)
     end
 
     function jacobian(J::Vector{C64}, x::Vector{C64})
