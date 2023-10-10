@@ -319,7 +319,7 @@ See `calc_theta()`.
 F[A_{\theta_{M+1}}(\omega)] =
     \left|
         1 - \int A_{\theta_{M+1}}(\omega) d\omega
-    \right| +
+    \right|^2 +
     \alpha \int \left[A^{''}_{\theta_{M+1}}(\omega)\right]^2 d\omega,
 \end{equation}
 ```
@@ -702,9 +702,12 @@ function smooth_norm(nac::NevanACContext, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C6
     A = F64.(imag.(_G) ./ π)
 
     tot_int = trapz(nac.mesh, A)
-    second_der = integrate_squared_second_deriv(nac.mesh.mesh, A) 
 
-    func = abs(1.0-tot_int)^2 + α*second_der
+    sd = second_deriv(nac.mesh.mesh, A)
+    x_sd = view(nac.mesh.mesh, 2:(length(nac.mesh)-1))
+    second_der = trapz(x_sd, abs.(sd) .^ 2)
+
+    func = abs(1.0-tot_int)^2 + α * second_der
 
     return func
 end
@@ -732,16 +735,7 @@ function second_deriv(x::AbstractVector, y::AbstractVector)
 end
 
 """
-Integrate the squarre of the abs of the second derivative
 """
-function integrate_squared_second_deriv(x::AbstractVector, y::AbstractVector)
-    N = length(x)
-    sd = second_deriv(x, y)
-
-    x_sd = view(x, 2:(N-1))
-    return trapz(x_sd, abs.(sd) .^ 2)
-end
-
 function check_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
     freq = calc_mobius(wn[1:Nopt])
     val = calc_mobius(-gw[1:Nopt])
@@ -757,6 +751,8 @@ function check_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
     val  = reverse(val)
 end
 
+"""
+"""
 function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     param = ℋ * 𝑎𝑏
     @show typeof(param), size(ℋ), size(𝑎𝑏), size(param)
