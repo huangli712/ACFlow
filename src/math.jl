@@ -212,6 +212,53 @@ end
 ### *Math* : *Derivatives*
 =#
 
+#=
+*Remarks* :
+
+**Second derivatives**
+
+We assume that the mesh is not uniform, so the centered difference approximation
+of ``f'(x)`` reads:
+
+```math
+\begin{equation}
+f'(x) = \frac{f(x + h_2) - f(x - h_1)}{h_1 + h_2}.
+\end{equation}
+```
+
+So the second derivative of ``f(x)`` is
+
+```math
+\begin{equation}
+f''(x) = \frac{f'(x + h_2) - f'(x - h_1)}{h_1 + h_2}.
+\end{equation}
+```
+
+Considering the backward difference approximation of ``f'(x + h_2)``:
+
+```math
+\begin{equation}
+f'(x + h_2) = \frac{f(x + h_2) - f(x)}{h_2}.
+\end{equation}
+```
+
+Similarly, we apply the forward difference approximation to ``f'(x - h_1)``:
+
+```math
+\begin{equation}
+f'(x - h_1) = \frac{f(x) - f(x - h_1)}{h_1}.
+\end{equation}
+```
+
+Finally, the second derivate of ``f(x)`` becomes
+
+```math
+\begin{equation}
+f''(x) = \frac{h_1 f(x + h_2) - (h_1 + h_2) f(x) + h_2 f(x - h_1)}{h_1h_2(h_2 + h_1)}.
+\end{equation}
+```
+=#
+
 """
     deriv2(x::AbstractVector, y::AbstractVector)
 
