@@ -401,6 +401,7 @@ end
     calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
 
 Try to calculate the Φ vector, which is used to calculate the 𝒜 matrix.
+Note that Φ should not be changed anymore once it has been established.
 """
 function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
     ngrid = length(grid)
