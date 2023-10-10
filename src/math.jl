@@ -259,6 +259,9 @@ f''(x) = \frac{h_1 f(x + h_2) - (h_1 + h_2) f(x) + h_2 f(x - h_1)}{h_1h_2(h_2 + 
 ```
 =#
 
+function deriv1(x::AbstractVector, y::AbstractVector)
+end
+
 """
     deriv2(x::AbstractVector, y::AbstractVector)
 
@@ -266,20 +269,18 @@ Compute second derivative y''(x). If the length of `x` and `y` is `N`, the
 length of the returned vector is `N-2`.
 """
 function deriv2(x::AbstractVector, y::AbstractVector)
-    if length(x) != length(y)
-        throw(ArgumentError("x and y must be the same length")) 
-    end
+    @assert length(x) == length(y)
 
     N = length(x)
-    dx_backward = view(x, 2:(N-1)) - view(x, 1:(N-2))
-    dx_forward = view(x, 3:N) - view(x, 2:(N-1))
+    h₁ = view(x, 2:(N-1)) - view(x, 1:(N-2))
+    h₂ = view(x, 3:N) - view(x, 2:(N-1))
 
     y_forward = view(y, 3:N)
     y_mid = view(y, 2:(N-1))
     y_backward = view(y, 1:(N-2))
 
-    n = dx_backward .* y_forward + dx_forward .* y_backward - (dx_forward + dx_backward) .* y_mid
-    d = (dx_forward.^2) .* dx_backward + (dx_backward.^2) .* dx_forward
+    n = h₁ .* y_forward + h₂ .* y_backward - (h₁ + h₂) .* y_mid
+    d = (h₂.^2) .* h₁ + (h₁.^2) .* h₂
     return 2 .* n ./ d
 end
 
