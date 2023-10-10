@@ -654,7 +654,8 @@ end
                     𝑎𝑏::Vector{C64},
                     H::I64)
 
-For 
+For given Hardy matrix ℋ, try to update the expanding coefficients 𝑎𝑏
+by minimizing the smooth norm.
 """
 function hardy_optimize!(nac::NevanACContext,
                          ℋ::Array{APC,2},
