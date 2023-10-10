@@ -585,7 +585,8 @@ and the corresponding coefficients 𝑎𝑏 are updated. They are used to
 calculate θ, which is then back transformed to generate smooth G (i.e.,
 the spectrum) at real axis.
 
-This function will determine the minimal value of H.
+This function will determine the minimal value of H (hmin). Of course,
+ℋ and 𝑎𝑏 in NevanACContext object are also changed.
 """
 function calc_hmin!(nac::NevanACContext)
     hmax = get_n("hmax")
@@ -594,12 +595,15 @@ function calc_hmin!(nac::NevanACContext)
     while h ≤ hmax
         println("H = $h")
 
+        # Prepare initial ℋ and 𝑎𝑏
         ℋ = calc_hmatrix(nac.mesh, h)
         𝑎𝑏 = zeros(C64, 2*h)
+
+        # Hardy basis optimization
         causality, optim = hardy_optimize!(nac, ℋ, 𝑎𝑏, h)
 
-        # break if we find optimal H in which causality is preserved
-        # and optimize is successful
+        # Check whether the causality is preserved and the
+        # optimization is successful.
         if causality && optim
             nac.hmin = h
             break
