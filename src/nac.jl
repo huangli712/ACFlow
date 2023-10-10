@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/09
+# Last modified: 2023/10/10
 #
 
 #=
@@ -25,8 +25,8 @@ Mutable struct. It is used within the NevanAC solver only.
 * 𝒜    -> Coefficients matrix `abcd` in Schur algorithm.
 * ℋ    -> Hardy matrix for Hardy basis optimization.
 * 𝑎𝑏   -> Coefficients matrix for expanding `θ` with Hardy basis.
-* hmin -> Minimal value of H, the order of Hardy basis functions.
-* hopt -> Optimal value of H, the order of Hardy basis functions.
+* hmin -> Minimal value of the order of Hardy basis functions.
+* hopt -> Optimal value of the order of Hardy basis functions.
 """
 mutable struct NevanACContext
     Gᵥ   :: Vector{APC}
@@ -95,18 +95,28 @@ function init(S::NevanACSolver, rd::RawData)
     Φ, 𝒜, ℋ, 𝑎𝑏 = precompute(grid, mesh, Gᵥ)
     println("Precompute key matrices")
 
+    # Actually, the NevanACContext struct already contains enough
+    # information to build the Nevanlinna interpolant and get the
+    # spectrum, but Hardy basis optimization is needed to smooth
+    # the results further.
     return NevanACContext(Gᵥ, grid, mesh, Φ, 𝒜, ℋ, 𝑎𝑏, 1, 1)
 end
 
 """
     run(nac::NevanACContext)
 
-Perform Hardy basis optimization to smooth the spectrum.
+Perform Hardy basis optimization to smooth the spectrum. the members `ℋ`,
+`𝑎𝑏`, `hmin`, and `hopt` of the NevanACContext object (`nac`) should be
+updated in this function.
 """
 function run(nac::NevanACContext)
     hardy = get_n("hardy")
+    #
     if hardy
+        # Determine the minimal Hardy order (`hmin`), update `ℋ` and `𝑎𝑏`.
         calc_hmin!(nac)
+
+        # Determine the optimal Hardy order (`hopt`), update `ℋ` and `𝑎𝑏`.
         calc_hopt!(nac)
     end
 end
@@ -124,7 +134,8 @@ function last(nac::NevanACContext)
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
 
     # Calculate full response function on real axis and write them
-    # Note that _G is actually 𝑁G, so there is a `-` symbol.
+    # Note that _G is actually 𝑁G, so there is a `-` symbol for the
+    # return value.
     _G = C64.(calc_green(nac.𝒜, nac.ℋ, nac.𝑎𝑏))
     fwrite && write_complete(nac.mesh, -_G)
 
@@ -137,7 +148,7 @@ function last(nac::NevanACContext)
     G = reprod(nac.mesh, kernel, Aout)
     fwrite && write_backward(nac.grid, G)
 
-    return Aout, _G
+    return Aout, -_G
 end
 
 #=
@@ -298,6 +309,23 @@ See `calc_hbasis()` and `calc_hmatrix()`.
 ```
 
 See `calc_theta()`.
+
+---
+
+**Smooth norm**
+
+```math
+\begin{equation}
+F[A_{\theta_{M+1}}(\omega)] =
+    \left|
+        1 - \int A_{\theta_{M+1}}(\omega) d\omega
+    \right| +
+    \alpha \int \left[A^{''}_{\theta_{M+1}}(\omega)\right]^2 d\omega,
+\end{equation}
+```
+where the first term enforces proper normalization while the second
+term promotes smoothness by minimizing second derivatives. Here α
+is a regulation parameter.
 =#
 
 """

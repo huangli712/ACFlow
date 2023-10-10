@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/09
+# Last modified: 2023/10/10
 #
 
 #=
@@ -110,7 +110,7 @@ const PNevanAC = Dict{String,ADT}(
     "pick"    => [missing, 1, :Bool  , "Check the Pick criterion or not"],
     "hardy"   => [missing, 1, :Bool  , "Perform Hardy basis optimization or not"],
     "hmax"    => [missing, 1, :I64   , "Upper cut off of Hardy order"],
-    "alpha"   => [missing, 1, :F64   , "Regulation parameter for Hardy basis optimization"],
+    "alpha"   => [missing, 1, :F64   , "Regulation parameter for smooth norm"],
     "eta"     => [missing, 1, :F64   , "Tiny distance from the real axis"],
 )
 
