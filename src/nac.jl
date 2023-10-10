@@ -335,8 +335,11 @@ See `smooth_norm()`.
                mesh::AbstractMesh,
                Gᵥ::Vector{APC})
 
-Precompute some key quantities. Here `Gᵥ` is input data, `grid` is the
-grid for input data, and `mesh` is the mesh for output spectrum.
+Precompute some key quantities, such as `Φ`, `𝒜`, `ℋ`, and `𝑎𝑏`. Note
+that `Φ` and `𝒜` won't be changed any more. But `𝒜` and `𝑎𝑏` should be
+updated by the Hardy basis optimization to get a smooth spectrum. Here
+`Gᵥ` is input data, `grid` is the grid for input data, and `mesh` is
+the mesh for output spectrum.
 """
 function precompute(grid::AbstractGrid,
                     mesh::AbstractMesh,
@@ -346,6 +349,7 @@ function precompute(grid::AbstractGrid,
     𝒜 = calc_abcd(grid, mesh, Φ)
 
     # Allocate memory for evaluating θ
+    # The initial Hardy order is just 1.
     ℋ = calc_hmatrix(mesh, 1)
     𝑎𝑏 = zeros(C64, 2)
 
