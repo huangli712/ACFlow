@@ -614,6 +614,15 @@ function calc_hmin!(nac::NevanACContext)
 end
 
 """
+    calc_hopt!(nac::NevanACContext)
+
+Try to perform Hardy basis optimization. Such that the Hardy matrix ℋ
+and the corresponding coefficients 𝑎𝑏 are updated. They are used to
+calculate θ, which is then back transformed to generate smooth G (i.e.,
+the spectrum) at real axis.
+
+This function will determine the optimal value of H (hopt). Of course,
+ℋ and 𝑎𝑏 in NevanACContext object are also changed.
 """
 function calc_hopt!(nac::NevanACContext)
     for h = nac.hmin + 1:get_n("hmax")
