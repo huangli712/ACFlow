@@ -215,7 +215,7 @@ end
 #=
 *Remarks* :
 
-**Second derivatives**
+**First and second derivatives**
 
 We assume that the mesh is not uniform, so the centered difference approximation
 of ``f'(x)`` reads:
