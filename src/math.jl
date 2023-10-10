@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/28
+# Last modified: 2023/10/10
 #
 
 #=
@@ -206,6 +206,34 @@ function simpson(x::AbstractVector{S},
     end
 
     return h * (y[1] + y[end] + 4.0 * even_sum + 2.0 * odd_sum)
+end
+
+#=
+### *Math* : *Derivatives*
+=#
+
+"""
+    deriv2(x::AbstractVector, y::AbstractVector)
+
+Compute second derivative y''(x). If the length of `x` and `y` is `N`, the
+length of the returned vector is `N-2`.
+"""
+function deriv2(x::AbstractVector, y::AbstractVector)
+    if length(x) != length(y)
+        throw(ArgumentError("x and y must be the same length")) 
+    end
+
+    N = length(x)
+    dx_backward = view(x, 2:(N-1)) - view(x, 1:(N-2))
+    dx_forward = view(x, 3:N) - view(x, 2:(N-1))
+
+    y_forward = view(y, 3:N)
+    y_mid = view(y, 2:(N-1))
+    y_backward = view(y, 1:(N-2))
+
+    n = dx_backward .* y_forward + dx_forward .* y_backward - (dx_forward + dx_backward) .* y_mid
+    d = (dx_forward.^2) .* dx_backward + (dx_backward.^2) .* dx_forward
+    return 2 .* n ./ d
 end
 
 #=

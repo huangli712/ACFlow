@@ -705,7 +705,7 @@ function smooth_norm(nac::NevanACContext, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C6
     𝑓₁ = trapz(nac.mesh, A)
 
     # Smoothness term
-    sd = second_deriv(nac.mesh.mesh, A)
+    sd = deriv2(nac.mesh.mesh, A)
     x_sd = nac.mesh.mesh[2:end-1]
     𝑓₂ = trapz(x_sd, abs.(sd) .^ 2)
 
@@ -713,28 +713,6 @@ function smooth_norm(nac::NevanACContext, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C6
     𝐹 = abs(1.0 - 𝑓₁)^2 + α * 𝑓₂
 
     return 𝐹
-end
-
-"""
-Compute second derivative
-If the length of `x` and `y` is `N`, the length of the returned vector is `N-2`.
-"""
-function second_deriv(x::AbstractVector, y::AbstractVector)
-    if length(x) != length(y)
-        throw(ArgumentError("x and y must be the same length")) 
-    end
-
-    N = length(x)
-    dx_backward = view(x, 2:(N-1)) - view(x, 1:(N-2))
-    dx_forward = view(x, 3:N) - view(x, 2:(N-1))
-
-    y_forward = view(y, 3:N)
-    y_mid = view(y, 2:(N-1))
-    y_backward = view(y, 1:(N-2))
-
-    n = dx_backward .* y_forward + dx_forward .* y_backward - (dx_forward + dx_backward) .* y_mid
-    d = (dx_forward.^2) .* dx_backward + (dx_backward.^2) .* dx_forward
-    return 2 .* n ./ d
 end
 
 """
