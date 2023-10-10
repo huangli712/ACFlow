@@ -260,6 +260,16 @@ f''(x) = \frac{h_1 f(x + h_2) - (h_1 + h_2) f(x) + h_2 f(x - h_1)}{h_1h_2(h_2 + 
 =#
 
 function deriv1(x::AbstractVector, y::AbstractVector)
+    @assert length(x) == length(y)
+
+    N = length(x)
+    h₁ = view(x, 2:(N-1)) - view(x, 1:(N-2))
+    h₂ = view(x, 3:N) - view(x, 2:(N-1))
+
+    y_forward = view(y, 3:N)
+    y_backward = view(y, 1:(N-2))
+
+    return (y_forward .- y_backward) ./ (h₁ + h₂)
 end
 
 """
