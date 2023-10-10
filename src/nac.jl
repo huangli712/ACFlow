@@ -688,10 +688,16 @@ function hardy_optimize!(nac::NevanACContext,
 end
 
 """
+    smooth_norm(nac::NevanACContext, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
+
+Establish the smooth norm, which is used to improve the smoothness of
+the output spectrum.
 """
 function smooth_norm(nac::NevanACContext, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
+    # Get regulation parameter
     α = get_n("alpha")
 
+    # Generate output spectrum
     _G = calc_green(nac.𝒜, ℋ, 𝑎𝑏)
     A = F64.(imag.(_G) ./ π)
 
