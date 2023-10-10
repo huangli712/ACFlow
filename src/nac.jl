@@ -625,17 +625,23 @@ This function will determine the optimal value of H (hopt). Of course,
 ℋ and 𝑎𝑏 in NevanACContext object are also changed.
 """
 function calc_hopt!(nac::NevanACContext)
-    for h = nac.hmin + 1:get_n("hmax")
+    hmax = get_n("hmax")
+
+    for h = nac.hmin + 1:hmax
         println("H = $h")
 
+        # Prepare initial ℋ and 𝑎𝑏
         ℋ = calc_hmatrix(nac.mesh, h)
         𝑎𝑏  = copy(nac.𝑎𝑏)
         push!(𝑎𝑏, zero(C64))
         push!(𝑎𝑏, zero(C64))
+        @assert size(ℋ)[2] == length(𝑎𝑏)
 
+        # Hardy basis optimization
         causality, optim = hardy_optimize!(nac, ℋ, 𝑎𝑏, h)
 
-        # break if we face instability of optimization
+        # Check whether the causality is preserved and the
+        # optimization is successful.
         if !(causality && optim)
             break
         end
