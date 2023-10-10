@@ -279,9 +279,9 @@ function deriv2(x::AbstractVector, y::AbstractVector)
     y_mid = view(y, 2:(N-1))
     y_backward = view(y, 1:(N-2))
 
-    n = h₁ .* y_forward + h₂ .* y_backward - (h₁ + h₂) .* y_mid
-    d = (h₂.^2) .* h₁ + (h₁.^2) .* h₂
-    return 2 .* n ./ d
+    num = h₁ .* y_forward + h₂ .* y_backward - (h₁ + h₂) .* y_mid
+    den = (h₂.^2) .* h₁ + (h₁.^2) .* h₂
+    return 2 .* num ./ den
 end
 
 #=
