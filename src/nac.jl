@@ -326,6 +326,8 @@ F[A_{\theta_{M+1}}(\omega)] =
 where the first term enforces proper normalization while the second
 term promotes smoothness by minimizing second derivatives. Here α
 is a regulation parameter.
+
+See `smooth_norm()`.
 =#
 
 """
