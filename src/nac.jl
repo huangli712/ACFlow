@@ -701,13 +701,16 @@ function smooth_norm(nac::NevanACContext, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C6
     _G = calc_green(nac.𝒜, ℋ, 𝑎𝑏)
     A = F64.(imag.(_G) ./ π)
 
+    # Normalization term
     tot_int = trapz(nac.mesh, A)
 
+    # Smoothness term
     sd = second_deriv(nac.mesh.mesh, A)
     x_sd = view(nac.mesh.mesh, 2:(length(nac.mesh)-1))
     second_der = trapz(x_sd, abs.(sd) .^ 2)
 
-    func = abs(1.0-tot_int)^2 + α * second_der
+    # Assemble the final smooth norm
+    func = abs(1.0 - tot_int)^2 + α * second_der
 
     return func
 end
