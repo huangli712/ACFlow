@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/10
+# Last modified: 2023/10/19
 #
 
 #=
@@ -212,71 +212,11 @@ end
 ### *Math* : *Derivatives*
 =#
 
-#=
-*Remarks* :
-
-**First and second derivatives**
-
-We assume that the mesh is not uniform, so the centered difference approximation
-of ``f'(x)`` reads:
-
-```math
-\begin{equation}
-f'(x) = \frac{f(x + h_2) - f(x - h_1)}{h_1 + h_2}.
-\end{equation}
-```
-
-So the second derivative of ``f(x)`` is
-
-```math
-\begin{equation}
-f''(x) = \frac{f'(x + h_2) - f'(x - h_1)}{h_1 + h_2}.
-\end{equation}
-```
-
-Considering the backward difference approximation of ``f'(x + h_2)``:
-
-```math
-\begin{equation}
-f'(x + h_2) = \frac{f(x + h_2) - f(x)}{h_2}.
-\end{equation}
-```
-
-Similarly, we apply the forward difference approximation to ``f'(x - h_1)``:
-
-```math
-\begin{equation}
-f'(x - h_1) = \frac{f(x) - f(x - h_1)}{h_1}.
-\end{equation}
-```
-
-Finally, the second derivate of ``f(x)`` becomes
-
-```math
-\begin{equation}
-f''(x) = \frac{h_1 f(x + h_2) - (h_1 + h_2) f(x) + h_2 f(x - h_1)}{h_1h_2(h_2 + h_1)}.
-\end{equation}
-```
-=#
-
-function deriv1(x::AbstractVector, y::AbstractVector)
-    @assert length(x) == length(y)
-
-    N = length(x)
-    h₁ = view(x, 2:(N-1)) - view(x, 1:(N-2))
-    h₂ = view(x, 3:N) - view(x, 2:(N-1))
-
-    y_forward = view(y, 3:N)
-    y_backward = view(y, 1:(N-2))
-
-    return (y_forward .- y_backward) ./ (h₁ + h₂)
-end
-
 """
     deriv2(x::AbstractVector, y::AbstractVector)
 
-Compute second derivative y''(x). If the length of `x` and `y` is `N`, the
-length of the returned vector is `N-2`.
+Compute second derivative y''(x). If the length of `x` and `y` is `N`,
+the length of the returned vector is `N-2`.
 """
 function deriv2(x::AbstractVector, y::AbstractVector)
     @assert length(x) == length(y)
