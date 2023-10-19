@@ -661,7 +661,7 @@ function hardy_optimize!(nac::NevanACContext,
                          ℋ::Array{APC,2},
                          𝑎𝑏::Vector{C64},
                          H::I64)
-    function 𝑓(x::Vector{C64})::F64
+    function 𝑓(x::Vector{C64})
         return smooth_norm(nac, ℋ, x)
     end
 
@@ -712,7 +712,7 @@ function smooth_norm(nac::NevanACContext, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C6
     # Assemble the final smooth norm
     𝐹 = abs(1.0 - 𝑓₁)^2 + α * 𝑓₂
 
-    return 𝐹
+    return F64(𝐹)
 end
 
 """
