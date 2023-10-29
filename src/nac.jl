@@ -665,11 +665,11 @@ function hardy_optimize!(nac::NevanACContext,
         return smooth_norm(nac, ℋ, x)
     end
 
-    function 𝐽(J::Vector{C64}, x::Vector{C64})
+    function 𝐽!(J::Vector{C64}, x::Vector{C64})
         J .= gradient(𝑓, x)[1]
     end
 
-    res = optimize(𝑓, 𝐽, 𝑎𝑏, BFGS(), 
+    res = optimize(𝑓, 𝐽!, 𝑎𝑏, BFGS(), 
                    Optim.Options(iterations = 500, show_trace = true))
     
     if  !(Optim.converged(res))
