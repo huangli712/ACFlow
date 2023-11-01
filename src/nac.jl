@@ -776,7 +776,7 @@ function finite_difference_gradient(
     fx=nothing,
     c1=nothing,
     c2=nothing;
-    relstep=default_relstep(fdtype, eltype(x)),
+    relstep=default_relstep(eltype(x)),
     absstep=relstep,
     dir=true)
 
@@ -804,16 +804,8 @@ function finite_difference_gradient(
     finite_difference_gradient!(df, f, x, cache, relstep=relstep, absstep=absstep, dir=dir)
 end
 
-@inline function default_relstep(::Val{fdtype}, ::Type{T}) where {fdtype,T<:Number}
-    if fdtype==:forward
-        return sqrt(eps(real(T)))
-    elseif fdtype==:central
-        return cbrt(eps(real(T)))
-    elseif fdtype==:hcentral
-        eps(T)^(1/4)
-    else
-        return one(real(T))
-    end
+@inline function default_relstep(::Type{T}) where {T<:Number}
+    return cbrt(eps(real(T)))
 end
 
 struct GradientCache{CacheType1,CacheType2,CacheType3,CacheType4}
@@ -845,7 +837,7 @@ function finite_difference_gradient!(
     f,
     x::StridedVector{<:Number},
     cache::GradientCache{T1,T2,T3,T4};
-    relstep=default_relstep(Val(:central), eltype(x)),
+    relstep=default_relstep(eltype(x)),
     absstep=relstep,
     dir=true) where {T1,T2,T3,T4,returntype,inplace}
 
