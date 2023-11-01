@@ -836,20 +836,12 @@ function GradientCache(
     typeof(x) <: AbstractArray # the vector->scalar case
 
     fdtype != Val(:complex) # complex-mode FD only needs one cache, for x+eps*im
-        #if eltype(df) <: Complex && !(eltype(x) <: Complex)
-        #    @show "here1"
-        #    _c1 = zero(Complex{eltype(x)}) .* x
-        #    _c2 = nothing
-        #else
-        #    @show "here2"
-            _c1 = nothing
-            _c2 = nothing
-        #end
+    _c1 = nothing
+    _c2 = nothing
     _c3 = zero(x)
 
     GradientCache{Nothing,typeof(_c1),typeof(_c2),typeof(_c3),fdtype,
         returntype,inplace}(nothing, _c1, _c2, _c3)
-
 end
 
 function finite_difference_gradient!(
