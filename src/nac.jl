@@ -767,32 +767,10 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
-@inline function compute_epsilon(x::T, relstep::Real, absstep::Real) where {T<:Number}
-    return max(relstep*abs(x), absstep)
-end
-
-@inline function default_relstep(::Type{T}) where {T<:Number}
-    return cbrt(eps(real(T)))
-end
-
-struct GradientCache{CacheType1,CacheType2,CacheType3,CacheType4}
-    c1::CacheType2
-    c3::CacheType4
-end
-
-function GradientCache(x)
-    typeof(x) <: AbstractArray # the vector->scalar case
-    _c1 = nothing
-    _c2 = nothing
-    _c3 = zero(x)
-
-    GradientCache{Nothing,typeof(_c1),typeof(_c2),typeof(_c3)}(_c1, _c3)
-end
-
 function finite_difference_gradient(f, x::StridedVector{<:Number})
     df = zero(eltype(x)) .* x
-    #cache = GradientCache(x)
-    relstep=default_relstep(eltype(x))
+    T = eltype(x)
+    relstep=cbrt(eps(real(T)))
     absstep=relstep
 
     # c1 is x1 if we need a complex copy of x, otherwise Nothing
@@ -808,7 +786,7 @@ function finite_difference_gradient(f, x::StridedVector{<:Number})
     copyto!(c3, x)
     
     @inbounds for i ∈ eachindex(x)
-        epsilon = compute_epsilon(x[i], relstep, absstep)
+        epsilon = max(relstep*abs(x[i]), absstep)
         x_old = x[i]
         c3[i] += epsilon
         dfi = f(c3)
