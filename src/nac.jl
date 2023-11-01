@@ -777,20 +777,21 @@ function finite_difference_gradient(f, x::StridedVector{<:Number})
     
     @inbounds for i ∈ eachindex(x)
         epsilon = max(relstep*abs(x[i]), absstep)
+        #
         x_old = x[i]
+        #
         c3[i] += epsilon
         dfi = f(c3)
         c3[i] = x_old - epsilon
         dfi -= f(c3)
         c3[i] = x_old
         df[i] = real(dfi / (2 * epsilon))
-
+        #
         c3[i] += im * epsilon
         dfi = f(c3)
         c3[i] = x_old - im * epsilon
         dfi -= f(c3)
         c3[i] = x_old
-
         df[i] -= im * imag(dfi / (2 * im * epsilon))
     end
     df
