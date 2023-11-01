@@ -832,10 +832,9 @@ function GradientCache(
 
     fdtype isa Type && (fdtype = fdtype())
     inplace isa Type && (inplace = inplace())
-
     typeof(x) <: AbstractArray # the vector->scalar case
-
     fdtype != Val(:complex) # complex-mode FD only needs one cache, for x+eps*im
+
     _c1 = nothing
     _c2 = nothing
     _c3 = zero(x)
