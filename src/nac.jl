@@ -781,27 +781,8 @@ function finite_difference_gradient(
     dir=true)
 
     inplace isa Type && (inplace = inplace())
-    if typeof(x) <: AbstractArray
-        @show "hehe1"
-        df = zero(returntype) .* x
-    else
-        @show "hehe2"
-        if inplace == Val(true)
-            if typeof(fx) == Nothing && typeof(c1) == Nothing && typeof(c2) == Nothing
-                error("In the scalar->vector in-place map case, at least one of fx, c1 or c2 must be provided, otherwise we cannot infer the return size.")
-            else
-                if c1 != nothing
-                    df = zero(c1)
-                elseif fx != nothing
-                    df = zero(fx)
-                elseif c2 != nothing
-                    df = zero(c2)
-                end
-            end
-        else
-            df = zero(f(x))
-        end
-    end
+    typeof(x) <: AbstractArray
+    df = zero(returntype) .* x
     cache = GradientCache(x, fdtype, inplace)
     finite_difference_gradient!(df, f, x, cache, relstep=relstep, absstep=absstep, dir=dir)
 end
