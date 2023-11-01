@@ -800,7 +800,7 @@ function finite_difference_gradient(
             df = zero(f(x))
         end
     end
-    cache = GradientCache(df, x, fdtype, returntype, inplace)
+    cache = GradientCache(x, fdtype, inplace)
     finite_difference_gradient!(df, f, x, cache, relstep=relstep, absstep=absstep, dir=dir)
 end
 
@@ -814,10 +814,8 @@ struct GradientCache{CacheType1,CacheType2,CacheType3,CacheType4}
 end
 
 function GradientCache(
-    df,
     x,
     fdtype=Val(:central),
-    returntype=eltype(df),
     inplace=Val(true))
 
     fdtype isa Type && (fdtype = fdtype())
