@@ -773,8 +773,7 @@ function finite_difference_gradient(f, x::StridedVector{<:Number})
     relstep=cbrt(eps(real(T)))
     absstep=relstep
 
-    c3 = zero(x)
-    copyto!(c3, x)
+    c3 = copy(x)
     
     @inbounds for i ∈ eachindex(x)
         epsilon = max(relstep*abs(x[i]), absstep)
