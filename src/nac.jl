@@ -773,9 +773,6 @@ function finite_difference_gradient(
     fdtype=Val(:central),
     returntype=eltype(x),
     inplace=Val(true),
-    fx=nothing,
-    c1=nothing,
-    c2=nothing;
     relstep=default_relstep(eltype(x)),
     absstep=relstep,
     dir=true)
