@@ -783,7 +783,7 @@ function finite_difference_gradient(
     finite_difference_gradient!(df, f, x, cache, relstep=relstep, absstep=absstep)
 end
 
-@inline function compute_epsilon(x::T, relstep::Real, absstep::Real) where T<:Number
+@inline function compute_epsilon(x::T, relstep::Real, absstep::Real) where {T<:Number}
     return max(relstep*abs(x), absstep)
 end
 
