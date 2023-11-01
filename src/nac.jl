@@ -667,8 +667,6 @@ function hardy_optimize!(nac::NevanACContext,
 
     function 𝐽!(J::Vector{C64}, x::Vector{C64})
         J .= gradient(𝑓, x)
-        @show J
- #       exit()
     end
 
     res = optimize(𝑓, 𝐽!, 𝑎𝑏, BFGS(), 
