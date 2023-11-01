@@ -767,12 +767,6 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
-function finite_difference_gradient(f, x)
-    df = zero(eltype(x)) .* x
-    cache = GradientCache(x)
-    finite_difference_gradient!(df, f, x, cache)
-end
-
 @inline function compute_epsilon(x::T, relstep::Real, absstep::Real) where {T<:Number}
     return max(relstep*abs(x), absstep)
 end
@@ -795,13 +789,11 @@ function GradientCache(x)
     GradientCache{Nothing,typeof(_c1),typeof(_c2),typeof(_c3)}(_c1, _c3)
 end
 
-function finite_difference_gradient!(
-    df::StridedVector{<:Number},
-    f,
-    x::StridedVector{<:Number},
-    cache::GradientCache{T1,T2,T3,T4};
-    relstep=default_relstep(eltype(x)),
-    absstep=relstep) where {T1,T2,T3,T4}
+function finite_difference_gradient(f, x::StridedVector{<:Number})
+    df = zero(eltype(x)) .* x
+    cache = GradientCache(x)
+    relstep=default_relstep(eltype(x))
+    absstep=relstep
 
     # c1 is x1 if we need a complex copy of x, otherwise Nothing
     # c2 is Nothing
