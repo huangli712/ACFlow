@@ -767,15 +767,8 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
-function finite_difference_gradient(
-    f,
-    x,
-    returntype=eltype(x),
-    inplace=Val(true))
-
-    inplace isa Type && (inplace = inplace())
-    typeof(x) <: AbstractArray
-    df = zero(returntype) .* x
+function finite_difference_gradient(f, x)
+    df = zero(eltype(x)) .* x
     cache = GradientCache(x)
     finite_difference_gradient!(df, f, x, cache)
 end
