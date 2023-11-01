@@ -755,15 +755,13 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
 end
 
 function gradient(f, x::StridedVector{<:Number})
-    df = zero(eltype(x)) .* x
-    T = eltype(x)
-    relstep=cbrt(eps(real(T)))
-    absstep=relstep
+    𝑠 = cbrt(eps(F64))
 
+    ∇𝑓 = zero(x)
     cx = copy(x)
-    
+
     @inbounds for i in eachindex(x)
-        ϵ = max(relstep*abs(x[i]), absstep)
+        ϵ = max(𝑠*abs(x[i]), 𝑠)
         #
         x_old = x[i]
         #
@@ -772,14 +770,14 @@ function gradient(f, x::StridedVector{<:Number})
         cx[i] = x_old - ϵ
         dfi -= f(cx)
         cx[i] = x_old
-        df[i] = real(dfi / (2 * ϵ))
+        ∇𝑓[i] = real(dfi / (2 * ϵ))
         #
         cx[i] += im * ϵ
         dfi = f(cx)
         cx[i] = x_old - im * ϵ
         dfi -= f(cx)
         cx[i] = x_old
-        df[i] -= im * imag(dfi / (2 * im * ϵ))
+        ∇𝑓[i] -= im * imag(dfi / (2 * im * ϵ))
     end
-    df
+    ∇𝑓
 end
