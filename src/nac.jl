@@ -758,25 +758,25 @@ function gradient(f, x::StridedVector{<:Number})
     𝑠 = cbrt(eps(F64))
 
     ∇𝑓 = zero(x)
-    cx = copy(x)
+    𝑥 = copy(x)
 
     @inbounds for i in eachindex(x)
         ϵ = max(𝑠*abs(x[i]), 𝑠)
         #
         x_old = x[i]
         #
-        cx[i] += ϵ
-        dfi = f(cx)
-        cx[i] = x_old - ϵ
-        dfi -= f(cx)
+        𝑥[i] += ϵ
+        dfi = f(𝑥)
+        𝑥[i] = x_old - ϵ
+        dfi -= f(𝑥)
         cx[i] = x_old
         ∇𝑓[i] = real(dfi / (2 * ϵ))
         #
-        cx[i] += im * ϵ
-        dfi = f(cx)
-        cx[i] = x_old - im * ϵ
-        dfi -= f(cx)
-        cx[i] = x_old
+        𝑥[i] += im * ϵ
+        dfi = f(𝑥)
+        𝑥[i] = x_old - im * ϵ
+        dfi -= f(𝑥)
+        𝑥[i] = x_old
         ∇𝑓[i] -= im * imag(dfi / (2 * im * ϵ))
     end
     ∇𝑓
