@@ -839,7 +839,7 @@ function finite_difference_gradient!(
     cache::GradientCache{T1,T2,T3,T4};
     relstep=default_relstep(eltype(x)),
     absstep=relstep,
-    dir=true) where {T1,T2,T3,T4,returntype,inplace}
+    dir=true) where {T1,T2,T3,T4}
 
     # c1 is x1 if we need a complex copy of x, otherwise Nothing
     # c2 is Nothing
