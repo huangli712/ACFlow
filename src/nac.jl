@@ -666,7 +666,7 @@ function hardy_optimize!(nac::NevanACContext,
     end
 
     function 𝐽!(J::Vector{C64}, x::Vector{C64})
-        J .= finite_difference_gradient(𝑓, x)
+        J .= gradient(𝑓, x)
         @show J
  #       exit()
     end
@@ -754,7 +754,7 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
-function finite_difference_gradient(f, x::StridedVector{<:Number})
+function gradient(f, x::StridedVector{<:Number})
     df = zero(eltype(x)) .* x
     T = eltype(x)
     relstep=cbrt(eps(real(T)))
