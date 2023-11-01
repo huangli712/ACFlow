@@ -836,18 +836,15 @@ function GradientCache(
     typeof(x) <: AbstractArray # the vector->scalar case
 
     fdtype != Val(:complex) # complex-mode FD only needs one cache, for x+eps*im
-    if typeof(x) <: StridedVector
-        if eltype(df) <: Complex && !(eltype(x) <: Complex)
-            _c1 = zero(Complex{eltype(x)}) .* x
-            _c2 = nothing
-        else
+        #if eltype(df) <: Complex && !(eltype(x) <: Complex)
+        #    @show "here1"
+        #    _c1 = zero(Complex{eltype(x)}) .* x
+        #    _c2 = nothing
+        #else
+        #    @show "here2"
             _c1 = nothing
             _c2 = nothing
-        end
-    else
-        _c1 = zero(x)
-        _c2 = zero(real(eltype(x))) .* x
-    end
+        #end
     _c3 = zero(x)
 
     GradientCache{Nothing,typeof(_c1),typeof(_c2),typeof(_c3),fdtype,
