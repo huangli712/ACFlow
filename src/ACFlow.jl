@@ -47,7 +47,6 @@ module ACFlow
 =#
 
 using Optim #Nevanlinna
-using FiniteDiff
 
 using Distributed
 using LinearAlgebra
