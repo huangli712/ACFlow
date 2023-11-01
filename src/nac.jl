@@ -856,6 +856,7 @@ function finite_difference_gradient!(
     # c1 is x1 if we need a complex copy of x, otherwise Nothing
     # c2 is Nothing
     fx, c1, c2, c3 = cache.fx, cache.c1, cache.c2, cache.c3
+
     if fdtype != Val(:complex)
         if eltype(df) <: Complex && !(eltype(x) <: Complex)
             copyto!(c1, x)
