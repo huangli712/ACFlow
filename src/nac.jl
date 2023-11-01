@@ -770,14 +770,13 @@ end
 function finite_difference_gradient(
     f,
     x,
-    fdtype=Val(:central),
     returntype=eltype(x),
     inplace=Val(true))
 
     inplace isa Type && (inplace = inplace())
     typeof(x) <: AbstractArray
     df = zero(returntype) .* x
-    cache = GradientCache(x, fdtype, inplace)
+    cache = GradientCache(x)
     finite_difference_gradient!(df, f, x, cache)
 end
 
@@ -794,16 +793,8 @@ struct GradientCache{CacheType1,CacheType2,CacheType3,CacheType4}
     c3::CacheType4
 end
 
-function GradientCache(
-    x,
-    fdtype=Val(:central),
-    inplace=Val(true))
-
-    fdtype isa Type && (fdtype = fdtype())
-    inplace isa Type && (inplace = inplace())
+function GradientCache(x)
     typeof(x) <: AbstractArray # the vector->scalar case
-    fdtype != Val(:complex) # complex-mode FD only needs one cache, for x+eps*im
-
     _c1 = nothing
     _c2 = nothing
     _c3 = zero(x)
