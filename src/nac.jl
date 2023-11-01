@@ -667,10 +667,7 @@ function hardy_optimize!(nac::NevanACContext,
 
     function 𝐽!(J::Vector{C64}, x::Vector{C64})
         #J .= gradient(𝑓, x)[1]
-        #@show x
-        #@show J
-        #@show FiniteDiff.finite_difference_gradient(𝑓, x)
-        J .= FiniteDiff.finite_difference_gradient(𝑓, x)
+        J .= finite_difference_gradient(𝑓, x)
         @show J
  #       exit()
     end
@@ -768,4 +765,235 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     end
 
     return causality
+end
+
+function finite_difference_gradient(
+    f,
+    x,
+    fdtype=Val(:central),
+    returntype=eltype(x),
+    inplace=Val(true),
+    fx=nothing,
+    c1=nothing,
+    c2=nothing;
+    relstep=default_relstep(fdtype, eltype(x)),
+    absstep=relstep,
+    dir=true)
+
+    inplace isa Type && (inplace = inplace())
+    if typeof(x) <: AbstractArray
+        df = zero(returntype) .* x
+    else
+        if inplace == Val(true)
+            if typeof(fx) == Nothing && typeof(c1) == Nothing && typeof(c2) == Nothing
+                error("In the scalar->vector in-place map case, at least one of fx, c1 or c2 must be provided, otherwise we cannot infer the return size.")
+            else
+                if c1 != nothing
+                    df = zero(c1)
+                elseif fx != nothing
+                    df = zero(fx)
+                elseif c2 != nothing
+                    df = zero(c2)
+                end
+            end
+        else
+            df = zero(f(x))
+        end
+    end
+    cache = GradientCache(df, x, fdtype, returntype, inplace)
+    finite_difference_gradient!(df, f, x, cache, relstep=relstep, absstep=absstep, dir=dir)
+end
+
+@inline function default_relstep(::Val{fdtype}, ::Type{T}) where {fdtype,T<:Number}
+    if fdtype==:forward
+        return sqrt(eps(real(T)))
+    elseif fdtype==:central
+        return cbrt(eps(real(T)))
+    elseif fdtype==:hcentral
+        eps(T)^(1/4)
+    else
+        return one(real(T))
+    end
+end
+
+struct GradientCache{CacheType1,CacheType2,CacheType3,CacheType4,fdtype,returntype,inplace}
+    fx::CacheType1
+    c1::CacheType2
+    c2::CacheType3
+    c3::CacheType4
+end
+
+function GradientCache(
+    df,
+    x,
+    fdtype=Val(:central),
+    returntype=eltype(df),
+    inplace=Val(true))
+
+    fdtype isa Type && (fdtype = fdtype())
+    inplace isa Type && (inplace = inplace())
+    if typeof(x) <: AbstractArray # the vector->scalar case
+        if fdtype != Val(:complex) # complex-mode FD only needs one cache, for x+eps*im
+            if typeof(x) <: StridedVector
+                if eltype(df) <: Complex && !(eltype(x) <: Complex)
+                    _c1 = zero(Complex{eltype(x)}) .* x
+                    _c2 = nothing
+                else
+                    _c1 = nothing
+                    _c2 = nothing
+                end
+            else
+                _c1 = zero(x)
+                _c2 = zero(real(eltype(x))) .* x
+            end
+        else
+            if !(returntype <: Real)
+                fdtype_error(returntype)
+            else
+                _c1 = x .+ zero(eltype(x)) .* im
+                _c2 = nothing
+            end
+        end
+        _c3 = zero(x)
+    else # the scalar->vector case
+        # need cache arrays for fx1 and fx2, except in complex mode, which needs one complex array
+        if fdtype != Val(:complex)
+            _c1 = zero(df)
+            _c2 = zero(df)
+        else
+            _c1 = zero(Complex{eltype(x)}) .* df
+            _c2 = nothing
+        end
+        _c3 = x
+    end
+
+    GradientCache{Nothing,typeof(_c1),typeof(_c2),typeof(_c3),fdtype,
+        returntype,inplace}(nothing, _c1, _c2, _c3)
+
+end
+
+function finite_difference_gradient!(
+    df::StridedVector{<:Number},
+    f,
+    x::StridedVector{<:Number},
+    cache::GradientCache{T1,T2,T3,T4,fdtype,returntype,inplace};
+    relstep=default_relstep(fdtype, eltype(x)),
+    absstep=relstep,
+    dir=true) where {T1,T2,T3,T4,fdtype,returntype,inplace}
+
+    # c1 is x1 if we need a complex copy of x, otherwise Nothing
+    # c2 is Nothing
+    fx, c1, c2, c3 = cache.fx, cache.c1, cache.c2, cache.c3
+    if fdtype != Val(:complex)
+        if eltype(df) <: Complex && !(eltype(x) <: Complex)
+            copyto!(c1, x)
+        end
+    end
+    copyto!(c3, x)
+    if fdtype == Val(:forward)
+        for i ∈ eachindex(x)
+            epsilon = compute_epsilon(fdtype, x[i], relstep, absstep, dir)
+            x_old = x[i]
+            if typeof(fx) != Nothing
+                c3[i] += epsilon
+                dfi = (f(c3) - fx) / epsilon
+                c3[i] = x_old
+            else
+                fx0 = f(x)
+                c3[i] += epsilon
+                dfi = (f(c3) - fx0) / epsilon
+                c3[i] = x_old
+            end
+
+            df[i] = real(dfi)
+            if eltype(df) <: Complex
+                if eltype(x) <: Complex
+                    c3[i] += im * epsilon
+                    if typeof(fx) != Nothing
+                        dfi = (f(c3) - fx) / (im * epsilon)
+                    else
+                        dfi = (f(c3) - fx0) / (im * epsilon)
+                    end
+                    c3[i] = x_old
+                else
+                    c1[i] += im * epsilon
+                    if typeof(fx) != Nothing
+                        dfi = (f(c1) - fx) / (im * epsilon)
+                    else
+                        dfi = (f(c1) - fx0) / (im * epsilon)
+                    end
+                    c1[i] = x_old
+                end
+                df[i] -= im * imag(dfi)
+            end
+        end
+    elseif fdtype == Val(:central)
+        @inbounds for i ∈ eachindex(x)
+            epsilon = compute_epsilon(fdtype, x[i], relstep, absstep, dir)
+            x_old = x[i]
+            c3[i] += epsilon
+            dfi = f(c3)
+            c3[i] = x_old - epsilon
+            dfi -= f(c3)
+            c3[i] = x_old
+            df[i] = real(dfi / (2 * epsilon))
+            if eltype(df) <: Complex
+                if eltype(x) <: Complex
+                    c3[i] += im * epsilon
+                    dfi = f(c3)
+                    c3[i] = x_old - im * epsilon
+                    dfi -= f(c3)
+                    c3[i] = x_old
+                else
+                    c1[i] += im * epsilon
+                    dfi = f(c1)
+                    c1[i] = x_old - im * epsilon
+                    dfi -= f(c1)
+                    c1[i] = x_old
+                end
+                df[i] -= im * imag(dfi / (2 * im * epsilon))
+            end
+        end
+    elseif fdtype == Val(:complex) && returntype <: Real && eltype(df) <: Real && eltype(x) <: Real
+        copyto!(c1, x)
+        epsilon_complex = eps(real(eltype(x)))
+        # we use c1 here to avoid typing issues with x
+        @inbounds for i ∈ eachindex(x)
+            c1_old = c1[i]
+            c1[i] += im * epsilon_complex
+            df[i] = imag(f(c1)) / epsilon_complex
+            c1[i] = c1_old
+        end
+    else
+        fdtype_error(returntype)
+    end
+    df
+end
+
+
+
+"""
+    fast_scalar_indexing(::Type{T}) -> Bool
+
+Query whether an array type has fast scalar indexing.
+"""
+fast_scalar_indexing(x) = fast_scalar_indexing(typeof(x))
+fast_scalar_indexing(::Type) = true
+fast_scalar_indexing(::Type{<:LinearAlgebra.AbstractQ}) = false
+fast_scalar_indexing(::Type{<:LinearAlgebra.LQPackedQ}) = false
+
+@inline function compute_epsilon(::Val{:forward}, x::T, relstep::Real, absstep::Real, dir::Real) where T<:Number
+    return max(relstep*abs(x), absstep)*dir
+end
+
+@inline function compute_epsilon(::Val{:central}, x::T, relstep::Real, absstep::Real, dir=nothing) where T<:Number
+    return max(relstep*abs(x), absstep)
+end
+
+@inline function compute_epsilon(::Val{:hcentral}, x::T, relstep::Real, absstep::Real, dir=nothing) where T<:Number
+    return max(relstep*abs(x), absstep)
+end
+
+@inline function compute_epsilon(::Val{:complex}, x::T, ::Union{Nothing,T}=nothing, ::Union{Nothing,T}=nothing, dir=nothing) where T<:Real
+    return eps(T)
 end
