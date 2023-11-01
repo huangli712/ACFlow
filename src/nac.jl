@@ -672,6 +672,8 @@ function hardy_optimize!(nac::NevanACContext,
     res = optimize(𝑓, 𝐽!, 𝑎𝑏, BFGS(), 
                    Optim.Options(iterations = 500, show_trace = true))
     
+    @show Optim.minimizer(res)
+
     if  !(Optim.converged(res))
         println("Faild to optimize!")
     end
