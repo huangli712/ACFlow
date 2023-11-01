@@ -784,6 +784,10 @@ function finite_difference_gradient(
     finite_difference_gradient!(df, f, x, cache, relstep=relstep, absstep=absstep, dir=dir)
 end
 
+@inline function compute_epsilon(::Val{:central}, x::T, relstep::Real, absstep::Real, dir=nothing) where T<:Number
+    return max(relstep*abs(x), absstep)
+end
+
 @inline function default_relstep(::Type{T}) where {T<:Number}
     return cbrt(eps(real(T)))
 end
@@ -858,8 +862,4 @@ function finite_difference_gradient!(
         end
     end
     df
-end
-
-@inline function compute_epsilon(::Val{:central}, x::T, relstep::Real, absstep::Real, dir=nothing) where T<:Number
-    return max(relstep*abs(x), absstep)
 end
