@@ -890,110 +890,36 @@ function finite_difference_gradient!(
         end
     end
     copyto!(c3, x)
-    if fdtype == Val(:forward)
-        for i ∈ eachindex(x)
-            epsilon = compute_epsilon(fdtype, x[i], relstep, absstep, dir)
-            x_old = x[i]
-            if typeof(fx) != Nothing
-                c3[i] += epsilon
-                dfi = (f(c3) - fx) / epsilon
+    
+    @inbounds for i ∈ eachindex(x)
+        epsilon = compute_epsilon(fdtype, x[i], relstep, absstep, dir)
+        x_old = x[i]
+        c3[i] += epsilon
+        dfi = f(c3)
+        c3[i] = x_old - epsilon
+        dfi -= f(c3)
+        c3[i] = x_old
+        df[i] = real(dfi / (2 * epsilon))
+        if eltype(df) <: Complex
+            if eltype(x) <: Complex
+                c3[i] += im * epsilon
+                dfi = f(c3)
+                c3[i] = x_old - im * epsilon
+                dfi -= f(c3)
                 c3[i] = x_old
             else
-                fx0 = f(x)
-                c3[i] += epsilon
-                dfi = (f(c3) - fx0) / epsilon
-                c3[i] = x_old
+                c1[i] += im * epsilon
+                dfi = f(c1)
+                c1[i] = x_old - im * epsilon
+                dfi -= f(c1)
+                c1[i] = x_old
             end
-
-            df[i] = real(dfi)
-            if eltype(df) <: Complex
-                if eltype(x) <: Complex
-                    c3[i] += im * epsilon
-                    if typeof(fx) != Nothing
-                        dfi = (f(c3) - fx) / (im * epsilon)
-                    else
-                        dfi = (f(c3) - fx0) / (im * epsilon)
-                    end
-                    c3[i] = x_old
-                else
-                    c1[i] += im * epsilon
-                    if typeof(fx) != Nothing
-                        dfi = (f(c1) - fx) / (im * epsilon)
-                    else
-                        dfi = (f(c1) - fx0) / (im * epsilon)
-                    end
-                    c1[i] = x_old
-                end
-                df[i] -= im * imag(dfi)
-            end
+            df[i] -= im * imag(dfi / (2 * im * epsilon))
         end
-    elseif fdtype == Val(:central)
-        @inbounds for i ∈ eachindex(x)
-            epsilon = compute_epsilon(fdtype, x[i], relstep, absstep, dir)
-            x_old = x[i]
-            c3[i] += epsilon
-            dfi = f(c3)
-            c3[i] = x_old - epsilon
-            dfi -= f(c3)
-            c3[i] = x_old
-            df[i] = real(dfi / (2 * epsilon))
-            if eltype(df) <: Complex
-                if eltype(x) <: Complex
-                    c3[i] += im * epsilon
-                    dfi = f(c3)
-                    c3[i] = x_old - im * epsilon
-                    dfi -= f(c3)
-                    c3[i] = x_old
-                else
-                    c1[i] += im * epsilon
-                    dfi = f(c1)
-                    c1[i] = x_old - im * epsilon
-                    dfi -= f(c1)
-                    c1[i] = x_old
-                end
-                df[i] -= im * imag(dfi / (2 * im * epsilon))
-            end
-        end
-    elseif fdtype == Val(:complex) && returntype <: Real && eltype(df) <: Real && eltype(x) <: Real
-        copyto!(c1, x)
-        epsilon_complex = eps(real(eltype(x)))
-        # we use c1 here to avoid typing issues with x
-        @inbounds for i ∈ eachindex(x)
-            c1_old = c1[i]
-            c1[i] += im * epsilon_complex
-            df[i] = imag(f(c1)) / epsilon_complex
-            c1[i] = c1_old
-        end
-    else
-        fdtype_error(returntype)
     end
     df
 end
 
-
-
-"""
-    fast_scalar_indexing(::Type{T}) -> Bool
-
-Query whether an array type has fast scalar indexing.
-"""
-fast_scalar_indexing(x) = fast_scalar_indexing(typeof(x))
-fast_scalar_indexing(::Type) = true
-fast_scalar_indexing(::Type{<:LinearAlgebra.AbstractQ}) = false
-fast_scalar_indexing(::Type{<:LinearAlgebra.LQPackedQ}) = false
-
-@inline function compute_epsilon(::Val{:forward}, x::T, relstep::Real, absstep::Real, dir::Real) where T<:Number
-    return max(relstep*abs(x), absstep)*dir
-end
-
 @inline function compute_epsilon(::Val{:central}, x::T, relstep::Real, absstep::Real, dir=nothing) where T<:Number
     return max(relstep*abs(x), absstep)
-end
-
-@inline function compute_epsilon(::Val{:hcentral}, x::T, relstep::Real, absstep::Real, dir=nothing) where T<:Number
-    return max(relstep*abs(x), absstep)
-end
-
-@inline function compute_epsilon(::Val{:complex}, x::T, ::Union{Nothing,T}=nothing, ::Union{Nothing,T}=nothing, dir=nothing) where T<:Real
-    return eps(T)
 end
