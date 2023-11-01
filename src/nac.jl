@@ -791,7 +791,7 @@ end
 
 function finite_difference_gradient(f, x::StridedVector{<:Number})
     df = zero(eltype(x)) .* x
-    cache = GradientCache(x)
+    #cache = GradientCache(x)
     relstep=default_relstep(eltype(x))
     absstep=relstep
 
