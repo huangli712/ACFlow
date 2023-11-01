@@ -816,10 +816,8 @@ end
     end
 end
 
-struct GradientCache{CacheType1,CacheType2,CacheType3,CacheType4,fdtype,returntype,inplace}
-    fx::CacheType1
+struct GradientCache{CacheType1,CacheType2,CacheType3,CacheType4}
     c1::CacheType2
-    c2::CacheType3
     c3::CacheType4
 end
 
@@ -839,23 +837,23 @@ function GradientCache(
     _c2 = nothing
     _c3 = zero(x)
 
-    GradientCache{Nothing,typeof(_c1),typeof(_c2),typeof(_c3),fdtype,
-        returntype,inplace}(nothing, _c1, _c2, _c3)
+    GradientCache{Nothing,typeof(_c1),typeof(_c2),typeof(_c3)}(_c1, _c3)
 end
 
 function finite_difference_gradient!(
     df::StridedVector{<:Number},
     f,
     x::StridedVector{<:Number},
-    cache::GradientCache{T1,T2,T3,T4,fdtype,returntype,inplace};
-    relstep=default_relstep(fdtype, eltype(x)),
+    cache::GradientCache{T1,T2,T3,T4};
+    relstep=default_relstep(Val(:central), eltype(x)),
     absstep=relstep,
-    dir=true) where {T1,T2,T3,T4,fdtype,returntype,inplace}
+    dir=true) where {T1,T2,T3,T4,returntype,inplace}
 
     # c1 is x1 if we need a complex copy of x, otherwise Nothing
     # c2 is Nothing
-    fx, c1, c2, c3 = cache.fx, cache.c1, cache.c2, cache.c3
+    c1, c3 = cache.c1, cache.c3
 
+    fdtype=Val(:central)
     if fdtype != Val(:complex)
         if eltype(df) <: Complex && !(eltype(x) <: Complex)
             copyto!(c1, x)
