@@ -760,26 +760,26 @@ function gradient(f, x::StridedVector{<:Number})
     relstep=cbrt(eps(real(T)))
     absstep=relstep
 
-    c3 = copy(x)
+    cx = copy(x)
     
-    @inbounds for i ∈ eachindex(x)
-        epsilon = max(relstep*abs(x[i]), absstep)
+    @inbounds for i in eachindex(x)
+        ϵ = max(relstep*abs(x[i]), absstep)
         #
         x_old = x[i]
         #
-        c3[i] += epsilon
-        dfi = f(c3)
-        c3[i] = x_old - epsilon
-        dfi -= f(c3)
-        c3[i] = x_old
-        df[i] = real(dfi / (2 * epsilon))
+        cx[i] += ϵ
+        dfi = f(cx)
+        cx[i] = x_old - ϵ
+        dfi -= f(cx)
+        cx[i] = x_old
+        df[i] = real(dfi / (2 * ϵ))
         #
-        c3[i] += im * epsilon
-        dfi = f(c3)
-        c3[i] = x_old - im * epsilon
-        dfi -= f(c3)
-        c3[i] = x_old
-        df[i] -= im * imag(dfi / (2 * im * epsilon))
+        cx[i] += im * ϵ
+        dfi = f(cx)
+        cx[i] = x_old - im * ϵ
+        dfi -= f(cx)
+        cx[i] = x_old
+        df[i] -= im * imag(dfi / (2 * im * ϵ))
     end
     df
 end
