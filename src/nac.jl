@@ -773,16 +773,7 @@ function finite_difference_gradient(f, x::StridedVector{<:Number})
     relstep=cbrt(eps(real(T)))
     absstep=relstep
 
-    # c1 is x1 if we need a complex copy of x, otherwise Nothing
-    # c2 is Nothing
-    c1, c3 = nothing, zero(x)
-
-    fdtype=Val(:central)
-    if fdtype != Val(:complex)
-        if eltype(df) <: Complex && !(eltype(x) <: Complex)
-            copyto!(c1, x)
-        end
-    end
+    c3 = zero(x)
     copyto!(c3, x)
     
     @inbounds for i ∈ eachindex(x)
@@ -794,22 +785,14 @@ function finite_difference_gradient(f, x::StridedVector{<:Number})
         dfi -= f(c3)
         c3[i] = x_old
         df[i] = real(dfi / (2 * epsilon))
-        if eltype(df) <: Complex
-            if eltype(x) <: Complex
-                c3[i] += im * epsilon
-                dfi = f(c3)
-                c3[i] = x_old - im * epsilon
-                dfi -= f(c3)
-                c3[i] = x_old
-            else
-                c1[i] += im * epsilon
-                dfi = f(c1)
-                c1[i] = x_old - im * epsilon
-                dfi -= f(c1)
-                c1[i] = x_old
-            end
-            df[i] -= im * imag(dfi / (2 * im * epsilon))
-        end
+
+        c3[i] += im * epsilon
+        dfi = f(c3)
+        c3[i] = x_old - im * epsilon
+        dfi -= f(c3)
+        c3[i] = x_old
+
+        df[i] -= im * imag(dfi / (2 * im * epsilon))
     end
     df
 end
