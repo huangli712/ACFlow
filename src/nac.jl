@@ -774,17 +774,16 @@ function finite_difference_gradient(
     returntype=eltype(x),
     inplace=Val(true),
     relstep=default_relstep(eltype(x)),
-    absstep=relstep,
-    dir=true)
+    absstep=relstep)
 
     inplace isa Type && (inplace = inplace())
     typeof(x) <: AbstractArray
     df = zero(returntype) .* x
     cache = GradientCache(x, fdtype, inplace)
-    finite_difference_gradient!(df, f, x, cache, relstep=relstep, absstep=absstep, dir=dir)
+    finite_difference_gradient!(df, f, x, cache, relstep=relstep, absstep=absstep)
 end
 
-@inline function compute_epsilon(::Val{:central}, x::T, relstep::Real, absstep::Real, dir=nothing) where T<:Number
+@inline function compute_epsilon(x::T, relstep::Real, absstep::Real) where T<:Number
     return max(relstep*abs(x), absstep)
 end
 
@@ -820,8 +819,7 @@ function finite_difference_gradient!(
     x::StridedVector{<:Number},
     cache::GradientCache{T1,T2,T3,T4};
     relstep=default_relstep(eltype(x)),
-    absstep=relstep,
-    dir=true) where {T1,T2,T3,T4}
+    absstep=relstep) where {T1,T2,T3,T4}
 
     # c1 is x1 if we need a complex copy of x, otherwise Nothing
     # c2 is Nothing
@@ -836,7 +834,7 @@ function finite_difference_gradient!(
     copyto!(c3, x)
     
     @inbounds for i ∈ eachindex(x)
-        epsilon = compute_epsilon(fdtype, x[i], relstep, absstep, dir)
+        epsilon = compute_epsilon(x[i], relstep, absstep)
         x_old = x[i]
         c3[i] += epsilon
         dfi = f(c3)
