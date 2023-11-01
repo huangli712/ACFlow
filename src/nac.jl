@@ -666,11 +666,29 @@ function hardy_optimize!(nac::NevanACContext,
     end
 
     function 𝐽!(J::Vector{C64}, x::Vector{C64})
-        J .= gradient(𝑓, x)[1]
+        #J .= gradient(𝑓, x)[1]
+        #@show x
+        #@show J
+        #@show FiniteDiff.finite_difference_gradient(𝑓, x)
+        J .= FiniteDiff.finite_difference_gradient(𝑓, x)
+        @show J
+ #       exit()
     end
+
+    function fun(x::Vector{C64}, nac::NevanACContext, ℋ::Array{APC,2})
+        f = smooth_norm(nac, ℋ, x)
+        J = gradient(𝑓, x)[1]
+        return f, J
+    end
+
+    #solution, call = newton(fun, 𝑎𝑏, nac, ℋ)
+    #@show solution, call
 
     res = optimize(𝑓, 𝐽!, 𝑎𝑏, BFGS(), 
                    Optim.Options(iterations = 500, show_trace = true))
+    #@show Optim.minimizer(res)
+
+    #exit()
     
     if  !(Optim.converged(res))
         println("Faild to optimize!")
