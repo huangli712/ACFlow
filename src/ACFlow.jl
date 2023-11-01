@@ -46,7 +46,9 @@ module ACFlow
 ### *Using Standard Libraries*
 =#
 
-using Optim #Nevanlinna
+#using Optim #Nevanlinna
+using LineSearches
+import NLSolversBase: AbstractObjective
 
 using Distributed
 using LinearAlgebra

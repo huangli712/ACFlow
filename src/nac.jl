@@ -670,9 +670,9 @@ function hardy_optimize!(nac::NevanACContext,
     end
 
     res = optimize(𝑓, 𝐽!, 𝑎𝑏, BFGS(), 
-                   Optim.Options(iterations = 500, show_trace = true))
+                   Options(iterations = 500, show_trace = true))
     
-    @show Optim.minimizer(res)
+    @show minimizer(res)
 
     if  !(Optim.converged(res))
         println("Faild to optimize!")
@@ -752,4 +752,671 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     end
 
     return causality
+end
+
+
+abstract type Manifold end
+abstract type AbstractOptimizer end
+abstract type FirstOrderOptimizer  <: AbstractOptimizer end
+struct Flat <: Manifold
+end
+struct BFGS{IL, L, H, T, TM} <: FirstOrderOptimizer
+    alphaguess!::IL
+    linesearch!::L
+    initial_invH::H
+    initial_stepnorm::T
+    manifold::TM
+end
+
+abstract type AbstractOptimizerState end
+mutable struct BFGSState{Tx, Tm, T,G} <: AbstractOptimizerState
+    x::Tx
+    x_previous::Tx
+    g_previous::G
+    f_x_previous::T
+    dx::Tx
+    dg::Tx
+    u::Tx
+    invH::Tm
+    s::Tx
+    @add_linesearch_fields()
+end
+
+
+#abstract type AbstractObjective end
+
+mutable struct ManifoldObjective{T <: AbstractObjective} <: AbstractObjective
+    manifold::Manifold
+    inner_obj::T
+end
+
+struct OptimizationState{Tf<:Real, T <: AbstractOptimizer}
+    iteration::Int
+    value::Tf
+    g_norm::Tf
+    metadata::Dict
+end
+
+const OptimizationTrace{Tf, T} = Vector{OptimizationState{Tf, T}}
+
+abstract type OptimizationResults1 end
+
+mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, M, Tls, Tsb} <: OptimizationResults1
+    method::O
+    initial_x::Tx
+    minimizer::Tx
+    minimum::Tf
+    iterations::Int
+    iteration_converged::Bool
+    x_converged::Bool
+    x_abstol::Tf
+    x_reltol::Tf
+    x_abschange::Tc
+    x_relchange::Tc
+    f_converged::Bool
+    f_abstol::Tf
+    f_reltol::Tf
+    f_abschange::Tc
+    f_relchange::Tc
+    g_converged::Bool
+    g_abstol::Tf
+    g_residual::Tc
+    f_increased::Bool
+    trace::M
+    f_calls::Int
+    g_calls::Int
+    h_calls::Int
+    ls_success::Tls
+    time_limit::Float64
+    time_run::Float64
+    stopped_by::Tsb
+end
+
+# Used for objectives and solvers where the gradient is available/exists
+mutable struct OnceDifferentiable1{TF, TDF, TX} <: AbstractObjective
+    f # objective
+    df # (partial) derivative of objective
+    fdf # objective and (partial) derivative of objective
+    F::TF # cache for f output
+    DF::TDF # cache for df output
+    x_f::TX # x used to evaluate f (stored in F)
+    x_df::TX # x used to evaluate df (stored in DF)
+    f_calls::Vector{Int}
+    df_calls::Vector{Int}
+end
+
+struct Options{T, TCallback}
+    x_abstol::T
+    x_reltol::T
+    f_abstol::T
+    f_reltol::T
+    g_abstol::T
+    g_reltol::T
+    outer_x_abstol::T
+    outer_x_reltol::T
+    outer_f_abstol::T
+    outer_f_reltol::T
+    outer_g_abstol::T
+    outer_g_reltol::T
+    f_calls_limit::Int
+    g_calls_limit::Int
+    h_calls_limit::Int
+    allow_f_increases::Bool
+    allow_outer_f_increases::Bool
+    successive_f_tol::Int
+    iterations::Int
+    outer_iterations::Int
+    store_trace::Bool
+    trace_simplex::Bool
+    show_trace::Bool
+    extended_trace::Bool
+    show_every::Int
+    callback::TCallback
+    time_limit::Float64
+end
+
+function Options(;
+        x_tol = nothing,
+        f_tol = nothing,
+        g_tol = nothing,
+        x_abstol::Real = 0.0,
+        x_reltol::Real = 0.0,
+        f_abstol::Real = 0.0,
+        f_reltol::Real = 0.0,
+        g_abstol::Real = 1e-8,
+        g_reltol::Real = 1e-8,
+        outer_x_tol = nothing,
+        outer_f_tol = nothing,
+        outer_g_tol = nothing,
+        outer_x_abstol::Real = 0.0,
+        outer_x_reltol::Real = 0.0,
+        outer_f_abstol::Real = 0.0,
+        outer_f_reltol::Real = 0.0,
+        outer_g_abstol::Real = 1e-8,
+        outer_g_reltol::Real = 1e-8,
+        f_calls_limit::Int = 0,
+        g_calls_limit::Int = 0,
+        h_calls_limit::Int = 0,
+        allow_f_increases::Bool = true,
+        allow_outer_f_increases::Bool = true,
+        successive_f_tol::Int = 1,
+        iterations::Int = 1_000,
+        outer_iterations::Int = 1000,
+        store_trace::Bool = false,
+        trace_simplex::Bool = false,
+        show_trace::Bool = false,
+        extended_trace::Bool = false,
+        show_every::Int = 1,
+        callback = nothing,
+        time_limit = NaN)
+    show_every = show_every > 0 ? show_every : 1
+    #if extended_trace && callback === nothing
+    #    show_trace = true
+    #end
+    if !(x_tol === nothing)
+        x_abstol = x_tol
+    end
+    if !(g_tol === nothing)
+        g_abstol = g_tol
+    end
+    if !(f_tol === nothing)
+        f_reltol = f_tol
+    end
+    if !(outer_x_tol === nothing)
+        outer_x_abstol = outer_x_tol
+    end
+    if !(outer_g_tol === nothing)
+        outer_g_abstol = outer_g_tol
+    end
+    if !(outer_f_tol === nothing)
+        outer_f_reltol = outer_f_tol
+    end
+    Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_x_abstol, outer_x_reltol, outer_f_abstol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit, h_calls_limit,
+        allow_f_increases, allow_outer_f_increases, successive_f_tol, Int(iterations), Int(outer_iterations), store_trace, trace_simplex, show_trace, extended_trace,
+        Int(show_every), callback, Float64(time_limit))
+end
+
+_alphaguess(a) = a
+_alphaguess(a::Number) = LineSearches.InitialStatic(alpha=a)
+function BFGS(; alphaguess = LineSearches.InitialStatic(), # TODO: benchmark defaults
+    linesearch = LineSearches.HagerZhang(),  # TODO: benchmark defaults
+    initial_invH = nothing,
+    initial_stepnorm = nothing,
+    manifold::Manifold=Flat())
+BFGS(_alphaguess(alphaguess), linesearch, initial_invH, initial_stepnorm, manifold)
+end
+
+function perform_linesearch!(state, method, d)
+    # Calculate search direction dphi0
+    dphi_0 = real(dot(gradient(d), state.s))
+    # reset the direction if it becomes corrupted
+    if dphi_0 >= zero(dphi_0) && reset_search_direction!(state, d, method)
+        dphi_0 = real(dot(gradient(d), state.s)) # update after direction reset
+    end
+    phi_0  = value(d)
+
+    # Guess an alpha
+    method.alphaguess!(method.linesearch!, state, phi_0, dphi_0, d)
+
+    # Store current x and f(x) for next iteration
+    state.f_x_previous = phi_0
+    copyto!(state.x_previous, state.x)
+
+    # Perform line search; catch LineSearchException to allow graceful exit
+    try
+        @show typeof(d)
+        state.alpha, ϕalpha = method.linesearch!(d, state.x, state.s, state.alpha,
+                               state.x_ls, phi_0, dphi_0)
+        return true # lssuccess = true
+    catch ex
+        if isa(ex, LineSearches.LineSearchException)
+            state.alpha = ex.alpha
+            # We shouldn't warn here, we should just carry it to the output
+            # @warn("Linesearch failed, using alpha = $(state.alpha) and
+            # exiting optimization.\nThe linesearch exited with message:\n$(ex.message)")
+            return false # lssuccess = false
+        else
+            rethrow(ex)
+        end
+    end
+end
+
+#promote_objtype(method::FirstOrderOptimizer,  x, autodiff::Symbol, inplace::Bool, f) = OnceDifferentiable1(f, x, real(zero(eltype(x))); autodiff = autodiff)
+promote_objtype(method::FirstOrderOptimizer,  x, autodiff::Symbol, inplace::Bool, args...) = OnceDifferentiable1(args..., x, real(zero(eltype(x))); inplace = inplace)
+#promote_objtype(method::FirstOrderOptimizer,  x, autodiff::Symbol, inplace::Bool, f, g, h) = OnceDifferentiable1(f, g, x, real(zero(eltype(x))); inplace = inplace)
+
+x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
+alloc_DF(x, F) = eltype(x)(NaN) .* vec(F) .* vec(x)'
+alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
+
+function df!_from_df(g, F::Real, inplace)
+    if inplace
+        return g
+    else
+        return function gg!(G, x)
+            copyto!(G, g(x))
+            G
+        end
+    end
+end
+function df!_from_df(j, F::AbstractArray, inplace)
+    if inplace
+        return j
+    else
+        return function jj!(J, x)
+            copyto!(J, j(x))
+            J
+        end
+    end
+end
+
+struct InplaceObjective{DF, FDF, FGH, Hv, FGHv}
+    df::DF
+    fdf::FDF
+    fgh::FGH
+    hv::Hv
+    fghv::FGHv
+end
+
+InplaceObjective(;df=nothing, fdf=nothing, fgh=nothing, hv=nothing, fghv=nothing) = InplaceObjective(df, fdf, fgh, hv, fghv)
+const InPlaceObjectiveFGH = InplaceObjective{<:Nothing, <:Nothing, <:Any, <:Nothing, <: Nothing}
+const InPlaceObjectiveFG_Hv = InplaceObjective{<:Nothing, <:Any, <:Nothing, <:Any, <:Nothing}
+const InPlaceObjectiveFGHv = InplaceObjective{<:Nothing, <:Nothing, <:Nothing, <:Nothing, <:Any}
+make_fdf(t::InplaceObjective, x, F::Real) = (G, x) -> fdf(t)(F, G, x)
+make_fdf(t::InPlaceObjectiveFGH, x, F::Real) = (G, x) -> t.fgh(F, G, nothing, x)
+make_fdf(t::InPlaceObjectiveFGHv, x, F::Real) = (G, x) -> t.fghv(F, G, nothing, x, nothing)
+make_fdf(t::InplaceObjective, x, F) = fdf(t)
+
+function make_fdf(x, F, f!, j!)
+    function fj!(fx, jx, x)
+        j!(jx, x)
+        return f!(fx, x)
+    end
+end
+function make_fdf(x, F::Number, f, g!)
+    function fg!(gx, x)
+        g!(gx, x)
+        return f(x)
+    end
+end
+
+function fdf!_from_fdf(fg, F::Real, inplace)
+    if inplace
+        return fg
+    else
+        return function ffgg!(G, x)
+            fx, gx = fg(x)
+            copyto!(G, gx)
+            fx
+        end
+    end
+end
+
+function fdf!_from_fdf(fj, F::AbstractArray, inplace)
+    if inplace
+        return fj
+    else
+        return function ffjj!(F, J, x)
+            fx, jx = fj(x)
+            copyto!(J, jx)
+            copyto!(F, fx)
+        end
+    end
+end
+
+function OnceDifferentiable1(f, df, fdf,
+    x::AbstractArray,
+    F::Real = real(zero(eltype(x))),
+    DF::AbstractArray = alloc_DF(x, F);
+    inplace = true)
+
+    # f is never "inplace" since F is scalar
+    df! = df!_from_df(df, F, inplace)
+    fdf! = fdf!_from_fdf(fdf, F, inplace)
+
+    x_f, x_df = x_of_nans(x), x_of_nans(x)
+
+    OnceDifferentiable1{typeof(F),typeof(DF),typeof(x)}(f, df!, fdf!,
+    copy(F), copy(DF),
+    x_f, x_df,
+    [0,], [0,])
+end
+
+function OnceDifferentiable1(f, df,
+                   x::AbstractArray,
+                   F::Real = real(zero(eltype(x))),
+                   DF::AbstractArray = alloc_DF(x, F);
+                   inplace = true)
+
+
+    df! = df!_from_df(df, F, inplace)
+
+    fdf! = make_fdf(x, F, f, df!)
+
+    OnceDifferentiable1(f, df!, fdf!, x, F, DF)
+end
+
+#=
+function OnceDifferentiable1(f, j,
+                   x::AbstractArray,
+                   F::AbstractArray,
+                   J::AbstractArray = alloc_DF(x, F);
+                   inplace = true)
+
+    f! = f!_from_f(f, F, inplace)
+    j! = df!_from_df(j, F, inplace)
+    fj! = make_fdf(x, F, f!, j!)
+
+    OnceDifferentiable1(f!, j!, fj!, x, F, J)
+end
+=#
+
+function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer,
+         options::Options = Options(;default_options(method)...); inplace = true, autodiff = :finite)
+
+    d = promote_objtype(method, initial_x, autodiff, inplace, f, g)
+
+    optimize(d, initial_x, method, options)
+end
+
+"""
+Evaluates the gradient value at `x`.
+
+Stores the value in `obj.DF`.
+"""
+function gradient!(obj::AbstractObjective, x)
+    if x != obj.x_df
+        gradient!!(obj, x)
+    end
+    gradient(obj)
+end
+
+function gradient(obj::ManifoldObjective)
+    gradient(obj.inner_obj)
+end
+
+function value(obj::ManifoldObjective)
+    value(obj.inner_obj)
+end
+
+function print_header(method::AbstractOptimizer)
+    @printf "Iter     Function value   Gradient norm \n"
+end
+
+function trace!(tr, d, state, iteration, method::BFGS, options, curr_time=time())
+    dt = Dict()
+    dt["time"] = curr_time
+    if options.extended_trace
+        dt["x"] = copy(state.x)
+        dt["g(x)"] = copy(gradient(d))
+        dt["~inv(H)"] = copy(state.invH)
+        dt["Current step size"] = state.alpha
+    end
+    g_norm = norm(gradient(d), Inf)
+    update!(tr,
+    iteration,
+    value(d),
+    g_norm,
+    dt,
+    options.store_trace,
+    options.show_trace,
+    options.show_every,
+    options.callback)
+end
+
+function update!(tr::OptimizationTrace{Tf, T},
+              iteration::Integer,
+              f_x::Tf,
+              grnorm::Real,
+              dt::Dict,
+              store_trace::Bool,
+              show_trace::Bool,
+              show_every::Int = 1,
+              callback = nothing,
+              trace_simplex = false) where {Tf, T}
+    os = OptimizationState{Tf, T}(iteration, f_x, grnorm, dt)
+    if store_trace
+        push!(tr, os)
+    end
+    if show_trace
+        if iteration % show_every == 0
+            show(os)
+            flush(stdout)
+        end
+    end
+    if callback !== nothing && (iteration % show_every == 0)
+        if store_trace
+            stopped = callback(tr)
+        else
+            stopped = callback(os)
+        end
+    else
+        stopped = false
+    end
+    stopped
+end
+
+function update_state!(d, state::BFGSState, method::BFGS)
+    n = length(state.x)
+    T = eltype(state.s)
+    # Set the search direction
+    # Search direction is the negative gradient divided by the approximate Hessian
+    mul!(vec(state.s), state.invH, vec(gradient(d)))
+    rmul!(state.s, T(-1))
+    project_tangent!(method.manifold, state.s, state.x)
+
+    # Maintain a record of the previous gradient
+    copyto!(state.g_previous, gradient(d))
+
+    # Determine the distance of movement along the search line
+    # This call resets invH to initial_invH is the former in not positive
+    # semi-definite
+    lssuccess = perform_linesearch!(state, method, ManifoldObjective(method.manifold, d))
+
+    # Update current position
+    state.dx .= state.alpha.*state.s
+    state.x .= state.x .+ state.dx
+    retract!(method.manifold, state.x)
+
+    lssuccess == false # break on linesearch error
+end
+
+function initial_convergence(d, state, method::AbstractOptimizer, initial_x, options)
+    gradient!(d, initial_x)
+    stopped = !isfinite(value(d)) || any(!isfinite, gradient(d))
+    maximum(abs, gradient(d)) <= options.g_abstol, stopped
+end
+
+function optimize(d::D, initial_x::Tx, method::M,
+                  options::Options{T, TCallback} = Options(;default_options(method)...),
+                  state = initial_state(method, options, d, initial_x)) where {D<:AbstractObjective, M<:AbstractOptimizer, Tx <: AbstractArray, T, TCallback}
+
+    t0 = time() # Initial time stamp used to control early stopping by options.time_limit
+    tr = OptimizationTrace{typeof(value(d)), typeof(method)}()
+    tracing = options.store_trace || options.show_trace || options.extended_trace || options.callback !== nothing
+    stopped, stopped_by_callback, stopped_by_time_limit = false, false, false
+    f_limit_reached, g_limit_reached, h_limit_reached = false, false, false
+    x_converged, f_converged, f_increased, counter_f_tol = false, false, false, 0
+
+    f_converged, g_converged = initial_convergence(d, state, method, initial_x, options)
+    converged = f_converged || g_converged
+    # prepare iteration counter (used to make "initial state" trace entry)
+    iteration = 0
+
+    options.show_trace && print_header(method)
+    _time = time()
+    trace!(tr, d, state, iteration, method, options, _time-t0)
+    ls_success::Bool = true
+    while !converged && !stopped && iteration < options.iterations
+        iteration += 1
+        ls_success = !update_state!(d, state, method)
+        if !ls_success
+            break # it returns true if it's forced by something in update! to stop (eg dx_dg == 0.0 in BFGS, or linesearch errors)
+        end
+        if !(method isa NewtonTrustRegion)
+            update_g!(d, state, method) # TODO: Should this be `update_fg!`?
+        end
+        x_converged, f_converged,
+        g_converged, f_increased = assess_convergence(state, d, options)
+        # For some problems it may be useful to require `f_converged` to be hit multiple times
+        # TODO: Do the same for x_tol?
+        counter_f_tol = f_converged ? counter_f_tol+1 : 0
+        converged = x_converged || g_converged || (counter_f_tol > options.successive_f_tol)
+        if !(converged && method isa Newton) && !(method isa NewtonTrustRegion)
+            update_h!(d, state, method) # only relevant if not converged
+        end
+        if tracing
+            # update trace; callbacks can stop routine early by returning true
+            stopped_by_callback = trace!(tr, d, state, iteration, method, options, time()-t0)
+        end
+
+        # Check time_limit; if none is provided it is NaN and the comparison
+        # will always return false.
+        _time = time()
+        stopped_by_time_limit = _time-t0 > options.time_limit
+        f_limit_reached = options.f_calls_limit > 0 && f_calls(d) >= options.f_calls_limit ? true : false
+        g_limit_reached = options.g_calls_limit > 0 && g_calls(d) >= options.g_calls_limit ? true : false
+        h_limit_reached = options.h_calls_limit > 0 && h_calls(d) >= options.h_calls_limit ? true : false
+
+        if (f_increased && !options.allow_f_increases) || stopped_by_callback ||
+            stopped_by_time_limit || f_limit_reached || g_limit_reached || h_limit_reached
+            stopped = true
+        end
+
+        if method isa NewtonTrustRegion
+            # If the trust region radius keeps on reducing we need to stop
+            # because something is wrong. Wrong gradients or a non-differentiability
+            # at the solution could be explanations.
+            if state.delta ≤ method.delta_min
+                stopped = true
+            end
+        end
+
+        if g_calls(d) > 0 && !all(isfinite, gradient(d))
+            @warn "Terminated early due to NaN in gradient."
+            break
+        end
+        if h_calls(d) > 0 && !(d isa TwiceDifferentiableHV) && !all(isfinite, hessian(d))
+            @warn "Terminated early due to NaN in Hessian."
+            break
+        end
+    end # while
+
+    after_while!(d, state, method, options)
+
+    # we can just check minimum, as we've earlier enforced same types/eltypes
+    # in variables besides the option settings
+    Tf = typeof(value(d))
+    f_incr_pick = f_increased && !options.allow_f_increases
+    stopped_by =(f_limit_reached=f_limit_reached,
+                 g_limit_reached=g_limit_reached,
+                 h_limit_reached=h_limit_reached,
+                 time_limit=stopped_by_time_limit,
+                 callback=stopped_by_callback,
+                 f_increased=f_incr_pick)
+    return MultivariateOptimizationResults{typeof(method),Tx,typeof(x_abschange(state)),Tf,typeof(tr), Bool, typeof(stopped_by)}(method,
+                                        initial_x,
+                                        pick_best_x(f_incr_pick, state),
+                                        pick_best_f(f_incr_pick, state, d),
+                                        iteration,
+                                        iteration == options.iterations,
+                                        x_converged,
+                                        Tf(options.x_abstol),
+                                        Tf(options.x_reltol),
+                                        x_abschange(state),
+                                        x_relchange(state),
+                                        f_converged,
+                                        Tf(options.f_abstol),
+                                        Tf(options.f_reltol),
+                                        f_abschange(d, state),
+                                        f_relchange(d, state),
+                                        g_converged,
+                                        Tf(options.g_abstol),
+                                        g_residual(d, state),
+                                        f_increased,
+                                        tr,
+                                        f_calls(d),
+                                        g_calls(d),
+                                        h_calls(d),
+                                        ls_success,
+                                        options.time_limit,
+                                        _time-t0,
+                                        stopped_by,
+                                        )
+end
+
+macro def(name, definition)
+  esc(quote
+    macro $name()
+      esc($(Expr(:quote, definition)))
+    end
+  end)
+end
+
+@def add_linesearch_fields begin
+    x_ls::Tx
+    alpha::T
+end
+
+@def initial_linesearch begin
+    (similar(initial_x), # Buffer of x for line search in state.x_ls
+    real(one(T)))             # Keep track of step size in state.alpha
+end
+
+retract!(M::Flat,x) = x
+project_tangent(M::Flat, g, x) = g
+project_tangent!(M::Flat, g, x) = g
+gradient(obj::AbstractObjective) = obj.DF
+value(obj::AbstractObjective) = obj.F
+
+function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
+    x_ = reshape(x, :)
+    Id = x_ .* x_' .* false
+    idxs = diagind(Id)
+    @. @view(Id[idxs]) = scale * true
+    return Id
+end
+
+
+function value_gradient!!(obj::AbstractObjective, x)
+    obj.f_calls .+= 1
+    obj.df_calls .+= 1
+    copyto!(obj.x_f, x)
+    copyto!(obj.x_df, x)
+    obj.F = obj.fdf(gradient(obj), x)
+    value(obj), gradient(obj)
+end
+
+function initial_state(method::BFGS, options, d, initial_x::AbstractArray{T}) where T
+    n = length(initial_x)
+    initial_x = copy(initial_x)
+    retract!(method.manifold, initial_x)
+
+    value_gradient!!(d, initial_x)
+
+    project_tangent!(method.manifold, gradient(d), initial_x)
+
+    if method.initial_invH === nothing
+        if method.initial_stepnorm === nothing
+            # Identity matrix of size n x n
+            invH0 = _init_identity_matrix(initial_x)
+        else
+            initial_scale = T(method.initial_stepnorm) * inv(norm(gradient(d), Inf))
+            invH0 = _init_identity_matrix(initial_x, initial_scale)
+        end
+    else
+        invH0 = method.initial_invH(initial_x)
+    end
+    # Maintain a cache for line search results
+    # Trace the history of states visited
+    BFGSState(initial_x, # Maintain current state in state.x
+              copy(initial_x), # Maintain previous state in state.x_previous
+              copy(gradient(d)), # Store previous gradient in state.g_previous
+              real(T)(NaN), # Store previous f in state.f_x_previous
+              similar(initial_x), # Store changes in position in state.dx
+              similar(initial_x), # Store changes in gradient in state.dg
+              similar(initial_x), # Buffer stored in state.u
+              invH0, # Store current invH in state.invH
+              similar(initial_x), # Store current search direction in state.s
+              @initial_linesearch()...)
 end
