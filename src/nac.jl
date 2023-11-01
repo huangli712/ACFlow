@@ -754,7 +754,7 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
-function gradient(f, x::StridedVector{<:Number})
+function gradient(f, x)
     𝑠 = cbrt(eps(F64))
 
     ∇𝑓 = zero(x)
