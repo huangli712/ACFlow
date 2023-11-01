@@ -782,8 +782,10 @@ function finite_difference_gradient(
 
     inplace isa Type && (inplace = inplace())
     if typeof(x) <: AbstractArray
+        @show "hehe1"
         df = zero(returntype) .* x
     else
+        @show "hehe2"
         if inplace == Val(true)
             if typeof(fx) == Nothing && typeof(c1) == Nothing && typeof(c2) == Nothing
                 error("In the scalar->vector in-place map case, at least one of fx, c1 or c2 must be provided, otherwise we cannot infer the return size.")
