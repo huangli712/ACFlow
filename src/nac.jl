@@ -797,7 +797,7 @@ function finite_difference_gradient(f, x::StridedVector{<:Number})
 
     # c1 is x1 if we need a complex copy of x, otherwise Nothing
     # c2 is Nothing
-    c1, c3 = cache.c1, cache.c3
+    c1, c3 = nothing, zero(x)
 
     fdtype=Val(:central)
     if fdtype != Val(:complex)
