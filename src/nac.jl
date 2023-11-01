@@ -766,18 +766,18 @@ function gradient(f, x::StridedVector{<:Number})
         x_old = x[i]
         #
         𝑥[i] += ϵ
-        dfi = f(𝑥)
+        δ𝑓 = f(𝑥)
         𝑥[i] = x_old - ϵ
-        dfi -= f(𝑥)
+        δ𝑓 -= f(𝑥)
         𝑥[i] = x_old
-        ∇𝑓[i] = real(dfi / (2 * ϵ))
+        ∇𝑓[i] = real(δ𝑓 / (2 * ϵ))
         #
         𝑥[i] += im * ϵ
-        dfi = f(𝑥)
+        δ𝑓 = f(𝑥)
         𝑥[i] = x_old - im * ϵ
-        dfi -= f(𝑥)
+        δ𝑓 -= f(𝑥)
         𝑥[i] = x_old
-        ∇𝑓[i] -= im * imag(dfi / (2 * im * ϵ))
+        ∇𝑓[i] -= im * imag(δ𝑓 / (2 * im * ϵ))
     end
     ∇𝑓
 end
