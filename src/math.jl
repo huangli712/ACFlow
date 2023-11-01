@@ -234,6 +234,34 @@ function deriv2(x::AbstractVector, y::AbstractVector)
     return 2 .* num ./ den
 end
 
+function gradient(f, x)
+    𝑠 = cbrt(eps(F64))
+
+    ∇𝑓 = zero(x)
+    𝑥 = copy(x)
+
+    @inbounds for i in eachindex(x)
+        ϵ = max(𝑠*abs(x[i]), 𝑠)
+        #
+        𝑥ᵢ = x[i]
+        #
+        𝑥[i] = 𝑥ᵢ + ϵ
+        δ𝑓 = f(𝑥)
+        𝑥[i] = 𝑥ᵢ - ϵ
+        δ𝑓 -= f(𝑥)
+        𝑥[i] = 𝑥ᵢ
+        ∇𝑓[i] = real(δ𝑓 / (2 * ϵ))
+        #
+        𝑥[i] = 𝑥ᵢ + im * ϵ
+        δ𝑓 = f(𝑥)
+        𝑥[i] = 𝑥ᵢ - im * ϵ
+        δ𝑓 -= f(𝑥)
+        𝑥[i] = 𝑥ᵢ
+        ∇𝑓[i] -= im * imag(δ𝑓 / (2 * im * ϵ))
+    end
+    ∇𝑓
+end
+
 #=
 ### *Math* : *Interpolations*
 =#
