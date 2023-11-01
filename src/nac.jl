@@ -772,15 +772,13 @@ function finite_difference_gradient(
     x,
     fdtype=Val(:central),
     returntype=eltype(x),
-    inplace=Val(true),
-    relstep=default_relstep(eltype(x)),
-    absstep=relstep)
+    inplace=Val(true))
 
     inplace isa Type && (inplace = inplace())
     typeof(x) <: AbstractArray
     df = zero(returntype) .* x
     cache = GradientCache(x, fdtype, inplace)
-    finite_difference_gradient!(df, f, x, cache, relstep=relstep, absstep=absstep)
+    finite_difference_gradient!(df, f, x, cache)
 end
 
 @inline function compute_epsilon(x::T, relstep::Real, absstep::Real) where {T<:Number}
