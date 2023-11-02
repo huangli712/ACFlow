@@ -999,31 +999,17 @@ function perform_linesearch!(state, method, d)
     end
 end
 
-
-
 x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
 alloc_DF(x, F) = eltype(x)(NaN) .* vec(F) .* vec(x)'
 alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 
 function df!_from_df(g, F::Real, inplace)
-    @show "real"
     if inplace
         return g
     else
         return function gg!(G, x)
             copyto!(G, g(x))
             G
-        end
-    end
-end
-function df!_from_df(j, F::AbstractArray, inplace)
-    @show "array"
-    if inplace
-        return j
-    else
-        return function jj!(J, x)
-            copyto!(J, j(x))
-            J
         end
     end
 end
