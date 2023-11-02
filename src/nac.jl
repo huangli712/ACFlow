@@ -626,6 +626,7 @@ This function will determine the optimal value of H (hopt). Of course,
 """
 function calc_hopt!(nac::NevanACContext)
     hmax = get_n("hmax")
+    hmax = 3 # DEBUG
 
     for h = nac.hmin + 1:hmax
         println("H = $h")
@@ -756,9 +757,17 @@ end
 
 
 abstract type Manifold end
+struct Flat <: Manifold end
+
 abstract type AbstractOptimizer end
 abstract type FirstOrderOptimizer  <: AbstractOptimizer end
 abstract type SecondOrderOptimizer <: AbstractOptimizer end
+struct OptimizationState{Tf<:Real, T <: AbstractOptimizer}
+    iteration::Int
+    value::Tf
+    g_norm::Tf
+    metadata::Dict
+end
 struct NewtonTrustRegion{T <: Real} <: SecondOrderOptimizer
     initial_delta::T
     delta_hat::T
@@ -767,9 +776,6 @@ struct NewtonTrustRegion{T <: Real} <: SecondOrderOptimizer
     rho_lower::T
     rho_upper::T
     use_fg::Bool
-end
-
-struct Flat <: Manifold
 end
 struct BFGS{IL, L, H, T, TM} <: FirstOrderOptimizer
     alphaguess!::IL
@@ -796,23 +802,30 @@ mutable struct BFGSState{Tx, Tm, T,G} <: AbstractOptimizerState
 end
 
 abstract type AbstractObjective end
-
 mutable struct ManifoldObjective{T <: AbstractObjective} <: AbstractObjective
     manifold::Manifold
     inner_obj::T
 end
-
-struct OptimizationState{Tf<:Real, T <: AbstractOptimizer}
-    iteration::Int
-    value::Tf
-    g_norm::Tf
-    metadata::Dict
+# Used for objectives and solvers where the gradient is available/exists
+mutable struct OnceDifferentiable1{TF, TDF, TX} <: AbstractObjective
+    f # objective
+    df # (partial) derivative of objective
+    fdf # objective and (partial) derivative of objective
+    F::TF # cache for f output
+    DF::TDF # cache for df output
+    x_f::TX # x used to evaluate f (stored in F)
+    x_df::TX # x used to evaluate df (stored in DF)
+    f_calls::Vector{Int}
+    df_calls::Vector{Int}
+end
+mutable struct NonDifferentiable{TF,TX} <: AbstractObjective
+    f
+    F::TF
+    x_f::TX
+    f_calls::Vector{Int}
 end
 
-const OptimizationTrace{Tf, T} = Vector{OptimizationState{Tf, T}}
-
 abstract type OptimizationResults1 end
-minimizer(r::OptimizationResults1) = r.minimizer
 mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, M, Tls, Tsb} <: OptimizationResults1
     method::O
     initial_x::Tx
@@ -844,25 +857,13 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, M, Tls, Tsb} <: Op
     stopped_by::Tsb
 end
 
-# Used for objectives and solvers where the gradient is available/exists
-mutable struct OnceDifferentiable1{TF, TDF, TX} <: AbstractObjective
-    f # objective
-    df # (partial) derivative of objective
-    fdf # objective and (partial) derivative of objective
-    F::TF # cache for f output
-    DF::TDF # cache for df output
-    x_f::TX # x used to evaluate f (stored in F)
-    x_df::TX # x used to evaluate df (stored in DF)
-    f_calls::Vector{Int}
-    df_calls::Vector{Int}
-end
+const OptimizationTrace{Tf, T} = Vector{OptimizationState{Tf, T}}
 
-mutable struct NonDifferentiable{TF,TX} <: AbstractObjective
-    f
-    F::TF
-    x_f::TX
-    f_calls::Vector{Int}
-end
+minimizer(r::OptimizationResults1) = r.minimizer
+
+
+
+
 
 struct Options{T, TCallback}
     x_abstol::T
