@@ -1002,12 +1002,24 @@ function trace!(d, state, iteration, method::BFGS, options, curr_time=time())
     dt = Dict()
     dt["time"] = curr_time
     g_norm = norm(gradient(d), Inf)
+
+#=
     update!(iteration,
     value(d),
     g_norm,
     dt,
     options.show_trace,
     options.show_every)
+=#
+
+    os = OptimizationState(iteration, value(d), g_norm, dt)
+    if options.show_trace
+        if iteration % options.show_every == 0
+            show(os)
+            flush(stdout)
+        end
+    end
+    false
 end
 
 function update!(iteration::Integer,
