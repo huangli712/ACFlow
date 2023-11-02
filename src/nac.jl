@@ -1405,8 +1405,6 @@ function assess_convergence(x,
     return x_converged, f_converged, g_converged, f_increased
 end
 
-#after_while!(d, state, method, options) = nothing
-
 function optimize(d::D, initial_x::Tx, method::M,
                   options::Options{T, TCallback} = Options(;default_options(method)...),
                   state = initial_state(method, options, d, initial_x)) where {D<:AbstractObjective, M<:AbstractOptimizer, Tx <: AbstractArray, T, TCallback}
@@ -1481,8 +1479,6 @@ function optimize(d::D, initial_x::Tx, method::M,
             break
         end
     end # while
-
-    #after_while!(d, state, method, options)
 
     # we can just check minimum, as we've earlier enforced same types/eltypes
     # in variables besides the option settings
