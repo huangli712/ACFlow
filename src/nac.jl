@@ -1122,10 +1122,8 @@ function OnceDifferentiable1(f, df,
     OnceDifferentiable1(f, df!, fdf!, x, F, DF)
 end
 
-function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer,
-         options::Options = Options(;default_options(method)...); inplace = true)
-    d = OnceDifferentiable1(f, g, initial_x, real(zero(eltype(initial_x))); inplace = inplace)
-
+function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, options::Options)
+    d = OnceDifferentiable1(f, g, initial_x, real(zero(eltype(initial_x))))
     optimize(d, initial_x, method, options)
 end
 
