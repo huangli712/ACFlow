@@ -1058,7 +1058,7 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
     f_limit_reached, g_limit_reached, h_limit_reached = false, false, false
     x_converged, f_converged, f_increased, counter_f_tol = false, false, false, 0
 
-    f_converged, g_converged = initial_convergence(d, state, method, initial_x, options)
+    f_converged, g_converged = initial_convergence(d, initial_x, options)
     converged = f_converged || g_converged
     # prepare iteration counter (used to make "initial state" trace entry)
     iteration = 0
@@ -1269,7 +1269,7 @@ g_residual(d::AbstractObjective) = g_residual(gradient(d))
 g_residual(g) = maximum(abs, g)
 g_residual(r::MultivariateOptimizationResults) = r.g_residual
 
-function initial_convergence(d, state, method::AbstractOptimizer, initial_x, options)
+function initial_convergence(d, initial_x, options)
     gradient!(d, initial_x)
     stopped = !isfinite(value(d)) || any(!isfinite, gradient(d))
     maximum(abs, gradient(d)) <= options.g_abstol, stopped
