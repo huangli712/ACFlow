@@ -1409,7 +1409,7 @@ end
 
 function optimize(d::D, initial_x::Tx, method::M,
                   options::Options,
-                  state = initial_state(method, options, d, initial_x)) where {D<:AbstractObjective, M<:AbstractOptimizer, Tx <: AbstractArray}
+                  state = initial_state(method, d, initial_x)) where {D<:AbstractObjective, M<:AbstractOptimizer, Tx <: AbstractArray}
 
     t0 = time() # Initial time stamp used to control early stopping by options.time_limit
     tr = OptimizationTrace{typeof(value(d)), typeof(method)}()
@@ -1536,24 +1536,12 @@ end
     real(one(T)))             # Keep track of step size in state.alpha
 end
 
-f_calls(r::OptimizationResults1) = r.f_calls
-f_calls(d) = first(d.f_calls)
-pick_best_x(f_increased, state) = f_increased ? state.x_previous : state.x
-pick_best_f(f_increased, state, d) = f_increased ? state.f_x_previous : value(d)
+
 
 retract!(M::Flat,x) = x
-project_tangent(M::Flat, g, x) = g
 project_tangent!(M::Flat, g, x) = g
 gradient(obj::AbstractObjective) = obj.DF
 value(obj::AbstractObjective) = obj.F
-
-function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
-    x_ = reshape(x, :)
-    Id = x_ .* x_' .* false
-    idxs = diagind(Id)
-    @. @view(Id[idxs]) = scale * true
-    return Id
-end
 
 function value_gradient!(obj::AbstractObjective, x)
     if x != obj.x_f && x != obj.x_df
@@ -1575,8 +1563,16 @@ function value_gradient!!(obj::AbstractObjective, x)
     value(obj), gradient(obj)
 end
 
-function initial_state(method::BFGS, options, d, initial_x::AbstractArray{T}) where T
-    n = length(initial_x)
+function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
+    x_ = reshape(x, :)
+    Id = x_ .* x_' .* false
+    idxs = diagind(Id)
+    @. @view(Id[idxs]) = scale * true
+    return Id
+end
+
+function initial_state(method::BFGS, d, initial_x::AbstractArray{T}) where T
+    #n = length(initial_x)
     initial_x = copy(initial_x)
     retract!(method.manifold, initial_x)
 
@@ -1609,6 +1605,10 @@ function initial_state(method::BFGS, options, d, initial_x::AbstractArray{T}) wh
               @initial_linesearch()...)
 end
 
+f_calls(r::OptimizationResults1) = r.f_calls
+f_calls(d) = first(d.f_calls)
+pick_best_x(f_increased, state) = f_increased ? state.x_previous : state.x
+pick_best_f(f_increased, state, d) = f_increased ? state.f_x_previous : value(d)
 f_abschange(r::MultivariateOptimizationResults) = r.f_abschange
 f_relchange(r::MultivariateOptimizationResults) = r.f_relchange
 g_residual(r::MultivariateOptimizationResults) = r.g_residual
