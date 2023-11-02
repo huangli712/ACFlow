@@ -757,7 +757,7 @@ end
 
 struct Manifold end
 
-struct BFGS{IL, L, H, T, TM}
+struct BFGS{IL, L, TM}
     alphaguess!::IL
     linesearch!::L
     manifold::TM
