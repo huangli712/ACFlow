@@ -937,10 +937,18 @@ function Options(;
         Int(show_every), callback, Float64(time_limit))
 end
 
+include("hagerzhang.jl")
+
 _alphaguess(a) = a
-_alphaguess(a::Number) = LineSearches.InitialStatic(alpha=a)
-function BFGS(; alphaguess = LineSearches.InitialStatic(), # TODO: benchmark defaults
-    linesearch = LineSearches.HagerZhang(),  # TODO: benchmark defaults
+_alphaguess(a::Number) = InitialStatic(alpha=a)
+
+@with_kw struct InitialStatic{T}
+    alpha::T = 1.0
+    scaled::Bool = false # Scales step. alpha ← min(alpha,||s||_2) / ||s||_2
+end
+
+function BFGS(; alphaguess = InitialStatic(), # TODO: benchmark defaults
+    linesearch = HagerZhang(),  # TODO: benchmark defaults
     initial_invH = nothing,
     initial_stepnorm = nothing,
     manifold::Manifold=Flat())
