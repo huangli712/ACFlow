@@ -805,7 +805,7 @@ mutable struct OnceDifferentiable1{TF, TDF, TX} <: AbstractObjective
     df_calls::Vector{Int}
 end
 
-mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls, Tsb}
+mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
     method::O
     initial_x::Tx
     minimizer::Tx
@@ -826,14 +826,12 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls, Tsb}
     g_abstol::Tf
     g_residual::Tc
     f_increased::Bool
-    #trace::M
     f_calls::Int
     g_calls::Int
     h_calls::Int
     ls_success::Tls
     time_limit::Float64
     time_run::Float64
-    stopped_by::Tsb
 end
 
 struct Options{T, TCallback}
@@ -917,8 +915,6 @@ function Options(;
         allow_f_increases, allow_outer_f_increases, successive_f_tol, Int(iterations), Int(outer_iterations), show_trace,
         Int(show_every), callback, Float64(time_limit))
 end
-
-const OptimizationTrace{Tf} = Vector{OptimizationState{Tf}}
 
 include("hagerzhang.jl")
 
@@ -1080,7 +1076,6 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
     state = initial_state(method, d, initial_x)
 
     t0 = time() # Initial time stamp used to control early stopping by options.time_limit
-    #tr = OptimizationTrace{typeof(value(d))}()
     tracing = options.show_trace || options.callback !== nothing
     stopped, stopped_by_callback, stopped_by_time_limit = false, false, false
     f_limit_reached, g_limit_reached, h_limit_reached = false, false, false
@@ -1141,12 +1136,6 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
     # in variables besides the option settings
     Tf = typeof(value(d))
     f_incr_pick = f_increased && !options.allow_f_increases
-    stopped_by =(f_limit_reached=f_limit_reached,
-                 g_limit_reached=g_limit_reached,
-                 h_limit_reached=h_limit_reached,
-                 time_limit=stopped_by_time_limit,
-                 callback=stopped_by_callback,
-                 f_increased=f_incr_pick)
     return MultivariateOptimizationResults(method,
                                         initial_x,
                                         pick_best_x(f_incr_pick, state),
@@ -1167,14 +1156,12 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
                                         Tf(options.g_abstol),
                                         g_residual(d, state),
                                         f_increased,
-                                        #tr,
                                         f_calls(d),
                                         g_calls(d),
                                         h_calls(d),
                                         ls_success,
                                         options.time_limit,
                                         _time-t0,
-                                        stopped_by,
                                         )
 end
 
