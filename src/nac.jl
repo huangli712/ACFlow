@@ -1075,6 +1075,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
         # will always return false.
         _time = time()
         stopped_by_time_limit = _time-t0 > options.time_limit
+        @show typeof(d), options.g_calls_limit
         f_limit_reached = options.f_calls_limit > 0 && f_calls(d) >= options.f_calls_limit ? true : false
         g_limit_reached = options.g_calls_limit > 0 && g_calls(d) >= options.g_calls_limit ? true : false
         h_limit_reached = options.h_calls_limit > 0 && h_calls(d) >= options.h_calls_limit ? true : false
@@ -1219,8 +1220,8 @@ end
 x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
 alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 
-g_calls(r::MultivariateOptimizationResults) = r.g_calls
-g_calls(d) = first(d.df_calls)
+#g_calls(r::MultivariateOptimizationResults) = r.g_calls
+g_calls(d::OnceDifferentiable1) = first(d.df_calls)
 h_calls(r::MultivariateOptimizationResults) = r.h_calls
 h_calls(d::OnceDifferentiable1) = 0
 h_calls(d) = first(d.h_calls)
