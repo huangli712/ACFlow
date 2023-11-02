@@ -779,11 +779,12 @@ mutable struct BFGSState{Tx, Tm, T,G} <: AbstractOptimizerState
     u::Tx
     invH::Tm
     s::Tx
-    @add_linesearch_fields()
+    #@add_linesearch_fields()
+    x_ls::Tx
+    alpha::T
 end
 
-
-#abstract type AbstractObjective end
+abstract type AbstractObjective end
 
 mutable struct ManifoldObjective{T <: AbstractObjective} <: AbstractObjective
     manifold::Manifold
@@ -964,9 +965,11 @@ function perform_linesearch!(state, method, d)
 
     # Perform line search; catch LineSearchException to allow graceful exit
     try
-        @show typeof(d)
+        #@show typeof(d)
         state.alpha, ϕalpha = method.linesearch!(d, state.x, state.s, state.alpha,
                                state.x_ls, phi_0, dphi_0)
+        #state.alpha, ϕalpha = method.linesearch!(state.x, state.s, state.alpha,
+        #                       state.x_ls, phi_0, dphi_0)
         return true # lssuccess = true
     catch ex
         if isa(ex, LineSearches.LineSearchException)
@@ -1137,6 +1140,13 @@ end
 
 function value(obj::ManifoldObjective)
     value(obj.inner_obj)
+end
+
+function value_gradient!(obj::ManifoldObjective,x)
+    xin = retract(obj.manifold, x)
+    value_gradient!(obj.inner_obj,xin)
+    project_tangent!(obj.manifold,gradient(obj.inner_obj),xin)
+    return value(obj.inner_obj)
 end
 
 function print_header(method::AbstractOptimizer)
