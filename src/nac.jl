@@ -1020,7 +1020,6 @@ function print_header(method::AbstractOptimizer)
 end
 
 function initial_state(method::BFGS, d, initial_x::AbstractArray{T}) where T
-    #n = length(initial_x)
     initial_x = copy(initial_x)
     retract!(method.manifold, initial_x)
 
