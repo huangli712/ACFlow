@@ -784,8 +784,7 @@ struct BFGS{IL, L, H, T, TM} <: FirstOrderOptimizer
     manifold::TM
 end
 
-abstract type AbstractOptimizerState end
-mutable struct BFGSState{Tx, Tm, T,G} <: AbstractOptimizerState
+mutable struct BFGSState{Tx, Tm, T,G}
     x::Tx
     x_previous::Tx
     g_previous::G
@@ -1402,7 +1401,7 @@ function converged(r::MultivariateOptimizationResults)
 end
 
 # Default function for convergence assessment used by BFGSState
-function assess_convergence(state::AbstractOptimizerState, d, options::Options)
+function assess_convergence(state::BFGSState, d, options::Options)
     x_converged, f_converged, f_increased, g_converged = false, false, false, false
 
     f_x = value(d)
