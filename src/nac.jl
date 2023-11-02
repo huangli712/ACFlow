@@ -758,15 +758,6 @@ end
 struct Manifold end
 abstract type AbstractOptimizer end
 
-#=
-struct OptimizationState{Tf<:Real}
-    iteration::Int
-    value::Tf
-    g_norm::Tf
-    metadata::Dict
-end
-=#
-
 struct BFGS{IL, L, H, T, TM} <: AbstractOptimizer
     alphaguess!::IL
     linesearch!::L
@@ -1243,18 +1234,6 @@ end
 function print_header(method::AbstractOptimizer)
     @printf "Iter     Function value   Gradient norm \n"
 end
-
-#=
-function Base.show(io::IO, t::OptimizationState)
-    @printf io "%6d   %14e   %14e\n" t.iteration t.value t.g_norm
-    if !isempty(t.metadata)
-        for (key, value) in t.metadata
-            @printf io " * %s: %s\n" key value
-        end
-    end
-    return
-end
-=#
 
 x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
 alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
