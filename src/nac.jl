@@ -1489,14 +1489,10 @@ h_calls(r::OptimizationResults1) = error("h_calls is not implemented for $(summa
 h_calls(r::MultivariateOptimizationResults) = r.h_calls
 h_calls(d::Union{NonDifferentiable, OnceDifferentiable1}) = 0
 h_calls(d) = first(d.h_calls)
-#h_calls(d::TwiceDifferentiableHV) = first(d.hv_calls)
 f_calls(r::OptimizationResults1) = r.f_calls
 f_calls(d) = first(d.f_calls)
 pick_best_x(f_increased, state) = f_increased ? state.x_previous : state.x
 pick_best_f(f_increased, state, d) = f_increased ? state.f_x_previous : value(d)
-f_abschange(r::MultivariateOptimizationResults) = r.f_abschange
-f_relchange(r::MultivariateOptimizationResults) = r.f_relchange
-g_residual(r::MultivariateOptimizationResults) = r.g_residual
 
 function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
@@ -1504,8 +1500,10 @@ end
 
 f_abschange(d::AbstractObjective, state) = f_abschange(value(d), state.f_x_previous)
 f_abschange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)
+f_abschange(r::MultivariateOptimizationResults) = r.f_abschange
 f_relchange(d::AbstractObjective, state) = f_relchange(value(d), state.f_x_previous)
 f_relchange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)/abs(f_x)
+f_relchange(r::MultivariateOptimizationResults) = r.f_relchange
 
 x_abschange(r::MultivariateOptimizationResults) = r.x_abschange
 x_relchange(r::MultivariateOptimizationResults) = r.x_relchange
@@ -1515,12 +1513,9 @@ x_relchange(state) = x_relchange(state.x, state.x_previous)
 x_relchange(x, x_previous) = maxdiff(x, x_previous)/maximum(abs, x)
 
 g_residual(d, state) = g_residual(d)
-#g_residual(d, state::NelderMeadState) = state.nm_x
 g_residual(d::AbstractObjective) = g_residual(gradient(d))
-#g_residual(d::NonDifferentiable) = convert(typeof(value(d)), NaN)
 g_residual(g) = maximum(abs, g)
-gradient_convergence_assessment(state::AbstractOptimizerState, d, options) = g_residual(gradient(d)) ≤ options.g_abstol
-#gradient_convergence_assessment(state::ZerothOrderState, d, options) = false
+g_residual(r::MultivariateOptimizationResults) = r.g_residual
 
 function initial_convergence(d, state, method::AbstractOptimizer, initial_x, options)
     gradient!(d, initial_x)
