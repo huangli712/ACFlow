@@ -1254,7 +1254,7 @@ f_abschange(d::OnceDifferentiable1, state) = f_abschange(value(d), state.f_x_pre
 f_abschange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)
 f_abschange(r::MultivariateOptimizationResults) = r.f_abschange
 
-f_relchange(d::AbstractObjective, state) = f_relchange(value(d), state.f_x_previous)
+f_relchange(d::OnceDifferentiable1, state) = f_relchange(value(d), state.f_x_previous)
 f_relchange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)/abs(f_x)
 f_relchange(r::MultivariateOptimizationResults) = r.f_relchange
 
