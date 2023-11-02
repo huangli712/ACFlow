@@ -1273,7 +1273,6 @@ function perform_linesearch!(state, method, d)
     phi_0  = value(d)
 
     # Guess an alpha
-    #@show "hahah", method
     method.alphaguess!(method.linesearch!, state, phi_0, dphi_0, d)
 
     # Store current x and f(x) for next iteration
@@ -1282,11 +1281,8 @@ function perform_linesearch!(state, method, d)
 
     # Perform line search; catch LineSearchException to allow graceful exit
     try
-        #@show typeof(d)
         state.alpha, ϕalpha = method.linesearch!(d, state.x, state.s, state.alpha,
                                state.x_ls, phi_0, dphi_0)
-        #state.alpha, ϕalpha = method.linesearch!(state.x, state.s, state.alpha,
-        #                       state.x_ls, phi_0, dphi_0)
         return true # lssuccess = true
     catch ex
         if isa(ex, LineSearchException)
