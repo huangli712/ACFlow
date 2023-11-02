@@ -1021,6 +1021,7 @@ function make_fdf(x, F::Number, f, g!)
 end
 
 function fdf!_from_fdf(fg, F::Real, inplace)
+    @show "real"
     if inplace
         return fg
     else
@@ -1033,6 +1034,7 @@ function fdf!_from_fdf(fg, F::Real, inplace)
 end
 
 function fdf!_from_fdf(fj, F::AbstractArray, inplace)
+    @show "array"
     if inplace
         return fj
     else
