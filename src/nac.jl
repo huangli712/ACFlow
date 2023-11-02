@@ -1177,7 +1177,7 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
                  time_limit=stopped_by_time_limit,
                  callback=stopped_by_callback,
                  f_increased=f_incr_pick)
-    return MultivariateOptimizationResults{typeof(method),typeof(initial_x),typeof(x_abschange(state)),Tf,typeof(tr), Bool, typeof(stopped_by)}(method,
+    return MultivariateOptimizationResults(method,
                                         initial_x,
                                         pick_best_x(f_incr_pick, state),
                                         pick_best_f(f_incr_pick, state, d),
