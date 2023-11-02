@@ -857,14 +857,6 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, M, Tls, Tsb} <: Op
     stopped_by::Tsb
 end
 
-const OptimizationTrace{Tf, T} = Vector{OptimizationState{Tf, T}}
-
-minimizer(r::OptimizationResults1) = r.minimizer
-
-
-
-
-
 struct Options{T, TCallback}
     x_abstol::T
     x_reltol::T
@@ -955,6 +947,10 @@ function Options(;
         allow_f_increases, allow_outer_f_increases, successive_f_tol, Int(iterations), Int(outer_iterations), store_trace, trace_simplex, show_trace, extended_trace,
         Int(show_every), callback, Float64(time_limit))
 end
+
+const OptimizationTrace{Tf, T} = Vector{OptimizationState{Tf, T}}
+
+minimizer(r::OptimizationResults1) = r.minimizer
 
 include("hagerzhang.jl")
 
