@@ -857,6 +857,7 @@ struct Options{T, TCallback}
     outer_iterations::Int
     show_trace::Bool
     show_every::Int
+    callback::TCallback
     time_limit::Float64
 end
 
@@ -889,6 +890,7 @@ function Options(;
         outer_iterations::Int = 1000,
         show_trace::Bool = false,
         show_every::Int = 1,
+        callback = nothing,
         time_limit = NaN)
     show_every = show_every > 0 ? show_every : 1
     if !(x_tol === nothing)
@@ -911,7 +913,7 @@ function Options(;
     end
     Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_x_abstol, outer_x_reltol, outer_f_abstol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit, h_calls_limit,
         allow_f_increases, allow_outer_f_increases, successive_f_tol, Int(iterations), Int(outer_iterations), show_trace,
-        Int(show_every), Float64(time_limit))
+        Int(show_every), callback, Float64(time_limit))
 end
 
 include("hagerzhang.jl")
@@ -1005,7 +1007,8 @@ function trace!(d, state, iteration, method::BFGS, options, curr_time=time())
     g_norm,
     dt,
     options.show_trace,
-    options.show_every)
+    options.show_every,
+    options.callback)
 end
 
 function update!(iteration::Integer,
@@ -1013,15 +1016,24 @@ function update!(iteration::Integer,
               grnorm::Real,
               dt::Dict,
               show_trace::Bool,
-              show_every::Int = 1) where {Tf}
-    os = OptimizationState(iteration, f_x, grnorm, dt)
+              show_every::Int = 1,
+              callback = nothing) where {Tf}
+    os = OptimizationState{Tf}(iteration, f_x, grnorm, dt)
     if show_trace
         if iteration % show_every == 0
             show(os)
             flush(stdout)
         end
     end
-    false
+    #@show callback
+    #if callback !== nothing && (iteration % show_every == 0)
+    #    @show "have callback"
+    #    stopped = callback(os)
+    #else
+    #    @show "callback false"
+        stopped = false
+    #end
+    stopped
 end
 
 function update_g!(d, state, method)
@@ -1067,7 +1079,7 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
     state = initial_state(method, d, initial_x)
 
     t0 = time() # Initial time stamp used to control early stopping by options.time_limit
-    tracing = options.show_trace
+    tracing = options.show_trace || options.callback !== nothing
     stopped, stopped_by_callback, stopped_by_time_limit = false, false, false
     f_limit_reached, g_limit_reached, h_limit_reached = false, false, false
     x_converged, f_converged, f_increased, counter_f_tol = false, false, false, 0
