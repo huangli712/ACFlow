@@ -758,6 +758,17 @@ end
 abstract type Manifold end
 abstract type AbstractOptimizer end
 abstract type FirstOrderOptimizer  <: AbstractOptimizer end
+abstract type SecondOrderOptimizer <: AbstractOptimizer end
+struct NewtonTrustRegion{T <: Real} <: SecondOrderOptimizer
+    initial_delta::T
+    delta_hat::T
+    delta_min::T
+    eta::T
+    rho_lower::T
+    rho_upper::T
+    use_fg::Bool
+end
+
 struct Flat <: Manifold
 end
 struct BFGS{IL, L, H, T, TM} <: FirstOrderOptimizer
@@ -801,7 +812,7 @@ end
 const OptimizationTrace{Tf, T} = Vector{OptimizationState{Tf, T}}
 
 abstract type OptimizationResults1 end
-
+minimizer(r::OptimizationResults1) = r.minimizer
 mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, M, Tls, Tsb} <: OptimizationResults1
     method::O
     initial_x::Tx
@@ -844,6 +855,13 @@ mutable struct OnceDifferentiable1{TF, TDF, TX} <: AbstractObjective
     x_df::TX # x used to evaluate df (stored in DF)
     f_calls::Vector{Int}
     df_calls::Vector{Int}
+end
+
+mutable struct NonDifferentiable{TF,TX} <: AbstractObjective
+    f
+    F::TF
+    x_f::TX
+    f_calls::Vector{Int}
 end
 
 struct Options{T, TCallback}
@@ -947,12 +965,52 @@ _alphaguess(a::Number) = InitialStatic(alpha=a)
     scaled::Bool = false # Scales step. alpha ← min(alpha,||s||_2) / ||s||_2
 end
 
+function (is::InitialStatic{T})(ls, state, phi_0, dphi_0, df) where T
+    PT = promote_type(T, real(eltype(state.s)))
+    if is.scaled == true && (ns = real(norm(state.s))) > convert(PT, 0)
+        # TODO: Type instability if there's a type mismatch between is.alpha and ns?
+        state.alpha = convert(PT, min(is.alpha, ns)) / ns
+    else
+        state.alpha = convert(PT, is.alpha)
+    end
+end
+
 function BFGS(; alphaguess = InitialStatic(), # TODO: benchmark defaults
     linesearch = HagerZhang(),  # TODO: benchmark defaults
     initial_invH = nothing,
     initial_stepnorm = nothing,
     manifold::Manifold=Flat())
 BFGS(_alphaguess(alphaguess), linesearch, initial_invH, initial_stepnorm, manifold)
+end
+
+mutable struct LineSearchException{T<:Real} <: Exception
+    message::AbstractString
+    alpha::T
+end
+
+function make_ϕ(df, x_new, x, s)
+    function ϕ(α)
+        # Move a distance of alpha in the direction of s
+        x_new .= x .+ α.*s
+
+        # Evaluate f(x+α*s)
+        value!(df, x_new)
+    end
+    ϕ
+end
+
+function make_ϕ_ϕdϕ(df, x_new, x, s)
+    function ϕdϕ(α)
+        # Move a distance of alpha in the direction of s
+        x_new .= x .+ α.*s
+
+        # Evaluate ∇f(x+α*s)
+        value_gradient!(df, x_new)
+
+        # Calculate ϕ'(a_i)
+        value(df), real(dot(gradient(df), s))
+    end
+    make_ϕ(df, x_new, x, s), ϕdϕ
 end
 
 function perform_linesearch!(state, method, d)
@@ -965,6 +1023,7 @@ function perform_linesearch!(state, method, d)
     phi_0  = value(d)
 
     # Guess an alpha
+    #@show "hahah", method
     method.alphaguess!(method.linesearch!, state, phi_0, dphi_0, d)
 
     # Store current x and f(x) for next iteration
@@ -980,7 +1039,7 @@ function perform_linesearch!(state, method, d)
         #                       state.x_ls, phi_0, dphi_0)
         return true # lssuccess = true
     catch ex
-        if isa(ex, LineSearches.LineSearchException)
+        if isa(ex, LineSearchException)
             state.alpha = ex.alpha
             # We shouldn't warn here, we should just carry it to the output
             # @warn("Linesearch failed, using alpha = $(state.alpha) and
@@ -1150,6 +1209,8 @@ function value(obj::ManifoldObjective)
     value(obj.inner_obj)
 end
 
+retract(M::Manifold,x) = retract!(M, copy(x))
+
 function value_gradient!(obj::ManifoldObjective,x)
     xin = retract(obj.manifold, x)
     value_gradient!(obj.inner_obj,xin)
@@ -1244,6 +1305,167 @@ function initial_convergence(d, state, method::AbstractOptimizer, initial_x, opt
     stopped = !isfinite(value(d)) || any(!isfinite, gradient(d))
     maximum(abs, gradient(d)) <= options.g_abstol, stopped
 end
+
+struct Newton{IL, L} <: SecondOrderOptimizer
+    alphaguess!::IL
+    linesearch!::L
+end
+
+update_g!(d, state, method) = nothing
+function update_g!(d, state, method::M) where M<:Union{FirstOrderOptimizer, Newton}
+    # Update the function value and gradient
+    value_gradient!(d, state.x)
+    if M <: FirstOrderOptimizer #only for methods that support manifold optimization
+        project_tangent!(method.manifold, gradient(d), state.x)
+    end
+end
+
+g_calls(r::OptimizationResults1) = error("g_calls is not implemented for $(summary(r)).")
+g_calls(r::MultivariateOptimizationResults) = r.g_calls
+#g_calls(d::NonDifferentiable) = 0
+g_calls(d) = first(d.df_calls)
+
+h_calls(r::OptimizationResults1) = error("h_calls is not implemented for $(summary(r)).")
+h_calls(r::MultivariateOptimizationResults) = r.h_calls
+h_calls(d::Union{NonDifferentiable, OnceDifferentiable1}) = 0
+h_calls(d) = first(d.h_calls)
+#h_calls(d::TwiceDifferentiableHV) = first(d.hv_calls)
+
+
+function update_h!(d, state, method::BFGS)
+    n = length(state.x)
+    # Measure the change in the gradient
+    state.dg .= gradient(d) .- state.g_previous
+
+    # Update the inverse Hessian approximation using Sherman-Morrison
+    dx_dg = real(dot(state.dx, state.dg))
+    if dx_dg > 0
+        mul!(vec(state.u), state.invH, vec(state.dg))
+
+        c1 = (dx_dg + real(dot(state.dg, state.u))) / (dx_dg' * dx_dg)
+        c2 = 1 / dx_dg
+
+        # invH = invH + c1 * (s * s') - c2 * (u * s' + s * u')
+        if(state.invH isa Array) # i.e. not a CuArray
+            invH = state.invH; dx = state.dx; u = state.u;
+            @inbounds for j in 1:n
+                c1dxj = c1 * dx[j]'
+                c2dxj = c2 * dx[j]'
+                c2uj  = c2 *  u[j]'
+                for i in 1:n
+                    invH[i, j] = muladd(dx[i], c1dxj, muladd(-u[i], c2dxj, muladd(c2uj, -dx[i], invH[i, j])))
+                end
+            end
+        else
+            mul!(state.invH,vec(state.dx),vec(state.dx)', c1,1)
+            mul!(state.invH,vec(state.u ),vec(state.dx)',-c2,1)
+            mul!(state.invH,vec(state.dx),vec(state.u )',-c2,1)
+        end
+    end
+end
+
+function maxdiff(x::AbstractArray, y::AbstractArray)
+    return mapreduce((a, b) -> abs(a - b), max, x, y)
+end
+
+f_abschange(d::AbstractObjective, state) = f_abschange(value(d), state.f_x_previous)
+f_abschange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)
+f_relchange(d::AbstractObjective, state) = f_relchange(value(d), state.f_x_previous)
+f_relchange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)/abs(f_x)
+
+x_abschange(state) = x_abschange(state.x, state.x_previous)
+x_abschange(x, x_previous) = maxdiff(x, x_previous)
+x_relchange(state) = x_relchange(state.x, state.x_previous)
+x_relchange(x, x_previous) = maxdiff(x, x_previous)/maximum(abs, x)
+
+g_residual(d, state) = g_residual(d)
+#g_residual(d, state::NelderMeadState) = state.nm_x
+g_residual(d::AbstractObjective) = g_residual(gradient(d))
+#g_residual(d::NonDifferentiable) = convert(typeof(value(d)), NaN)
+g_residual(g) = maximum(abs, g)
+gradient_convergence_assessment(state::AbstractOptimizerState, d, options) = g_residual(gradient(d)) ≤ options.g_abstol
+#gradient_convergence_assessment(state::ZerothOrderState, d, options) = false
+
+# Default function for convergence assessment used by
+# AcceleratedGradientDescentState, BFGSState, ConjugateGradientState,
+# GradientDescentState, LBFGSState, MomentumGradientDescentState and NewtonState
+function assess_convergence(state::AbstractOptimizerState, d, options::Options)
+    assess_convergence(state.x,
+                       state.x_previous,
+                       value(d),
+                       state.f_x_previous,
+                       gradient(d),
+                       options.x_abstol,
+                       options.x_reltol,
+                       options.f_abstol,
+                       options.f_reltol,
+                       options.g_abstol)
+end
+function assess_convergence(x, x_previous, f_x, f_x_previous, gx, x_abstol, x_reltol, f_abstol, f_reltol, g_abstol)
+    x_converged, f_converged, f_increased, g_converged = false, false, false, false
+
+    # TODO: Create function for x_convergence_assessment
+    if x_abschange(x, x_previous) ≤ x_abstol
+        x_converged = true
+    end
+    if x_abschange(x, x_previous) ≤ x_reltol * maximum(abs, x)
+        x_converged = true
+    end
+
+    # Relative Tolerance
+    # TODO: Create function for f_convergence_assessment
+    if f_abschange(f_x, f_x_previous) ≤ f_abstol
+        f_converged = true
+    end
+
+    if f_abschange(f_x, f_x_previous) ≤ f_reltol*abs(f_x)
+        f_converged = true
+    end
+
+    if f_x > f_x_previous
+        f_increased = true
+    end
+
+    g_converged = g_residual(gx) ≤ g_abstol
+
+    return x_converged, f_converged, g_converged, f_increased
+end
+
+# Used by Fminbox and IPNewton
+function assess_convergence(x,
+                            x_previous,
+                            f_x,
+                            f_x_previous,
+                            g,
+                            x_tol,
+                            f_tol,
+                            g_tol)
+
+    x_converged, f_converged, f_increased, g_converged = false, false, false, false
+
+    if x_abschange(x, x_previous) ≤ x_tol
+        x_converged = true
+    end
+
+    # Absolute Tolerance
+    # if abs(f_x - f_x_previous) < f_tol
+    # Relative Tolerance
+    if f_abschange(f_x, f_x_previous) ≤ f_tol*abs(f_x)
+        f_converged = true
+    end
+
+    if f_x > f_x_previous
+        f_increased = true
+    end
+
+    if g_residual(g) ≤ g_tol
+        g_converged = true
+    end
+
+    return x_converged, f_converged, g_converged, f_increased
+end
+
+after_while!(d, state, method, options) = nothing
 
 function optimize(d::D, initial_x::Tx, method::M,
                   options::Options{T, TCallback} = Options(;default_options(method)...),
@@ -1381,6 +1603,11 @@ end
     real(one(T)))             # Keep track of step size in state.alpha
 end
 
+f_calls(r::OptimizationResults1) = r.f_calls
+f_calls(d) = first(d.f_calls)
+pick_best_x(f_increased, state) = f_increased ? state.x_previous : state.x
+pick_best_f(f_increased, state, d) = f_increased ? state.f_x_previous : value(d)
+
 retract!(M::Flat,x) = x
 project_tangent(M::Flat, g, x) = g
 project_tangent!(M::Flat, g, x) = g
@@ -1395,6 +1622,16 @@ function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
     return Id
 end
 
+function value_gradient!(obj::AbstractObjective, x)
+    if x != obj.x_f && x != obj.x_df
+        value_gradient!!(obj, x)
+    elseif x != obj.x_f
+        value!!(obj, x)
+    elseif x != obj.x_df
+        gradient!!(obj, x)
+    end
+    value(obj), gradient(obj)
+end
 
 function value_gradient!!(obj::AbstractObjective, x)
     obj.f_calls .+= 1
