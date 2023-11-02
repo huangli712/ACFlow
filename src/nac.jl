@@ -1391,8 +1391,22 @@ end
 retract!(M::Flat,x) = x
 retract(M::Manifold,x) = retract!(M, copy(x))
 project_tangent!(M::Flat, g, x) = g
-gradient(obj::AbstractObjective) = obj.DF
+
 value(obj::AbstractObjective) = obj.F
+function value(obj::ManifoldObjective)
+    value(obj.inner_obj)
+end
+
+gradient(obj::AbstractObjective) = obj.DF
+function gradient(obj::ManifoldObjective)
+    gradient(obj.inner_obj)
+end
+function gradient!(obj::AbstractObjective, x)
+    if x != obj.x_df
+        gradient!!(obj, x)
+    end
+    gradient(obj)
+end
 
 function value_gradient!(obj::AbstractObjective, x)
     if x != obj.x_f && x != obj.x_df
@@ -1419,26 +1433,6 @@ function value_gradient!!(obj::AbstractObjective, x)
     copyto!(obj.x_df, x)
     obj.F = obj.fdf(gradient(obj), x)
     value(obj), gradient(obj)
-end
-
-"""
-Evaluates the gradient value at `x`.
-
-Stores the value in `obj.DF`.
-"""
-function gradient!(obj::AbstractObjective, x)
-    if x != obj.x_df
-        gradient!!(obj, x)
-    end
-    gradient(obj)
-end
-
-function gradient(obj::ManifoldObjective)
-    gradient(obj.inner_obj)
-end
-
-function value(obj::ManifoldObjective)
-    value(obj.inner_obj)
 end
 
 function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
