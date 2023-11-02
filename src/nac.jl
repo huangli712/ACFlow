@@ -1016,7 +1016,7 @@ function update!(iteration::Integer,
               dt::Dict,
               show_trace::Bool,
               show_every::Int = 1) where {Tf}
-    os = OptimizationState{Tf}(iteration, f_x, grnorm, dt)
+    os = OptimizationState(iteration, f_x, grnorm, dt)
     if show_trace
         if iteration % show_every == 0
             show(os)
