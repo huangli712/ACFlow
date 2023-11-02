@@ -805,7 +805,7 @@ mutable struct OnceDifferentiable1{TF, TDF, TX} <: AbstractObjective
     df_calls::Vector{Int}
 end
 
-mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, M, Tls, Tsb}
+mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls, Tsb}
     method::O
     initial_x::Tx
     minimizer::Tx
@@ -826,7 +826,7 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, M, Tls, Tsb}
     g_abstol::Tf
     g_residual::Tc
     f_increased::Bool
-    trace::M
+    #trace::M
     f_calls::Int
     g_calls::Int
     h_calls::Int
@@ -1002,12 +1002,11 @@ function update_state!(d, state::BFGSState, method::BFGS)
     lssuccess == false # break on linesearch error
 end
 
-function trace!(tr, d, state, iteration, method::BFGS, options, curr_time=time())
+function trace!(d, state, iteration, method::BFGS, options, curr_time=time())
     dt = Dict()
     dt["time"] = curr_time
     g_norm = norm(gradient(d), Inf)
-    update!(tr,
-    iteration,
+    update!(iteration,
     value(d),
     g_norm,
     dt,
@@ -1016,8 +1015,7 @@ function trace!(tr, d, state, iteration, method::BFGS, options, curr_time=time()
     options.callback)
 end
 
-function update!(tr::OptimizationTrace{Tf},
-              iteration::Integer,
+function update!(iteration::Integer,
               f_x::Tf,
               grnorm::Real,
               dt::Dict,
@@ -1082,7 +1080,7 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
     state = initial_state(method, d, initial_x)
 
     t0 = time() # Initial time stamp used to control early stopping by options.time_limit
-    tr = OptimizationTrace{typeof(value(d))}()
+    #tr = OptimizationTrace{typeof(value(d))}()
     tracing = options.show_trace || options.callback !== nothing
     stopped, stopped_by_callback, stopped_by_time_limit = false, false, false
     f_limit_reached, g_limit_reached, h_limit_reached = false, false, false
@@ -1095,7 +1093,7 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
 
     options.show_trace && print_header(method)
     _time = time()
-    trace!(tr, d, state, iteration, method, options, _time-t0)
+    trace!(d, state, iteration, method, options, _time-t0)
     ls_success::Bool = true
     while !converged && !stopped && iteration < options.iterations
         iteration += 1
@@ -1113,7 +1111,7 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
         update_h!(d, state, method) # only relevant if not converged
         if tracing
             # update trace; callbacks can stop routine early by returning true
-            stopped_by_callback = trace!(tr, d, state, iteration, method, options, time()-t0)
+            stopped_by_callback = trace!(d, state, iteration, method, options, time()-t0)
         end
 
         # Check time_limit; if none is provided it is NaN and the comparison
@@ -1169,7 +1167,7 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
                                         Tf(options.g_abstol),
                                         g_residual(d, state),
                                         f_increased,
-                                        tr,
+                                        #tr,
                                         f_calls(d),
                                         g_calls(d),
                                         h_calls(d),
