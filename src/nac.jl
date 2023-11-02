@@ -768,6 +768,15 @@ struct OptimizationState{Tf<:Real, T <: AbstractOptimizer}
     g_norm::Tf
     metadata::Dict
 end
+function Base.show(io::IO, t::OptimizationState)
+    @printf io "%6d   %14e   %14e\n" t.iteration t.value t.g_norm
+    if !isempty(t.metadata)
+        for (key, value) in t.metadata
+            @printf io " * %s: %s\n" key value
+        end
+    end
+    return
+end
 struct NewtonTrustRegion{T <: Real} <: SecondOrderOptimizer
     initial_delta::T
     delta_hat::T
@@ -954,49 +963,12 @@ minimizer(r::OptimizationResults1) = r.minimizer
 
 include("hagerzhang.jl")
 
-_alphaguess(a) = a
-#_alphaguess(a::Number) = InitialStatic(a, false)
-
-function Base.show(io::IO, t::OptimizationState)
-    @printf io "%6d   %14e   %14e\n" t.iteration t.value t.g_norm
-    if !isempty(t.metadata)
-        for (key, value) in t.metadata
-            @printf io " * %s: %s\n" key value
-        end
-    end
-    return
-end
-
-mutable struct InitialStatic{T}
-    alpha::T
-    scaled::Bool
-end
-
-function InitialStatic()
-    InitialStatic(1.0, false)
-end
-
-function (is::InitialStatic{T})(ls, state, phi_0, dphi_0, df) where T
-    PT = promote_type(T, real(eltype(state.s)))
-    if is.scaled == true && (ns = real(norm(state.s))) > convert(PT, 0)
-        # TODO: Type instability if there's a type mismatch between is.alpha and ns?
-        state.alpha = convert(PT, min(is.alpha, ns)) / ns
-    else
-        state.alpha = convert(PT, is.alpha)
-    end
-end
-
-function BFGS(; alphaguess = InitialStatic(), # TODO: benchmark defaults
-    linesearch = HagerZhang(),  # TODO: benchmark defaults
+function BFGS(; alphaguess = InitialStatic(),
+    linesearch = HagerZhang(),
     initial_invH = nothing,
     initial_stepnorm = nothing,
     manifold::Manifold=Flat())
-BFGS(_alphaguess(alphaguess), linesearch, initial_invH, initial_stepnorm, manifold)
-end
-
-mutable struct LineSearchException{T<:Real} <: Exception
-    message::AbstractString
-    alpha::T
+    BFGS(alphaguess, linesearch, initial_invH, initial_stepnorm, manifold)
 end
 
 function make_ϕ(df, x_new, x, s)
