@@ -756,9 +756,8 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
 end
 
 struct Manifold end
-#abstract type AbstractOptimizer end
 
-struct BFGS{IL, L, H, T, TM} #<: AbstractOptimizer
+struct BFGS{IL, L, H, T, TM}
     alphaguess!::IL
     linesearch!::L
     initial_invH::H
@@ -785,6 +784,7 @@ mutable struct ManifoldObjective{T <: AbstractObjective} <: AbstractObjective
     manifold::Manifold
     inner_obj::T
 end
+
 # Used for objectives and solvers where the gradient is available/exists
 mutable struct OnceDifferentiable1{TF, TDF, TX} <: AbstractObjective
     f # objective
