@@ -1122,37 +1122,6 @@ function OnceDifferentiable1(f, df,
     OnceDifferentiable1(f, df!, fdf!, x, F, DF)
 end
 
-
-
-"""
-Evaluates the gradient value at `x`.
-
-Stores the value in `obj.DF`.
-"""
-function gradient!(obj::AbstractObjective, x)
-    if x != obj.x_df
-        gradient!!(obj, x)
-    end
-    gradient(obj)
-end
-
-function gradient(obj::ManifoldObjective)
-    gradient(obj.inner_obj)
-end
-
-function value(obj::ManifoldObjective)
-    value(obj.inner_obj)
-end
-
-retract(M::Manifold,x) = retract!(M, copy(x))
-
-function value_gradient!(obj::ManifoldObjective,x)
-    xin = retract(obj.manifold, x)
-    value_gradient!(obj.inner_obj,xin)
-    project_tangent!(obj.manifold,gradient(obj.inner_obj),xin)
-    return value(obj.inner_obj)
-end
-
 function print_header(method::AbstractOptimizer)
     @printf "Iter     Function value   Gradient norm \n"
 end
@@ -1210,6 +1179,40 @@ function update!(tr::OptimizationTrace{Tf, T},
     stopped
 end
 
+function initial_state(method::BFGS, d, initial_x::AbstractArray{T}) where T
+    #n = length(initial_x)
+    initial_x = copy(initial_x)
+    retract!(method.manifold, initial_x)
+
+    value_gradient!!(d, initial_x)
+
+    project_tangent!(method.manifold, gradient(d), initial_x)
+
+    if method.initial_invH === nothing
+        if method.initial_stepnorm === nothing
+            # Identity matrix of size n x n
+            invH0 = _init_identity_matrix(initial_x)
+        else
+            initial_scale = T(method.initial_stepnorm) * inv(norm(gradient(d), Inf))
+            invH0 = _init_identity_matrix(initial_x, initial_scale)
+        end
+    else
+        invH0 = method.initial_invH(initial_x)
+    end
+    # Maintain a cache for line search results
+    # Trace the history of states visited
+    BFGSState(initial_x, # Maintain current state in state.x
+              copy(initial_x), # Maintain previous state in state.x_previous
+              copy(gradient(d)), # Store previous gradient in state.g_previous
+              real(T)(NaN), # Store previous f in state.f_x_previous
+              similar(initial_x), # Store changes in position in state.dx
+              similar(initial_x), # Store changes in gradient in state.dg
+              similar(initial_x), # Buffer stored in state.u
+              invH0, # Store current invH in state.invH
+              similar(initial_x), # Store current search direction in state.s
+              @initial_linesearch()...)
+end
+
 function update_state!(d, state::BFGSState, method::BFGS)
     n = length(state.x)
     T = eltype(state.s)
@@ -1235,12 +1238,6 @@ function update_state!(d, state::BFGSState, method::BFGS)
     lssuccess == false # break on linesearch error
 end
 
-function initial_convergence(d, state, method::AbstractOptimizer, initial_x, options)
-    gradient!(d, initial_x)
-    stopped = !isfinite(value(d)) || any(!isfinite, gradient(d))
-    maximum(abs, gradient(d)) <= options.g_abstol, stopped
-end
-
 struct Newton{IL, L} <: SecondOrderOptimizer
     alphaguess!::IL
     linesearch!::L
@@ -1254,18 +1251,6 @@ function update_g!(d, state, method::M) where M<:Union{FirstOrderOptimizer, Newt
         project_tangent!(method.manifold, gradient(d), state.x)
     end
 end
-
-g_calls(r::OptimizationResults1) = error("g_calls is not implemented for $(summary(r)).")
-g_calls(r::MultivariateOptimizationResults) = r.g_calls
-#g_calls(d::NonDifferentiable) = 0
-g_calls(d) = first(d.df_calls)
-
-h_calls(r::OptimizationResults1) = error("h_calls is not implemented for $(summary(r)).")
-h_calls(r::MultivariateOptimizationResults) = r.h_calls
-h_calls(d::Union{NonDifferentiable, OnceDifferentiable1}) = 0
-h_calls(d) = first(d.h_calls)
-#h_calls(d::TwiceDifferentiableHV) = first(d.hv_calls)
-
 
 function update_h!(d, state, method::BFGS)
     n = length(state.x)
@@ -1297,109 +1282,6 @@ function update_h!(d, state, method::BFGS)
             mul!(state.invH,vec(state.dx),vec(state.u )',-c2,1)
         end
     end
-end
-
-function maxdiff(x::AbstractArray, y::AbstractArray)
-    return mapreduce((a, b) -> abs(a - b), max, x, y)
-end
-
-f_abschange(d::AbstractObjective, state) = f_abschange(value(d), state.f_x_previous)
-f_abschange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)
-f_relchange(d::AbstractObjective, state) = f_relchange(value(d), state.f_x_previous)
-f_relchange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)/abs(f_x)
-
-x_abschange(r::MultivariateOptimizationResults) = r.x_abschange
-x_relchange(r::MultivariateOptimizationResults) = r.x_relchange
-x_abschange(state) = x_abschange(state.x, state.x_previous)
-x_abschange(x, x_previous) = maxdiff(x, x_previous)
-x_relchange(state) = x_relchange(state.x, state.x_previous)
-x_relchange(x, x_previous) = maxdiff(x, x_previous)/maximum(abs, x)
-
-g_residual(d, state) = g_residual(d)
-#g_residual(d, state::NelderMeadState) = state.nm_x
-g_residual(d::AbstractObjective) = g_residual(gradient(d))
-#g_residual(d::NonDifferentiable) = convert(typeof(value(d)), NaN)
-g_residual(g) = maximum(abs, g)
-gradient_convergence_assessment(state::AbstractOptimizerState, d, options) = g_residual(gradient(d)) ≤ options.g_abstol
-#gradient_convergence_assessment(state::ZerothOrderState, d, options) = false
-
-# Default function for convergence assessment used by
-# AcceleratedGradientDescentState, BFGSState, ConjugateGradientState,
-# GradientDescentState, LBFGSState, MomentumGradientDescentState and NewtonState
-function assess_convergence(state::AbstractOptimizerState, d, options::Options)
-    assess_convergence(state.x,
-                       state.x_previous,
-                       value(d),
-                       state.f_x_previous,
-                       gradient(d),
-                       options.x_abstol,
-                       options.x_reltol,
-                       options.f_abstol,
-                       options.f_reltol,
-                       options.g_abstol)
-end
-function assess_convergence(x, x_previous, f_x, f_x_previous, gx, x_abstol, x_reltol, f_abstol, f_reltol, g_abstol)
-    x_converged, f_converged, f_increased, g_converged = false, false, false, false
-
-    # TODO: Create function for x_convergence_assessment
-    if x_abschange(x, x_previous) ≤ x_abstol
-        x_converged = true
-    end
-    if x_abschange(x, x_previous) ≤ x_reltol * maximum(abs, x)
-        x_converged = true
-    end
-
-    # Relative Tolerance
-    # TODO: Create function for f_convergence_assessment
-    if f_abschange(f_x, f_x_previous) ≤ f_abstol
-        f_converged = true
-    end
-
-    if f_abschange(f_x, f_x_previous) ≤ f_reltol*abs(f_x)
-        f_converged = true
-    end
-
-    if f_x > f_x_previous
-        f_increased = true
-    end
-
-    g_converged = g_residual(gx) ≤ g_abstol
-
-    return x_converged, f_converged, g_converged, f_increased
-end
-
-# Used by Fminbox and IPNewton
-function assess_convergence(x,
-                            x_previous,
-                            f_x,
-                            f_x_previous,
-                            g,
-                            x_tol,
-                            f_tol,
-                            g_tol)
-
-    x_converged, f_converged, f_increased, g_converged = false, false, false, false
-
-    if x_abschange(x, x_previous) ≤ x_tol
-        x_converged = true
-    end
-
-    # Absolute Tolerance
-    # if abs(f_x - f_x_previous) < f_tol
-    # Relative Tolerance
-    if f_abschange(f_x, f_x_previous) ≤ f_tol*abs(f_x)
-        f_converged = true
-    end
-
-    if f_x > f_x_previous
-        f_increased = true
-    end
-
-    if g_residual(g) ≤ g_tol
-        g_converged = true
-    end
-
-    return x_converged, f_converged, g_converged, f_increased
 end
 
 function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, options::Options)
@@ -1536,9 +1418,8 @@ end
     real(one(T)))             # Keep track of step size in state.alpha
 end
 
-
-
 retract!(M::Flat,x) = x
+retract(M::Manifold,x) = retract!(M, copy(x))
 project_tangent!(M::Flat, g, x) = g
 gradient(obj::AbstractObjective) = obj.DF
 value(obj::AbstractObjective) = obj.F
@@ -1554,6 +1435,13 @@ function value_gradient!(obj::AbstractObjective, x)
     value(obj), gradient(obj)
 end
 
+function value_gradient!(obj::ManifoldObjective,x)
+    xin = retract(obj.manifold, x)
+    value_gradient!(obj.inner_obj,xin)
+    project_tangent!(obj.manifold,gradient(obj.inner_obj),xin)
+    return value(obj.inner_obj)
+end
+
 function value_gradient!!(obj::AbstractObjective, x)
     obj.f_calls .+= 1
     obj.df_calls .+= 1
@@ -1561,6 +1449,26 @@ function value_gradient!!(obj::AbstractObjective, x)
     copyto!(obj.x_df, x)
     obj.F = obj.fdf(gradient(obj), x)
     value(obj), gradient(obj)
+end
+
+"""
+Evaluates the gradient value at `x`.
+
+Stores the value in `obj.DF`.
+"""
+function gradient!(obj::AbstractObjective, x)
+    if x != obj.x_df
+        gradient!!(obj, x)
+    end
+    gradient(obj)
+end
+
+function gradient(obj::ManifoldObjective)
+    gradient(obj.inner_obj)
+end
+
+function value(obj::ManifoldObjective)
+    value(obj.inner_obj)
 end
 
 function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
@@ -1571,40 +1479,16 @@ function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
     return Id
 end
 
-function initial_state(method::BFGS, d, initial_x::AbstractArray{T}) where T
-    #n = length(initial_x)
-    initial_x = copy(initial_x)
-    retract!(method.manifold, initial_x)
+g_calls(r::OptimizationResults1) = error("g_calls is not implemented for $(summary(r)).")
+g_calls(r::MultivariateOptimizationResults) = r.g_calls
+#g_calls(d::NonDifferentiable) = 0
+g_calls(d) = first(d.df_calls)
 
-    value_gradient!!(d, initial_x)
-
-    project_tangent!(method.manifold, gradient(d), initial_x)
-
-    if method.initial_invH === nothing
-        if method.initial_stepnorm === nothing
-            # Identity matrix of size n x n
-            invH0 = _init_identity_matrix(initial_x)
-        else
-            initial_scale = T(method.initial_stepnorm) * inv(norm(gradient(d), Inf))
-            invH0 = _init_identity_matrix(initial_x, initial_scale)
-        end
-    else
-        invH0 = method.initial_invH(initial_x)
-    end
-    # Maintain a cache for line search results
-    # Trace the history of states visited
-    BFGSState(initial_x, # Maintain current state in state.x
-              copy(initial_x), # Maintain previous state in state.x_previous
-              copy(gradient(d)), # Store previous gradient in state.g_previous
-              real(T)(NaN), # Store previous f in state.f_x_previous
-              similar(initial_x), # Store changes in position in state.dx
-              similar(initial_x), # Store changes in gradient in state.dg
-              similar(initial_x), # Buffer stored in state.u
-              invH0, # Store current invH in state.invH
-              similar(initial_x), # Store current search direction in state.s
-              @initial_linesearch()...)
-end
-
+h_calls(r::OptimizationResults1) = error("h_calls is not implemented for $(summary(r)).")
+h_calls(r::MultivariateOptimizationResults) = r.h_calls
+h_calls(d::Union{NonDifferentiable, OnceDifferentiable1}) = 0
+h_calls(d) = first(d.h_calls)
+#h_calls(d::TwiceDifferentiableHV) = first(d.hv_calls)
 f_calls(r::OptimizationResults1) = r.f_calls
 f_calls(d) = first(d.f_calls)
 pick_best_x(f_increased, state) = f_increased ? state.x_previous : state.x
@@ -1612,6 +1496,37 @@ pick_best_f(f_increased, state, d) = f_increased ? state.f_x_previous : value(d)
 f_abschange(r::MultivariateOptimizationResults) = r.f_abschange
 f_relchange(r::MultivariateOptimizationResults) = r.f_relchange
 g_residual(r::MultivariateOptimizationResults) = r.g_residual
+
+function maxdiff(x::AbstractArray, y::AbstractArray)
+    return mapreduce((a, b) -> abs(a - b), max, x, y)
+end
+
+f_abschange(d::AbstractObjective, state) = f_abschange(value(d), state.f_x_previous)
+f_abschange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)
+f_relchange(d::AbstractObjective, state) = f_relchange(value(d), state.f_x_previous)
+f_relchange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)/abs(f_x)
+
+x_abschange(r::MultivariateOptimizationResults) = r.x_abschange
+x_relchange(r::MultivariateOptimizationResults) = r.x_relchange
+x_abschange(state) = x_abschange(state.x, state.x_previous)
+x_abschange(x, x_previous) = maxdiff(x, x_previous)
+x_relchange(state) = x_relchange(state.x, state.x_previous)
+x_relchange(x, x_previous) = maxdiff(x, x_previous)/maximum(abs, x)
+
+g_residual(d, state) = g_residual(d)
+#g_residual(d, state::NelderMeadState) = state.nm_x
+g_residual(d::AbstractObjective) = g_residual(gradient(d))
+#g_residual(d::NonDifferentiable) = convert(typeof(value(d)), NaN)
+g_residual(g) = maximum(abs, g)
+gradient_convergence_assessment(state::AbstractOptimizerState, d, options) = g_residual(gradient(d)) ≤ options.g_abstol
+#gradient_convergence_assessment(state::ZerothOrderState, d, options) = false
+
+function initial_convergence(d, state, method::AbstractOptimizer, initial_x, options)
+    gradient!(d, initial_x)
+    stopped = !isfinite(value(d)) || any(!isfinite, gradient(d))
+    maximum(abs, gradient(d)) <= options.g_abstol, stopped
+end
+
 function converged(r::MultivariateOptimizationResults)
     conv_flags = r.x_converged || r.f_converged || r.g_converged
     x_isfinite = isfinite(x_abschange(r)) || isnan(x_relchange(r))
@@ -1622,4 +1537,83 @@ function converged(r::MultivariateOptimizationResults)
         end
     g_isfinite = isfinite(g_residual(r))
     return conv_flags && all((x_isfinite, f_isfinite, g_isfinite))
+end
+
+# Default function for convergence assessment used by
+# AcceleratedGradientDescentState, BFGSState, ConjugateGradientState,
+# GradientDescentState, LBFGSState, MomentumGradientDescentState and NewtonState
+function assess_convergence(state::AbstractOptimizerState, d, options::Options)
+    assess_convergence(state.x,
+                       state.x_previous,
+                       value(d),
+                       state.f_x_previous,
+                       gradient(d),
+                       options.x_abstol,
+                       options.x_reltol,
+                       options.f_abstol,
+                       options.f_reltol,
+                       options.g_abstol)
+end
+function assess_convergence(x, x_previous, f_x, f_x_previous, gx, x_abstol, x_reltol, f_abstol, f_reltol, g_abstol)
+    x_converged, f_converged, f_increased, g_converged = false, false, false, false
+
+    # TODO: Create function for x_convergence_assessment
+    if x_abschange(x, x_previous) ≤ x_abstol
+        x_converged = true
+    end
+    if x_abschange(x, x_previous) ≤ x_reltol * maximum(abs, x)
+        x_converged = true
+    end
+
+    # Relative Tolerance
+    # TODO: Create function for f_convergence_assessment
+    if f_abschange(f_x, f_x_previous) ≤ f_abstol
+        f_converged = true
+    end
+
+    if f_abschange(f_x, f_x_previous) ≤ f_reltol*abs(f_x)
+        f_converged = true
+    end
+
+    if f_x > f_x_previous
+        f_increased = true
+    end
+
+    g_converged = g_residual(gx) ≤ g_abstol
+
+    return x_converged, f_converged, g_converged, f_increased
+end
+
+# Used by Fminbox and IPNewton
+function assess_convergence(x,
+                            x_previous,
+                            f_x,
+                            f_x_previous,
+                            g,
+                            x_tol,
+                            f_tol,
+                            g_tol)
+
+    x_converged, f_converged, f_increased, g_converged = false, false, false, false
+
+    if x_abschange(x, x_previous) ≤ x_tol
+        x_converged = true
+    end
+
+    # Absolute Tolerance
+    # if abs(f_x - f_x_previous) < f_tol
+    # Relative Tolerance
+    if f_abschange(f_x, f_x_previous) ≤ f_tol*abs(f_x)
+        f_converged = true
+    end
+
+    if f_x > f_x_previous
+        f_increased = true
+    end
+
+    if g_residual(g) ≤ g_tol
+        g_converged = true
+    end
+
+    return x_converged, f_converged, g_converged, f_increased
 end
