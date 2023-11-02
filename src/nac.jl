@@ -933,25 +933,10 @@ end
 function initial_state(method::BFGS, d, initial_x::AbstractArray{T}) where T
     initial_x = copy(initial_x)
     retract!(method.manifold, initial_x)
-
     value_gradient!!(d, initial_x)
-
     project_tangent!(method.manifold, gradient(d), initial_x)
+    invH0 = _init_identity_matrix(initial_x)
 
-    #if method.initial_invH === nothing
-    #    @show "here"
-    #    if method.initial_stepnorm === nothing
-    #        @show "here1"
-            # Identity matrix of size n x n
-            invH0 = _init_identity_matrix(initial_x)
-        #else
-        #    @show "here2"
-        #    initial_scale = T(method.initial_stepnorm) * inv(norm(gradient(d), Inf))
-        #    invH0 = _init_identity_matrix(initial_x, initial_scale)
-    #    end
-    #else
-    #    invH0 = method.initial_invH(initial_x)
-    #end
     # Maintain a cache for line search results
     # Trace the history of states visited
     BFGSState(initial_x, # Maintain current state in state.x
