@@ -942,8 +942,6 @@ end
 
 const OptimizationTrace{Tf, T} = Vector{OptimizationState{Tf, T}}
 
-# minimizer(r::OptimizationResults1) = r.minimizer
-
 include("hagerzhang.jl")
 
 function BFGS(; alphaguess = InitialStatic(),
