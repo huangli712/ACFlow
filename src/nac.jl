@@ -966,6 +966,16 @@ _alphaguess(a::Number) = InitialStatic(a, false)
 #    scaled::Bool = false # Scales step. alpha ← min(alpha,||s||_2) / ||s||_2
 #end
 
+function Base.show(io::IO, t::OptimizationState)
+    @printf io "%6d   %14e   %14e\n" t.iteration t.value t.g_norm
+    if !isempty(t.metadata)
+        for (key, value) in t.metadata
+            @printf io " * %s: %s\n" key value
+        end
+    end
+    return
+end
+
 mutable struct InitialStatic{T}
     alpha::T
     scaled::Bool # false # Scales step. alpha ← min(alpha,||s||_2) / ||s||_2
