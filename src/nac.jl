@@ -1105,14 +1105,13 @@ function update_h!(d, state, method::BFGS)
     end
 end
 
+#function optimize(initial_x::AbstractArray, method::AbstractOptimizer, options::Options)
+#    optimize(d, initial_x, method, options)
+#end
+
 function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, options::Options)
     d = OnceDifferentiable1(f, g, initial_x, real(zero(eltype(initial_x))))
-    optimize(d, initial_x, method, options)
-end
-
-function optimize(d::D, initial_x::Tx, method::M,
-                  options::Options,
-                  state = initial_state(method, d, initial_x)) where {D<:AbstractObjective, M<:AbstractOptimizer, Tx <: AbstractArray}
+    state = initial_state(method, d, initial_x)
 
     t0 = time() # Initial time stamp used to control early stopping by options.time_limit
     tr = OptimizationTrace{typeof(value(d)), typeof(method)}()
@@ -1182,7 +1181,7 @@ function optimize(d::D, initial_x::Tx, method::M,
                  time_limit=stopped_by_time_limit,
                  callback=stopped_by_callback,
                  f_increased=f_incr_pick)
-    return MultivariateOptimizationResults{typeof(method),Tx,typeof(x_abschange(state)),Tf,typeof(tr), Bool, typeof(stopped_by)}(method,
+    return MultivariateOptimizationResults{typeof(method),typeof(initial_x),typeof(x_abschange(state)),Tf,typeof(tr), Bool, typeof(stopped_by)}(method,
                                         initial_x,
                                         pick_best_x(f_incr_pick, state),
                                         pick_best_f(f_incr_pick, state, d),
