@@ -1409,7 +1409,7 @@ end
 
 function optimize(d::D, initial_x::Tx, method::M,
                   options::Options,
-                  state = initial_state(method, options, d, initial_x)) where {D<:AbstractObjective, M<:AbstractOptimizer, Tx <: AbstractArray, T, TCallback}
+                  state = initial_state(method, options, d, initial_x)) where {D<:AbstractObjective, M<:AbstractOptimizer, Tx <: AbstractArray}
 
     t0 = time() # Initial time stamp used to control early stopping by options.time_limit
     tr = OptimizationTrace{typeof(value(d)), typeof(method)}()
