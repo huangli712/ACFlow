@@ -767,15 +767,7 @@ struct OptimizationState{Tf<:Real, T <: AbstractOptimizer}
     g_norm::Tf
     metadata::Dict
 end
-function Base.show(io::IO, t::OptimizationState)
-    @printf io "%6d   %14e   %14e\n" t.iteration t.value t.g_norm
-    if !isempty(t.metadata)
-        for (key, value) in t.metadata
-            @printf io " * %s: %s\n" key value
-        end
-    end
-    return
-end
+
 struct BFGS{IL, L, H, T, TM} <: FirstOrderOptimizer
     alphaguess!::IL
     linesearch!::L
@@ -950,47 +942,6 @@ function BFGS(; alphaguess = InitialStatic(),
     BFGS(alphaguess, linesearch, initial_invH, initial_stepnorm, manifold)
 end
 
-function perform_linesearch!(state, method, d)
-    # Calculate search direction dphi0
-    dphi_0 = real(dot(gradient(d), state.s))
-    # reset the direction if it becomes corrupted
-    if dphi_0 >= zero(dphi_0) && reset_search_direction!(state, d, method)
-        dphi_0 = real(dot(gradient(d), state.s)) # update after direction reset
-    end
-    phi_0  = value(d)
-
-    # Guess an alpha
-    #@show "hahah", method
-    method.alphaguess!(method.linesearch!, state, phi_0, dphi_0, d)
-
-    # Store current x and f(x) for next iteration
-    state.f_x_previous = phi_0
-    copyto!(state.x_previous, state.x)
-
-    # Perform line search; catch LineSearchException to allow graceful exit
-    try
-        #@show typeof(d)
-        state.alpha, ϕalpha = method.linesearch!(d, state.x, state.s, state.alpha,
-                               state.x_ls, phi_0, dphi_0)
-        #state.alpha, ϕalpha = method.linesearch!(state.x, state.s, state.alpha,
-        #                       state.x_ls, phi_0, dphi_0)
-        return true # lssuccess = true
-    catch ex
-        if isa(ex, LineSearchException)
-            state.alpha = ex.alpha
-            # We shouldn't warn here, we should just carry it to the output
-            # @warn("Linesearch failed, using alpha = $(state.alpha) and
-            # exiting optimization.\nThe linesearch exited with message:\n$(ex.message)")
-            return false # lssuccess = false
-        else
-            rethrow(ex)
-        end
-    end
-end
-
-x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
-alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
-
 function OnceDifferentiable1(f, df,
                    x::AbstractArray,
                    F::Real = real(zero(eltype(x))),
@@ -1001,10 +952,6 @@ function OnceDifferentiable1(f, df,
     end
     x_f, x_df = x_of_nans(x), x_of_nans(x)
     OnceDifferentiable1(f, df, fdf, copy(F), copy(DF), x_f, x_df, [0,], [0,])
-end
-
-function print_header(method::AbstractOptimizer)
-    @printf "Iter     Function value   Gradient norm \n"
 end
 
 function initial_state(method::BFGS, d, initial_x::AbstractArray{T}) where T
@@ -1320,6 +1267,61 @@ function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
     @. @view(Id[idxs]) = scale * true
     return Id
 end
+
+function perform_linesearch!(state, method, d)
+    # Calculate search direction dphi0
+    dphi_0 = real(dot(gradient(d), state.s))
+    # reset the direction if it becomes corrupted
+    if dphi_0 >= zero(dphi_0) && reset_search_direction!(state, d, method)
+        dphi_0 = real(dot(gradient(d), state.s)) # update after direction reset
+    end
+    phi_0  = value(d)
+
+    # Guess an alpha
+    #@show "hahah", method
+    method.alphaguess!(method.linesearch!, state, phi_0, dphi_0, d)
+
+    # Store current x and f(x) for next iteration
+    state.f_x_previous = phi_0
+    copyto!(state.x_previous, state.x)
+
+    # Perform line search; catch LineSearchException to allow graceful exit
+    try
+        #@show typeof(d)
+        state.alpha, ϕalpha = method.linesearch!(d, state.x, state.s, state.alpha,
+                               state.x_ls, phi_0, dphi_0)
+        #state.alpha, ϕalpha = method.linesearch!(state.x, state.s, state.alpha,
+        #                       state.x_ls, phi_0, dphi_0)
+        return true # lssuccess = true
+    catch ex
+        if isa(ex, LineSearchException)
+            state.alpha = ex.alpha
+            # We shouldn't warn here, we should just carry it to the output
+            # @warn("Linesearch failed, using alpha = $(state.alpha) and
+            # exiting optimization.\nThe linesearch exited with message:\n$(ex.message)")
+            return false # lssuccess = false
+        else
+            rethrow(ex)
+        end
+    end
+end
+
+function print_header(method::AbstractOptimizer)
+    @printf "Iter     Function value   Gradient norm \n"
+end
+
+function Base.show(io::IO, t::OptimizationState)
+    @printf io "%6d   %14e   %14e\n" t.iteration t.value t.g_norm
+    if !isempty(t.metadata)
+        for (key, value) in t.metadata
+            @printf io " * %s: %s\n" key value
+        end
+    end
+    return
+end
+
+x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
+alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 
 g_calls(r::MultivariateOptimizationResults) = r.g_calls
 g_calls(d) = first(d.df_calls)
