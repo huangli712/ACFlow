@@ -816,8 +816,8 @@ mutable struct OnceDifferentiable1{TF, TDF, TX} <: AbstractObjective
     df_calls::Vector{Int}
 end
 
-abstract type OptimizationResults1 end
-mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, M, Tls, Tsb} <: OptimizationResults1
+#abstract type OptimizationResults1 end
+mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, M, Tls, Tsb} #<: OptimizationResults1
     method::O
     initial_x::Tx
     minimizer::Tx
@@ -1346,14 +1346,14 @@ function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
     return Id
 end
 
-g_calls(r::OptimizationResults1) = error("g_calls is not implemented for $(summary(r)).")
+#g_calls(r::OptimizationResults1) = error("g_calls is not implemented for $(summary(r)).")
 g_calls(r::MultivariateOptimizationResults) = r.g_calls
 g_calls(d) = first(d.df_calls)
-h_calls(r::OptimizationResults1) = error("h_calls is not implemented for $(summary(r)).")
+#h_calls(r::OptimizationResults1) = error("h_calls is not implemented for $(summary(r)).")
 h_calls(r::MultivariateOptimizationResults) = r.h_calls
 h_calls(d::OnceDifferentiable1) = 0
 h_calls(d) = first(d.h_calls)
-f_calls(r::OptimizationResults1) = r.f_calls
+#f_calls(r::OptimizationResults1) = r.f_calls
 f_calls(d) = first(d.f_calls)
 
 pick_best_x(f_increased, state) = f_increased ? state.x_previous : state.x
