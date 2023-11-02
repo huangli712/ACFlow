@@ -1003,10 +1003,17 @@ function trace!(d, iteration, options, curr_time=time())
     dt["time"] = curr_time
     g_norm = norm(gradient(d), Inf)
 
-    os = OptimizationState(iteration, value(d), g_norm, dt)
+    #os = OptimizationState(iteration, value(d), g_norm, dt)
     if options.show_trace
         if iteration % options.show_every == 0
-            show(os)
+            #show(os)
+            @printf("%6d   %14e   %14e\n", iteration, value(d), g_norm)
+            if !isempty(dt)
+                for (key, value) in dt
+                    @printf(" * %s: %s\n", key, value)
+                end
+            end
+
             flush(stdout)
         end
     end
