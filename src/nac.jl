@@ -1540,47 +1540,33 @@ function converged(r::MultivariateOptimizationResults)
     return conv_flags && all((x_isfinite, f_isfinite, g_isfinite))
 end
 
-# Default function for convergence assessment used by
-# AcceleratedGradientDescentState, BFGSState, ConjugateGradientState,
-# GradientDescentState, LBFGSState, MomentumGradientDescentState and NewtonState
+# Default function for convergence assessment used by BFGSState
 function assess_convergence(state::AbstractOptimizerState, d, options::Options)
-    assess_convergence(state.x,
-                       state.x_previous,
-                       value(d),
-                       state.f_x_previous,
-                       gradient(d),
-                       options.x_abstol,
-                       options.x_reltol,
-                       options.f_abstol,
-                       options.f_reltol,
-                       options.g_abstol)
-end
-function assess_convergence(x, x_previous, f_x, f_x_previous, gx, x_abstol, x_reltol, f_abstol, f_reltol, g_abstol)
     x_converged, f_converged, f_increased, g_converged = false, false, false, false
 
-    # TODO: Create function for x_convergence_assessment
-    if x_abschange(x, x_previous) ≤ x_abstol
+    f_x = value(d)
+    g_x = gradient(d)
+
+    if x_abschange(state.x, state.x_previous) ≤ options.x_abstol
         x_converged = true
     end
-    if x_abschange(x, x_previous) ≤ x_reltol * maximum(abs, x)
+    if x_abschange(state.x, state.x_previous) ≤ options.x_reltol * maximum(abs, state.x)
         x_converged = true
     end
 
-    # Relative Tolerance
-    # TODO: Create function for f_convergence_assessment
-    if f_abschange(f_x, f_x_previous) ≤ f_abstol
+    if f_abschange(f_x, state.f_x_previous) ≤ options.f_abstol
         f_converged = true
     end
 
-    if f_abschange(f_x, f_x_previous) ≤ f_reltol*abs(f_x)
+    if f_abschange(f_x, state.f_x_previous) ≤ options.f_reltol*abs(f_x)
         f_converged = true
     end
 
-    if f_x > f_x_previous
+    if f_x > state.f_x_previous
         f_increased = true
     end
 
-    g_converged = g_residual(gx) ≤ g_abstol
+    g_converged = g_residual(g_x) ≤ options.g_abstol
 
     return x_converged, f_converged, g_converged, f_increased
 end
