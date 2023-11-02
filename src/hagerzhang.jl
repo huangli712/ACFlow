@@ -22,6 +22,31 @@ mutable struct LineSearchException{T<:Real} <: Exception
     alpha::T
 end
 
+function make_ϕ(df, x_new, x, s)
+    function ϕ(α)
+        # Move a distance of alpha in the direction of s
+        x_new .= x .+ α.*s
+
+        # Evaluate f(x+α*s)
+        value!(df, x_new)
+    end
+    ϕ
+end
+
+function make_ϕ_ϕdϕ(df, x_new, x, s)
+    function ϕdϕ(α)
+        # Move a distance of alpha in the direction of s
+        x_new .= x .+ α.*s
+
+        # Evaluate ∇f(x+α*s)
+        value_gradient!(df, x_new)
+
+        # Calculate ϕ'(a_i)
+        value(df), real(dot(gradient(df), s))
+    end
+    make_ϕ(df, x_new, x, s), ϕdϕ
+end
+
 #
 # Conjugate gradient line search implementation from:
 #   W. W. Hager and H. Zhang (2006) Algorithm 851: CG_DESCENT, a

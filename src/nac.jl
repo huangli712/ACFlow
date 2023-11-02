@@ -971,30 +971,7 @@ function BFGS(; alphaguess = InitialStatic(),
     BFGS(alphaguess, linesearch, initial_invH, initial_stepnorm, manifold)
 end
 
-function make_ϕ(df, x_new, x, s)
-    function ϕ(α)
-        # Move a distance of alpha in the direction of s
-        x_new .= x .+ α.*s
 
-        # Evaluate f(x+α*s)
-        value!(df, x_new)
-    end
-    ϕ
-end
-
-function make_ϕ_ϕdϕ(df, x_new, x, s)
-    function ϕdϕ(α)
-        # Move a distance of alpha in the direction of s
-        x_new .= x .+ α.*s
-
-        # Evaluate ∇f(x+α*s)
-        value_gradient!(df, x_new)
-
-        # Calculate ϕ'(a_i)
-        value(df), real(dot(gradient(df), s))
-    end
-    make_ϕ(df, x_new, x, s), ϕdϕ
-end
 
 function perform_linesearch!(state, method, d)
     # Calculate search direction dphi0
