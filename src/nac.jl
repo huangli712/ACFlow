@@ -1000,7 +1000,6 @@ function perform_linesearch!(state, method, d)
 end
 
 x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
-alloc_DF(x, F) = eltype(x)(NaN) .* vec(F) .* vec(x)'
 alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 
 function df!_from_df(g, F::Real, inplace)
