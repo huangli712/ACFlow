@@ -1250,9 +1250,10 @@ function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
 end
 
-f_abschange(d::AbstractObjective, state) = f_abschange(value(d), state.f_x_previous)
-f_abschange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)
+f_abschange(d::OnceDifferentiable1, state) = abs(value(d) - state.f_x_previous)     #f_abschange(value(d), state.f_x_previous)
+#f_abschange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)
 f_abschange(r::MultivariateOptimizationResults) = r.f_abschange
+
 f_relchange(d::AbstractObjective, state) = f_relchange(value(d), state.f_x_previous)
 f_relchange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)/abs(f_x)
 f_relchange(r::MultivariateOptimizationResults) = r.f_relchange
