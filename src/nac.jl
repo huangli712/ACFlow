@@ -1064,7 +1064,6 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
     iteration = 0
 
     if options.show_trace
-        #print_header(method)
         @printf "Iter     Function value   Gradient norm \n"
     end
     _time = time()
@@ -1232,10 +1231,6 @@ function perform_linesearch!(state, method, d)
             rethrow(ex)
         end
     end
-end
-
-function print_header(method::AbstractOptimizer)
-    @printf "Iter     Function value   Gradient norm \n"
 end
 
 x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
