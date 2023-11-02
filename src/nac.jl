@@ -991,12 +991,6 @@ end
 x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
 alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 
-
-#function OnceDifferentiable1(f, df, fdf, x::AbstractArray, F::Real, DF::AbstractArray)
-#    x_f, x_df = x_of_nans(x), x_of_nans(x)
-#    OnceDifferentiable1{typeof(F),typeof(DF),typeof(x)}(f, df, fdf, copy(F), copy(DF), x_f, x_df, [0,], [0,])
-#end
-
 function OnceDifferentiable1(f, df,
                    x::AbstractArray,
                    F::Real = real(zero(eltype(x))),
@@ -1005,9 +999,8 @@ function OnceDifferentiable1(f, df,
         df(gx, x)
         return f(x)
     end
-    #OnceDifferentiable1(f, df, fdf, x, F, DF)
     x_f, x_df = x_of_nans(x), x_of_nans(x)
-    OnceDifferentiable1{typeof(F),typeof(DF),typeof(x)}(f, df, fdf, copy(F), copy(DF), x_f, x_df, [0,], [0,])
+    OnceDifferentiable1(f, df, fdf, copy(F), copy(DF), x_f, x_df, [0,], [0,])
 end
 
 function print_header(method::AbstractOptimizer)
