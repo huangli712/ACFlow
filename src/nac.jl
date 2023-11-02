@@ -1294,16 +1294,6 @@ function optimize(d::D, initial_x::Tx, method::M,
                                         )
 end
 
-#=
-macro def(name, definition)
-  esc(quote
-    macro $name()
-      esc($(Expr(:quote, definition)))
-    end
-  end)
-end
-=#
-
 retract!(M::Flat,x) = x
 retract(M::Manifold,x) = retract!(M, copy(x))
 project_tangent!(M::Flat, g, x) = g
