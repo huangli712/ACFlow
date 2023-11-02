@@ -1148,23 +1148,23 @@ retract!(M::Manifold,x) = x
 retract(M::Manifold,x) = retract!(M, copy(x))
 project_tangent!(M::Manifold, g, x) = g
 
-value(obj::AbstractObjective) = obj.F
+value(obj::OnceDifferentiable1) = obj.F
 function value(obj::ManifoldObjective)
     value(obj.inner_obj)
 end
 
-gradient(obj::AbstractObjective) = obj.DF
+gradient(obj::OnceDifferentiable1) = obj.DF
 function gradient(obj::ManifoldObjective)
     gradient(obj.inner_obj)
 end
-function gradient!(obj::AbstractObjective, x)
+function gradient!(obj::OnceDifferentiable1, x)
     if x != obj.x_df
         gradient!!(obj, x)
     end
     gradient(obj)
 end
 
-function value_gradient!(obj::AbstractObjective, x)
+function value_gradient!(obj::OnceDifferentiable1, x)
     if x != obj.x_f && x != obj.x_df
         value_gradient!!(obj, x)
     elseif x != obj.x_f
