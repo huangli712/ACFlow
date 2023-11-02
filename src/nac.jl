@@ -1040,11 +1040,11 @@ function update!(tr::OptimizationTrace{Tf},
         end
     end
     if callback !== nothing && (iteration % show_every == 0)
-        if store_trace
-            stopped = callback(tr)
-        else
+        #if store_trace
+        #    stopped = callback(tr)
+        #else
             stopped = callback(os)
-        end
+        #end
     else
         stopped = false
     end
@@ -1095,7 +1095,7 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
 
     t0 = time() # Initial time stamp used to control early stopping by options.time_limit
     tr = OptimizationTrace{typeof(value(d))}()
-    tracing = options.store_trace || options.show_trace || options.callback !== nothing
+    tracing = options.show_trace || options.callback !== nothing
     stopped, stopped_by_callback, stopped_by_time_limit = false, false, false
     f_limit_reached, g_limit_reached, h_limit_reached = false, false, false
     x_converged, f_converged, f_increased, counter_f_tol = false, false, false, 0
