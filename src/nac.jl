@@ -1122,10 +1122,7 @@ function OnceDifferentiable1(f, df,
     OnceDifferentiable1(f, df!, fdf!, x, F, DF)
 end
 
-function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, options::Options)
-    d = OnceDifferentiable1(f, g, initial_x, real(zero(eltype(initial_x))))
-    optimize(d, initial_x, method, options)
-end
+
 
 """
 Evaluates the gradient value at `x`.
@@ -1405,8 +1402,13 @@ function assess_convergence(x,
     return x_converged, f_converged, g_converged, f_increased
 end
 
+function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, options::Options)
+    d = OnceDifferentiable1(f, g, initial_x, real(zero(eltype(initial_x))))
+    optimize(d, initial_x, method, options)
+end
+
 function optimize(d::D, initial_x::Tx, method::M,
-                  options::Options{T, TCallback} = Options(;default_options(method)...),
+                  options::Options,
                   state = initial_state(method, options, d, initial_x)) where {D<:AbstractObjective, M<:AbstractOptimizer, Tx <: AbstractArray, T, TCallback}
 
     t0 = time() # Initial time stamp used to control early stopping by options.time_limit
