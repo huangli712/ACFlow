@@ -46,8 +46,6 @@ module ACFlow
 ### *Using Standard Libraries*
 =#
 
-#using Optim #Nevanlinna
-#using LineSearches
 using Parameters
 
 using Distributed
