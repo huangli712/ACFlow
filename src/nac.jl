@@ -756,9 +756,9 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
 end
 
 struct Manifold end
-abstract type AbstractOptimizer end
+#abstract type AbstractOptimizer end
 
-struct BFGS{IL, L, H, T, TM} <: AbstractOptimizer
+struct BFGS{IL, L, H, T, TM} #<: AbstractOptimizer
     alphaguess!::IL
     linesearch!::L
     initial_invH::H
@@ -1048,7 +1048,7 @@ function update_h!(d, state, method::BFGS)
     end
 end
 
-function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, options::Options)
+function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options)
     d = OnceDifferentiable1(f, g, initial_x, real(zero(eltype(initial_x))))
     state = initial_state(method, d, initial_x)
 
