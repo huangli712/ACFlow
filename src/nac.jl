@@ -1482,15 +1482,14 @@ end
 
 g_calls(r::OptimizationResults1) = error("g_calls is not implemented for $(summary(r)).")
 g_calls(r::MultivariateOptimizationResults) = r.g_calls
-#g_calls(d::NonDifferentiable) = 0
 g_calls(d) = first(d.df_calls)
-
 h_calls(r::OptimizationResults1) = error("h_calls is not implemented for $(summary(r)).")
 h_calls(r::MultivariateOptimizationResults) = r.h_calls
 h_calls(d::Union{NonDifferentiable, OnceDifferentiable1}) = 0
 h_calls(d) = first(d.h_calls)
 f_calls(r::OptimizationResults1) = r.f_calls
 f_calls(d) = first(d.f_calls)
+
 pick_best_x(f_increased, state) = f_increased ? state.x_previous : state.x
 pick_best_f(f_increased, state, d) = f_increased ? state.f_x_previous : value(d)
 
