@@ -1059,6 +1059,7 @@ function make_fdf(x, F, f!, j!)
         return f!(fx, x)
     end
 end
+
 function make_fdf(x, F::Number, f, g!)
     function fg!(gx, x)
         g!(gx, x)
@@ -1580,40 +1581,6 @@ function assess_convergence(x, x_previous, f_x, f_x_previous, gx, x_abstol, x_re
     end
 
     g_converged = g_residual(gx) ≤ g_abstol
-
-    return x_converged, f_converged, g_converged, f_increased
-end
-
-# Used by Fminbox and IPNewton
-function assess_convergence(x,
-                            x_previous,
-                            f_x,
-                            f_x_previous,
-                            g,
-                            x_tol,
-                            f_tol,
-                            g_tol)
-
-    x_converged, f_converged, f_increased, g_converged = false, false, false, false
-
-    if x_abschange(x, x_previous) ≤ x_tol
-        x_converged = true
-    end
-
-    # Absolute Tolerance
-    # if abs(f_x - f_x_previous) < f_tol
-    # Relative Tolerance
-    if f_abschange(f_x, f_x_previous) ≤ f_tol*abs(f_x)
-        f_converged = true
-    end
-
-    if f_x > f_x_previous
-        f_increased = true
-    end
-
-    if g_residual(g) ≤ g_tol
-        g_converged = true
-    end
 
     return x_converged, f_converged, g_converged, f_increased
 end
