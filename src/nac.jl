@@ -998,7 +998,7 @@ function update_state!(d, state::BFGSState, method::BFGS)
     lssuccess == false # break on linesearch error
 end
 
-function trace!(d, state, iteration, method::BFGS, options, curr_time=time())
+function trace!(d, iteration, options, curr_time=time())
     dt = Dict()
     dt["time"] = curr_time
     g_norm = norm(gradient(d), Inf)
@@ -1012,24 +1012,6 @@ function trace!(d, state, iteration, method::BFGS, options, curr_time=time())
     end
     false
 end
-
-#=
-function update!(iteration::Integer,
-              f_x::Tf,
-              grnorm::Real,
-              dt::Dict,
-              show_trace::Bool,
-              show_every::Int = 1) where {Tf}
-    os = OptimizationState(iteration, f_x, grnorm, dt)
-    if show_trace
-        if iteration % show_every == 0
-            show(os)
-            flush(stdout)
-        end
-    end
-    false
-end
-=#
 
 function update_g!(d, state, method)
     # Update the function value and gradient
@@ -1086,7 +1068,7 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
 
     options.show_trace && print_header(method)
     _time = time()
-    trace!(d, state, iteration, method, options, _time-t0)
+    trace!(d, iteration, options, _time-t0)
     ls_success::Bool = true
     while !converged && !stopped && iteration < options.iterations
         iteration += 1
@@ -1104,7 +1086,7 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
         update_h!(d, state, method) # only relevant if not converged
         if tracing
             # update trace; callbacks can stop routine early by returning true
-            stopped_by_callback = trace!(d, state, iteration, method, options, time()-t0)
+            stopped_by_callback = trace!(d, iteration, options, time()-t0)
         end
 
         # Check time_limit; if none is provided it is NaN and the comparison
