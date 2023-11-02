@@ -761,7 +761,6 @@ struct Flat <: Manifold end
 
 abstract type AbstractOptimizer end
 abstract type FirstOrderOptimizer  <: AbstractOptimizer end
-abstract type SecondOrderOptimizer <: AbstractOptimizer end
 struct OptimizationState{Tf<:Real, T <: AbstractOptimizer}
     iteration::Int
     value::Tf
@@ -1118,59 +1117,6 @@ function print_header(method::AbstractOptimizer)
     @printf "Iter     Function value   Gradient norm \n"
 end
 
-function trace!(tr, d, state, iteration, method::BFGS, options, curr_time=time())
-    dt = Dict()
-    dt["time"] = curr_time
-    if options.extended_trace
-        dt["x"] = copy(state.x)
-        dt["g(x)"] = copy(gradient(d))
-        dt["~inv(H)"] = copy(state.invH)
-        dt["Current step size"] = state.alpha
-    end
-    g_norm = norm(gradient(d), Inf)
-    update!(tr,
-    iteration,
-    value(d),
-    g_norm,
-    dt,
-    options.store_trace,
-    options.show_trace,
-    options.show_every,
-    options.callback)
-end
-
-function update!(tr::OptimizationTrace{Tf, T},
-              iteration::Integer,
-              f_x::Tf,
-              grnorm::Real,
-              dt::Dict,
-              store_trace::Bool,
-              show_trace::Bool,
-              show_every::Int = 1,
-              callback = nothing,
-              trace_simplex = false) where {Tf, T}
-    os = OptimizationState{Tf, T}(iteration, f_x, grnorm, dt)
-    if store_trace
-        push!(tr, os)
-    end
-    if show_trace
-        if iteration % show_every == 0
-            show(os)
-            flush(stdout)
-        end
-    end
-    if callback !== nothing && (iteration % show_every == 0)
-        if store_trace
-            stopped = callback(tr)
-        else
-            stopped = callback(os)
-        end
-    else
-        stopped = false
-    end
-    stopped
-end
-
 function initial_state(method::BFGS, d, initial_x::AbstractArray{T}) where T
     #n = length(initial_x)
     initial_x = copy(initial_x)
@@ -1228,6 +1174,59 @@ function update_state!(d, state::BFGSState, method::BFGS)
     retract!(method.manifold, state.x)
 
     lssuccess == false # break on linesearch error
+end
+
+function trace!(tr, d, state, iteration, method::BFGS, options, curr_time=time())
+    dt = Dict()
+    dt["time"] = curr_time
+    if options.extended_trace
+        dt["x"] = copy(state.x)
+        dt["g(x)"] = copy(gradient(d))
+        dt["~inv(H)"] = copy(state.invH)
+        dt["Current step size"] = state.alpha
+    end
+    g_norm = norm(gradient(d), Inf)
+    update!(tr,
+    iteration,
+    value(d),
+    g_norm,
+    dt,
+    options.store_trace,
+    options.show_trace,
+    options.show_every,
+    options.callback)
+end
+
+function update!(tr::OptimizationTrace{Tf, T},
+              iteration::Integer,
+              f_x::Tf,
+              grnorm::Real,
+              dt::Dict,
+              store_trace::Bool,
+              show_trace::Bool,
+              show_every::Int = 1,
+              callback = nothing,
+              trace_simplex = false) where {Tf, T}
+    os = OptimizationState{Tf, T}(iteration, f_x, grnorm, dt)
+    if store_trace
+        push!(tr, os)
+    end
+    if show_trace
+        if iteration % show_every == 0
+            show(os)
+            flush(stdout)
+        end
+    end
+    if callback !== nothing && (iteration % show_every == 0)
+        if store_trace
+            stopped = callback(tr)
+        else
+            stopped = callback(os)
+        end
+    else
+        stopped = false
+    end
+    stopped
 end
 
 function update_g!(d, state, method)
