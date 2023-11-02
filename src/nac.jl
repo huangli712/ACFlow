@@ -857,7 +857,7 @@ struct Options{T, TCallback}
     successive_f_tol::Int
     iterations::Int
     outer_iterations::Int
-    store_trace::Bool
+    #store_trace::Bool
     show_trace::Bool
     show_every::Int
     callback::TCallback
@@ -891,7 +891,7 @@ function Options(;
         successive_f_tol::Int = 1,
         iterations::Int = 1_000,
         outer_iterations::Int = 1000,
-        store_trace::Bool = false,
+        #store_trace::Bool = false,
         show_trace::Bool = false,
         show_every::Int = 1,
         callback = nothing,
@@ -916,7 +916,7 @@ function Options(;
         outer_f_reltol = outer_f_tol
     end
     Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_x_abstol, outer_x_reltol, outer_f_abstol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit, h_calls_limit,
-        allow_f_increases, allow_outer_f_increases, successive_f_tol, Int(iterations), Int(outer_iterations), store_trace, show_trace,
+        allow_f_increases, allow_outer_f_increases, successive_f_tol, Int(iterations), Int(outer_iterations), show_trace,
         Int(show_every), callback, Float64(time_limit))
 end
 
@@ -1013,7 +1013,7 @@ function trace!(tr, d, state, iteration, method::BFGS, options, curr_time=time()
     value(d),
     g_norm,
     dt,
-    options.store_trace,
+    #options.store_trace,
     options.show_trace,
     options.show_every,
     options.callback)
@@ -1024,15 +1024,15 @@ function update!(tr::OptimizationTrace{Tf},
               f_x::Tf,
               grnorm::Real,
               dt::Dict,
-              store_trace::Bool,
+              #store_trace::Bool,
               show_trace::Bool,
               show_every::Int = 1,
               callback = nothing) where {Tf}
     os = OptimizationState{Tf}(iteration, f_x, grnorm, dt)
-    if store_trace
-        @show "haha"
-        push!(tr, os)
-    end
+    #if store_trace
+    #    @show "haha"
+    #    push!(tr, os)
+    #end
     if show_trace
         if iteration % show_every == 0
             show(os)
