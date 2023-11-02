@@ -1002,12 +1002,6 @@ end
 x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
 alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 
-function df!_from_df(g, F::Real, inplace)
-    if inplace
-        return g
-    end
-end
-
 function make_fdf(x, F::Number, f, g!)
     function fg!(gx, x)
         g!(gx, x)
@@ -1017,13 +1011,8 @@ end
 
 function fdf!_from_fdf(fg, F::Real, inplace)
     if inplace
+        @show "here1"
         return fg
-    else
-        return function ffgg!(G, x)
-            fx, gx = fg(x)
-            copyto!(G, gx)
-            fx
-        end
     end
 end
 
@@ -1034,8 +1023,8 @@ function OnceDifferentiable1(f, df, fdf,
     inplace = true)
 
     # f is never "inplace" since F is scalar
-    df! = df #df!_from_df(df, F, inplace)
-    fdf! = fdf!_from_fdf(fdf, F, inplace)
+    df! = df
+    fdf! = fdf # fdf!_from_fdf(fdf, F, inplace)
 
     x_f, x_df = x_of_nans(x), x_of_nans(x)
 
@@ -1052,7 +1041,7 @@ function OnceDifferentiable1(f, df,
                    inplace = true)
 
 
-    df! = df #df!_from_df(df, F, inplace)
+    df! = df
 
     fdf! = make_fdf(x, F, f, df!)
 
