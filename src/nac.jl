@@ -1182,6 +1182,7 @@ function value_gradient!(obj::ManifoldObjective,x)
     return value(obj.inner_obj)
 end
 
+#=
 function value_gradient!!(obj::AbstractObjective, x)
     obj.f_calls .+= 1
     obj.df_calls .+= 1
@@ -1190,6 +1191,7 @@ function value_gradient!!(obj::AbstractObjective, x)
     obj.F = obj.fdf(gradient(obj), x)
     value(obj), gradient(obj)
 end
+=#
 
 function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
     x_ = reshape(x, :)
