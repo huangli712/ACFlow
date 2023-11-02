@@ -1001,28 +1001,17 @@ end
 function OnceDifferentiable1(f, df, fdf,
     x::AbstractArray,
     F::Real = real(zero(eltype(x))),
-    DF::AbstractArray = alloc_DF(x, F);
-    inplace = true)
-
+    DF::AbstractArray = alloc_DF(x, F))
     x_f, x_df = x_of_nans(x), x_of_nans(x)
-
-    OnceDifferentiable1{typeof(F),typeof(DF),typeof(x)}(f, df, fdf,
-    copy(F), copy(DF),
-    x_f, x_df,
-    [0,], [0,])
+    OnceDifferentiable1{typeof(F),typeof(DF),typeof(x)}(f, df, fdf, copy(F), copy(DF), x_f, x_df, [0,], [0,])
 end
 
 function OnceDifferentiable1(f, df,
                    x::AbstractArray,
                    F::Real = real(zero(eltype(x))),
-                   DF::AbstractArray = alloc_DF(x, F);
-                   inplace = true)
-
-
+                   DF::AbstractArray = alloc_DF(x, F))
     df! = df
-
     fdf! = make_fdf(x, F, f, df!)
-
     OnceDifferentiable1(f, df!, fdf!, x, F, DF)
 end
 
