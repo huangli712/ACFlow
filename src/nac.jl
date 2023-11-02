@@ -673,17 +673,17 @@ function hardy_optimize!(nac::NevanACContext,
     res = optimize(𝑓, 𝐽!, 𝑎𝑏, BFGS(), 
                    Options(iterations = 500, show_trace = true))
     
-    @show minimizer(res)
+    @show res.minimizer
 
     if  !(converged(res))
         println("Faild to optimize!")
     end
     
-    causality = check_causality(ℋ, minimizer(res))
+    causality = check_causality(ℋ, res.minimizer)
 
     if causality && (converged(res))
         nac.hopt = H
-        nac.𝑎𝑏 = minimizer(res)
+        nac.𝑎𝑏 = res.minimizer
         nac.ℋ = ℋ
     end
     
