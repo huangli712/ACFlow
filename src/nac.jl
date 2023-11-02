@@ -1063,7 +1063,10 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
     # prepare iteration counter (used to make "initial state" trace entry)
     iteration = 0
 
-    options.show_trace && print_header(method)
+    if options.show_trace
+        #print_header(method)
+        @printf "Iter     Function value   Gradient norm \n"
+    end
     _time = time()
     trace!(d, iteration, options, _time-t0)
     ls_success::Bool = true
