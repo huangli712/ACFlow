@@ -971,8 +971,6 @@ function BFGS(; alphaguess = InitialStatic(),
     BFGS(alphaguess, linesearch, initial_invH, initial_stepnorm, manifold)
 end
 
-
-
 function perform_linesearch!(state, method, d)
     # Calculate search direction dphi0
     dphi_0 = real(dot(gradient(d), state.s))
@@ -1011,9 +1009,7 @@ function perform_linesearch!(state, method, d)
     end
 end
 
-#promote_objtype(method::FirstOrderOptimizer,  x, autodiff::Symbol, inplace::Bool, f) = OnceDifferentiable1(f, x, real(zero(eltype(x))); autodiff = autodiff)
-promote_objtype(method::FirstOrderOptimizer,  x, autodiff::Symbol, inplace::Bool, args...) = OnceDifferentiable1(args..., x, real(zero(eltype(x))); inplace = inplace)
-#promote_objtype(method::FirstOrderOptimizer,  x, autodiff::Symbol, inplace::Bool, f, g, h) = OnceDifferentiable1(f, g, x, real(zero(eltype(x))); inplace = inplace)
+
 
 x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
 alloc_DF(x, F) = eltype(x)(NaN) .* vec(F) .* vec(x)'
@@ -1126,25 +1122,9 @@ function OnceDifferentiable1(f, df,
     OnceDifferentiable1(f, df!, fdf!, x, F, DF)
 end
 
-#=
-function OnceDifferentiable1(f, j,
-                   x::AbstractArray,
-                   F::AbstractArray,
-                   J::AbstractArray = alloc_DF(x, F);
-                   inplace = true)
-
-    f! = f!_from_f(f, F, inplace)
-    j! = df!_from_df(j, F, inplace)
-    fj! = make_fdf(x, F, f!, j!)
-
-    OnceDifferentiable1(f!, j!, fj!, x, F, J)
-end
-=#
-
 function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer,
-         options::Options = Options(;default_options(method)...); inplace = true, autodiff = :finite)
-
-    d = promote_objtype(method, initial_x, autodiff, inplace, f, g)
+         options::Options = Options(;default_options(method)...); inplace = true)
+    d = OnceDifferentiable1(f, g, initial_x, real(zero(eltype(initial_x))); inplace = inplace)
 
     optimize(d, initial_x, method, options)
 end
