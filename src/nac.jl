@@ -1003,15 +1003,6 @@ function trace!(d, state, iteration, method::BFGS, options, curr_time=time())
     dt["time"] = curr_time
     g_norm = norm(gradient(d), Inf)
 
-#=
-    update!(iteration,
-    value(d),
-    g_norm,
-    dt,
-    options.show_trace,
-    options.show_every)
-=#
-
     os = OptimizationState(iteration, value(d), g_norm, dt)
     if options.show_trace
         if iteration % options.show_every == 0
@@ -1022,6 +1013,7 @@ function trace!(d, state, iteration, method::BFGS, options, curr_time=time())
     false
 end
 
+#=
 function update!(iteration::Integer,
               f_x::Tf,
               grnorm::Real,
@@ -1037,6 +1029,7 @@ function update!(iteration::Integer,
     end
     false
 end
+=#
 
 function update_g!(d, state, method)
     # Update the function value and gradient
