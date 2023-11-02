@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/07
+# Last modified: 2023/11/01
 #
 
 """
@@ -45,8 +45,6 @@ module ACFlow
 #=
 ### *Using Standard Libraries*
 =#
-
-#using Parameters
 
 using Distributed
 using LinearAlgebra
