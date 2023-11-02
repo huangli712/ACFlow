@@ -760,7 +760,7 @@ struct Manifold end
 struct BFGS{IL, L, H, T, TM}
     alphaguess!::IL
     linesearch!::L
-    initial_invH::H
+    #initial_invH::H
     initial_stepnorm::T
     manifold::TM
 end
@@ -912,10 +912,10 @@ include("hagerzhang.jl")
 
 function BFGS(; alphaguess = InitialStatic(),
     linesearch = HagerZhang(),
-    initial_invH = nothing,
+    #initial_invH = nothing,
     initial_stepnorm = nothing,
     manifold::Manifold=Manifold())
-    BFGS(alphaguess, linesearch, initial_invH, initial_stepnorm, manifold)
+    BFGS(alphaguess, linesearch, initial_stepnorm, manifold)
 end
 
 function OnceDifferentiable1(f, df,
