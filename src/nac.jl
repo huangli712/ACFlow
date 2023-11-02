@@ -757,7 +757,8 @@ end
 
 struct Manifold end
 abstract type AbstractOptimizer end
-struct OptimizationState{Tf<:Real, T <: AbstractOptimizer}
+
+struct OptimizationState{Tf<:Real}
     iteration::Int
     value::Tf
     g_norm::Tf
