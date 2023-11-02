@@ -779,14 +779,14 @@ mutable struct BFGSState{Tx, Tm, T,G}
     alpha::T
 end
 
-#abstract type AbstractObjective end
-mutable struct ManifoldObjective{T}
+abstract type AbstractObjective end
+mutable struct ManifoldObjective{T} <: AbstractObjective
     manifold::Manifold
     inner_obj::T
 end
 
 # Used for objectives and solvers where the gradient is available/exists
-mutable struct OnceDifferentiable1{TF, TDF, TX}
+mutable struct OnceDifferentiable1{TF, TDF, TX} <: AbstractObjective
     f # objective
     df # (partial) derivative of objective
     fdf # objective and (partial) derivative of objective
