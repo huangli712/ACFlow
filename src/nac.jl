@@ -1030,6 +1030,7 @@ function update!(tr::OptimizationTrace{Tf},
               callback = nothing) where {Tf}
     os = OptimizationState{Tf}(iteration, f_x, grnorm, dt)
     if store_trace
+        @show "haha"
         push!(tr, os)
     end
     if show_trace
