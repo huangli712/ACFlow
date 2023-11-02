@@ -1009,13 +1009,6 @@ function make_fdf(x, F::Number, f, g!)
     end
 end
 
-function fdf!_from_fdf(fg, F::Real, inplace)
-    if inplace
-        @show "here1"
-        return fg
-    end
-end
-
 function OnceDifferentiable1(f, df, fdf,
     x::AbstractArray,
     F::Real = real(zero(eltype(x))),
@@ -1023,12 +1016,12 @@ function OnceDifferentiable1(f, df, fdf,
     inplace = true)
 
     # f is never "inplace" since F is scalar
-    df! = df
-    fdf! = fdf # fdf!_from_fdf(fdf, F, inplace)
+    #df! = df
+    #fdf! = fdf
 
     x_f, x_df = x_of_nans(x), x_of_nans(x)
 
-    OnceDifferentiable1{typeof(F),typeof(DF),typeof(x)}(f, df!, fdf!,
+    OnceDifferentiable1{typeof(F),typeof(DF),typeof(x)}(f, df, fdf,
     copy(F), copy(DF),
     x_f, x_df,
     [0,], [0,])
