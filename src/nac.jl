@@ -958,13 +958,7 @@ end
 include("hagerzhang.jl")
 
 _alphaguess(a) = a
-#_alphaguess(a::Number) = InitialStatic(alpha=a)
-_alphaguess(a::Number) = InitialStatic(a, false)
-
-#@with_kw struct InitialStatic{T}
-#    alpha::T = 1.0
-#    scaled::Bool = false # Scales step. alpha ← min(alpha,||s||_2) / ||s||_2
-#end
+#_alphaguess(a::Number) = InitialStatic(a, false)
 
 function Base.show(io::IO, t::OptimizationState)
     @printf io "%6d   %14e   %14e\n" t.iteration t.value t.g_norm
@@ -978,7 +972,7 @@ end
 
 mutable struct InitialStatic{T}
     alpha::T
-    scaled::Bool # false # Scales step. alpha ← min(alpha,||s||_2) / ||s||_2
+    scaled::Bool
 end
 
 function InitialStatic()
