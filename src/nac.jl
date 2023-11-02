@@ -1007,8 +1007,7 @@ function trace!(d, state, iteration, method::BFGS, options, curr_time=time())
     g_norm,
     dt,
     options.show_trace,
-    options.show_every,
-    options.callback)
+    options.show_every)
 end
 
 function update!(iteration::Integer,
@@ -1016,8 +1015,7 @@ function update!(iteration::Integer,
               grnorm::Real,
               dt::Dict,
               show_trace::Bool,
-              show_every::Int = 1,
-              callback = nothing) where {Tf}
+              show_every::Int = 1) where {Tf}
     os = OptimizationState{Tf}(iteration, f_x, grnorm, dt)
     if show_trace
         if iteration % show_every == 0
