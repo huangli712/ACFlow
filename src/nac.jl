@@ -758,12 +758,14 @@ end
 struct Manifold end
 abstract type AbstractOptimizer end
 
+#=
 struct OptimizationState{Tf<:Real}
     iteration::Int
     value::Tf
     g_norm::Tf
     metadata::Dict
 end
+=#
 
 struct BFGS{IL, L, H, T, TM} <: AbstractOptimizer
     alphaguess!::IL
@@ -1003,17 +1005,14 @@ function trace!(d, iteration, options, curr_time=time())
     dt["time"] = curr_time
     g_norm = norm(gradient(d), Inf)
 
-    #os = OptimizationState(iteration, value(d), g_norm, dt)
     if options.show_trace
         if iteration % options.show_every == 0
-            #show(os)
             @printf("%6d   %14e   %14e\n", iteration, value(d), g_norm)
             if !isempty(dt)
                 for (key, value) in dt
                     @printf(" * %s: %s\n", key, value)
                 end
             end
-
             flush(stdout)
         end
     end
@@ -1245,6 +1244,7 @@ function print_header(method::AbstractOptimizer)
     @printf "Iter     Function value   Gradient norm \n"
 end
 
+#=
 function Base.show(io::IO, t::OptimizationState)
     @printf io "%6d   %14e   %14e\n" t.iteration t.value t.g_norm
     if !isempty(t.metadata)
@@ -1254,6 +1254,7 @@ function Base.show(io::IO, t::OptimizationState)
     end
     return
 end
+=#
 
 x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
 alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
