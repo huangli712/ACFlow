@@ -120,6 +120,11 @@ end
 
 (ls::HagerZhang)(ϕ, dϕ, ϕdϕ, c, phi_0, dphi_0) = ls(ϕ, ϕdϕ, c, phi_0, dphi_0)
 
+function unpack end
+@inline unpack(x, ::Val{f}) where {f} = getproperty(x, f)
+@inline unpack(x::AbstractDict{Symbol}, ::Val{k}) where {k} = x[k]
+@inline unpack(x::AbstractDict{<:AbstractString}, ::Val{k}) where {k} = x[string(k)]
+
 macro unpack(args)
     args.head!=:(=) && error("Expression needs to be of form `a, b = c`")
     items, suitecase = args.args
