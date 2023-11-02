@@ -1005,11 +1005,6 @@ alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 function df!_from_df(g, F::Real, inplace)
     if inplace
         return g
-    else
-        return function gg!(G, x)
-            copyto!(G, g(x))
-            G
-        end
     end
 end
 
@@ -1039,7 +1034,7 @@ function OnceDifferentiable1(f, df, fdf,
     inplace = true)
 
     # f is never "inplace" since F is scalar
-    df! = df!_from_df(df, F, inplace)
+    df! = df #df!_from_df(df, F, inplace)
     fdf! = fdf!_from_fdf(fdf, F, inplace)
 
     x_f, x_df = x_of_nans(x), x_of_nans(x)
@@ -1057,7 +1052,7 @@ function OnceDifferentiable1(f, df,
                    inplace = true)
 
 
-    df! = df!_from_df(df, F, inplace)
+    df! = df #df!_from_df(df, F, inplace)
 
     fdf! = make_fdf(x, F, f, df!)
 
