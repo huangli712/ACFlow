@@ -857,7 +857,6 @@ struct Options{T, TCallback}
     successive_f_tol::Int
     iterations::Int
     outer_iterations::Int
-    #store_trace::Bool
     show_trace::Bool
     show_every::Int
     callback::TCallback
@@ -891,7 +890,6 @@ function Options(;
         successive_f_tol::Int = 1,
         iterations::Int = 1_000,
         outer_iterations::Int = 1000,
-        #store_trace::Bool = false,
         show_trace::Bool = false,
         show_every::Int = 1,
         callback = nothing,
@@ -1013,7 +1011,6 @@ function trace!(tr, d, state, iteration, method::BFGS, options, curr_time=time()
     value(d),
     g_norm,
     dt,
-    #options.store_trace,
     options.show_trace,
     options.show_every,
     options.callback)
@@ -1024,15 +1021,10 @@ function update!(tr::OptimizationTrace{Tf},
               f_x::Tf,
               grnorm::Real,
               dt::Dict,
-              #store_trace::Bool,
               show_trace::Bool,
               show_every::Int = 1,
               callback = nothing) where {Tf}
     os = OptimizationState{Tf}(iteration, f_x, grnorm, dt)
-    #if store_trace
-    #    @show "haha"
-    #    push!(tr, os)
-    #end
     if show_trace
         if iteration % show_every == 0
             show(os)
@@ -1040,11 +1032,7 @@ function update!(tr::OptimizationTrace{Tf},
         end
     end
     if callback !== nothing && (iteration % show_every == 0)
-        #if store_trace
-        #    stopped = callback(tr)
-        #else
-            stopped = callback(os)
-        #end
+        stopped = callback(os)
     else
         stopped = false
     end
