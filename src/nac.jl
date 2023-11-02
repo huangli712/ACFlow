@@ -674,19 +674,19 @@ function hardy_optimize!(nac::NevanACContext,
     
     @show minimizer(res)
 
-    if  !(Optim.converged(res))
+    if  !(converged(res))
         println("Faild to optimize!")
     end
     
-    causality = check_causality(ℋ, Optim.minimizer(res))
+    causality = check_causality(ℋ, minimizer(res))
 
-    if causality && (Optim.converged(res))
+    if causality && (converged(res))
         nac.hopt = H
-        nac.𝑎𝑏 = Optim.minimizer(res)
+        nac.𝑎𝑏 = minimizer(res)
         nac.ℋ = ℋ
     end
     
-    return causality, (Optim.converged(res))
+    return causality, (converged(res))
 end
 
 """
@@ -1373,6 +1373,8 @@ f_abschange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)
 f_relchange(d::AbstractObjective, state) = f_relchange(value(d), state.f_x_previous)
 f_relchange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)/abs(f_x)
 
+x_abschange(r::MultivariateOptimizationResults) = r.x_abschange
+x_relchange(r::MultivariateOptimizationResults) = r.x_relchange
 x_abschange(state) = x_abschange(state.x, state.x_previous)
 x_abschange(x, x_previous) = maxdiff(x, x_previous)
 x_relchange(state) = x_relchange(state.x, state.x_previous)
@@ -1674,4 +1676,19 @@ function initial_state(method::BFGS, options, d, initial_x::AbstractArray{T}) wh
               invH0, # Store current invH in state.invH
               similar(initial_x), # Store current search direction in state.s
               @initial_linesearch()...)
+end
+
+f_abschange(r::MultivariateOptimizationResults) = r.f_abschange
+f_relchange(r::MultivariateOptimizationResults) = r.f_relchange
+g_residual(r::MultivariateOptimizationResults) = r.g_residual
+function converged(r::MultivariateOptimizationResults)
+    conv_flags = r.x_converged || r.f_converged || r.g_converged
+    x_isfinite = isfinite(x_abschange(r)) || isnan(x_relchange(r))
+    f_isfinite = if r.iterations > 0
+            isfinite(f_abschange(r)) || isnan(f_relchange(r))
+        else
+            true
+        end
+    g_isfinite = isfinite(g_residual(r))
+    return conv_flags && all((x_isfinite, f_isfinite, g_isfinite))
 end
