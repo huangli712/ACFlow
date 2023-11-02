@@ -858,7 +858,7 @@ struct Options{T, TCallback}
     iterations::Int
     outer_iterations::Int
     store_trace::Bool
-    trace_simplex::Bool
+    #trace_simplex::Bool
     show_trace::Bool
     extended_trace::Bool
     show_every::Int
@@ -894,7 +894,7 @@ function Options(;
         iterations::Int = 1_000,
         outer_iterations::Int = 1000,
         store_trace::Bool = false,
-        trace_simplex::Bool = false,
+        #trace_simplex::Bool = false,
         show_trace::Bool = false,
         extended_trace::Bool = false,
         show_every::Int = 1,
@@ -923,11 +923,11 @@ function Options(;
         outer_f_reltol = outer_f_tol
     end
     Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_x_abstol, outer_x_reltol, outer_f_abstol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit, h_calls_limit,
-        allow_f_increases, allow_outer_f_increases, successive_f_tol, Int(iterations), Int(outer_iterations), store_trace, trace_simplex, show_trace, extended_trace,
+        allow_f_increases, allow_outer_f_increases, successive_f_tol, Int(iterations), Int(outer_iterations), store_trace, show_trace, extended_trace,
         Int(show_every), callback, Float64(time_limit))
 end
 
-const OptimizationTrace{Tf, T} = Vector{OptimizationState{Tf, T}}
+const OptimizationTrace{Tf} = Vector{OptimizationState{Tf}}
 
 include("hagerzhang.jl")
 
@@ -1032,7 +1032,7 @@ function trace!(tr, d, state, iteration, method::BFGS, options, curr_time=time()
     options.callback)
 end
 
-function update!(tr::OptimizationTrace{Tf, T},
+function update!(tr::OptimizationTrace{Tf},
               iteration::Integer,
               f_x::Tf,
               grnorm::Real,
@@ -1040,9 +1040,8 @@ function update!(tr::OptimizationTrace{Tf, T},
               store_trace::Bool,
               show_trace::Bool,
               show_every::Int = 1,
-              callback = nothing,
-              trace_simplex = false) where {Tf, T}
-    os = OptimizationState{Tf, T}(iteration, f_x, grnorm, dt)
+              callback = nothing) where {Tf}
+    os = OptimizationState{Tf}(iteration, f_x, grnorm, dt)
     if store_trace
         push!(tr, os)
     end
@@ -1107,7 +1106,7 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
     state = initial_state(method, d, initial_x)
 
     t0 = time() # Initial time stamp used to control early stopping by options.time_limit
-    tr = OptimizationTrace{typeof(value(d)), typeof(method)}()
+    tr = OptimizationTrace{typeof(value(d))}()
     tracing = options.store_trace || options.show_trace || options.extended_trace || options.callback !== nothing
     stopped, stopped_by_callback, stopped_by_time_limit = false, false, false
     f_limit_reached, g_limit_reached, h_limit_reached = false, false, false
