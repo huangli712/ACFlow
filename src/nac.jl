@@ -755,12 +755,8 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
-
-abstract type Manifold end
-struct Flat <: Manifold end
-
+struct Manifold end
 abstract type AbstractOptimizer end
-abstract type FirstOrderOptimizer  <: AbstractOptimizer end
 struct OptimizationState{Tf<:Real, T <: AbstractOptimizer}
     iteration::Int
     value::Tf
@@ -768,7 +764,7 @@ struct OptimizationState{Tf<:Real, T <: AbstractOptimizer}
     metadata::Dict
 end
 
-struct BFGS{IL, L, H, T, TM} <: FirstOrderOptimizer
+struct BFGS{IL, L, H, T, TM} <: AbstractOptimizer
     alphaguess!::IL
     linesearch!::L
     initial_invH::H
@@ -938,7 +934,7 @@ function BFGS(; alphaguess = InitialStatic(),
     linesearch = HagerZhang(),
     initial_invH = nothing,
     initial_stepnorm = nothing,
-    manifold::Manifold=Flat())
+    manifold::Manifold=Manifold())
     BFGS(alphaguess, linesearch, initial_invH, initial_stepnorm, manifold)
 end
 
@@ -1208,9 +1204,9 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
                                         )
 end
 
-retract!(M::Flat,x) = x
+retract!(M::Manifold,x) = x
 retract(M::Manifold,x) = retract!(M, copy(x))
-project_tangent!(M::Flat, g, x) = g
+project_tangent!(M::Manifold, g, x) = g
 
 value(obj::AbstractObjective) = obj.F
 function value(obj::ManifoldObjective)
