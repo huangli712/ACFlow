@@ -80,30 +80,38 @@ Conjugate gradient line search implementation from:
     conjugate gradient method with guaranteed descent. ACM
     Transactions on Mathematical Software 32: 113–137.
 """
-@with_kw struct HagerZhang{T, Tm}
-   delta::T = DEFAULTDELTA # c_1 Wolfe sufficient decrease condition
-   sigma::T = DEFAULTSIGMA # c_2 Wolfe curvature condition (Recommend 0.1 for GradientDescent)
-   alphamax::T = Inf
-   rho::T = 5.0
-   epsilon::T = 1e-6
-   gamma::T = 0.66
-   linesearchmax::Int = 50
-   psi3::T = 0.1
-   display::Int = 0
-   mayterminate::Tm = Ref{Bool}(false)
+
+mutable struct HagerZhang{T, Tm}
+    delta::T # DEFAULTDELTA # c_1 Wolfe sufficient decrease condition
+    sigma::T # DEFAULTSIGMA # c_2 Wolfe curvature condition (Recommend 0.1 for GradientDescent)
+    alphamax::T # Inf
+    rho::T # 5.0
+    epsilon::T # 1e-6
+    gamma::T # 0.66
+    linesearchmax::Int # 50
+    psi3::T # 0.1
+    display::Int # 0
+    mayterminate::Tm # Ref{Bool}(false)
+ end
+
+function HagerZhang()
+    HagerZhang(
+   DEFAULTDELTA, # c_1 Wolfe sufficient decrease condition
+   DEFAULTSIGMA, # c_2 Wolfe curvature condition (Recommend 0.1 for GradientDescent)
+   Inf,
+   5.0,
+   1e-6,
+   0.66,
+   50,
+   0.1,
+   0,
+   Ref{Bool}(false)
+   )
 end
+
 HagerZhang{T}(args...; kwargs...) where T = HagerZhang{T, Base.RefValue{Bool}}(args...; kwargs...)
 
-#=
 function (ls::HagerZhang)(df::AbstractObjective, x::AbstractArray{T},
-                          s::AbstractArray{T}, α::Real,
-                          x_new::AbstractArray{T}, phi_0::Real, dphi_0::Real) where T
-    ϕ, ϕdϕ = make_ϕ_ϕdϕ(df, x_new, x, s)
-    ls(ϕ, ϕdϕ, α::Real, phi_0, dphi_0)
-end
-=#
-
-function (ls::HagerZhang)(df, x::AbstractArray{T},
                           s::AbstractArray{T}, α::Real,
                           x_new::AbstractArray{T}, phi_0::Real, dphi_0::Real) where T
     ϕ, ϕdϕ = make_ϕ_ϕdϕ(df, x_new, x, s)
@@ -111,6 +119,21 @@ function (ls::HagerZhang)(df, x::AbstractArray{T},
 end
 
 (ls::HagerZhang)(ϕ, dϕ, ϕdϕ, c, phi_0, dphi_0) = ls(ϕ, ϕdϕ, c, phi_0, dphi_0)
+
+macro unpack(args)
+    args.head!=:(=) && error("Expression needs to be of form `a, b = c`")
+    items, suitecase = args.args
+    items = isa(items, Symbol) ? [items] : items.args
+    suitecase_instance = gensym()
+    kd = [:( $key = unpack($suitecase_instance, Val{$(Expr(:quote, key))}()) ) for key in items]
+    kdblock = Expr(:block, kd...)
+    expr = quote
+        local $suitecase_instance = $suitecase # handles if suitecase is not a variable but an expression
+        $kdblock
+        $suitecase_instance # return RHS of `=` as standard in Julia
+    end
+    esc(expr)
+end
 
 # TODO: Should we deprecate the interface that only uses the ϕ and ϕd\phi arguments?
 function (ls::HagerZhang)(ϕ, ϕdϕ,

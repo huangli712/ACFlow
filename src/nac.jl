@@ -958,11 +958,21 @@ end
 include("hagerzhang.jl")
 
 _alphaguess(a) = a
-_alphaguess(a::Number) = InitialStatic(alpha=a)
+#_alphaguess(a::Number) = InitialStatic(alpha=a)
+_alphaguess(a::Number) = InitialStatic(a, false)
 
-@with_kw struct InitialStatic{T}
-    alpha::T = 1.0
-    scaled::Bool = false # Scales step. alpha ← min(alpha,||s||_2) / ||s||_2
+#@with_kw struct InitialStatic{T}
+#    alpha::T = 1.0
+#    scaled::Bool = false # Scales step. alpha ← min(alpha,||s||_2) / ||s||_2
+#end
+
+mutable struct InitialStatic{T}
+    alpha::T
+    scaled::Bool # false # Scales step. alpha ← min(alpha,||s||_2) / ||s||_2
+end
+
+function InitialStatic()
+    InitialStatic(1.0, false)
 end
 
 function (is::InitialStatic{T})(ls, state, phi_0, dphi_0, df) where T
