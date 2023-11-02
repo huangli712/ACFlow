@@ -1025,15 +1025,7 @@ function update!(iteration::Integer,
             flush(stdout)
         end
     end
-    #@show callback
-    #if callback !== nothing && (iteration % show_every == 0)
-    #    @show "have callback"
-    #    stopped = callback(os)
-    #else
-    #    @show "callback false"
-        stopped = false
-    #end
-    stopped
+    false
 end
 
 function update_g!(d, state, method)
