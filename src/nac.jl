@@ -1034,14 +1034,14 @@ struct InplaceObjective{DF, FDF, FGH, Hv, FGHv}
     fghv::FGHv
 end
 
-InplaceObjective(;df=nothing, fdf=nothing, fgh=nothing, hv=nothing, fghv=nothing) = InplaceObjective(df, fdf, fgh, hv, fghv)
-const InPlaceObjectiveFGH = InplaceObjective{<:Nothing, <:Nothing, <:Any, <:Nothing, <: Nothing}
-const InPlaceObjectiveFG_Hv = InplaceObjective{<:Nothing, <:Any, <:Nothing, <:Any, <:Nothing}
-const InPlaceObjectiveFGHv = InplaceObjective{<:Nothing, <:Nothing, <:Nothing, <:Nothing, <:Any}
-make_fdf(t::InplaceObjective, x, F::Real) = (G, x) -> fdf(t)(F, G, x)
-make_fdf(t::InPlaceObjectiveFGH, x, F::Real) = (G, x) -> t.fgh(F, G, nothing, x)
-make_fdf(t::InPlaceObjectiveFGHv, x, F::Real) = (G, x) -> t.fghv(F, G, nothing, x, nothing)
-make_fdf(t::InplaceObjective, x, F) = fdf(t)
+#InplaceObjective(;df=nothing, fdf=nothing, fgh=nothing, hv=nothing, fghv=nothing) = InplaceObjective(df, fdf, fgh, hv, fghv)
+#const InPlaceObjectiveFGH = InplaceObjective{<:Nothing, <:Nothing, <:Any, <:Nothing, <: Nothing}
+#const InPlaceObjectiveFG_Hv = InplaceObjective{<:Nothing, <:Any, <:Nothing, <:Any, <:Nothing}
+#const InPlaceObjectiveFGHv = InplaceObjective{<:Nothing, <:Nothing, <:Nothing, <:Nothing, <:Any}
+#make_fdf(t::InplaceObjective, x, F::Real) = (G, x) -> fdf(t)(F, G, x)
+#make_fdf(t::InPlaceObjectiveFGH, x, F::Real) = (G, x) -> t.fgh(F, G, nothing, x)
+#make_fdf(t::InPlaceObjectiveFGHv, x, F::Real) = (G, x) -> t.fghv(F, G, nothing, x, nothing)
+#make_fdf(t::InplaceObjective, x, F) = fdf(t)
 
 function make_fdf(x, F, f!, j!)
     function fj!(fx, jx, x)
