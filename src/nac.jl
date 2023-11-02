@@ -779,7 +779,6 @@ mutable struct BFGSState{Tx, Tm, T,G}
     alpha::T
 end
 
-#abstract type AbstractObjective end
 mutable struct ManifoldObjective{T}
     manifold::Manifold
     inner_obj::T
