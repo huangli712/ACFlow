@@ -857,7 +857,6 @@ struct Options{T, TCallback}
     outer_iterations::Int
     show_trace::Bool
     show_every::Int
-    callback::TCallback
     time_limit::Float64
 end
 
@@ -913,7 +912,7 @@ function Options(;
     end
     Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_x_abstol, outer_x_reltol, outer_f_abstol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit, h_calls_limit,
         allow_f_increases, allow_outer_f_increases, successive_f_tol, Int(iterations), Int(outer_iterations), show_trace,
-        Int(show_every), callback, Float64(time_limit))
+        Int(show_every), Float64(time_limit))
 end
 
 include("hagerzhang.jl")
@@ -1069,7 +1068,7 @@ function optimize(f, g, initial_x::AbstractArray, method::AbstractOptimizer, opt
     state = initial_state(method, d, initial_x)
 
     t0 = time() # Initial time stamp used to control early stopping by options.time_limit
-    tracing = options.show_trace || options.callback !== nothing
+    tracing = options.show_trace
     stopped, stopped_by_callback, stopped_by_time_limit = false, false, false
     f_limit_reached, g_limit_reached, h_limit_reached = false, false, false
     x_converged, f_converged, f_increased, counter_f_tol = false, false, false, 0
