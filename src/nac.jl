@@ -795,7 +795,6 @@ mutable struct BFGSState{Tx, Tm, T,G} <: AbstractOptimizerState
     u::Tx
     invH::Tm
     s::Tx
-    #@add_linesearch_fields()
     x_ls::Tx
     alpha::T
 end
@@ -1066,7 +1065,10 @@ function initial_state(method::BFGS, d, initial_x::AbstractArray{T}) where T
               similar(initial_x), # Buffer stored in state.u
               invH0, # Store current invH in state.invH
               similar(initial_x), # Store current search direction in state.s
-              @initial_linesearch()...)
+              #@initial_linesearch()...
+              similar(initial_x), # Buffer of x for line search in state.x_ls
+              real(one(T))
+              )
 end
 
 function update_state!(d, state::BFGSState, method::BFGS)
