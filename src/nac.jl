@@ -1260,13 +1260,15 @@ f_relchange(r::MultivariateOptimizationResults) = r.f_relchange
 
 x_abschange(r::MultivariateOptimizationResults) = r.x_abschange
 x_relchange(r::MultivariateOptimizationResults) = r.x_relchange
+
 x_abschange(state) = x_abschange(state.x, state.x_previous)
 x_abschange(x, x_previous) = maxdiff(x, x_previous)
+
 x_relchange(state) = x_relchange(state.x, state.x_previous)
 x_relchange(x, x_previous) = maxdiff(x, x_previous)/maximum(abs, x)
 
 g_residual(d, state) = g_residual(d)
-g_residual(d::AbstractObjective) = g_residual(gradient(d))
+#g_residual(d::AbstractObjective) = g_residual(gradient(d))
 g_residual(g) = maximum(abs, g)
 g_residual(r::MultivariateOptimizationResults) = r.g_residual
 
