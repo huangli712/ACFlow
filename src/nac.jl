@@ -1244,13 +1244,10 @@ struct Newton{IL, L} <: SecondOrderOptimizer
     linesearch!::L
 end
 
-update_g!(d, state, method) = nothing
-function update_g!(d, state, method::M) where M<:Union{FirstOrderOptimizer, Newton}
+function update_g!(d, state, method)
     # Update the function value and gradient
     value_gradient!(d, state.x)
-    if M <: FirstOrderOptimizer #only for methods that support manifold optimization
-        project_tangent!(method.manifold, gradient(d), state.x)
-    end
+    project_tangent!(method.manifold, gradient(d), state.x)
 end
 
 function update_h!(d, state, method::BFGS)
@@ -1316,15 +1313,14 @@ function optimize(d::D, initial_x::Tx, method::M,
         if !ls_success
             break # it returns true if it's forced by something in update! to stop (eg dx_dg == 0.0 in BFGS, or linesearch errors)
         end
-        if !(method isa NewtonTrustRegion)
-            update_g!(d, state, method) # TODO: Should this be `update_fg!`?
-        end
+        update_g!(d, state, method) # TODO: Should this be `update_fg!`?
         x_converged, f_converged,
         g_converged, f_increased = assess_convergence(state, d, options)
         # For some problems it may be useful to require `f_converged` to be hit multiple times
         # TODO: Do the same for x_tol?
         counter_f_tol = f_converged ? counter_f_tol+1 : 0
         converged = x_converged || g_converged || (counter_f_tol > options.successive_f_tol)
+        @show !(method isa NewtonTrustRegion)
         if !(converged && method isa Newton) && !(method isa NewtonTrustRegion)
             update_h!(d, state, method) # only relevant if not converged
         end
