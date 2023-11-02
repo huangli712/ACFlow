@@ -777,15 +777,6 @@ function Base.show(io::IO, t::OptimizationState)
     end
     return
 end
-struct NewtonTrustRegion{T <: Real} <: SecondOrderOptimizer
-    initial_delta::T
-    delta_hat::T
-    delta_min::T
-    eta::T
-    rho_lower::T
-    rho_upper::T
-    use_fg::Bool
-end
 struct BFGS{IL, L, H, T, TM} <: FirstOrderOptimizer
     alphaguess!::IL
     linesearch!::L
@@ -1320,8 +1311,7 @@ function optimize(d::D, initial_x::Tx, method::M,
         # TODO: Do the same for x_tol?
         counter_f_tol = f_converged ? counter_f_tol+1 : 0
         converged = x_converged || g_converged || (counter_f_tol > options.successive_f_tol)
-        @show !(method isa NewtonTrustRegion)
-        if !(converged && method isa Newton) && !(method isa NewtonTrustRegion)
+        if !(converged && method isa Newton)
             update_h!(d, state, method) # only relevant if not converged
         end
         if tracing
@@ -1340,15 +1330,6 @@ function optimize(d::D, initial_x::Tx, method::M,
         if (f_increased && !options.allow_f_increases) || stopped_by_callback ||
             stopped_by_time_limit || f_limit_reached || g_limit_reached || h_limit_reached
             stopped = true
-        end
-
-        if method isa NewtonTrustRegion
-            # If the trust region radius keeps on reducing we need to stop
-            # because something is wrong. Wrong gradients or a non-differentiability
-            # at the solution could be explanations.
-            if state.delta ≤ method.delta_min
-                stopped = true
-            end
         end
 
         if g_calls(d) > 0 && !all(isfinite, gradient(d))
