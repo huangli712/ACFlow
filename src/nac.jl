@@ -937,7 +937,7 @@ function update_h!(d, state, method::BFGS)
     end
 end
 
-function optimize(f, g, initial_x::AbstractArray, method::BFGS, max_iter::I64 = 1000)
+function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 1000)
     d = OnceDifferentiable1(f, g, initial_x, real(zero(eltype(initial_x))))
     state = initial_state(method, d, initial_x)
 
@@ -947,7 +947,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, max_iter::I64 = 
     f_increased = false
 
     g_converged = initial_convergence(d, initial_x)
-    converged = (false) || g_converged
+    converged = g_converged
     # prepare iteration counter (used to make "initial state" trace entry)
     iteration = 0
 
@@ -964,7 +964,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, max_iter::I64 = 
         end
         update_g!(d, state, method) # TODO: Should this be `update_fg!`?
         g_converged, f_increased = assess_convergence(state, d)
-        converged = (false) || g_converged
+        converged = g_converged
         update_h!(d, state, method) # only relevant if not converged
 
         # update trace
