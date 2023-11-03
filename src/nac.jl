@@ -857,7 +857,6 @@ function update_state!(d, state::BFGSState, method::BFGS)
     # Search direction is the negative gradient divided by the approximate Hessian
     mul!(vec(state.s), state.invH, vec(gradient(d)))
     rmul!(state.s, T(-1))
-    project_tangent!(method.manifold, state.s, state.x)
 
     # Maintain a record of the previous gradient
     copyto!(state.g_previous, gradient(d))
@@ -892,10 +891,9 @@ function trace!(d, iteration, curr_time=time())
     false
 end
 
-function update_g!(d, state, method)
-    # Update the function value and gradient
+# Update the function value and gradient
+function update_g!(d, state)
     value_gradient!(d, state.x)
-    project_tangent!(method.manifold, gradient(d), state.x)
 end
 
 function update_h!(d, state)
@@ -953,7 +951,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
         if !ls_success
             break # it returns true if it's forced by something in update! to stop (eg dx_dg == 0.0 in BFGS, or linesearch errors)
         end
-        update_g!(d, state, method) # TODO: Should this be `update_fg!`?
+        update_g!(d, state)
         g_converged = (g_residual(d) ≤ 1e-8)
         update_h!(d, state) # only relevant if not converged
 
@@ -987,7 +985,6 @@ end
 
 retract!(M::Manifold,x) = x
 retract(M::Manifold,x) = retract!(M, copy(x))
-project_tangent!(M::Manifold, g, x) = g
 
 value(obj::OnceDifferentiable1) = obj.F
 function value(obj::ManifoldObjective)
