@@ -828,7 +828,6 @@ struct Options{T}
     f_reltol::T
     g_abstol::T
     g_reltol::T
-    f_calls_limit::Int
     g_calls_limit::Int
     successive_f_tol::Int
     iterations::Int
@@ -841,11 +840,10 @@ function Options(;
         f_reltol::Real = 0.0,
         g_abstol::Real = 1e-8,
         g_reltol::Real = 1e-8,
-        f_calls_limit::Int = 0,
         g_calls_limit::Int = 0,
         successive_f_tol::Int = 1,
         iterations::Int = 1_000)
-    Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol)..., f_calls_limit, g_calls_limit,
+    Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol)..., g_calls_limit,
         successive_f_tol, Int(iterations))
 end
 
@@ -979,7 +977,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
     t0 = time() # Initial time stamp
 
     stopped = false
-    f_limit_reached, g_limit_reached, h_limit_reached = false, false, false
+    g_limit_reached = false
     x_converged, f_converged, f_increased, counter_f_tol = false, false, false, 0
 
     f_converged, g_converged = initial_convergence(d, initial_x, options)
@@ -1010,10 +1008,9 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
         trace!(d, iteration, time()-t0)
 
         _time = time()
-        f_limit_reached = options.f_calls_limit > 0 && f_calls(d) >= options.f_calls_limit ? true : false
         g_limit_reached = options.g_calls_limit > 0 && g_calls(d) >= options.g_calls_limit ? true : false
 
-        if (false) || f_limit_reached || g_limit_reached || h_limit_reached
+        if (false) || g_limit_reached
             stopped = true
         end
 
