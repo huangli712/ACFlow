@@ -952,7 +952,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
     t0 = time() # Initial time stamp
 
     stopped = false
-    f_increased, counter_f_tol = false, 0
+    f_increased = false
 
     g_converged = initial_convergence(d, initial_x)
     converged = (false) || g_converged
@@ -972,8 +972,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
         end
         update_g!(d, state, method) # TODO: Should this be `update_fg!`?
         g_converged, f_increased = assess_convergence(state, d)
-        counter_f_tol = (false) ? counter_f_tol+1 : 0
-        converged = (false) || g_converged || (counter_f_tol > 1)
+        converged = (false) || g_converged
         update_h!(d, state, method) # only relevant if not converged
 
         # update trace
@@ -989,7 +988,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
 
     # we can just check minimum, as we've earlier enforced same types/eltypes
     # in variables besides the option settings
-    Tf = typeof(value(d))
+    #Tf = typeof(value(d))
     f_incr_pick = false
     return MultivariateOptimizationResults(method,
                                         initial_x,
