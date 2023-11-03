@@ -833,7 +833,6 @@ function initial_state(method::BFGS, d, initial_x::AbstractArray{T}) where T
     initial_x = copy(initial_x)
     retract!(method.manifold, initial_x)
     value_gradient!!(d, initial_x)
-    project_tangent!(method.manifold, gradient(d), initial_x)
     invH0 = _init_identity_matrix(initial_x)
 
     # Maintain a cache for line search results
@@ -849,11 +848,10 @@ function initial_state(method::BFGS, d, initial_x::AbstractArray{T}) where T
               similar(initial_x), # Store current search direction in state.s
               similar(initial_x), # Buffer of x for line search in state.x_ls
               real(one(T))
-            )
+    )
 end
 
 function update_state!(d, state::BFGSState, method::BFGS)
-    n = length(state.x)
     T = eltype(state.s)
     # Set the search direction
     # Search direction is the negative gradient divided by the approximate Hessian
@@ -1021,7 +1019,6 @@ end
 function value_gradient!(obj::ManifoldObjective,x)
     xin = retract(obj.manifold, x)
     value_gradient!(obj.inner_obj,xin)
-    #project_tangent!(obj.manifold,gradient(obj.inner_obj),xin)
     gradient(obj.inner_obj)
     return value(obj.inner_obj)
 end
