@@ -829,7 +829,7 @@ function OnceDifferentiable1(f, df,
     OnceDifferentiable1(f, df, fdf, copy(F), copy(DF), x_f, x_df, [0,], [0,])
 end
 
-function initial_state(method::BFGS, d, initial_x::AbstractArray{T}) where T
+function initial_state(d, initial_x::AbstractArray{T}) where T
     initial_x = copy(initial_x)
     value_gradient!!(d, initial_x)
     invH0 = _init_identity_matrix(initial_x)
@@ -928,7 +928,7 @@ end
 
 function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 1000)
     d = OnceDifferentiable1(f, g, initial_x, real(zero(eltype(initial_x))))
-    state = initial_state(method, d, initial_x)
+    state = initial_state(d, initial_x)
 
     t0 = time() # Initial time stamp
 
