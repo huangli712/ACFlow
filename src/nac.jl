@@ -1116,8 +1116,7 @@ function converged(r::MultivariateOptimizationResults)
 end
 
 # Default function for convergence assessment used by BFGSState
-function assess_convergence(d)
-    g_x = gradient(d)
-    g_converged = g_residual(g_x) ≤ 1e-8
+function assess_convergence(d::OnceDifferentiable1)
+    g_converged = g_residual(d) ≤ 1e-8
     return g_converged
 end
