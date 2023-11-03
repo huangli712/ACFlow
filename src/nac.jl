@@ -814,13 +814,12 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
     time_run::Float64
 end
 
-struct Options{T}
-    successive_f_tol::Int
+struct Options
     iterations::Int
 end
 
-function Options(; successive_f_tol::Int = 1, iterations::Int = 1_000)
-    Options(successive_f_tol, Int(iterations))
+function Options(; iterations::Int = 1_000)
+    Options(Int(iterations))
 end
 
 include("hagerzhang.jl")
@@ -974,7 +973,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
         update_g!(d, state, method) # TODO: Should this be `update_fg!`?
         g_converged, f_increased = assess_convergence(state, d)
         counter_f_tol = (false) ? counter_f_tol+1 : 0
-        converged = (false) || g_converged || (counter_f_tol > options.successive_f_tol)
+        converged = (false) || g_converged || (counter_f_tol > 1)
         update_h!(d, state, method) # only relevant if not converged
 
         # update trace
