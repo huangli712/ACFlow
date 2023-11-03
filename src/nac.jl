@@ -828,7 +828,6 @@ struct Options{T}
     f_reltol::T
     g_abstol::T
     g_reltol::T
-    outer_f_abstol::T
     outer_f_reltol::T
     outer_g_abstol::T
     outer_g_reltol::T
@@ -851,7 +850,6 @@ function Options(;
         outer_x_tol = nothing,
         outer_f_tol = nothing,
         outer_g_tol = nothing,
-        outer_f_abstol::Real = 0.0,
         outer_f_reltol::Real = 0.0,
         outer_g_abstol::Real = 1e-8,
         outer_g_reltol::Real = 1e-8,
@@ -874,7 +872,7 @@ function Options(;
     if !(outer_f_tol === nothing)
         outer_f_reltol = outer_f_tol
     end
-    Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_f_abstol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit,
+    Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit,
         successive_f_tol, Int(iterations))
 end
 
