@@ -805,7 +805,7 @@ mutable struct MultivariateOptimizationResults{Tx, Tc, Tf}
     f_relchange::Tc
     g_converged::Bool
     g_residual::Tc
-    f_increased::Bool
+    #f_increased::Bool
     f_calls::Int
     g_calls::Int
 end
@@ -940,7 +940,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
     t0 = time() # Initial time stamp
 
     stopped = false
-    f_increased = false
+    #f_increased = false
 
     g_converged = initial_convergence(d, initial_x)
     converged = g_converged
@@ -959,7 +959,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
             break # it returns true if it's forced by something in update! to stop (eg dx_dg == 0.0 in BFGS, or linesearch errors)
         end
         update_g!(d, state, method) # TODO: Should this be `update_fg!`?
-        g_converged, f_increased = assess_convergence(state, d)
+        g_converged, _ = assess_convergence(state, d)
         converged = g_converged
         update_h!(d, state, method) # only relevant if not converged
 
@@ -987,7 +987,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
                                         f_relchange(d, state),
                                         g_converged,
                                         g_residual(d, state),
-                                        f_increased,
+                                        #f_increased,
                                         f_calls(d),
                                         g_calls(d)
                                         )
