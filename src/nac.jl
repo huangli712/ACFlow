@@ -1083,8 +1083,8 @@ alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 g_calls(d::OnceDifferentiable1) = first(d.df_calls)
 f_calls(d::OnceDifferentiable1) = first(d.f_calls)
 
-pick_best_x(f_increased, state) = f_increased ? state.x_previous : state.x
-pick_best_f(f_increased, state, d) = f_increased ? state.f_x_previous : value(d)
+pick_best_x(f_increased, state) = state.x #f_increased ? state.x_previous : state.x
+pick_best_f(f_increased, state, d) = value(d) #f_increased ? state.f_x_previous : value(d)
 
 function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
