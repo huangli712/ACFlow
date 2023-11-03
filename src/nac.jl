@@ -761,7 +761,7 @@ mutable struct ManifoldObjective{T}
     inner_obj::T
 end
 
-struct BFGS{IL, L, TM}
+struct BFGS{IL, L}
     alphaguess!::IL
     linesearch!::L
     #manifold::TM
@@ -862,7 +862,7 @@ function update_state!(d, state::BFGSState, method::BFGS)
     # Determine the distance of movement along the search line
     # This call resets invH to initial_invH is the former in not positive
     # semi-definite
-    manifold=Manifold()
+    manifold = Manifold()
     lssuccess = perform_linesearch!(state, method, ManifoldObjective(manifold, d))
 
     # Update current position
