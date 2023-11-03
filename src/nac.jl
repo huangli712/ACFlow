@@ -818,7 +818,6 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
     f_calls::Int
     g_calls::Int
     ls_success::Tls
-    time_limit::Float64
     time_run::Float64
 end
 
@@ -840,7 +839,6 @@ struct Options{T}
     successive_f_tol::Int
     iterations::Int
     show_every::Int
-    time_limit::Float64
 end
 
 function Options(;
@@ -866,8 +864,7 @@ function Options(;
         g_calls_limit::Int = 0,
         successive_f_tol::Int = 1,
         iterations::Int = 1_000,
-        show_every::Int = 1,
-        time_limit = NaN)
+        show_every::Int = 1)
     show_every = show_every > 0 ? show_every : 1
     if !(x_tol === nothing)
         x_abstol = x_tol
@@ -889,7 +886,7 @@ function Options(;
     end
     Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_x_abstol, outer_x_reltol, outer_f_abstol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit,
         successive_f_tol, Int(iterations),
-        Int(show_every), Float64(time_limit))
+        Int(show_every))
 end
 
 include("hagerzhang.jl")
@@ -1019,9 +1016,9 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
     d = OnceDifferentiable1(f, g, initial_x, real(zero(eltype(initial_x))))
     state = initial_state(method, d, initial_x)
 
-    t0 = time() # Initial time stamp used to control early stopping by options.time_limit
+    t0 = time() # Initial time stamp
 
-    stopped, stopped_by_callback, stopped_by_time_limit = false, false, false
+    stopped, stopped_by_callback = false, false
     f_limit_reached, g_limit_reached, h_limit_reached = false, false, false
     x_converged, f_converged, f_increased, counter_f_tol = false, false, false, 0
 
@@ -1053,15 +1050,11 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
         # update trace; callbacks can stop routine early by returning true
         stopped_by_callback = trace!(d, iteration, options, time()-t0)
 
-        # Check time_limit; if none is provided it is NaN and the comparison
-        # will always return false.
         _time = time()
-        stopped_by_time_limit = _time-t0 > options.time_limit
         f_limit_reached = options.f_calls_limit > 0 && f_calls(d) >= options.f_calls_limit ? true : false
         g_limit_reached = options.g_calls_limit > 0 && g_calls(d) >= options.g_calls_limit ? true : false
 
-        if (false) || stopped_by_callback ||
-            stopped_by_time_limit || f_limit_reached || g_limit_reached || h_limit_reached
+        if (false) || stopped_by_callback || f_limit_reached || g_limit_reached || h_limit_reached
             stopped = true
         end
 
@@ -1098,7 +1091,6 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
                                         f_calls(d),
                                         g_calls(d),
                                         ls_success,
-                                        options.time_limit,
                                         _time-t0,
                                         )
 end
