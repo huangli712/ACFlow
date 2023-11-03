@@ -1188,6 +1188,7 @@ function assess_convergence(state::BFGSState, d, options::Options)
     g_x = gradient(d)
 
     if x_abschange(state.x, state.x_previous) ≤ options.x_reltol * maximum(abs, state.x)
+        @show "here"
         x_converged = true
     end
 
