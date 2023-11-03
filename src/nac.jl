@@ -1102,8 +1102,7 @@ x_abschange(r::MultivariateOptimizationResults) = r.x_abschange
 x_abschange(state) = maxdiff(state.x, state.x_previous)
 
 x_relchange(r::MultivariateOptimizationResults) = r.x_relchange
-x_relchange(state) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x) #x_relchange(state.x, state.x_previous)
-#x_relchange(x, x_previous) = maxdiff(x, x_previous)/maximum(abs, x)
+x_relchange(state) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
 
 g_residual(d, state) = g_residual(d)
 g_residual(d::OnceDifferentiable1) = g_residual(gradient(d))
