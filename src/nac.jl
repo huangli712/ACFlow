@@ -835,8 +835,6 @@ struct Options{T}
 end
 
 function Options(;
-        f_tol = nothing,
-        g_tol = nothing,
         x_abstol::Real = 0.0,
         x_reltol::Real = 0.0,
         f_abstol::Real = 0.0,
@@ -847,12 +845,6 @@ function Options(;
         g_calls_limit::Int = 0,
         successive_f_tol::Int = 1,
         iterations::Int = 1_000)
-    if !(g_tol === nothing)
-        g_abstol = g_tol
-    end
-    if !(f_tol === nothing)
-        f_reltol = f_tol
-    end
     Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol)..., f_calls_limit, g_calls_limit,
         successive_f_tol, Int(iterations))
 end
