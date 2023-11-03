@@ -1006,7 +1006,7 @@ end
 function value_gradient!(obj::ManifoldObjective,x)
     xin = copy(x)
     value_gradient!(obj.inner_obj,xin)
-    gradient(obj.inner_obj)
+    #gradient(obj.inner_obj)
     return value(obj.inner_obj)
 end
 
