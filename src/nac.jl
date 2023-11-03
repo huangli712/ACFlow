@@ -988,7 +988,6 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
 
     # we can just check minimum, as we've earlier enforced same types/eltypes
     # in variables besides the option settings
-    #Tf = typeof(value(d))
     f_incr_pick = false
     return MultivariateOptimizationResults(method,
                                         initial_x,
