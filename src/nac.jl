@@ -1021,7 +1021,8 @@ end
 function value_gradient!(obj::ManifoldObjective,x)
     xin = retract(obj.manifold, x)
     value_gradient!(obj.inner_obj,xin)
-    project_tangent!(obj.manifold,gradient(obj.inner_obj),xin)
+    #project_tangent!(obj.manifold,gradient(obj.inner_obj),xin)
+    gradient(obj.inner_obj)
     return value(obj.inner_obj)
 end
 
