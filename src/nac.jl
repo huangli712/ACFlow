@@ -818,7 +818,6 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
     f_increased::Bool
     f_calls::Int
     g_calls::Int
-    #h_calls::Int
     ls_success::Tls
     time_limit::Float64
     time_run::Float64
@@ -839,7 +838,6 @@ struct Options{T}
     outer_g_reltol::T
     f_calls_limit::Int
     g_calls_limit::Int
-    #h_calls_limit::Int
     allow_f_increases::Bool
     allow_outer_f_increases::Bool
     successive_f_tol::Int
@@ -871,7 +869,6 @@ function Options(;
         outer_g_reltol::Real = 1e-8,
         f_calls_limit::Int = 0,
         g_calls_limit::Int = 0,
-        #h_calls_limit::Int = 0,
         allow_f_increases::Bool = true,
         allow_outer_f_increases::Bool = true,
         successive_f_tol::Int = 1,
@@ -899,7 +896,7 @@ function Options(;
     if !(outer_f_tol === nothing)
         outer_f_reltol = outer_f_tol
     end
-    Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_x_abstol, outer_x_reltol, outer_f_abstol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit, #h_calls_limit,
+    Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_x_abstol, outer_x_reltol, outer_f_abstol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit,
         allow_f_increases, allow_outer_f_increases, successive_f_tol, Int(iterations), Int(outer_iterations), show_trace,
         Int(show_every), Float64(time_limit))
 end
@@ -1073,10 +1070,8 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
         # will always return false.
         _time = time()
         stopped_by_time_limit = _time-t0 > options.time_limit
-        @show typeof(d), options.g_calls_limit
         f_limit_reached = options.f_calls_limit > 0 && f_calls(d) >= options.f_calls_limit ? true : false
         g_limit_reached = options.g_calls_limit > 0 && g_calls(d) >= options.g_calls_limit ? true : false
-        #h_limit_reached = options.h_calls_limit > 0 && h_calls(d) >= options.h_calls_limit ? true : false
 
         if (f_increased && !options.allow_f_increases) || stopped_by_callback ||
             stopped_by_time_limit || f_limit_reached || g_limit_reached || h_limit_reached
@@ -1087,10 +1082,6 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
             @warn "Terminated early due to NaN in gradient."
             break
         end
-        #if h_calls(d) > 0 && !(d isa TwiceDifferentiableHV) && !all(isfinite, hessian(d))
-        #    @warn "Terminated early due to NaN in Hessian."
-        #    break
-        #end
     end # while
 
     # we can just check minimum, as we've earlier enforced same types/eltypes
@@ -1119,7 +1110,6 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
                                         f_increased,
                                         f_calls(d),
                                         g_calls(d),
-                                        #h_calls(d),
                                         ls_success,
                                         options.time_limit,
                                         _time-t0,
@@ -1218,11 +1208,7 @@ end
 x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
 alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 
-#g_calls(r::MultivariateOptimizationResults) = r.g_calls
 g_calls(d::OnceDifferentiable1) = first(d.df_calls)
-#h_calls(r::MultivariateOptimizationResults) = r.h_calls
-#h_calls(d::OnceDifferentiable1) = 0
-#h_calls(d) = first(d.h_calls)
 f_calls(d) = first(d.f_calls)
 
 pick_best_x(f_increased, state) = f_increased ? state.x_previous : state.x
