@@ -937,7 +937,7 @@ function update_h!(d, state, method::BFGS)
     end
 end
 
-function optimize(f, g, initial_x::AbstractArray, method::BFGS, max_iter:I64 = 1000)
+function optimize(f, g, initial_x::AbstractArray, method::BFGS, max_iter::I64 = 1000)
     d = OnceDifferentiable1(f, g, initial_x, real(zero(eltype(initial_x))))
     state = initial_state(method, d, initial_x)
 
