@@ -801,10 +801,8 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
     minimum::Tf
     iterations::Int
     iteration_converged::Bool
-    x_converged::Bool
     x_abschange::Tc
     x_relchange::Tc
-    f_converged::Bool
     f_abschange::Tc
     f_relchange::Tc
     g_converged::Bool
@@ -962,10 +960,10 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
     t0 = time() # Initial time stamp
 
     stopped = false
-    x_converged, f_converged, f_increased, counter_f_tol = false, false, false, 0
+    f_increased, counter_f_tol = false, 0
 
-    f_converged, g_converged = initial_convergence(d, initial_x, options)
-    converged = f_converged || g_converged
+    _, g_converged = initial_convergence(d, initial_x, options)
+    converged = (false) || g_converged
     # prepare iteration counter (used to make "initial state" trace entry)
     iteration = 0
 
@@ -981,11 +979,9 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
             break # it returns true if it's forced by something in update! to stop (eg dx_dg == 0.0 in BFGS, or linesearch errors)
         end
         update_g!(d, state, method) # TODO: Should this be `update_fg!`?
-        x_converged, f_converged,
         g_converged, f_increased = assess_convergence(state, d, options)
-        # For some problems it may be useful to require `f_converged` to be hit multiple times
-        counter_f_tol = f_converged ? counter_f_tol+1 : 0
-        converged = x_converged || g_converged || (counter_f_tol > options.successive_f_tol)
+        counter_f_tol = (false) ? counter_f_tol+1 : 0
+        converged = (false) || g_converged || (counter_f_tol > options.successive_f_tol)
         update_h!(d, state, method) # only relevant if not converged
 
         # update trace
@@ -1009,10 +1005,8 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
                                         pick_best_f(f_incr_pick, state, d),
                                         iteration,
                                         iteration == options.iterations,
-                                        x_converged,
                                         x_abschange(state),
                                         x_relchange(state),
-                                        f_converged,
                                         f_abschange(d, state),
                                         f_relchange(d, state),
                                         g_converged,
@@ -1157,7 +1151,7 @@ function initial_convergence(d, initial_x, options)
 end
 
 function converged(r::MultivariateOptimizationResults)
-    conv_flags = r.x_converged || r.f_converged || r.g_converged
+    conv_flags = (false) || (false) || r.g_converged
     x_isfinite = isfinite(x_abschange(r)) || isnan(x_relchange(r))
     f_isfinite = if r.iterations > 0
             isfinite(f_abschange(r)) || isnan(f_relchange(r))
@@ -1170,7 +1164,7 @@ end
 
 # Default function for convergence assessment used by BFGSState
 function assess_convergence(state::BFGSState, d, options::Options)
-    x_converged, f_converged, f_increased, g_converged = false, false, false, false
+    f_increased, g_converged = false, false
 
     f_x = value(d)
     g_x = gradient(d)
@@ -1181,5 +1175,5 @@ function assess_convergence(state::BFGSState, d, options::Options)
 
     g_converged = g_residual(g_x) ≤ options.g_abstol
 
-    return x_converged, f_converged, g_converged, f_increased
+    return g_converged, f_increased
 end
