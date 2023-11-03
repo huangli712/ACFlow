@@ -810,7 +810,6 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
     f_increased::Bool
     f_calls::Int
     g_calls::Int
-    ls_success::Tls
 end
 
 include("hagerzhang.jl")
@@ -954,7 +953,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
 
     _time = time()
     trace!(d, iteration, _time-t0)
-    ls_success::Bool = true
+    ls_success = true
     while !converged && !stopped && iteration < max_iter
         iteration += 1
         ls_success = !update_state!(d, state, method)
@@ -994,8 +993,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
                                         g_residual(d, state),
                                         f_increased,
                                         f_calls(d),
-                                        g_calls(d),
-                                        ls_success,
+                                        g_calls(d)
                                         )
 end
 
