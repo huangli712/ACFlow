@@ -811,7 +811,6 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
     f_calls::Int
     g_calls::Int
     ls_success::Tls
-    time_run::Float64
 end
 
 include("hagerzhang.jl")
@@ -997,7 +996,6 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
                                         f_calls(d),
                                         g_calls(d),
                                         ls_success,
-                                        _time-t0,
                                         )
 end
 
