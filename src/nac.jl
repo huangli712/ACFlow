@@ -786,8 +786,7 @@ mutable struct OnceDifferentiable1{TF, TDF, TX}
     DF::TDF # cache for df output
     x_f::TX # x used to evaluate f (stored in F)
     x_df::TX # x used to evaluate df (stored in DF)
-    f_calls::Vector{Int}
-    #df_calls::Vector{Int}
+    #f_calls::Vector{Int}
 end
 
 mutable struct MultivariateOptimizationResults{Tx, Tc, Tf}
@@ -801,7 +800,7 @@ mutable struct MultivariateOptimizationResults{Tx, Tc, Tf}
     f_relchange::Tc
     g_converged::Bool
     g_residual::Tc
-    f_calls::Int
+    #f_calls::Int
 end
 
 include("hagerzhang.jl")
@@ -969,8 +968,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
                                         f_abschange(d, state),
                                         f_relchange(d, state),
                                         g_converged,
-                                        g_residual(d),
-                                        f_calls(d)
+                                        g_residual(d)
     )
 end
 
@@ -1008,8 +1006,7 @@ function value_gradient!(obj::ManifoldObjective,x)
 end
 
 function value_gradient!!(obj::OnceDifferentiable1, x)
-    obj.f_calls .+= 1
-    #obj.df_calls .+= 1
+    #obj.f_calls .+= 1
     copyto!(obj.x_f, x)
     copyto!(obj.x_df, x)
     obj.F = obj.fdf(gradient(obj), x)
@@ -1061,7 +1058,7 @@ end
 x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
 alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 
-f_calls(d::OnceDifferentiable1) = first(d.f_calls)
+#f_calls(d::OnceDifferentiable1) = first(d.f_calls)
 
 function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
