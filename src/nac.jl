@@ -1101,7 +1101,7 @@ f_relchange(r::MultivariateOptimizationResults) = r.f_relchange
 x_abschange(r::MultivariateOptimizationResults) = r.x_abschange
 x_abschange(state) = maxdiff(state.x, state.x_previous)
 
-x_relchange(r::MultivariateOptimizationResults) = r.x_relchange
+#x_relchange(r::MultivariateOptimizationResults) = r.x_relchange
 x_relchange(state) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
 
 g_residual(d, state) = g_residual(d)
@@ -1117,7 +1117,7 @@ end
 
 function converged(r::MultivariateOptimizationResults)
     conv_flags = r.g_converged
-    x_isfinite = isfinite(x_abschange(r)) || isnan(x_relchange(r))
+    x_isfinite = isfinite(x_abschange(r)) || isnan(r.x_relchange)
     f_isfinite = if r.iterations > 0
             isfinite(f_abschange(r)) || isnan(f_relchange(r))
         else
