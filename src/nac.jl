@@ -754,17 +754,13 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
-struct Manifold end
-
 mutable struct ManifoldObjective{T}
-    manifold::Manifold
     inner_obj::T
 end
 
 struct BFGS{IL, L}
     alphaguess!::IL
     linesearch!::L
-    #manifold::TM
 end
 
 mutable struct BFGSState{Tx, Tm, T, G}
@@ -862,8 +858,7 @@ function update_state!(d, state::BFGSState, method::BFGS)
     # Determine the distance of movement along the search line
     # This call resets invH to initial_invH is the former in not positive
     # semi-definite
-    manifold = Manifold()
-    lssuccess = perform_linesearch!(state, method, ManifoldObjective(manifold, d))
+    lssuccess = perform_linesearch!(state, method, ManifoldObjective(d))
 
     # Update current position
     state.dx .= state.alpha.*state.s
