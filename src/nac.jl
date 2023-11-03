@@ -1091,8 +1091,7 @@ function maxdiff(x::AbstractArray, y::AbstractArray)
 end
 
 f_abschange(d::OnceDifferentiable1, state) = abs(value(d) - state.f_x_previous)
-f_relchange(d::OnceDifferentiable1, state) = abs(value(d) - state.f_x_previous)/abs(vaue(d)) #f_relchange(value(d), state.f_x_previous)
-#f_relchange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)/abs(f_x)
+f_relchange(d::OnceDifferentiable1, state) = abs(value(d) - state.f_x_previous)/abs(value(d))
 
 x_abschange(state) = maxdiff(state.x, state.x_previous)
 x_relchange(state) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
