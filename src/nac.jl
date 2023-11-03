@@ -1081,7 +1081,7 @@ x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
 alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 
 g_calls(d::OnceDifferentiable1) = first(d.df_calls)
-f_calls(d) = first(d.f_calls)
+f_calls(d::OnceDifferentiable1) = first(d.f_calls)
 
 pick_best_x(f_increased, state) = f_increased ? state.x_previous : state.x
 pick_best_f(f_increased, state, d) = f_increased ? state.f_x_previous : value(d)
