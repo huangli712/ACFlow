@@ -1092,14 +1092,12 @@ end
 
 f_abschange(d::OnceDifferentiable1, state) = abs(value(d) - state.f_x_previous)
 f_relchange(d::OnceDifferentiable1, state) = abs(value(d) - state.f_x_previous)/abs(value(d))
-
 x_abschange(state) = maxdiff(state.x, state.x_previous)
 x_relchange(state) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
 
 g_residual(d, state) = g_residual(d)
 g_residual(d::OnceDifferentiable1) = g_residual(gradient(d))
 g_residual(g) = maximum(abs, g)
-g_residual(r::MultivariateOptimizationResults) = r.g_residual
 
 function initial_convergence(d, initial_x)
     gradient!(d, initial_x)
@@ -1115,7 +1113,7 @@ function converged(r::MultivariateOptimizationResults)
         else
             true
         end
-    g_isfinite = isfinite(g_residual(r))
+    g_isfinite = isfinite(r.g_residual)
     return conv_flags && all((x_isfinite, f_isfinite, g_isfinite))
 end
 
