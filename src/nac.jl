@@ -956,7 +956,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
             break # it returns true if it's forced by something in update! to stop (eg dx_dg == 0.0 in BFGS, or linesearch errors)
         end
         update_g!(d, state, method) # TODO: Should this be `update_fg!`?
-        g_converged = assess_convergence(d)
+        g_converged = (g_residual(d) ≤ 1e-8)
         update_h!(d, state, method) # only relevant if not converged
 
         # update trace
@@ -1113,10 +1113,4 @@ function converged(r::MultivariateOptimizationResults)
         end
     g_isfinite = isfinite(r.g_residual)
     return conv_flags && all((x_isfinite, f_isfinite, g_isfinite))
-end
-
-# Default function for convergence assessment used by BFGSState
-function assess_convergence(d::OnceDifferentiable1)
-    g_converged = g_residual(d) ≤ 1e-8
-    return g_converged
 end
