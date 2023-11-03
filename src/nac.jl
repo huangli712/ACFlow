@@ -982,7 +982,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
                                         f_abschange(d, state),
                                         f_relchange(d, state),
                                         g_converged,
-                                        g_residual(d, state),
+                                        g_residual(d),
                                         f_calls(d),
                                         g_calls(d)
                                         )
@@ -1095,7 +1095,7 @@ f_relchange(d::OnceDifferentiable1, state) = abs(value(d) - state.f_x_previous)/
 x_abschange(state) = maxdiff(state.x, state.x_previous)
 x_relchange(state) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
 
-g_residual(d, state) = g_residual(d)
+#g_residual(d, state) = g_residual(d)
 g_residual(d::OnceDifferentiable1) = g_residual(gradient(d))
 g_residual(g) = maximum(abs, g)
 
