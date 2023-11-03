@@ -984,7 +984,6 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
 end
 
 retract!(M::Manifold,x) = x
-retract(M::Manifold,x) = retract!(M, copy(x))
 
 value(obj::OnceDifferentiable1) = obj.F
 function value(obj::ManifoldObjective)
@@ -1014,7 +1013,7 @@ function value_gradient!(obj::OnceDifferentiable1, x)
 end
 
 function value_gradient!(obj::ManifoldObjective,x)
-    xin = retract(obj.manifold, x)
+    xin = copy(x) #retract!(obj.manifold, copy(x))
     value_gradient!(obj.inner_obj,xin)
     gradient(obj.inner_obj)
     return value(obj.inner_obj)
