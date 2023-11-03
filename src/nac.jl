@@ -1014,7 +1014,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
 
     t0 = time() # Initial time stamp
 
-    stopped, stopped_by_callback = false, false
+    stopped = false
     f_limit_reached, g_limit_reached, h_limit_reached = false, false, false
     x_converged, f_converged, f_increased, counter_f_tol = false, false, false, 0
 
@@ -1043,14 +1043,14 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
         converged = x_converged || g_converged || (counter_f_tol > options.successive_f_tol)
         update_h!(d, state, method) # only relevant if not converged
 
-        # update trace; callbacks can stop routine early by returning true
-        stopped_by_callback = trace!(d, iteration, time()-t0)
+        # update trace
+        trace!(d, iteration, time()-t0)
 
         _time = time()
         f_limit_reached = options.f_calls_limit > 0 && f_calls(d) >= options.f_calls_limit ? true : false
         g_limit_reached = options.g_calls_limit > 0 && g_calls(d) >= options.g_calls_limit ? true : false
 
-        if (false) || stopped_by_callback || f_limit_reached || g_limit_reached || h_limit_reached
+        if (false) || f_limit_reached || g_limit_reached || h_limit_reached
             stopped = true
         end
 
