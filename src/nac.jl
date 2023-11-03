@@ -841,7 +841,6 @@ struct Options{T}
     allow_f_increases::Bool
     successive_f_tol::Int
     iterations::Int
-    outer_iterations::Int
     show_trace::Bool
     show_every::Int
     time_limit::Float64
@@ -871,7 +870,6 @@ function Options(;
         allow_f_increases::Bool = true,
         successive_f_tol::Int = 1,
         iterations::Int = 1_000,
-        outer_iterations::Int = 1000,
         show_trace::Bool = false,
         show_every::Int = 1,
         time_limit = NaN)
@@ -895,7 +893,7 @@ function Options(;
         outer_f_reltol = outer_f_tol
     end
     Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_x_abstol, outer_x_reltol, outer_f_abstol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit,
-        allow_f_increases, successive_f_tol, Int(iterations), Int(outer_iterations), show_trace,
+        allow_f_increases, successive_f_tol, Int(iterations), show_trace,
         Int(show_every), Float64(time_limit))
 end
 
