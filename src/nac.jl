@@ -764,7 +764,7 @@ end
 struct BFGS{IL, L, TM}
     alphaguess!::IL
     linesearch!::L
-    manifold::TM
+    #manifold::TM
 end
 
 mutable struct BFGSState{Tx, Tm, T, G}
@@ -812,9 +812,8 @@ end
 include("hagerzhang.jl")
 
 function BFGS(; alphaguess = InitialStatic(),
-    linesearch = HagerZhang(),
-    manifold::Manifold=Manifold())
-    BFGS(alphaguess, linesearch, manifold)
+    linesearch = HagerZhang())
+    BFGS(alphaguess, linesearch)
 end
 
 function OnceDifferentiable1(f, df,
@@ -863,7 +862,8 @@ function update_state!(d, state::BFGSState, method::BFGS)
     # Determine the distance of movement along the search line
     # This call resets invH to initial_invH is the former in not positive
     # semi-definite
-    lssuccess = perform_linesearch!(state, method, ManifoldObjective(method.manifold, d))
+    manifold=Manifold()
+    lssuccess = perform_linesearch!(state, method, ManifoldObjective(manifold, d))
 
     # Update current position
     state.dx .= state.alpha.*state.s
