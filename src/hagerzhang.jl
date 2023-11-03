@@ -34,6 +34,7 @@ function make_ϕ(df, x_new, x, s)
 end
 
 function make_ϕ_ϕdϕ(df, x_new, x, s)
+    @show typeof(df)
     function ϕdϕ(α)
         # Move a distance of alpha in the direction of s
         x_new .= x .+ α.*s

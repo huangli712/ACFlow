@@ -802,7 +802,7 @@ mutable struct MultivariateOptimizationResults{Tx, Tc, Tf}
     g_converged::Bool
     g_residual::Tc
     f_calls::Int
-    g_calls::Int
+    #g_calls::Int
 end
 
 include("hagerzhang.jl")
@@ -953,7 +953,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
 
         _time = time()
 
-        if g_calls(d) > 0 && !all(isfinite, gradient(d))
+        if !all(isfinite, gradient(d))
             @warn "Terminated early due to NaN in gradient."
             break
         end
@@ -971,8 +971,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
                                         f_relchange(d, state),
                                         g_converged,
                                         g_residual(d),
-                                        f_calls(d),
-                                        g_calls(d)
+                                        f_calls(d)
     )
 end
 
@@ -1063,7 +1062,7 @@ end
 x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
 alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 
-g_calls(d::OnceDifferentiable1) = first(d.df_calls)
+#g_calls(d::OnceDifferentiable1) = first(d.df_calls)
 f_calls(d::OnceDifferentiable1) = first(d.f_calls)
 
 function maxdiff(x::AbstractArray, y::AbstractArray)
