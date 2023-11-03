@@ -1092,11 +1092,9 @@ end
 
 f_abschange(d::OnceDifferentiable1, state) = f_abschange(value(d), state.f_x_previous)
 f_abschange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)
-#f_abschange(r::MultivariateOptimizationResults) = r.f_abschange
 
 f_relchange(d::OnceDifferentiable1, state) = f_relchange(value(d), state.f_x_previous)
 f_relchange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)/abs(f_x)
-f_relchange(r::MultivariateOptimizationResults) = r.f_relchange
 
 x_abschange(state) = maxdiff(state.x, state.x_previous)
 x_relchange(state) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
@@ -1116,7 +1114,7 @@ function converged(r::MultivariateOptimizationResults)
     conv_flags = r.g_converged
     x_isfinite = isfinite(r.x_abschange) || isnan(r.x_relchange)
     f_isfinite = if r.iterations > 0
-            isfinite(r.f_abschange) || isnan(f_relchange(r))
+            isfinite(r.f_abschange) || isnan(r.f_relchange)
         else
             true
         end
