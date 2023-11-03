@@ -794,8 +794,7 @@ mutable struct OnceDifferentiable1{TF, TDF, TX}
     df_calls::Vector{Int}
 end
 
-mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
-    method::O
+mutable struct MultivariateOptimizationResults{Tx, Tc, Tf}
     initial_x::Tx
     minimizer::Tx
     minimum::Tf
@@ -978,8 +977,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
     # we can just check minimum, as we've earlier enforced same types/eltypes
     # in variables besides the option settings
     f_incr_pick = false
-    return MultivariateOptimizationResults(method,
-                                        initial_x,
+    return MultivariateOptimizationResults(initial_x,
                                         pick_best_x(f_incr_pick, state),
                                         pick_best_f(f_incr_pick, state, d),
                                         iteration,
