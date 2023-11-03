@@ -756,13 +756,18 @@ end
 
 struct Manifold end
 
+mutable struct ManifoldObjective{T}
+    manifold::Manifold
+    inner_obj::T
+end
+
 struct BFGS{IL, L, TM}
     alphaguess!::IL
     linesearch!::L
     manifold::TM
 end
 
-mutable struct BFGSState{Tx, Tm, T,G}
+mutable struct BFGSState{Tx, Tm, T, G}
     x::Tx
     x_previous::Tx
     g_previous::G
@@ -774,11 +779,6 @@ mutable struct BFGSState{Tx, Tm, T,G}
     s::Tx
     x_ls::Tx
     alpha::T
-end
-
-mutable struct ManifoldObjective{T}
-    manifold::Manifold
-    inner_obj::T
 end
 
 # Used for objectives and solvers where the gradient is available/exists
@@ -900,7 +900,7 @@ function update_g!(d, state, method)
     project_tangent!(method.manifold, gradient(d), state.x)
 end
 
-function update_h!(d, state, method::BFGS)
+function update_h!(d, state)
     n = length(state.x)
     # Measure the change in the gradient
     state.dg .= gradient(d) .- state.g_previous
@@ -957,7 +957,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
         end
         update_g!(d, state, method) # TODO: Should this be `update_fg!`?
         g_converged = (g_residual(d) ≤ 1e-8)
-        update_h!(d, state, method) # only relevant if not converged
+        update_h!(d, state) # only relevant if not converged
 
         # update trace
         trace!(d, iteration, time()-t0)
