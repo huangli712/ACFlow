@@ -670,7 +670,7 @@ function hardy_optimize!(nac::NevanACContext,
         J .= gradient(𝑓, x)
     end
 
-    res = optimize(𝑓, 𝐽!, 𝑎𝑏, BFGS(), Options(iterations = 500))
+    res = optimize(𝑓, 𝐽!, 𝑎𝑏, BFGS(), max_iter = 500)
     
     @show res.minimizer
 
@@ -814,14 +814,6 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
     time_run::Float64
 end
 
-struct Options
-    iterations::Int
-end
-
-function Options(; iterations::Int = 1_000)
-    Options(Int(iterations))
-end
-
 include("hagerzhang.jl")
 
 function BFGS(; alphaguess = InitialStatic(),
@@ -945,7 +937,7 @@ function update_h!(d, state, method::BFGS)
     end
 end
 
-function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options)
+function optimize(f, g, initial_x::AbstractArray, method::BFGS, max_iter:I64 = 1000)
     d = OnceDifferentiable1(f, g, initial_x, real(zero(eltype(initial_x))))
     state = initial_state(method, d, initial_x)
 
@@ -964,7 +956,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
     _time = time()
     trace!(d, iteration, _time-t0)
     ls_success::Bool = true
-    while !converged && !stopped && iteration < options.iterations
+    while !converged && !stopped && iteration < max_iter
         iteration += 1
         ls_success = !update_state!(d, state, method)
         if !ls_success
@@ -994,7 +986,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
                                         pick_best_x(f_incr_pick, state),
                                         pick_best_f(f_incr_pick, state, d),
                                         iteration,
-                                        iteration == options.iterations,
+                                        iteration == max_iter,
                                         x_abschange(state),
                                         x_relchange(state),
                                         f_abschange(d, state),
