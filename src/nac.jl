@@ -980,7 +980,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
                                         g_residual(d),
                                         f_calls(d),
                                         g_calls(d)
-                                        )
+    )
 end
 
 retract!(M::Manifold,x) = x
