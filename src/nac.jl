@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/10
+# Last modified: 2023/11/03
 #
 
 #=
@@ -806,7 +806,6 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
     f_abschange::Tc
     f_relchange::Tc
     g_converged::Bool
-    g_abstol::Tf
     g_residual::Tc
     f_increased::Bool
     f_calls::Int
@@ -816,18 +815,16 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
 end
 
 struct Options{T}
-    g_abstol::T
     g_reltol::T
     successive_f_tol::Int
     iterations::Int
 end
 
 function Options(;
-        g_abstol::Real = 1e-8,
         g_reltol::Real = 1e-8,
         successive_f_tol::Int = 1,
         iterations::Int = 1_000)
-    Options(promote(g_abstol, g_reltol)..., successive_f_tol, Int(iterations))
+    Options(promote(g_reltol)..., successive_f_tol, Int(iterations))
 end
 
 include("hagerzhang.jl")
@@ -979,7 +976,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
             break # it returns true if it's forced by something in update! to stop (eg dx_dg == 0.0 in BFGS, or linesearch errors)
         end
         update_g!(d, state, method) # TODO: Should this be `update_fg!`?
-        g_converged, f_increased = assess_convergence(state, d, options)
+        g_converged, f_increased = assess_convergence(state, d)
         counter_f_tol = (false) ? counter_f_tol+1 : 0
         converged = (false) || g_converged || (counter_f_tol > options.successive_f_tol)
         update_h!(d, state, method) # only relevant if not converged
@@ -1010,7 +1007,6 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
                                         f_abschange(d, state),
                                         f_relchange(d, state),
                                         g_converged,
-                                        Tf(options.g_abstol),
                                         g_residual(d, state),
                                         f_increased,
                                         f_calls(d),
@@ -1163,7 +1159,7 @@ function converged(r::MultivariateOptimizationResults)
 end
 
 # Default function for convergence assessment used by BFGSState
-function assess_convergence(state::BFGSState, d, options::Options)
+function assess_convergence(state::BFGSState, d)
     f_increased, g_converged = false, false
 
     f_x = value(d)
@@ -1173,7 +1169,7 @@ function assess_convergence(state::BFGSState, d, options::Options)
         f_increased = true
     end
 
-    g_converged = g_residual(g_x) ≤ options.g_abstol
+    g_converged = g_residual(g_x) ≤ 1e-8
 
     return g_converged, f_increased
 end
