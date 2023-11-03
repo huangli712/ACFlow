@@ -941,7 +941,6 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
     stopped = false
 
     g_converged = initial_convergence(d, initial_x)
-    converged = g_converged
     # prepare iteration counter (used to make "initial state" trace entry)
     iteration = 0
 
@@ -950,7 +949,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
     _time = time()
     trace!(d, iteration, _time-t0)
     ls_success = true
-    while !converged && !stopped && iteration < max_iter
+    while !g_converged && !stopped && iteration < max_iter
         iteration += 1
         ls_success = !update_state!(d, state, method)
         if !ls_success
@@ -958,7 +957,6 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
         end
         update_g!(d, state, method) # TODO: Should this be `update_fg!`?
         g_converged = assess_convergence(d)
-        converged = g_converged
         update_h!(d, state, method) # only relevant if not converged
 
         # update trace
@@ -1121,7 +1119,7 @@ function initial_convergence(d, initial_x)
 end
 
 function converged(r::MultivariateOptimizationResults)
-    conv_flags = (false) || (false) || r.g_converged
+    conv_flags = r.g_converged
     x_isfinite = isfinite(x_abschange(r)) || isnan(x_relchange(r))
     f_isfinite = if r.iterations > 0
             isfinite(f_abschange(r)) || isnan(f_relchange(r))
