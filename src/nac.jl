@@ -800,7 +800,6 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
     minimizer::Tx
     minimum::Tf
     iterations::Int
-    iteration_converged::Bool
     x_abschange::Tc
     x_relchange::Tc
     f_abschange::Tc
@@ -984,7 +983,6 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
                                         pick_best_x(f_incr_pick, state),
                                         pick_best_f(f_incr_pick, state, d),
                                         iteration,
-                                        iteration == max_iter,
                                         x_abschange(state),
                                         x_relchange(state),
                                         f_abschange(d, state),
