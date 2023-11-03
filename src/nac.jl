@@ -670,8 +670,7 @@ function hardy_optimize!(nac::NevanACContext,
         J .= gradient(𝑓, x)
     end
 
-    res = optimize(𝑓, 𝐽!, 𝑎𝑏, BFGS(), 
-                   Options(iterations = 500, show_trace = true))
+    res = optimize(𝑓, 𝐽!, 𝑎𝑏, BFGS(), Options(iterations = 500))
     
     @show res.minimizer
 
@@ -840,7 +839,6 @@ struct Options{T}
     g_calls_limit::Int
     successive_f_tol::Int
     iterations::Int
-    show_trace::Bool
     show_every::Int
     time_limit::Float64
 end
@@ -868,7 +866,6 @@ function Options(;
         g_calls_limit::Int = 0,
         successive_f_tol::Int = 1,
         iterations::Int = 1_000,
-        show_trace::Bool = false,
         show_every::Int = 1,
         time_limit = NaN)
     show_every = show_every > 0 ? show_every : 1
@@ -891,7 +888,7 @@ function Options(;
         outer_f_reltol = outer_f_tol
     end
     Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_x_abstol, outer_x_reltol, outer_f_abstol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit,
-        successive_f_tol, Int(iterations), show_trace,
+        successive_f_tol, Int(iterations),
         Int(show_every), Float64(time_limit))
 end
 
@@ -968,16 +965,14 @@ function trace!(d, iteration, options, curr_time=time())
     dt["time"] = curr_time
     g_norm = norm(gradient(d), Inf)
 
-    if options.show_trace
-        if iteration % options.show_every == 0
-            @printf("%6d   %14e   %14e\n", iteration, value(d), g_norm)
-            if !isempty(dt)
-                for (key, value) in dt
-                    @printf(" * %s: %s\n", key, value)
-                end
+    if iteration % options.show_every == 0
+        @printf("%6d   %14e   %14e\n", iteration, value(d), g_norm)
+        if !isempty(dt)
+            for (key, value) in dt
+                @printf(" * %s: %s\n", key, value)
             end
-            flush(stdout)
         end
+        flush(stdout)
     end
     false
 end
@@ -1025,7 +1020,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
     state = initial_state(method, d, initial_x)
 
     t0 = time() # Initial time stamp used to control early stopping by options.time_limit
-    tracing = options.show_trace
+
     stopped, stopped_by_callback, stopped_by_time_limit = false, false, false
     f_limit_reached, g_limit_reached, h_limit_reached = false, false, false
     x_converged, f_converged, f_increased, counter_f_tol = false, false, false, 0
@@ -1035,9 +1030,8 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
     # prepare iteration counter (used to make "initial state" trace entry)
     iteration = 0
 
-    if options.show_trace
-        @printf "Iter     Function value   Gradient norm \n"
-    end
+    @printf "Iter     Function value   Gradient norm \n"
+
     _time = time()
     trace!(d, iteration, options, _time-t0)
     ls_success::Bool = true
@@ -1055,10 +1049,9 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
         counter_f_tol = f_converged ? counter_f_tol+1 : 0
         converged = x_converged || g_converged || (counter_f_tol > options.successive_f_tol)
         update_h!(d, state, method) # only relevant if not converged
-        if tracing
-            # update trace; callbacks can stop routine early by returning true
-            stopped_by_callback = trace!(d, iteration, options, time()-t0)
-        end
+
+        # update trace; callbacks can stop routine early by returning true
+        stopped_by_callback = trace!(d, iteration, options, time()-t0)
 
         # Check time_limit; if none is provided it is NaN and the comparison
         # will always return false.
