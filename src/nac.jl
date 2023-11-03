@@ -838,7 +838,6 @@ struct Options{T}
     g_calls_limit::Int
     successive_f_tol::Int
     iterations::Int
-    show_every::Int
 end
 
 function Options(;
@@ -863,9 +862,7 @@ function Options(;
         f_calls_limit::Int = 0,
         g_calls_limit::Int = 0,
         successive_f_tol::Int = 1,
-        iterations::Int = 1_000,
-        show_every::Int = 1)
-    show_every = show_every > 0 ? show_every : 1
+        iterations::Int = 1_000)
     if !(x_tol === nothing)
         x_abstol = x_tol
     end
@@ -885,8 +882,7 @@ function Options(;
         outer_f_reltol = outer_f_tol
     end
     Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_x_abstol, outer_x_reltol, outer_f_abstol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit,
-        successive_f_tol, Int(iterations),
-        Int(show_every))
+        successive_f_tol, Int(iterations))
 end
 
 include("hagerzhang.jl")
@@ -962,7 +958,7 @@ function trace!(d, iteration, options, curr_time=time())
     dt["time"] = curr_time
     g_norm = norm(gradient(d), Inf)
 
-    if iteration % options.show_every == 0
+    if iteration % 1 == 0
         @printf("%6d   %14e   %14e\n", iteration, value(d), g_norm)
         if !isempty(dt)
             for (key, value) in dt
