@@ -835,7 +835,6 @@ struct Options{T}
 end
 
 function Options(;
-        x_tol = nothing,
         f_tol = nothing,
         g_tol = nothing,
         x_abstol::Real = 0.0,
@@ -848,9 +847,6 @@ function Options(;
         g_calls_limit::Int = 0,
         successive_f_tol::Int = 1,
         iterations::Int = 1_000)
-    if !(x_tol === nothing)
-        x_abstol = x_tol
-    end
     if !(g_tol === nothing)
         g_abstol = g_tol
     end
@@ -1014,7 +1010,6 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
         x_converged, f_converged,
         g_converged, f_increased = assess_convergence(state, d, options)
         # For some problems it may be useful to require `f_converged` to be hit multiple times
-        # TODO: Do the same for x_tol?
         counter_f_tol = f_converged ? counter_f_tol+1 : 0
         converged = x_converged || g_converged || (counter_f_tol > options.successive_f_tol)
         update_h!(d, state, method) # only relevant if not converged
