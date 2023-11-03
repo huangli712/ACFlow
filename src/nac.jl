@@ -838,7 +838,6 @@ struct Options{T}
     outer_g_reltol::T
     f_calls_limit::Int
     g_calls_limit::Int
-    allow_f_increases::Bool
     successive_f_tol::Int
     iterations::Int
     show_trace::Bool
@@ -867,7 +866,6 @@ function Options(;
         outer_g_reltol::Real = 1e-8,
         f_calls_limit::Int = 0,
         g_calls_limit::Int = 0,
-        allow_f_increases::Bool = true,
         successive_f_tol::Int = 1,
         iterations::Int = 1_000,
         show_trace::Bool = false,
@@ -893,7 +891,7 @@ function Options(;
         outer_f_reltol = outer_f_tol
     end
     Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol, outer_x_abstol, outer_x_reltol, outer_f_abstol, outer_f_reltol, outer_g_abstol, outer_g_reltol)..., f_calls_limit, g_calls_limit,
-        allow_f_increases, successive_f_tol, Int(iterations), show_trace,
+        successive_f_tol, Int(iterations), show_trace,
         Int(show_every), Float64(time_limit))
 end
 
@@ -1069,7 +1067,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
         f_limit_reached = options.f_calls_limit > 0 && f_calls(d) >= options.f_calls_limit ? true : false
         g_limit_reached = options.g_calls_limit > 0 && g_calls(d) >= options.g_calls_limit ? true : false
 
-        if (f_increased && !options.allow_f_increases) || stopped_by_callback ||
+        if (false) || stopped_by_callback ||
             stopped_by_time_limit || f_limit_reached || g_limit_reached || h_limit_reached
             stopped = true
         end
@@ -1083,7 +1081,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
     # we can just check minimum, as we've earlier enforced same types/eltypes
     # in variables besides the option settings
     Tf = typeof(value(d))
-    f_incr_pick = f_increased && !options.allow_f_increases
+    f_incr_pick = false
     return MultivariateOptimizationResults(method,
                                         initial_x,
                                         pick_best_x(f_incr_pick, state),
