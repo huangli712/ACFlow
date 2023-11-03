@@ -831,7 +831,6 @@ end
 
 function initial_state(method::BFGS, d, initial_x::AbstractArray{T}) where T
     initial_x = copy(initial_x)
-    retract!(method.manifold, initial_x)
     value_gradient!!(d, initial_x)
     invH0 = _init_identity_matrix(initial_x)
 
@@ -869,7 +868,6 @@ function update_state!(d, state::BFGSState, method::BFGS)
     # Update current position
     state.dx .= state.alpha.*state.s
     state.x .= state.x .+ state.dx
-    retract!(method.manifold, state.x)
 
     lssuccess == false # break on linesearch error
 end
@@ -983,8 +981,6 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
     )
 end
 
-retract!(M::Manifold,x) = x
-
 value(obj::OnceDifferentiable1) = obj.F
 function value(obj::ManifoldObjective)
     value(obj.inner_obj)
@@ -1013,7 +1009,7 @@ function value_gradient!(obj::OnceDifferentiable1, x)
 end
 
 function value_gradient!(obj::ManifoldObjective,x)
-    xin = copy(x) #retract!(obj.manifold, copy(x))
+    xin = copy(x)
     value_gradient!(obj.inner_obj,xin)
     gradient(obj.inner_obj)
     return value(obj.inner_obj)
