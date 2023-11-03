@@ -815,16 +815,12 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
 end
 
 struct Options{T}
-    g_reltol::T
     successive_f_tol::Int
     iterations::Int
 end
 
-function Options(;
-        g_reltol::Real = 1e-8,
-        successive_f_tol::Int = 1,
-        iterations::Int = 1_000)
-    Options(promote(g_reltol)..., successive_f_tol, Int(iterations))
+function Options(; successive_f_tol::Int = 1, iterations::Int = 1_000)
+    Options(successive_f_tol, Int(iterations))
 end
 
 include("hagerzhang.jl")
