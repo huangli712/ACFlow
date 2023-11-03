@@ -802,7 +802,6 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
     iterations::Int
     iteration_converged::Bool
     x_converged::Bool
-    x_abstol::Tf
     x_reltol::Tf
     x_abschange::Tc
     x_relchange::Tc
@@ -822,7 +821,6 @@ mutable struct MultivariateOptimizationResults{O, Tx, Tc, Tf, Tls}
 end
 
 struct Options{T}
-    x_abstol::T
     x_reltol::T
     f_abstol::T
     f_reltol::T
@@ -833,7 +831,6 @@ struct Options{T}
 end
 
 function Options(;
-        x_abstol::Real = 0.0,
         x_reltol::Real = 0.0,
         f_abstol::Real = 0.0,
         f_reltol::Real = 0.0,
@@ -841,7 +838,7 @@ function Options(;
         g_reltol::Real = 1e-8,
         successive_f_tol::Int = 1,
         iterations::Int = 1_000)
-    Options(promote(x_abstol, x_reltol, f_abstol, f_reltol, g_abstol, g_reltol)..., successive_f_tol, Int(iterations))
+    Options(promote(x_reltol, f_abstol, f_reltol, g_abstol, g_reltol)..., successive_f_tol, Int(iterations))
 end
 
 include("hagerzhang.jl")
@@ -1022,7 +1019,6 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS, options::Options
                                         iteration,
                                         iteration == options.iterations,
                                         x_converged,
-                                        Tf(options.x_abstol),
                                         Tf(options.x_reltol),
                                         x_abschange(state),
                                         x_relchange(state),
@@ -1191,9 +1187,6 @@ function assess_convergence(state::BFGSState, d, options::Options)
     f_x = value(d)
     g_x = gradient(d)
 
-    if x_abschange(state.x, state.x_previous) ≤ options.x_abstol
-        x_converged = true
-    end
     if x_abschange(state.x, state.x_previous) ≤ options.x_reltol * maximum(abs, state.x)
         x_converged = true
     end
