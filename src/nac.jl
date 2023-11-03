@@ -972,10 +972,9 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
 
     # we can just check minimum, as we've earlier enforced same types/eltypes
     # in variables besides the option settings
-    f_incr_pick = false
     return MultivariateOptimizationResults(initial_x,
-                                        pick_best_x(f_incr_pick, state),
-                                        pick_best_f(f_incr_pick, state, d),
+                                        state.x,
+                                        value(d),
                                         iteration,
                                         x_abschange(state),
                                         x_relchange(state),
@@ -1082,9 +1081,6 @@ alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 
 g_calls(d::OnceDifferentiable1) = first(d.df_calls)
 f_calls(d::OnceDifferentiable1) = first(d.f_calls)
-
-pick_best_x(f_increased, state) = state.x #f_increased ? state.x_previous : state.x
-pick_best_f(f_increased, state, d) = value(d) #f_increased ? state.f_x_previous : value(d)
 
 function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
