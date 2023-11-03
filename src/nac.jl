@@ -1098,7 +1098,6 @@ f_relchange(d::OnceDifferentiable1, state) = f_relchange(value(d), state.f_x_pre
 f_relchange(f_x::T, f_x_previous) where T = abs(f_x - f_x_previous)/abs(f_x)
 f_relchange(r::MultivariateOptimizationResults) = r.f_relchange
 
-#x_abschange(r::MultivariateOptimizationResults) = r.x_abschange
 x_abschange(state) = maxdiff(state.x, state.x_previous)
 x_relchange(state) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
 
