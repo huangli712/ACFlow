@@ -805,107 +805,6 @@ function value_gradient!(obj::BFGSDifferentiable, x)
     obj.𝐹 = obj.ℱ!(x)
 end
 
-function init_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
-    value_gradient!(d, initial_x)
-
-    x_ = reshape(initial_x, :)
-    invH0 = x_ .* x_' .* false
-    idxs = diagind(invH0)
-    scale = eltype(initial_x)(1)
-    @. @view(invH0[idxs]) = scale * true
-
-    # Maintain a cache for line search results
-    # Trace the history of states visited
-    BFGSState(initial_x, # Maintain current state in state.x
-              copy(initial_x), # Maintain previous state in state.x_previous
-              copy(gradient(d)), # Store previous gradient in state.g_previous
-              real(T)(NaN), # Store previous f in state.f_x_previous
-              similar(initial_x), # Store changes in position in state.dx
-              similar(initial_x), # Store changes in gradient in state.dg
-              similar(initial_x), # Buffer stored in state.u
-              invH0, # Store current invH in state.invH
-              similar(initial_x), # Store current search direction in state.s
-              similar(initial_x), # Buffer of x for line search in state.x_ls
-              real(one(T))
-    )
-end
-
-function update_state!(d::BFGSDifferentiable, state::BFGSState)
-    T = eltype(state.s)
-    # Set the search direction
-    # Search direction is the negative gradient divided by the approximate Hessian
-    mul!(vec(state.s), state.invH, vec(gradient(d)))
-    rmul!(state.s, T(-1))
-
-    # Maintain a record of the previous gradient
-    copyto!(state.g_previous, gradient(d))
-
-    # Determine the distance of movement along the search line
-    # This call resets invH to initial_invH is the former in not positive
-    # semi-definite
-    lssuccess = linesearch!(state, d)
-
-    # Update current position
-    state.dx .= state.alpha.*state.s
-    state.x .= state.x .+ state.dx
-
-    lssuccess == false # break on linesearch error
-end
-
-function trace!(d::BFGSDifferentiable, iteration, curr_time=time())
-    dt = Dict()
-    dt["time"] = curr_time
-    g_norm = norm(gradient(d), Inf)
-
-    if iteration % 1 == 0
-        @printf("%6d   %14e   %14e\n", iteration, value(d), g_norm)
-        if !isempty(dt)
-            for (key, value) in dt
-                @printf(" * %s: %s\n", key, value)
-            end
-        end
-        flush(stdout)
-    end
-    false
-end
-
-# Update the function value and gradient
-function update_g!(d::BFGSDifferentiable, state::BFGSState)
-    value_gradient!(d, state.x)
-end
-
-function update_h!(d::BFGSDifferentiable, state::BFGSState)
-    n = length(state.x)
-    # Measure the change in the gradient
-    state.dg .= gradient(d) .- state.g_previous
-
-    # Update the inverse Hessian approximation using Sherman-Morrison
-    dx_dg = real(dot(state.dx, state.dg))
-    if dx_dg > 0
-        mul!(vec(state.u), state.invH, vec(state.dg))
-
-        c1 = (dx_dg + real(dot(state.dg, state.u))) / (dx_dg' * dx_dg)
-        c2 = 1 / dx_dg
-
-        # invH = invH + c1 * (s * s') - c2 * (u * s' + s * u')
-        if(state.invH isa Array) # i.e. not a CuArray
-            invH = state.invH; dx = state.dx; u = state.u;
-            @inbounds for j in 1:n
-                c1dxj = c1 * dx[j]'
-                c2dxj = c2 * dx[j]'
-                c2uj  = c2 *  u[j]'
-                for i in 1:n
-                    invH[i, j] = muladd(dx[i], c1dxj, muladd(-u[i], c2dxj, muladd(c2uj, -dx[i], invH[i, j])))
-                end
-            end
-        else
-            mul!(state.invH,vec(state.dx),vec(state.dx)', c1,1)
-            mul!(state.invH,vec(state.u ),vec(state.dx)',-c2,1)
-            mul!(state.invH,vec(state.dx),vec(state.u )',-c2,1)
-        end
-    end
-end
-
 function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
     d = BFGSDifferentiable(f, g, initial_x)
     state = init_state(d, initial_x)
@@ -959,6 +858,107 @@ function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
     )
 end
 
+function init_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
+    value_gradient!(d, initial_x)
+
+    x_ = reshape(initial_x, :)
+    invH0 = x_ .* x_' .* false
+    idxs = diagind(invH0)
+    scale = eltype(initial_x)(1)
+    @. @view(invH0[idxs]) = scale * true
+
+    # Maintain a cache for line search results
+    # Trace the history of states visited
+    BFGSState(initial_x, # Maintain current state in state.x
+              copy(initial_x), # Maintain previous state in state.x_previous
+              copy(gradient(d)), # Store previous gradient in state.g_previous
+              real(T)(NaN), # Store previous f in state.f_x_previous
+              similar(initial_x), # Store changes in position in state.dx
+              similar(initial_x), # Store changes in gradient in state.dg
+              similar(initial_x), # Buffer stored in state.u
+              invH0, # Store current invH in state.invH
+              similar(initial_x), # Store current search direction in state.s
+              similar(initial_x), # Buffer of x for line search in state.x_ls
+              real(one(T))
+    )
+end
+
+function update_state!(d::BFGSDifferentiable, state::BFGSState)
+    T = eltype(state.s)
+    # Set the search direction
+    # Search direction is the negative gradient divided by the approximate Hessian
+    mul!(vec(state.s), state.invH, vec(gradient(d)))
+    rmul!(state.s, T(-1))
+
+    # Maintain a record of the previous gradient
+    copyto!(state.g_previous, gradient(d))
+
+    # Determine the distance of movement along the search line
+    # This call resets invH to initial_invH is the former in not positive
+    # semi-definite
+    lssuccess = linesearch!(state, d)
+
+    # Update current position
+    state.dx .= state.alpha.*state.s
+    state.x .= state.x .+ state.dx
+
+    lssuccess == false # break on linesearch error
+end
+
+# Update the function value and gradient
+function update_g!(d::BFGSDifferentiable, state::BFGSState)
+    value_gradient!(d, state.x)
+end
+
+function update_h!(d::BFGSDifferentiable, state::BFGSState)
+    n = length(state.x)
+    # Measure the change in the gradient
+    state.dg .= gradient(d) .- state.g_previous
+
+    # Update the inverse Hessian approximation using Sherman-Morrison
+    dx_dg = real(dot(state.dx, state.dg))
+    if dx_dg > 0
+        mul!(vec(state.u), state.invH, vec(state.dg))
+
+        c1 = (dx_dg + real(dot(state.dg, state.u))) / (dx_dg' * dx_dg)
+        c2 = 1 / dx_dg
+
+        # invH = invH + c1 * (s * s') - c2 * (u * s' + s * u')
+        if(state.invH isa Array) # i.e. not a CuArray
+            invH = state.invH; dx = state.dx; u = state.u;
+            @inbounds for j in 1:n
+                c1dxj = c1 * dx[j]'
+                c2dxj = c2 * dx[j]'
+                c2uj  = c2 *  u[j]'
+                for i in 1:n
+                    invH[i, j] = muladd(dx[i], c1dxj, muladd(-u[i], c2dxj, muladd(c2uj, -dx[i], invH[i, j])))
+                end
+            end
+        else
+            mul!(state.invH,vec(state.dx),vec(state.dx)', c1,1)
+            mul!(state.invH,vec(state.u ),vec(state.dx)',-c2,1)
+            mul!(state.invH,vec(state.dx),vec(state.u )',-c2,1)
+        end
+    end
+end
+
+function trace!(d::BFGSDifferentiable, iteration, curr_time=time())
+    dt = Dict()
+    dt["time"] = curr_time
+    g_norm = norm(gradient(d), Inf)
+
+    if iteration % 1 == 0
+        @printf("%6d   %14e   %14e\n", iteration, value(d), g_norm)
+        if !isempty(dt)
+            for (key, value) in dt
+                @printf(" * %s: %s\n", key, value)
+            end
+        end
+        flush(stdout)
+    end
+    false
+end
+
 function linesearch!(state::BFGSState, d::BFGSDifferentiable)
     # Calculate search direction dphi0
     dphi_0 = real(dot(gradient(d), state.s))
@@ -995,17 +995,6 @@ function linesearch!(state::BFGSState, d::BFGSDifferentiable)
     end
 end
 
-function maxdiff(x::AbstractArray, y::AbstractArray)
-    return mapreduce((a, b) -> abs(a - b), max, x, y)
-end
-
-f_abschange(d::BFGSDifferentiable, state) = abs(value(d) - state.f_x_previous)
-f_relchange(d::BFGSDifferentiable, state) = abs(value(d) - state.f_x_previous)/abs(value(d))
-x_abschange(state::BFGSState) = maxdiff(state.x, state.x_previous)
-x_relchange(state::BFGSState) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
-g_residual(d::BFGSDifferentiable) = g_residual(gradient(d))
-g_residual(g) = maximum(abs, g)
-
 function converged(r::BFGSOptimizationResults)
     conv_flags = r.g_converged
     x_isfinite = isfinite(r.x_abschange) || isnan(r.x_relchange)
@@ -1017,3 +1006,14 @@ function converged(r::BFGSOptimizationResults)
     g_isfinite = isfinite(r.g_residual)
     return conv_flags && all((x_isfinite, f_isfinite, g_isfinite))
 end
+
+function maxdiff(x::AbstractArray, y::AbstractArray)
+    return mapreduce((a, b) -> abs(a - b), max, x, y)
+end
+
+f_abschange(d::BFGSDifferentiable, state) = abs(value(d) - state.f_x_previous)
+f_relchange(d::BFGSDifferentiable, state) = abs(value(d) - state.f_x_previous)/abs(value(d))
+x_abschange(state::BFGSState) = maxdiff(state.x, state.x_previous)
+x_relchange(state::BFGSState) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
+g_residual(d::BFGSDifferentiable) = g_residual(gradient(d))
+g_residual(g) = maximum(abs, g)
