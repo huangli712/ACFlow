@@ -972,11 +972,6 @@ end
 
 value(obj::OnceDifferentiable1) = obj.F
 gradient(obj::OnceDifferentiable1) = obj.DF
-
-#function value_gradient!(obj::ManifoldObjective, x)
-#    value_gradient!(obj.inner_obj, x)
-#end
-
 function value_gradient!(obj::OnceDifferentiable1, x)
     copyto!(obj.x_f, x)
     copyto!(obj.x_df, x)
