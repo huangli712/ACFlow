@@ -772,7 +772,7 @@ end
 mutable struct BFGSDifferentiable{TF, TDF}
     f # objective
     df # (partial) derivative of objective
-    fdf # objective and (partial) derivative of objective
+    #fdf # objective and (partial) derivative of objective
     F::TF # cache for f output
     DF::TDF # cache for df output
 end
@@ -796,12 +796,11 @@ function BFGSDifferentiable(f, df,
                    x::AbstractArray,
                    F::Real = real(zero(eltype(x))),
                    DF::AbstractArray = alloc_DF(x, F))
-    function fdf(gx, x)
-        df(gx, x)
-        return f(x)
-    end
-    #x_f = x_of_nans(x)#, x_of_nans(x)
-    BFGSDifferentiable(f, df, fdf, copy(F), copy(DF))
+    #function fdf(gx, x)
+    #    df(gx, x)
+    #    return f(x)
+    #end
+    BFGSDifferentiable(f, df, copy(F), copy(DF))
 end
 
 function initial_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
@@ -957,8 +956,11 @@ end
 value(obj::BFGSDifferentiable) = obj.F
 gradient(obj::BFGSDifferentiable) = obj.DF
 function value_gradient!(obj::BFGSDifferentiable, x)
-    #copyto!(obj.x_f, x)
-    obj.F = obj.fdf(gradient(obj), x)
+    function fdf(gx, x)
+        obj.df(gx, x)
+        return obj.f(x)
+    end
+    obj.F = fdf(gradient(obj), x)
 end
 
 function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
