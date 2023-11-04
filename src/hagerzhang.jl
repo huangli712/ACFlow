@@ -40,7 +40,7 @@ function make_ϕ_ϕdϕ(df::ManifoldObjective, x_new, x, s)
         x_new .= x .+ α.*s
 
         # Evaluate ∇f(x+α*s)
-        value_gradient!(df, x_new)
+        value_gradient!(df.inner_obj, x_new)
 
         # Calculate ϕ'(a_i)
         value(df.inner_obj), real(dot(gradient(df.inner_obj), s))
