@@ -951,11 +951,6 @@ end
 value(obj::BFGSDifferentiable) = obj.F
 gradient(obj::BFGSDifferentiable) = obj.DF
 function value_gradient!(obj::BFGSDifferentiable, x)
-    #function fdf(gx, x)
-    #    obj.df(gx, x)
-    #    return obj.f(x)
-    #end
-    #obj.F = fdf(gradient(obj), x)
     obj.df(gradient(obj), x)
     obj.F = obj.f(x)
 end
@@ -978,7 +973,6 @@ function perform_linesearch!(state::BFGSState, d::BFGSDifferentiable)
     phi_0  = value(d)
 
     # Guess an alpha
-    
     guess = InitialStatic()
     linesearch = HagerZhang()
     guess(linesearch, state, phi_0, dphi_0, d)
