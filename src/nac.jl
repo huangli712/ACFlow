@@ -791,6 +791,9 @@ mutable struct BFGSDifferentiable{TF, TDF}
     𝐷 :: TDF # cache for df output, DF
 end
 
+x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
+alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
+
 function BFGSDifferentiable(f, df, x::AbstractArray)
     F::Real = real(zero(eltype(x)))
     DF::AbstractArray = alloc_DF(x, F)
@@ -993,9 +996,6 @@ function perform_linesearch!(state::BFGSState, d::BFGSDifferentiable)
         end
     end
 end
-
-x_of_nans(x, Tf=eltype(x)) = fill!(Tf.(x), Tf(NaN))
-alloc_DF(x, F::T) where T<:Number = x_of_nans(x, promote_type(eltype(x), T))
 
 function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
