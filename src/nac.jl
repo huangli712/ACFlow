@@ -971,12 +971,9 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
 end
 
 value(obj::OnceDifferentiable1) = obj.F
-
 gradient(obj::OnceDifferentiable1) = obj.DF
-#function gradient(obj::ManifoldObjective)
-#    gradient(obj.inner_obj)
-#end
 function gradient!(obj::OnceDifferentiable1, x)
+    @show x, obj.x_df
     if x != obj.x_df
         gradient!!(obj, x)
     end
