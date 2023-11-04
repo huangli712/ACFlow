@@ -971,14 +971,11 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
 end
 
 value(obj::OnceDifferentiable1) = obj.F
-#function value(obj::ManifoldObjective)
-#    value(obj.inner_obj)
-#end
 
 gradient(obj::OnceDifferentiable1) = obj.DF
-function gradient(obj::ManifoldObjective)
-    gradient(obj.inner_obj)
-end
+#function gradient(obj::ManifoldObjective)
+#    gradient(obj.inner_obj)
+#end
 function gradient!(obj::OnceDifferentiable1, x)
     if x != obj.x_df
         gradient!!(obj, x)
@@ -1020,7 +1017,7 @@ end
 
 function perform_linesearch!(state::BFGSState, method::BFGS, d::ManifoldObjective)
     # Calculate search direction dphi0
-    dphi_0 = real(dot(gradient(d), state.s))
+    dphi_0 = real(dot(gradient(d.inner_obj), state.s))
     # reset the direction if it becomes corrupted
     if dphi_0 >= zero(dphi_0) && reset_search_direction!(state, d, method)
         dphi_0 = real(dot(gradient(d), state.s)) # update after direction reset

@@ -22,7 +22,7 @@ mutable struct LineSearchException{T<:Real} <: Exception
     alpha::T
 end
 
-function make_ϕ(df, x_new, x, s)
+function make_ϕ(df::ManifoldObjective, x_new, x, s)
     function ϕ(α)
         # Move a distance of alpha in the direction of s
         x_new .= x .+ α.*s
@@ -43,7 +43,7 @@ function make_ϕ_ϕdϕ(df::ManifoldObjective, x_new, x, s)
         value_gradient!(df, x_new)
 
         # Calculate ϕ'(a_i)
-        value(df.inner_obj), real(dot(gradient(df), s))
+        value(df.inner_obj), real(dot(gradient(df.inner_obj), s))
     end
     make_ϕ(df, x_new, x, s), ϕdϕ
 end
@@ -161,7 +161,7 @@ end
 
 HagerZhang{T}(args...; kwargs...) where T = HagerZhang{T, Base.RefValue{Bool}}(args...; kwargs...)
 
-function (ls::HagerZhang)(df, x::AbstractArray{T},
+function (ls::HagerZhang)(df::ManifoldObjective, x::AbstractArray{T},
                           s::AbstractArray{T}, α::Real,
                           x_new::AbstractArray{T}, phi_0::Real, dphi_0::Real) where T
     ϕ, ϕdϕ = make_ϕ_ϕdϕ(df, x_new, x, s)
