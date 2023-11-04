@@ -754,11 +754,6 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
-#struct BFGS{IL, L}
-#    alphaguess!::IL
-#    linesearch!::L
-#end
-
 mutable struct BFGSState{Tx, Tm, T, G}
     x::Tx
     x_previous::Tx
@@ -798,12 +793,6 @@ mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
 end
 
 include("hagerzhang.jl")
-#
-#function BFGS(; alphaguess = InitialStatic(),
-#    linesearch = HagerZhang())
-#    BFGS(alphaguess, linesearch)
-#end
-#
 
 function BFGSDifferentiable(f, df,
                    x::AbstractArray,
