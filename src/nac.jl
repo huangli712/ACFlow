@@ -754,10 +754,6 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
-mutable struct ManifoldObjective{T}
-    inner_obj::T
-end
-
 struct BFGS{IL, L}
     alphaguess!::IL
     linesearch!::L
@@ -778,7 +774,7 @@ mutable struct BFGSState{Tx, Tm, T, G}
 end
 
 # Used for objectives and solvers where the gradient is available/exists
-mutable struct OnceDifferentiable1{TF, TDF, TX}
+mutable struct BFGSDifferentiable{TF, TDF, TX}
     f # objective
     df # (partial) derivative of objective
     fdf # objective and (partial) derivative of objective
@@ -788,7 +784,7 @@ mutable struct OnceDifferentiable1{TF, TDF, TX}
     x_df::TX # x used to evaluate df (stored in DF)
 end
 
-mutable struct MultivariateOptimizationResults{Tx, Tc, Tf}
+mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
     initial_x::Tx
     minimizer::Tx
     minimum::Tf
@@ -808,7 +804,7 @@ function BFGS(; alphaguess = InitialStatic(),
     BFGS(alphaguess, linesearch)
 end
 
-function OnceDifferentiable1(f, df,
+function BFGSDifferentiable(f, df,
                    x::AbstractArray,
                    F::Real = real(zero(eltype(x))),
                    DF::AbstractArray = alloc_DF(x, F))
@@ -817,10 +813,10 @@ function OnceDifferentiable1(f, df,
         return f(x)
     end
     x_f, x_df = x_of_nans(x), x_of_nans(x)
-    OnceDifferentiable1(f, df, fdf, copy(F), copy(DF), x_f, x_df)
+    BFGSDifferentiable(f, df, fdf, copy(F), copy(DF), x_f, x_df)
 end
 
-function initial_state(d::OnceDifferentiable1, initial_x::AbstractArray{T}) where T
+function initial_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
     initial_x = copy(initial_x)
     value_gradient!(d, initial_x)
     invH0 = _init_identity_matrix(initial_x)
@@ -841,7 +837,7 @@ function initial_state(d::OnceDifferentiable1, initial_x::AbstractArray{T}) wher
     )
 end
 
-function update_state!(d::OnceDifferentiable1, state::BFGSState, method::BFGS)
+function update_state!(d::BFGSDifferentiable, state::BFGSState, method::BFGS)
     T = eltype(state.s)
     # Set the search direction
     # Search direction is the negative gradient divided by the approximate Hessian
@@ -863,7 +859,7 @@ function update_state!(d::OnceDifferentiable1, state::BFGSState, method::BFGS)
     lssuccess == false # break on linesearch error
 end
 
-function trace!(d::OnceDifferentiable1, iteration, curr_time=time())
+function trace!(d::BFGSDifferentiable, iteration, curr_time=time())
     dt = Dict()
     dt["time"] = curr_time
     g_norm = norm(gradient(d), Inf)
@@ -881,11 +877,11 @@ function trace!(d::OnceDifferentiable1, iteration, curr_time=time())
 end
 
 # Update the function value and gradient
-function update_g!(d::OnceDifferentiable1, state::BFGSState)
+function update_g!(d::BFGSDifferentiable, state::BFGSState)
     value_gradient!(d, state.x)
 end
 
-function update_h!(d::OnceDifferentiable1, state::BFGSState)
+function update_h!(d::BFGSDifferentiable, state::BFGSState)
     n = length(state.x)
     # Measure the change in the gradient
     state.dg .= gradient(d) .- state.g_previous
@@ -918,7 +914,7 @@ function update_h!(d::OnceDifferentiable1, state::BFGSState)
 end
 
 function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 1000)
-    d = OnceDifferentiable1(f, g, initial_x, real(zero(eltype(initial_x))))
+    d = BFGSDifferentiable(f, g, initial_x, real(zero(eltype(initial_x))))
     state = initial_state(d, initial_x)
 
     t0 = time() # Initial time stamp
@@ -957,7 +953,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
 
     # we can just check minimum, as we've earlier enforced same types/eltypes
     # in variables besides the option settings
-    return MultivariateOptimizationResults(initial_x,
+    return BFGSOptimizationResults(initial_x,
                                         state.x,
                                         value(d),
                                         iteration,
@@ -970,9 +966,9 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
     )
 end
 
-value(obj::OnceDifferentiable1) = obj.F
-gradient(obj::OnceDifferentiable1) = obj.DF
-function value_gradient!(obj::OnceDifferentiable1, x)
+value(obj::BFGSDifferentiable) = obj.F
+gradient(obj::BFGSDifferentiable) = obj.DF
+function value_gradient!(obj::BFGSDifferentiable, x)
     copyto!(obj.x_f, x)
     copyto!(obj.x_df, x)
     obj.F = obj.fdf(gradient(obj), x)
@@ -986,7 +982,7 @@ function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
     return Id
 end
 
-function perform_linesearch!(state::BFGSState, method::BFGS, d::OnceDifferentiable1)
+function perform_linesearch!(state::BFGSState, method::BFGS, d::BFGSDifferentiable)
     # Calculate search direction dphi0
     dphi_0 = real(dot(gradient(d), state.s))
     # reset the direction if it becomes corrupted
@@ -1027,19 +1023,19 @@ function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
 end
 
-f_abschange(d::OnceDifferentiable1, state) = abs(value(d) - state.f_x_previous)
-f_relchange(d::OnceDifferentiable1, state) = abs(value(d) - state.f_x_previous)/abs(value(d))
+f_abschange(d::BFGSDifferentiable, state) = abs(value(d) - state.f_x_previous)
+f_relchange(d::BFGSDifferentiable, state) = abs(value(d) - state.f_x_previous)/abs(value(d))
 x_abschange(state::BFGSState) = maxdiff(state.x, state.x_previous)
 x_relchange(state::BFGSState) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
-g_residual(d::OnceDifferentiable1) = g_residual(gradient(d))
+g_residual(d::BFGSDifferentiable) = g_residual(gradient(d))
 g_residual(g) = maximum(abs, g)
 
-function initial_convergence(d::OnceDifferentiable1)
+function initial_convergence(d::BFGSDifferentiable)
     stopped = !isfinite(value(d)) || any(!isfinite, gradient(d))
     stopped
 end
 
-function converged(r::MultivariateOptimizationResults)
+function converged(r::BFGSOptimizationResults)
     conv_flags = r.g_converged
     x_isfinite = isfinite(r.x_abschange) || isnan(r.x_relchange)
     f_isfinite = if r.iterations > 0

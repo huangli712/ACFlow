@@ -7,7 +7,7 @@ function InitialStatic()
     InitialStatic(1.0, false)
 end
 
-function (is::InitialStatic{T})(ls, state, phi_0, dphi_0, df::OnceDifferentiable1) where T
+function (is::InitialStatic{T})(ls, state, phi_0, dphi_0, df::BFGSDifferentiable) where T
     PT = promote_type(T, real(eltype(state.s)))
     if is.scaled == true && (ns = real(norm(state.s))) > convert(PT, 0)
         # TODO: Type instability if there's a type mismatch between is.alpha and ns?
@@ -22,7 +22,7 @@ mutable struct LineSearchException{T<:Real} <: Exception
     alpha::T
 end
 
-function make_ϕ(df::OnceDifferentiable1, x_new, x, s)
+function make_ϕ(df::BFGSDifferentiable, x_new, x, s)
     function ϕ(α)
         # Move a distance of alpha in the direction of s
         x_new .= x .+ α.*s
@@ -33,7 +33,7 @@ function make_ϕ(df::OnceDifferentiable1, x_new, x, s)
     ϕ
 end
 
-function make_ϕ_ϕdϕ(df::OnceDifferentiable1, x_new, x, s)
+function make_ϕ_ϕdϕ(df::BFGSDifferentiable, x_new, x, s)
     function ϕdϕ(α)
         # Move a distance of alpha in the direction of s
         x_new .= x .+ α.*s
@@ -160,7 +160,7 @@ end
 
 HagerZhang{T}(args...; kwargs...) where T = HagerZhang{T, Base.RefValue{Bool}}(args...; kwargs...)
 
-function (ls::HagerZhang)(df::OnceDifferentiable1, x::AbstractArray{T},
+function (ls::HagerZhang)(df::BFGSDifferentiable, x::AbstractArray{T},
                           s::AbstractArray{T}, α::Real,
                           x_new::AbstractArray{T}, phi_0::Real, dphi_0::Real) where T
     ϕ, ϕdϕ = make_ϕ_ϕdϕ(df, x_new, x, s)
