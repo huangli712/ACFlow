@@ -670,7 +670,7 @@ function hardy_optimize!(nac::NevanACContext,
         J .= gradient(𝑓, x)
     end
 
-    res = optimize(𝑓, 𝐽!, 𝑎𝑏, BFGS(), max_iter = 500)
+    res = optimize(𝑓, 𝐽!, 𝑎𝑏, max_iter = 500)
     
     @show res.minimizer
 
@@ -754,10 +754,10 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
-struct BFGS{IL, L}
-    alphaguess!::IL
-    linesearch!::L
-end
+#struct BFGS{IL, L}
+#    alphaguess!::IL
+#    linesearch!::L
+#end
 
 mutable struct BFGSState{Tx, Tm, T, G}
     x::Tx
@@ -798,11 +798,12 @@ mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
 end
 
 include("hagerzhang.jl")
-
-function BFGS(; alphaguess = InitialStatic(),
-    linesearch = HagerZhang())
-    BFGS(alphaguess, linesearch)
-end
+#
+#function BFGS(; alphaguess = InitialStatic(),
+#    linesearch = HagerZhang())
+#    BFGS(alphaguess, linesearch)
+#end
+#
 
 function BFGSDifferentiable(f, df,
                    x::AbstractArray,
@@ -837,7 +838,7 @@ function initial_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where
     )
 end
 
-function update_state!(d::BFGSDifferentiable, state::BFGSState, method::BFGS)
+function update_state!(d::BFGSDifferentiable, state::BFGSState)
     T = eltype(state.s)
     # Set the search direction
     # Search direction is the negative gradient divided by the approximate Hessian
@@ -850,7 +851,7 @@ function update_state!(d::BFGSDifferentiable, state::BFGSState, method::BFGS)
     # Determine the distance of movement along the search line
     # This call resets invH to initial_invH is the former in not positive
     # semi-definite
-    lssuccess = perform_linesearch!(state, method, d)
+    lssuccess = perform_linesearch!(state, d)
 
     # Update current position
     state.dx .= state.alpha.*state.s
@@ -913,7 +914,7 @@ function update_h!(d::BFGSDifferentiable, state::BFGSState)
     end
 end
 
-function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 1000)
+function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
     d = BFGSDifferentiable(f, g, initial_x, real(zero(eltype(initial_x))))
     state = initial_state(d, initial_x)
 
@@ -932,7 +933,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
     ls_success = true
     while !g_converged && !stopped && iteration < max_iter
         iteration += 1
-        ls_success = !update_state!(d, state, method)
+        ls_success = !update_state!(d, state)
         if !ls_success
             break # it returns true if it's forced by something in update! to stop (eg dx_dg == 0.0 in BFGS, or linesearch errors)
         end
@@ -982,7 +983,7 @@ function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
     return Id
 end
 
-function perform_linesearch!(state::BFGSState, method::BFGS, d::BFGSDifferentiable)
+function perform_linesearch!(state::BFGSState, d::BFGSDifferentiable)
     # Calculate search direction dphi0
     dphi_0 = real(dot(gradient(d), state.s))
     # reset the direction if it becomes corrupted
@@ -992,8 +993,10 @@ function perform_linesearch!(state::BFGSState, method::BFGS, d::BFGSDifferentiab
     phi_0  = value(d)
 
     # Guess an alpha
-    @show typeof(method.alphaguess!)
-    method.alphaguess!(method.linesearch!, state, phi_0, dphi_0, d)
+    
+    guess = InitialStatic()
+    linesearch = HagerZhang()
+    guess(linesearch, state, phi_0, dphi_0, d)
 
     # Store current x and f(x) for next iteration
     state.f_x_previous = phi_0
@@ -1001,7 +1004,7 @@ function perform_linesearch!(state::BFGSState, method::BFGS, d::BFGSDifferentiab
 
     # Perform line search; catch LineSearchException to allow graceful exit
     try
-        state.alpha, ϕalpha = method.linesearch!(d, state.x, state.s, state.alpha,
+        state.alpha, ϕalpha = linesearch(d, state.x, state.s, state.alpha,
                                state.x_ls, phi_0, dphi_0)
         return true # lssuccess = true
     catch ex
