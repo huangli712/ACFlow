@@ -822,7 +822,7 @@ end
 
 function initial_state(d, initial_x::AbstractArray{T}) where T
     initial_x = copy(initial_x)
-    value_gradient!!(d, initial_x)
+    value_gradient!(d, initial_x)
     invH0 = _init_identity_matrix(initial_x)
 
     # Maintain a cache for line search results
