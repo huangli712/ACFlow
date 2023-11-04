@@ -976,12 +976,6 @@ gradient(obj::OnceDifferentiable1) = obj.DF
 function value_gradient!(obj::OnceDifferentiable1, x)
     if x != obj.x_f && x != obj.x_df
         value_gradient!!(obj, x)
-    elseif x != obj.x_f
-        @show "here1"
-        value!!(obj, x)
-    elseif x != obj.x_df
-        @show "here2"
-        gradient!!(obj, x)
     end
     value(obj), gradient(obj)
 end
