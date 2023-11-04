@@ -768,8 +768,6 @@ mutable struct BFGSState{Tx, Tm, T, G}
     alpha::T
 end
 
-
-
 mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
     initial_x::Tx
     minimizer::Tx
@@ -807,10 +805,14 @@ function value_gradient!(obj::BFGSDifferentiable, x)
     obj.𝐹 = obj.ℱ!(x)
 end
 
-function initial_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
-    initial_x = copy(initial_x)
+function init_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
     value_gradient!(d, initial_x)
-    invH0 = _init_identity_matrix(initial_x)
+
+    x_ = reshape(initial_x, :)
+    invH0 = x_ .* x_' .* false
+    idxs = diagind(invH0)
+    scale = eltype(initial_x)(1)
+    @. @view(invH0[idxs]) = scale * true
 
     # Maintain a cache for line search results
     # Trace the history of states visited
@@ -906,7 +908,7 @@ end
 
 function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
     d = BFGSDifferentiable(f, g, initial_x, real(zero(eltype(initial_x))))
-    state = initial_state(d, initial_x)
+    state = init_state(d, initial_x)
 
     t0 = time() # Initial time stamp
 
@@ -955,16 +957,6 @@ function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
                                         g_converged,
                                         g_residual(d)
     )
-end
-
-
-
-function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
-    x_ = reshape(x, :)
-    Id = x_ .* x_' .* false
-    idxs = diagind(Id)
-    @. @view(Id[idxs]) = scale * true
-    return Id
 end
 
 function perform_linesearch!(state::BFGSState, d::BFGSDifferentiable)
