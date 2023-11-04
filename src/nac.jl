@@ -881,11 +881,11 @@ function trace!(d, iteration, curr_time=time())
 end
 
 # Update the function value and gradient
-function update_g!(d, state)
+function update_g!(d::OnceDifferentiable1, state::BFGSState)
     value_gradient!(d, state.x)
 end
 
-function update_h!(d, state)
+function update_h!(d::OnceDifferentiable1, state::BFGSState)
     n = length(state.x)
     # Measure the change in the gradient
     state.dg .= gradient(d) .- state.g_previous
