@@ -863,7 +863,7 @@ function update_state!(d, state::BFGSState, method::BFGS)
     lssuccess == false # break on linesearch error
 end
 
-function trace!(d, iteration, curr_time=time())
+function trace!(d::OnceDifferentiable1, iteration, curr_time=time())
     dt = Dict()
     dt["time"] = curr_time
     g_norm = norm(gradient(d), Inf)
