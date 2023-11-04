@@ -925,7 +925,7 @@ function optimize(f, g, initial_x::AbstractArray, method::BFGS; max_iter::I64 = 
 
     stopped = false
 
-    g_converged = initial_convergence(d, initial_x)
+    g_converged = initial_convergence(d)
     # prepare iteration counter (used to make "initial state" trace entry)
     iteration = 0
 
@@ -972,13 +972,10 @@ end
 
 value(obj::OnceDifferentiable1) = obj.F
 gradient(obj::OnceDifferentiable1) = obj.DF
-function gradient!(obj::OnceDifferentiable1, x)
-    @show x, obj.x_df
-    if x != obj.x_df
-        gradient!!(obj, x)
-    end
-    gradient(obj)
-end
+#function gradient!(obj::OnceDifferentiable1, x)
+#    @assert x == obj.x_df
+#    gradient(obj)
+#end
 
 function value_gradient!(obj::OnceDifferentiable1, x)
     if x != obj.x_f && x != obj.x_df
@@ -1060,8 +1057,7 @@ x_relchange(state::BFGSState) = maxdiff(state.x, state.x_previous)/maximum(abs, 
 g_residual(d::OnceDifferentiable1) = g_residual(gradient(d))
 g_residual(g) = maximum(abs, g)
 
-function initial_convergence(d, initial_x)
-    gradient!(d, initial_x)
+function initial_convergence(d::OnceDifferentiable1)
     stopped = !isfinite(value(d)) || any(!isfinite, gradient(d))
     stopped
 end
