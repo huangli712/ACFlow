@@ -977,7 +977,7 @@ function value_gradient!(obj::OnceDifferentiable1, x)
     if x != obj.x_f && x != obj.x_df
         value_gradient!!(obj, x)
     end
-    value(obj), gradient(obj)
+    #value(obj), gradient(obj)
 end
 
 function value_gradient!(obj::ManifoldObjective, x)
@@ -990,7 +990,6 @@ function value_gradient!!(obj::OnceDifferentiable1, x)
     copyto!(obj.x_f, x)
     copyto!(obj.x_df, x)
     obj.F = obj.fdf(gradient(obj), x)
-    #value(obj), gradient(obj)
 end
 
 function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
