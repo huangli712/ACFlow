@@ -776,7 +776,7 @@ mutable struct BFGSDifferentiable{TF, TDF, TX}
     F::TF # cache for f output
     DF::TDF # cache for df output
     x_f::TX # x used to evaluate f (stored in F)
-    x_df::TX # x used to evaluate df (stored in DF)
+    #x_df::TX # x used to evaluate df (stored in DF)
 end
 
 mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
@@ -802,8 +802,8 @@ function BFGSDifferentiable(f, df,
         df(gx, x)
         return f(x)
     end
-    x_f, x_df = x_of_nans(x), x_of_nans(x)
-    BFGSDifferentiable(f, df, fdf, copy(F), copy(DF), x_f, x_df)
+    x_f = x_of_nans(x)#, x_of_nans(x)
+    BFGSDifferentiable(f, df, fdf, copy(F), copy(DF), x_f)
 end
 
 function initial_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
@@ -960,7 +960,7 @@ value(obj::BFGSDifferentiable) = obj.F
 gradient(obj::BFGSDifferentiable) = obj.DF
 function value_gradient!(obj::BFGSDifferentiable, x)
     copyto!(obj.x_f, x)
-    copyto!(obj.x_df, x)
+    #copyto!(obj.x_df, x)
     obj.F = obj.fdf(gradient(obj), x)
 end
 
