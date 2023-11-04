@@ -791,21 +791,11 @@ mutable struct BFGSDifferentiable{TF, TDF}
     𝐷 :: TDF # cache for df output, DF
 end
 
-#function x_of_nans(x, Tf=eltype(x))
-#    fill!(Tf.(x), Tf(NaN))
-#end
-
-function alloc_DF(x, F::T) where T<:Number
-    Tf = promote_type(eltype(x), T)
-    #x_of_nans(x, Tf)
-    fill!(Tf.(x), Tf(NaN))
-end
-
 function BFGSDifferentiable(f, df, x::AbstractArray)
-    F = real(zero(eltype(x)))
-    DF = alloc_DF(x, F)
-    #@show eltype(x), promote_type(eltype(x), Real), typeof(DF)
-    BFGSDifferentiable(f, df, copy(F), copy(DF))
+    𝐹 = real(zero(eltype(x)))
+    T = promote_type(eltype(x), eltype(𝐹))
+    𝐷 = fill!(T.(x), T(NaN))
+    BFGSDifferentiable(f, df, copy(𝐹), copy(𝐷))
 end
 
 value(obj::BFGSDifferentiable) = obj.𝐹
