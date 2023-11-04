@@ -7,7 +7,7 @@ function InitialStatic()
     InitialStatic(1.0, false)
 end
 
-function (is::InitialStatic{T})(ls, state, phi_0, dphi_0, df) where T
+function (is::InitialStatic{T})(ls, state, phi_0, dphi_0, df::ManifoldObjective) where T
     PT = promote_type(T, real(eltype(state.s)))
     if is.scaled == true && (ns = real(norm(state.s))) > convert(PT, 0)
         # TODO: Type instability if there's a type mismatch between is.alpha and ns?
@@ -34,7 +34,6 @@ function make_ϕ(df::ManifoldObjective, x_new, x, s)
 end
 
 function make_ϕ_ϕdϕ(df::ManifoldObjective, x_new, x, s)
-    #@show typeof(df)
     function ϕdϕ(α)
         # Move a distance of alpha in the direction of s
         x_new .= x .+ α.*s
