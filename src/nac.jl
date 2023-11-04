@@ -854,7 +854,7 @@ function update_state!(d::OnceDifferentiable1, state::BFGSState, method::BFGS)
     # Determine the distance of movement along the search line
     # This call resets invH to initial_invH is the former in not positive
     # semi-definite
-    lssuccess = perform_linesearch!(state, method, ManifoldObjective(d))
+    lssuccess = perform_linesearch!(state, method, d)
 
     # Update current position
     state.dx .= state.alpha.*state.s
@@ -986,14 +986,14 @@ function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
     return Id
 end
 
-function perform_linesearch!(state::BFGSState, method::BFGS, d::ManifoldObjective)
+function perform_linesearch!(state::BFGSState, method::BFGS, d::OnceDifferentiable1)
     # Calculate search direction dphi0
-    dphi_0 = real(dot(gradient(d.inner_obj), state.s))
+    dphi_0 = real(dot(gradient(d), state.s))
     # reset the direction if it becomes corrupted
     if dphi_0 >= zero(dphi_0)
-        dphi_0 = real(dot(gradient(d.inner_obj), state.s)) # update after direction reset
+        dphi_0 = real(dot(gradient(d), state.s)) # update after direction reset
     end
-    phi_0  = value(d.inner_obj)
+    phi_0  = value(d)
 
     # Guess an alpha
     method.alphaguess!(method.linesearch!, state, phi_0, dphi_0, d)
