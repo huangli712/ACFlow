@@ -990,8 +990,8 @@ function perform_linesearch!(state::BFGSState, method::BFGS, d::ManifoldObjectiv
     # Calculate search direction dphi0
     dphi_0 = real(dot(gradient(d.inner_obj), state.s))
     # reset the direction if it becomes corrupted
-    if dphi_0 >= zero(dphi_0) && reset_search_direction!(state, d, method)
-        dphi_0 = real(dot(gradient(d), state.s)) # update after direction reset
+    if dphi_0 >= zero(dphi_0)
+        dphi_0 = real(dot(gradient(d.inner_obj), state.s)) # update after direction reset
     end
     phi_0  = value(d.inner_obj)
 
