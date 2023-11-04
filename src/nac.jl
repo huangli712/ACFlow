@@ -1061,8 +1061,8 @@ end
 
 f_abschange(d::OnceDifferentiable1, state) = abs(value(d) - state.f_x_previous)
 f_relchange(d::OnceDifferentiable1, state) = abs(value(d) - state.f_x_previous)/abs(value(d))
-x_abschange(state) = maxdiff(state.x, state.x_previous)
-x_relchange(state) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
+x_abschange(state::BFGSState) = maxdiff(state.x, state.x_previous)
+x_relchange(state::BFGSState) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
 g_residual(d::OnceDifferentiable1) = g_residual(gradient(d))
 g_residual(g) = maximum(abs, g)
 
