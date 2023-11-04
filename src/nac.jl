@@ -992,6 +992,7 @@ function perform_linesearch!(state::BFGSState, method::BFGS, d::BFGSDifferentiab
     phi_0  = value(d)
 
     # Guess an alpha
+    @show typeof(method.alphaguess!)
     method.alphaguess!(method.linesearch!, state, phi_0, dphi_0, d)
 
     # Store current x and f(x) for next iteration
