@@ -768,13 +768,7 @@ mutable struct BFGSState{Tx, Tm, T, G}
     alpha::T
 end
 
-# Used for objectives and solvers where the gradient is available/exists
-mutable struct BFGSDifferentiable{TF, TDF}
-    ℱ! # objective, f
-    𝒟! # (partial) derivative of objective, df
-    𝐹 :: TF # cache for f output, F
-    𝐷 :: TDF # cache for df output, DF
-end
+
 
 mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
     initial_x::Tx
@@ -791,11 +785,26 @@ end
 
 include("hagerzhang.jl")
 
+# Used for objectives and solvers where the gradient is available/exists
+mutable struct BFGSDifferentiable{TF, TDF}
+    ℱ! # objective, f
+    𝒟! # (partial) derivative of objective, df
+    𝐹 :: TF # cache for f output, F
+    𝐷 :: TDF # cache for df output, DF
+end
+
 function BFGSDifferentiable(f, df,
                    x::AbstractArray,
                    F::Real = real(zero(eltype(x))),
                    DF::AbstractArray = alloc_DF(x, F))
     BFGSDifferentiable(f, df, copy(F), copy(DF))
+end
+
+value(obj::BFGSDifferentiable) = obj.𝐹
+gradient(obj::BFGSDifferentiable) = obj.𝐷
+function value_gradient!(obj::BFGSDifferentiable, x)
+    obj.𝒟!(gradient(obj), x)
+    obj.𝐹 = obj.ℱ!(x)
 end
 
 function initial_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
@@ -903,7 +912,7 @@ function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
 
     stopped = false
 
-    g_converged = initial_convergence(d)
+    g_converged = !isfinite(value(d)) || any(!isfinite, gradient(d)) #initial_convergence(d)
     # prepare iteration counter (used to make "initial state" trace entry)
     iteration = 0
 
@@ -948,12 +957,7 @@ function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
     )
 end
 
-value(obj::BFGSDifferentiable) = obj.𝐹
-gradient(obj::BFGSDifferentiable) = obj.𝐷
-function value_gradient!(obj::BFGSDifferentiable, x)
-    obj.𝒟!(gradient(obj), x)
-    obj.𝐹 = obj.ℱ!(x)
-end
+
 
 function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
     x_ = reshape(x, :)
@@ -1012,11 +1016,6 @@ x_abschange(state::BFGSState) = maxdiff(state.x, state.x_previous)
 x_relchange(state::BFGSState) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
 g_residual(d::BFGSDifferentiable) = g_residual(gradient(d))
 g_residual(g) = maximum(abs, g)
-
-function initial_convergence(d::BFGSDifferentiable)
-    stopped = !isfinite(value(d)) || any(!isfinite, gradient(d))
-    stopped
-end
 
 function converged(r::BFGSOptimizationResults)
     conv_flags = r.g_converged
