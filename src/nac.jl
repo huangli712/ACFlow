@@ -820,7 +820,7 @@ function OnceDifferentiable1(f, df,
     OnceDifferentiable1(f, df, fdf, copy(F), copy(DF), x_f, x_df)
 end
 
-function initial_state(d, initial_x::AbstractArray{T}) where T
+function initial_state(d::OnceDifferentiable1, initial_x::AbstractArray{T}) where T
     initial_x = copy(initial_x)
     value_gradient!(d, initial_x)
     invH0 = _init_identity_matrix(initial_x)
@@ -841,7 +841,7 @@ function initial_state(d, initial_x::AbstractArray{T}) where T
     )
 end
 
-function update_state!(d, state::BFGSState, method::BFGS)
+function update_state!(d::OnceDifferentiable1, state::BFGSState, method::BFGS)
     T = eltype(state.s)
     # Set the search direction
     # Search direction is the negative gradient divided by the approximate Hessian
