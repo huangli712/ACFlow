@@ -791,10 +791,9 @@ mutable struct BFGSDifferentiable{TF, TDF}
     𝐷 :: TDF # cache for df output, DF
 end
 
-function BFGSDifferentiable(f, df,
-                   x::AbstractArray,
-                   F::Real = real(zero(eltype(x))),
-                   DF::AbstractArray = alloc_DF(x, F))
+function BFGSDifferentiable(f, df, x::AbstractArray)
+    F::Real = real(zero(eltype(x)))
+    DF::AbstractArray = alloc_DF(x, F)
     BFGSDifferentiable(f, df, copy(F), copy(DF))
 end
 
@@ -907,7 +906,7 @@ function update_h!(d::BFGSDifferentiable, state::BFGSState)
 end
 
 function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
-    d = BFGSDifferentiable(f, g, initial_x, real(zero(eltype(initial_x))))
+    d = BFGSDifferentiable(f, g, initial_x)
     state = init_state(d, initial_x)
 
     t0 = time() # Initial time stamp
