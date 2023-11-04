@@ -973,15 +973,10 @@ end
 value(obj::OnceDifferentiable1) = obj.F
 gradient(obj::OnceDifferentiable1) = obj.DF
 
-#function value_gradient!(obj::OnceDifferentiable1, x)
-#    #if x != obj.x_f && x != obj.x_df
-#        value_gradient!!(obj, x)
-#    #end
-#end
-
 function value_gradient!(obj::ManifoldObjective, x)
-    xin = copy(x)
-    value_gradient!(obj.inner_obj, xin)
+    #xin = copy(x)
+    value_gradient!(obj.inner_obj, x)
+    #@show x .- xin
     return value(obj.inner_obj)
 end
 
