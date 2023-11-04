@@ -843,7 +843,7 @@ function update_state!(d::BFGSDifferentiable, state::BFGSState)
     # Determine the distance of movement along the search line
     # This call resets invH to initial_invH is the former in not positive
     # semi-definite
-    lssuccess = perform_linesearch!(state, d)
+    lssuccess = linesearch!(state, d)
 
     # Update current position
     state.dx .= state.alpha.*state.s
@@ -959,7 +959,7 @@ function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
     )
 end
 
-function perform_linesearch!(state::BFGSState, d::BFGSDifferentiable)
+function linesearch!(state::BFGSState, d::BFGSDifferentiable)
     # Calculate search direction dphi0
     dphi_0 = real(dot(gradient(d), state.s))
     # reset the direction if it becomes corrupted
