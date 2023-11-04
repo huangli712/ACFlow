@@ -770,10 +770,10 @@ end
 
 # Used for objectives and solvers where the gradient is available/exists
 mutable struct BFGSDifferentiable{TF, TDF}
-    f # objective
-    df # (partial) derivative of objective
-    F::TF # cache for f output
-    DF::TDF # cache for df output
+    ℱ! # objective, f
+    𝒟! # (partial) derivative of objective, df
+    𝐹 :: TF # cache for f output, F
+    𝐷 :: TDF # cache for df output, DF
 end
 
 mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
@@ -948,11 +948,11 @@ function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
     )
 end
 
-value(obj::BFGSDifferentiable) = obj.F
-gradient(obj::BFGSDifferentiable) = obj.DF
+value(obj::BFGSDifferentiable) = obj.𝐹
+gradient(obj::BFGSDifferentiable) = obj.𝐷
 function value_gradient!(obj::BFGSDifferentiable, x)
-    obj.df(gradient(obj), x)
-    obj.F = obj.f(x)
+    obj.𝒟!(gradient(obj), x)
+    obj.𝐹 = obj.ℱ!(x)
 end
 
 function _init_identity_matrix(x::AbstractArray{T}, scale::T = T(1)) where {T}
