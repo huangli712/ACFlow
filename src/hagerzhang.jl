@@ -33,8 +33,8 @@ function make_ϕ(df, x_new, x, s)
     ϕ
 end
 
-function make_ϕ_ϕdϕ(df, x_new, x, s)
-    @show typeof(df)
+function make_ϕ_ϕdϕ(df::ManifoldObjective, x_new, x, s)
+    #@show typeof(df)
     function ϕdϕ(α)
         # Move a distance of alpha in the direction of s
         x_new .= x .+ α.*s
@@ -43,7 +43,7 @@ function make_ϕ_ϕdϕ(df, x_new, x, s)
         value_gradient!(df, x_new)
 
         # Calculate ϕ'(a_i)
-        value(df), real(dot(gradient(df), s))
+        value(df.inner_obj), real(dot(gradient(df), s))
     end
     make_ϕ(df, x_new, x, s), ϕdϕ
 end
