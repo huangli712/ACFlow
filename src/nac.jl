@@ -785,14 +785,6 @@ end
 
 include("hagerzhang.jl")
 
-# Used for objectives and solvers where the gradient is available/exists
-mutable struct BFGSDifferentiable{TF, TDF}
-    ℱ! # objective, f
-    𝒟! # (partial) derivative of objective, df
-    𝐹 :: TF # cache for f output, F
-    𝐷 :: TDF # cache for df output, DF
-end
-
 function BFGSDifferentiable(f, df, x::AbstractArray)
     𝐹 = real(zero(eltype(x)))
     T = promote_type(eltype(x), eltype(𝐹))

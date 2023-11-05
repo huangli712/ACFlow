@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/19
+# Last modified: 2023/11/06
 #
 
 #=
@@ -209,7 +209,7 @@ function simpson(x::AbstractVector{S},
 end
 
 #=
-### *Math* : *Derivatives*
+### *Math* : *Numerical Derivatives*
 =#
 
 """
@@ -1131,3 +1131,15 @@ export value
 export value!
 export jacobian
 export jacobian!
+
+#=
+### *Math* : *Numerical Optimization*
+=#
+
+# Used for objectives and solvers where the gradient is available/exists
+mutable struct BFGSDifferentiable
+    ℱ! # objective, f
+    𝒟! # (partial) derivative of objective, df
+    𝐹  # cache for f output, F
+    𝐷  # cache for df output, DF
+end
