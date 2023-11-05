@@ -626,7 +626,7 @@ This function will determine the optimal value of H (hopt). Of course,
 """
 function calc_hopt!(nac::NevanACContext)
     hmax = get_n("hmax")
-    hmax = 3 # DEBUG
+    #hmax = 1 # DEBUG
 
     for h = nac.hmin + 1:hmax
         println("H = $h")
@@ -649,6 +649,8 @@ function calc_hopt!(nac::NevanACContext)
     end
 end
 
+using Zygote
+
 """
     hardy_optimize!(nac::NevanACContext,
                     ℋ::Array{APC,2},
@@ -667,7 +669,7 @@ function hardy_optimize!(nac::NevanACContext,
     end
 
     function 𝐽!(J::Vector{C64}, x::Vector{C64})
-        J .= gradient(𝑓, x)
+        J .= Zygote.gradient(𝑓, x)[1]
     end
 
     res = optimize(𝑓, 𝐽!, 𝑎𝑏, max_iter = 500)
