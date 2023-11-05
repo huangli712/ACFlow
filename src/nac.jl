@@ -1013,9 +1013,26 @@ function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
 end
 
-f_abschange(d::BFGSDifferentiable, state) = abs(value(d) - state.f_x_previous)
-f_relchange(d::BFGSDifferentiable, state) = abs(value(d) - state.f_x_previous)/abs(value(d))
-x_abschange(state::BFGSState) = maxdiff(state.x, state.x_previous)
-x_relchange(state::BFGSState) = maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
-g_residual(d::BFGSDifferentiable) = g_residual(gradient(d))
-g_residual(g) = maximum(abs, g)
+function f_abschange(d::BFGSDifferentiable, state::BFGSState)
+    abs(value(d) - state.f_x_previous)
+end
+
+function f_relchange(d::BFGSDifferentiable, state::BFGSState)
+    abs(value(d) - state.f_x_previous) / abs(value(d))
+end
+
+function x_abschange(state::BFGSState)
+    maxdiff(state.x, state.x_previous)
+end
+
+function x_relchange(state::BFGSState)
+    maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
+end
+
+function g_residual(d::BFGSDifferentiable)
+    g_residual(gradient(d))
+end
+
+function g_residual(g::AbstractVector)
+    maximum(abs, g)
+end
