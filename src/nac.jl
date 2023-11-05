@@ -785,20 +785,6 @@ end
 
 include("hagerzhang.jl")
 
-function BFGSDifferentiable(f, df, x::AbstractArray)
-    𝐹 = real(zero(eltype(x)))
-    T = promote_type(eltype(x), eltype(𝐹))
-    𝐷 = fill!(T.(x), T(NaN))
-    BFGSDifferentiable(f, df, copy(𝐹), copy(𝐷))
-end
-
-value(obj::BFGSDifferentiable) = obj.𝐹
-gradient(obj::BFGSDifferentiable) = obj.𝐷
-function value_gradient!(obj::BFGSDifferentiable, x)
-    obj.𝒟!(gradient(obj), x)
-    obj.𝐹 = obj.ℱ!(x)
-end
-
 function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
     d = BFGSDifferentiable(f, g, initial_x)
     state = init_state(d, initial_x)

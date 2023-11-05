@@ -1143,3 +1143,17 @@ mutable struct BFGSDifferentiable
     𝐹  # cache for f output, F
     𝐷  # cache for df output, DF
 end
+
+function BFGSDifferentiable(f, df, x::AbstractArray)
+    𝐹 = real(zero(eltype(x)))
+    T = promote_type(eltype(x), eltype(𝐹))
+    𝐷 = fill!(T.(x), T(NaN))
+    BFGSDifferentiable(f, df, copy(𝐹), copy(𝐷))
+end
+
+value(obj::BFGSDifferentiable) = obj.𝐹
+gradient(obj::BFGSDifferentiable) = obj.𝐷
+function value_gradient!(obj::BFGSDifferentiable, x)
+    obj.𝒟!(gradient(obj), x)
+    obj.𝐹 = obj.ℱ!(x)
+end
