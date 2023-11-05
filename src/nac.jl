@@ -771,16 +771,16 @@ mutable struct BFGSState{Tx, Tm, T, G}
 end
 
 mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
-    initial_x::Tx
-    minimizer::Tx
-    minimum::Tf
-    iterations::Int
-    x_abschange::Tc
-    x_relchange::Tc
-    f_abschange::Tc
-    f_relchange::Tc
-    g_converged::Bool
-    g_residual::Tc
+    initial_x   :: Tx
+    minimizer   :: Tx
+    minimum     :: Tf
+    iterations  :: Int
+    δx :: Tc
+    Δx :: Tc
+    δf :: Tc
+    Δf :: Tc
+    gconv :: Bool
+    g_residual  :: Tc
 end
 
 include("hagerzhang.jl")
@@ -793,7 +793,7 @@ function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
 
     stopped = false
 
-    g_converged = !isfinite(value(d)) || any(!isfinite, gradient(d)) #initial_convergence(d)
+    gconv = !isfinite(value(d)) || any(!isfinite, gradient(d)) #initial_convergence(d)
     # prepare iteration counter (used to make "initial state" trace entry)
     iteration = 0
 
@@ -802,14 +802,14 @@ function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
     _time = time()
     trace!(d, iteration, _time-t0)
     ls_success = true
-    while !g_converged && !stopped && iteration < max_iter
+    while !gconv && !stopped && iteration < max_iter
         iteration += 1
         ls_success = !update_state!(d, state)
         if !ls_success
             break # it returns true if it's forced by something in update! to stop (eg dx_dg == 0.0 in BFGS, or linesearch errors)
         end
         update_g!(d, state)
-        g_converged = (g_residual(d) ≤ 1e-8)
+        gconv = (g_residual(d) ≤ 1e-8)
         update_h!(d, state) # only relevant if not converged
 
         # update trace
@@ -829,11 +829,11 @@ function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
                                         state.x,
                                         value(d),
                                         iteration,
-                                        x_abschange(state),
-                                        x_relchange(state),
-                                        f_abschange(d, state),
-                                        f_relchange(d, state),
-                                        g_converged,
+                                        eval_δx(state),
+                                        eval_Δx(state),
+                                        eval_δf(d, state),
+                                        eval_Δf(d, state),
+                                        gconv,
                                         g_residual(d)
     )
 end
@@ -976,8 +976,8 @@ function linesearch!(state::BFGSState, d::BFGSDifferentiable)
 end
 
 function converged(r::BFGSOptimizationResults)
-    conv_flags = r.g_converged
-    x_isfinite = isfinite(r.x_abschange) || isnan(r.x_relchange)
+    conv_flags = r.gconv
+    x_isfinite = isfinite(r.δx) || isnan(r.x_relchange)
     f_isfinite = if r.iterations > 0
             isfinite(r.f_abschange) || isnan(r.f_relchange)
         else
@@ -991,20 +991,20 @@ function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
 end
 
-function f_abschange(d::BFGSDifferentiable, state::BFGSState)
+function eval_δf(d::BFGSDifferentiable, state::BFGSState)
     abs(value(d) - state.f_x_previous)
 end
 
-function f_relchange(d::BFGSDifferentiable, state::BFGSState)
+function eval_Δf(d::BFGSDifferentiable, state::BFGSState)
     abs(value(d) - state.f_x_previous) / abs(value(d))
 end
 
-function x_abschange(state::BFGSState)
+function eval_δx(state::BFGSState)
     maxdiff(state.x, state.x_previous)
 end
 
-function x_relchange(state::BFGSState)
-    maxdiff(state.x, state.x_previous)/maximum(abs, state.x)
+function eval_Δx(state::BFGSState)
+    maxdiff(state.x, state.x_previous) / maximum(abs, state.x)
 end
 
 function g_residual(d::BFGSDifferentiable)
