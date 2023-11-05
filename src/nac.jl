@@ -977,9 +977,9 @@ end
 
 function converged(r::BFGSOptimizationResults)
     conv_flags = r.gconv
-    x_isfinite = isfinite(r.δx) || isnan(r.x_relchange)
+    x_isfinite = isfinite(r.δx) || isnan(r.Δx)
     f_isfinite = if r.iterations > 0
-            isfinite(r.f_abschange) || isnan(r.f_relchange)
+            isfinite(r.δf) || isnan(r.Δf)
         else
             true
         end

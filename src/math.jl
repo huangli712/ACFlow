@@ -1157,3 +1157,4 @@ function value_gradient!(obj::BFGSDifferentiable, x)
     obj.𝒟!(gradient(obj), x)
     obj.𝐹 = obj.ℱ!(x)
 end
+
