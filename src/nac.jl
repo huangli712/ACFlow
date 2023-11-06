@@ -765,28 +765,26 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
     d = BFGSDifferentiable(f, g, x₀)
     state = init_state(d, x₀)
 
-    stopped = false
-
-    gconv = !isfinite(value(d)) || any(!isfinite, gradient(d))
-
     # Prepare iteration counter
+    gconv = !isfinite(value(d)) || any(!isfinite, gradient(d))
+    stopped = false
     iteration = 0
 
     @printf "Iter     Function value   Gradient norm \n"
-
     trace!(d, iteration, time() - t₀)
-    ls_success = true
+
     while !gconv && !stopped && iteration < max_iter
         iteration += 1
+
         ls_success = !update_state!(d, state)
         if !ls_success
-            break # it returns true if it's forced by something in update! to stop (eg dx_dg == 0.0 in BFGS, or linesearch errors)
+            break
         end
         update_g!(d, state)
         gconv = (eval_resid(d) ≤ 1e-8)
-        update_h!(d, state) # only relevant if not converged
+        update_h!(d, state)
 
-        # update trace
+        # Print trace
         trace!(d, iteration, time() - t₀)
 
         if !all(isfinite, gradient(d))
