@@ -760,7 +760,7 @@ mutable struct BFGSState{Tx, Tm, T, G}
     x :: Tx
     x_prev :: Tx
     g_prev :: G
-    f_x_prev :: T
+    f_prev :: T
     dx :: Tx
     dg :: Tx
     u :: Tx
@@ -852,7 +852,7 @@ function init_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
     BFGSState(initial_x, # Maintain current state in state.x
               copy(initial_x), # Maintain previous state in state.x_prev
               copy(gradient(d)), # Store previous gradient in state.g_prev
-              real(T)(NaN), # Store previous f in state.f_x_prev
+              real(T)(NaN), # Store previous f in state.f_prev
               similar(initial_x), # Store changes in position in state.dx
               similar(initial_x), # Store changes in gradient in state.dg
               similar(initial_x), # Buffer stored in state.u
@@ -947,7 +947,7 @@ function linesearch!(s::BFGSState, d::BFGSDifferentiable)
 
     # Store current x and f(x) for next iteration
     phi_0  = value(d)
-    s.f_x_prev = phi_0
+    s.f_prev = phi_0
     copyto!(s.x_prev, s.x)
 
     # Perform line search
@@ -982,7 +982,7 @@ function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
 end
 
-eval_δf(d::BFGSDifferentiable, s::BFGSState) = abs(value(d) - s.f_x_prev)
+eval_δf(d::BFGSDifferentiable, s::BFGSState) = abs(value(d) - s.f_prev)
 eval_Δf(d::BFGSDifferentiable, s::BFGSState) = eval_δf(d, s) / abs(value(d))
 eval_δx(s::BFGSState) = maxdiff(s.x, s.x_prev)
 eval_Δx(s::BFGSState) = eval_δx(s) / maximum(abs, s.x)
