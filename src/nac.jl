@@ -886,8 +886,8 @@ function update_state!(d::BFGSDifferentiable, state::BFGSState)
 end
 
 # Update the function value and gradient
-function update_g!(d::BFGSDifferentiable, state::BFGSState)
-    value_gradient!(d, state.x)
+function update_g!(d::BFGSDifferentiable, s::BFGSState)
+    value_gradient!(d, s.x)
 end
 
 function update_h!(d::BFGSDifferentiable, s::BFGSState)
