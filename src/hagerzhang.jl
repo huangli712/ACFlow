@@ -108,12 +108,6 @@ function (ls::HagerZhang)(df::BFGSDifferentiable, x::AbstractArray{T},
     ls(ϕ, ϕdϕ, α::Real, phi_0, dphi_0)
 end
 
-#function unpack end
-@inline unpack(x, ::Val{f}) where {f} = getproperty(x, f)
-@inline unpack(x::AbstractDict{Symbol}, ::Val{k}) where {k} = x[k]
-@inline unpack(x::AbstractDict{<:AbstractString}, ::Val{k}) where {k} = x[string(k)]
-
-
 # TODO: Should we deprecate the interface that only uses the ϕ and ϕd\phi arguments?
 function (ls::HagerZhang)(ϕ, ϕdϕ,
                           c::T,
