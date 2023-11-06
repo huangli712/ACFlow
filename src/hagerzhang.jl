@@ -153,7 +153,7 @@ function LS(df::BFGSDifferentiable, x::AbstractArray,
             mayterminate[] = false # reset in case another initial guess is used next
             return a, values[ia] # lsr.value[ia]
         end
-        iswolfe, iA, iB = secant2!(ϕdϕ, alphas, values, slopes, ia, ib, phi_lim, delta, sigma)
+        iswolfe, iA, iB = ls_secant2!(ϕdϕ, alphas, values, slopes, ia, ib, phi_lim, delta, sigma)
         if iswolfe
             mayterminate[] = false # reset in case another initial guess is used next
             return alphas[iA], values[iA] # lsr.value[iA]
@@ -219,14 +219,15 @@ function satisfies_wolfe(c::T,
 end
 
 # HZ, stages S1-S4
-function secant(a::Real, b::Real, dphi_a::Real, dphi_b::Real)
+function ls_secant(a::F64, b::F64, dphi_a::F64, dphi_b::F64)
     return (a * dphi_b - b * dphi_a) / (dphi_b - dphi_a)
 end
 
 # phi
-function secant2!(ϕdϕ, alphas, values, slopes,
-                  ia::Integer, ib::Integer,
-                  phi_lim::Real, delta::Real, sigma::Real)
+function ls_secant2!(ϕdϕ, alphas::Vector{F64},
+                  values::Vector{F64}, slopes::Vector{F64},
+                  ia::I64, ib::I64,
+                  phi_lim::F64, delta::F64, sigma::F64)
     phi_0 = values[1]
     dphi_0 = slopes[1]
     a = alphas[ia]
@@ -240,7 +241,7 @@ function secant2!(ϕdϕ, alphas, values, slopes,
                      "this error may indicate that user-provided derivatives are inaccurate. ",
                       @sprintf "(dphi_a = %f; dphi_b = %f)" dphi_a dphi_b))
     end
-    c = secant(a, b, dphi_a, dphi_b)
+    c = ls_secant(a, b, dphi_a, dphi_b)
     @assert isfinite(c)
     # phi_c = phi(tmpc, c) # Replace
     phi_c, dphi_c = ϕdϕ(c)
@@ -260,10 +261,10 @@ function secant2!(ϕdϕ, alphas, values, slopes,
     b = alphas[iB]
     if iB == ic
         # we updated b, make sure we also update a
-        c = secant(alphas[ib], alphas[iB], slopes[ib], slopes[iB])
+        c = ls_secant(alphas[ib], alphas[iB], slopes[ib], slopes[iB])
     elseif iA == ic
         # we updated a, do it for b too
-        c = secant(alphas[ia], alphas[iA], slopes[ia], slopes[iA])
+        c = ls_secant(alphas[ia], alphas[iA], slopes[ia], slopes[iA])
     end
     if (iA == ic || iB == ic) && a <= c <= b
         # phi_c = phi(tmpc, c) # TODO: Replace
