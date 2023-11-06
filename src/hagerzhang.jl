@@ -203,14 +203,9 @@ function make_ϕdϕ(df::BFGSDifferentiable, x_new, x, s)
 end
 
 # Check Wolfe & approximate Wolfe
-function satisfies_wolfe(c::T,
-                         phi_c::Real,
-                         dphi_c::Real,
-                         phi_0::Real,
-                         dphi_0::Real,
-                         phi_lim::Real,
-                         delta::Real,
-                         sigma::Real) where T<:Number
+function satisfies_wolfe(c::F64, phi_c::F64, dphi_c::F64,
+                         phi_0::F64, dphi_0::F64, phi_lim::F64,
+                         delta::F64, sigma::F64)
     wolfe1 = delta * dphi_0 >= (phi_c - phi_0) / c &&
                dphi_c >= sigma * dphi_0
     wolfe2 = (2 * delta - 1) * dphi_0 >= dphi_c >= sigma * dphi_0 &&
@@ -225,9 +220,9 @@ end
 
 # phi
 function ls_secant2!(ϕdϕ, alphas::Vector{F64},
-                  values::Vector{F64}, slopes::Vector{F64},
-                  ia::I64, ib::I64,
-                  phi_lim::F64, delta::F64, sigma::F64)
+                     values::Vector{F64}, slopes::Vector{F64},
+                     ia::I64, ib::I64,
+                     phi_lim::F64, delta::F64, sigma::F64)
     phi_0 = values[1]
     dphi_0 = slopes[1]
     a = alphas[ia]
