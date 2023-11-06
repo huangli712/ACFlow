@@ -761,14 +761,14 @@ end
 
 ### Members
 
-* x ->  # Maintain current state in state.x
-* ls ->  # Store current search direction in state.s
-* δx ->  # Store changes in position in state.dx
-* δg ->  # Store changes in gradient in state.dg
-* xₚ ->  # Maintain previous state in state.xₚ
-* gₚ ->  # Store previous gradient in state.gₚ
-* fₚ ->  # Store previous f in state.fₚ
-* H⁻¹ ->  # Store current H⁻¹ in state.H⁻¹
+* x     -> Current position.
+* ls    -> Current search direction.
+* δx    -> Changes in position.
+* δg    -> Changes in gradient.
+* xₚ    -> Previous position.
+* gₚ    -> Previous gradient.
+* fₚ    -> Previous f in xₚ.
+* H⁻¹   -> Current inverse Hessian matrix.
 * alpha ->
 """
 mutable struct BFGSState{Tx, Tm, T, G}
@@ -785,6 +785,8 @@ end
 
 """
     BFGSOptimizationResults
+
+### Members
 
 """
 mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
