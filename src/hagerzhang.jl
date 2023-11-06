@@ -217,7 +217,6 @@ function (ls::HagerZhang)(ϕ, ϕdϕ,
         println("New linesearch")
     end
 
-
     phi_lim = phi_0 + epsilon * abs(phi_0)
     @assert c >= 0
     c <= eps(T) && return zeroT, phi_0

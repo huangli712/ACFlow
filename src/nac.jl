@@ -950,16 +950,16 @@ function linesearch!(s::BFGSState, d::BFGSDifferentiable)
 
     # Guess an alpha
     guess = InitialStatic()
-    linesearch = HagerZhang()
-    phi_0  = value(d)
     guess(s)
 
     # Store current x and f(x) for next iteration
+    phi_0  = value(d)
     s.f_x_prev = phi_0
     copyto!(s.x_prev, s.x)
 
     # Perform line search
     try
+        linesearch = HagerZhang()
         s.alpha, _ = linesearch(d, s.x, s.s, s.alpha, s.x_ls, phi_0, dphi_0)
         return true # lssuccess = true
     catch ex
