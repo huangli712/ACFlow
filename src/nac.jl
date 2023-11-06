@@ -942,32 +942,31 @@ end
 function linesearch!(state::BFGSState, d::BFGSDifferentiable)
     # Calculate search direction dphi0
     dphi_0 = real(dot(gradient(d), state.s))
-    # reset the direction if it becomes corrupted
+
+    # Reset the direction if it becomes corrupted
     if dphi_0 >= zero(dphi_0)
-        dphi_0 = real(dot(gradient(d), state.s)) # update after direction reset
+        dphi_0 = real(dot(gradient(d), state.s))
     end
-    phi_0  = value(d)
 
     # Guess an alpha
     guess = InitialStatic()
     linesearch = HagerZhang()
+    phi_0  = value(d)
     guess(linesearch, state, phi_0, dphi_0, d)
 
     # Store current x and f(x) for next iteration
     state.f_x_prev = phi_0
     copyto!(state.x_prev, state.x)
 
-    # Perform line search; catch LineSearchException to allow graceful exit
+    # Perform line search
     try
-        state.alpha, ϕalpha = linesearch(d, state.x, state.s, state.alpha,
+        state.alpha, _ = linesearch(d, state.x, state.s, state.alpha,
                                state.x_ls, phi_0, dphi_0)
         return true # lssuccess = true
     catch ex
+        # catch LineSearchException to allow graceful exit
         if isa(ex, LineSearchException)
             state.alpha = ex.alpha
-            # We shouldn't warn here, we should just carry it to the output
-            # @warn("Linesearch failed, using alpha = $(state.alpha) and
-            # exiting optimization.\nThe linesearch exited with message:\n$(ex.message)")
             return false # lssuccess = false
         else
             rethrow(ex)
