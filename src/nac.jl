@@ -780,7 +780,7 @@ mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
     δf :: Tc
     Δf :: Tc
     gconv :: Bool
-    g_residual  :: Tc
+    resid :: Tc
 end
 
 include("hagerzhang.jl")
@@ -809,7 +809,7 @@ function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
             break # it returns true if it's forced by something in update! to stop (eg dx_dg == 0.0 in BFGS, or linesearch errors)
         end
         update_g!(d, state)
-        gconv = (g_residual(d) ≤ 1e-8)
+        gconv = (eval_resid(d) ≤ 1e-8)
         update_h!(d, state) # only relevant if not converged
 
         # update trace
@@ -834,7 +834,7 @@ function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
                                         eval_δf(d, state),
                                         eval_Δf(d, state),
                                         gconv,
-                                        g_residual(d)
+                                        eval_resid(d)
     )
 end
 
@@ -983,7 +983,7 @@ function converged(r::BFGSOptimizationResults)
         else
             true
         end
-    g_isfinite = isfinite(r.g_residual)
+    g_isfinite = isfinite(r.resid)
     return conv_flags && all((x_isfinite, f_isfinite, g_isfinite))
 end
 
@@ -995,4 +995,4 @@ eval_δf(d::BFGSDifferentiable, s::BFGSState) = abs(value(d) - s.f_x_prev)
 eval_Δf(d::BFGSDifferentiable, s::BFGSState) = eval_δf(d, s) / abs(value(d))
 eval_δx(s::BFGSState) = maxdiff(s.x, s.x_prev)
 eval_Δx(s::BFGSState) = eval_δx(s) / maximum(abs, s.x)
-g_residual(d::BFGSDifferentiable) = maximum(abs, gradient(d))
+eval_resid(d::BFGSDifferentiable) = maximum(abs, gradient(d))
