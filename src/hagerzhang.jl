@@ -56,12 +56,8 @@ function LS(df::BFGSDifferentiable, x::AbstractArray{T},
                           phi_0::Real, dphi_0::Real) where T
     x_new = similar(x)
     ϕdϕ = make_ϕdϕ(df, x_new, x, s)
-    #LS(ϕdϕ, α::Real, phi_0, dphi_0)
     c = α
-#end
-#
-# TODO: Should we deprecate the interface that only uses the ϕ and ϕd\phi arguments?
-#function LS(ϕdϕ, c::T, phi_0::Real, dphi_0::Real) where T # Should c and phi_0 be same type?
+
     ls = HagerZhang()
     delta = ls.delta
     sigma = ls.sigma
