@@ -163,6 +163,7 @@ HagerZhang{T}(args...; kwargs...) where T = HagerZhang{T, Base.RefValue{Bool}}(a
 function (ls::HagerZhang)(df::BFGSDifferentiable, x::AbstractArray{T},
                           s::AbstractArray{T}, α::Real,
                           x_new::AbstractArray{T}, phi_0::Real, dphi_0::Real) where T
+    @show x_new
     ϕ, ϕdϕ = make_ϕ_ϕdϕ(df, x_new, x, s)
     ls(ϕ, ϕdϕ, α::Real, phi_0, dphi_0)
 end
