@@ -774,7 +774,7 @@ end
 mutable struct BFGSState{Tx, Tm, T, G}
     x :: Tx
     ls :: Tx
-    dx :: Tx
+    δx :: Tx
     dg :: Tx
     xₚ :: Tx
     gₚ :: G
@@ -895,8 +895,8 @@ function update_state!(d::BFGSDifferentiable, s::BFGSState)
     lssuccess = linesearch!(s, d)
 
     # Update current position
-    s.dx .= s.alpha .* s.ls
-    s.x .= s.x .+ s.dx
+    s.δx .= s.alpha .* s.ls
+    s.x .= s.x .+ s.δx
 
     lssuccess == false # break on linesearch error
 end
@@ -914,7 +914,7 @@ function update_h!(d::BFGSDifferentiable, s::BFGSState)
     s.dg .= gradient(d) .- s.gₚ
 
     # Update inverse Hessian approximation using Sherman-Morrison equation
-    dx_dg = real(dot(s.dx, s.dg))
+    dx_dg = real(dot(s.δx, s.dg))
     if dx_dg > 0
         mul!(vec(su), s.H⁻¹, vec(s.dg))
 
@@ -923,7 +923,7 @@ function update_h!(d::BFGSDifferentiable, s::BFGSState)
 
         # H⁻¹ = H⁻¹ + c1 * (s * s') - c2 * (u * s' + s * u')
         if s.H⁻¹ isa Array
-            H⁻¹ = s.H⁻¹; dx = s.dx; u = su;
+            H⁻¹ = s.H⁻¹; dx = s.δx; u = su;
             @inbounds for j in 1:n
                 c1dxj = c1 * dx[j]'
                 c2dxj = c2 * dx[j]'
@@ -935,9 +935,9 @@ function update_h!(d::BFGSDifferentiable, s::BFGSState)
                 end
             end
         else
-            mul!(s.H⁻¹, vec(s.dx), vec(s.dx)', +c1, 1)
-            mul!(s.H⁻¹, vec(su  ), vec(s.dx)', -c2, 1)
-            mul!(s.H⁻¹, vec(s.dx), vec(su  )', -c2, 1)
+            mul!(s.H⁻¹, vec(s.δx), vec(s.δx)', +c1, 1)
+            mul!(s.H⁻¹, vec(su  ), vec(s.δx)', -c2, 1)
+            mul!(s.H⁻¹, vec(s.δx), vec(su  )', -c2, 1)
         end
     end
 end
