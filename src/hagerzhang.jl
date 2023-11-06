@@ -20,20 +20,6 @@ function LS(state::BFGSState, alpha::T, scaled::Bool) where T
     end
 end
 
-function make_ϕdϕ(df::BFGSDifferentiable, x_new, x, s)
-    function ϕdϕ(α)
-        # Move a distance of alpha in the direction of s
-        x_new .= x .+ α.*s
-
-        # Evaluate ∇f(x+α*s)
-        value_gradient!(df, x_new)
-
-        # Calculate ϕ'(a_i)
-        value(df), real(dot(gradient(df), s))
-    end
-    ϕdϕ
-end
-
 function LS(df::BFGSDifferentiable, x::AbstractArray,
                           s::AbstractArray, c::Real,
                           phi_0::Real, dphi_0::Real)
@@ -205,6 +191,20 @@ function LS(df::BFGSDifferentiable, x::AbstractArray,
 
     throw(LineSearchException("Linesearch failed to converge, reached maximum iterations $(linesearchmax).",
                               alphas[ia]))
+end
+
+function make_ϕdϕ(df::BFGSDifferentiable, x_new, x, s)
+    function ϕdϕ(α)
+        # Move a distance of alpha in the direction of s
+        x_new .= x .+ α.*s
+
+        # Evaluate ∇f(x+α*s)
+        value_gradient!(df, x_new)
+
+        # Calculate ϕ'(a_i)
+        value(df), real(dot(gradient(df), s))
+    end
+    ϕdϕ
 end
 
 # Check Wolfe & approximate Wolfe
