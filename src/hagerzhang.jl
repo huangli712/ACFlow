@@ -326,10 +326,8 @@ function update!(ϕdϕ, alphas, values, slopes,
 end
 
 # HZ, stage U3 (with theta=0.5)
-function bisect!(ϕdϕ, alphas::Vector{F64},
-                 values::Vector{F64}, slopes::Vector{F64},
-                 ia::I64, ib::I64,
-                 phi_lim::F64)
+function bisect!(ϕdϕ, alphas::Vector{F64}, values::Vector{F64},
+                 slopes::Vector{F64}, ia::I64, ib::I64, phi_lim::F64)
     T = eltype(alphas)
     gphi = convert(T, NaN)
     a = alphas[ia]
