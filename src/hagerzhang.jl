@@ -66,21 +66,8 @@ mutable struct HagerZhang{T, Tm}
  end
 
 function HagerZhang()
-    HagerZhang(
-   0.1, # c_1 Wolfe sufficient decrease condition
-   0.9, # c_2 Wolfe curvature condition (Recommend 0.1 for GradientDescent)
-   Inf,
-   5.0,
-   1e-6,
-   0.66,
-   50,
-   0.1,
-   0,
-   Ref{Bool}(false)
-   )
+    HagerZhang(0.1, 0.9, Inf, 5.0, 1e-6, 0.66, 50, 0.1, 0, Ref{Bool}(false))
 end
-
-HagerZhang{T}(args...; kwargs...) where T = HagerZhang{T, Base.RefValue{Bool}}(args...; kwargs...)
 
 function (ls::HagerZhang)(df::BFGSDifferentiable, x::AbstractArray{T},
                           s::AbstractArray{T}, α::Real,
