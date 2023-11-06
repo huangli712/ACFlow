@@ -288,10 +288,7 @@ end
 # Given a third point, pick the best two that retain the bracket
 # around the minimum (as defined by HZ, eq. 29)
 # b will be the upper bound, and a the lower bound
-function update!(ϕdϕ,
-                 alphas,
-                 values,
-                 slopes,
+function update!(ϕdϕ, alphas, values, slopes,
                  ia::Integer,
                  ib::Integer,
                  ic::Integer,
@@ -300,6 +297,7 @@ function update!(ϕdϕ,
     b = alphas[ib]
     T = eltype(slopes)
     zeroT = convert(T, 0)
+
     # Debugging (HZ, eq. 4.4):
     @assert slopes[ia] < zeroT
     @assert values[ia] <= phi_lim
@@ -328,16 +326,14 @@ function update!(ϕdϕ,
 end
 
 # HZ, stage U3 (with theta=0.5)
-function bisect!(ϕdϕ,
-                 alphas::AbstractArray{T},
-                 values,
-                 slopes,
-                 ia::Integer,
-                 ib::Integer,
+function bisect!(ϕdϕ, alphas::AbstractArray{T},
+                 values, slopes,
+                 ia::Integer, ib::Integer,
                  phi_lim::Real) where T
     gphi = convert(T, NaN)
     a = alphas[ia]
     b = alphas[ib]
+
     # Debugging (HZ, conditions shown following U3)
     zeroT = convert(T, 0)
     @assert slopes[ia] < zeroT
