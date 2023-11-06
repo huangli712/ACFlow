@@ -906,11 +906,11 @@ end
 
 function linesearch!(s::BFGSState, d::BFGSDifferentiable)
     # Calculate search direction dphi0
-    dphi_0 = real(dot(gradient(d), s.ls))
+    dϕ₀ = real(dot(gradient(d), s.ls))
 
     # Reset the direction if it becomes corrupted
-    if dphi_0 >= zero(dphi_0)
-        dphi_0 = real(dot(gradient(d), s.ls))
+    if dϕ₀ >= zero(dϕ₀)
+        dϕ₀ = real(dot(gradient(d), s.ls))
     end
 
     # Guess an alpha
@@ -918,14 +918,14 @@ function linesearch!(s::BFGSState, d::BFGSDifferentiable)
     LS(s)
 
     # Store current x and f(x) for next iteration
-    phi_0  = value(d)
-    s.fₚ = phi_0
+    ϕ₀  = value(d)
+    s.fₚ = ϕ₀
     copyto!(s.xₚ, s.x)
 
     # Perform line search
     try
         LS = HagerZhang()
-        s.alpha, _ = LS(d, s.x, s.ls, s.alpha, phi_0, dphi_0)
+        s.alpha, _ = LS(d, s.x, s.ls, s.alpha, ϕ₀, dϕ₀)
         return true # lssuccess = true
     catch ex
         # Catch LineSearchException to allow graceful exit
