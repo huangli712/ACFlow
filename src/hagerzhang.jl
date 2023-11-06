@@ -9,9 +9,6 @@
 # (not exported, but can use via LineSearches.ITER, for example)
 const one64 = convert(UInt64, 1)
 const BRACKET     = 256
-const LINESEARCH  = 512
-const UPDATE      = 1024
-#const SECANT2     = 2048
 
 mutable struct LineSearchException{T<:Real} <: Exception
     message::AbstractString
@@ -108,9 +105,6 @@ function (ls::HagerZhang)(ϕdϕ,
     alphas = [zeroT] # for bisection
     values = [phi_0]
     slopes = [dphi_0]
-    if display & LINESEARCH > 0
-        println("New linesearch")
-    end
 
     phi_lim = phi_0 + epsilon * abs(phi_0)
     @assert c >= 0
@@ -137,9 +131,6 @@ function (ls::HagerZhang)(ϕdϕ,
     # satisfies the Wolfe conditions
     if mayterminate[] &&
           satisfies_wolfe(c, phi_c, dphi_c, phi_0, dphi_0, phi_lim, delta, sigma)
-        if display & LINESEARCH > 0
-            println("Wolfe condition satisfied on point alpha = ", c)
-        end
         mayterminate[] = false # reset in case another initial guess is used next
         return c, phi_c # phi_c
     end
@@ -234,14 +225,6 @@ function (ls::HagerZhang)(ϕdϕ,
         a = alphas[ia]
         b = alphas[ib]
         @assert b > a
-        if display & LINESEARCH > 0
-            println("linesearch: ia = ", ia,
-                    ", ib = ", ib,
-                    ", a = ", a,
-                    ", b = ", b,
-                    ", phi(a) = ", values[ia],
-                    ", phi(b) = ", values[ib])
-        end
         if b - a <= eps(b)
             mayterminate[] = false # reset in case another initial guess is used next
             return a, values[ia] # lsr.value[ia]
@@ -255,14 +238,8 @@ function (ls::HagerZhang)(ϕdϕ,
         B = alphas[iB]
         @assert B > A
         if B - A < gamma * (b - a)
-            if display & LINESEARCH > 0
-                println("Linesearch: secant succeeded")
-            end
             if nextfloat(values[ia]) >= values[ib] && nextfloat(values[iA]) >= values[iB]
                 # It's so flat, secant didn't do anything useful, time to quit
-                if display & LINESEARCH > 0
-                    println("Linesearch: secant suggests it's flat")
-                end
                 mayterminate[] = false # reset in case another initial guess is used next
                 return A, values[iA]
             end
@@ -270,9 +247,6 @@ function (ls::HagerZhang)(ϕdϕ,
             ib = iB
         else
             # Secant is converging too slowly, use bisection
-            if display & LINESEARCH > 0
-                println("Linesearch: secant failed, using bisection")
-            end
             c = (A + B) / convert(T, 2)
 
             phi_c, dphi_c = ϕdϕ(c)
@@ -409,15 +383,6 @@ function update!(ϕdϕ,
     c = alphas[ic]
     phi_c = values[ic]
     dphi_c = slopes[ic]
-    if display & UPDATE > 0
-        println("update: ia = ", ia,
-                ", a = ", a,
-                ", ib = ", ib,
-                ", b = ", b,
-                ", c = ", c,
-                ", phi_c = ", phi_c,
-                ", dphi_c = ", dphi_c)
-    end
     if c < a || c > b
         return ia, ib #, 0, 0  # it's out of the bracketing interval
     end
