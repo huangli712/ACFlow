@@ -20,8 +20,7 @@ function LS(state::BFGSState, alpha::T, scaled::Bool) where T
 end
 
 function LS(df::BFGSDifferentiable, x::AbstractArray,
-                          s::AbstractArray, c::Real,
-                          phi_0::Real, dphi_0::Real)
+            s::AbstractArray, c::Real, phi_0::Real, dphi_0::Real)
     delta = 0.1
     sigma = 0.9
     alphamax = Inf
@@ -116,7 +115,7 @@ function LS(df::BFGSDifferentiable, x::AbstractArray,
             # So cold = c has a lower objective than phi_0 up to epsilon. 
             # This makes it a viable step to return if bracketing fails.
 
-            # Bracketing can fail if no cold < c <= alphamax can be found with finite phi_c and dphi_c. 
+            # Bracketing can fail if no cold < c <= alphamax can be found with finite phi_c and dphi_c.
             # Going back to the loop with c = cold will only result in infinite cycling.
             # So returning (cold, phi_cold) and exiting the line search is the best move.
             cold = c
@@ -224,7 +223,7 @@ function secant(a::Real, b::Real, dphi_a::Real, dphi_b::Real)
     return (a * dphi_b - b * dphi_a) / (dphi_b - dphi_a)
 end
 
-function secant(alphas, values, slopes, ia::Integer, ib::Integer)
+function secant(alphas, slopes, ia::Integer, ib::Integer)
     return secant(alphas[ia], alphas[ib], slopes[ia], slopes[ib])
 end
 
@@ -269,13 +268,12 @@ function secant2!(ϕdϕ,
     iA, iB = update!(ϕdϕ, alphas, values, slopes, ia, ib, ic, phi_lim)
     a = alphas[iA]
     b = alphas[iB]
-    doupdate = false
     if iB == ic
         # we updated b, make sure we also update a
-        c = secant(alphas, values, slopes, ib, iB)
+        c = secant(alphas[ib], alphas[iB], slopes[ib], slopes[iB])
     elseif iA == ic
         # we updated a, do it for b too
-        c = secant(alphas, values, slopes, ia, iA)
+        c = secant(alphas[ia], alphas[iA], slopes[ia], slopes[iA])
     end
     if (iA == ic || iB == ic) && a <= c <= b
         # phi_c = phi(tmpc, c) # TODO: Replace
