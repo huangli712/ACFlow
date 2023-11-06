@@ -223,20 +223,10 @@ function secant(a::Real, b::Real, dphi_a::Real, dphi_b::Real)
     return (a * dphi_b - b * dphi_a) / (dphi_b - dphi_a)
 end
 
-function secant(alphas, slopes, ia::Integer, ib::Integer)
-    return secant(alphas[ia], alphas[ib], slopes[ia], slopes[ib])
-end
-
 # phi
-function secant2!(ϕdϕ,
-                  alphas,
-                  values,
-                  slopes,
-                  ia::Integer,
-                  ib::Integer,
-                  phi_lim::Real,
-                  delta::Real,
-                  sigma::Real)
+function secant2!(ϕdϕ, alphas, values, slopes,
+                  ia::Integer, ib::Integer,
+                  phi_lim::Real, delta::Real, sigma::Real)
     phi_0 = values[1]
     dphi_0 = slopes[1]
     a = alphas[ia]
