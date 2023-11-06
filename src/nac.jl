@@ -758,7 +758,6 @@ end
 
 mutable struct BFGSState{Tx, Tm, T, G}
     x :: Tx
-    u :: Tx
     s :: Tx
     dx :: Tx
     dg :: Tx
@@ -849,7 +848,6 @@ function init_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
     # Maintain a cache for line search results
     # Trace the history of states visited
     BFGSState(initial_x, # Maintain current state in state.x
-              similar(initial_x), # Buffer stored in state.u
               similar(initial_x), # Store current search direction in state.s
               similar(initial_x), # Store changes in position in state.dx
               similar(initial_x), # Store changes in gradient in state.dg
