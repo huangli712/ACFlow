@@ -756,27 +756,6 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
-
-
-"""
-    BFGSOptimizationResults
-
-### Members
-
-"""
-mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
-    x₀ :: Tx
-    minimizer  :: Tx
-    minimum    :: Tf
-    iterations :: Int
-    δx :: Tc
-    Δx :: Tc
-    δf :: Tc
-    Δf :: Tc
-    resid :: Tc
-    gconv :: Bool
-end
-
 include("hagerzhang.jl")
 
 function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
@@ -974,9 +953,3 @@ end
 function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
 end
-
-eval_δf(d::BFGSDifferentiable, s::BFGSState) = abs(value(d) - s.fₚ)
-eval_Δf(d::BFGSDifferentiable, s::BFGSState) = eval_δf(d, s) / abs(value(d))
-eval_δx(s::BFGSState) = maxdiff(s.x, s.xₚ)
-eval_Δx(s::BFGSState) = eval_δx(s) / maximum(abs, s.x)
-eval_resid(d::BFGSDifferentiable) = maximum(abs, gradient(d))
