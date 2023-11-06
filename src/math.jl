@@ -1273,3 +1273,26 @@ function init_state(d::BFGSDifferentiable, x₀::AbstractArray)
               H⁻¹,
               real(one(T)))
 end
+
+function update_state!(d::BFGSDifferentiable, s::BFGSState)
+    T = eltype(s.ls)
+
+    # Set the search direction
+    #
+    # Note that Search direction is the negative gradient divided by
+    # the approximate Hessian
+    mul!(vec(s.ls), s.H⁻¹, vec(gradient(d)))
+    rmul!(s.ls, T(-1))
+
+    # Maintain a record of the previous gradient
+    copyto!(s.gₚ, gradient(d))
+
+    # Determine the distance of movement along the search line
+    lssuccess = linesearch!(s, d)
+
+    # Update current position
+    s.δx .= s.alpha .* s.ls
+    s.x .= s.x .+ s.δx
+
+    lssuccess == false # break on linesearch error
+end
