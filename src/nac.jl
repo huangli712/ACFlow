@@ -922,9 +922,9 @@ function update_h!(d::BFGSDifferentiable, state::BFGSState)
     end
 end
 
-function trace!(d::BFGSDifferentiable, iteration, curr_time=time())
+function trace!(d::BFGSDifferentiable, iter, curr_time=time())
     gnorm = norm(gradient(d), Inf)
-    @printf("%4d %14e %14e %8.4f\n", iteration, value(d), gnorm, curr_time)
+    @printf("%4d %14e %14e %8.4f\n", iter, value(d), gnorm, curr_time)
     flush(stdout)
 end
 
