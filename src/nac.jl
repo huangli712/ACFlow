@@ -912,7 +912,9 @@ function update_h!(d::BFGSDifferentiable, s::BFGSState)
                 c2dxj = c2 * dx[j]'
                 c2uj  = c2 *  u[j]'
                 for i in 1:n
-                    invH[i, j] = muladd(dx[i], c1dxj, muladd(-u[i], c2dxj, muladd(c2uj, -dx[i], invH[i, j])))
+                    invH[i, j] = muladd(dx[i], c1dxj,
+                                        muladd(-u[i], c2dxj,
+                                              muladd(c2uj, -dx[i], invH[i, j])))
                 end
             end
         else
