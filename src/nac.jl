@@ -756,6 +756,18 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
+"""
+    BFGSState
+
+x ->  # Maintain current state in state.x
+s ->  # Store current search direction in state.s
+dx ->  # Store changes in position in state.dx
+dg ->  # Store changes in gradient in state.dg
+x_prev ->  # Maintain previous state in state.x_prev
+g_prev ->  # Store previous gradient in state.g_prev
+f_prev ->  # Store previous f in state.f_prev
+invH ->  # Store current invH in state.invH
+"""
 mutable struct BFGSState{Tx, Tm, T, G}
     x :: Tx
     s :: Tx
@@ -847,14 +859,14 @@ function init_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
 
     # Maintain a cache for line search results
     # Trace the history of states visited
-    BFGSState(initial_x, # Maintain current state in state.x
-              similar(initial_x), # Store current search direction in state.s
-              similar(initial_x), # Store changes in position in state.dx
-              similar(initial_x), # Store changes in gradient in state.dg
-              copy(initial_x), # Maintain previous state in state.x_prev
-              copy(gradient(d)), # Store previous gradient in state.g_prev
-              real(T)(NaN), # Store previous f in state.f_prev
-              invH0, # Store current invH in state.invH
+    BFGSState(initial_x,
+              similar(initial_x),
+              similar(initial_x),
+              similar(initial_x),
+              copy(initial_x),
+              copy(gradient(d)),
+              real(T)(NaN),
+              invH0,
               real(one(T))
     )
 end
