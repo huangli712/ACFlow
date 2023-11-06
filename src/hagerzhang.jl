@@ -339,9 +339,9 @@ function secant2!(ϕdϕ,
                   ia::Integer,
                   ib::Integer,
                   phi_lim::Real,
-                  delta::Real = DEFAULTDELTA,
-                  sigma::Real = DEFAULTSIGMA,
-                  display::Integer = 0)
+                  delta::Real,
+                  sigma::Real,
+                  display::Integer)
     phi_0 = values[1]
     dphi_0 = slopes[1]
     a = alphas[ia]
