@@ -5,6 +5,22 @@
 #     Transactions on Mathematical Software 32: 113–137.
 #
 
+# Display flags are represented as a bitfield
+# (not exported, but can use via LineSearches.ITER, for example)
+const one64 = convert(UInt64, 1)
+const BRACKET     = one64 << 8
+const LINESEARCH  = one64 << 9
+const UPDATE      = one64 << 10
+const SECANT2     = one64 << 11
+const BISECT      = one64 << 12
+const DEFAULTDELTA = 0.1
+const DEFAULTSIGMA = 0.9
+
+mutable struct LineSearchException{T<:Real} <: Exception
+    message::AbstractString
+    alpha::T
+end
+
 mutable struct InitialStatic{T}
     alpha::T
     scaled::Bool
@@ -24,10 +40,7 @@ function (is::InitialStatic{T})(state::BFGSState) where T
     end
 end
 
-mutable struct LineSearchException{T<:Real} <: Exception
-    message::AbstractString
-    alpha::T
-end
+
 
 function make_ϕ(df::BFGSDifferentiable, x_new, x, s)
     function ϕ(α)
@@ -55,24 +68,6 @@ function make_ϕ_ϕdϕ(df::BFGSDifferentiable, x_new, x, s)
 end
 
 
-
-# Display flags are represented as a bitfield
-# (not exported, but can use via LineSearches.ITER, for example)
-const one64 = convert(UInt64, 1)
-const BRACKET     = one64 << 8
-const LINESEARCH  = one64 << 9
-const UPDATE      = one64 << 10
-const SECANT2     = one64 << 11
-const BISECT      = one64 << 12
-const DEFAULTDELTA = 0.1 # Values taken from HZ paper (Nocedal & Wright recommends 0.01?)
-const DEFAULTSIGMA = 0.9 # Values taken from HZ paper (Nocedal & Wright recommends 0.1 for GradientDescent)
-
-"""
-Conjugate gradient line search implementation from:
-  W. W. Hager and H. Zhang (2006) Algorithm 851: CG_DESCENT, a
-    conjugate gradient method with guaranteed descent. ACM
-    Transactions on Mathematical Software 32: 113–137.
-"""
 
 mutable struct HagerZhang{T, Tm}
     delta::T # DEFAULTDELTA # c_1 Wolfe sufficient decrease condition
@@ -113,8 +108,6 @@ function (ls::HagerZhang)(df::BFGSDifferentiable, x::AbstractArray{T},
     ls(ϕ, ϕdϕ, α::Real, phi_0, dphi_0)
 end
 
-(ls::HagerZhang)(ϕ, dϕ, ϕdϕ, c, phi_0, dphi_0) = ls(ϕ, ϕdϕ, c, phi_0, dphi_0)
-
 #function unpack end
 @inline unpack(x, ::Val{f}) where {f} = getproperty(x, f)
 @inline unpack(x::AbstractDict{Symbol}, ::Val{k}) where {k} = x[k]
@@ -140,8 +133,16 @@ function (ls::HagerZhang)(ϕ, ϕdϕ,
                           c::T,
                           phi_0::Real,
                           dphi_0::Real) where T # Should c and phi_0 be same type?
-    @unpack delta, sigma, alphamax, rho, epsilon, gamma,
-            linesearchmax, psi3, display, mayterminate = ls
+    delta = ls.delta
+    sigma = ls.sigma
+    alphamax = ls.alphamax
+    rho = ls.rho
+    epsilon = ls.epsilon
+    gamma = ls.gamma
+    linesearchmax = ls.linesearchmax
+    psi3 = ls.psi3
+    display = ls.display
+    mayterminate = ls.mayterminate
 
     zeroT = convert(T, 0)
     if !(isfinite(phi_0) && isfinite(dphi_0))
