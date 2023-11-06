@@ -763,8 +763,8 @@ end
 
 * x ->  # Maintain current state in state.x
 * ls ->  # Store current search direction in state.s
-* dx ->  # Store changes in position in state.dx
-* dg ->  # Store changes in gradient in state.dg
+* δx ->  # Store changes in position in state.dx
+* δg ->  # Store changes in gradient in state.dg
 * xₚ ->  # Maintain previous state in state.xₚ
 * gₚ ->  # Store previous gradient in state.gₚ
 * fₚ ->  # Store previous f in state.fₚ
@@ -775,7 +775,7 @@ mutable struct BFGSState{Tx, Tm, T, G}
     x :: Tx
     ls :: Tx
     δx :: Tx
-    dg :: Tx
+    δg :: Tx
     xₚ :: Tx
     gₚ :: G
     fₚ :: T
@@ -911,14 +911,14 @@ function update_h!(d::BFGSDifferentiable, s::BFGSState)
     su = similar(s.x)
 
     # Measure the change in the gradient
-    s.dg .= gradient(d) .- s.gₚ
+    s.δg .= gradient(d) .- s.gₚ
 
     # Update inverse Hessian approximation using Sherman-Morrison equation
-    dx_dg = real(dot(s.δx, s.dg))
+    dx_dg = real(dot(s.δx, s.δg))
     if dx_dg > 0
-        mul!(vec(su), s.H⁻¹, vec(s.dg))
+        mul!(vec(su), s.H⁻¹, vec(s.δg))
 
-        c1 = (dx_dg + real(dot(s.dg, su))) / (dx_dg' * dx_dg)
+        c1 = (dx_dg + real(dot(s.δg, su))) / (dx_dg' * dx_dg)
         c2 = 1 / dx_dg
 
         # H⁻¹ = H⁻¹ + c1 * (s * s') - c2 * (u * s' + s * u')
