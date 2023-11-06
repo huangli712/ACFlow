@@ -757,17 +757,17 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
 end
 
 mutable struct BFGSState{Tx, Tm, T, G}
-    x::Tx
+    x :: Tx
     x_prev :: Tx
     g_prev :: G
     f_x_prev :: T
-    dx::Tx
-    dg::Tx
-    u::Tx
-    invH::Tm
-    s::Tx
-    x_ls::Tx
-    alpha::T
+    dx :: Tx
+    dg :: Tx
+    u :: Tx
+    invH :: Tm
+    s :: Tx
+    x_ls :: Tx
+    alpha :: T
 end
 
 mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
