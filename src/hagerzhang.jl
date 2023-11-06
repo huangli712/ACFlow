@@ -1,3 +1,10 @@
+#
+# Conjugate gradient line search implementation from:
+#   W. W. Hager and H. Zhang (2006) Algorithm 851: CG_DESCENT, a
+#     conjugate gradient method with guaranteed descent. ACM
+#     Transactions on Mathematical Software 32: 113–137.
+#
+
 mutable struct InitialStatic{T}
     alpha::T
     scaled::Bool
@@ -47,12 +54,7 @@ function make_ϕ_ϕdϕ(df::BFGSDifferentiable, x_new, x, s)
     make_ϕ(df, x_new, x, s), ϕdϕ
 end
 
-#
-# Conjugate gradient line search implementation from:
-#   W. W. Hager and H. Zhang (2006) Algorithm 851: CG_DESCENT, a
-#     conjugate gradient method with guaranteed descent. ACM
-#     Transactions on Mathematical Software 32: 113–137.
-#
+
 
 # Display flags are represented as a bitfield
 # (not exported, but can use via LineSearches.ITER, for example)
