@@ -21,7 +21,6 @@ end
 
 function LS(df::BFGSDifferentiable, x::Vector{C64}, s::Vector{C64},
             c::F64, phi_0::F64, dphi_0::F64)
-    @show typeof(x), typeof(s), typeof(dphi_0)
     delta = 0.1
     sigma = 0.9
     alphamax = Inf
