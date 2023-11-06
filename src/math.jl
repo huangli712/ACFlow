@@ -234,7 +234,7 @@ function deriv2(x::AbstractVector, y::AbstractVector)
     return 2 .* num ./ den
 end
 
-function gradient(f, x)
+function gradient_noad(f, x)
     𝑠 = cbrt(eps(F64))
 
     ∇𝑓 = zero(x)
