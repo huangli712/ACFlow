@@ -756,32 +756,7 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     return causality
 end
 
-"""
-    BFGSState
 
-### Members
-
-* x     -> Current position.
-* ls    -> Current search direction.
-* δx    -> Changes in position.
-* δg    -> Changes in gradient.
-* xₚ    -> Previous position.
-* gₚ    -> Previous gradient.
-* fₚ    -> Previous f in xₚ.
-* H⁻¹   -> Current inverse Hessian matrix.
-* alpha ->
-"""
-mutable struct BFGSState{Tx, Tm, T, G}
-    x :: Tx
-    ls :: Tx
-    δx :: Tx
-    δg :: Tx
-    xₚ :: Tx
-    gₚ :: G
-    fₚ :: T
-    H⁻¹ :: Tm
-    alpha :: T
-end
 
 """
     BFGSOptimizationResults
@@ -790,16 +765,16 @@ end
 
 """
 mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
-    x₀   :: Tx
-    minimizer   :: Tx
-    minimum     :: Tf
-    iterations  :: Int
+    x₀ :: Tx
+    minimizer  :: Tx
+    minimum    :: Tf
+    iterations :: Int
     δx :: Tc
     Δx :: Tc
     δf :: Tc
     Δf :: Tc
-    gconv :: Bool
     resid :: Tc
+    gconv :: Bool
 end
 
 include("hagerzhang.jl")
@@ -845,15 +820,15 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
     # we can just check minimum, as we've earlier enforced same types/eltypes
     # in variables besides the option settings
     return BFGSOptimizationResults(x₀,
-                                        state.x,
-                                        value(d),
-                                        iteration,
-                                        eval_δx(state),
-                                        eval_Δx(state),
-                                        eval_δf(d, state),
-                                        eval_Δf(d, state),
-                                        gconv,
-                                        eval_resid(d)
+                                    state.x,
+                                    value(d),
+                                    iteration,
+                                    eval_δx(state),
+                                    eval_Δx(state),
+                                    eval_δf(d, state),
+                                    eval_Δf(d, state),
+                                    eval_resid(d),
+                                    gconv
     )
 end
 

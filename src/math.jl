@@ -1158,3 +1158,29 @@ function value_gradient!(obj::BFGSDifferentiable, x)
     obj.𝐹 = obj.ℱ!(x)
 end
 
+"""
+    BFGSState
+
+### Members
+
+* x     -> Current position.
+* ls    -> Current search direction.
+* δx    -> Changes in position.
+* δg    -> Changes in gradient.
+* xₚ    -> Previous position.
+* gₚ    -> Previous gradient.
+* fₚ    -> Previous f in xₚ.
+* H⁻¹   -> Current inverse Hessian matrix.
+* alpha ->
+"""
+mutable struct BFGSState{Tx, Tm, T, G}
+    x :: Tx
+    ls :: Tx
+    δx :: Tx
+    δg :: Tx
+    xₚ :: Tx
+    gₚ :: G
+    fₚ :: T
+    H⁻¹ :: Tm
+    alpha :: T
+end
