@@ -763,7 +763,7 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
     t₀ = time()
 
     d = BFGSDifferentiable(f, g, x₀)
-    state = init_state(d, x₀)
+    s = init_state(d, x₀)
 
     # Prepare iteration counter
     gconv = !isfinite(value(d)) || any(!isfinite, gradient(d))
@@ -775,14 +775,14 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
     while !gconv && iteration < max_iter
         iteration += 1
 
-        ls_success = !update_state!(d, state)
+        ls_success = !update_state!(d, s)
         if !ls_success
             break
         end
 
-        update_g!(d, state)
+        update_g!(d, s)
         gconv = (eval_resid(d) ≤ 1e-8)
-        update_h!(d, state)
+        update_h!(d, s)
 
         # Print trace
         trace!(d, iteration, time() - t₀)
@@ -793,9 +793,9 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
         end
     end # while
 
-    BFGSOptimizationResults(x₀, state.x, value(d), iteration,
-                            eval_δx(state), eval_Δx(state),
-                            eval_δf(d, state), eval_Δf(d, state),
+    BFGSOptimizationResults(x₀, s.x, value(d), iteration,
+                            eval_δx(s), eval_Δx(s),
+                            eval_δf(d, s), eval_Δf(d, s),
                             eval_resid(d),
                             gconv)
 end
