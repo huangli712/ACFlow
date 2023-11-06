@@ -949,7 +949,3 @@ function converged(r::BFGSOptimizationResults)
     g_isfinite = isfinite(r.resid)
     return conv_flags && all((x_isfinite, f_isfinite, g_isfinite))
 end
-
-function maxdiff(x::AbstractArray, y::AbstractArray)
-    return mapreduce((a, b) -> abs(a - b), max, x, y)
-end
