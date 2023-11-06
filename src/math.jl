@@ -1360,8 +1360,8 @@ function linesearch!(s::BFGSState, d::BFGSDifferentiable)
     end
 
     # Guess an alpha
-    LS = InitialStatic()
-    LS(s)
+    #LS = InitialStatic()
+    LS(s, 1.0, false)
 
     # Store current x and f(x) for next iteration
     ϕ₀  = value(d)

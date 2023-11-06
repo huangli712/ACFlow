@@ -29,6 +29,16 @@ function (is::InitialStatic{T})(state::BFGSState) where T
     end
 end
 
+function LS(state::BFGSState, alpha::T, scaled::Bool) where T
+    PT = promote_type(T, real(eltype(state.ls)))
+    if scaled == true && (ns = real(norm(state.ls))) > convert(PT, 0)
+        # TODO: Type instability if there's a type mismatch between is.alpha and ns?
+        state.alpha = convert(PT, min(alpha, ns)) / ns
+    else
+        state.alpha = convert(PT, alpha)
+    end
+end
+
 function make_ϕdϕ(df::BFGSDifferentiable, x_new, x, s)
     function ϕdϕ(α)
         # Move a distance of alpha in the direction of s
