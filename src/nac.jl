@@ -890,22 +890,23 @@ function update_g!(d::BFGSDifferentiable, state::BFGSState)
     value_gradient!(d, state.x)
 end
 
-function update_h!(d::BFGSDifferentiable, state::BFGSState)
-    n = length(state.x)
+function update_h!(d::BFGSDifferentiable, s::BFGSState)
+    n = length(s.x)
+
     # Measure the change in the gradient
-    state.dg .= gradient(d) .- state.g_prev
+    s.dg .= gradient(d) .- s.g_prev
 
-    # Update the inverse Hessian approximation using Sherman-Morrison
-    dx_dg = real(dot(state.dx, state.dg))
+    # Update inverse Hessian approximation using Sherman-Morrison equation
+    dx_dg = real(dot(s.dx, s.dg))
     if dx_dg > 0
-        mul!(vec(state.u), state.invH, vec(state.dg))
+        mul!(vec(s.u), s.invH, vec(s.dg))
 
-        c1 = (dx_dg + real(dot(state.dg, state.u))) / (dx_dg' * dx_dg)
+        c1 = (dx_dg + real(dot(s.dg, s.u))) / (dx_dg' * dx_dg)
         c2 = 1 / dx_dg
 
         # invH = invH + c1 * (s * s') - c2 * (u * s' + s * u')
-        if(state.invH isa Array) # i.e. not a CuArray
-            invH = state.invH; dx = state.dx; u = state.u;
+        if s.invH isa Array
+            invH = s.invH; dx = s.dx; u = s.u;
             @inbounds for j in 1:n
                 c1dxj = c1 * dx[j]'
                 c2dxj = c2 * dx[j]'
@@ -915,14 +916,14 @@ function update_h!(d::BFGSDifferentiable, state::BFGSState)
                 end
             end
         else
-            mul!(state.invH,vec(state.dx),vec(state.dx)', c1,1)
-            mul!(state.invH,vec(state.u ),vec(state.dx)',-c2,1)
-            mul!(state.invH,vec(state.dx),vec(state.u )',-c2,1)
+            mul!(s.invH, vec(s.dx), vec(s.dx)',  c1, 1)
+            mul!(s.invH, vec(s.u ), vec(s.dx)', -c2, 1)
+            mul!(s.invH, vec(s.dx), vec(s.u )', -c2, 1)
         end
     end
 end
 
-function trace!(d::BFGSDifferentiable, iter, curr_time=time())
+function trace!(d::BFGSDifferentiable, iter, curr_time)
     gnorm = norm(gradient(d), Inf)
     @printf("%4d %14e %14e %8.4f\n", iter, value(d), gnorm, curr_time)
     flush(stdout)
