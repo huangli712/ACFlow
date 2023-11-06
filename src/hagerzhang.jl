@@ -19,8 +19,9 @@ function LS(state::BFGSState, alpha::T, scaled::Bool) where T
     end
 end
 
-function LS(df::BFGSDifferentiable, x::AbstractArray,
-            s::AbstractArray, c::Real, phi_0::Real, dphi_0::Real)
+function LS(df::BFGSDifferentiable, x::Vector{C64}, s::Vector{C64},
+            c::F64, phi_0::F64, dphi_0::F64)
+    @show typeof(x), typeof(s), typeof(dphi_0)
     delta = 0.1
     sigma = 0.9
     alphamax = Inf
