@@ -1349,3 +1349,49 @@ function trace!(d::BFGSDifferentiable, iter, curr_time)
     #
     flush(stdout)
 end
+
+function linesearch!(s::BFGSState, d::BFGSDifferentiable)
+    # Calculate search direction dphi0
+    dϕ₀ = real(dot(gradient(d), s.ls))
+
+    # Reset the direction if it becomes corrupted
+    if dϕ₀ >= zero(dϕ₀)
+        dϕ₀ = real(dot(gradient(d), s.ls))
+    end
+
+    # Guess an alpha
+    LS = InitialStatic()
+    LS(s)
+
+    # Store current x and f(x) for next iteration
+    ϕ₀  = value(d)
+    s.fₚ = ϕ₀
+    copyto!(s.xₚ, s.x)
+
+    # Perform line search
+    try
+        LS = HagerZhang()
+        s.alpha, _ = LS(d, s.x, s.ls, s.alpha, ϕ₀, dϕ₀)
+        return true # lssuccess = true
+    catch ex
+        # Catch LineSearchException to allow graceful exit
+        if isa(ex, LineSearchException)
+            s.alpha = ex.alphagit 
+            return false # lssuccess = false
+        else
+            rethrow(ex)
+        end
+    end
+end
+
+function converged(r::BFGSOptimizationResults)
+    conv_flags = r.gconv
+    x_isfinite = isfinite(r.δx) || isnan(r.Δx)
+    f_isfinite = if r.iterations > 0
+            isfinite(r.δf) || isnan(r.Δf)
+        else
+            true
+        end
+    g_isfinite = isfinite(r.resid)
+    return conv_flags && all((x_isfinite, f_isfinite, g_isfinite))
+end
