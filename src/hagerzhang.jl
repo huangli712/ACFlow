@@ -11,7 +11,7 @@ const one64 = convert(UInt64, 1)
 const BRACKET     = 256
 const LINESEARCH  = 512
 const UPDATE      = 1024
-const SECANT2     = 2048
+#const SECANT2     = 2048
 
 mutable struct LineSearchException{T<:Real} <: Exception
     message::AbstractString
@@ -340,9 +340,6 @@ function secant2!(ϕdϕ,
                       @sprintf "(dphi_a = %f; dphi_b = %f)" dphi_a dphi_b))
     end
     c = secant(a, b, dphi_a, dphi_b)
-    if display & SECANT2 > 0
-        println("secant2: a = ", a, ", b = ", b, ", c = ", c)
-    end
     @assert isfinite(c)
     # phi_c = phi(tmpc, c) # Replace
     phi_c, dphi_c = ϕdϕ(c)
@@ -354,16 +351,10 @@ function secant2!(ϕdϕ,
 
     ic = length(alphas)
     if satisfies_wolfe(c, phi_c, dphi_c, phi_0, dphi_0, phi_lim, delta, sigma)
-        if display & SECANT2 > 0
-            println("secant2: first c satisfied Wolfe conditions")
-        end
         return true, ic, ic
     end
 
     iA, iB = update!(ϕdϕ, alphas, values, slopes, ia, ib, ic, phi_lim, display)
-    if display & SECANT2 > 0
-        println("secant2: iA = ", iA, ", iB = ", iB, ", ic = ", ic)
-    end
     a = alphas[iA]
     b = alphas[iB]
     doupdate = false
@@ -375,9 +366,6 @@ function secant2!(ϕdϕ,
         c = secant(alphas, values, slopes, ia, iA)
     end
     if (iA == ic || iB == ic) && a <= c <= b
-        if display & SECANT2 > 0
-            println("secant2: second c = ", c)
-        end
         # phi_c = phi(tmpc, c) # TODO: Replace
         phi_c, dphi_c = ϕdϕ(c)
         @assert isfinite(phi_c) && isfinite(dphi_c)
@@ -389,15 +377,9 @@ function secant2!(ϕdϕ,
         ic = length(alphas)
         # Check arguments here
         if satisfies_wolfe(c, phi_c, dphi_c, phi_0, dphi_0, phi_lim, delta, sigma)
-            if display & SECANT2 > 0
-                println("secant2: second c satisfied Wolfe conditions")
-            end
             return true, ic, ic
         end
         iA, iB = update!(ϕdϕ, alphas, values, slopes, iA, iB, ic, phi_lim, display)
-    end
-    if display & SECANT2 > 0
-        println("secant2 output: a = ", alphas[iA], ", b = ", alphas[iB])
     end
     return false, iA, iB
 end
