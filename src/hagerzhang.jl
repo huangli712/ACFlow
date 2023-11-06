@@ -64,10 +64,8 @@ function make_ϕ_ϕdϕ(df::BFGSDifferentiable, x_new, x, s)
         # Calculate ϕ'(a_i)
         value(df), real(dot(gradient(df), s))
     end
-    make_ϕ(df, x_new, x, s), ϕdϕ
+    ϕdϕ
 end
-
-
 
 mutable struct HagerZhang{T, Tm}
     delta::T # DEFAULTDELTA # c_1 Wolfe sufficient decrease condition
@@ -103,12 +101,12 @@ function (ls::HagerZhang)(df::BFGSDifferentiable, x::AbstractArray{T},
                           s::AbstractArray{T}, α::Real,
                           phi_0::Real, dphi_0::Real) where T
     x_new = similar(x)
-    ϕ, ϕdϕ = make_ϕ_ϕdϕ(df, x_new, x, s)
-    ls(ϕ, ϕdϕ, α::Real, phi_0, dphi_0)
+    ϕdϕ = make_ϕ_ϕdϕ(df, x_new, x, s)
+    ls(ϕdϕ, α::Real, phi_0, dphi_0)
 end
 
 # TODO: Should we deprecate the interface that only uses the ϕ and ϕd\phi arguments?
-function (ls::HagerZhang)(ϕ, ϕdϕ,
+function (ls::HagerZhang)(ϕdϕ,
                           c::T,
                           phi_0::Real,
                           dphi_0::Real) where T # Should c and phi_0 be same type?
