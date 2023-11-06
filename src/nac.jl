@@ -939,34 +939,33 @@ function trace!(d::BFGSDifferentiable, iteration, curr_time=time())
     false
 end
 
-function linesearch!(state::BFGSState, d::BFGSDifferentiable)
+function linesearch!(s::BFGSState, d::BFGSDifferentiable)
     # Calculate search direction dphi0
-    dphi_0 = real(dot(gradient(d), state.s))
+    dphi_0 = real(dot(gradient(d), s.s))
 
     # Reset the direction if it becomes corrupted
     if dphi_0 >= zero(dphi_0)
-        dphi_0 = real(dot(gradient(d), state.s))
+        dphi_0 = real(dot(gradient(d), s.s))
     end
 
     # Guess an alpha
     guess = InitialStatic()
     linesearch = HagerZhang()
     phi_0  = value(d)
-    guess(linesearch, state, phi_0, dphi_0, d)
+    guess(linesearch, s, phi_0, dphi_0, d)
 
     # Store current x and f(x) for next iteration
-    state.f_x_prev = phi_0
-    copyto!(state.x_prev, state.x)
+    s.f_x_prev = phi_0
+    copyto!(s.x_prev, s.x)
 
     # Perform line search
     try
-        state.alpha, _ = linesearch(d, state.x, state.s, state.alpha,
-                               state.x_ls, phi_0, dphi_0)
+        s.alpha, _ = linesearch(d, s.x, s.s, s.alpha, s.x_ls, phi_0, dphi_0)
         return true # lssuccess = true
     catch ex
         # catch LineSearchException to allow graceful exit
         if isa(ex, LineSearchException)
-            state.alpha = ex.alpha
+            s.alpha = ex.alphagit 
             return false # lssuccess = false
         else
             rethrow(ex)
