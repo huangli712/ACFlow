@@ -760,7 +760,7 @@ end
     BFGSState
 
 x ->  # Maintain current state in state.x
-s ->  # Store current search direction in state.s
+ls ->  # Store current search direction in state.s
 dx ->  # Store changes in position in state.dx
 dg ->  # Store changes in gradient in state.dg
 x_prev ->  # Maintain previous state in state.x_prev
@@ -780,6 +780,10 @@ mutable struct BFGSState{Tx, Tm, T, G}
     alpha :: T
 end
 
+"""
+    BFGSOptimizationResults
+
+"""
 mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
     initial_x   :: Tx
     minimizer   :: Tx
