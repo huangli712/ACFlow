@@ -765,13 +765,12 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
     d = BFGSDifferentiable(f, g, x₀)
     s = init_state(d, x₀)
 
-    # Prepare iteration counter
     gconv = !isfinite(value(d)) || any(!isfinite, gradient(d))
     iteration = 0
 
-    @printf "Iter     Function value   Gradient norm \n"
-    trace!(d, iteration, time() - t₀)
+    @printf("Tracing BFGS Optimization\n")
 
+    trace!(d, iteration, time() - t₀)
     while !gconv && iteration < max_iter
         iteration += 1
 
@@ -884,7 +883,12 @@ end
 
 function trace!(d::BFGSDifferentiable, iter, curr_time)
     gnorm = norm(gradient(d), Inf)
-    @printf("%4d %14e %14e %8.4f\n", iter, value(d), gnorm, curr_time)
+    #
+    @printf("iter = %4d ", iter)
+    @printf("fval = %8.4e ", value(d))
+    @printf("gnorm = %8.4e ", gnorm)
+    @printf("time = %8.4f (s)\n", curr_time)
+    #
     flush(stdout)
 end
 
