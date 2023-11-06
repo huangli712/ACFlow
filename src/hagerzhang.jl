@@ -8,7 +8,6 @@
 # Display flags are represented as a bitfield
 # (not exported, but can use via LineSearches.ITER, for example)
 const one64 = convert(UInt64, 1)
-const BRACKET     = 256
 
 mutable struct LineSearchException{T<:Real} <: Exception
     message::AbstractString
@@ -142,13 +141,6 @@ function (ls::HagerZhang)(ϕdϕ,
     iter = 1
     cold = -one(T)
     while !isbracketed && iter < linesearchmax
-        if display & BRACKET > 0
-            println("bracketing: ia = ", ia,
-                    ", ib = ", ib,
-                    ", c = ", c,
-                    ", phi_c = ", phi_c,
-                    ", dphi_c = ", dphi_c)
-        end
         if dphi_c >= zeroT
             # We've reached the upward slope, so we have b; examine
             # previous values to find a
@@ -189,30 +181,16 @@ function (ls::HagerZhang)(ϕdϕ,
             c *= rho
             if c > alphamax
                 c = alphamax
-                if display & BRACKET > 0
-                    println("bracket: exceeding alphamax, using c = alphamax = ", alphamax,
-                    ", cold = ", cold)
-                end
             end
             phi_c, dphi_c = ϕdϕ(c)
             iterfinite = 1
             while !(isfinite(phi_c) && isfinite(dphi_c)) && c > nextfloat(cold) && iterfinite < iterfinitemax
                 alphamax = c # shrinks alphamax, assumes that steps >= c can never have finite phi_c and dphi_c
                 iterfinite += 1
-                if display & BRACKET > 0
-                    println("bracket: non-finite value, bisection")
-                end
                 c = (cold + c) / 2
                 phi_c, dphi_c = ϕdϕ(c)
             end
             if !(isfinite(phi_c) && isfinite(dphi_c))
-                if display & BRACKET > 0
-                    println("Warning: failed to expand interval to bracket with finite values. If this happens frequently, check your function and gradient.")
-                    println("c = ", c,
-                            ", alphamax = ", alphamax,
-                            ", phi_c = ", phi_c,
-                            ", dphi_c = ", dphi_c)
-                end
                 return cold, phi_cold
             end
             push!(alphas, c)
