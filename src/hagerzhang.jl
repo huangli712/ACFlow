@@ -51,12 +51,11 @@ function HagerZhang()
     HagerZhang(0.1, 0.9, Inf, 5.0, 1e-6, 0.66, 50, 0.1, 0, Ref{Bool}(false))
 end
 
-function LS(df::BFGSDifferentiable, x::AbstractArray{T},
-                          s::AbstractArray{T}, α::Real,
-                          phi_0::Real, dphi_0::Real) where T
+function LS(df::BFGSDifferentiable, x::AbstractArray,
+                          s::AbstractArray, c::Real,
+                          phi_0::Real, dphi_0::Real)
     x_new = similar(x)
     ϕdϕ = make_ϕdϕ(df, x_new, x, s)
-    c = α
 
     ls = HagerZhang()
     delta = ls.delta
@@ -69,6 +68,8 @@ function LS(df::BFGSDifferentiable, x::AbstractArray{T},
     psi3 = ls.psi3
     display = ls.display
     mayterminate = ls.mayterminate
+
+    T = typeof(c)
 
     zeroT = convert(T, 0)
     if !(isfinite(phi_0) && isfinite(dphi_0))
