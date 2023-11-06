@@ -34,7 +34,6 @@ function LS(df::BFGSDifferentiable, x::AbstractArray,
     gamma = 0.66
     linesearchmax = 50
     psi3 = 0.1
-    display = 0
     mayterminate = Ref{Bool}(false)
 
     T = typeof(c)
@@ -158,7 +157,7 @@ function LS(df::BFGSDifferentiable, x::AbstractArray,
             mayterminate[] = false # reset in case another initial guess is used next
             return a, values[ia] # lsr.value[ia]
         end
-        iswolfe, iA, iB = secant2!(ϕdϕ, alphas, values, slopes, ia, ib, phi_lim, delta, sigma, display)
+        iswolfe, iA, iB = secant2!(ϕdϕ, alphas, values, slopes, ia, ib, phi_lim, delta, sigma)
         if iswolfe
             mayterminate[] = false # reset in case another initial guess is used next
             return alphas[iA], values[iA] # lsr.value[iA]
@@ -184,7 +183,7 @@ function LS(df::BFGSDifferentiable, x::AbstractArray,
             push!(values, phi_c)
             push!(slopes, dphi_c)
 
-            ia, ib = update!(ϕdϕ, alphas, values, slopes, iA, iB, length(alphas), phi_lim, display)
+            ia, ib = update!(ϕdϕ, alphas, values, slopes, iA, iB, length(alphas), phi_lim)
         end
         iter += 1
     end
@@ -241,8 +240,7 @@ function secant2!(ϕdϕ,
                   ib::Integer,
                   phi_lim::Real,
                   delta::Real,
-                  sigma::Real,
-                  display::Integer)
+                  sigma::Real)
     phi_0 = values[1]
     dphi_0 = slopes[1]
     a = alphas[ia]
@@ -271,7 +269,7 @@ function secant2!(ϕdϕ,
         return true, ic, ic
     end
 
-    iA, iB = update!(ϕdϕ, alphas, values, slopes, ia, ib, ic, phi_lim, display)
+    iA, iB = update!(ϕdϕ, alphas, values, slopes, ia, ib, ic, phi_lim)
     a = alphas[iA]
     b = alphas[iB]
     doupdate = false
@@ -296,7 +294,7 @@ function secant2!(ϕdϕ,
         if satisfies_wolfe(c, phi_c, dphi_c, phi_0, dphi_0, phi_lim, delta, sigma)
             return true, ic, ic
         end
-        iA, iB = update!(ϕdϕ, alphas, values, slopes, iA, iB, ic, phi_lim, display)
+        iA, iB = update!(ϕdϕ, alphas, values, slopes, iA, iB, ic, phi_lim)
     end
     return false, iA, iB
 end
@@ -312,8 +310,7 @@ function update!(ϕdϕ,
                  ia::Integer,
                  ib::Integer,
                  ic::Integer,
-                 phi_lim::Real,
-                 display::Integer = 0)
+                 phi_lim::Real)
     a = alphas[ia]
     b = alphas[ib]
     T = eltype(slopes)
