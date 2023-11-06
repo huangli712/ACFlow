@@ -765,12 +765,12 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
     d = BFGSDifferentiable(f, g, x₀)
     s = init_state(d, x₀)
 
-    gconv = !isfinite(value(d)) || any(!isfinite, gradient(d))
-    iteration = 0
-
     @printf("Tracing BFGS Optimization\n")
 
+    iteration = 0
     trace!(d, iteration, time() - t₀)
+
+    gconv = !isfinite(value(d)) || any(!isfinite, gradient(d))
     while !gconv && iteration < max_iter
         iteration += 1
 
@@ -780,7 +780,6 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
         end
 
         update_g!(d, s)
-        gconv = (eval_resid(d) ≤ 1e-8)
         update_h!(d, s)
 
         # Print trace
@@ -790,6 +789,8 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
             @warn "Terminated early due to NaN in gradient."
             break
         end
+
+        gconv = (eval_resid(d) ≤ 1e-8)
     end # while
 
     BFGSOptimizationResults(x₀, s.x, value(d), iteration,
