@@ -1215,3 +1215,61 @@ eval_Δf(d::BFGSDifferentiable, s::BFGSState) = eval_δf(d, s) / abs(value(d))
 eval_δx(s::BFGSState) = maxdiff(s.x, s.xₚ)
 eval_Δx(s::BFGSState) = eval_δx(s) / maximum(abs, s.x)
 eval_resid(d::BFGSDifferentiable) = maximum(abs, gradient(d))
+
+function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
+    # Initialize time stamp
+    t₀ = time()
+
+    d = BFGSDifferentiable(f, g, x₀)
+    s = init_state(d, x₀)
+
+    @printf("Tracing BFGS Optimization\n")
+
+    iteration = 0
+    trace!(d, iteration, time() - t₀)
+
+    gconv = !isfinite(value(d)) || any(!isfinite, gradient(d))
+    while !gconv && iteration < max_iter
+        iteration += 1
+
+        ls_success = !update_state!(d, s)
+        if !ls_success
+            break
+        end
+
+        update_g!(d, s)
+        update_h!(d, s)
+
+        # Print trace
+        trace!(d, iteration, time() - t₀)
+
+        if !all(isfinite, gradient(d))
+            @warn "Terminated early due to NaN in gradient."
+            break
+        end
+
+        gconv = (eval_resid(d) ≤ 1e-8)
+    end # while
+
+    BFGSOptimizationResults(x₀, s.x, value(d), iteration,
+                            eval_δx(s), eval_Δx(s),
+                            eval_δf(d, s), eval_Δf(d, s),
+                            eval_resid(d),
+                            gconv)
+end
+
+function init_state(d::BFGSDifferentiable, x₀::AbstractArray)
+    T = eltype(x₀)
+    value_gradient!(d, x₀)
+
+    x_ = reshape(x₀, :)
+    H⁻¹ = x_ .* x_' .* false
+    idxs = diagind(H⁻¹)
+    scale = T(1)
+    @. @view(H⁻¹[idxs]) = scale * true
+
+    BFGSState(x₀, similar(x₀), similar(x₀), similar(x₀), copy(x₀),
+              copy(gradient(d)), real(T)(NaN),
+              H⁻¹,
+              real(one(T)))
+end
