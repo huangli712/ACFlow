@@ -770,7 +770,7 @@ invH ->  # Store current invH in state.invH
 """
 mutable struct BFGSState{Tx, Tm, T, G}
     x :: Tx
-    s :: Tx
+    ls :: Tx
     dx :: Tx
     dg :: Tx
     x_prev :: Tx
@@ -872,14 +872,14 @@ function init_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
 end
 
 function update_state!(d::BFGSDifferentiable, s::BFGSState)
-    T = eltype(s.s)
+    T = eltype(s.ls)
 
     # Set the search direction
     #
     # Note that Search direction is the negative gradient divided by
     # the approximate Hessian
-    mul!(vec(s.s), s.invH, vec(gradient(d)))
-    rmul!(s.s, T(-1))
+    mul!(vec(s.ls), s.invH, vec(gradient(d)))
+    rmul!(s.ls, T(-1))
 
     # Maintain a record of the previous gradient
     copyto!(s.g_prev, gradient(d))
@@ -888,7 +888,7 @@ function update_state!(d::BFGSDifferentiable, s::BFGSState)
     lssuccess = linesearch!(s, d)
 
     # Update current position
-    s.dx .= s.alpha .* s.s
+    s.dx .= s.alpha .* s.ls
     s.x .= s.x .+ s.dx
 
     lssuccess == false # break on linesearch error
@@ -943,11 +943,11 @@ end
 
 function linesearch!(s::BFGSState, d::BFGSDifferentiable)
     # Calculate search direction dphi0
-    dphi_0 = real(dot(gradient(d), s.s))
+    dphi_0 = real(dot(gradient(d), s.ls))
 
     # Reset the direction if it becomes corrupted
     if dphi_0 >= zero(dphi_0)
-        dphi_0 = real(dot(gradient(d), s.s))
+        dphi_0 = real(dot(gradient(d), s.ls))
     end
 
     # Guess an alpha
@@ -962,7 +962,7 @@ function linesearch!(s::BFGSState, d::BFGSDifferentiable)
     # Perform line search
     try
         LS = HagerZhang()
-        s.alpha, _ = LS(d, s.x, s.s, s.alpha, phi_0, dphi_0)
+        s.alpha, _ = LS(d, s.x, s.ls, s.alpha, phi_0, dphi_0)
         return true # lssuccess = true
     catch ex
         # Catch LineSearchException to allow graceful exit
