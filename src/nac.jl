@@ -759,24 +759,27 @@ end
 """
     BFGSState
 
-x ->  # Maintain current state in state.x
-ls ->  # Store current search direction in state.s
-dx ->  # Store changes in position in state.dx
-dg ->  # Store changes in gradient in state.dg
-x_prev ->  # Maintain previous state in state.x_prev
-g_prev ->  # Store previous gradient in state.g_prev
-f_prev ->  # Store previous f in state.f_prev
-invH ->  # Store current invH in state.invH
+### Members
+
+* x ->  # Maintain current state in state.x
+* ls ->  # Store current search direction in state.s
+* dx ->  # Store changes in position in state.dx
+* dg ->  # Store changes in gradient in state.dg
+* xₚ ->  # Maintain previous state in state.xₚ
+* gₚ ->  # Store previous gradient in state.gₚ
+* fₚ ->  # Store previous f in state.fₚ
+* H⁻¹ ->  # Store current H⁻¹ in state.H⁻¹
+* alpha ->
 """
 mutable struct BFGSState{Tx, Tm, T, G}
     x :: Tx
     ls :: Tx
     dx :: Tx
     dg :: Tx
-    x_prev :: Tx
-    g_prev :: G
-    f_prev :: T
-    invH :: Tm
+    xₚ :: Tx
+    gₚ :: G
+    fₚ :: T
+    H⁻¹ :: Tm
     alpha :: T
 end
 
@@ -882,11 +885,11 @@ function update_state!(d::BFGSDifferentiable, s::BFGSState)
     #
     # Note that Search direction is the negative gradient divided by
     # the approximate Hessian
-    mul!(vec(s.ls), s.invH, vec(gradient(d)))
+    mul!(vec(s.ls), s.H⁻¹, vec(gradient(d)))
     rmul!(s.ls, T(-1))
 
     # Maintain a record of the previous gradient
-    copyto!(s.g_prev, gradient(d))
+    copyto!(s.gₚ, gradient(d))
 
     # Determine the distance of movement along the search line
     lssuccess = linesearch!(s, d)
@@ -908,33 +911,33 @@ function update_h!(d::BFGSDifferentiable, s::BFGSState)
     su = similar(s.x)
 
     # Measure the change in the gradient
-    s.dg .= gradient(d) .- s.g_prev
+    s.dg .= gradient(d) .- s.gₚ
 
     # Update inverse Hessian approximation using Sherman-Morrison equation
     dx_dg = real(dot(s.dx, s.dg))
     if dx_dg > 0
-        mul!(vec(su), s.invH, vec(s.dg))
+        mul!(vec(su), s.H⁻¹, vec(s.dg))
 
         c1 = (dx_dg + real(dot(s.dg, su))) / (dx_dg' * dx_dg)
         c2 = 1 / dx_dg
 
-        # invH = invH + c1 * (s * s') - c2 * (u * s' + s * u')
-        if s.invH isa Array
-            invH = s.invH; dx = s.dx; u = su;
+        # H⁻¹ = H⁻¹ + c1 * (s * s') - c2 * (u * s' + s * u')
+        if s.H⁻¹ isa Array
+            H⁻¹ = s.H⁻¹; dx = s.dx; u = su;
             @inbounds for j in 1:n
                 c1dxj = c1 * dx[j]'
                 c2dxj = c2 * dx[j]'
                 c2uj  = c2 *  u[j]'
                 for i in 1:n
-                    invH[i, j] = muladd(dx[i], c1dxj,
+                    H⁻¹[i, j] = muladd(dx[i], c1dxj,
                                         muladd(-u[i], c2dxj,
-                                              muladd(c2uj, -dx[i], invH[i, j])))
+                                              muladd(c2uj, -dx[i], H⁻¹[i, j])))
                 end
             end
         else
-            mul!(s.invH, vec(s.dx), vec(s.dx)',  c1, 1)
-            mul!(s.invH, vec(su ), vec(s.dx)', -c2, 1)
-            mul!(s.invH, vec(s.dx), vec(su )', -c2, 1)
+            mul!(s.H⁻¹, vec(s.dx), vec(s.dx)', +c1, 1)
+            mul!(s.H⁻¹, vec(su  ), vec(s.dx)', -c2, 1)
+            mul!(s.H⁻¹, vec(s.dx), vec(su  )', -c2, 1)
         end
     end
 end
@@ -960,8 +963,8 @@ function linesearch!(s::BFGSState, d::BFGSDifferentiable)
 
     # Store current x and f(x) for next iteration
     phi_0  = value(d)
-    s.f_prev = phi_0
-    copyto!(s.x_prev, s.x)
+    s.fₚ = phi_0
+    copyto!(s.xₚ, s.x)
 
     # Perform line search
     try
@@ -995,8 +998,8 @@ function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
 end
 
-eval_δf(d::BFGSDifferentiable, s::BFGSState) = abs(value(d) - s.f_prev)
+eval_δf(d::BFGSDifferentiable, s::BFGSState) = abs(value(d) - s.fₚ)
 eval_Δf(d::BFGSDifferentiable, s::BFGSState) = eval_δf(d, s) / abs(value(d))
-eval_δx(s::BFGSState) = maxdiff(s.x, s.x_prev)
+eval_δx(s::BFGSState) = maxdiff(s.x, s.xₚ)
 eval_Δx(s::BFGSState) = eval_δx(s) / maximum(abs, s.x)
 eval_resid(d::BFGSDifferentiable) = maximum(abs, gradient(d))
