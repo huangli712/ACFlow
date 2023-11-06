@@ -758,15 +758,14 @@ end
 
 mutable struct BFGSState{Tx, Tm, T, G}
     x :: Tx
+    u :: Tx
+    s :: Tx
+    dx :: Tx
+    dg :: Tx
     x_prev :: Tx
     g_prev :: G
     f_prev :: T
-    dx :: Tx
-    dg :: Tx
-    u :: Tx
     invH :: Tm
-    s :: Tx
-    x_ls :: Tx
     alpha :: T
 end
 
@@ -850,15 +849,14 @@ function init_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
     # Maintain a cache for line search results
     # Trace the history of states visited
     BFGSState(initial_x, # Maintain current state in state.x
+              similar(initial_x), # Buffer stored in state.u
+              similar(initial_x), # Store current search direction in state.s
+              similar(initial_x), # Store changes in position in state.dx
+              similar(initial_x), # Store changes in gradient in state.dg
               copy(initial_x), # Maintain previous state in state.x_prev
               copy(gradient(d)), # Store previous gradient in state.g_prev
               real(T)(NaN), # Store previous f in state.f_prev
-              similar(initial_x), # Store changes in position in state.dx
-              similar(initial_x), # Store changes in gradient in state.dg
-              similar(initial_x), # Buffer stored in state.u
               invH0, # Store current invH in state.invH
-              similar(initial_x), # Store current search direction in state.s
-              similar(initial_x), # Buffer of x for line search in state.x_ls
               real(one(T))
     )
 end
@@ -953,7 +951,7 @@ function linesearch!(s::BFGSState, d::BFGSDifferentiable)
     # Perform line search
     try
         LS = HagerZhang()
-        s.alpha, _ = LS(d, s.x, s.s, s.alpha, s.x_ls, phi_0, dphi_0)
+        s.alpha, _ = LS(d, s.x, s.s, s.alpha, phi_0, dphi_0)
         return true # lssuccess = true
     catch ex
         # Catch LineSearchException to allow graceful exit
