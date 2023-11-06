@@ -772,8 +772,7 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
 
     @printf "Iter     Function value   Gradient norm \n"
 
-    _time = time()
-    trace!(d, iteration, _time-t0)
+    trace!(d, iteration, time() - t0)
     ls_success = true
     while !gconv && !stopped && iteration < max_iter
         iteration += 1
@@ -787,8 +786,6 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
 
         # update trace
         trace!(d, iteration, time()-t0)
-
-        _time = time()
 
         if !all(isfinite, gradient(d))
             @warn "Terminated early due to NaN in gradient."
