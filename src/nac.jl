@@ -790,7 +790,7 @@ end
 
 """
 mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
-    initial_x   :: Tx
+    x₀   :: Tx
     minimizer   :: Tx
     minimum     :: Tf
     iterations  :: Int
@@ -804,9 +804,9 @@ end
 
 include("hagerzhang.jl")
 
-function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
-    d = BFGSDifferentiable(f, g, initial_x)
-    state = init_state(d, initial_x)
+function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
+    d = BFGSDifferentiable(f, g, x₀)
+    state = init_state(d, x₀)
 
     t0 = time() # Initial time stamp
 
@@ -844,7 +844,7 @@ function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
 
     # we can just check minimum, as we've earlier enforced same types/eltypes
     # in variables besides the option settings
-    return BFGSOptimizationResults(initial_x,
+    return BFGSOptimizationResults(x₀,
                                         state.x,
                                         value(d),
                                         iteration,
@@ -857,22 +857,22 @@ function optimize(f, g, initial_x::AbstractArray; max_iter::I64 = 1000)
     )
 end
 
-function init_state(d::BFGSDifferentiable, initial_x::AbstractArray{T}) where T
-    value_gradient!(d, initial_x)
+function init_state(d::BFGSDifferentiable, x₀::AbstractArray{T}) where T
+    value_gradient!(d, x₀)
 
-    x_ = reshape(initial_x, :)
+    x_ = reshape(x₀, :)
     invH0 = x_ .* x_' .* false
     idxs = diagind(invH0)
-    scale = eltype(initial_x)(1)
+    scale = eltype(x₀)(1)
     @. @view(invH0[idxs]) = scale * true
 
     # Maintain a cache for line search results
     # Trace the history of states visited
-    BFGSState(initial_x,
-              similar(initial_x),
-              similar(initial_x),
-              similar(initial_x),
-              copy(initial_x),
+    BFGSState(x₀,
+              similar(x₀),
+              similar(x₀),
+              similar(x₀),
+              copy(x₀),
               copy(gradient(d)),
               real(T)(NaN),
               invH0,
