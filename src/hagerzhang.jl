@@ -8,11 +8,10 @@
 # Display flags are represented as a bitfield
 # (not exported, but can use via LineSearches.ITER, for example)
 const one64 = convert(UInt64, 1)
-const BRACKET     = one64 << 8
-const LINESEARCH  = one64 << 9
-const UPDATE      = one64 << 10
-const SECANT2     = one64 << 11
-const BISECT      = one64 << 12
+const BRACKET     = 256
+const LINESEARCH  = 512
+const UPDATE      = 1024
+const SECANT2     = 2048
 
 mutable struct LineSearchException{T<:Real} <: Exception
     message::AbstractString
@@ -179,7 +178,7 @@ function (ls::HagerZhang)(ϕdϕ,
                 error("c = ", c)
             end
             # ia, ib = bisect(phi, lsr, ia, ib, phi_lim) # TODO: Pass options
-            ia, ib = bisect!(ϕdϕ, alphas, values, slopes, ia, ib, phi_lim, display)
+            ia, ib = bisect!(ϕdϕ, alphas, values, slopes, ia, ib, phi_lim)
             isbracketed = true
         else
             # We'll still going downhill, expand the interval and try again.
@@ -453,7 +452,7 @@ function update!(ϕdϕ,
     end
     # phi_c is bigger than phi_0, which implies that the minimum
     # lies between a and c. Find it via bisection.
-    return bisect!(ϕdϕ, alphas, values, slopes, ia, ic, phi_lim, display)
+    return bisect!(ϕdϕ, alphas, values, slopes, ia, ic, phi_lim)
 end
 
 # HZ, stage U3 (with theta=0.5)
@@ -463,8 +462,7 @@ function bisect!(ϕdϕ,
                  slopes,
                  ia::Integer,
                  ib::Integer,
-                 phi_lim::Real,
-                 display::Integer = 0) where T
+                 phi_lim::Real) where T
     gphi = convert(T, NaN)
     a = alphas[ia]
     b = alphas[ib]
@@ -476,9 +474,6 @@ function bisect!(ϕdϕ,
     @assert values[ib] > phi_lim
     @assert b > a
     while b - a > eps(b)
-        if display & BISECT > 0
-            println("bisect: a = ", a, ", b = ", b, ", b - a = ", b - a)
-        end
         d = (a + b) / convert(T, 2)
         phi_d, gphi = ϕdϕ(d)
         @assert isfinite(phi_d) && isfinite(gphi)
