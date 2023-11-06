@@ -288,11 +288,10 @@ end
 # Given a third point, pick the best two that retain the bracket
 # around the minimum (as defined by HZ, eq. 29)
 # b will be the upper bound, and a the lower bound
-function update!(ϕdϕ, alphas, values, slopes,
-                 ia::Integer,
-                 ib::Integer,
-                 ic::Integer,
-                 phi_lim::Real)
+function update!(ϕdϕ, alphas::Vector{F64},
+                 values::Vector{F64}, slopes::Vector{F64},
+                 ia::I64, ib::I64, ic::I64, phi_lim::F64)
+    @show typeof(alphas), typeof(values), typeof(phi_lim)
     a = alphas[ia]
     b = alphas[ib]
     T = eltype(slopes)
