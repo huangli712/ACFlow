@@ -40,20 +40,7 @@ function (is::InitialStatic{T})(state::BFGSState) where T
     end
 end
 
-
-
-function make_ϕ(df::BFGSDifferentiable, x_new, x, s)
-    function ϕ(α)
-        # Move a distance of alpha in the direction of s
-        x_new .= x .+ α.*s
-
-        # Evaluate f(x+α*s)
-        value!(df, x_new)
-    end
-    ϕ
-end
-
-function make_ϕ_ϕdϕ(df::BFGSDifferentiable, x_new, x, s)
+function make_ϕdϕ(df::BFGSDifferentiable, x_new, x, s)
     function ϕdϕ(α)
         # Move a distance of alpha in the direction of s
         x_new .= x .+ α.*s
@@ -101,7 +88,7 @@ function (ls::HagerZhang)(df::BFGSDifferentiable, x::AbstractArray{T},
                           s::AbstractArray{T}, α::Real,
                           phi_0::Real, dphi_0::Real) where T
     x_new = similar(x)
-    ϕdϕ = make_ϕ_ϕdϕ(df, x_new, x, s)
+    ϕdϕ = make_ϕdϕ(df, x_new, x, s)
     ls(ϕdϕ, α::Real, phi_0, dphi_0)
 end
 
