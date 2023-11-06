@@ -1394,6 +1394,10 @@ function converged(r::BFGSOptimizationResults)
     return conv_flags && all((x_isfinite, f_isfinite, g_isfinite))
 end
 
+#=
+### *Math* : *Line Search*
+=#
+
 #
 # Conjugate gradient line search implementation from:
 #   W. W. Hager and H. Zhang (2006) Algorithm 851: CG_DESCENT, a
