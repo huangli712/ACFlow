@@ -23,9 +23,6 @@ end
 function LS(df::BFGSDifferentiable, x::AbstractArray,
                           s::AbstractArray, c::Real,
                           phi_0::Real, dphi_0::Real)
-    x_new = similar(x)
-    ϕdϕ = make_ϕdϕ(df, x_new, x, s)
-
     delta = 0.1
     sigma = 0.9
     alphamax = Inf
@@ -36,8 +33,9 @@ function LS(df::BFGSDifferentiable, x::AbstractArray,
     psi3 = 0.1
     mayterminate = Ref{Bool}(false)
 
-    T = typeof(c)
+    ϕdϕ = make_ϕdϕ(df, similar(x), x, s)
 
+    T = typeof(c)
     zeroT = convert(T, 0)
     if !(isfinite(phi_0) && isfinite(dphi_0))
         throw(LineSearchException("Value and slope at step length = 0 must be finite.", T(0)))
