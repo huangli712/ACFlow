@@ -759,20 +759,22 @@ end
 include("hagerzhang.jl")
 
 function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
+    # Initialize time stamp
+    t₀ = time()
+
     d = BFGSDifferentiable(f, g, x₀)
     state = init_state(d, x₀)
 
-    t0 = time() # Initial time stamp
-
     stopped = false
 
-    gconv = !isfinite(value(d)) || any(!isfinite, gradient(d)) #initial_convergence(d)
-    # prepare iteration counter (used to make "initial state" trace entry)
+    gconv = !isfinite(value(d)) || any(!isfinite, gradient(d))
+
+    # Prepare iteration counter
     iteration = 0
 
     @printf "Iter     Function value   Gradient norm \n"
 
-    trace!(d, iteration, time() - t0)
+    trace!(d, iteration, time() - t₀)
     ls_success = true
     while !gconv && !stopped && iteration < max_iter
         iteration += 1
@@ -785,7 +787,7 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
         update_h!(d, state) # only relevant if not converged
 
         # update trace
-        trace!(d, iteration, time()-t0)
+        trace!(d, iteration, time() - t₀)
 
         if !all(isfinite, gradient(d))
             @warn "Terminated early due to NaN in gradient."
