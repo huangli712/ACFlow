@@ -7,7 +7,7 @@ function InitialStatic()
     InitialStatic(1.0, false)
 end
 
-function (is::InitialStatic{T})(ls, state, phi_0, dphi_0, df::BFGSDifferentiable) where T
+function (is::InitialStatic{T})(state) where T
     PT = promote_type(T, real(eltype(state.s)))
     if is.scaled == true && (ns = real(norm(state.s))) > convert(PT, 0)
         # TODO: Type instability if there's a type mismatch between is.alpha and ns?

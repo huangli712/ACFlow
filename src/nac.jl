@@ -952,7 +952,7 @@ function linesearch!(s::BFGSState, d::BFGSDifferentiable)
     guess = InitialStatic()
     linesearch = HagerZhang()
     phi_0  = value(d)
-    guess(linesearch, s, phi_0, dphi_0, d)
+    guess(s)
 
     # Store current x and f(x) for next iteration
     s.f_x_prev = phi_0
