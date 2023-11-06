@@ -821,13 +821,8 @@ function init_state(d::BFGSDifferentiable, x₀::AbstractArray)
     scale = eltype(x₀)(1)
     @. @view(invH0[idxs]) = scale * true
 
-    BFGSState(x₀,
-              similar(x₀),
-              similar(x₀),
-              similar(x₀),
-              copy(x₀),
-              copy(gradient(d)),
-              real(T)(NaN),
+    BFGSState(x₀, similar(x₀), similar(x₀), similar(x₀), copy(x₀),
+              copy(gradient(d)), real(T)(NaN),
               invH0,
               real(one(T))
     )
