@@ -1369,7 +1369,6 @@ function linesearch!(s::BFGSState, d::BFGSDifferentiable)
 
     # Perform line search
     try
-        LS = HagerZhang()
         s.alpha, _ = LS(d, s.x, s.ls, s.alpha, ϕ₀, dϕ₀)
         return true # lssuccess = true
     catch ex

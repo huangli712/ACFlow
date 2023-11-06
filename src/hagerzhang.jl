@@ -51,19 +51,17 @@ function HagerZhang()
     HagerZhang(0.1, 0.9, Inf, 5.0, 1e-6, 0.66, 50, 0.1, 0, Ref{Bool}(false))
 end
 
-function (ls::HagerZhang)(df::BFGSDifferentiable, x::AbstractArray{T},
+function LS(df::BFGSDifferentiable, x::AbstractArray{T},
                           s::AbstractArray{T}, α::Real,
                           phi_0::Real, dphi_0::Real) where T
     x_new = similar(x)
     ϕdϕ = make_ϕdϕ(df, x_new, x, s)
-    ls(ϕdϕ, α::Real, phi_0, dphi_0)
+    LS(ϕdϕ, α::Real, phi_0, dphi_0)
 end
 
 # TODO: Should we deprecate the interface that only uses the ϕ and ϕd\phi arguments?
-function (ls::HagerZhang)(ϕdϕ,
-                          c::T,
-                          phi_0::Real,
-                          dphi_0::Real) where T # Should c and phi_0 be same type?
+function LS(ϕdϕ, c::T, phi_0::Real, dphi_0::Real) where T # Should c and phi_0 be same type?
+    ls = HagerZhang()
     delta = ls.delta
     sigma = ls.sigma
     alphamax = ls.alphamax
