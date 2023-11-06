@@ -5,10 +5,6 @@
 #     Transactions on Mathematical Software 32: 113–137.
 #
 
-# Display flags are represented as a bitfield
-# (not exported, but can use via LineSearches.ITER, for example)
-const one64 = convert(UInt64, 1)
-
 mutable struct LineSearchException{T<:Real} <: Exception
     message::AbstractString
     alpha::T
