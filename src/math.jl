@@ -1296,3 +1296,56 @@ function update_state!(d::BFGSDifferentiable, s::BFGSState)
 
     lssuccess == false # break on linesearch error
 end
+
+# Update the function value and gradient
+function update_g!(d::BFGSDifferentiable, s::BFGSState)
+    value_gradient!(d, s.x)
+end
+
+function update_h!(d::BFGSDifferentiable, s::BFGSState)
+    n = length(s.x)
+    su = similar(s.x)
+
+    # Measure the change in the gradient
+    s.δg .= gradient(d) .- s.gₚ
+
+    # Update the inverse Hessian approximation by using the
+    # famous Sherman-Morrison equation
+    dx_dg = real(dot(s.δx, s.δg))
+    if dx_dg > 0
+        mul!(vec(su), s.H⁻¹, vec(s.δg))
+
+        c1 = (dx_dg + real(dot(s.δg, su))) / (dx_dg' * dx_dg)
+        c2 = 1 / dx_dg
+
+        # H⁻¹ = H⁻¹ + c1 * (s * s') - c2 * (u * s' + s * u')
+        if s.H⁻¹ isa Array
+            H⁻¹ = s.H⁻¹; dx = s.δx; u = su;
+            @inbounds for j in 1:n
+                c1dxj = c1 * dx[j]'
+                c2dxj = c2 * dx[j]'
+                c2uj  = c2 *  u[j]'
+                for i in 1:n
+                    H⁻¹[i, j] = muladd(dx[i], c1dxj,
+                                        muladd(-u[i], c2dxj,
+                                              muladd(c2uj, -dx[i], H⁻¹[i, j])))
+                end
+            end
+        else
+            mul!(s.H⁻¹, vec(s.δx), vec(s.δx)', +c1, 1)
+            mul!(s.H⁻¹, vec(su  ), vec(s.δx)', -c2, 1)
+            mul!(s.H⁻¹, vec(s.δx), vec(su  )', -c2, 1)
+        end
+    end
+end
+
+function trace!(d::BFGSDifferentiable, iter, curr_time)
+    gnorm = norm(gradient(d), Inf)
+    #
+    @printf("iter = %4d ", iter)
+    @printf("fval = %8.4e ", value(d))
+    @printf("gnorm = %8.4e ", gnorm)
+    @printf("time = %8.4f (s)\n", curr_time)
+    #
+    flush(stdout)
+end
