@@ -13,8 +13,6 @@ const LINESEARCH  = one64 << 9
 const UPDATE      = one64 << 10
 const SECANT2     = one64 << 11
 const BISECT      = one64 << 12
-const DEFAULTDELTA = 0.1
-const DEFAULTSIGMA = 0.9
 
 mutable struct LineSearchException{T<:Real} <: Exception
     message::AbstractString
@@ -55,8 +53,8 @@ function make_ϕdϕ(df::BFGSDifferentiable, x_new, x, s)
 end
 
 mutable struct HagerZhang{T, Tm}
-    delta::T # DEFAULTDELTA # c_1 Wolfe sufficient decrease condition
-    sigma::T # DEFAULTSIGMA # c_2 Wolfe curvature condition (Recommend 0.1 for GradientDescent)
+    delta::T # c_1 Wolfe sufficient decrease condition
+    sigma::T # c_2 Wolfe curvature condition (Recommend 0.1 for GradientDescent)
     alphamax::T # Inf
     rho::T # 5.0
     epsilon::T # 1e-6
@@ -69,8 +67,8 @@ mutable struct HagerZhang{T, Tm}
 
 function HagerZhang()
     HagerZhang(
-   DEFAULTDELTA, # c_1 Wolfe sufficient decrease condition
-   DEFAULTSIGMA, # c_2 Wolfe curvature condition (Recommend 0.1 for GradientDescent)
+   0.1, # c_1 Wolfe sufficient decrease condition
+   0.9, # c_2 Wolfe curvature condition (Recommend 0.1 for GradientDescent)
    Inf,
    5.0,
    1e-6,
