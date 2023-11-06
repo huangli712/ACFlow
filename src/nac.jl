@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/03
+# Last modified: 2023/11/06
 #
 
 #=
@@ -755,5 +755,3 @@ function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
 
     return causality
 end
-
-include("hagerzhang.jl")
