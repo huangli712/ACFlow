@@ -811,7 +811,8 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
     )
 end
 
-function init_state(d::BFGSDifferentiable, x₀::AbstractArray{T}) where T
+function init_state(d::BFGSDifferentiable, x₀::AbstractArray)
+    T = eltype(x₀)
     value_gradient!(d, x₀)
 
     x_ = reshape(x₀, :)
@@ -820,8 +821,6 @@ function init_state(d::BFGSDifferentiable, x₀::AbstractArray{T}) where T
     scale = eltype(x₀)(1)
     @. @view(invH0[idxs]) = scale * true
 
-    # Maintain a cache for line search results
-    # Trace the history of states visited
     BFGSState(x₀,
               similar(x₀),
               similar(x₀),
@@ -869,7 +868,8 @@ function update_h!(d::BFGSDifferentiable, s::BFGSState)
     # Measure the change in the gradient
     s.δg .= gradient(d) .- s.gₚ
 
-    # Update inverse Hessian approximation using Sherman-Morrison equation
+    # Update the inverse Hessian approximation by using the
+    # famous Sherman-Morrison equation
     dx_dg = real(dot(s.δx, s.δg))
     if dx_dg > 0
         mul!(vec(su), s.H⁻¹, vec(s.δg))

@@ -1161,6 +1161,8 @@ end
 """
     BFGSState
 
+Trace the history of states visited
+
 ### Members
 
 * x     -> Current position.
