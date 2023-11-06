@@ -291,7 +291,6 @@ end
 function update!(ϕdϕ, alphas::Vector{F64},
                  values::Vector{F64}, slopes::Vector{F64},
                  ia::I64, ib::I64, ic::I64, phi_lim::F64)
-    @show typeof(alphas), typeof(values), typeof(phi_lim)
     a = alphas[ia]
     b = alphas[ib]
     T = eltype(slopes)
