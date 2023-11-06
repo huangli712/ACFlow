@@ -10,25 +10,6 @@ mutable struct LineSearchException{T<:Real} <: Exception
     alpha::T
 end
 
-mutable struct InitialStatic{T}
-    alpha::T
-    scaled::Bool
-end
-
-function InitialStatic()
-    InitialStatic(1.0, false)
-end
-
-function (is::InitialStatic{T})(state::BFGSState) where T
-    PT = promote_type(T, real(eltype(state.ls)))
-    if is.scaled == true && (ns = real(norm(state.ls))) > convert(PT, 0)
-        # TODO: Type instability if there's a type mismatch between is.alpha and ns?
-        state.alpha = convert(PT, min(is.alpha, ns)) / ns
-    else
-        state.alpha = convert(PT, is.alpha)
-    end
-end
-
 function LS(state::BFGSState, alpha::T, scaled::Bool) where T
     PT = promote_type(T, real(eltype(state.ls)))
     if scaled == true && (ns = real(norm(state.ls))) > convert(PT, 0)
