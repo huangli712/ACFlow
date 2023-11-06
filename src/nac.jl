@@ -818,7 +818,7 @@ function init_state(d::BFGSDifferentiable, x₀::AbstractArray)
     x_ = reshape(x₀, :)
     invH0 = x_ .* x_' .* false
     idxs = diagind(invH0)
-    scale = eltype(x₀)(1)
+    scale = T(1)
     @. @view(invH0[idxs]) = scale * true
 
     BFGSState(x₀, similar(x₀), similar(x₀), similar(x₀), copy(x₀),
