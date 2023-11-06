@@ -891,6 +891,7 @@ end
 
 function update_h!(d::BFGSDifferentiable, s::BFGSState)
     n = length(s.x)
+    su = similar(s.x)
 
     # Measure the change in the gradient
     s.dg .= gradient(d) .- s.g_prev
@@ -898,14 +899,14 @@ function update_h!(d::BFGSDifferentiable, s::BFGSState)
     # Update inverse Hessian approximation using Sherman-Morrison equation
     dx_dg = real(dot(s.dx, s.dg))
     if dx_dg > 0
-        mul!(vec(s.u), s.invH, vec(s.dg))
+        mul!(vec(su), s.invH, vec(s.dg))
 
-        c1 = (dx_dg + real(dot(s.dg, s.u))) / (dx_dg' * dx_dg)
+        c1 = (dx_dg + real(dot(s.dg, su))) / (dx_dg' * dx_dg)
         c2 = 1 / dx_dg
 
         # invH = invH + c1 * (s * s') - c2 * (u * s' + s * u')
         if s.invH isa Array
-            invH = s.invH; dx = s.dx; u = s.u;
+            invH = s.invH; dx = s.dx; u = su;
             @inbounds for j in 1:n
                 c1dxj = c1 * dx[j]'
                 c2dxj = c2 * dx[j]'
@@ -918,8 +919,8 @@ function update_h!(d::BFGSDifferentiable, s::BFGSState)
             end
         else
             mul!(s.invH, vec(s.dx), vec(s.dx)',  c1, 1)
-            mul!(s.invH, vec(s.u ), vec(s.dx)', -c2, 1)
-            mul!(s.invH, vec(s.dx), vec(s.u )', -c2, 1)
+            mul!(s.invH, vec(su ), vec(s.dx)', -c2, 1)
+            mul!(s.invH, vec(s.dx), vec(su )', -c2, 1)
         end
     end
 end
