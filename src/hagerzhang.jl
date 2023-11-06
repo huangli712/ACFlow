@@ -113,20 +113,6 @@ end
 @inline unpack(x::AbstractDict{Symbol}, ::Val{k}) where {k} = x[k]
 @inline unpack(x::AbstractDict{<:AbstractString}, ::Val{k}) where {k} = x[string(k)]
 
-macro unpack(args)
-    args.head!=:(=) && error("Expression needs to be of form `a, b = c`")
-    items, suitecase = args.args
-    items = isa(items, Symbol) ? [items] : items.args
-    suitecase_instance = gensym()
-    kd = [:( $key = unpack($suitecase_instance, Val{$(Expr(:quote, key))}()) ) for key in items]
-    kdblock = Expr(:block, kd...)
-    expr = quote
-        local $suitecase_instance = $suitecase # handles if suitecase is not a variable but an expression
-        $kdblock
-        $suitecase_instance # return RHS of `=` as standard in Julia
-    end
-    esc(expr)
-end
 
 # TODO: Should we deprecate the interface that only uses the ϕ and ϕd\phi arguments?
 function (ls::HagerZhang)(ϕ, ϕdϕ,
