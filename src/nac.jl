@@ -767,19 +767,19 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
 
     # Prepare iteration counter
     gconv = !isfinite(value(d)) || any(!isfinite, gradient(d))
-    stopped = false
     iteration = 0
 
     @printf "Iter     Function value   Gradient norm \n"
     trace!(d, iteration, time() - t₀)
 
-    while !gconv && !stopped && iteration < max_iter
+    while !gconv && iteration < max_iter
         iteration += 1
 
         ls_success = !update_state!(d, state)
         if !ls_success
             break
         end
+
         update_g!(d, state)
         gconv = (eval_resid(d) ≤ 1e-8)
         update_h!(d, state)
@@ -793,19 +793,11 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
         end
     end # while
 
-    # we can just check minimum, as we've earlier enforced same types/eltypes
-    # in variables besides the option settings
-    return BFGSOptimizationResults(x₀,
-                                    state.x,
-                                    value(d),
-                                    iteration,
-                                    eval_δx(state),
-                                    eval_Δx(state),
-                                    eval_δf(d, state),
-                                    eval_Δf(d, state),
-                                    eval_resid(d),
-                                    gconv
-    )
+    BFGSOptimizationResults(x₀, state.x, value(d), iteration,
+                            eval_δx(state), eval_Δx(state),
+                            eval_δf(d, state), eval_Δf(d, state),
+                            eval_resid(d),
+                            gconv)
 end
 
 function init_state(d::BFGSDifferentiable, x₀::AbstractArray)
