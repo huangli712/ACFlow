@@ -107,7 +107,7 @@ function LS(df::BFGSDifferentiable, x::AbstractArray,
                 error("c = ", c)
             end
             # ia, ib = bisect(phi, lsr, ia, ib, phi_lim) # TODO: Pass options
-            ia, ib = bisect!(ϕdϕ, alphas, values, slopes, ia, ib, phi_lim)
+            ia, ib = ls_bisect!(ϕdϕ, alphas, values, slopes, ia, ib, phi_lim)
             isbracketed = true
         else
             # We'll still going downhill, expand the interval and try again.
@@ -179,7 +179,7 @@ function LS(df::BFGSDifferentiable, x::AbstractArray,
             push!(values, phi_c)
             push!(slopes, dphi_c)
 
-            ia, ib = update!(ϕdϕ, alphas, values, slopes, iA, iB, length(alphas), phi_lim)
+            ia, ib = ls_update!(ϕdϕ, alphas, values, slopes, iA, iB, length(alphas), phi_lim)
         end
         iter += 1
     end
@@ -256,7 +256,7 @@ function ls_secant2!(ϕdϕ, alphas::Vector{F64},
         return true, ic, ic
     end
 
-    iA, iB = update!(ϕdϕ, alphas, values, slopes, ia, ib, ic, phi_lim)
+    iA, iB = ls_update!(ϕdϕ, alphas, values, slopes, ia, ib, ic, phi_lim)
     a = alphas[iA]
     b = alphas[iB]
     if iB == ic
@@ -280,7 +280,7 @@ function ls_secant2!(ϕdϕ, alphas::Vector{F64},
         if satisfies_wolfe(c, phi_c, dphi_c, phi_0, dphi_0, phi_lim, delta, sigma)
             return true, ic, ic
         end
-        iA, iB = update!(ϕdϕ, alphas, values, slopes, iA, iB, ic, phi_lim)
+        iA, iB = ls_update!(ϕdϕ, alphas, values, slopes, iA, iB, ic, phi_lim)
     end
     return false, iA, iB
 end
@@ -289,9 +289,9 @@ end
 # Given a third point, pick the best two that retain the bracket
 # around the minimum (as defined by HZ, eq. 29)
 # b will be the upper bound, and a the lower bound
-function update!(ϕdϕ, alphas::Vector{F64},
-                 values::Vector{F64}, slopes::Vector{F64},
-                 ia::I64, ib::I64, ic::I64, phi_lim::F64)
+function ls_update!(ϕdϕ, alphas::Vector{F64},
+                    values::Vector{F64}, slopes::Vector{F64},
+                    ia::I64, ib::I64, ic::I64, phi_lim::F64)
     a = alphas[ia]
     b = alphas[ib]
     T = eltype(slopes)
@@ -321,12 +321,12 @@ function update!(ϕdϕ, alphas::Vector{F64},
     end
     # phi_c is bigger than phi_0, which implies that the minimum
     # lies between a and c. Find it via bisection.
-    return bisect!(ϕdϕ, alphas, values, slopes, ia, ic, phi_lim)
+    return ls_bisect!(ϕdϕ, alphas, values, slopes, ia, ic, phi_lim)
 end
 
 # HZ, stage U3 (with theta=0.5)
-function bisect!(ϕdϕ, alphas::Vector{F64}, values::Vector{F64},
-                 slopes::Vector{F64}, ia::I64, ib::I64, phi_lim::F64)
+function ls_bisect!(ϕdϕ, alphas::Vector{F64}, values::Vector{F64},
+                    slopes::Vector{F64}, ia::I64, ib::I64, phi_lim::F64)
     T = eltype(alphas)
     gphi = convert(T, NaN)
     a = alphas[ia]
