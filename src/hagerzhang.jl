@@ -34,40 +34,22 @@ function make_ϕdϕ(df::BFGSDifferentiable, x_new, x, s)
     ϕdϕ
 end
 
-mutable struct HagerZhang{T, Tm}
-    delta::T # c_1 Wolfe sufficient decrease condition
-    sigma::T # c_2 Wolfe curvature condition (Recommend 0.1 for GradientDescent)
-    alphamax::T # Inf
-    rho::T # 5.0
-    epsilon::T # 1e-6
-    gamma::T # 0.66
-    linesearchmax::Int # 50
-    psi3::T # 0.1
-    display::Int # 0
-    mayterminate::Tm # Ref{Bool}(false)
- end
-
-function HagerZhang()
-    HagerZhang(0.1, 0.9, Inf, 5.0, 1e-6, 0.66, 50, 0.1, 0, Ref{Bool}(false))
-end
-
 function LS(df::BFGSDifferentiable, x::AbstractArray,
                           s::AbstractArray, c::Real,
                           phi_0::Real, dphi_0::Real)
     x_new = similar(x)
     ϕdϕ = make_ϕdϕ(df, x_new, x, s)
 
-    ls = HagerZhang()
-    delta = ls.delta
-    sigma = ls.sigma
-    alphamax = ls.alphamax
-    rho = ls.rho
-    epsilon = ls.epsilon
-    gamma = ls.gamma
-    linesearchmax = ls.linesearchmax
-    psi3 = ls.psi3
-    display = ls.display
-    mayterminate = ls.mayterminate
+    delta = 0.1
+    sigma = 0.9
+    alphamax = Inf
+    rho = 5.0
+    epsilon = 1e-6
+    gamma = 0.66
+    linesearchmax = 50
+    psi3 = 0.1
+    display = 0
+    mayterminate = Ref{Bool}(false)
 
     T = typeof(c)
 
