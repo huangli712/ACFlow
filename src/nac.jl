@@ -816,14 +816,14 @@ function init_state(d::BFGSDifferentiable, x₀::AbstractArray)
     value_gradient!(d, x₀)
 
     x_ = reshape(x₀, :)
-    invH0 = x_ .* x_' .* false
-    idxs = diagind(invH0)
+    H⁻¹ = x_ .* x_' .* false
+    idxs = diagind(H⁻¹)
     scale = T(1)
-    @. @view(invH0[idxs]) = scale * true
+    @. @view(H⁻¹[idxs]) = scale * true
 
     BFGSState(x₀, similar(x₀), similar(x₀), similar(x₀), copy(x₀),
               copy(gradient(d)), real(T)(NaN),
-              invH0,
+              H⁻¹,
               real(one(T))
     )
 end
