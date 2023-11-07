@@ -649,7 +649,8 @@ function calc_hopt!(nac::NevanACContext)
     end
 end
 
-#using Zygote
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/Zygote/src/")
+using Zygote
 
 """
     hardy_optimize!(nac::NevanACContext,
@@ -669,7 +670,7 @@ function hardy_optimize!(nac::NevanACContext,
     end
 
     function 𝐽!(J::Vector{C64}, x::Vector{C64})
-        J .= gradient(𝑓, x)[1]
+        J .= Zygote.gradient(𝑓, x)[1]
         #J .= gradient(𝑓, x)
         #@show J
     end
