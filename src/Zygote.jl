@@ -686,13 +686,7 @@ tailmemaybe(::Nothing) = nothing
 tailmemaybe(x::Tuple) = Base.tail(x)
 
 @inline function pullback(f, args...)
-  @show "bbbb"
-  pullback(f, Context(), args...)
-end
-
-function pullback(f, cx::AContext, args...)
-  @show "haha"
-  y, back = _pullback(cx, f, args...)
+  y, back = _pullback(Context(), f, args...)
   y, Δ -> tailmemaybe(back(Δ))
 end
 
@@ -723,7 +717,9 @@ julia> gradient([7, 11], 0, 1) do x, y, d
 """
 function gradient(f, args...)
   y, back = pullback(f, args...)
+  @show back
   grad = back(one(y))
+  @show isnothing(grad)
   isnothing(grad) ? nothing : map(_project, args, grad)
 end
 
