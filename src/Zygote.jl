@@ -837,32 +837,26 @@ _empty(x::Union{Tuple,NamedTuple}) = map(_->nothing, x)
 
 _unapply(t::Integer, xs) = xs[1:t], xs[t+1:end]
 _unapply(t, xs) = first(xs), tail(xs)
-_unapply(t::Tuple{}, xs) = (), xs
+unapply(t, xs) = _unapply(t, xs)[1]
+#_unapply(t::Tuple{}, xs) = (), xs
 
 function _unapply(t::Tuple, xs)
+  @show "ccc", typeof(first(t)), typeof(tail(t))
   t1, xs1 = _unapply(first(t), xs)
   t2, xs2 = _unapply(tail(t), xs1)
   (t1, t2...), xs2
 end
 
+#=
 function _unapply(t::NamedTuple{K}, xs) where K
+  @show "ddd"
   t, rst = _unapply(Tuple(t), xs)
   NamedTuple{K}(t), rst
 end
-
-unapply(t, xs) = _unapply(t, xs)[1]
-
-@adjoint! function Core._apply(f, args...)
-  y, back = Core._apply(_pullback, (__context__, f), args...)
-  st = map(_empty, args)
-  y, function (Δ)
-    Δ = back(Δ)
-    Δ === nothing ? nothing :
-      (first(Δ), unapply(st, Base.tail(Δ))...)
-  end
-end
+=#
 
 @adjoint! function Core._apply_iterate(::typeof(iterate), f, args...)
+  #@show "hhh"
   y, back = Core._apply(_pullback, (__context__, f), args...)
   st = map(_empty, args)
   y, function (Δ)
@@ -871,8 +865,6 @@ end
       (nothing, first(Δ), unapply(st, Base.tail(Δ))...)
   end
 end
-
-# Structs
 
 @generated nt_nothing(x) = Expr(:tuple, [:($f=nothing) for f in fieldnames(x)]...)
 @generated pair(::Val{k}, v, _=nothing) where k = :($k = v,)
@@ -924,8 +916,6 @@ grad_mut(d::AbstractDict) = Dict()
   val, dict_getindex_pullback
 end
 
-# General
-
 for (mapfunc,∇mapfunc) in [(:map,:∇map),(:pmap,:∇pmap)]
   @eval function $∇mapfunc(cx, f::F, args::Vararg{Any, N}) where {F, N}
     ys_and_backs = $mapfunc((args...) -> _pullback(cx, f, args...), args...)
@@ -942,11 +932,6 @@ for (mapfunc,∇mapfunc) in [(:map,:∇map),(:pmap,:∇pmap)]
   end
 end
 
-# Utilities
-# =========
-
-# Work around reducedim_init issue
-# https://github.com/JuliaLang/julia/issues/31427
 accum_sum(xs::AbstractArray{<:Number}; dims = :) = sum(xs, dims = dims)
 accum_sum(xs::Number; dims = :) = xs
 
@@ -957,9 +942,6 @@ end
 function unbroadcast(x::Number, x̄)
   accum_sum(x̄)
 end
-
-# Split Reverse Mode
-# ==================
 
 @adjoint broadcasted(::typeof(+), xs::Numeric...) =
   broadcast(+, xs...), ȳ -> (nothing, map(x -> unbroadcast(x, ȳ), xs)...)
@@ -975,14 +957,9 @@ end
   res, Δ -> (nothing, unbroadcast(x, Δ ./ conj.(y)), unbroadcast(y, .-Δ .* conj.(res ./ y)))
 end
 
-# General Fallback
-# ================
-
 # Avoid hitting special cases for `Adjoint` etc.
 @adjoint broadcasted(::AbstractArrayStyle, f::F, args...) where {F} = broadcast_forward(f, args...)
 @adjoint! (b::typeof(broadcast))(f, args...) = _pullback(__context__, broadcasted, f, args...)
-
-# Forward Mode -- necessary for CUDA, also used as a fast path above
 
 # We do this because it ensures type stability so it compiles nicely on the gpu
 # The val is needed for some type stability
