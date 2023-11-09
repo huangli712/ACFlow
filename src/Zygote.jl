@@ -961,7 +961,7 @@ function _generate_pullback(ctx, world, f, args...)
   ignore_sig(T) && return :(f(args...), Pullback{$T}(()))
 
   g = _generate_pullback_via_decomposition(T, world)
-  g === nothing && return :(f(args...), Pullback{$T}((f,)))
+  #g === nothing && return :(f(args...), Pullback{$T}((f,)))
   meta, forw, _ = g
   argnames!(meta, Symbol("#self#"), :ctx, :f, :args)
   forw = varargs!(meta, forw, 3)
@@ -973,20 +973,7 @@ end
 
 function _generate_callable_pullback(j::Type{<:Pullback{T}}, world, Δ) where T
   ignore_sig(T) && return :nothing
-  g = #try
-    _generate_pullback_via_decomposition(T, world)
-  #catch e
-  #  if VERSION < v"1.8"
-  #    # work around Julia bug
-  #    rethrow(CompileError(T,e))
-  #  end
-  #  return :(throw($(CompileError(T,e))))
-  #end
-  if g === nothing
-    @show "haha"
-    Δ == Nothing && return :nothing
-    return :(error("Non-differentiable function $(repr(j.t[1]))"))
-  end
+  g = _generate_pullback_via_decomposition(T, world)
   meta, _, back = g
   argnames!(meta, Symbol("#self#"), :Δ)
   # IRTools.verify(back)
