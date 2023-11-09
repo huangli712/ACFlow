@@ -680,9 +680,8 @@ struct CompileError
 end
 
 # Wrappers
-_pullback(f, args...) = _pullback(Context(), f, args...)
-
-tailmemaybe(::Nothing) = nothing
+#_pullback(f, args...) = _pullback(Context(), f, args...)
+#tailmemaybe(::Nothing) = nothing
 tailmemaybe(x::Tuple) = Base.tail(x)
 
 @inline function pullback(f, args...)
@@ -717,10 +716,8 @@ julia> gradient([7, 11], 0, 1) do x, y, d
 """
 function gradient(f, args...)
   y, back = pullback(f, args...)
-  @show back
   grad = back(one(y))
-  @show isnothing(grad)
-  isnothing(grad) ? nothing : map(_project, args, grad)
+  map(_project, args, grad)
 end
 
 # Interfaces
