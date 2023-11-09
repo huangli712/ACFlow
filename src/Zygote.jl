@@ -607,7 +607,6 @@ Convert `x` from the differentials types ChainRules uses to the format Zygote us
 Convert `dx` from the format Zygote uses internally to differentials types ChainRules uses.
 """
 @inline wrap_chainrules_input(dx) = dx
-#@inline wrap_chainrules_input(::AbstractArray{Nothing}) = ChainRules.ZeroTangent()
 # For arrays, whitelist the safe ones, but always look inside Any[]:
 @inline wrap_chainrules_input(dxs::AbstractArray{<:Number}) = dxs
 @inline wrap_chainrules_input(dxs::AbstractArray) = map(wrap_chainrules_input, dxs)
@@ -946,39 +945,27 @@ end
 # Utilities
 # =========
 
-accum_sum(xs; dims = :) = reduce(accum, xs, dims = dims)
-
 # Work around reducedim_init issue
 # https://github.com/JuliaLang/julia/issues/31427
 accum_sum(xs::AbstractArray{<:Number}; dims = :) = sum(xs, dims = dims)
-accum_sum(xs::AbstractArray{<:AbstractArray{<:Number}}; dims = :) = sum(xs, dims = dims)
 accum_sum(xs::Number; dims = :) = xs
 
 function unbroadcast(x::AbstractArray, x̄)
-  N = ndims(x̄)
-  if length(x) == length(x̄)
-    _project(x, x̄)  # ProjectTo handles reshape, offsets, structured matrices, row vectors
-  else
-    dims = ntuple(d -> size(x, d) == 1 ? d : ndims(x̄)+1, ndims(x̄))
-    _project(x, accum_sum(x̄; dims = dims))
-  end
+  _project(x, x̄)
 end
 
-unbroadcast(x::Number, x̄) = accum_sum(x̄)
+function unbroadcast(x::Number, x̄)
+  accum_sum(x̄)
+end
 
 # Split Reverse Mode
 # ==================
-
-#_minus(Δ) = -Δ
 
 @adjoint broadcasted(::typeof(+), xs::Numeric...) =
   broadcast(+, xs...), ȳ -> (nothing, map(x -> unbroadcast(x, ȳ), xs)...)
 
 @adjoint broadcasted(::typeof(-), x::Numeric, y::Numeric) = x .- y,
   Δ -> (nothing, unbroadcast(x, Δ), -unbroadcast(y, Δ))
-
-@adjoint broadcasted(::typeof(-), x::Numeric) = .-x,
-  Δ -> (nothing, -Δ)
 
 @adjoint broadcasted(::typeof(*), x::Numeric, y::Numeric) = x.*y,
    Δ -> (nothing, unbroadcast(x, Δ .* conj.(y)), unbroadcast(y, Δ .* conj.(x)))
