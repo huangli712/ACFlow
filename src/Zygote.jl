@@ -444,7 +444,6 @@ function forward_stacks!(adj, F)
   args = arguments(pr)[3:end]
   rec = push!(pr, xtuple(recs...))
   P = length(pr.blocks) == 1 ? Pullback{F} : Pullback{F,Any}
-  # P = Pullback{F,Any} # reduce specialisation
   rec = push!(pr, Expr(:call, P, rec))
   ret = xtuple(pr.blocks[end].branches[end].args[1], rec)
   ret = push!(pr, ret)
