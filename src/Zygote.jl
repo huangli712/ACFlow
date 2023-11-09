@@ -685,28 +685,15 @@ _pullback(f, args...) = _pullback(Context(), f, args...)
 tailmemaybe(::Nothing) = nothing
 tailmemaybe(x::Tuple) = Base.tail(x)
 
-@inline pullback(f, args...) = pullback(f, Context(), args...)
-function pullback(f, cx::AContext, args...)
-  y, back = _pullback(cx, f, args...)
-  y, Δ -> tailmemaybe(back(Δ))
+@inline function pullback(f, args...)
+  @show "bbbb"
+  pullback(f, Context(), args...)
 end
 
-function pullback(cx::Context, f, args...)
-  ChainRulesCore.ignore_derivatives() do
-    @warn """
-    Incorrect argument order for pullback, please use:
-
-      pullback(f, __context__::Context, args)
-
-    instead of:
-
-      pullback(__context__::Context, f, args)
-
-    This is usually caused by a call to pullback in a higher-order @adjoint.
-    The above warning will become an error in Zygote 0.7.
-    """
-  end
-  return pullback(f, cx, args...)
+function pullback(f, cx::AContext, args...)
+  @show "haha"
+  y, back = _pullback(cx, f, args...)
+  y, Δ -> tailmemaybe(back(Δ))
 end
 
 """
