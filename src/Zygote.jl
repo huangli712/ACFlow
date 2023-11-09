@@ -770,16 +770,6 @@ function accum(x::RefValue, y::RefValue)
 end
 
 # Core functions
-@adjoint deepcopy(x) = deepcopy(x), ȳ -> (ȳ,)
-
-@adjoint (::Type{V})(x...) where V<:Val = V(x...), _ -> nothing
-
-@adjoint ifelse(cond::Bool, t, f) =
-  ifelse(cond, t, f),
-  Δ -> cond ? (nothing, Δ, zero(Δ)) : (nothing, zero(Δ), Δ)
-
-@adjoint Base.typeassert(x, T) = Base.typeassert(x, T), Δ -> (Δ, nothing)
-
 accum_param(::Context{false}, _, Δ) = Δ
 @generated function accum_param(cx::Context, x, Δ)
   isbitstype(x) && return :(Δ)
@@ -801,11 +791,8 @@ function accum_global(cx::Context, ref, x̄)
 end
 
 unwrap(x) = x
-
 @adjoint unwrap(x) = unwrap(x), x̄ -> (accum_param(__context__, x, x̄),)
-
 unwrap(ref, x) = x
-
 @adjoint unwrap(ref, x) = unwrap(x), function (x̄)
   accum_global(__context__, ref, x̄)
   (accum_param(__context__, x, x̄),)
@@ -829,19 +816,13 @@ end
   end
 end
 
-# Tuples
 @adjoint tuple(xs...) = xs, identity
 
-_empty(x) = length(x)
-_empty(x::Union{Tuple,NamedTuple}) = map(_->nothing, x)
-
 unapply(t, xs) = _unapply(t, xs)[1]
-#_unapply(t::Integer, xs) = xs[1:t], xs[t+1:end]
 _unapply(t, xs) = first(xs), tail(xs)
 _unapply(t::Tuple{}, xs) = (), xs
 
 function _unapply(t::Tuple, xs)
-  @show "ccc", typeof(first(t)), typeof(tail(t))
   t1, xs1 = _unapply(first(t), xs)
   t2, xs2 = _unapply(tail(t), xs1)
   (t1, t2...), xs2
@@ -849,7 +830,7 @@ end
 
 @adjoint! function Core._apply_iterate(::typeof(iterate), f, args...)
   y, back = Core._apply(_pullback, (__context__, f), args...)
-  st = map(_empty, args)
+  st = map(x -> map(_->nothing, x), args)
   y, function (Δ)
     Δ = back(Δ)
     Δ === nothing ? nothing :
