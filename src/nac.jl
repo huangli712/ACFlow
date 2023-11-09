@@ -649,7 +649,6 @@ function calc_hopt!(nac::NevanACContext)
     end
 end
 
-push!(LOAD_PATH, "/Users/lihuang/Working/devel/Zygote/src/")
 using Zygote
 
 """
