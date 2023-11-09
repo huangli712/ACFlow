@@ -927,38 +927,21 @@ end
 
 # General
 
+#=
 struct StaticGetter{i} end
 (::StaticGetter{i})(v) where {i} = v[i]
 (::StaticGetter{i})(::Nothing) where {i} = nothing
 
-@generated function _unzip(tuples, ::Val{N}) where {N}
-  Expr(:tuple, (:(map($(StaticGetter{i}()), tuples)) for i ∈ 1:N)...)
-end
-
-# Reverse iteration order in ∇map, for stateful functions.
-# This is also used by comprehensions, which do guarantee iteration order.
-# Not done for pmap, presumably because all is lost if you are relying on its order.
-#_tryreverse(m, backs, Δ) = backs, Δ
-#_tryreverse(m::typeof(map), backs, Δ) = _reverse(backs), _reverse(Δ)
-
-# With mismatched lengths, map stops early. With mismatched shapes, it makes a vector.
-# So we keep axes(x) to restore gradient dx to its full length & correct shape.
-#_tryaxes(x) = axes(x)
-#_tryaxes(x::Tuple) = Val(length(x))
-#_restore(dx, ax::Tuple) = axes(dx) == ax ? dx : reshape(vcat(dx, falses(prod(length, ax) - length(dx))), ax)
-#_restore(dx, ::Val{N}) where {N} = ntuple(i -> get(dx,i,nothing), N)
-
-# Sometimes a pullback doesn't return a Tuple, but rather returns only a
-# single nothing to say "all arguments have zero cotangent". This function is needed to
-# account for that inside the pullback for map.
-#last_or_nothing(x) = last(x)
+#@generated function _unzip(tuples, ::Val{N}) where {N}
+#  Expr(:tuple, (:(map($(StaticGetter{i}()), tuples)) for i ∈ 1:N)...)
+#end
+=#
 
 for (mapfunc,∇mapfunc) in [(:map,:∇map),(:pmap,:∇pmap)]
   @eval function $∇mapfunc(cx, f::F, args::Vararg{Any, N}) where {F, N}
     ys_and_backs = $mapfunc((args...) -> _pullback(cx, f, args...), args...)
     ys = map(first, ys_and_backs)
     function map_back(Δ)
-        #@show "haha1"
         Δarg = $mapfunc(((_,pb), δ) -> last(pb(δ)), ys_and_backs, Δ)
         (nothing, Δarg)
     end
@@ -971,6 +954,7 @@ for (mapfunc,∇mapfunc) in [(:map,:∇map),(:pmap,:∇pmap)]
 end
 
 function _pullback(cx::AContext, ::typeof(collect), g::Base.Generator)
+  @show "hh"
   giter, _keys = collect_if_dict(g.iter) # map is not defined for dictionaries
   y, map_pullback = ∇map(cx, g.f, giter)
 
