@@ -496,7 +496,6 @@ end
 struct ZygoteRuleConfig{CTX<:AContext} <: RuleConfig{Union{HasReverseMode,NoForwardsMode}}
   context::CTX
 end
-ZygoteRuleConfig() = ZygoteRuleConfig(Context())
 
 _is_rrule_redispatcher(m::Method) = m.sig == Tuple{typeof(rrule), RuleConfig, Vararg}
 
@@ -513,7 +512,6 @@ function has_chain_rrule(T, world)
   config_T, arg_Ts = Iterators.peel(T.parameters)
   configured_rrule_m = meta(Tuple{typeof(rrule), config_T, arg_Ts...}; world)
   is_ambig = configured_rrule_m === nothing  # this means there was an ambiguity error, on configured_rrule
-
 
   if !is_ambig && _is_rrule_redispatcher(configured_rrule_m.method)
     # The config is not being used:
@@ -548,7 +546,6 @@ function has_chain_rrule(T, world)
   #
   # Note that the fallback cases are the same outcome as the general cases as fallback is just most general.
   # It can be seen that checking if it matches is the correct way to decide if we should use the rrule or not.
-
 
   if !is_ambig && matching_cr_sig(no_rrule_m, rrule_m)  # Not ambiguous, and opted-out.
     # Return instance for configured_rrule_m as that will be invalidated 
@@ -678,9 +675,6 @@ struct CompileError
   T
   e
 end
-
-# Wrappers
-#tailmemaybe(x::Tuple) = Base.tail(x)
 
 @inline function pullback(f, args...)
   y, back = _pullback(Context(), f, args...)
