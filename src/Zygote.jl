@@ -958,10 +958,10 @@ function _generate_pullback(ctx, world, f, args...)
 
   # No ChainRule, going to have to work it out.
   T = Tuple{f,args...}
+  @show ignore_sig(T)
   ignore_sig(T) && return :(f(args...), Pullback{$T}(()))
 
   g = _generate_pullback_via_decomposition(T, world)
-  #g === nothing && return :(f(args...), Pullback{$T}((f,)))
   meta, forw, _ = g
   argnames!(meta, Symbol("#self#"), :ctx, :f, :args)
   forw = varargs!(meta, forw, 3)
