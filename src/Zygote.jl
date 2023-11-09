@@ -960,20 +960,11 @@ function _generate_pullback(ctx, world, f, args...)
   T = Tuple{f,args...}
   ignore_sig(T) && return :(f(args...), Pullback{$T}(()))
 
-  g = try
-    _generate_pullback_via_decomposition(T, world)
-  catch e
-    if VERSION < v"1.8"
-      # work around Julia bug
-      rethrow(CompileError(T,e))
-    end
-    return :(throw($(CompileError(T,e))))
-  end
+  g = _generate_pullback_via_decomposition(T, world)
   g === nothing && return :(f(args...), Pullback{$T}((f,)))
   meta, forw, _ = g
   argnames!(meta, Symbol("#self#"), :ctx, :f, :args)
   forw = varargs!(meta, forw, 3)
-  # IRTools.verify(forw)
   forw = slots!(pis!(inlineable!(forw)))
   # be ready to swap to using chainrule if one is declared
   cr_edge != nothing && edge!(meta, cr_edge)
@@ -982,16 +973,17 @@ end
 
 function _generate_callable_pullback(j::Type{<:Pullback{T}}, world, Δ) where T
   ignore_sig(T) && return :nothing
-  g = try
+  g = #try
     _generate_pullback_via_decomposition(T, world)
-  catch e
-    if VERSION < v"1.8"
-      # work around Julia bug
-      rethrow(CompileError(T,e))
-    end
-    return :(throw($(CompileError(T,e))))
-  end
+  #catch e
+  #  if VERSION < v"1.8"
+  #    # work around Julia bug
+  #    rethrow(CompileError(T,e))
+  #  end
+  #  return :(throw($(CompileError(T,e))))
+  #end
   if g === nothing
+    @show "haha"
     Δ == Nothing && return :nothing
     return :(error("Non-differentiable function $(repr(j.t[1]))"))
   end
