@@ -709,11 +709,6 @@ function pullback(cx::Context, f, args...)
   return pullback(f, cx, args...)
 end
 
-sensitivity(y::Number) = one(y)
-sensitivity(y::Complex) = error("Output is complex, so the gradient is not defined.")
-sensitivity(y::AbstractArray) = error("Output is an array, so the gradient is not defined. Perhaps you wanted jacobian.")
-sensitivity(y) = error("Output should be scalar; gradients are not defined for output $(repr(y))")
-
 """
     gradient(f, args...)
 
@@ -741,7 +736,7 @@ julia> gradient([7, 11], 0, 1) do x, y, d
 """
 function gradient(f, args...)
   y, back = pullback(f, args...)
-  grad = back(sensitivity(y))
+  grad = back(one(y))
   isnothing(grad) ? nothing : map(_project, args, grad)
 end
 
@@ -757,6 +752,7 @@ accum(x, y, zs...) = accum(accum(x, y), zs...)
 accum(x::AbstractArray, ys::AbstractArray...) = accum.(x, ys...)
 
 @generated function accum(x::NamedTuple, y::NamedTuple)
+  #@show "haha"
   # assumes that y has no keys apart from those also in x
   fieldnames(y) ⊆ fieldnames(x) || throw(ArgumentError("$y keys must be a subset of $x keys"))
 
@@ -765,6 +761,7 @@ accum(x::AbstractArray, ys::AbstractArray...) = accum.(x, ys...)
 end
 
 function accum(x::RefValue, y::RefValue)
+  #@show "baba"
   @assert x === y
   return x
 end
