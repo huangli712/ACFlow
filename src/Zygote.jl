@@ -943,23 +943,6 @@ for (mapfunc,∇mapfunc) in [(:map,:∇map),(:pmap,:∇pmap)]
   end
 end
 
-#=
-function _pullback(cx::AContext, ::typeof(collect), g::Base.Generator)
-  @show "hh"
-  giter, _keys = collect_if_dict(g.iter) # map is not defined for dictionaries
-  y, map_pullback = ∇map(cx, g.f, giter)
-
-  collect_pullback(::Nothing) = nothing
-
-  function collect_pullback(ȳ)
-    f̄, x̄ = map_pullback(ȳ)
-    x̄ = reconstruct_if_dict(x̄, _keys) # return a dictionary if needed
-    (nothing, (f = f̄, iter = x̄),)
-  end
-  y, collect_pullback
-end
-=#
-
 # Utilities
 # =========
 
@@ -986,25 +969,19 @@ unbroadcast(x::Number, x̄) = accum_sum(x̄)
 # Split Reverse Mode
 # ==================
 
-_minus(Δ) = -Δ
+#_minus(Δ) = -Δ
 
 @adjoint broadcasted(::typeof(+), xs::Numeric...) =
   broadcast(+, xs...), ȳ -> (nothing, map(x -> unbroadcast(x, ȳ), xs)...)
 
 @adjoint broadcasted(::typeof(-), x::Numeric, y::Numeric) = x .- y,
-  Δ -> (nothing, unbroadcast(x, Δ), _minus(unbroadcast(y, Δ)))
+  Δ -> (nothing, unbroadcast(x, Δ), -unbroadcast(y, Δ))
 
 @adjoint broadcasted(::typeof(-), x::Numeric) = .-x,
-  Δ -> (nothing, _minus(Δ))
+  Δ -> (nothing, -Δ)
 
 @adjoint broadcasted(::typeof(*), x::Numeric, y::Numeric) = x.*y,
    Δ -> (nothing, unbroadcast(x, Δ .* conj.(y)), unbroadcast(y, Δ .* conj.(x)))
-
-@adjoint broadcasted(::typeof(*), x::Number, y::AbstractArray{<:Number}) =
-  _pullback(__context__, *, x, y)  # this uses dot(y,Δ) instead of sum(Δ .* conj.(y))
-
-@adjoint broadcasted(::typeof(*), x::AbstractArray{<:Number}, y::Number) =
-  _pullback(__context__, *, x, y)
 
 @adjoint function broadcasted(::typeof(/), x::Numeric, y::Numeric)
   res = x ./ y
@@ -1023,7 +1000,6 @@ end
 # We do this because it ensures type stability so it compiles nicely on the gpu
 # The val is needed for some type stability
 @inline dual(x, i, ::Val{N}) where {N} = x
-#@inline dual(x::Bool, i, ::Val{N}) where {N} = x
 @inline dual(x::Real, i, ::Val{N}) where {N} = Dual(x, ntuple(==(i), N))
 
 function dualize(args::Vararg{Any, N}) where {N}
