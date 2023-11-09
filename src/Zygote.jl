@@ -927,16 +927,6 @@ end
 
 # General
 
-#=
-struct StaticGetter{i} end
-(::StaticGetter{i})(v) where {i} = v[i]
-(::StaticGetter{i})(::Nothing) where {i} = nothing
-
-#@generated function _unzip(tuples, ::Val{N}) where {N}
-#  Expr(:tuple, (:(map($(StaticGetter{i}()), tuples)) for i ∈ 1:N)...)
-#end
-=#
-
 for (mapfunc,∇mapfunc) in [(:map,:∇map),(:pmap,:∇pmap)]
   @eval function $∇mapfunc(cx, f::F, args::Vararg{Any, N}) where {F, N}
     ys_and_backs = $mapfunc((args...) -> _pullback(cx, f, args...), args...)
@@ -953,6 +943,7 @@ for (mapfunc,∇mapfunc) in [(:map,:∇map),(:pmap,:∇pmap)]
   end
 end
 
+#=
 function _pullback(cx::AContext, ::typeof(collect), g::Base.Generator)
   @show "hh"
   giter, _keys = collect_if_dict(g.iter) # map is not defined for dictionaries
@@ -967,6 +958,7 @@ function _pullback(cx::AContext, ::typeof(collect), g::Base.Generator)
   end
   y, collect_pullback
 end
+=#
 
 # Utilities
 # =========
