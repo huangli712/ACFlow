@@ -835,10 +835,10 @@ end
 _empty(x) = length(x)
 _empty(x::Union{Tuple,NamedTuple}) = map(_->nothing, x)
 
-_unapply(t::Integer, xs) = xs[1:t], xs[t+1:end]
-_unapply(t, xs) = first(xs), tail(xs)
 unapply(t, xs) = _unapply(t, xs)[1]
-#_unapply(t::Tuple{}, xs) = (), xs
+#_unapply(t::Integer, xs) = xs[1:t], xs[t+1:end]
+_unapply(t, xs) = first(xs), tail(xs)
+_unapply(t::Tuple{}, xs) = (), xs
 
 function _unapply(t::Tuple, xs)
   @show "ccc", typeof(first(t)), typeof(tail(t))
@@ -847,16 +847,7 @@ function _unapply(t::Tuple, xs)
   (t1, t2...), xs2
 end
 
-#=
-function _unapply(t::NamedTuple{K}, xs) where K
-  @show "ddd"
-  t, rst = _unapply(Tuple(t), xs)
-  NamedTuple{K}(t), rst
-end
-=#
-
 @adjoint! function Core._apply_iterate(::typeof(iterate), f, args...)
-  #@show "hhh"
   y, back = Core._apply(_pullback, (__context__, f), args...)
   st = map(_empty, args)
   y, function (Δ)
