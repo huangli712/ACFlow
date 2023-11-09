@@ -389,7 +389,6 @@ function Adjoint(ir::IR; varargs = nothing, normalise = true)
 end
 
 # Stacks
-
 mutable struct Stack{T}
   idx::Int
   data::Vector{T}
