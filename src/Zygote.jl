@@ -5,10 +5,10 @@ import ZygoteRules: @adjoint, @adjoint!, AContext, adjoint, _pullback, pullback,
 using ChainRulesCore
 using ChainRules: rrule, unthunk
 using IRTools
-using MacroTools, Requires
+#using MacroTools
 using IRTools: IR, Variable, Pipe, xcall, var, prewalk, postwalk,
   blocks, predecessors, successors, argument!, arguments, branches,
-  insertafter!, finish, expand!, prune!, substitute!, substitute,
+  insertafter!, finish, expand!, prune!, substitute,
   block, block!, branch!, return!, stmt, meta
 using IRTools.Inner: argnames!, update!
 using IRTools: varargs!, inlineable!, pis!, slots!
@@ -36,6 +36,10 @@ literal_indexed_iterate(x, ::Val{i}, state) where i = Base.indexed_iterate(x, i,
 @inline tuple_va(N, x, xs...) = (x, tuple_va(N, xs...)...)
 @inline tuple_va(::Val{N}, ::Nothing) where N = ntuple(_ -> nothing, Val(N))
 
+isexpr(x::Expr) = true
+isexpr(x) = false
+isexpr(x::Expr, ts...) = x.head in ts
+isexpr(x, ts...) = any(T->isa(T, Type) && isa(x, T), ts)
 iscall(x, m::Module, n::Symbol) = isexpr(x, :call) && x.args[1] == GlobalRef(m, n)
 
 gradindex(x, i) = x[i]
@@ -45,17 +49,11 @@ xgradindex(x, i) = xcall(Zygote, :gradindex, x, i)
 
 normalise!(ir) = ir |> IRTools.merge_returns!
 
-function instrument_new!(ir, v, ex)
-  isexpr(ex, :new) ? (ir[v] = xcall(Zygote, :__new__, ex.args...)) :
-  isexpr(ex, :splatnew) ? (ir[v] = xcall(Zygote, :__splatnew__, ex.args...)) :
-  ex
-end
+
 
 # Hack to work around fragile constant prop through overloaded functions
 unwrapquote(x) = x
 unwrapquote(x::QuoteNode) = x.value
-
-is_getproperty(ex) = iscall(ex, Base, :getproperty)
 
 # The initial premise of literal_getproperty was in some ways inherently flawed, because for
 # getproperty it was intended that _pullback falls back to literal_getproperty, but we actually
@@ -84,15 +82,7 @@ function instrument_getproperty!(ir, v, ex)
   end
 end
 
-# Here, only instrumenting getfield with literals is fine, since users should never have to
-# define custom adjoints for literal_getfield
-function instrument_getfield!(ir, v, ex)
-  if is_literal_getfield(ex)
-    ir[v] = xcall(Zygote, :literal_getfield, ex.args[2], Val(unwrapquote(ex.args[3])))
-  else
-    ex
-  end
-end
+is_getproperty(ex) = iscall(ex, Base, :getproperty)
 
 is_literal_getfield(ex) =
   (iscall(ex, Core, :getfield) || iscall(ex, Base, :getfield)) &&
@@ -103,6 +93,16 @@ is_literal_iterate(ex) =
 
 is_literal_getindex(ex) =
   iscall(ex, Base, :getindex) && length(ex.args) == 3 && ex.args[3] isa Union{Integer,QuoteNode}
+
+  # Here, only instrumenting getfield with literals is fine, since users should never have to
+# define custom adjoints for literal_getfield
+function instrument_getfield!(ir, v, ex)
+  if is_literal_getfield(ex)
+    ir[v] = xcall(Zygote, :literal_getfield, ex.args[2], Val(unwrapquote(ex.args[3])))
+  else
+    ex
+  end
+end
 
 # TODO: is this always correct for user defined getindex methods?
 function instrument_getindex!(ir, v, ex)
@@ -127,6 +127,12 @@ function instrument_literals!(ir, v, ex)
   ex = instrument_getfield!(ir, v, ex)
   ex = instrument_getindex!(ir, v, ex)
   ex = instrument_iterate!(ir, v, ex)
+end
+
+function instrument_new!(ir, v, ex)
+  isexpr(ex, :new) ? (ir[v] = xcall(Zygote, :__new__, ex.args...)) :
+  isexpr(ex, :splatnew) ? (ir[v] = xcall(Zygote, :__splatnew__, ex.args...)) :
+  ex
 end
 
 function instrument_global!(ir, v, ex)
@@ -722,7 +728,6 @@ accum(x, y, zs...) = accum(accum(x, y), zs...)
 accum(x::AbstractArray, ys::AbstractArray...) = accum.(x, ys...)
 
 @generated function accum(x::NamedTuple, y::NamedTuple)
-  #@show "haha"
   # assumes that y has no keys apart from those also in x
   fieldnames(y) ⊆ fieldnames(x) || throw(ArgumentError("$y keys must be a subset of $x keys"))
 
@@ -731,7 +736,6 @@ accum(x::AbstractArray, ys::AbstractArray...) = accum.(x, ys...)
 end
 
 function accum(x::RefValue, y::RefValue)
-  #@show "baba"
   @assert x === y
   return x
 end
@@ -830,6 +834,7 @@ _pullback(cx::AContext, ::typeof(getfield), x, field_name::Symbol) =
 
 grad_mut(x) = Ref{Any}(nt_nothing(x))
 grad_mut(cx::Context, x) = _get!(() -> grad_mut(x), cache(cx), x)
+grad_mut(d::AbstractDict) = Dict()
 
 # needed for reverse-over-reverse pending rrule for Base.get!
 function _get!(default::Base.Callable, ch, x)
@@ -839,10 +844,6 @@ function _get!(default::Base.Callable, ch, x)
     ch[x] = default()
   end
 end
-
-# Dictionaries
-
-grad_mut(d::AbstractDict) = Dict()
 
 @adjoint function getindex(d::AbstractDict, k)
   val = d[k]
@@ -958,7 +959,6 @@ function _generate_pullback(ctx, world, f, args...)
 
   # No ChainRule, going to have to work it out.
   T = Tuple{f,args...}
-  @show ignore_sig(T)
   ignore_sig(T) && return :(f(args...), Pullback{$T}(()))
 
   g = _generate_pullback_via_decomposition(T, world)
