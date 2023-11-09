@@ -680,13 +680,11 @@ struct CompileError
 end
 
 # Wrappers
-#_pullback(f, args...) = _pullback(Context(), f, args...)
-#tailmemaybe(::Nothing) = nothing
-tailmemaybe(x::Tuple) = Base.tail(x)
+#tailmemaybe(x::Tuple) = Base.tail(x)
 
 @inline function pullback(f, args...)
   y, back = _pullback(Context(), f, args...)
-  y, Δ -> tailmemaybe(back(Δ))
+  y, Δ -> Base.tail(back(Δ))
 end
 
 """
