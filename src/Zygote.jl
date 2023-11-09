@@ -5,13 +5,11 @@ import ZygoteRules: @adjoint, @adjoint!, AContext, adjoint, _pullback, pullback,
 using ChainRulesCore
 using ChainRules: rrule, unthunk
 using IRTools
-#using MacroTools
 using IRTools: IR, Variable, Pipe, xcall, var, prewalk, postwalk,
   blocks, predecessors, successors, argument!, arguments, branches,
   insertafter!, finish, expand!, prune!, substitute,
-  block, block!, branch!, return!, stmt, meta
+  block, block!, branch!, return!, stmt, meta, varargs!, inlineable!, pis!, slots!
 using IRTools.Inner: argnames!, update!
-using IRTools: varargs!, inlineable!, pis!, slots!
 import Base: copy!, tail, RefValue
 using Base.Broadcast: AbstractArrayStyle, broadcasted
 using Distributed: pmap
@@ -36,8 +34,6 @@ literal_indexed_iterate(x, ::Val{i}, state) where i = Base.indexed_iterate(x, i,
 @inline tuple_va(N, x, xs...) = (x, tuple_va(N, xs...)...)
 @inline tuple_va(::Val{N}, ::Nothing) where N = ntuple(_ -> nothing, Val(N))
 
-isexpr(x::Expr) = true
-isexpr(x) = false
 isexpr(x::Expr, ts...) = x.head in ts
 isexpr(x, ts...) = any(T->isa(T, Type) && isa(x, T), ts)
 iscall(x, m::Module, n::Symbol) = isexpr(x, :call) && x.args[1] == GlobalRef(m, n)
@@ -48,8 +44,6 @@ xgetindex(x, i...) = xcall(Base, :getindex, x, i...)
 xgradindex(x, i) = xcall(Zygote, :gradindex, x, i)
 
 normalise!(ir) = ir |> IRTools.merge_returns!
-
-
 
 # Hack to work around fragile constant prop through overloaded functions
 unwrapquote(x) = x
@@ -898,7 +892,7 @@ end
 end
 
 # Avoid hitting special cases for `Adjoint` etc.
-@adjoint broadcasted(::AbstractArrayStyle, f::F, args...) where {F} = broadcast_forward(f, args...)
+#@adjoint broadcasted(::AbstractArrayStyle, f::F, args...) where {F} = broadcast_forward(f, args...)
 @adjoint! (b::typeof(broadcast))(f, args...) = _pullback(__context__, broadcasted, f, args...)
 
 # We do this because it ensures type stability so it compiles nicely on the gpu
