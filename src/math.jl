@@ -1516,13 +1516,13 @@ end
 """
     linesearch!(d::BFGSDifferentiable, s::BFGSState)
 
-Evaluate line search direction. Actually, `s.alpha` will be updated in
-this function.
+Evaluate line search direction. Actually, `s.alpha`, `s.fₚ`, and `s.xₚ`
+will be updated in this function.
 
 See also: [`BFGSDifferentiable`](@ref), [`BFGSState`](@ref).
 """
 function linesearch!(d::BFGSDifferentiable, s::BFGSState)
-    # Calculate search direction dphi0
+    # Calculate search direction dϕ₀
     dϕ₀ = real(dot(gradient(d), s.ls))
 
     # Reset the direction if it becomes corrupted
