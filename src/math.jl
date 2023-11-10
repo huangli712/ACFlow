@@ -11,9 +11,10 @@
 # BE CAREFUL:
 #
 # The algorithms as implemented here are designed for the ACFlow package
-# only. Some of them are greatly simplified to get better performance.
-# Perhaps they won't work for general cases. Please use the professional
-# Julia's packages in your codes.
+# only. Some of them are oversimplified to get better performance. Thus
+# they won't work for general cases sometimes. Anyway, it is not a good
+# idea to adopt these functions outside the ACFlow package. Please use
+# popular Julia's packages in your codes.
 #
 
 #=
