@@ -1434,7 +1434,7 @@ function update_state!(d::BFGSDifferentiable, s::BFGSState)
     copyto!(s.gₚ, gradient(d))
 
     # Determine the distance of movement along the search line
-    lssuccess = linesearch!(s, d)
+    lssuccess = linesearch!(d, s)
 
     # Update current position
     s.δx .= s.alpha .* s.ls
@@ -1513,7 +1513,7 @@ function trace(d::BFGSDifferentiable, iter::I64, curr_time::F64)
     flush(stdout)
 end
 
-function linesearch!(s::BFGSState, d::BFGSDifferentiable)
+function linesearch!(d::BFGSDifferentiable, s::BFGSState)
     # Calculate search direction dphi0
     dϕ₀ = real(dot(gradient(d), s.ls))
 
