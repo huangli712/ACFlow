@@ -4,13 +4,14 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/25
+# Last modified: 2023/11/10
 #
 
 #=
 *Remarks* : Default Models
 
 Now `ACFlow` supports various default model functions `m(ω)`. Note that
+the `NevanAC` solver (based on the Nevanlinna analytical continuation),
 the `StochOM` solver (based on the stochastic optimization method), the
 `StochSK` solver (based on the stochastic analytic continuation method),
 and the `StochPX` solver (based on the stochastic pole expansion method)
