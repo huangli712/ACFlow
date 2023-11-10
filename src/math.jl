@@ -1345,7 +1345,7 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
 
     # Print trace for optimization progress
     @printf("Tracing BFGS Optimization\n")
-    trace!(d, iteration, time() - t₀)
+    trace(d, iteration, time() - t₀)
 
     # Setup convergence flag
     gconv = !isfinite(value(d)) || any(!isfinite, gradient(d))
@@ -1365,7 +1365,7 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
         update_h!(d, s)
 
         # Print trace for optimization progress
-        trace!(d, iteration, time() - t₀)
+        trace(d, iteration, time() - t₀)
 
         # Check the gradient
         if !all(isfinite, gradient(d))
@@ -1497,7 +1497,12 @@ function update_h!(d::BFGSDifferentiable, s::BFGSState)
     end
 end
 
-function trace!(d::BFGSDifferentiable, iter, curr_time)
+"""
+    trace(d::BFGSDifferentiable, iter::I64, curr_time::F64)
+
+Print some useful information about the optimization procedure.
+"""
+function trace(d::BFGSDifferentiable, iter::I64, curr_time::F64)
     gnorm = norm(gradient(d), Inf)
     #
     @printf("iter = %4d ", iter)
