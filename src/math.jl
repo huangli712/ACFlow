@@ -1323,6 +1323,13 @@ Evaluate residual (maximum gradient of f at the current position).
 """
 eval_resid(d::BFGSDifferentiable) = maximum(abs, gradient(d))
 
+"""
+    optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
+
+Return the argmin over x of `f(x)` using the BFGS algorithm. Here, `f`
+is the function call, and `g` will return the gradient of `f`, `x₀` is
+an initial guess for the solution.
+"""
 function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
     # Initialize time stamp
     t₀ = time()
