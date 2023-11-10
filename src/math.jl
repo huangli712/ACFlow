@@ -1206,8 +1206,14 @@ Return `obj.𝐷`. `obj` will not be affected.
 """
 gradient(obj::BFGSDifferentiable) = obj.𝐷
 
+"""
+    value_gradient!(obj::BFGSDifferentiable, x)
 
+Evaluate objective and derivative at `x`. `obj.𝐹` and `obj.𝐷` should be
+updated. Note that here `obj.𝒟!` is actually `nac.jl/smooth_norm()`.
+"""
 function value_gradient!(obj::BFGSDifferentiable, x)
+    # Note that gradient(obj), i.e obj.𝐷, should be updated in obj.𝒟!().
     obj.𝒟!(gradient(obj), x)
     obj.𝐹 = obj.ℱ!(x)
 end
