@@ -1250,8 +1250,14 @@ end
 """
     BFGSOptimizationResults
 
+It is used to save the optimization results of the BFGS algorithm.
+
 ### Members
 
+* x₀         -> Initial guess for the solution.
+* minimizer  -> Final results for the solution.
+* minimum    -> Residual.
+* iterations -> Number of iterations.
 """
 mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
     x₀ :: Tx
