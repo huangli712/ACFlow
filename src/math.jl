@@ -1593,6 +1593,11 @@ end
 
 Mutable struct. It contains information about the error occured in
 the line search.
+
+### Members
+
+* message -> Error message.
+* alpha   -> A key parameter used to control line search.
 """
 mutable struct LineSearchException{T<:Real} <: Exception
     message :: AbstractString
