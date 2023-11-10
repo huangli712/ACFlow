@@ -1604,6 +1604,8 @@ mutable struct LineSearchException{T<:Real} <: Exception
     alpha :: T
 end
 
+"""
+"""
 function LS(state::BFGSState, alpha::T, scaled::Bool) where T
     PT = promote_type(T, real(eltype(state.ls)))
     if scaled == true && (ns = real(norm(state.ls))) > convert(PT, 0)
