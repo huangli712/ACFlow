@@ -1221,7 +1221,7 @@ end
 """
     BFGSState
 
-Trace the history of states visited
+Mutable struct. It is used to trace the history of states visited.
 
 ### Members
 
@@ -1231,9 +1231,9 @@ Trace the history of states visited
 * δg    -> Changes in gradient.
 * xₚ    -> Previous position.
 * gₚ    -> Previous gradient.
-* fₚ    -> Previous f in xₚ.
+* fₚ    -> Previous f (f in xₚ).
 * H⁻¹   -> Current inverse Hessian matrix.
-* alpha ->
+* alpha -> A internal parameter to control the BFGS algorithm.
 """
 mutable struct BFGSState{Tx, Tm, T, G}
     x :: Tx
