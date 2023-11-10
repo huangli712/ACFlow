@@ -11,7 +11,6 @@ using IRTools: block, block!, branch!, return!, stmt, meta, varargs!, inlineable
 using IRTools.Inner: argnames!, update!
 import Base: copy!, tail, RefValue
 using Base.Broadcast: AbstractArrayStyle, broadcasted
-using Distributed: pmap
 using ForwardDiff: Dual, value, partials
 
 export gradient
@@ -333,8 +332,7 @@ function adjoint(pr::Primal)
                            line = b[v].line))
         for (i, x) in enumerate(ex.args)
           x isa Variable || continue
-          grad(x, push!(rb, stmt(xgradindex(g, i),
-                                 line = b[v].line)))
+          grad(x, push!(rb, stmt(xgradindex(g, i), line = b[v].line)))
         end
       elseif ex isa Core.PiNode
         grads[ex.val] = grads[v]
@@ -387,7 +385,6 @@ function Adjoint(ir::IR; varargs = nothing, normalise = true)
   Adjoint(pr.pr, adj)
 end
 
-# Stacks
 mutable struct Stack{T}
   idx::Int
   data::Vector{T}
@@ -407,8 +404,6 @@ function _push!(a::Vector{T}, x::T) where T
   @inbounds a[end] = x
   return
 end
-
-# Emit
 
 xstack(T) = Expr(:call, Vector{T})
 
@@ -562,10 +557,9 @@ function has_chain_rrule(T, world)
   end
 end
 
-matching_cr_sig(t, s) = matching_cr_sig(t.method.sig, s.method.sig)
-matching_cr_sig(::DataType, ::UnionAll) = false
-matching_cr_sig(::UnionAll, ::DataType) = false
-matching_cr_sig(t::Type, s::Type) = type_tuple_tail(t) == type_tuple_tail(s)
+function matching_cr_sig(t, s)
+  type_tuple_tail(t.method.sig) == type_tuple_tail(s.method.sig)
+end
 
 type_tuple_tail(d::DataType) = Tuple{d.parameters[2:end]...}
 function type_tuple_tail(d::UnionAll)
@@ -601,9 +595,7 @@ Convert `x` from the differentials types ChainRules uses to the format Zygote us
 Convert `dx` from the format Zygote uses internally to differentials types ChainRules uses.
 """
 @inline wrap_chainrules_input(dx) = dx
-# For arrays, whitelist the safe ones, but always look inside Any[]:
-@inline wrap_chainrules_input(dxs::AbstractArray{<:Number}) = dxs
-@inline wrap_chainrules_input(dxs::AbstractArray) = map(wrap_chainrules_input, dxs)
+#@inline wrap_chainrules_input(dxs::AbstractArray{<:Number}) = dxs
 
 """
   _project(x, dx)
