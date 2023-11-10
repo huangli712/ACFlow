@@ -149,14 +149,9 @@ function instrument(ir::IR)
   pr = Pipe(ir)
   for (v, st) in pr
     ex = st.expr
-    if isexpr(ex, :foreigncall, :isdefined)
-      @show "hhh"
-      continue
-    else
-      ex = instrument_new!(pr, v, ex)
-      ex = instrument_literals!(pr, v, ex)
-      ex = instrument_global!(pr, v, ex)
-    end
+    ex = instrument_new!(pr, v, ex)
+    ex = instrument_literals!(pr, v, ex)
+    ex = instrument_global!(pr, v, ex)
   end
   ir = finish(pr)
   # GlobalRefs can turn up in branch arguments
