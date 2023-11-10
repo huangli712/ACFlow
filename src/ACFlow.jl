@@ -55,6 +55,8 @@ using Printf
 using DelimitedFiles
 using TOML
 
+using Zygote
+
 #=
 ### *Includes And Exports* : *global.jl*
 =#
