@@ -1358,7 +1358,7 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
             break
         end
 
-        # Update the gradient
+        # Update the value of f and its gradient
         update_g!(d, s)
 
         # Update the Hessian matrix
@@ -1412,13 +1412,21 @@ function init_state(d::BFGSDifferentiable, x₀::AbstractArray)
               real(one(T)))
 end
 
+"""
+    update_state!(d::BFGSDifferentiable, s::BFGSState)
+
+Evaluate line search direction and change of x. New position and old
+gradient are saved in `s`.
+
+See also: [`BFGSDifferentiable`](@ref), [`BFGSState`](@ref).
+"""
 function update_state!(d::BFGSDifferentiable, s::BFGSState)
     T = eltype(s.ls)
 
     # Set the search direction
     #
-    # Note that Search direction is the negative gradient divided by
-    # the approximate Hessian
+    # Note that search direction is the negative gradient divided by
+    # the approximate Hessian matrix.
     mul!(vec(s.ls), s.H⁻¹, vec(gradient(d)))
     rmul!(s.ls, T(-1))
 
@@ -1432,14 +1440,26 @@ function update_state!(d::BFGSDifferentiable, s::BFGSState)
     s.δx .= s.alpha .* s.ls
     s.x .= s.x .+ s.δx
 
-    lssuccess == false # break on linesearch error
+    # Break on linesearch error
+    lssuccess == false
 end
 
-# Update the function value and gradient
-function update_g!(d::BFGSDifferentiable, s::BFGSState)
-    value_gradient!(d, s.x)
-end
+"""
+    update_g!(d::BFGSDifferentiable, s::BFGSState)
 
+Update the function value and gradient (`d.𝐹` and `d.𝐷` are changed).
+
+See also: [`BFGSDifferentiable`](@ref), [`BFGSState`](@ref).
+"""
+update_g!(d::BFGSDifferentiable, s::BFGSState) = value_gradient!(d, s.x)
+
+"""
+    update_h!(d::BFGSDifferentiable, s::BFGSState)
+
+Try to evaluate the new Hessian matrix.
+
+See also: [`BFGSDifferentiable`](@ref), [`BFGSState`](@ref).
+"""
 function update_h!(d::BFGSDifferentiable, s::BFGSState)
     n = length(s.x)
     su = similar(s.x)
