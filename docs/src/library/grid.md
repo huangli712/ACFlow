@@ -116,5 +116,7 @@ Base.getindex(bg::BosonicFragmentMatsubaraGrid, I::UnitRange{I64})
 ## Utilities
 
 ```@docs
-rebuild
+rebuild!
+resize!
+reverse!
 ```
