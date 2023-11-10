@@ -1513,6 +1513,14 @@ function trace(d::BFGSDifferentiable, iter::I64, curr_time::F64)
     flush(stdout)
 end
 
+"""
+    linesearch!(d::BFGSDifferentiable, s::BFGSState)
+
+Evaluate line search direction. Actually, `s.alpha` will be updated in
+this function.
+
+See also: [`BFGSDifferentiable`](@ref), [`BFGSState`](@ref).
+"""
 function linesearch!(d::BFGSDifferentiable, s::BFGSState)
     # Calculate search direction dphi0
     dϕ₀ = real(dot(gradient(d), s.ls))
