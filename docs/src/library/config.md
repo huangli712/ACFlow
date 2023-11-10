@@ -21,6 +21,12 @@ Pages = ["config.md"]
 inp_toml
 fil_dict
 rev_dict_b
+rev_dict_m
+rev_dict_n
+rev_dict_a
+rev_dict_k
+rev_dict_s
+rev_dict_x
 ```
 
 ## Validation
