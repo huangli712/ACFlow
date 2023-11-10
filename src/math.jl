@@ -468,9 +468,6 @@ function _interp(A::CubicSplineInterpolation{<:AbstractVector{<:Number}}, t::Num
     I + C + D
 end
 
-export munge_data
-export _interp
-
 #=
 ### *Math* : *Einstein Summation Convention*
 =#
@@ -960,9 +957,9 @@ function jacobian!(obj::OnceDifferentiable, x)
 end
 
 """
-    OptimizationResults{T,N}
+    LMOptimizationResults{T,N}
 
-It is used to save the optimization results of the levenberg_marquardt
+It is used to save the optimization results of the `levenberg_marquardt`
 algorithm.
 
 ### Members
@@ -974,7 +971,7 @@ algorithm.
 * xconv      -> If the convergence criterion 1 is satisfied.
 * gconv      -> If the convergence criterion 2 is satisfied.
 """
-struct OptimizationResults{T,N}
+struct LMOptimizationResults{T,N}
     x₀ :: Array{T,N}
     minimizer :: Array{T,N}
     minimum :: T
@@ -1094,7 +1091,7 @@ function levenberg_marquardt(df::OnceDifferentiable, x₀::AbstractVector{T} whe
     end
 
     # Return the results
-    OptimizationResults(
+    LMOptimizationResults(
         x₀,      # x₀
         x,       # minimizer
         C_resid, # residual
@@ -1140,15 +1137,6 @@ function curve_fit(model, x::AbstractArray, y::AbstractArray, p0::AbstractArray)
     conv = OR.xconv || OR.gconv
     return LsqFitResult(p, value!(R, p), jacobian!(R, p), conv)
 end
-
-export OnceDifferentiable
-export OptimizationResults
-export LsqFitResult
-export levenberg_marquardt
-export value
-export value!
-export jacobian
-export jacobian!
 
 #=
 ### *Math* : *Numerical Optimization*
