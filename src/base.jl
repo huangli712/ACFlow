@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/27
+# Last modified: 2023/11/10
 #
 
 """
@@ -51,7 +51,7 @@ end
     solve(rd::RawData)
 
 Solve the analytic continuation problem. The input data are encapsulated
-in a `Rawdata` struct. This function call is the actual interface to the
+in a `RawData` struct. This function call is the actual interface to the
 desired analytic continuation solvers.
 
 See also: [`RawData`](@ref).
