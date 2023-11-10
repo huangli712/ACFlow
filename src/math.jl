@@ -249,7 +249,7 @@ end
 
 Compute ∂f/∂x via finite difference method. It is less accurate and much
 slower than the automatic differentiation approach. Actually, we won't
-use this function to calculate gradient. The `Zygote.gradient` function
+use this function to calculate gradient. The `Zygote.gradient()` function
 is always a better choice.
 """
 function gradient_via_fd(f, x)
@@ -1142,12 +1142,41 @@ end
 ### *Math* : *Numerical Optimization*
 =#
 
-# Used for objectives and solvers where the gradient is available/exists
+#=
+*Remarks* :
+
+The following codes implements the BFGS algorithm for numerical optimization.
+
+Actually, these codes are borrowed from the following repositories:
+
+* https://github.com/JuliaNLSolvers/Optim.jl
+* https://github.com/JuliaNLSolvers/NLSolversBase.jl
+* https://github.com/JuliaNLSolvers/LineSearches.jl
+
+Of cource, these codes are greatly simplified, and only the vital
+features are retained. Only the `optimize()` function is exported. If
+any errors occur, please turn to the original version of `optimize()`
+as implemented in the `Optim.jl` package.
+=#
+
+"""
+    BFGSDifferentiable
+
+Mutable struct. It is used for objectives and solvers where the gradient
+is available/exists.
+
+### Members
+
+* ℱ! -> Objective. It is actually a function call and return objective.
+* 𝒟! -> It is a function call as well and returns derivative of objective.
+* 𝐹  -> Cache for ℱ! output.
+* 𝐷  -> Cache for 𝒟! output.
+"""
 mutable struct BFGSDifferentiable
-    ℱ! # objective, f
-    𝒟! # (partial) derivative of objective, df
-    𝐹  # cache for f output, F
-    𝐷  # cache for df output, DF
+    ℱ! 
+    𝒟!
+    𝐹
+    𝐷
 end
 
 function BFGSDifferentiable(f, df, x::AbstractArray)
