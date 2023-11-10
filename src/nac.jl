@@ -707,7 +707,7 @@ function smooth_norm(nac::NevanACContext, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C6
     𝑓₁ = trapz(nac.mesh, A)
 
     # Smoothness term
-    sd = deriv2(nac.mesh.mesh, A)
+    sd = second_derivative(nac.mesh.mesh, A)
     x_sd = nac.mesh.mesh[2:end-1]
     𝑓₂ = trapz(x_sd, abs.(sd) .^ 2)
 

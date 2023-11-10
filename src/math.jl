@@ -223,12 +223,12 @@ end
 =#
 
 """
-    deriv2(x::AbstractVector, y::AbstractVector)
+    second_derivative(x::AbstractVector, y::AbstractVector)
 
 Compute second derivative y''(x). If the length of `x` and `y` is `N`,
 the length of the returned vector is `N-2`.
 """
-function deriv2(x::AbstractVector, y::AbstractVector)
+function second_derivative(x::AbstractVector, y::AbstractVector)
     @assert length(x) == length(y)
 
     N = length(x)
