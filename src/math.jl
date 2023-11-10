@@ -1179,15 +1179,34 @@ mutable struct BFGSDifferentiable
     𝐷
 end
 
+"""
+    BFGSDifferentiable(f, df, x::AbstractArray)
+
+Constructor for BFGSDifferentiable struct. `f` is the function, `df` is
+the derivative of objective, `x` is the initial guess. 
+"""
 function BFGSDifferentiable(f, df, x::AbstractArray)
     𝐹 = real(zero(eltype(x)))
     T = promote_type(eltype(x), eltype(𝐹))
     𝐷 = fill!(T.(x), T(NaN))
-    BFGSDifferentiable(f, df, copy(𝐹), copy(𝐷))
+    return BFGSDifferentiable(f, df, copy(𝐹), copy(𝐷))
 end
 
+"""
+    value(obj::BFGSDifferentiable)
+
+Return `obj.𝐹`. `obj` will not be affected.
+"""
 value(obj::BFGSDifferentiable) = obj.𝐹
+
+"""
+    gradient(obj::BFGSDifferentiable)
+
+Return `obj.𝐷`. `obj` will not be affected.
+"""
 gradient(obj::BFGSDifferentiable) = obj.𝐷
+
+
 function value_gradient!(obj::BFGSDifferentiable, x)
     obj.𝒟!(gradient(obj), x)
     obj.𝐹 = obj.ℱ!(x)
