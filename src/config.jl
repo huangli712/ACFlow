@@ -428,7 +428,7 @@ function chk_dict()
         @case "NevanAC"
             push!(PA, PNevanAC)
             # It does not support imaginary time data.
-            @assert get_b("grid") in ("ffreq", "ffrag", "bfreq", "bfrag")
+            @assert get_b("grid") in ("ffreq", "ffrag")
             #
             @assert get_n("hmax")  ≥ 10
             @assert get_n("alpha") ≥ 1e-8
