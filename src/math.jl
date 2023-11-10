@@ -4,7 +4,16 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/06
+# Last modified: 2023/11/10
+#
+
+#
+# BE CAREFUL:
+#
+# The algorithms as implemented here are designed for the ACFlow package
+# only. Some of them are greatly simplified to get better performance.
+# Perhaps they won't work for general cases. Please use the professional
+# Julia's packages in your codes.
 #
 
 #=
