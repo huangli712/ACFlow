@@ -12,7 +12,7 @@ using IRTools.Inner: argnames!, update!
 import Base: copy!, tail, RefValue
 using Base.Broadcast: AbstractArrayStyle, broadcasted
 using Distributed: pmap
-using ForwardDiff: Dual, value
+using ForwardDiff: Dual, value, partials
 
 export gradient
 
