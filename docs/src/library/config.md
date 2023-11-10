@@ -20,7 +20,7 @@ Pages = ["config.md"]
 ```@docs
 inp_toml
 fil_dict
-rev_dict
+rev_dict_b
 ```
 
 ## Validation
