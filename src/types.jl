@@ -260,7 +260,8 @@ struct MaxEntSolver <: AbstractSolver end
     NevanACSolver
 
 It represents the analytic continuation solver that implements the
-Nevanlinna analytical continuation.
+Nevanlinna analytical continuation (It doesn't support the analytic
+confinuations for matrix-valued Green's functions).
 """
 struct NevanACSolver <: AbstractSolver end
 
