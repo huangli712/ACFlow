@@ -1389,21 +1389,23 @@ end
     init_state(d::BFGSDifferentiable, x₀::AbstractArray)
 
 Create a BFGSState object. Note that `d` should be updated in this
-function (`d.𝐹` and `d.𝐷`).
+function (`d.𝐹` and `d.𝐷`). `x₀` is an initial guess for the solution.
 
 See also: [`BFGSDifferentiable`](@ref), [`BFGSState`](@ref).
 """
 function init_state(d::BFGSDifferentiable, x₀::AbstractArray)
-    T = eltype(x₀)
+    # Update `d.𝐹` and `d.𝐷` using x₀.
     value_gradient!(d, x₀)
 
     # Prepare inverse Hessian matrix
+    T = eltype(x₀)
     x_ = reshape(x₀, :)
     H⁻¹ = x_ .* x_' .* false
     idxs = diagind(H⁻¹)
     scale = T(1)
     @. @view(H⁻¹[idxs]) = scale * true
 
+    # Return BFGSState
     BFGSState(x₀, similar(x₀), similar(x₀), similar(x₀), copy(x₀),
               copy(gradient(d)), real(T)(NaN),
               H⁻¹,
