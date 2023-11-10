@@ -1534,11 +1534,11 @@ function linesearch!(d::BFGSDifferentiable, s::BFGSState)
     LS(s, 1.0, false)
 
     # Store current x and f(x) for next iteration
-    ϕ₀  = value(d)
+    ϕ₀ = value(d)
     s.fₚ = ϕ₀
     copyto!(s.xₚ, s.x)
 
-    # Perform line search
+    # Perform line search using the Hager-Zhang algorithm
     try
         s.alpha, _ = LS(d, s.x, s.ls, s.alpha, ϕ₀, dϕ₀)
         return true # lssuccess = true
