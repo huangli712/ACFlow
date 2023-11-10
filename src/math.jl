@@ -244,7 +244,15 @@ function second_derivative(x::AbstractVector, y::AbstractVector)
     return 2 .* num ./ den
 end
 
-function gradient_noad(f, x)
+"""
+    gradient_via_fd(f, x)
+
+Compute ∂f/∂x via finite difference method. It is less accurate and much
+slower than the automatic differentiation approach. Actually, we won't
+use this function to calculate gradient. The `Zygote.gradient` function
+is always a better choice.
+"""
+function gradient_via_fd(f, x)
     𝑠 = cbrt(eps(F64))
 
     ∇𝑓 = zero(x)
