@@ -590,14 +590,6 @@ Convert `x` from the differentials types ChainRules uses to the format Zygote us
 @inline wrap_chainrules_output(x::Tuple) = map(wrap_chainrules_output, x)
 
 """
-    wrap_chainrules_input(dx)
-
-Convert `dx` from the format Zygote uses internally to differentials types ChainRules uses.
-"""
-@inline wrap_chainrules_input(dx) = dx
-#@inline wrap_chainrules_input(dxs::AbstractArray{<:Number}) = dxs
-
-"""
   _project(x, dx)
 
 Uses `ChainRulesCore.ProjectTo` to standardise the gradient `dx` for type & shape.
@@ -617,7 +609,7 @@ Wrapper for a ChainRules pullback `back`, that causes it to follow Zygote conven
 struct ZBack{F} <: Function
   back::F
 end
-@inline (s::ZBack)(dy) = wrap_chainrules_output(s.back(wrap_chainrules_input(dy)))
+@inline (s::ZBack)(dy) = wrap_chainrules_output(s.back(dy))
 # `nothing->nothing` can be deleted after https://github.com/FluxML/Zygote.jl/issues/603
 # though it might be worth keeping as a performance optimization (benchmarking pending)
 @inline (s::ZBack)(::Nothing) = nothing
