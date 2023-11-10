@@ -1553,6 +1553,13 @@ function linesearch!(d::BFGSDifferentiable, s::BFGSState)
     end
 end
 
+"""
+    converged(r::BFGSOptimizationResults)
+
+Check whether the optimization is converged.
+
+See also: [`BFGSOptimizationResults`](@ref).
+"""
 function converged(r::BFGSOptimizationResults)
     conv_flags = r.gconv
     x_isfinite = isfinite(r.δx) || isnan(r.Δx)
