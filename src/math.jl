@@ -1334,37 +1334,50 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
     # Initialize time stamp
     t₀ = time()
 
+    # Create BFGSDifferentiable
     d = BFGSDifferentiable(f, g, x₀)
+
+    # Create BFGSState
     s = init_state(d, x₀)
 
-    @printf("Tracing BFGS Optimization\n")
-
+    # Prepare counter
     iteration = 0
+
+    # Print trace for optimization progress
+    @printf("Tracing BFGS Optimization\n")
     trace!(d, iteration, time() - t₀)
 
+    # Setup convergence flag
     gconv = !isfinite(value(d)) || any(!isfinite, gradient(d))
     while !gconv && iteration < max_iter
         iteration += 1
 
+        # Update line search direction
         ls_success = !update_state!(d, s)
         if !ls_success
             break
         end
 
+        # Update the gradient
         update_g!(d, s)
+
+        # Update the Hessian matrix
         update_h!(d, s)
 
-        # Print trace
+        # Print trace for optimization progress
         trace!(d, iteration, time() - t₀)
 
+        # Check the gradient
         if !all(isfinite, gradient(d))
             @warn "Terminated early due to NaN in gradient."
             break
         end
 
+        # Check whether convergence criterion is satisfied
         gconv = (eval_resid(d) ≤ 1e-8)
-    end # while
+    end
 
+    # Return BFGSOptimizationResults
     BFGSOptimizationResults(x₀, s.x, value(d), iteration,
                             eval_δx(s), eval_Δx(s),
                             eval_δf(d, s), eval_Δf(d, s),
