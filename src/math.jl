@@ -1288,6 +1288,11 @@ function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
 end
 
+"""
+    eval_δf(d::BFGSDifferentiable, s::BFGSState)
+
+Evaluate the changes in f.
+"""
 eval_δf(d::BFGSDifferentiable, s::BFGSState) = abs(value(d) - s.fₚ)
 eval_Δf(d::BFGSDifferentiable, s::BFGSState) = eval_δf(d, s) / abs(value(d))
 eval_δx(s::BFGSState) = maxdiff(s.x, s.xₚ)
