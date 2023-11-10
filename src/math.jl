@@ -1583,9 +1583,20 @@ end
 #     Transactions on Mathematical Software 32: 113–137.
 #
 
+#
+# The following codes are borrowed from:
+#     https://github.com/JuliaNLSolvers/LineSearches.jl
+#
+
+"""
+    LineSearchException
+
+Mutable struct. It contains information about the error occured in
+the line search.
+"""
 mutable struct LineSearchException{T<:Real} <: Exception
-    message::AbstractString
-    alpha::T
+    message :: AbstractString
+    alpha :: T
 end
 
 function LS(state::BFGSState, alpha::T, scaled::Bool) where T
