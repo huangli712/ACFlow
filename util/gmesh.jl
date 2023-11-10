@@ -4,7 +4,7 @@
 # This script is used to generate a non-uniform and very dense mesh
 # according to the given spectral function `Aout.data`. The mesh will
 # be stored in `fmesh.inp`. The stochastic analytic continuation and
-# the stochastic pole expansion can utilize this mesh to capture the
+# the stochastic pole expansion can utilize this mesh to resolve the
 # fine structure of the spectrum automatically. This script will launch
 # only 1 process.
 #
@@ -75,6 +75,10 @@ function generate_fmesh(mesh::Vector{F64}, image::Vector{F64})
     nfine = 10000
     @cswitch solver begin
         @case "MaxEnt"
+            sorry()
+            break
+
+        @case "NevanAC"
             sorry()
             break
 
