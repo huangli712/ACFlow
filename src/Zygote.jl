@@ -668,11 +668,6 @@ end
 
 Pullback{S}(x) where S = Pullback{S,typeof(x)}(x)
 
-struct CompileError
-  T
-  e
-end
-
 @inline function pullback(f, args...)
   y, back = _pullback(Context(), f, args...)
   y, Δ -> Base.tail(back(Δ))
@@ -849,20 +844,18 @@ end
   val, dict_getindex_pullback
 end
 
-for (mapfunc,∇mapfunc) in [(:map,:∇map),(:pmap,:∇pmap)]
-  @eval function $∇mapfunc(cx, f::F, args::Vararg{Any, N}) where {F, N}
-    ys_and_backs = $mapfunc((args...) -> _pullback(cx, f, args...), args...)
-    ys = map(first, ys_and_backs)
-    function map_back(Δ)
-        Δarg = $mapfunc(((_,pb), δ) -> last(pb(δ)), ys_and_backs, Δ)
-        (nothing, Δarg)
-    end
-    return ys, map_back
+function ∇map(cx, f::F, args::Vararg{Any, N}) where {F, N}
+  ys_and_backs = map((args...) -> _pullback(cx, f, args...), args...)
+  ys = map(first, ys_and_backs)
+  function map_back(Δ)
+      Δarg = map(((_,pb), δ) -> last(pb(δ)), ys_and_backs, Δ)
+      (nothing, Δarg)
   end
+  return ys, map_back
+end
 
-  @eval @adjoint function $mapfunc(f, args::Union{AbstractArray,Tuple}...)
-    $∇mapfunc(__context__, f, args...)
-  end
+@adjoint function map(f, args::Union{AbstractArray,Tuple}...)
+  ∇map(__context__, f, args...)
 end
 
 accum_sum(xs::AbstractArray{<:Number}; dims = :) = sum(xs, dims = dims)
@@ -944,8 +937,8 @@ function edge!(m::IRTools.Meta, edge::Core.MethodInstance)
 end
 
 function _generate_pullback(ctx, world, f, args...)
-    cr_T = Tuple{ZygoteRuleConfig{ctx}, f, args...}
-    chain_rrule_f = :chain_rrule
+  cr_T = Tuple{ZygoteRuleConfig{ctx}, f, args...}
+  chain_rrule_f = :chain_rrule
 
   hascr, cr_edge = has_chain_rrule(cr_T, world)
   hascr && return :($chain_rrule_f(ZygoteRuleConfig(ctx), f, args...))
@@ -969,7 +962,6 @@ function _generate_callable_pullback(j::Type{<:Pullback{T}}, world, Δ) where T
   g = _generate_pullback_via_decomposition(T, world)
   meta, _, back = g
   argnames!(meta, Symbol("#self#"), :Δ)
-  # IRTools.verify(back)
   back = slots!(inlineable!(back))
   return update!(meta.code, back)
 end
