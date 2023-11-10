@@ -1256,8 +1256,14 @@ It is used to save the optimization results of the BFGS algorithm.
 
 * x₀         -> Initial guess for the solution.
 * minimizer  -> Final results for the solution.
-* minimum    -> Residual.
+* minimum    -> Objective at the final solution.
 * iterations -> Number of iterations.
+* δx         -> Absolute change in x.
+* Δx         -> Relative change in x.
+* δf         -> Absolute change in f.
+* Δf         -> Relative change in f.
+* resid      -> Maximum gradient for the final solution.
+* gconv      -> If the convergence criterion is satisfied
 """
 mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
     x₀ :: Tx
