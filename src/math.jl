@@ -1278,6 +1278,12 @@ mutable struct BFGSOptimizationResults{Tx, Tc, Tf}
     gconv :: Bool
 end
 
+"""
+    maxdiff(x::AbstractArray, y::AbstractArray)
+
+Return the maximum difference between two arrays: `x` and `y`. Note that
+the sizes of x and y should be the same.
+"""
 function maxdiff(x::AbstractArray, y::AbstractArray)
     return mapreduce((a, b) -> abs(a - b), max, x, y)
 end
