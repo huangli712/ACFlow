@@ -150,15 +150,8 @@ function instrument(ir::IR)
   for (v, st) in pr
     ex = st.expr
     if isexpr(ex, :foreigncall, :isdefined)
+      @show "hhh"
       continue
-    elseif isexpr(ex, :enter, :leave)
-      error("""try/catch is not supported.
-            Refer to the Zygote documentation for fixes.
-            https://fluxml.ai/Zygote.jl/latest/limitations
-            """)
-    elseif isexpr(ex, :(=))
-      @assert ex.args[1] isa GlobalRef
-      pr[v] = xcall(Zygote, :global_set, QuoteNode(ex.args[1]), ex.args[2])
     else
       ex = instrument_new!(pr, v, ex)
       ex = instrument_literals!(pr, v, ex)
@@ -688,13 +681,11 @@ function gradient(f, args...)
   map(_project, args, grad)
 end
 
-# Interfaces
-
-accum(x) = x
-accum(x, y) =
+function accum(x, y)
   x === nothing ? y :
   y === nothing ? x :
   x + y
+end
 
 accum(x, y, zs...) = accum(accum(x, y), zs...)
 accum(x::AbstractArray, ys::AbstractArray...) = accum.(x, ys...)
@@ -739,24 +730,6 @@ unwrap(ref, x) = x
 @adjoint unwrap(ref, x) = unwrap(x), function (x̄)
   accum_global(__context__, ref, x̄)
   (accum_param(__context__, x, x̄),)
-end
-
-function global_set(ref, val)
-  @static if VERSION < v"1.9.0-DEV.265"
-    ccall(:jl_set_global, Cvoid, (Any, Any, Any),
-          ref.mod, ref.name, val)
-  else
-    setglobal!(ref.mod, ref.name, val)
-  end
-end
-
-@adjoint! function global_set(ref, x)
-  global_set(ref, x), function (x̄)
-    gs = cache(__context__)
-    x̄ = accum(get(gs, ref, nothing), x̄)
-    gs[ref] = nothing
-    return (nothing, x̄)
-  end
 end
 
 @adjoint tuple(xs...) = xs, identity
