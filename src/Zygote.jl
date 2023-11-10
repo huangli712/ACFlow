@@ -1,96 +1,20 @@
 module Zygote
 
-import ZygoteRules: @adjoint, @adjoint!, AContext, adjoint, _pullback, pullback,
-  literal_getproperty, literal_getfield
+import ZygoteRules: @adjoint, @adjoint!, AContext, adjoint, _pullback, pullback, literal_getproperty, literal_getfield
 using ChainRulesCore
 using ChainRules: rrule, unthunk
 using IRTools
-using IRTools: IR, Variable, Pipe, xcall, var, prewalk, postwalk,
-  blocks, predecessors, successors, argument!, arguments, branches,
-  insertafter!, finish, expand!, prune!, substitute,
-  block, block!, branch!, return!, stmt, meta, varargs!, inlineable!, pis!, slots!
+using IRTools: IR, Variable, Pipe, xcall, var, prewalk, postwalk
+using IRTools: blocks, predecessors, successors, argument!, arguments, branches
+using IRTools: insertafter!, finish, expand!, prune!, substitute
+using IRTools: block, block!, branch!, return!, stmt, meta, varargs!, inlineable!, pis!, slots!
 using IRTools.Inner: argnames!, update!
 import Base: copy!, tail, RefValue
 using Base.Broadcast: AbstractArrayStyle, broadcasted
 using Distributed: pmap
-using ForwardDiff: Dual
+using ForwardDiff: Dual, value
 
 export gradient
-
-"""
-    ForwardDiff.can_dual(V::Type)
-
-Determines whether the type V is allowed as the scalar type in a
-Dual. By default, only `<:Real` types are allowed.
-"""
-can_dual(::Type{<:Real}) = true
-can_dual(::Type) = false
-
-#=
-struct Partials{N,V} <: AbstractVector{V}
-  values::NTuple{N,V}
-end
-
-struct Dual{T,V,N} <: Real
-    value::V
-    partials::Partials{N,V}
-    function Dual{T, V, N}(value::V, partials::Partials{N, V}) where {T, V, N}
-        can_dual(V) || throw_cannot_dual(V)
-        new{T, V, N}(value, partials)
-    end
-end
-
-@inline Dual{T}(value::V, partials::Partials{N,V}) where {T,N,V} = Dual{T,V,N}(value, partials)
-
-@inline function Dual{T}(value::A, partials::Partials{N,B}) where {T,N,A,B}
-    C = promote_type(A, B)
-    return Dual{T}(convert(C, value), convert(Partials{N,C}, partials))
-end
-
-@inline Dual{T}(value, partials::Tuple) where {T} = Dual{T}(value, Partials(partials))
-@inline Dual{T}(value, partials::Tuple{}) where {T} = Dual{T}(value, Partials{0,typeof(value)}(partials))
-@inline Dual{T}(value) where {T} = Dual{T}(value, ())
-@inline Dual{T}(x::Dual{T}) where {T} = Dual{T}(x, ())
-@inline Dual{T}(value, partial1, partials...) where {T} = Dual{T}(value, tuple(partial1, partials...))
-#@inline Dual{T}(value::V, ::Chunk{N}, p::Val{i}) where {T,V,N,i} = Dual{T}(value, single_seed(Partials{N,V}, p))
-@inline Dual(args...) = Dual{Nothing}(args...)
-
-# we define these special cases so that the "constructor <--> convert" pun holds for `Dual`
-@inline Dual{T,V,N}(x::Dual{T,V,N}) where {T,V,N} = x
-@inline Dual{T,V,N}(x) where {T,V,N} = convert(Dual{T,V,N}, x)
-@inline Dual{T,V,N}(x::Number) where {T,V,N} = convert(Dual{T,V,N}, x)
-@inline Dual{T,V}(x) where {T,V} = convert(Dual{T,V}, x)
-=#
-
-@inline value(x) = x
-@inline value(d::Dual) = d.value
-
-@inline value(::Type{T}, x) where T = x
-@inline value(::Type{T}, d::Dual{T}) where T = value(d)
-@inline function value(::Type{T}, d::Dual{S}) where {T,S}
-    if S ≺ T
-        d
-    else
-        throw(DualMismatchError(T,S))
-    end
-end
-
-@inline partials(x) = Partials{0,typeof(x)}(tuple())
-@inline partials(d::Dual) = d.partials
-@inline partials(x, i...) = zero(x)
-@inline Base.@propagate_inbounds partials(d::Dual, i) = d.partials[i]
-@inline Base.@propagate_inbounds partials(d::Dual, i, j) = partials(d, i).partials[j]
-@inline Base.@propagate_inbounds partials(d::Dual, i, j, k...) = partials(partials(d, i, j), k...)
-
-@inline Base.@propagate_inbounds partials(::Type{T}, x, i...) where T = partials(x, i...)
-@inline Base.@propagate_inbounds partials(::Type{T}, d::Dual{T}, i...) where T = partials(d, i...)
-@inline function partials(::Type{T}, d::Dual{S}, i...) where {T,S}
-    if S ≺ T
-        zero(d)
-    else
-        throw(DualMismatchError(T,S))
-    end
-end
 
 const Numeric{T<:Number} = Union{T, AbstractArray{<:T}}
 
