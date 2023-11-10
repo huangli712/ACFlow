@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/03
+# Last modified: 2023/11/10
 #
 
 #=
@@ -434,7 +434,7 @@ end
     Base.reverse!(fg::FermionicMatsubaraGrid)
 
 Reverse the fermionic Matsubara grid. This function is called by the
-NevanAC solver only.
+`NevanAC` solver only.
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
@@ -601,7 +601,7 @@ end
     Base.reverse!(fg::FermionicFragmentMatsubaraGrid)
 
 Reverse the fermionic fragment Matsubara grid. This function is called
-by the NevanAC solver only.
+by the `NevanAC` solver only.
 
 See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
@@ -1036,9 +1036,9 @@ end
     Base.reverse!(bg::BosonicMatsubaraGrid)
 
 Reverse the bosonic Matsubara grid. This function is called by the
-NevanAC solver only.
+`NevanAC` solver only.
 
-See also: [`FermionicMatsubaraGrid`](@ref).
+See also: [`BosonicMatsubaraGrid`](@ref).
 """
 function Base.reverse!(bg::BosonicMatsubaraGrid)
     reverse!(bg.ω)
@@ -1203,7 +1203,7 @@ end
     Base.reverse!(bg::BosonicFragmentMatsubaraGrid)
 
 Reverse the bosonic fragment Matsubara grid. This function is called
-by the NevanAC solver only.
+by the `NevanAC` solver only.
 
 See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
