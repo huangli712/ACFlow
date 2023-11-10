@@ -1385,10 +1385,19 @@ function optimize(f, g, x₀::AbstractArray; max_iter::I64 = 1000)
                             gconv)
 end
 
+"""
+    init_state(d::BFGSDifferentiable, x₀::AbstractArray)
+
+Create a BFGSState object. Note that `d` should be updated in this
+function (`d.𝐹` and `d.𝐷`).
+
+See also: [`BFGSDifferentiable`](@ref), [`BFGSState`](@ref).
+"""
 function init_state(d::BFGSDifferentiable, x₀::AbstractArray)
     T = eltype(x₀)
     value_gradient!(d, x₀)
 
+    # Prepare inverse Hessian matrix
     x_ = reshape(x₀, :)
     H⁻¹ = x_ .* x_' .* false
     idxs = diagind(H⁻¹)
