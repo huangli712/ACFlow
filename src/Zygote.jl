@@ -244,7 +244,6 @@ function Primal(ir::IR; varargs = nothing)
 end
 
 # Backwards Pass
-
 struct Alpha
   id::Int
 end
