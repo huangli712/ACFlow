@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/01
+# Last modified: 2023/11/10
 #
 
 """
@@ -17,11 +17,11 @@ toolkit is under heavy development. **PLEASE USE IT AT YOUR OWN RISK**.
 
 Nowadays the ACFlow toolkit supports the following algorithms:
 
-* Maximum Entropy Method (`MaxEnt` solver)
+* Maximum Entropy Method (`MaxEnt` solver, `recommended`)
 * Nevanlinna Analytical Continuation (`NevanAC` solver, `experimental`)
 * Stochastic Analytic Continuation (`StochAC` and `StochSK` solvers)
 * Stochastic Optimization Method (`StochOM` solver)
-* Stochastic Pole eXpansion (`StochPX` solver)
+* Stochastic Pole eXpansion (`StochPX` solver, `recommended`)
 
 More algorithms will be implemented in the future.
 
@@ -54,6 +54,20 @@ using Dates
 using Printf
 using DelimitedFiles
 using TOML
+
+#=
+### *Using Third-Party Libraries*
+=#
+
+#=
+The `Zygote` package is used to to calculate gradient via an automatic
+differentiation approach. The `NevanAC` solver depends on it to perform
+the Hardy basis function optimization. However, once you have trouble in
+installing `Zygote`, we also provide an built-in gradient function,
+which implements a finite difference approach (it is quite slow). Please
+see the comments in `nac.jl` about how to activate the built-in gradient
+function.
+=#
 
 using Zygote
 
