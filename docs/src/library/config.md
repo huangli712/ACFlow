@@ -41,6 +41,7 @@ _v
 ```@docs
 get_b
 get_m
+get_n
 get_a
 get_k
 get_s
