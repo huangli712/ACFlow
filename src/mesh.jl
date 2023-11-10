@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/10/01
+# Last modified: 2023/11/10
 #
 
 #=
@@ -161,7 +161,7 @@ end
 
 A constructor for the DynamicMesh struct, which is announced in
 `src/types.jl`. The δ peaks in the stochastic analytic continuation
-or the poles in the stochastic pole expansion method should be placed
+or the poles in the stochastic pole expansion method could be placed
 in this mesh. This mesh should not be used to define the spectrum.
 
 See also: [`DynamicMesh`](@ref).
