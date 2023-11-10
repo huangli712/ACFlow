@@ -20,14 +20,19 @@ Pages = ["global.md"]
 ```@docs
 I32
 I64
+API
 F32
 F64
+APF
 C32
 C64
+APC
 R32
 R64
+APR
 N32
 N64
+APN
 ```
 
 ## String Constants
