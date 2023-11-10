@@ -1,0 +1,4 @@
+name = "ACFlow"
+uuid = "534ee623-be29-41df-bae3-32a565735587"
+authors = ["Li Huang <lihuang.dmft@gmail.com>"]
+version = "0.1.0"
