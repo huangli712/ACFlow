@@ -558,7 +558,7 @@ To implement the MaxEnt solver for analytic continuation problem.
 *Members* :
 
 ```text
-MaxEntContext -> Essential struct for the MaxEnt solver.
+MaxEntContext   -> Essential struct for the MaxEnt solver.
 #
 solve           -> Wrapper function for the MaxEnt solver.
 init            -> Initialize maximum entropy simulation.
@@ -623,6 +623,30 @@ To implement the NevanAC solver for analytic continuation problem.
 *Members* :
 
 ```text
+NevanACContext  -> Essential struct for the NevanAC solver.
+#
+solve           -> Wrapper function for the NevanAC solver.
+init            -> Initialize Nevanlinna analytical continuation simulation.
+run             -> Perform Nevanlinna analytical continuation simulation.
+last            -> Postprocess the calculated results and write them.
+#
+precompute      -> Precompute some key arrays.
+calc_mobius     -> Perform Mobius transformation.
+calc_inv_mobius -> Perform inverse Mobius transformation.
+calc_pick       -> Calculate the Pick matrix.
+calc_phis       -> Try to calculate the Φ vector.
+calc_abcd       -> Try to calculate the coefficients matrix abcd.
+calc_hbasis     -> Try to calculate the Hardy basis.
+calc_hmatrix    -> Try to calculate ``[f^k(z), f^k(z)^*]`` for 0 ≤ 𝑘 ≤ 𝐻-1.
+calc_theta      -> Try to calculate the contractive function θ(z).
+calc_green      -> Evaluate the green's function via Nevanlinna interpolant.
+calc_noptim     -> Evaluate the optimal value for the size of input data.
+calc_hmin!      -> Try to perform Hardy basis optimization.
+calc_hopt!      -> Try to perform Hardy basis optimization.
+hardy_optimize! -> Try to perform Hardy basis optimization.
+smooth_norm     -> Establish the smooth norm.
+check_pick      -> Check whether the input data are valid.
+check_causality -> Check causality of the Hardy coefficients `𝑎𝑏`.
 ```
 =#
 
@@ -637,7 +661,6 @@ export run
 export last
 #
 export precompute
-#
 export calc_mobius
 export calc_inv_mobius
 export calc_pick
