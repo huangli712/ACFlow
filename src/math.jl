@@ -1840,7 +1840,6 @@ function ls_secant(a::F64, b::F64, dphi_a::F64, dphi_b::F64)
     return (a * dphi_b - b * dphi_a) / (dphi_b - dphi_a)
 end
 
-# phi
 function ls_secant2!(ϕdϕ, alphas::Vector{F64},
                      values::Vector{F64}, slopes::Vector{F64},
                      ia::I64, ib::I64,
@@ -1851,16 +1850,19 @@ function ls_secant2!(ϕdϕ, alphas::Vector{F64},
     b = alphas[ib]
     dphi_a = slopes[ia]
     dphi_b = slopes[ib]
+
     T = eltype(slopes)
     zeroT = convert(T, 0)
+    #
     if !(dphi_a < zeroT && dphi_b >= zeroT)
         error(string("Search direction is not a direction of descent; ",
                      "this error may indicate that user-provided derivatives are inaccurate. ",
                       @sprintf "(dphi_a = %f; dphi_b = %f)" dphi_a dphi_b))
     end
+    #
     c = ls_secant(a, b, dphi_a, dphi_b)
     @assert isfinite(c)
-    # phi_c = phi(tmpc, c) # Replace
+    #
     phi_c, dphi_c = ϕdϕ(c)
     @assert isfinite(phi_c) && isfinite(dphi_c)
 
@@ -1876,15 +1878,16 @@ function ls_secant2!(ϕdϕ, alphas::Vector{F64},
     iA, iB = ls_update!(ϕdϕ, alphas, values, slopes, ia, ib, ic, phi_lim)
     a = alphas[iA]
     b = alphas[iB]
+
     if iB == ic
-        # we updated b, make sure we also update a
+        # We updated b, make sure we also update a
         c = ls_secant(alphas[ib], alphas[iB], slopes[ib], slopes[iB])
     elseif iA == ic
-        # we updated a, do it for b too
+        # We updated a, do it for b too
         c = ls_secant(alphas[ia], alphas[iA], slopes[ia], slopes[iA])
     end
+    #
     if (iA == ic || iB == ic) && a <= c <= b
-        # phi_c = phi(tmpc, c) # TODO: Replace
         phi_c, dphi_c = ϕdϕ(c)
         @assert isfinite(phi_c) && isfinite(dphi_c)
 
@@ -1899,6 +1902,7 @@ function ls_secant2!(ϕdϕ, alphas::Vector{F64},
         end
         iA, iB = ls_update!(ϕdϕ, alphas, values, slopes, iA, iB, ic, phi_lim)
     end
+
     return false, iA, iB
 end
 
