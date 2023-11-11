@@ -753,17 +753,21 @@ function check_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
 end
 
 """
+    check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
+
+Check causality of the Hardy coefficients `𝑎𝑏`.
 """
 function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
-    param = ℋ * 𝑎𝑏
+    θₘ₊₁ = ℋ * 𝑎𝑏
 
-    max_theta = findmax(abs.(param))[1]
+    max_theta = findmax(abs.(θₘ₊₁))[1]
+
     if max_theta <= 1.0
-        println("max_theta = ",max_theta)
+        println("max_theta = ", max_theta)
         println("Hardy optimization was success.")
         causality = true
     else
-        println("max_theta = ",max_theta)
+        println("max_theta = ", max_theta)
         println("Hardy optimization was failure.")
         causality = false
     end
