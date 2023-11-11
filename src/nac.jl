@@ -628,10 +628,9 @@ This function will determine the optimal value of H (hopt). Of course,
 """
 function calc_hopt!(nac::NevanACContext)
     hmax = get_n("hmax")
-    hmax = 1 # DEBUG
 
     for h = nac.hmin + 1:hmax
-        println("H = $h")
+        println("H (Order of Hardy basis) -> $h")
 
         # Prepare initial ℋ and 𝑎𝑏
         ℋ = calc_hmatrix(nac.mesh, h)
