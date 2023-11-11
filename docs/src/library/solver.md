@@ -72,7 +72,6 @@ calc_chi2(mec::MaxEntContext, A::Vector{F64})
 
 ```@docs
 NevanACSolver
-NevanACContext
 ```
 
 ### Functions
