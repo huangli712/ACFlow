@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/06
+# Last modified: 2023/11/11
 #
 
 #=
@@ -113,6 +113,8 @@ function run(nac::NevanACContext)
     hardy = get_n("hardy")
     #
     if hardy
+        println("Activate Hardy basis optimization")
+
         # Determine the minimal Hardy order (`hmin`), update `ℋ` and `𝑎𝑏`.
         calc_hmin!(nac)
 
