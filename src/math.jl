@@ -1173,7 +1173,7 @@ is available/exists.
 * 𝐷  -> Cache for 𝒟! output.
 """
 mutable struct BFGSDifferentiable
-    ℱ! 
+    ℱ!
     𝒟!
     𝐹
     𝐷
@@ -1183,7 +1183,7 @@ end
     BFGSDifferentiable(f, df, x::AbstractArray)
 
 Constructor for BFGSDifferentiable struct. `f` is the function, `df` is
-the derivative of objective, `x` is the initial guess. 
+the derivative of objective, `x` is the initial guess.
 """
 function BFGSDifferentiable(f, df, x::AbstractArray)
     𝐹 = real(zero(eltype(x)))
@@ -1545,7 +1545,7 @@ function linesearch!(d::BFGSDifferentiable, s::BFGSState)
     catch ex
         # Catch LineSearchException to allow graceful exit
         if isa(ex, LineSearchException)
-            s.alpha = ex.alphagit 
+            s.alpha = ex.alphagit
             return false # lssuccess = false
         else
             rethrow(ex)
@@ -1725,7 +1725,7 @@ function LS(df::BFGSDifferentiable,
         else
             # We'll still going downhill, expand the interval and try again.
             # Reaching this branch means that dphi_c < 0 and phi_c <= phi_0 + ϵ_k
-            # So cold = c has a lower objective than phi_0 up to epsilon. 
+            # So cold = c has a lower objective than phi_0 up to epsilon.
             # This makes it a viable step to return if bracketing fails.
 
             # Bracketing can fail if no cold < c <= alphamax can be found
@@ -1776,7 +1776,7 @@ function LS(df::BFGSDifferentiable,
         iswolfe, iA, iB = ls_secant2!(ϕdϕ, alphas, values, slopes, ia, ib, phi_lim, delta, sigma)
         if iswolfe
             # Reset in case another initial guess is used next
-            mayterminate[] = false 
+            mayterminate[] = false
             return alphas[iA], values[iA]
         end
         A = alphas[iA]

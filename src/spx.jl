@@ -1286,7 +1286,7 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         𝕊₁ = SE.𝕊[s₁]
         P₁ = SE.P[s₁]
         P₃ = P₁
-        while P₃ == P₁ || sign(P₃) != sign(𝕊₁) 
+        while P₃ == P₁ || sign(P₃) != sign(𝕊₁)
             P₃ = rand(MC.rng, SC.allow)
         end
         P₃ = abs(P₃)

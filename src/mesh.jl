@@ -157,7 +157,7 @@ end
 =#
 
 """
-    DynamicMesh(mesh::Vector{T}) where {T} 
+    DynamicMesh(mesh::Vector{T}) where {T}
 
 A constructor for the DynamicMesh struct, which is announced in
 `src/types.jl`. The δ peaks in the stochastic analytic continuation

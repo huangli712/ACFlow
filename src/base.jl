@@ -400,7 +400,7 @@ function make_grid(rd::RawData; T::DataType = F64)
             @assert abs(_β - β) ≤ 1e-6
             _grid = BosonicMatsubaraGrid(ngrid, β, v)
             break
-        
+
         @case "bfrag"
             _grid = BosonicFragmentMatsubaraGrid(β, v)
             break

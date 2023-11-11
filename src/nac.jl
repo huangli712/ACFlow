@@ -190,7 +190,7 @@ See `calc_inv_mobius()`.
 
 ```math
 \begin{equation}
-\mathcal{P} = 
+\mathcal{P} =
 \left[
     \frac{1-\lambda_i \lambda^*_j}{1-h(Y_i)h(Y_j)^*}
 \right]_{i,j}.
@@ -277,7 +277,7 @@ where
 \begin{equation}
 \begin{pmatrix}
 a(z) & b(z) \\
-c(z) & d(z) 
+c(z) & d(z)
 \end{pmatrix}
 = \prod^{M}_{j=1}
 \begin{pmatrix}
@@ -409,7 +409,7 @@ function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
     ngrid = length(grid)
 
     # Allocate memory
-    Φ = zeros(APC, ngrid) 
+    Φ = zeros(APC, ngrid)
     𝒜 = zeros(APC, 2, 2, ngrid)
     ∏ = zeros(APC, 2, 2)
     𝑔 = grid.ω * im
@@ -550,7 +550,7 @@ function calc_noptim(ωₙ::Vector{APC}, Gₙ::Vector{APC})
     # Get size of input data
     ngrid = length(ωₙ)
 
-    # Check whether the Pick criterion is applied 
+    # Check whether the Pick criterion is applied
     pick = get_n("pick")
     if !pick
         return ngrid
@@ -676,7 +676,7 @@ function hardy_optimize!(nac::NevanACContext,
     # which is less efficient.
     function 𝐽!(J::Vector{C64}, x::Vector{C64})
         J .= Zygote.gradient(𝑓, x)[1]
-        
+
         # Finite difference algorithm
         # J .= gradient_via_fd(𝑓, x)
         #
@@ -700,7 +700,7 @@ function hardy_optimize!(nac::NevanACContext,
         nac.𝑎𝑏 = res.minimizer
         nac.ℋ = ℋ
     end
-    
+
     return causality, converged(res)
 end
 
