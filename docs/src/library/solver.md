@@ -2,11 +2,12 @@
 
 *Define various solvers for the ACFlow toolkit.*
 
-Now the ACFlow toolkit supports five analytic continuation solvers. They are:
+Now the ACFlow toolkit supports six analytic continuation solvers. They are:
 
 * `MaxEnt` (Maximum Entropy Method, see `maxent.jl`)
-* `StochAC` (Stochastic Analytical Continuations, see `sac.jl`)
-* `StochSK` (Stochastic Analytical Continuation, see `san.jl`)
+* `NevanAC` (Nevanlinna Analytical Continuation, see `nac.jl`)
+* `StochAC` (Stochastic Analytic Continuation, see `sac.jl`)
+* `StochSK` (Stochastic Analytic Continuation, see `san.jl`)
 * `StochOM` (Stochastic Optimization Method, see `som.jl`)
 * `StochPX` (Stochastic Pole Expansion, see `spx.jl`)
 
@@ -63,6 +64,24 @@ calc_entropy_od
 calc_bayes
 calc_bayes_od
 calc_chi2(mec::MaxEntContext, A::Vector{F64})
+```
+
+## NevanAC Solver
+
+### Structs
+
+```@docs
+NevanACSolver
+NevanACContext
+```
+
+### Functions
+
+```@docs
+solve(S::NevanACSolver, rd::RawData)
+init(S::NevanACSolver, rd::RawData)
+ACFlow.run(nac::NevanACContext)
+ACFlow.last(nac::NevanACContext)
 ```
 
 ## StochAC Solver
