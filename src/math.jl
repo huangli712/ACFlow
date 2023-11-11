@@ -1605,6 +1605,9 @@ mutable struct LineSearchException{T<:Real} <: Exception
 end
 
 """
+    LS(state::BFGSState, alpha::T, scaled::Bool)
+
+Line search: initial and static version.
 """
 function LS(state::BFGSState, alpha::T, scaled::Bool) where T
     PT = promote_type(T, real(eltype(state.ls)))
@@ -1615,7 +1618,15 @@ function LS(state::BFGSState, alpha::T, scaled::Bool) where T
     end
 end
 
-function LS(df::BFGSDifferentiable, x::Vector{C64}, s::Vector{C64},
+"""
+    LS(df::BFGSDifferentiable,
+        x::Vector{C64}, s::Vector{C64},
+        c::F64, phi_0::F64, dphi_0::F64)
+
+Line search: Hager-Zhang algorithm.
+"""
+function LS(df::BFGSDifferentiable,
+            x::Vector{C64}, s::Vector{C64},
             c::F64, phi_0::F64, dphi_0::F64)
     delta = 0.1
     sigma = 0.9
@@ -1631,17 +1642,19 @@ function LS(df::BFGSDifferentiable, x::Vector{C64}, s::Vector{C64},
 
     T = typeof(c)
     zeroT = convert(T, 0)
+    #
     if !(isfinite(phi_0) && isfinite(dphi_0))
         throw(LineSearchException("Value and slope at step length = 0 must be finite.", T(0)))
     end
+    #
     if dphi_0 >= eps(T) * abs(phi_0)
         throw(LineSearchException("Search direction is not a direction of descent.", T(0)))
     elseif dphi_0 >= 0
         return zeroT, phi_0
     end
 
-    # Prevent values of x_new = x+αs that are likely to make
-    # ϕ(x_new) infinite
+    # Prevent values of x_new = x+αs that are likely to
+    # make ϕ(x_new) infinite
     iterfinitemax::Int = ceil(Int, -log2(eps(T)))
     alphas = [zeroT] # for bisection
     values = [phi_0]
@@ -1653,17 +1666,20 @@ function LS(df::BFGSDifferentiable, x::Vector{C64}, s::Vector{C64},
     @assert isfinite(c) && c <= alphamax
     phi_c, dphi_c = ϕdϕ(c)
     iterfinite = 1
+    #
     while !(isfinite(phi_c) && isfinite(dphi_c)) && iterfinite < iterfinitemax
         mayterminate[] = false
         iterfinite += 1
         c *= psi3
         phi_c, dphi_c = ϕdϕ(c)
     end
+    #
     if !(isfinite(phi_c) && isfinite(dphi_c))
         @warn("Failed to achieve finite new evaluation point, using alpha=0")
         mayterminate[] = false # reset in case another initial guess is used next
         return zeroT, phi_0
     end
+    #
     push!(alphas, c)
     push!(values, phi_c)
     push!(slopes, dphi_c)
@@ -1672,9 +1688,11 @@ function LS(df::BFGSDifferentiable, x::Vector{C64}, s::Vector{C64},
     # satisfies the Wolfe conditions
     if mayterminate[] &&
           satisfies_wolfe(c, phi_c, dphi_c, phi_0, dphi_0, phi_lim, delta, sigma)
-        mayterminate[] = false # reset in case another initial guess is used next
+        # Reset in case another initial guess is used next
+        mayterminate[] = false
         return c, phi_c # phi_c
     end
+
     # Initial bracketing step (HZ, stages B0-B3)
     isbracketed = false
     ia = 1
@@ -1702,7 +1720,6 @@ function LS(df::BFGSDifferentiable, x::Vector{C64}, s::Vector{C64},
             if c ≉  alphas[ib] || slopes[ib] >= zeroT
                 error("c = ", c)
             end
-            # ia, ib = bisect(phi, lsr, ia, ib, phi_lim) # TODO: Pass options
             ia, ib = ls_bisect!(ϕdϕ, alphas, values, slopes, ia, ib, phi_lim)
             isbracketed = true
         else
@@ -1711,13 +1728,15 @@ function LS(df::BFGSDifferentiable, x::Vector{C64}, s::Vector{C64},
             # So cold = c has a lower objective than phi_0 up to epsilon. 
             # This makes it a viable step to return if bracketing fails.
 
-            # Bracketing can fail if no cold < c <= alphamax can be found with finite phi_c and dphi_c.
-            # Going back to the loop with c = cold will only result in infinite cycling.
-            # So returning (cold, phi_cold) and exiting the line search is the best move.
+            # Bracketing can fail if no cold < c <= alphamax can be found
+            # with finite phi_c and dphi_c. Going back to the loop with
+            # c = cold will only result in infinite cycling. So returning
+            # (cold, phi_cold) and exiting the line search is the best move.
             cold = c
             phi_cold = phi_c
             if nextfloat(cold) >= alphamax
-                mayterminate[] = false # reset in case another initial guess is used next
+                # Reset in case another initial guess is used next
+                mayterminate[] = false
                 return cold, phi_cold
             end
             c *= rho
@@ -1726,8 +1745,11 @@ function LS(df::BFGSDifferentiable, x::Vector{C64}, s::Vector{C64},
             end
             phi_c, dphi_c = ϕdϕ(c)
             iterfinite = 1
-            while !(isfinite(phi_c) && isfinite(dphi_c)) && c > nextfloat(cold) && iterfinite < iterfinitemax
-                alphamax = c # shrinks alphamax, assumes that steps >= c can never have finite phi_c and dphi_c
+            while !(isfinite(phi_c) && isfinite(dphi_c)) &&
+                    c > nextfloat(cold) && iterfinite < iterfinitemax
+                # Shrinks alphamax, assumes that steps >= c can never
+                # have finite phi_c and dphi_c.
+                alphamax = c
                 iterfinite += 1
                 c = (cold + c) / 2
                 phi_c, dphi_c = ϕdϕ(c)
@@ -1741,18 +1763,21 @@ function LS(df::BFGSDifferentiable, x::Vector{C64}, s::Vector{C64},
         end
         iter += 1
     end
+
     while iter < linesearchmax
         a = alphas[ia]
         b = alphas[ib]
         @assert b > a
         if b - a <= eps(b)
-            mayterminate[] = false # reset in case another initial guess is used next
+            # Reset in case another initial guess is used next
+            mayterminate[] = false
             return a, values[ia] # lsr.value[ia]
         end
         iswolfe, iA, iB = ls_secant2!(ϕdϕ, alphas, values, slopes, ia, ib, phi_lim, delta, sigma)
         if iswolfe
-            mayterminate[] = false # reset in case another initial guess is used next
-            return alphas[iA], values[iA] # lsr.value[iA]
+            # Reset in case another initial guess is used next
+            mayterminate[] = false 
+            return alphas[iA], values[iA]
         end
         A = alphas[iA]
         B = alphas[iB]
@@ -1760,7 +1785,8 @@ function LS(df::BFGSDifferentiable, x::Vector{C64}, s::Vector{C64},
         if B - A < gamma * (b - a)
             if nextfloat(values[ia]) >= values[ib] && nextfloat(values[iA]) >= values[iB]
                 # It's so flat, secant didn't do anything useful, time to quit
-                mayterminate[] = false # reset in case another initial guess is used next
+                # Reset in case another initial guess is used next
+                mayterminate[] = false
                 return A, values[iA]
             end
             ia = iA
@@ -1780,8 +1806,8 @@ function LS(df::BFGSDifferentiable, x::Vector{C64}, s::Vector{C64},
         iter += 1
     end
 
-    throw(LineSearchException("Linesearch failed to converge, reached maximum iterations $(linesearchmax).",
-                              alphas[ia]))
+    throw(LineSearchException("Linesearch failed to converge, reached maximum
+                               iterations $(linesearchmax).", alphas[ia]))
 end
 
 function make_ϕdϕ(df::BFGSDifferentiable, x_new, x, s)
