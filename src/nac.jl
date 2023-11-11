@@ -663,12 +663,23 @@ function hardy_optimize!(nac::NevanACContext,
                          ℋ::Array{APC,2},
                          𝑎𝑏::Vector{C64},
                          H::I64)
+    # Function call to the smooth norm.
     function 𝑓(x::Vector{C64})
         return smooth_norm(nac, ℋ, x)
     end
 
+    # Function call to the gradient of the smooth norm.
+    #
+    # Here we adopt the Zygote package, which implements an automatic
+    # differentiation algorithm, to evaluate the gradient of the smooth
+    # norm. Of course, we can turn to the finite difference algorithm,
+    # which is less efficient.
     function 𝐽!(J::Vector{C64}, x::Vector{C64})
         J .= Zygote.gradient(𝑓, x)[1]
+        
+        # Finite difference algorithm
+        # J .= gradient_via_fd(𝑓, x)
+        #
     end
 
     res = optimize(𝑓, 𝐽!, 𝑎𝑏, max_iter = 500)
