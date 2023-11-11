@@ -682,12 +682,13 @@ function hardy_optimize!(nac::NevanACContext,
         #
     end
 
+    # Perform numerical optimization by the BFGS algorithm.
+    # If it is failed, please turn to the Optim.jl package.
     res = optimize(𝑓, 𝐽!, 𝑎𝑏, max_iter = 500)
-    
-    @show res.minimizer
 
-    if  !(converged(res))
-        println("Faild to optimize!")
+    # Check whether the BFGS algorithm is converged
+    if !converged(res)
+        error("Sorry, faild to optimize the smooth norm!")
     end
     
     causality = check_causality(ℋ, res.minimizer)
