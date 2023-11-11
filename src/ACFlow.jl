@@ -641,8 +641,8 @@ calc_hmatrix    -> Try to calculate ``[f^k(z), f^k(z)^*]`` for 0 ≤ 𝑘 ≤ �
 calc_theta      -> Try to calculate the contractive function θ(z).
 calc_green      -> Evaluate the green's function via Nevanlinna interpolant.
 calc_noptim     -> Evaluate the optimal value for the size of input data.
-calc_hmin!      -> Try to perform Hardy basis optimization.
-calc_hopt!      -> Try to perform Hardy basis optimization.
+calc_hmin!      -> Evaluate the minimum value for the order of Hardy basis.
+calc_hopt!      -> Evaluate the optimal value for the order of Hardy basis.
 hardy_optimize! -> Try to perform Hardy basis optimization.
 smooth_norm     -> Establish the smooth norm.
 check_pick      -> Check whether the input data are valid.
