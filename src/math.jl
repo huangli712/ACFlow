@@ -1835,6 +1835,47 @@ function satisfies_wolfe(c::F64, phi_c::F64, dphi_c::F64,
     return wolfe1 || wolfe2
 end
 
+# HZ, stage U3 (with theta=0.5)
+function ls_bisect!(ϕdϕ, alphas::Vector{F64}, values::Vector{F64},
+                    slopes::Vector{F64}, ia::I64, ib::I64, phi_lim::F64)
+    T = eltype(alphas)
+    gphi = convert(T, NaN)
+    a = alphas[ia]
+    b = alphas[ib]
+
+    # Debugging (HZ, conditions shown following U3)
+    zeroT = convert(T, 0)
+    #
+    @assert slopes[ia] < zeroT
+    @assert values[ia] <= phi_lim
+    @assert slopes[ib] < zeroT
+    @assert values[ib] > phi_lim
+    @assert b > a
+    #
+    while b - a > eps(b)
+        d = (a + b) / convert(T, 2)
+        phi_d, gphi = ϕdϕ(d)
+        @assert isfinite(phi_d) && isfinite(gphi)
+
+        push!(alphas, d)
+        push!(values, phi_d)
+        push!(slopes, gphi)
+
+        id = length(alphas)
+        if gphi >= zeroT
+            return ia, id # replace b, return
+        end
+        if phi_d <= phi_lim
+            a = d # replace a, but keep bisecting until dphi_b > 0
+            ia = id
+        else
+            b = d
+            ib = id
+        end
+    end
+    return ia, ib
+end
+
 # HZ, stages S1-S4
 function ls_secant(a::F64, b::F64, dphi_a::F64, dphi_b::F64)
     return (a * dphi_b - b * dphi_a) / (dphi_b - dphi_a)
@@ -1907,6 +1948,7 @@ function ls_secant2!(ϕdϕ, alphas::Vector{F64},
 end
 
 # HZ, stages U0-U3
+#
 # Given a third point, pick the best two that retain the bracket
 # around the minimum (as defined by HZ, eq. 29)
 # b will be the upper bound, and a the lower bound
@@ -1923,15 +1965,19 @@ function ls_update!(ϕdϕ, alphas::Vector{F64},
     @assert values[ia] <= phi_lim
     @assert slopes[ib] >= zeroT
     @assert b > a
+    #
     c = alphas[ic]
     phi_c = values[ic]
     dphi_c = slopes[ic]
+    #
     if c < a || c > b
         return ia, ib #, 0, 0  # it's out of the bracketing interval
     end
+    #
     if dphi_c >= zeroT
         return ia, ic #, 0, 0  # replace b with a closer point
     end
+
     # We know dphi_c < 0. However, phi may not be monotonic between a
     # and c, so check that the value is also smaller than phi_0.  (It's
     # more dangerous to replace a than b, since we're leaving the
@@ -1940,46 +1986,8 @@ function ls_update!(ϕdϕ, alphas::Vector{F64},
     if phi_c <= phi_lim
         return ic, ib#, 0, 0  # replace a
     end
+
     # phi_c is bigger than phi_0, which implies that the minimum
     # lies between a and c. Find it via bisection.
     return ls_bisect!(ϕdϕ, alphas, values, slopes, ia, ic, phi_lim)
-end
-
-# HZ, stage U3 (with theta=0.5)
-function ls_bisect!(ϕdϕ, alphas::Vector{F64}, values::Vector{F64},
-                    slopes::Vector{F64}, ia::I64, ib::I64, phi_lim::F64)
-    T = eltype(alphas)
-    gphi = convert(T, NaN)
-    a = alphas[ia]
-    b = alphas[ib]
-
-    # Debugging (HZ, conditions shown following U3)
-    zeroT = convert(T, 0)
-    @assert slopes[ia] < zeroT
-    @assert values[ia] <= phi_lim
-    @assert slopes[ib] < zeroT       # otherwise we wouldn't be here
-    @assert values[ib] > phi_lim
-    @assert b > a
-    while b - a > eps(b)
-        d = (a + b) / convert(T, 2)
-        phi_d, gphi = ϕdϕ(d)
-        @assert isfinite(phi_d) && isfinite(gphi)
-
-        push!(alphas, d)
-        push!(values, phi_d)
-        push!(slopes, gphi)
-
-        id = length(alphas)
-        if gphi >= zeroT
-            return ia, id # replace b, return
-        end
-        if phi_d <= phi_lim
-            a = d # replace a, but keep bisecting until dphi_b > 0
-            ia = id
-        else
-            b = d
-            ib = id
-        end
-    end
-    return ia, ib
 end
