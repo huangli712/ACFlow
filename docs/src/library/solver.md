@@ -77,10 +77,9 @@ NevanACSolver
 ### Functions
 
 ```@docs
-solve(S::NevanACSolver, rd::RawData)
-init(S::NevanACSolver, rd::RawData)
-ACFlow.run(nac::NevanACContext)
-ACFlow.last(nac::NevanACContext)
+calc_mobius
+calc_inv_mobius
+check_pick
 ```
 
 ## StochAC Solver
