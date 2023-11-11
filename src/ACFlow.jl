@@ -629,7 +629,31 @@ To implement the NevanAC solver for analytic continuation problem.
 #
 include("nac.jl")
 #
+export NevanACContext
+#
 export solve
+export init
+export run
+export last
+#
+export precompute
+#
+export calc_mobius
+export calc_inv_mobius
+export calc_pick
+export calc_phis
+export calc_abcd
+export calc_hbasis
+export calc_hmatrix
+export calc_theta
+export calc_green
+export calc_noptim
+export calc_hmin!
+export calc_hopt!
+export hardy_optimize!
+export smooth_norm
+export check_pick
+export check_causality
 
 #=
 ### *Includes And Exports* : *sac.jl*
