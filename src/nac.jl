@@ -338,7 +338,7 @@ See `smooth_norm()`.
                Gᵥ::Vector{APC})
 
 Precompute some key quantities, such as `Φ`, `𝒜`, `ℋ`, and `𝑎𝑏`. Note
-that `Φ` and `𝒜` won't be changed any more. But `𝒜` and `𝑎𝑏` should be
+that `Φ` and `𝒜` won't be changed any more. But `ℋ` and `𝑎𝑏` should be
 updated by the Hardy basis optimization to get a smooth spectrum. Here
 `Gᵥ` is input data, `grid` is the grid for input data, and `mesh` is
 the mesh for output spectrum.
@@ -595,7 +595,7 @@ function calc_hmin!(nac::NevanACContext)
 
     h = 1
     while h ≤ hmax
-        println("H = $h")
+        println("H (Order of Hardy basis) -> $h")
 
         # Prepare initial ℋ and 𝑎𝑏
         ℋ = calc_hmatrix(nac.mesh, h)
