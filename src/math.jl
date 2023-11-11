@@ -1862,9 +1862,11 @@ function ls_bisect!(ϕdϕ, alphas::Vector{F64}, values::Vector{F64},
         push!(slopes, gphi)
 
         id = length(alphas)
+        #
         if gphi >= zeroT
             return ia, id # replace b, return
         end
+        #
         if phi_d <= phi_lim
             a = d # replace a, but keep bisecting until dphi_b > 0
             ia = id
@@ -1873,6 +1875,7 @@ function ls_bisect!(ϕdϕ, alphas::Vector{F64}, values::Vector{F64},
             ib = id
         end
     end
+
     return ia, ib
 end
 
