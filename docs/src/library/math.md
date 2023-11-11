@@ -29,6 +29,13 @@ trapz
 simpson
 ```
 
+## Numerical Derivatives
+
+```@docs
+second_derivative
+gradient_via_fd
+```
+
 ## Interpolations
 
 ```@docs
@@ -47,4 +54,10 @@ CubicSplineInterpolation(u::AbstractVector, t::AbstractVector)
 
 ```@docs
 curve_fit
+```
+
+## Numerical Optimization
+
+```@docs
+optimize
 ```
