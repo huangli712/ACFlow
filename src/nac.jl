@@ -690,16 +690,18 @@ function hardy_optimize!(nac::NevanACContext,
     if !converged(res)
         error("Sorry, faild to optimize the smooth norm!")
     end
-    
+
+    # Check causality of the solution
     causality = check_causality(ℋ, res.minimizer)
 
+    # Update ℋ and the corresponding 𝑎𝑏
     if causality && (converged(res))
         nac.hopt = H
         nac.𝑎𝑏 = res.minimizer
         nac.ℋ = ℋ
     end
     
-    return causality, (converged(res))
+    return causality, converged(res)
 end
 
 """
@@ -731,27 +733,29 @@ function smooth_norm(nac::NevanACContext, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C6
 end
 
 """
+    check_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
+
+Check whether the input data are valid (the Pick criterion is satisfied).
+Here, `wn` is the Matsubara frequency, `gw` is the Matsubara function,
+and `Nopt` is the optimized number of Matsubara data points.
 """
 function check_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
     freq = calc_mobius(wn[1:Nopt])
     val = calc_mobius(-gw[1:Nopt])
 
     success = calc_pick(Nopt, val, freq)
+    #
     if success
         println("Pick matrix is positive semi-definite.")
     else
         println("Pick matrix is non positive semi-definite matrix in Schur method.")
     end
-    
-    freq = reverse(wn[1:Nopt])
-    val  = reverse(val)
 end
 
 """
 """
 function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     param = ℋ * 𝑎𝑏
-    @show typeof(param), size(ℋ), size(𝑎𝑏), size(param)
 
     max_theta = findmax(abs.(param))[1]
     if max_theta <= 1.0
