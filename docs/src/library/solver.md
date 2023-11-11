@@ -72,6 +72,7 @@ calc_chi2(mec::MaxEntContext, A::Vector{F64})
 
 ```@docs
 NevanACSolver
+NevanACContext
 ```
 
 ### Functions
@@ -79,7 +80,15 @@ NevanACSolver
 ```@docs
 calc_mobius
 calc_inv_mobius
+calc_pick
+calc_phis
+calc_abcd
+calc_noptim
+calc_hmin!
+calc_hopt!
+smooth_norm
 check_pick
+check_causality
 ```
 
 ## StochAC Solver
