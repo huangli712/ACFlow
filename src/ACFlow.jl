@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/10
+# Last modified: 2023/11/11
 #
 
 """
@@ -292,7 +292,9 @@ newton    -> Root finding newton algorithm.
 trapz     -> Numerical integration (composite trapezoidal rule).
 simpson   -> Numerical integration (simpson rule).
 #
-AbstractInterpolation -> Abstract struct for interpolation.
+second_derivative -> Calculate second derivative.
+gradient_via_fd ->  Calculate gradient via finite difference algorithm.
+#
 LinearInterpolation -> Linear interpolation.
 QuadraticInterpolation -> Quadratic interpolation.
 CubicSplineInterpolation -> Cubic spline interpolation.
@@ -300,6 +302,8 @@ CubicSplineInterpolation -> Cubic spline interpolation.
 @einsum   -> Macro for Einstein summation notation.
 #
 curve_fit -> Try to fit the given (x,y) data to a predefined model.
+#
+optimize  -> Try to minimize f(x) via the BFGS algorithm.
 ```
 =#
 
@@ -312,7 +316,9 @@ export newton
 export trapz
 export simpson
 #
-export AbstractInterpolation
+export second_derivative
+export gradient_via_fd
+#
 export LinearInterpolation
 export QuadraticInterpolation
 export CubicSplineInterpolation
@@ -320,6 +326,8 @@ export CubicSplineInterpolation
 export @einsum
 #
 export curve_fit
+#
+export optimize
 
 #=
 ### *Includes And Exports* : *grid.jl*

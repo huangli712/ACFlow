@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/10
+# Last modified: 2023/11/11
 #
 
 #
@@ -1506,8 +1506,8 @@ function trace(d::BFGSDifferentiable, iter::I64, curr_time::F64)
     gnorm = norm(gradient(d), Inf)
     #
     @printf("iter = %4d ", iter)
-    @printf("fval = %8.4e ", value(d))
-    @printf("gnorm = %8.4e ", gnorm)
+    @printf("𝑓 = %8.4e ", value(d))
+    @printf("||∂𝑓/∂x|| = %8.4e ", gnorm)
     @printf("time = %8.4f (s)\n", curr_time)
     #
     flush(stdout)
