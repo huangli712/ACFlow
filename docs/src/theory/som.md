@@ -1,4 +1,4 @@
-# Stochastic Optimization Method
+# [Stochastic Optimization Method](@id som)
 
 A. O. Mishchenko *et al.* proposed the stochastic optimization method. Though it looks like the stochastic analytic continuation, their differences are quite apparent. The stochastic optimization method does not need any likelihood function or Boltzmann distribution to weight the candidate spectral functions. It generates a lot of spectral functions through Monte Carlo samplings. For each candidate spectral function, the deviation ``D`` between the reconstructed Green's function ``\tilde{G}`` and original Green's function ``\bar{G}`` is measured. Those spectral functions with small deviations ``D`` are selected and averaged. Such that the desired spectral function is obtained.
 

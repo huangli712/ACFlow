@@ -1,4 +1,4 @@
-# Stochastic Analytic Continuation 2
+# [Stochastic Analytic Continuation 2](@id sac)
 
 !!! info
 

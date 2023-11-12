@@ -1,4 +1,4 @@
-# Stochastic Pole Expansion
+# [Stochastic Pole Expansion](@id spx)
 
 !!! warning
 
