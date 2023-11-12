@@ -1587,6 +1587,10 @@ end
 export BFGSDifferentiable
 export BFGSState
 export BFGSOptimizationResults
+export value
+export gradient
+export value_gradient!
+export maxdiff
 
 #=
 ### *Math* : *Line Search*
