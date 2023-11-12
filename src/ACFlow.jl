@@ -295,6 +295,7 @@ simpson   -> Numerical integration (simpson rule).
 second_derivative -> Calculate second derivative.
 gradient_via_fd ->  Calculate gradient via finite difference algorithm.
 #
+AbstractInterpolation -> Abstract interpolation
 LinearInterpolation -> Linear interpolation.
 QuadraticInterpolation -> Quadratic interpolation.
 CubicSplineInterpolation -> Cubic spline interpolation.
@@ -319,6 +320,7 @@ export simpson
 export second_derivative
 export gradient_via_fd
 #
+export AbstractInterpolation
 export LinearInterpolation
 export QuadraticInterpolation
 export CubicSplineInterpolation
