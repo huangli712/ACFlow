@@ -1,3 +1,4 @@
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/ACFlow/src/")
 using Documenter
 using Random
 using ACFlow
@@ -37,8 +38,9 @@ makedocs(
         "Theory" => Any[
             "Basic Principles" => "theory/basic.md",
             "Maximum Entropy Method" => "theory/maxent.md",
-            "Stochastic Analytical Continuation 1" => "theory/sac1.md",
-            "Stochastic Analytical Continuation 2" => "theory/sac2.md",
+            "Nevanlinna Analytical Continuation" => "theory/nac.md",
+            "Stochastic Analytic Continuation 1" => "theory/sac1.md",
+            "Stochastic Analytic Continuation 2" => "theory/sac2.md",
             "Stochastic Optimization Method" => "theory/som.md",
             "Stochastic Pole Expansion" => "theory/spx.md",
             "References" => "theory/reference.md",
