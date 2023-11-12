@@ -124,4 +124,8 @@ eval_δx
 eval_Δx
 eval_resid
 optimize
+init_state
+update_state!
+update_g!
+update_h!
 ```
