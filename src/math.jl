@@ -2026,3 +2026,6 @@ function ls_update!(ϕdϕ, alphas::Vector{F64},
     # lies between a and c. Find it via bisection.
     return ls_bisect!(ϕdϕ, alphas, values, slopes, ia, ic, phi_lim)
 end
+
+export LineSearchException
+export LS
