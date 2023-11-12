@@ -128,4 +128,7 @@ init_state
 update_state!
 update_g!
 update_h!
+trace
+linesearch!
+converged
 ```
