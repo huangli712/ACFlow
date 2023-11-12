@@ -54,6 +54,7 @@ Depth = 1
 Pages = [
     "theory/basic.md",
     "theory/maxent.md",
+    "theory/nac.md",
     "theory/sac1.md",
     "theory/sac2.md",
     "theory/som.md",
