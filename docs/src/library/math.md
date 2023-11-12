@@ -74,7 +74,7 @@ _interp
 
 ```@docs
 OnceDifferentiable
-OptimizationResults
+LMOptimizationResults
 LsqFitResult
 ```
 
