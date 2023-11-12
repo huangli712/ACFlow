@@ -132,3 +132,17 @@ trace
 linesearch!
 converged
 ```
+
+## Line Search
+
+### Structs
+
+```@docs
+LineSearchException
+```
+
+### Functions
+
+```@docs
+LS
+```

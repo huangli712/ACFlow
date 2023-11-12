@@ -95,6 +95,7 @@ calc_green
 calc_noptim
 calc_hmin!
 calc_hopt!
+hardy_optimize!
 smooth_norm
 check_pick
 check_causality
