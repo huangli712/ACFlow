@@ -118,4 +118,10 @@ value(obj::BFGSDifferentiable)
 gradient
 value_gradient!
 maxdiff
+eval_δf
+eval_Δf
+eval_δx
+eval_Δx
+eval_resid
+optimize
 ```
