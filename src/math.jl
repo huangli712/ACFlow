@@ -1148,6 +1148,7 @@ export value
 export value!
 export jacobian
 export jacobian!
+export levenberg_marquardt
 
 #=
 ### *Math* : *Numerical Optimization*
