@@ -1596,6 +1596,10 @@ export eval_Δf
 export eval_δx
 export eval_Δx
 export eval_resid
+export init_state
+export update_state!
+export update_g!
+export update_h!
 
 #=
 ### *Math* : *Line Search*
