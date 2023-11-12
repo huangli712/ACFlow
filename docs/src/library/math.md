@@ -97,8 +97,25 @@ curve_fit
 
 ## Numerical Optimization
 
+### Structs
+
 ```@docs
+BFGSDifferentiable
 BFGSState
 BFGSOptimizationResults
-optimize
+```
+
+### Constructors
+
+```@docs
+BFGSDifferentiable(f, df, x::AbstractArray)
+```
+
+### Functions
+
+```@docs
+value(obj::BFGSDifferentiable)
+gradient
+value_gradient!
+maxdiff
 ```
