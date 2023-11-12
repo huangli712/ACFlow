@@ -38,10 +38,24 @@ gradient_via_fd
 
 ## Interpolations
 
+### Structs
+```@docs
+AbstractInterpolation
+LinearInterpolation
+QuadraticInterpolation
+CubicSplineInterpolation
+```
+
+### Constructors
 ```@docs
 LinearInterpolation(u::AbstractVector, t::AbstractVector)
 QuadraticInterpolation(u::AbstractVector, t::AbstractVector)
 CubicSplineInterpolation(u::AbstractVector, t::AbstractVector)
+```
+### Functions
+```@docs
+munge_data
+_interp
 ```
 
 ## Einstein Summation Convention
