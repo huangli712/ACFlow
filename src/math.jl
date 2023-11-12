@@ -1591,6 +1591,11 @@ export value
 export gradient
 export value_gradient!
 export maxdiff
+export eval_δf
+export eval_Δf
+export eval_δx
+export eval_Δx
+export eval_resid
 
 #=
 ### *Math* : *Line Search*
