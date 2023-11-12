@@ -1141,7 +1141,13 @@ function curve_fit(model, x::AbstractArray, y::AbstractArray, p0::AbstractArray)
     return LsqFitResult(p, value!(R, p), jacobian!(R, p), conv)
 end
 
+export OnceDifferentiable
+export LMOptimizationResults
 export LsqFitResult
+export value
+export value!
+export jacobian
+export jacobian!
 
 #=
 ### *Math* : *Numerical Optimization*
