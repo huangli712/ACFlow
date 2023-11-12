@@ -1138,6 +1138,8 @@ function curve_fit(model, x::AbstractArray, y::AbstractArray, p0::AbstractArray)
     return LsqFitResult(p, value!(R, p), jacobian!(R, p), conv)
 end
 
+export LsqFitResult
+
 #=
 ### *Math* : *Numerical Optimization*
 =#
@@ -1571,6 +1573,10 @@ function converged(r::BFGSOptimizationResults)
     g_isfinite = isfinite(r.resid)
     return conv_flags && all((x_isfinite, f_isfinite, g_isfinite))
 end
+
+export BFGSDifferentiable
+export BFGSState
+export BFGSOptimizationResults
 
 #=
 ### *Math* : *Line Search*
