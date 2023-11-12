@@ -78,11 +78,20 @@ NevanACContext
 ### Functions
 
 ```@docs
+solve(S::NevanACSolver, rd::RawData)
+init(S::NevanACSolver, rd::RawData)
+ACFlow.run(nac::NevanACContext)
+ACFlow.last(nac::NevanACContext)
+precompute(grid::AbstractGrid, mesh::AbstractMesh, Gᵥ::Vector{APC})
 calc_mobius
 calc_inv_mobius
 calc_pick
 calc_phis
 calc_abcd
+calc_hbasis
+calc_hmatrix
+calc_theta(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
+calc_green
 calc_noptim
 calc_hmin!
 calc_hopt!

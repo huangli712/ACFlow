@@ -59,5 +59,7 @@ curve_fit
 ## Numerical Optimization
 
 ```@docs
+BFGSState
+BFGSOptimizationResults
 optimize
 ```
