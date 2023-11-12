@@ -22,4 +22,4 @@ In recent years, quite a few analytic continuation codes have been released, inc
 
 !!! info
 
-    Quite recently, a new analytic continuation method, namely the stochastic pole expansion, has been implemented in the ACFlow toolkit. So, now it supports four analytic continuation methods :-).
+    Quite recently, two new analytic continuation methods, namely the stochastic pole expansion and the Nevanlinna analytical continuation, have been implemented in the ACFlow toolkit. So, now it supports five analytic continuation methods :-).
