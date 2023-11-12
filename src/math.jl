@@ -1600,6 +1600,9 @@ export init_state
 export update_state!
 export update_g!
 export update_h!
+export trace
+export linesearch!
+export converged
 
 #=
 ### *Math* : *Line Search*
