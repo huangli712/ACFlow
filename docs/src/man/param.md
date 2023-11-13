@@ -632,7 +632,7 @@ Depth = 3
 
 *Definition:*
 
-> Regulation parameter for smooth norm.
+> Regulation parameter for smooth norm. If the `alpha` parameter is too large, the detailed features in the spectra could be smeared out.
 
 *Type:*
 
