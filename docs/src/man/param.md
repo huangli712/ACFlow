@@ -1,6 +1,6 @@
 # [Parameters](@id param)
 
-*A comprehensive dictionary about parameters*
+*A comprehensive dictionary about parameters.*
 
 The official configuration file for the ACFlow toolkit is `case.toml`. This page contains all the valid parameters that can appear in `case.toml`. As for the format of `case.toml`, please look at [`case.toml`](input.md).
 
@@ -39,15 +39,18 @@ Depth = 3
 
 *Definition:*
 
-> This parameter specifies the solvers that used to solve the analytic continuation problem. Now the ACFlow toolkit supports five different solvers. They are as follows:
+> This parameter specifies the solvers that used to solve the analytic continuation problem. Now the ACFlow toolkit supports six different solvers. They are as follows:
 >
 > * MaxEnt
+> * NevanAC
 > * StochAC
 > * StochSK
 > * StochOM
 > * StochPX
 >
 > Here, `MaxEnt` means the maximum entropy method. The `MaxEnt` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file.
+>
+> `NevanAC` means the Nevanlinna analytical continuation. The `NevanAC` solver can be used to treat the fermionic correlators in Matsubara frequency. Note that this solver is extremely sensitive to the noise level of the input data.
 >
 >`StochAC` means the stochastic analytic continuation method (K. S. D. Beach's algorithm). The `StochAC` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochAC"`, then the `[StochAC]` block must be available in the configuration file.
 >

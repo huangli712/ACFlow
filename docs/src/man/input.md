@@ -77,7 +77,7 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-|`pick`  | bool    | false | Check the Pick criterion or not |
+|`pick`  | bool    | false | Check the Pick criterion or not. |
 |`hardy` | bool    | false | Perform Hardy basis optimization or not. |
 |`hmax`  | integer | 50    | Upper cut off of Hardy order. |
 |`alpha` | float   | 1e-4  | Regulation parameter for smooth norm. |
