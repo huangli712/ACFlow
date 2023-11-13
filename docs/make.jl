@@ -1,4 +1,3 @@
-push!(LOAD_PATH, "/Users/lihuang/Working/devel/ACFlow/src/")
 using Documenter
 using Random
 using ACFlow
