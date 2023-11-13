@@ -592,7 +592,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### hardy
+### [hardy](@id hardy)
 
 *Definition:*
 
@@ -626,7 +626,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. See also [`hardy`](@ref hardy).
 
 ### alpha
 
