@@ -8,7 +8,7 @@
 
 [BASE]
 finput = "giw.data"
-solver = "MaxEnt"
+solver = "NevanAC"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
@@ -30,7 +30,7 @@ blur   = -1.0
 
 [NevanAC]
 pick   = true
-hardy  = false
+hardy  = true
 hmax   = 10
 alpha  = 1e-4
 eta    = 1e-3
