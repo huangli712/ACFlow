@@ -574,7 +574,95 @@ Depth = 3
 
     If `solver = "NevanAC"`, the `[NevanAC]` block must be available.
 
+### pick
 
+*Definition:*
+
+> .
+
+*Type:*
+
+> Bool.
+
+*Example:*
+
+> pick = true
+
+*Comment:*
+
+> This parameter is mandatory.
+
+### hardy
+
+*Definition:*
+
+> .
+
+*Type:*
+
+> Bool.
+
+*Example:*
+
+> hardy = true
+
+*Comment:*
+
+> This parameter is mandatory.
+
+### hmax
+
+*Definition:*
+
+> .
+
+*Type:*
+
+> Integer.
+
+*Example:*
+
+> hmax = 50
+
+*Comment:*
+
+> This parameter is mandatory.
+
+### alpha
+
+*Definition:*
+
+> .
+
+*Type:*
+
+> Float.
+
+*Example:*
+
+> alpha = 1e-4
+
+*Comment:*
+
+> This parameter is mandatory.
+
+### eta
+
+*Definition:*
+
+> .
+
+*Type:*
+
+> Float.
+
+*Example:*
+
+> eta = 1e-2
+
+*Comment:*
+
+> This parameter is mandatory.
 
 ## [[StochAC] Block](@id stochac_block)
 
