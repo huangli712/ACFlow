@@ -442,7 +442,7 @@ Depth = 3
 
 !!! warning
 
-    If `solver = "Maxent"`, the `[MaxEnt]` block must be available.
+    If `solver = "MaxEnt"`, the `[MaxEnt]` block must be available.
 
 ### method
 
@@ -478,7 +478,7 @@ Depth = 3
 > * sj
 > * br
 >
-> Here, `sj` means the Shannon-Jaynes entropy, while `br` means the Bayesian Reconstruction entropy. Usually, the Shannon-Jaynes entropy is preferred, since with it the positivity of the generated spectrum is always guaranteed.
+> Here, `sj` means the Shannon-Jaynes entropy, while `br` means the Bayesian Reconstruction entropy. Usually, the Shannon-Jaynes entropy is preferred, since with it the positivity of the generated spectrum is always guaranteed. The Bayesian Reconstruction entropy tends to yield sharp features.
 
 *Type:*
 
@@ -563,6 +563,18 @@ Depth = 3
 *Comment:*
 
 > This parameter is mandatory.
+
+## [[NevanAC] Block](@id nevanac_block)
+
+!!! note
+
+    The parameters in this block is valid for the `NevanAC` solver only.
+
+!!! warning
+
+    If `solver = "NevanAC"`, the `[NevanAC]` block must be available.
+
+
 
 ## [[StochAC] Block](@id stochac_block)
 
