@@ -650,7 +650,7 @@ Depth = 3
 
 *Definition:*
 
-> Tiny distance from the real axis.
+> Tiny distance from the real axis. It is used to construct the Hardy matrix, instead of the Green's function.
 
 *Type:*
 
