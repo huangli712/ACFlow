@@ -8,7 +8,7 @@ The input data should be stored in some text-based files, which adopt the space-
 
 ## Configuration Files
 
-The configuration file adopts the TOML format. It is used to customize the computational parameters. It consists of one or more blocks. Possible blocks (or sections) of the configuration file include `[BASE]`, `[MaxEnt]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]`. The `[BASE]` block is mandatory, while the other blocks are optional. A schematic configuration file (`ac.toml`) is listed as follows:
+The configuration file adopts the TOML format. It is used to customize the computational parameters. It consists of one or more blocks. Possible blocks (or sections) of the configuration file include `[BASE]`, `[MaxEnt]`, `[NevanAC]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]`. The `[BASE]` block is mandatory, while the other blocks are optional. A schematic configuration file (`ac.toml`) is listed as follows:
 
 ```toml
 [BASE]
@@ -18,6 +18,10 @@ solver = "StochOM"
 
 [MaxEnt]
 method = "chi2kink"
+...
+
+[NevanAC]
+pick   = true
 ...
 
 [StochAC]
@@ -37,7 +41,7 @@ method = "mean"
 ...
 ```
 
-In the `[BASE]` block, the analytic continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]` blocks are used to customize the corresponding analytic continuation solvers further. In **Table 1**-**Table 6**, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please see [Parameters](@ref param).
+In the `[BASE]` block, the analytic continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[NevanAC]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]` blocks are used to customize the corresponding analytic continuation solvers further. In **Table 1**-**Table 7**, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please see [Parameters](@ref param).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -82,7 +86,7 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 |`alpha`  | float   | 1.0         | Starting value for the ``\alpha`` parameter. |
 |`ratio`  | float   | 1.2         | Scaling factor for the ``\alpha`` parameter. |
 
-**Table 3 |** Possible input parameters for the `[StochAC]` block, which are used to configure the solver based on the stochastic analytic continuation (Beach's algorithm).
+**Table 4 |** Possible input parameters for the `[StochAC]` block, which are used to configure the solver based on the stochastic analytic continuation (Beach's algorithm).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -96,7 +100,7 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 |`theta`  | float   | 1e6         | Starting value for the ``\Theta`` parameter. |
 |`ratio`  | float   | 0.9         | Scaling factor for the ``\Theta`` parameter. |
 
-**Table 4 |** Possible input parameters for the `[StochSK]` block, which are used to configure the solver based on the stochastic analytic continuation (Sandvik's algorithm).
+**Table 5 |** Possible input parameters for the `[StochSK]` block, which are used to configure the solver based on the stochastic analytic continuation (Sandvik's algorithm).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -107,7 +111,7 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 |`wbox`   | float   | 0.02        | Minimum width of the randomly generated rectangles. |
 |`norm`   | float   | -1.0        | Is the norm calculated? |
 
-**Table 5 |** Possible input parameters for the `[StochOM]` block, which are used to configure the solver based on the stochastic optimization method.
+**Table 6 |** Possible input parameters for the `[StochOM]` block, which are used to configure the solver based on the stochastic optimization method.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -119,4 +123,4 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 |`theta`  | float   | 1e+6        | Artificial inverse temperature ``\Theta``. |
 |`eta`    | float   | 1e-4        | Tiny distance from the real axis ``\eta``. |
 
-**Table 6 |** Possible input parameters for the `[StochPX]` block, which are used to configure the solver based on the stochastic pole expansion.
+**Table 7 |** Possible input parameters for the `[StochPX]` block, which are used to configure the solver based on the stochastic pole expansion.
