@@ -574,6 +574,10 @@ Depth = 3
 
     If `solver = "NevanAC"`, the `[NevanAC]` block must be available.
 
+!!! warning
+
+    This solver is numerically unstable, so use it at your own risk.
+
 ### pick
 
 *Definition:*
