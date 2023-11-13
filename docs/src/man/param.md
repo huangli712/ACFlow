@@ -578,7 +578,7 @@ Depth = 3
 
 *Definition:*
 
-> Check the Pick criterion or not.
+> Check the Pick criterion or not. If `pick` is true, ACFlow will try to figure out the optimal number of the input data (i.e., how many data points are retained for further postprocessing) by using the Pick criterion.
 
 *Type:*
 
