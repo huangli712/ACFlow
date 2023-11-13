@@ -121,7 +121,7 @@ The following twelve tests are used to test the basic features of the ACFlow too
     * Fixed error bar
     * A clone of **A02**
 
-## Experimental tests
+## Experimental tests 1
 
 The following tests are designed to test the newly developed `NevanAC` solver (based on the `Nevanlinna analytical continuation` method) only.
 
@@ -133,6 +133,8 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Linear mesh
     * Fixed error bar
     * Two gaussian peaks + big gap
+
+## Experimental tests 2
 
 The following tests are designed to test the newly developed `StochPX` solver (based on the `stochastic pole expansion` method) only. Note that the `X` series are for the fermionic systems, the `Y` series are for the bosonic systems, and the `Z` series are for the matrix-valued Green's functions.
 
