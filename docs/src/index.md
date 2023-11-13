@@ -1,6 +1,6 @@
 # ACFlow
 
-*A full-fledged analytic continuation toolkit in Julia*
+*A full-fledged analytic continuation toolkit in Julia.*
 
 !!! note
 
