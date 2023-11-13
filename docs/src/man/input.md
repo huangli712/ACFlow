@@ -66,36 +66,35 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-|`method` | string  | ''chi2kink''| How to determine the optimized ``\alpha`` parameter? |
-|`stype`  | string  | ''sj''      | Type of the entropic factor. |
-|`nalph`  | integer | 12          | Total number of the used ``\alpha`` parameters. |
-|`alpha`  | float   | 1e9         | Starting value for the ``\alpha`` parameter. |
-|`ratio`  | float   | 10.0        | Scaling factor for the ``\alpha`` parameter. |
-|`blur`   | float   | -1.0        | Shall we preblur the kernel and spectrum? |
+|`method` | string  | ''chi2kink'' | How to determine the optimized ``\alpha`` parameter? |
+|`stype`  | string  | ''sj''       | Type of the entropic factor. |
+|`nalph`  | integer | 12           | Total number of the used ``\alpha`` parameters. |
+|`alpha`  | float   | 1e9          | Starting value for the ``\alpha`` parameter. |
+|`ratio`  | float   | 10.0         | Scaling factor for the ``\alpha`` parameter. |
+|`blur`   | float   | -1.0         | Shall we preblur the kernel and spectrum? |
 
 **Table 2 |** Possible input parameters for the `[MaxEnt]` block, which are used to configure the solver based on the maximum entropy method.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-|`method` | string  | ''chi2kink''| How to determine the optimized ``\alpha`` parameter? |
-|`stype`  | string  | ''sj''      | Type of the entropic factor. |
-|`nalph`  | integer | 12          | Total number of the used ``\alpha`` parameters. |
-|`alpha`  | float   | 1e9         | Starting value for the ``\alpha`` parameter. |
-|`ratio`  | float   | 10.0        | Scaling factor for the ``\alpha`` parameter. |
-|`blur`   | float   | -1.0        | Shall we preblur the kernel and spectrum? |
+|`pick`  | bool    | false | Check the Pick criterion or not |
+|`hardy` | bool    | false | Perform Hardy basis optimization or not. |
+|`hmax`  | integer | 50    | Upper cut off of Hardy order. |
+|`alpha` | float   | 1e-4  | Regulation parameter for smooth norm. |
+|`eta`   | float   | 1e-2  | Tiny distance from the real axis. |
 
 **Table 3 |** Possible input parameters for the `[NevanAC]` block, which are used to configure the solver based on the Nevanlinna analytical continuation.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-|`nfine`  | integer | 10000       | Number of points of a very fine linear mesh. |
-|`ngamm`  | integer | 512         | Number of ``\delta`` functions. |
-|`nwarm`  | integer | 4000        | Number of Monte Carlo thermalization steps. |
-|`nstep`  | integer | 4000000     | Number of Monte Carlo sweeping steps. |
-|`ndump`  | integer | 40000       | Intervals for monitoring Monte Carlo sweeps. |
-|`nalph`  | integer | 20          | Total number of the used ``\alpha`` parameters. |
-|`alpha`  | float   | 1.0         | Starting value for the ``\alpha`` parameter. |
-|`ratio`  | float   | 1.2         | Scaling factor for the ``\alpha`` parameter. |
+|`nfine`  | integer | 10000   | Number of points of a very fine linear mesh. |
+|`ngamm`  | integer | 512     | Number of ``\delta`` functions. |
+|`nwarm`  | integer | 4000    | Number of Monte Carlo thermalization steps. |
+|`nstep`  | integer | 4000000 | Number of Monte Carlo sweeping steps. |
+|`ndump`  | integer | 40000   | Intervals for monitoring Monte Carlo sweeps. |
+|`nalph`  | integer | 20      | Total number of the used ``\alpha`` parameters. |
+|`alpha`  | float   | 1.0     | Starting value for the ``\alpha`` parameter. |
+|`ratio`  | float   | 1.2     | Scaling factor for the ``\alpha`` parameter. |
 
 **Table 4 |** Possible input parameters for the `[StochAC]` block, which are used to configure the solver based on the stochastic analytic continuation (Beach's algorithm).
 
@@ -115,23 +114,23 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-|`ntry`   | integer | 2000        | Number of attempts to figure out the solution. |
-|`nstep`  | integer | 1000        | Number of Monte Carlo sweeping steps per try. |
-|`nbox`   | integer | 100         | Number of rectangles to used construct the spectrum. |
-|`sbox`   | float   | 0.005       | Minimum area of the randomly generated rectangles. |
-|`wbox`   | float   | 0.02        | Minimum width of the randomly generated rectangles. |
-|`norm`   | float   | -1.0        | Is the norm calculated? |
+|`ntry`   | integer | 2000  | Number of attempts to figure out the solution. |
+|`nstep`  | integer | 1000  | Number of Monte Carlo sweeping steps per try. |
+|`nbox`   | integer | 100   | Number of rectangles to used construct the spectrum. |
+|`sbox`   | float   | 0.005 | Minimum area of the randomly generated rectangles. |
+|`wbox`   | float   | 0.02  | Minimum width of the randomly generated rectangles. |
+|`norm`   | float   | -1.0  | Is the norm calculated? |
 
 **Table 6 |** Possible input parameters for the `[StochOM]` block, which are used to configure the solver based on the stochastic optimization method.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-|`method` | string  | ''mean''    | How to evaluate the final spectral density? |
-|`nfine`  | integer | 100000      | Number of points of a very fine linear mesh. |
-|`npole`  | integer | 200         | Number of poles. |
-|`ntry`   | integer | 1000        | Number of attempts to figure out the solution. |
-|`nstep`  | integer | 1000000     | Number of Monte Carlo sweeping steps per attempt / try. |
-|`theta`  | float   | 1e+6        | Artificial inverse temperature ``\Theta``. |
-|`eta`    | float   | 1e-4        | Tiny distance from the real axis ``\eta``. |
+|`method` | string  | ''mean'' | How to evaluate the final spectral density? |
+|`nfine`  | integer | 100000   | Number of points of a very fine linear mesh. |
+|`npole`  | integer | 200      | Number of poles. |
+|`ntry`   | integer | 1000     | Number of attempts to figure out the solution. |
+|`nstep`  | integer | 1000000  | Number of Monte Carlo sweeping steps per attempt / try. |
+|`theta`  | float   | 1e+6     | Artificial inverse temperature ``\Theta``. |
+|`eta`    | float   | 1e-4     | Tiny distance from the real axis ``\eta``. |
 
 **Table 7 |** Possible input parameters for the `[StochPX]` block, which are used to configure the solver based on the stochastic pole expansion.
