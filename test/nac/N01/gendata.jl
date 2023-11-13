@@ -7,9 +7,9 @@ using ACFlow
 # Setup parameters
 wmin = -5.0  # Left boundary
 wmax = +5.0  # Right boundary
-nmesh = 2001 # Number of real-frequency points
+nmesh = 1000 # Number of real-frequency points
 niw  = 50    # Number of Matsubara frequencies
-beta = 10.0  # Inverse temperature
+beta = 100.0  # Inverse temperature
 ϵ₁   = 2.50  # Parameters for gaussian peaks
 ϵ₂   = -2.5
 A₁   = 0.50
@@ -27,6 +27,13 @@ image = similar(rmesh)
 @. image += A₂ * exp(-(rmesh - ϵ₂) ^ 2.0 / (2.0 * Γ₂ ^ 2.0))
 #
 image = image ./ trapz(rmesh, image)
+
+gaussian(x, mu, sigma) = exp(-0.5*((x-mu)/sigma)^2)/(sqrt(2*π)*sigma)
+rho(omega) = 0.8*gaussian(omega, -1.0, 1.0) + 0.2*gaussian(omega, 3, 0.7)
+omegas = LinRange(-10, 10, 1000)
+
+rmesh = omegas
+image = rho.(omegas)
 
 # Matsubara frequency mesh
 iw = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
@@ -64,5 +71,12 @@ end
 open("image.data", "w") do fout
     for i in eachindex(image)
         @printf(fout, "%20.16f %20.16f\n", rmesh[i], image[i])
+    end
+end
+
+open("image1.data", "w") do fout
+    image = rho.(omegas)
+    for i in eachindex(image)
+        @printf(fout, "%20.16f %20.16f\n", omegas[i], image[i])
     end
 end
