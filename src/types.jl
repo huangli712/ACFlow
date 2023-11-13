@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/10
+# Last modified: 2023/11/13
 #
 
 #=
@@ -116,8 +116,8 @@ const PNevanAC = Dict{String,ADT}(
 
 # Default parameters for PNevanAC
 const _PNevanAC= Dict{String,Any}(
-    "pick"    => false,
-    "hardy"   => false,
+    "pick"    => true,
+    "hardy"   => true,
     "hmax"    => 50,
     "alpha"   => 1e-4,
     "eta"     => 1e-2,
