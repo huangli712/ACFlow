@@ -596,7 +596,7 @@ Depth = 3
 
 *Definition:*
 
-> Perform Hardy basis optimization or not.
+> Perform Hardy basis optimization or not. The spectrum obtained by the Nevanlinna analytical continuation is usually wiggly. So, the Hardy basis optimization can help us smooth the spectrum.
 
 *Type:*
 
@@ -608,9 +608,9 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. See also [`hmax`](@ref hmax).
 
-### hmax
+### [hmax](@id hmax)
 
 *Definition:*
 
