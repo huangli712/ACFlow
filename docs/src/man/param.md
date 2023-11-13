@@ -578,7 +578,7 @@ Depth = 3
 
 *Definition:*
 
-> .
+> Check the Pick criterion or not.
 
 *Type:*
 
@@ -596,7 +596,7 @@ Depth = 3
 
 *Definition:*
 
-> .
+> Perform Hardy basis optimization or not.
 
 *Type:*
 
@@ -614,7 +614,7 @@ Depth = 3
 
 *Definition:*
 
-> .
+> Upper cut off of Hardy order.
 
 *Type:*
 
@@ -632,7 +632,7 @@ Depth = 3
 
 *Definition:*
 
-> .
+> Regulation parameter for smooth norm.
 
 *Type:*
 
@@ -650,7 +650,7 @@ Depth = 3
 
 *Definition:*
 
-> .
+> Tiny distance from the real axis.
 
 *Type:*
 
