@@ -614,7 +614,7 @@ Depth = 3
 
 *Definition:*
 
-> Upper cut off of Hardy order.
+> Upper cut off of Hardy order. In principle, the larger the Hardy order is, the smoother the obtained spectrum is. Usually `hmax = 20` is enough to get smooth spectrum.
 
 *Type:*
 
