@@ -203,6 +203,10 @@ Depth = 3
 
 !!! warning
 
+    If the `NevanAC` solver is employed, the `grid` parameter should be "ffreq" or "ffrag".
+
+!!! warning
+
     If the `StochOM` solver is employed, the `grid` parameter should not be "ftime" or "fpart".
 
 !!! warning
