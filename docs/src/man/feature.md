@@ -9,12 +9,12 @@ Now the ACFlow toolkit supports five analytic continuation methods as introduced
 * `StochOM`
 * `StochPX`
 
-Just as their names suggested, the `MaxEnt` solver implements the maximum entropy method. The `NevanAC` solver implements the Nevanlinna analytical continuation. The `StochAC` and `StochSK` solvers implement the K. S. D. Beach's algorithm and A. W. Sandvik's algorithm of the stochastic analytic continuation, respectively. The `StochOM` solver implements the stochastic optimization method. The `StochPX` solver implements the stochastic pole expansion method. The ACFlow toolkit also provides a convenient library, which can be used to prepare and carry out analytic continuation calculations flexibly. The major features of the present ACFlow toolkit (*v1.5.0* and above) are summarized in **Table 1**.
+Just as their names suggested, the `MaxEnt` solver implements the maximum entropy method. The `NevanAC` solver implements the Nevanlinna analytical continuation. The `StochAC` and `StochSK` solvers implement the K. S. D. Beach's algorithm and A. W. Sandvik's algorithm of the stochastic analytic continuation, respectively. The `StochOM` solver implements the stochastic optimization method. The `StochPX` solver implements the stochastic pole expansion method. The ACFlow toolkit also provides a convenient library, which can be used to prepare and carry out analytic continuation calculations flexibly. The major features of the present ACFlow toolkit (*v1.8.0* and above) are summarized in **Table 1**.
 
 | Features | MaxEnt | NevanAC | StochAC | StochSK | StochOM | StochPX |
 | :------- | :----: | :-----: | :-----: | :-----: | :-----: | :-----: |
 |Matrix-valued Green's function | Y | N | N | N | N | Y |
-|Fragment input grid            | Y | N | Y | Y | Y | Y |
+|Fragment input grid            | Y | Y | Y | Y | Y | Y |
 |Imaginary time grid            | Y | N | Y | Y | Y | N |
 |Matsubara frequency grid       | Y | Y | Y | Y | Y | Y |
 |Linear mesh                    | Y | Y | Y | Y | Y | Y |
