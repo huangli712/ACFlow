@@ -125,7 +125,7 @@ The following twelve tests are used to test the basic features of the ACFlow too
 
 The following tests are designed to test the newly developed `NevanAC` solver (based on the `Nevanlinna analytical continuation` method) only.
 
-* **nac/R01**
+* **nac/N01**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
     * NevanAC solver
@@ -133,6 +133,15 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Linear mesh
     * Fixed error bar
     * Two gaussian peaks + big gap
+
+* **pole/N02**
+    * Fermionic + Matsubara
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Single off-centered delta peak
 
 ## Experimental tests 2
 
