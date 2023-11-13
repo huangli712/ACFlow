@@ -77,6 +77,17 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
+|`method` | string  | ''chi2kink''| How to determine the optimized ``\alpha`` parameter? |
+|`stype`  | string  | ''sj''      | Type of the entropic factor. |
+|`nalph`  | integer | 12          | Total number of the used ``\alpha`` parameters. |
+|`alpha`  | float   | 1e9         | Starting value for the ``\alpha`` parameter. |
+|`ratio`  | float   | 10.0        | Scaling factor for the ``\alpha`` parameter. |
+|`blur`   | float   | -1.0        | Shall we preblur the kernel and spectrum? |
+
+**Table 3 |** Possible input parameters for the `[NevanAC]` block, which are used to configure the solver based on the Nevanlinna analytical continuation.
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
 |`nfine`  | integer | 10000       | Number of points of a very fine linear mesh. |
 |`ngamm`  | integer | 512         | Number of ``\delta`` functions. |
 |`nwarm`  | integer | 4000        | Number of Monte Carlo thermalization steps. |
