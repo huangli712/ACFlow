@@ -706,7 +706,7 @@ function hardy_optimize!(nac::NevanACContext,
         nac.ℋ = ℋ
     end
 
-    return causality, converged(res)
+    return causality, Optim.converged(res)
 end
 
 """

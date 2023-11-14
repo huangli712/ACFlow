@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/11
+# Last modified: 2023/11/14
 #
 
 #
@@ -1557,7 +1557,7 @@ function linesearch!(d::BFGSDifferentiable, s::BFGSState)
     catch ex
         # Catch LineSearchException to allow graceful exit
         if isa(ex, LineSearchException)
-            s.alpha = ex.alphagit
+            s.alpha = ex.alpha
             return false # lssuccess = false
         else
             rethrow(ex)
