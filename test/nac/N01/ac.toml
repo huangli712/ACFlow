@@ -7,13 +7,13 @@
 #
 
 [BASE]
-finput = "giw.data"
+finput = "giw1.data"
 solver = "NevanAC"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
 mesh   = "linear"
-ngrid  = 50
+ngrid  = 52
 nmesh  = 501
 wmax   = 5.0
 wmin   = -5.0
@@ -31,6 +31,6 @@ blur   = -1.0
 [NevanAC]
 pick   = true
 hardy  = true
-hmax   = 10
+hmax   = 12
 alpha  = 1e-4
 eta    = 1e-3
