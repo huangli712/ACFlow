@@ -650,8 +650,6 @@ function calc_hopt!(nac::NevanACContext)
     end
 end
 
-using Optim
-
 """
     hardy_optimize!(nac::NevanACContext,
                     ℋ::Array{APC,2},
@@ -686,13 +684,10 @@ function hardy_optimize!(nac::NevanACContext,
 
     # Perform numerical optimization by the BFGS algorithm.
     # If it is failed, please turn to the Optim.jl package.
-    #res = optimize(𝑓, 𝐽!, 𝑎𝑏, max_iter = 500)
-    res = Optim.optimize(𝑓, 𝐽!, 𝑎𝑏, BFGS(),
-                   Optim.Options(iterations = 500,
-                                 show_trace = true))
+    res = optimize(𝑓, 𝐽!, 𝑎𝑏, max_iter = 500)
 
     # Check whether the BFGS algorithm is converged
-    if !Optim.converged(res)
+    if !converged(res)
         @info("Sorry, faild to optimize the smooth norm!")
     end
 
@@ -700,7 +695,7 @@ function hardy_optimize!(nac::NevanACContext,
     causality = check_causality(ℋ, res.minimizer)
 
     # Update ℋ and the corresponding 𝑎𝑏
-    if causality && (Optim.converged(res))
+    if causality && (converged(res))
         nac.hopt = H
         nac.𝑎𝑏 = res.minimizer
         nac.ℋ = ℋ
