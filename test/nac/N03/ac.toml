@@ -1,0 +1,36 @@
+#
+# Test: N01
+#
+# 0. Run gendata.jl to generate input data at first.
+# 1. Change [BASE] -> solver (MaxEnt or NevanAC).
+# 2. Execute ../../../util/acrun.jl ac.toml.
+#
+
+[BASE]
+finput = "giw1.data"
+solver = "NevanAC"
+ktype  = "fermi"
+mtype  = "flat"
+grid   = "ffreq"
+mesh   = "linear"
+ngrid  = 52
+nmesh  = 1000
+wmax   = 10.0
+wmin   = -10.0
+beta   = 100.0
+offdiag = false
+
+[MaxEnt]
+method = "chi2kink"
+stype  = "sj"
+nalph  = 12
+alpha  = 1e9
+ratio  = 10.0
+blur   = -1.0
+
+[NevanAC]
+pick   = true
+hardy  = true
+hmax   = 15
+alpha  = 1e-4
+eta    = 1e-3
