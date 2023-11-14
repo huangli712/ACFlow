@@ -15,8 +15,8 @@ grid   = "ffreq"
 mesh   = "linear"
 ngrid  = 69
 nmesh  = 1000
-wmax   = 20.0
-wmin   = -20.0
+wmax   = 10.0
+wmin   = -10.0
 beta   = 100.0
 offdiag = false
 
@@ -30,7 +30,7 @@ blur   = -1.0
 
 [NevanAC]
 pick   = true
-hardy  = true
+hardy  = false
 hmax   = 15
 alpha  = 1e-4
 eta    = 1e-3
