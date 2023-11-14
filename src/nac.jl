@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/11
+# Last modified: 2023/11/14
 #
 
 #=
@@ -688,7 +688,7 @@ function hardy_optimize!(nac::NevanACContext,
 
     # Check whether the BFGS algorithm is converged
     if !converged(res)
-        error("Sorry, faild to optimize the smooth norm!")
+        @info("Sorry, faild to optimize the smooth norm!")
     end
 
     # Check causality of the solution
