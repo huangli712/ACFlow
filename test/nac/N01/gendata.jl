@@ -1,28 +1,27 @@
 #!/usr/bin/env julia
 
-using Random
 using Printf
 using ACFlow
 
 # Setup parameters
-wmin = -10.0  # Left boundary
-wmax = +10.0  # Right boundary
-nmesh = 1000 # Number of real-frequency points
+wmin = -10.0 # Left boundary
+wmax = +10.0 # Right boundary
+nmesh = 1001 # Number of real-frequency points
 niw  = 50    # Number of Matsubara frequencies
-beta = 100.0  # Inverse temperature
-ϵ₁   = 2.50  # Parameters for gaussian peaks
-ϵ₂   = -2.5
-A₁   = 0.50
-A₂   = 0.50
-Γ₁   = 0.50
-Γ₂   = 0.50
+beta = 100.0 # Inverse temperature
+ϵ₁   = -1.0  # Parameters for gaussian peaks
+ϵ₂   = 3.00
+A₁   = 0.80
+A₂   = 0.20
+Γ₁   = 1.00
+Γ₂   = 0.70
 
 # Real frequency mesh
 rmesh = collect(LinRange(wmin, wmax, nmesh))
 
 # Spectral function
-gaussian(x, mu, sigma) = exp(-0.5*((x-mu)/sigma)^2)/(sqrt(2*π)*sigma)
-rho(omega) = 0.8*gaussian(omega, -1.0, 1.0) + 0.2*gaussian(omega, 3, 0.7)
+gaussian(x, μ, σ) = exp(-0.5 * ( ( x - μ ) / σ ) ^ 2.0) / (sqrt(2*π) * σ)
+rho(ω) = A₁ * gaussian(ω, ϵ₁, Γ₁) + A₂ * gaussian(ω, ϵ₂, Γ₂)
 image = rho.(rmesh)
 
 # Matsubara frequency mesh
@@ -39,7 +38,7 @@ for i in eachindex(giw)
 end
 
 # Build error
-err = ones(F64, niw) * 0.0e-4
+err = ones(F64, niw) * 1.0e-4
 
 # Write green's function
 open("giw.data", "w") do fout

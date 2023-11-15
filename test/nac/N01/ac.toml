@@ -7,30 +7,30 @@
 #
 
 [BASE]
-finput = "giw1.data"
+finput = "giw.data"
 solver = "NevanAC"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
 mesh   = "linear"
-ngrid  = 52
-nmesh  = 501
-wmax   = 5.0
-wmin   = -5.0
+ngrid  = 50
+nmesh  = 1001
+wmax   = 10.0
+wmin   = -10.0
 beta   = 100.0
 offdiag = false
 
 [MaxEnt]
 method = "chi2kink"
 stype  = "sj"
-nalph  = 12
-alpha  = 1e9
+nalph  = 20
+alpha  = 1e12
 ratio  = 10.0
 blur   = -1.0
 
 [NevanAC]
 pick   = true
 hardy  = true
-hmax   = 12
+hmax   = 15
 alpha  = 1e-4
 eta    = 1e-3
