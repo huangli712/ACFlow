@@ -1,5 +1,5 @@
 #
-# Test: N01
+# Test: N02
 #
 # 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or NevanAC).
@@ -14,17 +14,17 @@ mtype  = "flat"
 grid   = "ffreq"
 mesh   = "linear"
 ngrid  = 50
-nmesh  = 1000
-wmax   = 10.0
-wmin   = -10.0
+nmesh  = 1001
+wmax   = 5.0
+wmin   = -5.0
 beta   = 100.0
 offdiag = false
 
 [MaxEnt]
 method = "chi2kink"
 stype  = "sj"
-nalph  = 12
-alpha  = 1e9
+nalph  = 20
+alpha  = 1e12
 ratio  = 10.0
 blur   = -1.0
 
