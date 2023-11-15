@@ -7,13 +7,13 @@
 #
 
 [BASE]
-finput = "giw1.data"
+finput = "giw.data"
 solver = "NevanAC"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
 mesh   = "linear"
-ngrid  = 52
+ngrid  = 50
 nmesh  = 1000
 wmax   = 10.0
 wmin   = -10.0
