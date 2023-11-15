@@ -4,7 +4,23 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/14
+# Last modified: 2023/11/15
+#
+
+#
+# Note:
+#
+# The following codes for the NevanAC solver are mostly adapted from
+#
+#     https://github.com/SpM-lab/Nevanlinna.jl
+#
+# See
+#
+#     Nevanlinna.jl: A Julia implementation of Nevanlinna analytic continuation
+#     Kosuke Nogaki, Jiani Fei, Emanuel Gull, Hiroshi Shinaoka
+#     SciPost Phys. Codebases 19 (2023)
+#
+# for more details. And we thank Dr. Shuang Liang for her help.
 #
 
 #=
