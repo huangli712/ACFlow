@@ -22,7 +22,7 @@ Once the analytic continuation simulation is finished, the final spectral functi
 !!! warning
 
     For bosonic systems, the `MaxEnt`, `StochAC`, `StochSK`, and `StochOM` solvers will generate and output ``\tilde{A}(\omega)``, instead of traditional ``A(\omega)``. That is to say, in `Aout.data`, the data are actually ``\tilde{A}(\omega)``. If the users want to retrieve ``A(\omega)``, they have to do the transformation by themselves:
-    
+
     ```math
     \tilde{A}(\omega) = \frac{A(\omega)}{\omega},
     ```
