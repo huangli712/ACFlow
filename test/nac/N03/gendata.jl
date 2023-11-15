@@ -28,8 +28,12 @@ image = similar(rmesh)
 #
 image = image ./ trapz(rmesh, image)
 
-gaussian(x, mu, sigma) = exp(-0.5*((x-mu)/sigma)^2)/(sqrt(2*π)*sigma)
-rho(omega) = 0.45*gaussian(omega, -2.5, 0.7) + 0.1*gaussian(omega, 0.0, 0.1) + 0.45*gaussian(omega, 2.5, 0.7)
+#Lorentzian(x, mu, gamma) = gamma/(pi*((x-mu)^2+gamma^2))
+#rho(omega) = Lorentzian(omega, 0.0, 1.)
+#omegas = LinRange(-20, 20, 1000)
+eta = 0.001
+Lorentzian(x, mu, gamma) = gamma/(pi*((x-mu)^2+gamma^2))
+rho(omega) = 0.3*Lorentzian(omega, 1.0, eta) + 0.5*Lorentzian(omega, -3.0, eta) + 0.2*Lorentzian(omega, 4.5, eta)
 omegas = LinRange(-10, 10, 1000)
 
 rmesh = omegas
