@@ -128,20 +128,30 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
 * **nac/N01**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
-    * NevanAC solver
+    * NevanAC solver + Hardy optimization
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Two gaussian peaks
+
+* **nac/N02**
+    * Fermionic + Matsubara
+    * MaxEnt solver (chi2kink algorithm)
+    * NevanAC solver + Hardy optimization
     * Flat model
     * Linear mesh
     * Fixed error bar
     * Two gaussian peaks + big gap
 
-* **pole/N02**
+* **nac/N03**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
-    * StochPX solver
+    * NevanAC solver + no Hardy optimization
     * Flat model
     * Linear mesh
     * Fixed error bar
-    * Single off-centered delta peak
+    * Three delta-like peaks
+    * Actually, MaxEnt solver will fail.
 
 ## Experimental tests 2
 
