@@ -151,7 +151,6 @@ The following tests are designed to test the newly developed `NevanAC` solver (b
     * Linear mesh
     * Fixed error bar
     * Three delta-like peaks
-    * Actually, MaxEnt solver will fail.
 
 ## Experimental tests 2
 
