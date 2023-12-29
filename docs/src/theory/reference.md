@@ -34,4 +34,4 @@
 
 ---
 
-[1] Li Huang, Shuang Liang, Stochastic pole expansion method, *arXiv:2307.11324* (2023).
+[1] Li Huang, Shuang Liang, Stochastic pole expansion method for analytic continuation of the Green's function, *Phys. Rev. B* **108**, 235143 (2023).
