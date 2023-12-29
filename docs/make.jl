@@ -9,8 +9,10 @@ makedocs(
     format = Documenter.HTML(
         prettyurls = false,
         ansicolor = true,
+        repolink = "https://github.com/huangli712/ACFlow",
     ),
     #format = Documenter.LaTeX(),
+    remotes = nothing,
     modules = [ACFlow],
     pages = [
         "Home" => "index.md",
