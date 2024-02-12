@@ -2,14 +2,14 @@
 
 #
 # This example is taken from Phys. Rev. D 97, 094503 (2018).
-# 
+#
 # Stochastic reconstructions of spectral functions: Application to lattice QCD
 #
 # H.-T. Ding, et al.
 #
 # Araw.inp -> Fig. 13
 #
-# Tc = 269.64 MeV, T = 0.75Tc 
+# T = 269.64 MeV, T = 0.75Tc
 #
 
 using DelimitedFiles
