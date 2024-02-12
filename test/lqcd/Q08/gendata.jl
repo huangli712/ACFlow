@@ -9,7 +9,7 @@
 #
 # Araw.inp -> Fig. 13
 #
-# T = 269.64 MeV, T = 0.75Tc
+# Tc = 269.64 MeV, T = 0.75Tc
 #
 
 using DelimitedFiles
