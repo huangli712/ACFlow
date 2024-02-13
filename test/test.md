@@ -412,12 +412,5 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Bosonic (symm) + Matsubara
     * Charmonium spectral functions (``\eta_c`` channel)
     * MaxEnt solver
-    * StochPX solver + self-adaptive mesh
-    * Very large gap + two peaks at high energy
-
-* **lqcd/Q09**
-    * Bosonic (symm) + Matsubara
-    * Charmonium spectral functions (``J/\psi`` channel)
-    * MaxEnt solver
-    * StochPX solver + self-adaptive mesh
-    * Very large gap + two peaks at high energy
+    * StochPX solver
+    * Very broad spectrum + multiple peaks at high energy
