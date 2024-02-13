@@ -19,7 +19,6 @@ wmax   = 80.0
 wmin   = 0.0
 beta   = 5.0
 offdiag = false
-exclude = [[0.0,3.1]]
 
 [MaxEnt]
 method = "chi2kink"
@@ -33,7 +32,7 @@ blur   = -1.0
 method = "mean"
 nfine  = 100000
 npole  = 2000
-ntry   = 200
+ntry   = 4000
 nstep  = 100
 theta  = 1e+8
 eta    = 1e-3

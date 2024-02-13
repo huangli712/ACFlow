@@ -1,15 +1,15 @@
 #!/usr/bin/env julia
 
 #
-# This example is taken from Phys. Rev. D 97, 094503 (2018).
+# This example is taken from Phys. Rev. D 86, 014509 (2012).
 #
-# Stochastic reconstructions of spectral functions: Application to lattice QCD
+# Charmonium properties in hot quenched lattice QCD
 #
 # H.-T. Ding, et al.
 #
-# Araw.inp -> Fig. 13
+# Araw.inp -> Fig. 9 (right)
 #
-# Tc = 269.64 MeV, T = 0.75Tc
+# Tc = 269.64 MeV, T = 0.73Tc
 #
 
 using DelimitedFiles
@@ -18,8 +18,6 @@ using Printf
 using ACFlow
 
 # Setup parameters
-wmin = +0.0  # Left boundary
-wmax = +10.  # Right boundary
 niw  = 50    # Number of Matsubara frequencies
 beta = 5.00  # Inverse temperature
 
