@@ -18,6 +18,8 @@ using Printf
 using ACFlow
 
 # Setup parameters
+wmin = +0.0  # Left boundary
+wmax = +10.  # Right boundary
 niw  = 50    # Number of Matsubara frequencies
 beta = 5.00  # Inverse temperature
 
