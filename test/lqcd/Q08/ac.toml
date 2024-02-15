@@ -7,7 +7,7 @@
 #
 
 [BASE]
-finput = "chiw.data"
+finput = "chiw.inp"
 solver = "StochPX"
 ktype  = "bsymm"
 mtype  = "flat"
