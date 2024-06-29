@@ -1279,7 +1279,9 @@ function try_split(MC::StochOMMC,
         # Apply the Metropolis algorithm
         if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
             # Remove old box t and insert two new boxes
-            SE.C[t] = SE.C[end]
+            if t < csize
+                SE.C[t] = SE.C[end]
+            end
             pop!(SE.C)
             push!(SE.C, R2)
             push!(SE.C, R3)
