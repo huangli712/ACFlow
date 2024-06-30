@@ -1281,7 +1281,6 @@ function try_split(MC::StochOMMC,
 
         # Calculate update for Λ
         G1 = SE.Λ[:,t]
-        Ge = SE.Λ[:,csize]
         G2 = calc_lambda(R2, SC.grid)
         G3 = calc_lambda(R3, SC.grid)
 
@@ -1291,20 +1290,13 @@ function try_split(MC::StochOMMC,
         # Apply the Metropolis algorithm
         if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
             # Remove old box t and insert two new boxes
-            if t < csize
-                SE.C[t] = SE.C[end]
-            end
-            pop!(SE.C)
-            push!(SE.C, R2)
+            SE.C[t] = R2
             push!(SE.C, R3)
 
             # Update Δ, G, and Λ.
             SE.Δ = Δ
             @. SE.G = SE.G - G1 + G2 + G3
-            if t < csize
-                @. SE.Λ[:,t] = Ge
-            end
-            @. SE.Λ[:,csize] = G2
+            @. SE.Λ[:,t] = G2
             @. SE.Λ[:,csize+1] = G3
 
             # Update the counter
