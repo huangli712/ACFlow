@@ -664,7 +664,7 @@ So, we have
 ```math
 \begin{equation}
 Λ_{R}(\omega_n) = h \int^{c+w/2}_{c-w/2}
-    d\omega~\frac{\omega^2}{\omega_n^2 + \omega^2}.
+    d\omega~\frac{-2\omega^2}{\omega_n^2 + \omega^2}.
 \end{equation}
 ```
 
@@ -681,7 +681,7 @@ Thus,
 
 ```math
 \begin{equation}
-Λ_{R}(\omega_n) = h
+Λ_{R}(\omega_n) = -2h
     \left[
         \omega - \omega_n \tan^{-1} \left(\frac{\omega}{\omega_n}\right)
     \right]
@@ -693,7 +693,7 @@ Finally, we have
 
 ```math
 \begin{equation}
-Λ_{R}(\omega_n) = h
+Λ_{R}(\omega_n) = -2h
     \left[
         w +
         \omega_n \tan^{-1} \left(\frac{c - w/2}{\omega_n}\right)
@@ -720,6 +720,18 @@ function calc_lambda(r::Box, grid::FermionicMatsubaraGrid)
     iw = im * grid.ω
     Λ = @. r.h * log((iw - e₁) / (iw - e₂))
     return vcat(real(Λ), imag(Λ))
+end
+
+"""
+    calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid)
+
+Try to calculate the contribution of a given box `r` to the Λ function.
+This function works for FermionicFragmentMatsubaraGrid only.
+
+See also: [`FermionicFragmentMatsubaraGrid`](@ref).
+"""
+function calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid)
+    sorry()
 end
 
 """
@@ -757,6 +769,18 @@ function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
         Λ = @. r.h * (-r.w + iw * log((iw - e₁) / (iw - e₂)))
         return vcat(real(Λ), imag(Λ))
     end
+end
+
+"""
+    calc_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid)
+
+Try to calculate the contribution of a given box `r` to the Λ function.
+This function works for BosonicFragmentMatsubaraGrid only.
+
+See also: [`BosonicFragmentMatsubaraGrid`](@ref).
+"""
+function calc_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid)
+    sorry()
 end
 
 """
