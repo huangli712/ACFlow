@@ -735,18 +735,6 @@ function calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid)
 end
 
 """
-    calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid)
-
-Try to calculate the contribution of a given box `r` to the Λ function.
-This function works for FermionicImaginaryTimeGrid only.
-
-See also: [`FermionicImaginaryTimeGrid`](@ref).
-"""
-function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid)
-    sorry()
-end
-
-"""
     calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
 
 Try to calculate the contribution of a given box `r` to the Λ function.
