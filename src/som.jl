@@ -1325,11 +1325,14 @@ function try_merge(MC::StochOMMC,
     csize = length(SE.C)
 
     # Choose two boxes randomly
+    # Box t2 will be removed, while box t1 will be modified.
     t1 = rand(MC.rng, 1:csize)
     t2 = rand(MC.rng, 1:csize)
+    #
     while t1 == t2
         t2 = rand(MC.rng, 1:csize)
     end
+    #
     if t1 > t2
         t1, t2 = t2, t1
     end
