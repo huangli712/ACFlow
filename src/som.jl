@@ -465,9 +465,10 @@ See also: [`StochOMMC`](@ref).
 function init_mc(S::StochOMSolver)
     seed = rand(1:100000000)
     rng = MersenneTwister(seed)
+    #
     Macc = zeros(I64, 7)
     Mtry = zeros(I64, 7)
-
+    #
     MC = StochOMMC(rng, Macc, Mtry)
 
     return MC
@@ -902,9 +903,12 @@ function try_insert(MC::StochOMMC,
     # Determine parameters for the new box
     r1 = rand(MC.rng, F64)
     r2 = rand(MC.rng, F64)
+    #
     c = (wmin + wbox / 2.0) + (wmax - wmin - wbox) * r1
+    #
     w_new_max = 2.0 * min(wmax - c, c - wmin)
     dx = Pdx(dx_min, dx_max, MC.rng)
+    #
     h = dx / w_new_max + (dx / wbox - dx / w_new_max) * r2
     w = dx / h
 
@@ -1165,6 +1169,7 @@ function try_height(MC::StochOMMC,
     # Choose two boxes randomly
     t1 = rand(MC.rng, 1:csize)
     t2 = rand(MC.rng, 1:csize)
+    #
     while t1 == t2
         t2 = rand(MC.rng, 1:csize)
     end
