@@ -601,6 +601,8 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
         end
     end
     #
+    # Perhaps we should check am[1] here!
+    @assert am[1] == 0.0
     @. kernel[:,1] = 2.0 / β
 
     return kernel
@@ -629,6 +631,8 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicFragmentTimeGrid)
         end
     end
     #
+    # Perhaps we should check am[1] here!
+    @assert am[1] == 0.0
     @. kernel[:,1] = 2.0 / β
 
     return kernel
