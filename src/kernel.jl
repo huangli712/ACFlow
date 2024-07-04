@@ -657,6 +657,7 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
                 kernel[j,i] = -2.0 * kernel[j,i]
             end
         end
+        # Perhaps we should check am[i] and bg[j] here!
         if am[1] == 0.0 && bg[1] == 0.0
             kernel[1,1] = -2.0
         end
@@ -675,7 +676,8 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
                     A² = (bmesh[k] + am[i]) ^ 2.0; I₁[k] = -2.0 * A² / (A² + g²)
                     B² = (bmesh[k] - am[i]) ^ 2.0; I₂[k] = -2.0 * B² / (B² + g²)
                 end
-                if i == 1 && j == 1 # Perhaps we should check am[i] and bg[j] here!
+                if i == 1 && j == 1
+                    # Perhaps we should check am[i] and bg[j] here!
                     @assert am[i] == 0.0
                     @assert bg[j] == 0.0
                     I₁ .= -2.0
@@ -713,6 +715,7 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicFragmentMatsubaraGrid)
                 kernel[j,i] = -2.0 * kernel[j,i]
             end
         end
+        # Perhaps we should check am[i] and bg[j] here!
         if am[1] == 0.0 && bg[1] == 0.0
             kernel[1,1] = -2.0
         end
@@ -731,7 +734,8 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicFragmentMatsubaraGrid)
                     A² = (bmesh[k] + am[i]) ^ 2.0; I₁[k] = -2.0 * A² / (A² + g²)
                     B² = (bmesh[k] - am[i]) ^ 2.0; I₂[k] = -2.0 * B² / (B² + g²)
                 end
-                if i == 1 && j == 1 # Perhaps we should check am[i] and bg[j] here!
+                if i == 1 && j == 1
+                    # Perhaps we should check am[i] and bg[j] here!
                     @assert am[i] == 0.0
                     @assert bg[j] == 0.0
                     I₁ .= -2.0
