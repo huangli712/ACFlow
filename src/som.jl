@@ -782,14 +782,38 @@ See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid)
     ktype = get_b("ktype")
+    ntime = bg.ntime
+    nmesh = 1001
+    β = bg.β
 
+    e₁ = r.c - 0.5 * r.w
+    e₂ = r.c + 0.5 * r.w
+    am = LinearMesh(nmesh, e₁, e₂)
+
+    K = zeros(F64, ntime, nmesh)
+    #
     if ktype == "bsymm"
-        Λ = @. r.h * exp(-1 * grid.τ * r.c) * sinh(0.5 * grid.τ * r.w)
-        Λ = Λ .* π ./ grid.τ
-        return Λ
+        for i = 1:nmesh
+            if am[i] == 0.0
+                @. K[:,i] = 2.0 / β
+                continue
+            end
+            #
+            f = am[i] / (1.0 - exp(-β * am[i]))
+            for j = 1:ntime
+                K[j,i] = f * (exp(-am[i] * grid[j]) + exp(-am[i] * (β - grid[j])))
+            end
+        end
     else
         sorry()
     end
+
+    Λ = zeros(F64, ntime)
+    for i = 1:ntime
+        Λ[i] = trapz(am, K[i,:]) * r.h
+    end
+
+    return Λ
 end
 
 """
