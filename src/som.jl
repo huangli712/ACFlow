@@ -173,7 +173,8 @@ function run(MC::StochOMMC, SC::StochOMContext)
     for l = 1:ntry
         SE = init_element(MC, SC)
 
-        for _ = 1:nstep
+        for m = 1:nstep
+            @show l, m
             update(MC, SE, SC)
         end
 
@@ -782,9 +783,9 @@ See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid)
     ktype = get_b("ktype")
-    ntime = bg.ntime
-    nmesh = 1001
-    β = bg.β
+    ntime = grid.ntime
+    nmesh = 101
+    β = grid.β
 
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
