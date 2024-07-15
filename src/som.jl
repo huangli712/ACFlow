@@ -736,6 +736,14 @@ function calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid)
     sorry()
 end
 
+function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid)
+    sorry()
+end
+
+function calc_lambda(r::Box, grid::FermionicFragmentTimeGrid)
+    sorry()
+end
+
 """
     calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
 
@@ -815,6 +823,10 @@ function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid)
     end
 
     return Λ
+end
+
+function calc_lambda(r::Box, grid::BosonicFragmentTimeGrid)
+    sorry()
 end
 
 """
