@@ -206,6 +206,10 @@ calc_lambda(r::Box, grid::FermionicMatsubaraGrid, 𝕊::Vector{<:AbstractInterpo
 calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid, 𝕊::Vector{<:AbstractInterpolation})
 calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid, 𝕊::Vector{<:AbstractInterpolation})
 calc_lambda(r::Box, grid::FermionicFragmentTimeGrid, 𝕊::Vector{<:AbstractInterpolation})
+calc_lambda(r::Box, grid::BosonicMatsubaraGrid, 𝕊::Vector{<:AbstractInterpolation})
+calc_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid, 𝕊::Vector{<:AbstractInterpolation})
+calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid, 𝕊::Vector{<:AbstractInterpolation})
+calc_lambda(r::Box, grid::BosonicFragmentTimeGrid, 𝕊::Vector{<:AbstractInterpolation})
 calc_error
 calc_green(Λ::Array{F64,2}, nk::I64)
 calc_norm
