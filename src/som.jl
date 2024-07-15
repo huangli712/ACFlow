@@ -1242,29 +1242,29 @@ function try_remove(MC::StochOMMC,
     # Get box t₁ and box t₂
     R₁ = SE.C[t₁]
     R₂ = SE.C[t₂]
-    Re = SE.C[end]
+    Rₑ = SE.C[end]
 
     # Generate new box t₂
     dx = R₁.h * R₁.w
-    R₂n = Box(R₂.h + dx / R₂.w, R₂.w, R₂.c)
+    R₂ₙ = Box(R₂.h + dx / R₂.w, R₂.w, R₂.c)
 
     # Calculate update for Λ
     G₁ = SE.Λ[:,t₁]
     G₂ = SE.Λ[:,t₂]
     Gₑ = SE.Λ[:,csize]
-    G₂n = calc_lambda(R₂n, SC.grid, SC.𝕊ᵥ)
+    G₂ₙ = calc_lambda(R₂ₙ, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
-    Δ = calc_error(SE.G - G₁ - G₂ + G₂n, SC.Gᵥ, SC.σ¹)
+    Δ = calc_error(SE.G - G₁ - G₂ + G₂ₙ, SC.Gᵥ, SC.σ¹)
 
     # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
         # Update box t₂
-        SE.C[t₂] = R₂n
+        SE.C[t₂] = R₂ₙ
 
         # Backup the last box in box t₁
         if t₁ < csize
-            SE.C[t₁] = Re
+            SE.C[t₁] = Rₑ
         end
 
         # Delete the last box, since its value has been stored in t₁.
@@ -1272,8 +1272,8 @@ function try_remove(MC::StochOMMC,
 
         # Update Δ, G, and Λ.
         SE.Δ = Δ
-        @. SE.G = SE.G - G₁ - G₂ + G₂n
-        @. SE.Λ[:,t₂] = G₂n
+        @. SE.G = SE.G - G₁ - G₂ + G₂ₙ
+        @. SE.Λ[:,t₂] = G₂ₙ
         if t₁ < csize
             @. SE.Λ[:,t₁] = Gₑ
         end
@@ -1455,13 +1455,13 @@ function try_height(MC::StochOMMC,
     # Calculate δh and generate new box t₁ and box t₂
     dh = Pdx(dx_min, dx_max, MC.rng)
     R₁n = Box(R₁.h + dh, R₁.w, R₁.c)
-    R₂n = Box(R₂.h - dh * w1 / w2, R₂.w, R₂.c)
+    R₂ₙ = Box(R₂.h - dh * w1 / w2, R₂.w, R₂.c)
 
     # Calculate update for Λ
     G₁A = SE.Λ[:,t₁]
     G₁B = calc_lambda(R₁n, SC.grid, SC.𝕊ᵥ)
     G₂A = SE.Λ[:,t₂]
-    G₂B = calc_lambda(R₂n, SC.grid, SC.𝕊ᵥ)
+    G₂B = calc_lambda(R₂ₙ, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G₁A + G₁B - G₂A + G₂B, SC.Gᵥ, SC.σ¹)
@@ -1470,7 +1470,7 @@ function try_height(MC::StochOMMC,
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
         # Update box t₁ and box t₂
         SE.C[t₁] = R₁n
-        SE.C[t₂] = R₂n
+        SE.C[t₂] = R₂ₙ
 
         # Update Δ, G, and Λ.
         SE.Δ = Δ
