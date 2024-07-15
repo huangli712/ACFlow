@@ -833,49 +833,15 @@ See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    ktype = get_b("ktype")
-    ntime = grid.ntime
-    nmesh = 101
-    β = grid.β
-
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
-    #am = LinearMesh(nmesh, e₁, e₂)
 
-    #K = zeros(F64, ntime, nmesh)
-    ##
-    #if ktype == "bsymm"
-    #    for i = 1:nmesh
-    #        if am[i] == 0.0
-    #            @. K[:,i] = 2.0 / β
-    #            continue
-    #        end
-    #        #
-    #        f = am[i] / (1.0 - exp(-β * am[i]))
-    #        for j = 1:ntime
-    #            K[j,i] = f * (exp(-am[i] * grid[j]) + exp(-am[i] * (β - grid[j])))
-    #        end
-    #    end
-    #else
-    #    sorry()
-    #end
-
+    ntime = grid.ntime
     Λ = zeros(F64, ntime)
-    #for i = 1:ntime
-    #    Λ[i] = trapz(am, K[i,:]) * r.h
-    #end
 
-    #-------------------
-
-    Λ₂ = zeros(F64, ntime)
     for i = 1:ntime
-        Λ₂[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) *  r.h
-        #@show i, Λ[i], Λ₂[i]
+        Λ[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) *  r.h
     end
-
-    @. Λ = Λ₂
-
-    #exit()
 
     return Λ
 end
