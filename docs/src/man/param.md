@@ -60,10 +60,6 @@ Depth = 3
 >
 > `StochPX` means the stochastic pole expansion method. The `StochPX` solver can be used to treat the correlators in Matsubara frequency axis only. If `solver = "StochPX"`, then the `[StochPX]` block must be available in the configuration file.
 
-!!! warning
-
-    For the `StochOM` solver, if the correlators are defined in imaginary time axis, they must be bosonic. In other words, the `StochOM` solver does not support analytic continuation of fermionic imaginary time correlation function.
-
 *Type:*
 
 > String.
@@ -204,10 +200,6 @@ Depth = 3
 !!! warning
 
     If the `NevanAC` solver is employed, the `grid` parameter should be "ffreq" or "ffrag".
-
-!!! warning
-
-    If the `StochOM` solver is employed, the `grid` parameter should not be "ftime" or "fpart".
 
 !!! warning
 
