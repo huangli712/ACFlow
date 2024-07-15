@@ -1444,22 +1444,22 @@ function try_height(MC::StochOMMC,
     # Determine left and right boundaries for the height of the box t₁
     w₁ = R₁.w
     w₂ = R₂.w
-    h1 = R₁.h
-    h2 = R₂.h
-    dx_min = sbox / w₁ - h1
-    dx_max = (h2 - sbox / w₂) * w₂ / w₁
+    h₁ = R₁.h
+    h₂ = R₂.h
+    dx_min = sbox / w₁ - h₁
+    dx_max = (h₂ - sbox / w₂) * w₂ / w₁
     if dx_max ≤ dx_min
         return
     end
 
     # Calculate δh and generate new box t₁ and box t₂
     dh = Pdx(dx_min, dx_max, MC.rng)
-    R₁n = Box(R₁.h + dh, R₁.w, R₁.c)
+    R₁ₙ = Box(R₁.h + dh, R₁.w, R₁.c)
     R₂ₙ = Box(R₂.h - dh * w₁ / w₂, R₂.w, R₂.c)
 
     # Calculate update for Λ
     G₁A = SE.Λ[:,t₁]
-    G₁B = calc_lambda(R₁n, SC.grid, SC.𝕊ᵥ)
+    G₁B = calc_lambda(R₁ₙ, SC.grid, SC.𝕊ᵥ)
     G₂A = SE.Λ[:,t₂]
     G₂B = calc_lambda(R₂ₙ, SC.grid, SC.𝕊ᵥ)
 
@@ -1469,7 +1469,7 @@ function try_height(MC::StochOMMC,
     # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
         # Update box t₁ and box t₂
-        SE.C[t₁] = R₁n
+        SE.C[t₁] = R₁ₙ
         SE.C[t₂] = R₂ₙ
 
         # Update Δ, G, and Λ.
@@ -1523,29 +1523,29 @@ function try_split(MC::StochOMMC,
         w₁, w₂ = w₂, w₁
     end
 
-    # Determine center for new boxes (c1 + dc1 and c2 + dc2)
-    c1 = R₁.c - R₁.w / 2.0 + w₁ / 2.0
-    c2 = R₁.c + R₁.w / 2.0 - w₂ / 2.0
-    dx_min = wmin + w₁ / 2.0 - c1
-    dx_max = wmax - w₁ / 2.0 - c1
+    # Determine center for new boxes (c₁ + dc₁ and c₂ + dc₂)
+    c₁ = R₁.c - R₁.w / 2.0 + w₁ / 2.0
+    c₂ = R₁.c + R₁.w / 2.0 - w₂ / 2.0
+    dx_min = wmin + w₁ / 2.0 - c₁
+    dx_max = wmax - w₁ / 2.0 - c₁
     if dx_max ≤ dx_min
         return
     end
-    dc1 = Pdx(dx_min, dx_max, MC.rng)
-    dc2 = -1.0 * w₁ * dc1 / w₂
-    if !constraints(c1 + dc1 - w₁/2, c1 + dc1 + w₁/2) ||
-       !constraints(c2 + dc2 - w₂/2, c2 + dc2 + w₂/2)
+    dc₁ = Pdx(dx_min, dx_max, MC.rng)
+    dc₂ = -1.0 * w₁ * dc₁ / w₂
+    if !constraints(c₁ + dc₁ - w₁/2, c₁ + dc₁ + w₁/2) ||
+       !constraints(c₂ + dc₂ - w₂/2, c₂ + dc₂ + w₂/2)
         return
     end
 
-    if (c1 + dc1 ≥ wmin + w₁ / 2.0) &&
-       (c1 + dc1 ≤ wmax - w₁ / 2.0) &&
-       (c2 + dc2 ≥ wmin + w₂ / 2.0) &&
-       (c2 + dc2 ≤ wmax - w₂ / 2.0)
+    if (c₁ + dc₁ ≥ wmin + w₁ / 2.0) &&
+       (c₁ + dc₁ ≤ wmax - w₁ / 2.0) &&
+       (c₂ + dc₂ ≥ wmin + w₂ / 2.0) &&
+       (c₂ + dc₂ ≤ wmax - w₂ / 2.0)
 
         # Generate two new boxes
-        R₂ = Box(h, w₁, c1 + dc1)
-        R₃ = Box(h, w₂, c2 + dc2)
+        R₂ = Box(h, w₁, c₁ + dc₁)
+        R₃ = Box(h, w₂, c₂ + dc₂)
 
         # Calculate update for Λ
         G₁ = SE.Λ[:,t]
@@ -1632,11 +1632,11 @@ function try_merge(MC::StochOMMC,
     # Calculate update for Λ
     G₁ = SE.Λ[:,t₁]
     G₂ = SE.Λ[:,t₂]
-    Ge = SE.Λ[:,csize]
-    Gn = calc_lambda(Rₙ, SC.grid, SC.𝕊ᵥ)
+    Gₑ = SE.Λ[:,csize]
+    Gₙ = calc_lambda(Rₙ, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
-    Δ = calc_error(SE.G - G₁ - G₂ + Gn, SC.Gᵥ, SC.σ¹)
+    Δ = calc_error(SE.G - G₁ - G₂ + Gₙ, SC.Gᵥ, SC.σ¹)
 
     # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
@@ -1651,10 +1651,10 @@ function try_merge(MC::StochOMMC,
 
         # Update Δ, G, and Λ.
         SE.Δ = Δ
-        @. SE.G = SE.G - G₁ - G₂ + Gn
-        @. SE.Λ[:,t₁] = Gn
+        @. SE.G = SE.G - G₁ - G₂ + Gₙ
+        @. SE.Λ[:,t₁] = Gₙ
         if t₂ < csize
-            @. SE.Λ[:,t₂] = Ge
+            @. SE.Λ[:,t₂] = Gₑ
         end
 
         # Update the counter
