@@ -864,39 +864,6 @@ function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid, 𝕊::Vector{CubicS
 
     #-------------------
 
-    #wmin = get_b("wmin")
-    #wmax = get_b("wmax")
-    #am = LinearMesh(nmesh, wmin, wmax)
-    #Λ_ = zeros(F64, ntime, nmesh)
-    #K_ = zeros(F64, ntime, nmesh)
-    #for m in eachindex(am)
-    #    if m > 1
-    #        cm = LinearMesh(nmesh, wmin, am[m])
-    #        @show m, wmin, am[m]
-
-    #        for i = 1:nmesh
-    #            if cm[i] == 0.0
-    #                @. K_[:,i] = 2.0 / β
-    #                continue
-    #            end
-    #            #
-    #            f = cm[i] / (1.0 - exp(-β * cm[i]))
-    #            for j = 1:ntime
-    #                K_[j,i] = f * (exp(-cm[i] * grid[j]) + exp(-cm[i] * (β - grid[j])))
-    #            end
-    #        end
-
-    #        for i = 1:ntime
-    #            Λ_[i,m] = trapz(cm, K_[i,:])
-    #        end
-    #    end
-    #end
-
-    #S = Array{CubicSplineInterpolation}(undef, ntime)
-    #for i = 1:ntime
-    #    S[i] = CubicSplineInterpolation(Λ_[i,:], am.mesh)
-    #end
-
     Λ₂ = zeros(F64, ntime)
     for i = 1:ntime
         Λ₂[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) *  r.h
