@@ -273,22 +273,30 @@ function average(SC::StochOMContext)
     Aom = zeros(F64, nmesh)
     passed = I64[]
     for l = 1:ntry
+        # Filter the reasonable spectra
         if SC.Δᵥ[l] < dev_ave / αgood
+            # Generate the spectrum, and add it to Aom.
             for w = 1:nmesh
                 _omega = SC.mesh[w]
+                # Scan all boxes
                 for r = 1:length(SC.Cᵥ[l])
                     R = SC.Cᵥ[l][r]
+                    # Yes, this box contributes. The point, _omega, is
+                    # covered by this box.
                     if R.c - 0.5 * R.w ≤ _omega ≤ R.c + 0.5 * R.w
                         Aom[w] = Aom[w] + R.h
                     end
                 end
             end
+            #
+            # Record which spectrum is used
             append!(passed, l)
         end
     end
 
     # Normalize the spectrum
     Lgood = count(x -> x < dev_ave / αgood, SC.Δᵥ)
+    @assert Lgood == length(passed)
     @. Aom = Aom / Lgood
     @printf("Median χ² : %16.12e Accepted configurations : %5i\n", dev_ave, Lgood)
 
