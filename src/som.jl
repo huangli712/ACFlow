@@ -1316,11 +1316,11 @@ function try_shift(MC::StochOMMC,
     end
 
     # Calculate δc and generate shifted box
-    dc = Pdx(dx_min, dx_max, MC.rng)
-    if !constraints(R.c + dc - R.w/2, R.c + dc + R.w/2)
+    δc = Pdx(dx_min, dx_max, MC.rng)
+    if !constraints(R.c + δc - R.w/2, R.c + δc + R.w/2)
         return
     end
-    Rₙ = Box(R.h, R.w, R.c + dc)
+    Rₙ = Box(R.h, R.w, R.c + δc)
 
     # Calculate update for Λ
     G₁ = SE.Λ[:,t]
@@ -1523,7 +1523,7 @@ function try_split(MC::StochOMMC,
         w₁, w₂ = w₂, w₁
     end
 
-    # Determine center for new boxes (c₁ + dc₁ and c₂ + dc₂)
+    # Determine center for new boxes (c₁ + δc₁ and c₂ + δc₂)
     c₁ = R₁.c - R₁.w / 2.0 + w₁ / 2.0
     c₂ = R₁.c + R₁.w / 2.0 - w₂ / 2.0
     dx_min = wmin + w₁ / 2.0 - c₁
@@ -1531,21 +1531,21 @@ function try_split(MC::StochOMMC,
     if dx_max ≤ dx_min
         return
     end
-    dc₁ = Pdx(dx_min, dx_max, MC.rng)
-    dc₂ = -1.0 * w₁ * dc₁ / w₂
-    if !constraints(c₁ + dc₁ - w₁/2, c₁ + dc₁ + w₁/2) ||
-       !constraints(c₂ + dc₂ - w₂/2, c₂ + dc₂ + w₂/2)
+    δc₁ = Pdx(dx_min, dx_max, MC.rng)
+    δc₂ = -1.0 * w₁ * δc₁ / w₂
+    if !constraints(c₁ + δc₁ - w₁/2, c₁ + δc₁ + w₁/2) ||
+       !constraints(c₂ + δc₂ - w₂/2, c₂ + δc₂ + w₂/2)
         return
     end
 
-    if (c₁ + dc₁ ≥ wmin + w₁ / 2.0) &&
-       (c₁ + dc₁ ≤ wmax - w₁ / 2.0) &&
-       (c₂ + dc₂ ≥ wmin + w₂ / 2.0) &&
-       (c₂ + dc₂ ≤ wmax - w₂ / 2.0)
+    if (c₁ + δc₁ ≥ wmin + w₁ / 2.0) &&
+       (c₁ + δc₁ ≤ wmax - w₁ / 2.0) &&
+       (c₂ + δc₂ ≥ wmin + w₂ / 2.0) &&
+       (c₂ + δc₂ ≤ wmax - w₂ / 2.0)
 
         # Generate two new boxes
-        R₂ = Box(h, w₁, c₁ + dc₁)
-        R₃ = Box(h, w₂, c₂ + dc₂)
+        R₂ = Box(h, w₁, c₁ + δc₁)
+        R₃ = Box(h, w₂, c₂ + δc₂)
 
         # Calculate update for Λ
         G₁ = SE.Λ[:,t]
@@ -1623,11 +1623,11 @@ function try_merge(MC::StochOMMC,
     end
 
     # Calculate δc and generate new box
-    dc = Pdx(dx_min, dx_max, MC.rng)
-    if !constraints(c_new + dc - w_new/2, c_new + dc + w_new/2)
+    δc = Pdx(dx_min, dx_max, MC.rng)
+    if !constraints(c_new + δc - w_new/2, c_new + δc + w_new/2)
         return
     end
-    Rₙ = Box(h_new, w_new, c_new + dc)
+    Rₙ = Box(h_new, w_new, c_new + δc)
 
     # Calculate update for Λ
     G₁ = SE.Λ[:,t₁]
