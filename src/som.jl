@@ -813,10 +813,10 @@ function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid,
     # 𝕊ᵢ(e₂): integral boundary is from wmin to e₂
     # 𝕊ᵢ(e₁): integral boundary is from wmin to e₁
     for i = 1:ntime
-        Λ[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) *  r.h
+        Λ[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) * r.h
     end
 
-    return Λ    
+    return Λ
 end
 
 """
@@ -843,10 +843,10 @@ function calc_lambda(r::Box, grid::FermionicFragmentTimeGrid,
     # 𝕊ᵢ(e₂): integral boundary is from wmin to e₂
     # 𝕊ᵢ(e₁): integral boundary is from wmin to e₁
     for i = 1:ntime
-        Λ[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) *  r.h
+        Λ[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) * r.h
     end
 
-    return Λ    
+    return Λ
 end
 
 """
@@ -939,7 +939,7 @@ function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid,
     # 𝕊ᵢ(e₂): integral boundary is from wmin to e₂
     # 𝕊ᵢ(e₁): integral boundary is from wmin to e₁
     for i = 1:ntime
-        Λ[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) *  r.h
+        Λ[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) * r.h
     end
 
     return Λ
@@ -969,7 +969,7 @@ function calc_lambda(r::Box, grid::BosonicFragmentTimeGrid,
     # 𝕊ᵢ(e₂): integral boundary is from wmin to e₂
     # 𝕊ᵢ(e₁): integral boundary is from wmin to e₁
     for i = 1:ntime
-        Λ[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) *  r.h
+        Λ[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) * r.h
     end
 
     return Λ
