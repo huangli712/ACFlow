@@ -201,7 +201,7 @@ update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
 init_mc(S::StochOMSolver)
 init_element(MC::StochOMMC, SC::StochOMContext)
 init_iodata(S::StochOMSolver, rd::RawData)
-init_context(S::StochOMSolver)
+init_context(S::StochOMSolver, grid::AbstractGrid)
 calc_lambda
 calc_error
 calc_green(Λ::Array{F64,2}, nk::I64)
