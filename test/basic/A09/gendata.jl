@@ -1,5 +1,5 @@
 #!/usr/bin/env julia
-
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/ACFlow/src")
 using Random
 using Printf
 using ACFlow
@@ -8,7 +8,7 @@ using ACFlow
 wmin = -5.0  # Left boundary
 wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
-ntau = 1000  # Number of imaginary time points
+ntau = 1001  # Number of imaginary time points
 beta = 5.00  # Inverse temperature
 ϵ₁   = 2.00  # Parameters for gaussian peaks
 ϵ₂   = -2.0
