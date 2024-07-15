@@ -786,17 +786,23 @@ end
                 𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
-This function works for BosonicMatsubaraGrid only.
+This function works for BosonicMatsubaraGrid only. Because there is an
+analytic expression for this case, 𝕊 is useless.
+
+Actually, 𝕊 is undefined here. See init_context().
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicMatsubaraGrid,
                      𝕊::Vector{<:AbstractInterpolation})
+    # get type of bosonic kernel
     ktype = get_b("ktype")
 
+    # get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
 
+    # evaluate Λ
     if ktype == "bsymm"
         Λ = @. atan( e₁ / grid.ω ) - atan( e₂ / grid.ω )
         Λ = -2.0 * r.h * (r.w .+ grid.ω .* Λ)
@@ -813,13 +819,32 @@ end
                 𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
-This function works for BosonicFragmentMatsubaraGrid only.
+This function works for BosonicFragmentMatsubaraGrid only. Because there
+is an analytic expression for this case, 𝕊 is useless.
+
+Actually, 𝕊 is undefined here. See init_context().
 
 See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    sorry()
+    # get type of bosonic kernel
+    ktype = get_b("ktype")
+
+    # get left and right boundaries of the given box
+    e₁ = r.c - 0.5 * r.w
+    e₂ = r.c + 0.5 * r.w
+
+    # evaluate Λ
+    if ktype == "bsymm"
+        Λ = @. atan( e₁ / grid.ω ) - atan( e₂ / grid.ω )
+        Λ = -2.0 * r.h * (r.w .+ grid.ω .* Λ)
+        return Λ
+    else
+        iw = im * grid.ω
+        Λ = @. r.h * (-r.w + iw * log((iw - e₁) / (iw - e₂)))
+        return vcat(real(Λ), imag(Λ))
+    end
 end
 
 """
@@ -835,7 +860,7 @@ See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    # left and right boundaries of the given box
+    # get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
 
@@ -865,7 +890,7 @@ See also: [`BosonicFragmentTimeGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicFragmentTimeGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    # left and right boundaries of the given box
+    # get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
 
