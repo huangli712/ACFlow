@@ -173,13 +173,16 @@ function run(MC::StochOMMC, SC::StochOMContext)
 
     # Sample and collect data
     for l = 1:ntry
+        # Re-initialize the simulation
         SE = init_element(MC, SC)
 
-        for m = 1:nstep
-            @show l, m
+        # For each attempt, we should perform `nstep × N` Monte Carlo
+        # updates, where `N` means length of the Markov chain.
+        for _ = 1:nstep
             update(MC, SE, SC)
         end
 
+        # Accumulate the data and write some statistics
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
         @printf("try -> %6i (%6i) Δ -> %8.4e \n", l, ntry, SE.Δ)
@@ -221,12 +224,16 @@ function prun(S::StochOMSolver,
 
     # Sample and collect data
     for l = 1:ntry
+        # Re-initialize the simulation
         SE = init_element(MC, SC)
 
+        # For each attempt, we should perform `nstep × N` Monte Carlo
+        # updates, where `N` means length of the Markov chain.
         for _ = 1:nstep
             update(MC, SE, SC)
         end
 
+        # Accumulate the data and write some statistics
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
         @printf("try -> %6i (%6i) Δ -> %8.4e \n", l, ntry, SE.Δ)
