@@ -827,7 +827,9 @@ end
                 𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
-This function works for BosonicImaginaryTimeGrid only.
+This function works for BosonicImaginaryTimeGrid only. Since there is
+not analytic expressions for this case, the cubic spline interpolation
+algorithm is adopted. Here, 𝕊 is initialized in init_context().
 
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
