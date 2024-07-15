@@ -835,12 +835,16 @@ See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid,
                      𝕊::Vector{<:AbstractInterpolation})
+    # left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
 
+    # initialize Λ function
     ntime = grid.ntime
     Λ = zeros(F64, ntime)
 
+    # 𝕊ᵢ(e₂): integral boundary is from wmin to e₂
+    # 𝕊ᵢ(e₁): integral boundary is from wmin to e₁
     for i = 1:ntime
         Λ[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) *  r.h
     end
