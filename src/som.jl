@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/06/30
+# Last modified: 2024/07/15
 #
 
 #=
@@ -63,6 +63,7 @@ Mutable struct. It is used within the StochOM solver only.
 * mesh  -> Mesh for output spectrum.
 * Cᵥ    -> It is used to record the field configurations for all attempts.
 * Δᵥ    -> It is used to record the errors for all attempts.
+* 𝕊ᵥ    -> It is used to interpolate the Λ functions.
 """
 mutable struct StochOMContext
     Gᵥ   :: Vector{F64}
@@ -71,6 +72,7 @@ mutable struct StochOMContext
     mesh :: AbstractMesh
     Cᵥ   :: Vector{Vector{Box}}
     Δᵥ   :: Vector{F64}
+    𝕊ᵥ   :: Vector{CubicSplineInterpolation}
 end
 
 #=
@@ -148,8 +150,8 @@ function init(S::StochOMSolver, rd::RawData)
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    Cᵥ, Δᵥ = init_context(S)
-    SC = StochOMContext(Gᵥ, σ¹, grid, mesh, Cᵥ, Δᵥ)
+    Cᵥ, Δᵥ, 𝕊ᵥ = init_context(S, grid)
+    SC = StochOMContext(Gᵥ, σ¹, grid, mesh, Cᵥ, Δᵥ, 𝕊ᵥ)
 
     return MC, SC
 end
@@ -530,7 +532,7 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
         h = weight[k] / w
         R = Box(h, w, c)
         push!(C, R)
-        Λ[:,k] .= calc_lambda(R, SC.grid)
+        Λ[:,k] .= calc_lambda(R, SC.grid, SC.𝕊ᵥ)
     end
     #
     # Calculate green's function and relative error using boxes
@@ -556,13 +558,20 @@ function init_iodata(S::StochOMSolver, rd::RawData)
 end
 
 """
-    init_context(S::StochOMSolver)
+    init_context(S::StochOMSolver, grid::AbstractGrid)
 
 Try to initialize the key members of a StochOMContext struct.
 
 See also: [`StochOMContext`](@ref).
 """
-function init_context(S::StochOMSolver)
+function init_context(S::StochOMSolver, grid::AbstractGrid)
+    wmin = get_b("wmin")
+    wmax = get_b("wmax")
+    nmesh = 101
+    ngrid = get_b("ngrid")
+    @assert ngrid == length(grid)
+    β = grid.β
+
     ntry = get_s("ntry")
     nbox = get_s("nbox")
 
@@ -577,7 +586,38 @@ function init_context(S::StochOMSolver)
         push!(Cv, C)
     end
 
-    return Cv, Δv
+    𝕊ᵥ = Vector{CubicSplineInterpolation}(undef, ngrid)
+    am = LinearMesh(nmesh, wmin, wmax)
+    Λ_ = zeros(F64, ngrid, nmesh)
+    K_ = zeros(F64, ngrid, nmesh)
+    for m in eachindex(am)
+        if m > 1
+            cm = LinearMesh(nmesh, wmin, am[m])
+            @show m, wmin, am[m]
+
+            for i = 1:nmesh
+                if cm[i] == 0.0
+                    @. K_[:,i] = 2.0 / β
+                    continue
+                end
+                #
+                f = cm[i] / (1.0 - exp(-β * cm[i]))
+                for j = 1:ngrid
+                    K_[j,i] = f * (exp(-cm[i] * grid[j]) + exp(-cm[i] * (β - grid[j])))
+                end
+            end
+
+            for i = 1:ngrid
+                Λ_[i,m] = trapz(cm, K_[i,:])
+            end
+        end
+    end
+
+    for i = 1:ngrid
+        𝕊ᵥ[i] = CubicSplineInterpolation(Λ_[i,:], am.mesh)
+    end
+
+    return Cv, Δv, 𝕊ᵥ
 end
 
 #=
@@ -789,7 +829,7 @@ This function works for BosonicImaginaryTimeGrid only.
 
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid)
+function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid, 𝕊::Vector{CubicSplineInterpolation})
     ktype = get_b("ktype")
     ntime = grid.ntime
     nmesh = 101
@@ -821,6 +861,49 @@ function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid)
     for i = 1:ntime
         Λ[i] = trapz(am, K[i,:]) * r.h
     end
+
+    #-------------------
+
+    #wmin = get_b("wmin")
+    #wmax = get_b("wmax")
+    #am = LinearMesh(nmesh, wmin, wmax)
+    #Λ_ = zeros(F64, ntime, nmesh)
+    #K_ = zeros(F64, ntime, nmesh)
+    #for m in eachindex(am)
+    #    if m > 1
+    #        cm = LinearMesh(nmesh, wmin, am[m])
+    #        @show m, wmin, am[m]
+
+    #        for i = 1:nmesh
+    #            if cm[i] == 0.0
+    #                @. K_[:,i] = 2.0 / β
+    #                continue
+    #            end
+    #            #
+    #            f = cm[i] / (1.0 - exp(-β * cm[i]))
+    #            for j = 1:ntime
+    #                K_[j,i] = f * (exp(-cm[i] * grid[j]) + exp(-cm[i] * (β - grid[j])))
+    #            end
+    #        end
+
+    #        for i = 1:ntime
+    #            Λ_[i,m] = trapz(cm, K_[i,:])
+    #        end
+    #    end
+    #end
+
+    #S = Array{CubicSplineInterpolation}(undef, ntime)
+    #for i = 1:ntime
+    #    S[i] = CubicSplineInterpolation(Λ_[i,:], am.mesh)
+    #end
+
+    Λ₂ = zeros(F64, ntime)
+    for i = 1:ntime
+        Λ₂[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) *  r.h
+        @show i, Λ[i], Λ₂[i]
+    end
+
+    exit()
 
     return Λ
 end
