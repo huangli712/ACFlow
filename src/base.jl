@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/10
+# Last modified: 2024/07/15
 #
 
 """
@@ -558,10 +558,12 @@ function make_kernel(am::AbstractMesh, ag::AbstractGrid)
 
     @cswitch ktype begin
         @case "fermi"
+            @assert grid in ("ftime", "fpart", "ffreq", "ffrag")
             return build_kernel(am, ag)
             break
 
         @case "boson"
+            @assert grid in ("btime", "bpart", "bfreq", "bfrag")
             return build_kernel(am, ag)
             break
 
