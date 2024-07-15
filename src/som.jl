@@ -744,16 +744,23 @@ We have implemented the above formulas in `calc_lambda()`.
                 𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
-This function works for FermionicMatsubaraGrid only.
+This function works for FermionicMatsubaraGrid only. Because there is an
+analytic expression for this case, 𝕊 is useless.
+
+Actually, 𝕊 is undefined here. See init_context().
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::FermionicMatsubaraGrid,
                      𝕊::Vector{<:AbstractInterpolation})
+    # get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
+
+    # evaluate Λ
     iw = im * grid.ω
     Λ = @. r.h * log((iw - e₁) / (iw - e₂))
+
     return vcat(real(Λ), imag(Λ))
 end
 
@@ -762,13 +769,24 @@ end
                 𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
-This function works for FermionicFragmentMatsubaraGrid only.
+This function works for FermionicFragmentMatsubaraGrid only. Because there
+is an analytic expression for this case, 𝕊 is useless.
+
+Actually, 𝕊 is undefined here. See init_context().
 
 See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    sorry()
+    # get left and right boundaries of the given box
+    e₁ = r.c - 0.5 * r.w
+    e₂ = r.c + 0.5 * r.w
+
+    # evaluate Λ
+    iw = im * grid.ω
+    Λ = @. r.h * log((iw - e₁) / (iw - e₂))
+
+    return vcat(real(Λ), imag(Λ))
 end
 
 function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid,
