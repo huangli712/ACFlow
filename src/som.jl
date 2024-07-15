@@ -858,10 +858,10 @@ function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid, 𝕊::Vector{<:Abst
     Λ₂ = zeros(F64, ntime)
     for i = 1:ntime
         Λ₂[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) *  r.h
-        @show i, Λ[i], Λ₂[i]
+        #@show i, Λ[i], Λ₂[i]
     end
 
-    exit()
+    #exit()
 
     return Λ
 end
@@ -1139,7 +1139,7 @@ function try_shift(MC::StochOMMC,
 
     # Calculate update for Λ
     G1 = SE.Λ[:,t]
-    G2 = calc_lambda(Rn, SC.grid)
+    G2 = calc_lambda(Rn, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G1 + G2, SC.Gᵥ, SC.σ¹)
@@ -1448,7 +1448,7 @@ function try_merge(MC::StochOMMC,
     G1 = SE.Λ[:,t1]
     G2 = SE.Λ[:,t2]
     Ge = SE.Λ[:,csize]
-    Gn = calc_lambda(Rn, SC.grid)
+    Gn = calc_lambda(Rn, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G1 - G2 + Gn, SC.Gᵥ, SC.σ¹)
