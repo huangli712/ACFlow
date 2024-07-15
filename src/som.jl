@@ -570,16 +570,14 @@ function init_context(S::StochOMSolver, grid::AbstractGrid)
     ntry = get_s("ntry")
     nbox = get_s("nbox")
 
-
-
     nmesh = 101
     ngrid = get_b("ngrid")
     @assert ngrid == length(grid)
 
-
-
+    # Initialize errors
     Δv = zeros(F64, ntry)
 
+    # Initialize field configurations (boxes)
     Cv = []
     for _ = 1:ntry
         C = Box[]
@@ -589,25 +587,39 @@ function init_context(S::StochOMSolver, grid::AbstractGrid)
         push!(Cv, C)
     end
 
+    # Initialize interpolants 𝕊ᵥ
+    # It is useful only when the input data is in imaginary time axis.
     𝕊ᵥ = Vector{CubicSplineInterpolation}(undef, ngrid)
+    #
     if get_b("grid") in ("ftime", "fpart", "btime", "bpart")
+        # Create linear mesh for the interpolants
         am = LinearMesh(nmesh, wmin, wmax)
-        Λ_ = zeros(F64, ngrid, nmesh)
+
+        # Calculate the interpolants at the nodes
+        #
+        # Initialize memory
+        Λ = zeros(F64, ngrid, nmesh)
+        #
+        # Just evaluate the interpolants
         for m in eachindex(am)
             if m > 1
+                # Create linear mesh for the integrand
                 cm = LinearMesh(nmesh, wmin, am[m])
-                @show m, wmin, am[m]
-
+                #
+                # Calculate the integrand
                 K_ = build_kernel_symm(cm, grid)
-
+                #
+                # Calculate the integral using trapz rule. Perhaps more
+                # precise algorithms should be used.
                 for i = 1:ngrid
-                    Λ_[i,m] = trapz(cm, K_[i,:])
+                    Λ[i,m] = trapz(cm, K_[i,:])
                 end
             end
         end
 
+        # Create CubicSplineInterpolation objects in the time grid
         for i = 1:ngrid
-            𝕊ᵥ[i] = CubicSplineInterpolation(Λ_[i,:], am.mesh)
+            𝕊ᵥ[i] = CubicSplineInterpolation(Λ[i,:], am.mesh)
         end
     end
 
