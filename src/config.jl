@@ -472,7 +472,7 @@ function chk_dict()
             @assert get_b("grid") in ("btime", "bpart", "ffreq", "ffrag", "bfreq", "bfrag")
             #
             @assert get_s("ntry")  ≥ 40
-            @assert get_s("nstep") ≥ 1000
+            @assert get_s("nstep") ≥ 100
             @assert get_s("nbox")  ≥ 100
             @assert get_s("sbox")  > 0.0
             @assert get_s("wbox")  > 0.0

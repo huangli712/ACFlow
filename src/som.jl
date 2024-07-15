@@ -740,14 +740,16 @@ We have implemented the above formulas in `calc_lambda()`.
 =#
 
 """
-    calc_lambda(r::Box, grid::FermionicMatsubaraGrid)
+    calc_lambda(r::Box, grid::FermionicMatsubaraGrid,
+                𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for FermionicMatsubaraGrid only.
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::FermionicMatsubaraGrid)
+function calc_lambda(r::Box, grid::FermionicMatsubaraGrid,
+                     𝕊::Vector{<:AbstractInterpolation})
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
     iw = im * grid.ω
@@ -756,34 +758,40 @@ function calc_lambda(r::Box, grid::FermionicMatsubaraGrid)
 end
 
 """
-    calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid)
+    calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid,
+                𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for FermionicFragmentMatsubaraGrid only.
 
 See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid)
+function calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid,
+                     𝕊::Vector{<:AbstractInterpolation})
     sorry()
 end
 
-function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid)
+function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid,
+                     𝕊::Vector{<:AbstractInterpolation})
     sorry()
 end
 
-function calc_lambda(r::Box, grid::FermionicFragmentTimeGrid)
+function calc_lambda(r::Box, grid::FermionicFragmentTimeGrid,
+                     𝕊::Vector{<:AbstractInterpolation})
     sorry()
 end
 
 """
-    calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
+    calc_lambda(r::Box, grid::BosonicMatsubaraGrid,
+                𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for BosonicMatsubaraGrid only.
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
+function calc_lambda(r::Box, grid::BosonicMatsubaraGrid,
+                     𝕊::Vector{<:AbstractInterpolation})
     ktype = get_b("ktype")
 
     e₁ = r.c - 0.5 * r.w
@@ -801,26 +809,30 @@ function calc_lambda(r::Box, grid::BosonicMatsubaraGrid)
 end
 
 """
-    calc_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid)
+    calc_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid,
+                𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for BosonicFragmentMatsubaraGrid only.
 
 See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid)
+function calc_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid,
+                     𝕊::Vector{<:AbstractInterpolation})
     sorry()
 end
 
 """
-    calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid)
+    calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid,
+                𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for BosonicImaginaryTimeGrid only.
 
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid, 𝕊::Vector{<:AbstractInterpolation})
+function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid,
+                     𝕊::Vector{<:AbstractInterpolation})
     ktype = get_b("ktype")
     ntime = grid.ntime
     nmesh = 101
@@ -828,30 +840,30 @@ function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid, 𝕊::Vector{<:Abst
 
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
-    am = LinearMesh(nmesh, e₁, e₂)
+    #am = LinearMesh(nmesh, e₁, e₂)
 
-    K = zeros(F64, ntime, nmesh)
-    #
-    if ktype == "bsymm"
-        for i = 1:nmesh
-            if am[i] == 0.0
-                @. K[:,i] = 2.0 / β
-                continue
-            end
-            #
-            f = am[i] / (1.0 - exp(-β * am[i]))
-            for j = 1:ntime
-                K[j,i] = f * (exp(-am[i] * grid[j]) + exp(-am[i] * (β - grid[j])))
-            end
-        end
-    else
-        sorry()
-    end
+    #K = zeros(F64, ntime, nmesh)
+    ##
+    #if ktype == "bsymm"
+    #    for i = 1:nmesh
+    #        if am[i] == 0.0
+    #            @. K[:,i] = 2.0 / β
+    #            continue
+    #        end
+    #        #
+    #        f = am[i] / (1.0 - exp(-β * am[i]))
+    #        for j = 1:ntime
+    #            K[j,i] = f * (exp(-am[i] * grid[j]) + exp(-am[i] * (β - grid[j])))
+    #        end
+    #    end
+    #else
+    #    sorry()
+    #end
 
     Λ = zeros(F64, ntime)
-    for i = 1:ntime
-        Λ[i] = trapz(am, K[i,:]) * r.h
-    end
+    #for i = 1:ntime
+    #    Λ[i] = trapz(am, K[i,:]) * r.h
+    #end
 
     #-------------------
 
@@ -861,12 +873,15 @@ function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid, 𝕊::Vector{<:Abst
         #@show i, Λ[i], Λ₂[i]
     end
 
+    @. Λ = Λ₂
+
     #exit()
 
     return Λ
 end
 
-function calc_lambda(r::Box, grid::BosonicFragmentTimeGrid)
+function calc_lambda(r::Box, grid::BosonicFragmentTimeGrid,
+                     𝕊::Vector{<:AbstractInterpolation})
     sorry()
 end
 
