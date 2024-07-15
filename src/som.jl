@@ -587,23 +587,25 @@ function init_context(S::StochOMSolver, grid::AbstractGrid)
     end
 
     𝕊ᵥ = Vector{CubicSplineInterpolation}(undef, ngrid)
-    am = LinearMesh(nmesh, wmin, wmax)
-    Λ_ = zeros(F64, ngrid, nmesh)
-    for m in eachindex(am)
-        if m > 1
-            cm = LinearMesh(nmesh, wmin, am[m])
-            @show m, wmin, am[m]
+    if get_b("grid") in ("ftime", "fpart", "btime", "bpart")
+        am = LinearMesh(nmesh, wmin, wmax)
+        Λ_ = zeros(F64, ngrid, nmesh)
+        for m in eachindex(am)
+            if m > 1
+                cm = LinearMesh(nmesh, wmin, am[m])
+                @show m, wmin, am[m]
 
-            K_ = build_kernel_symm(cm, grid)
+                K_ = build_kernel_symm(cm, grid)
 
-            for i = 1:ngrid
-                Λ_[i,m] = trapz(cm, K_[i,:])
+                for i = 1:ngrid
+                    Λ_[i,m] = trapz(cm, K_[i,:])
+                end
             end
         end
-    end
 
-    for i = 1:ngrid
-        𝕊ᵥ[i] = CubicSplineInterpolation(Λ_[i,:], am.mesh)
+        for i = 1:ngrid
+            𝕊ᵥ[i] = CubicSplineInterpolation(Λ_[i,:], am.mesh)
+        end
     end
 
     return Cv, Δv, 𝕊ᵥ
