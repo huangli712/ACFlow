@@ -700,6 +700,7 @@ function hardy_optimize!(nac::NevanACContext,
 
     # Perform numerical optimization by the BFGS algorithm.
     # If it is failed, please turn to the Optim.jl package.
+    # A simplified version is implemented in math.jl.
     res = optimize(𝑓, 𝐽!, 𝑎𝑏, max_iter = 500)
 
     # Check whether the BFGS algorithm is converged
