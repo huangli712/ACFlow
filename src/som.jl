@@ -820,7 +820,7 @@ This function works for BosonicImaginaryTimeGrid only.
 
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid, 𝕊::Vector{CubicSplineInterpolation})
+function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid, 𝕊::Vector{<:AbstractInterpolation})
     ktype = get_b("ktype")
     ntime = grid.ntime
     nmesh = 101
