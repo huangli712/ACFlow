@@ -999,8 +999,8 @@ function try_insert(MC::StochOMMC,
 
     # Calculate update for Λ
     G1 = SE.Λ[:,t]
-    G2 = calc_lambda(Rnew, SC.grid)
-    G3 = calc_lambda(Radd, SC.grid)
+    G2 = calc_lambda(Rnew, SC.grid, SC.𝕊ᵥ)
+    G3 = calc_lambda(Radd, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G1 + G2 + G3, SC.Gᵥ, SC.σ¹)
@@ -1067,7 +1067,7 @@ function try_remove(MC::StochOMMC,
     G1 = SE.Λ[:,t1]
     G2 = SE.Λ[:,t2]
     Ge = SE.Λ[:,csize]
-    G2n = calc_lambda(R2n, SC.grid)
+    G2n = calc_lambda(R2n, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G1 - G2 + G2n, SC.Gᵥ, SC.σ¹)
@@ -1276,7 +1276,7 @@ function try_height(MC::StochOMMC,
     G1A = SE.Λ[:,t1]
     G1B = calc_lambda(R1n, SC.grid, SC.𝕊ᵥ)
     G2A = SE.Λ[:,t2]
-    G2B = calc_lambda(R2n, SC.grid)
+    G2B = calc_lambda(R2n, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G1A + G1B - G2A + G2B, SC.Gᵥ, SC.σ¹)
@@ -1364,8 +1364,8 @@ function try_split(MC::StochOMMC,
 
         # Calculate update for Λ
         G1 = SE.Λ[:,t]
-        G2 = calc_lambda(R2, SC.grid)
-        G3 = calc_lambda(R3, SC.grid)
+        G2 = calc_lambda(R2, SC.grid, SC.𝕊ᵥ)
+        G3 = calc_lambda(R3, SC.grid, SC.𝕊ᵥ)
 
         # Calculate new Δ function, it is actually the error function.
         Δ = calc_error(SE.G - G1 + G2 + G3, SC.Gᵥ, SC.σ¹)
