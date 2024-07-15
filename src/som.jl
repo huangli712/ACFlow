@@ -567,13 +567,16 @@ See also: [`StochOMContext`](@ref).
 function init_context(S::StochOMSolver, grid::AbstractGrid)
     wmin = get_b("wmin")
     wmax = get_b("wmax")
+    ntry = get_s("ntry")
+    nbox = get_s("nbox")
+
+
+
     nmesh = 101
     ngrid = get_b("ngrid")
     @assert ngrid == length(grid)
-    β = grid.β
 
-    ntry = get_s("ntry")
-    nbox = get_s("nbox")
+
 
     Δv = zeros(F64, ntry)
 
@@ -753,11 +756,11 @@ See also: [`FermionicMatsubaraGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::FermionicMatsubaraGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    # get left and right boundaries of the given box
+    # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
 
-    # evaluate Λ
+    # Evaluate Λ
     iw = im * grid.ω
     Λ = @. r.h * log((iw - e₁) / (iw - e₂))
 
@@ -778,11 +781,11 @@ See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    # get left and right boundaries of the given box
+    # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
 
-    # evaluate Λ
+    # Evaluate Λ
     iw = im * grid.ω
     Λ = @. r.h * log((iw - e₁) / (iw - e₂))
 
@@ -802,11 +805,11 @@ See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    # get left and right boundaries of the given box
+    # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
 
-    # initialize Λ function
+    # Initialize Λ function
     ntime = grid.ntime
     Λ = zeros(F64, ntime)
 
@@ -832,11 +835,11 @@ See also: [`FermionicFragmentTimeGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::FermionicFragmentTimeGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    # get left and right boundaries of the given box
+    # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
 
-    # initialize Λ function
+    # Initialize Λ function
     ntime = grid.ntime
     Λ = zeros(F64, ntime)
 
@@ -863,14 +866,14 @@ See also: [`BosonicMatsubaraGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicMatsubaraGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    # get type of bosonic kernel
+    # Get type of bosonic kernel
     ktype = get_b("ktype")
 
-    # get left and right boundaries of the given box
+    # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
 
-    # evaluate Λ
+    # Evaluate Λ
     if ktype == "bsymm"
         Λ = @. atan( e₁ / grid.ω ) - atan( e₂ / grid.ω )
         Λ = -2.0 * r.h * (r.w .+ grid.ω .* Λ)
@@ -896,14 +899,14 @@ See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    # get type of bosonic kernel
+    # Get type of bosonic kernel
     ktype = get_b("ktype")
 
-    # get left and right boundaries of the given box
+    # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
 
-    # evaluate Λ
+    # Evaluate Λ
     if ktype == "bsymm"
         Λ = @. atan( e₁ / grid.ω ) - atan( e₂ / grid.ω )
         Λ = -2.0 * r.h * (r.w .+ grid.ω .* Λ)
@@ -928,11 +931,11 @@ See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    # get left and right boundaries of the given box
+    # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
 
-    # initialize Λ function
+    # Initialize Λ function
     ntime = grid.ntime
     Λ = zeros(F64, ntime)
 
@@ -958,11 +961,11 @@ See also: [`BosonicFragmentTimeGrid`](@ref).
 """
 function calc_lambda(r::Box, grid::BosonicFragmentTimeGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    # get left and right boundaries of the given box
+    # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
 
-    # initialize Λ function
+    # Initialize Λ function
     ntime = grid.ntime
     Λ = zeros(F64, ntime)
 
