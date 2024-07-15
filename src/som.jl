@@ -789,9 +789,34 @@ function calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid,
     return vcat(real(Λ), imag(Λ))
 end
 
+"""
+    calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid,
+                𝕊::Vector{<:AbstractInterpolation})
+
+Try to calculate the contribution of a given box `r` to the Λ function.
+This function works for FermionicImaginaryTimeGrid only. Since there is
+not analytic expressions for this case, the cubic spline interpolation
+algorithm is adopted. Here, 𝕊 is initialized in init_context().
+
+See also: [`FermionicImaginaryTimeGrid`](@ref).
+"""
 function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid,
                      𝕊::Vector{<:AbstractInterpolation})
-    sorry()
+    # get left and right boundaries of the given box
+    e₁ = r.c - 0.5 * r.w
+    e₂ = r.c + 0.5 * r.w
+
+    # initialize Λ function
+    ntime = grid.ntime
+    Λ = zeros(F64, ntime)
+
+    # 𝕊ᵢ(e₂): integral boundary is from wmin to e₂
+    # 𝕊ᵢ(e₁): integral boundary is from wmin to e₁
+    for i = 1:ntime
+        Λ[i] = ( 𝕊[i](e₂) - 𝕊[i](e₁) ) *  r.h
+    end
+
+    return Λ    
 end
 
 function calc_lambda(r::Box, grid::FermionicFragmentTimeGrid,
