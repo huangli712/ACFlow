@@ -1206,7 +1206,7 @@ function try_width(MC::StochOMMC,
 
     # Calculate update for Λ
     G1 = SE.Λ[:,t]
-    G2 = calc_lambda(Rn, SC.grid)
+    G2 = calc_lambda(Rn, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G1 + G2, SC.Gᵥ, SC.σ¹)
@@ -1274,7 +1274,7 @@ function try_height(MC::StochOMMC,
 
     # Calculate update for Λ
     G1A = SE.Λ[:,t1]
-    G1B = calc_lambda(R1n, SC.grid)
+    G1B = calc_lambda(R1n, SC.grid, SC.𝕊ᵥ)
     G2A = SE.Λ[:,t2]
     G2B = calc_lambda(R2n, SC.grid)
 
