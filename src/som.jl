@@ -606,13 +606,13 @@ function init_context(S::StochOMSolver, grid::AbstractGrid)
                 # Create linear mesh for the integrand
                 cm = LinearMesh(nmesh, wmin, am[m])
                 #
-                # Calculate the integrand
-                K_ = build_kernel_symm(cm, grid)
+                # Calculate the integrand, i.e., the kernel.
+                K = build_kernel_symm(cm, grid)
                 #
                 # Calculate the integral using trapz rule. Perhaps more
                 # precise algorithms should be used.
                 for i = 1:ngrid
-                    Λ[i,m] = trapz(cm, K_[i,:])
+                    Λ[i,m] = trapz(cm, K[i,:])
                 end
             end
         end
