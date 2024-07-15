@@ -587,21 +587,21 @@ function init_context(S::StochOMSolver, grid::AbstractGrid)
 
     # If we increase nmesh gradually, perhaps we could get more precise
     # interpolants 𝕊ᵥ.
-    nmesh = 1001
+    nmesh = 101
     ngrid = get_b("ngrid")
     @assert ngrid == length(grid)
 
     # Initialize errors
-    Δv = zeros(F64, ntry)
+    Δᵥ = zeros(F64, ntry)
 
     # Initialize field configurations (boxes)
-    Cv = []
+    Cᵥ = []
     for _ = 1:ntry
         C = Box[]
         for _ = 1:nbox
             push!(C, Box(0.0, 0.0, 0.0))
         end
-        push!(Cv, C)
+        push!(Cᵥ, C)
     end
 
     # Initialize interpolants 𝕊ᵥ
@@ -640,7 +640,7 @@ function init_context(S::StochOMSolver, grid::AbstractGrid)
         end
     end
 
-    return Cv, Δv, 𝕊ᵥ
+    return Cᵥ, Δᵥ, 𝕊ᵥ
 end
 
 #=
@@ -1164,15 +1164,15 @@ function try_insert(MC::StochOMMC,
     end
 
     # Determine parameters for the new box
-    r1 = rand(MC.rng, F64)
-    r2 = rand(MC.rng, F64)
+    r₁ = rand(MC.rng, F64)
+    r₂ = rand(MC.rng, F64)
     #
-    c = (wmin + wbox / 2.0) + (wmax - wmin - wbox) * r1
+    c = (wmin + wbox / 2.0) + (wmax - wmin - wbox) * r₁
     #
     w_new_max = 2.0 * min(wmax - c, c - wmin)
     dx = Pdx(dx_min, dx_max, MC.rng)
     #
-    h = dx / w_new_max + (dx / wbox - dx / w_new_max) * r2
+    h = dx / w_new_max + (dx / wbox - dx / w_new_max) * r₂
     w = dx / h
 
     # Rnew will be used to update Box t, while Radd is the new box.
@@ -1183,12 +1183,12 @@ function try_insert(MC::StochOMMC,
     Radd = Box(h, w, c)
 
     # Calculate update for Λ
-    G1 = SE.Λ[:,t]
-    G2 = calc_lambda(Rnew, SC.grid, SC.𝕊ᵥ)
-    G3 = calc_lambda(Radd, SC.grid, SC.𝕊ᵥ)
+    G₁ = SE.Λ[:,t]
+    G₂ = calc_lambda(Rnew, SC.grid, SC.𝕊ᵥ)
+    G₃ = calc_lambda(Radd, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
-    Δ = calc_error(SE.G - G1 + G2 + G3, SC.Gᵥ, SC.σ¹)
+    Δ = calc_error(SE.G - G₁ + G₂ + G₃, SC.Gᵥ, SC.σ¹)
 
     # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
@@ -1200,9 +1200,9 @@ function try_insert(MC::StochOMMC,
 
         # Update Δ, G, and Λ.
         SE.Δ = Δ
-        @. SE.G = SE.G - G1 + G2 + G3
-        @. SE.Λ[:,t] = G2
-        @. SE.Λ[:,csize+1] = G3
+        @. SE.G = SE.G - G₁ + G₂ + G₃
+        @. SE.Λ[:,t] = G₂
+        @. SE.Λ[:,csize+1] = G₃
 
         # Update the counter
         MC.Macc[1] = MC.Macc[1] + 1
@@ -1227,55 +1227,55 @@ function try_remove(MC::StochOMMC,
     csize = length(SE.C)
 
     # Choose two boxes randomly
-    # Box t1 will be removed, while box t2 will be modified.
-    t1 = rand(MC.rng, 1:csize)
-    t2 = rand(MC.rng, 1:csize)
+    # Box t₁ will be removed, while box t₂ will be modified.
+    t₁ = rand(MC.rng, 1:csize)
+    t₂ = rand(MC.rng, 1:csize)
     #
-    while t1 == t2
-        t2 = rand(MC.rng, 1:csize)
+    while t₁ == t₂
+        t₂ = rand(MC.rng, 1:csize)
     end
     #
-    if t1 < t2
-        t1, t2 = t2, t1
+    if t₁ < t₂
+        t₁, t₂ = t₂, t₁
     end
 
-    # Get box t1 and box t2
-    R1 = SE.C[t1]
-    R2 = SE.C[t2]
+    # Get box t₁ and box t₂
+    R₁ = SE.C[t₁]
+    R₂ = SE.C[t₂]
     Re = SE.C[end]
 
-    # Generate new box t2
-    dx = R1.h * R1.w
-    R2n = Box(R2.h + dx / R2.w, R2.w, R2.c)
+    # Generate new box t₂
+    dx = R₁.h * R₁.w
+    R₂n = Box(R₂.h + dx / R₂.w, R₂.w, R₂.c)
 
     # Calculate update for Λ
-    G1 = SE.Λ[:,t1]
-    G2 = SE.Λ[:,t2]
-    Ge = SE.Λ[:,csize]
-    G2n = calc_lambda(R2n, SC.grid, SC.𝕊ᵥ)
+    G₁ = SE.Λ[:,t₁]
+    G₂ = SE.Λ[:,t₂]
+    Gₑ = SE.Λ[:,csize]
+    G₂n = calc_lambda(R₂n, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
-    Δ = calc_error(SE.G - G1 - G2 + G2n, SC.Gᵥ, SC.σ¹)
+    Δ = calc_error(SE.G - G₁ - G₂ + G₂n, SC.Gᵥ, SC.σ¹)
 
     # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
-        # Update box t2
-        SE.C[t2] = R2n
+        # Update box t₂
+        SE.C[t₂] = R₂n
 
-        # Backup the last box in box t1
-        if t1 < csize
-            SE.C[t1] = Re
+        # Backup the last box in box t₁
+        if t₁ < csize
+            SE.C[t₁] = Re
         end
 
-        # Delete the last box, since its value has been stored in t1.
+        # Delete the last box, since its value has been stored in t₁.
         pop!(SE.C)
 
         # Update Δ, G, and Λ.
         SE.Δ = Δ
-        @. SE.G = SE.G - G1 - G2 + G2n
-        @. SE.Λ[:,t2] = G2n
-        if t1 < csize
-            @. SE.Λ[:,t1] = Ge
+        @. SE.G = SE.G - G₁ - G₂ + G₂n
+        @. SE.Λ[:,t₂] = G₂n
+        if t₁ < csize
+            @. SE.Λ[:,t₁] = Gₑ
         end
 
         # Update the counter
@@ -1323,11 +1323,11 @@ function try_shift(MC::StochOMMC,
     Rn = Box(R.h, R.w, R.c + dc)
 
     # Calculate update for Λ
-    G1 = SE.Λ[:,t]
-    G2 = calc_lambda(Rn, SC.grid, SC.𝕊ᵥ)
+    G₁ = SE.Λ[:,t]
+    G₂ = calc_lambda(Rn, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
-    Δ = calc_error(SE.G - G1 + G2, SC.Gᵥ, SC.σ¹)
+    Δ = calc_error(SE.G - G₁ + G₂, SC.Gᵥ, SC.σ¹)
 
     # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
@@ -1336,8 +1336,8 @@ function try_shift(MC::StochOMMC,
 
         # Update Δ, G, and Λ.
         SE.Δ = Δ
-        @. SE.G = SE.G - G1 + G2
-        @. SE.Λ[:,t] = G2
+        @. SE.G = SE.G - G₁ + G₂
+        @. SE.Λ[:,t] = G₂
 
         # Update the counter
         MC.Macc[3] = MC.Macc[3] + 1
@@ -1390,11 +1390,11 @@ function try_width(MC::StochOMMC,
     Rn = Box(h, w, c)
 
     # Calculate update for Λ
-    G1 = SE.Λ[:,t]
-    G2 = calc_lambda(Rn, SC.grid, SC.𝕊ᵥ)
+    G₁ = SE.Λ[:,t]
+    G₂ = calc_lambda(Rn, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
-    Δ = calc_error(SE.G - G1 + G2, SC.Gᵥ, SC.σ¹)
+    Δ = calc_error(SE.G - G₁ + G₂, SC.Gᵥ, SC.σ¹)
 
     # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
@@ -1403,8 +1403,8 @@ function try_width(MC::StochOMMC,
 
         # Update Δ, G, and Λ.
         SE.Δ = Δ
-        @. SE.G = SE.G - G1 + G2
-        @. SE.Λ[:,t] = G2
+        @. SE.G = SE.G - G₁ + G₂
+        @. SE.Λ[:,t] = G₂
 
         # Update the counter
         MC.Macc[4] = MC.Macc[4] + 1
@@ -1430,53 +1430,53 @@ function try_height(MC::StochOMMC,
     csize = length(SE.C)
 
     # Choose two boxes randomly
-    t1 = rand(MC.rng, 1:csize)
-    t2 = rand(MC.rng, 1:csize)
+    t₁ = rand(MC.rng, 1:csize)
+    t₂ = rand(MC.rng, 1:csize)
     #
-    while t1 == t2
-        t2 = rand(MC.rng, 1:csize)
+    while t₁ == t₂
+        t₂ = rand(MC.rng, 1:csize)
     end
 
-    # Get box t1 and box t2
-    R1 = SE.C[t1]
-    R2 = SE.C[t2]
+    # Get box t₁ and box t₂
+    R₁ = SE.C[t₁]
+    R₂ = SE.C[t₂]
 
-    # Determine left and right boundaries for the height of the box t1
-    w1 = R1.w
-    w2 = R2.w
-    h1 = R1.h
-    h2 = R2.h
+    # Determine left and right boundaries for the height of the box t₁
+    w1 = R₁.w
+    w2 = R₂.w
+    h1 = R₁.h
+    h2 = R₂.h
     dx_min = sbox / w1 - h1
     dx_max = (h2 - sbox / w2) * w2 / w1
     if dx_max ≤ dx_min
         return
     end
 
-    # Calculate δh and generate new box t1 and box t2
+    # Calculate δh and generate new box t₁ and box t₂
     dh = Pdx(dx_min, dx_max, MC.rng)
-    R1n = Box(R1.h + dh, R1.w, R1.c)
-    R2n = Box(R2.h - dh * w1 / w2, R2.w, R2.c)
+    R₁n = Box(R₁.h + dh, R₁.w, R₁.c)
+    R₂n = Box(R₂.h - dh * w1 / w2, R₂.w, R₂.c)
 
     # Calculate update for Λ
-    G1A = SE.Λ[:,t1]
-    G1B = calc_lambda(R1n, SC.grid, SC.𝕊ᵥ)
-    G2A = SE.Λ[:,t2]
-    G2B = calc_lambda(R2n, SC.grid, SC.𝕊ᵥ)
+    G₁A = SE.Λ[:,t₁]
+    G₁B = calc_lambda(R₁n, SC.grid, SC.𝕊ᵥ)
+    G₂A = SE.Λ[:,t₂]
+    G₂B = calc_lambda(R₂n, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
-    Δ = calc_error(SE.G - G1A + G1B - G2A + G2B, SC.Gᵥ, SC.σ¹)
+    Δ = calc_error(SE.G - G₁A + G₁B - G₂A + G₂B, SC.Gᵥ, SC.σ¹)
 
     # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
-        # Update box t1 and box t2
-        SE.C[t1] = R1n
-        SE.C[t2] = R2n
+        # Update box t₁ and box t₂
+        SE.C[t₁] = R₁n
+        SE.C[t₂] = R₂n
 
         # Update Δ, G, and Λ.
         SE.Δ = Δ
-        @. SE.G = SE.G - G1A + G1B - G2A + G2B
-        @. SE.Λ[:,t1] = G1B
-        @. SE.Λ[:,t2] = G2B
+        @. SE.G = SE.G - G₁A + G₁B - G₂A + G₂B
+        @. SE.Λ[:,t₁] = G₁B
+        @. SE.Λ[:,t₂] = G₂B
 
         # Update the counter
         MC.Macc[5] = MC.Macc[5] + 1
@@ -1508,24 +1508,24 @@ function try_split(MC::StochOMMC,
     t = rand(MC.rng, 1:csize)
 
     # Retreive the box t
-    R1 = SE.C[t]
-    if R1.w ≤ 2 * wbox || R1.w * R1.h ≤ 2.0 * sbox
+    R₁ = SE.C[t]
+    if R₁.w ≤ 2 * wbox || R₁.w * R₁.h ≤ 2.0 * sbox
         return
     end
 
     # Determine height for new boxes (h and h)
-    h = R1.h
+    h = R₁.h
 
     # Determine width for new boxes (w1 and w2)
-    w1 = wbox + (R1.w - 2.0 * wbox) * rand(MC.rng, F64)
-    w2 = R1.w - w1
+    w1 = wbox + (R₁.w - 2.0 * wbox) * rand(MC.rng, F64)
+    w2 = R₁.w - w1
     if w1 > w2
         w1, w2 = w2, w1
     end
 
     # Determine center for new boxes (c1 + dc1 and c2 + dc2)
-    c1 = R1.c - R1.w / 2.0 + w1 / 2.0
-    c2 = R1.c + R1.w / 2.0 - w2 / 2.0
+    c1 = R₁.c - R₁.w / 2.0 + w1 / 2.0
+    c2 = R₁.c + R₁.w / 2.0 - w2 / 2.0
     dx_min = wmin + w1 / 2.0 - c1
     dx_max = wmax - w1 / 2.0 - c1
     if dx_max ≤ dx_min
@@ -1544,28 +1544,28 @@ function try_split(MC::StochOMMC,
        (c2 + dc2 ≤ wmax - w2 / 2.0)
 
         # Generate two new boxes
-        R2 = Box(h, w1, c1 + dc1)
-        R3 = Box(h, w2, c2 + dc2)
+        R₂ = Box(h, w1, c1 + dc1)
+        R₃ = Box(h, w2, c2 + dc2)
 
         # Calculate update for Λ
-        G1 = SE.Λ[:,t]
-        G2 = calc_lambda(R2, SC.grid, SC.𝕊ᵥ)
-        G3 = calc_lambda(R3, SC.grid, SC.𝕊ᵥ)
+        G₁ = SE.Λ[:,t]
+        G₂ = calc_lambda(R₂, SC.grid, SC.𝕊ᵥ)
+        G₃ = calc_lambda(R₃, SC.grid, SC.𝕊ᵥ)
 
         # Calculate new Δ function, it is actually the error function.
-        Δ = calc_error(SE.G - G1 + G2 + G3, SC.Gᵥ, SC.σ¹)
+        Δ = calc_error(SE.G - G₁ + G₂ + G₃, SC.Gᵥ, SC.σ¹)
 
         # Apply the Metropolis algorithm
         if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
             # Remove old box t and insert two new boxes
-            SE.C[t] = R2
-            push!(SE.C, R3)
+            SE.C[t] = R₂
+            push!(SE.C, R₃)
 
             # Update Δ, G, and Λ.
             SE.Δ = Δ
-            @. SE.G = SE.G - G1 + G2 + G3
-            @. SE.Λ[:,t] = G2
-            @. SE.Λ[:,csize+1] = G3
+            @. SE.G = SE.G - G₁ + G₂ + G₃
+            @. SE.Λ[:,t] = G₂
+            @. SE.Λ[:,csize+1] = G₃
 
             # Update the counter
             MC.Macc[6] = MC.Macc[6] + 1
@@ -1593,27 +1593,27 @@ function try_merge(MC::StochOMMC,
     csize = length(SE.C)
 
     # Choose two boxes randomly
-    # Box t2 will be removed, while box t1 will be modified.
-    t1 = rand(MC.rng, 1:csize)
-    t2 = rand(MC.rng, 1:csize)
+    # Box t₂ will be removed, while box t₁ will be modified.
+    t₁ = rand(MC.rng, 1:csize)
+    t₂ = rand(MC.rng, 1:csize)
     #
-    while t1 == t2
-        t2 = rand(MC.rng, 1:csize)
+    while t₁ == t₂
+        t₂ = rand(MC.rng, 1:csize)
     end
     #
-    if t1 > t2
-        t1, t2 = t2, t1
+    if t₁ > t₂
+        t₁, t₂ = t₂, t₁
     end
 
-    # Get box t1 and box t2
-    R1 = SE.C[t1]
-    R2 = SE.C[t2]
+    # Get box t₁ and box t₂
+    R₁ = SE.C[t₁]
+    R₂ = SE.C[t₂]
 
     # Determine h, w, and c for new box
-    weight = R1.h * R1.w + R2.h * R2.w
-    w_new = 0.5 * (R1.w + R2.w)
+    weight = R₁.h * R₁.w + R₂.h * R₂.w
+    w_new = 0.5 * (R₁.w + R₂.w)
     h_new = weight / w_new
-    c_new = R1.c + (R2.c - R1.c) * R2.h * R2.w / weight
+    c_new = R₁.c + (R₂.c - R₁.c) * R₂.h * R₂.w / weight
 
     # Determine left and right boundaries for the center of the new box
     dx_min = wmin + w_new / 2.0 - c_new
@@ -1630,31 +1630,31 @@ function try_merge(MC::StochOMMC,
     Rn = Box(h_new, w_new, c_new + dc)
 
     # Calculate update for Λ
-    G1 = SE.Λ[:,t1]
-    G2 = SE.Λ[:,t2]
+    G₁ = SE.Λ[:,t₁]
+    G₂ = SE.Λ[:,t₂]
     Ge = SE.Λ[:,csize]
     Gn = calc_lambda(Rn, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
-    Δ = calc_error(SE.G - G1 - G2 + Gn, SC.Gᵥ, SC.σ¹)
+    Δ = calc_error(SE.G - G₁ - G₂ + Gn, SC.Gᵥ, SC.σ¹)
 
     # Apply the Metropolis algorithm
     if rand(MC.rng, F64) < ((SE.Δ/Δ) ^ (1.0 + dacc))
-        # Update box t1 with new box
-        SE.C[t1] = Rn
+        # Update box t₁ with new box
+        SE.C[t₁] = Rn
 
-        # Delete box t2
-        if t2 < csize
-            SE.C[t2] = SE.C[end]
+        # Delete box t₂
+        if t₂ < csize
+            SE.C[t₂] = SE.C[end]
         end
         pop!(SE.C)
 
         # Update Δ, G, and Λ.
         SE.Δ = Δ
-        @. SE.G = SE.G - G1 - G2 + Gn
-        @. SE.Λ[:,t1] = Gn
-        if t2 < csize
-            @. SE.Λ[:,t2] = Ge
+        @. SE.G = SE.G - G₁ - G₂ + Gn
+        @. SE.Λ[:,t₁] = Gn
+        if t₂ < csize
+            @. SE.Λ[:,t₂] = Ge
         end
 
         # Update the counter
