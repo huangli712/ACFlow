@@ -570,6 +570,8 @@ function init_context(S::StochOMSolver, grid::AbstractGrid)
     ntry = get_s("ntry")
     nbox = get_s("nbox")
 
+    # If we increase nmesh gradually, perhaps we could get more precise
+    # interpolants 𝕊ᵥ.
     nmesh = 101
     ngrid = get_b("ngrid")
     @assert ngrid == length(grid)
@@ -607,7 +609,7 @@ function init_context(S::StochOMSolver, grid::AbstractGrid)
                 cm = LinearMesh(nmesh, wmin, am[m])
                 #
                 # Calculate the integrand, i.e., the kernel.
-                K = build_kernel_symm(cm, grid)
+                K = make_kernel(cm, grid)
                 #
                 # Calculate the integral using trapz rule. Perhaps more
                 # precise algorithms should be used.
