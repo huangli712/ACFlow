@@ -587,7 +587,7 @@ function init_context(S::StochOMSolver, grid::AbstractGrid)
 
     # If we increase nmesh gradually, perhaps we could get more precise
     # interpolants 𝕊ᵥ.
-    nmesh = 101
+    nmesh = 1001
     ngrid = get_b("ngrid")
     @assert ngrid == length(grid)
 
@@ -668,6 +668,8 @@ where ``h``, ``w``, and ``c`` denote the height, width, and center of the
 box ``R``. Next, we will show you how to calculate ``\Lambda_R(\omega_n)``.
 We can use `sympy` to derive the integral formula.
 
+---
+
 **A** For fermionic Matsubara frequency system.
 
 ```math
@@ -694,6 +696,8 @@ So, we have
     \left(\frac{i\omega_n - c + w/2}{i\omega_n - c - w/2}\right).
 \end{equation}
 ```
+
+---
 
 **B** For bosonic Matsubara frequency system.
 
@@ -723,6 +727,8 @@ So, we have
 \right].
 \end{equation}
 ```
+
+---
 
 **C** For bosonic Matsubara frequency system (symmetric version).
 
@@ -767,6 +773,48 @@ Finally, we have
     \right]
 \end{equation}
 ```
+
+---
+
+**D** For imaginary time axis.
+
+If the kernel function ``K`` is defined in imaginary time axis, then the
+``\Lambda`` and ``\Lambda_R`` functions become:
+
+```math
+\begin{equation}
+\Lambda(\tau) = \int^{\infty}_{-\infty}
+    d\omega~K(\tau,\omega) A(\omega),
+\end{equation}
+```
+
+```math
+\begin{equation}
+Λ_{R}(\tau) = h \int^{c+w/2}_{c-w/2}
+    d\omega~K(\tau,\omega).
+\end{equation}
+```
+
+We just evaluate the following integral numerically
+
+```math
+\begin{equation}
+𝕊_R(\tau,Ω) = \int^{Ω}_{\omega_{\text{min}}}
+    d\omega~K(\tau,\omega).
+\end{equation}
+```
+
+We notice that `` \Omega \in (\omega_{\text{min}},\omega_{\text{max}}]``,
+and ``\Omega`` is defined in a dense linear mesh. Then we reach
+
+```math
+\begin{equation}
+Λ_{R}(\tau) = h \left[ 𝕊_R(\tau,c + w/2) - 𝕊_R(\tau,c - w/2) \right].
+\end{equation}
+```
+
+In the present implementation, Eq.(13) is evaluated by trapz algorithm,
+and Eq.(14) is evaluate using cubic spline interpolation.
 
 We have implemented the above formulas in `calc_lambda()`.
 =#
