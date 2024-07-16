@@ -587,7 +587,7 @@ function init_context(S::StochOMSolver, grid::AbstractGrid)
 
     # If we increase nmesh gradually, perhaps we could get more precise
     # interpolants 𝕊ᵥ.
-    nmesh = 101
+    nmesh = get_b("nmesh") # nmesh = 101, 201, 301, ...
     ngrid = get_b("ngrid")
     @assert ngrid == length(grid)
 
