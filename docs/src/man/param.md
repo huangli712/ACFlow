@@ -436,7 +436,7 @@ Depth = 3
 
     If `solver = "MaxEnt"`, the `[MaxEnt]` block must be available.
 
-### method
+### [method](@id maxent_method)
 
 *Definition:*
 
@@ -461,7 +461,7 @@ Depth = 3
 
 > This parameter is mandatory. As for the underlying principles of these algorithms, please see [Maximum Entropy Method](@ref mem).
 
-### stype
+### [stype](@id stype)
 
 *Definition:*
 
@@ -824,7 +824,7 @@ Depth = 3
 
     If `solver = "StochSK"`, the `[StochSK]` block must be available.
 
-### method
+### [method](@id stochsk_method)
 
 *Definition:*
 
@@ -1123,7 +1123,7 @@ Depth = 3
 
     The `StochPX` solver is still in development. Please use it at your own risk.
 
-### method
+### [method](@id stochpx_method)
 
 *Definition:*
 

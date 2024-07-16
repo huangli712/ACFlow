@@ -17,14 +17,36 @@ Depth = 3
 
 ## [General rules](@id general)
 
+1. It would be better to perform analytic continuation in Matsubara frequency axis, instead of imaginary time axis. See [`grid`](@ref grid) and [`ngrid`](@ref ngrid).
+
+2. Employ the MaxEnt solver for a fast analytic continuation task. And then the stochastic methods can be used to get a better spectrum. See [`solver`](@ref solver).
+
+3. If the input data is broken or discontinuous, please setup the [`grid`](@ref grid) parameter correctly.
+
 ## [MaxEnt solver](@id maxent)
+
+1. The `chi2kink` and `bryan` algorithms are recommended. See [`method`](@ref maxent_method).
+
+2. The Shannon-Jaynes entropy is recommented. But sometimes, if sharp features are essential, please choose the Bayesian Reconstruction entropy. See [`stype`](@ref stype).
 
 ## [NevanAC solver](@id nevanac)
 
+1. It is extremely sensitive to the noise. So please make sure that the input data is smooth and is free of noise.
+
 ## [StochAC solver](@id stochac)
+
+1. Increase `nfine` to 20000.
 
 ## [StochSK solver](@id stochsk)
 
+1. The `chi2min` algorithm is recommended. See [`method`](@ref stochsk_method).
+
 ## [StochOM solver](@id stochom)
 
+1. It is more efficient for Matsubara frequency Green's functions.
+
 ## [StochPX solver](@id stochpx)
+
+1. If the spectrum is expected to be broad, please set `method = 'mean'`. If the spectrum is expected to be ``\delta``-like, please set `method = 'best'`. See [`method`](@ref stochpx_method).
+
+2. Run it parallelly (use `Pacrun.jl`).
