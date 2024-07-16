@@ -859,7 +859,7 @@ init_element   -> Create a StochOMElement struct.
 init_iodata    -> Preprocess the input data.
 init_context   -> Prepare data for a StochOMContext struct.
 #
-calc_lambda    -> Build kernel function.
+eval_lambda    -> Build Λ function.
 calc_error     -> Calculate χ² function.
 calc_green     -> Reproduce green's function via the field configurations.
 calc_norm      -> Calculate norm of the field configurations.
@@ -898,7 +898,7 @@ export init_element
 export init_iodata
 export init_context
 #
-export calc_lambda
+export eval_lambda
 export calc_error
 export calc_green
 export calc_norm

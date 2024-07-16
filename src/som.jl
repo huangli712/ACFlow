@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/15
+# Last modified: 2024/07/16
 #
 
 #=
@@ -547,7 +547,7 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
         h = weight[k] / w
         R = Box(h, w, c)
         push!(C, R)
-        Λ[:,k] .= calc_lambda(R, SC.grid, SC.𝕊ᵥ)
+        Λ[:,k] .= eval_lambda(R, SC.grid, SC.𝕊ᵥ)
     end
     #
     # Calculate green's function and relative error using boxes
@@ -816,11 +816,11 @@ and ``\Omega`` is defined in a dense linear mesh. Then we reach
 In the present implementation, Eq.(13) is evaluated by trapz algorithm,
 and Eq.(14) is evaluate using cubic spline interpolation.
 
-We have implemented the above formulas in `calc_lambda()`.
+We have implemented the above formulas in `eval_lambda()`.
 =#
 
 """
-    calc_lambda(r::Box, grid::FermionicMatsubaraGrid,
+    eval_lambda(r::Box, grid::FermionicMatsubaraGrid,
                 𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
@@ -831,7 +831,7 @@ Actually, 𝕊 is undefined here. See init_context().
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::FermionicMatsubaraGrid,
+function eval_lambda(r::Box, grid::FermionicMatsubaraGrid,
                      𝕊::Vector{<:AbstractInterpolation})
     # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
@@ -845,7 +845,7 @@ function calc_lambda(r::Box, grid::FermionicMatsubaraGrid,
 end
 
 """
-    calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid,
+    eval_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid,
                 𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
@@ -856,7 +856,7 @@ Actually, 𝕊 is undefined here. See init_context().
 
 See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid,
+function eval_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid,
                      𝕊::Vector{<:AbstractInterpolation})
     # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
@@ -870,7 +870,7 @@ function calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid,
 end
 
 """
-    calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid,
+    eval_lambda(r::Box, grid::FermionicImaginaryTimeGrid,
                 𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
@@ -880,7 +880,7 @@ algorithm is adopted. Here, 𝕊 is initialized in init_context().
 
 See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid,
+function eval_lambda(r::Box, grid::FermionicImaginaryTimeGrid,
                      𝕊::Vector{<:AbstractInterpolation})
     # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
@@ -900,7 +900,7 @@ function calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid,
 end
 
 """
-    calc_lambda(r::Box, grid::FermionicFragmentTimeGrid,
+    eval_lambda(r::Box, grid::FermionicFragmentTimeGrid,
                 𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
@@ -910,7 +910,7 @@ algorithm is adopted. Here, 𝕊 is initialized in init_context().
 
 See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::FermionicFragmentTimeGrid,
+function eval_lambda(r::Box, grid::FermionicFragmentTimeGrid,
                      𝕊::Vector{<:AbstractInterpolation})
     # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
@@ -930,7 +930,7 @@ function calc_lambda(r::Box, grid::FermionicFragmentTimeGrid,
 end
 
 """
-    calc_lambda(r::Box, grid::BosonicMatsubaraGrid,
+    eval_lambda(r::Box, grid::BosonicMatsubaraGrid,
                 𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
@@ -941,7 +941,7 @@ Actually, 𝕊 is undefined here. See init_context().
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::BosonicMatsubaraGrid,
+function eval_lambda(r::Box, grid::BosonicMatsubaraGrid,
                      𝕊::Vector{<:AbstractInterpolation})
     # Get type of bosonic kernel
     ktype = get_b("ktype")
@@ -963,7 +963,7 @@ function calc_lambda(r::Box, grid::BosonicMatsubaraGrid,
 end
 
 """
-    calc_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid,
+    eval_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid,
                 𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
@@ -974,7 +974,7 @@ Actually, 𝕊 is undefined here. See init_context().
 
 See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid,
+function eval_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid,
                      𝕊::Vector{<:AbstractInterpolation})
     # Get type of bosonic kernel
     ktype = get_b("ktype")
@@ -996,7 +996,7 @@ function calc_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid,
 end
 
 """
-    calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid,
+    eval_lambda(r::Box, grid::BosonicImaginaryTimeGrid,
                 𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
@@ -1006,7 +1006,7 @@ algorithm is adopted. Here, 𝕊 is initialized in init_context().
 
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid,
+function eval_lambda(r::Box, grid::BosonicImaginaryTimeGrid,
                      𝕊::Vector{<:AbstractInterpolation})
     # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
@@ -1026,7 +1026,7 @@ function calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid,
 end
 
 """
-    calc_lambda(r::Box, grid::BosonicFragmentTimeGrid,
+    eval_lambda(r::Box, grid::BosonicFragmentTimeGrid,
                 𝕊::Vector{<:AbstractInterpolation})
 
 Try to calculate the contribution of a given box `r` to the Λ function.
@@ -1036,7 +1036,7 @@ algorithm is adopted. Here, 𝕊 is initialized in init_context().
 
 See also: [`BosonicFragmentTimeGrid`](@ref).
 """
-function calc_lambda(r::Box, grid::BosonicFragmentTimeGrid,
+function eval_lambda(r::Box, grid::BosonicFragmentTimeGrid,
                      𝕊::Vector{<:AbstractInterpolation})
     # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
@@ -1184,8 +1184,8 @@ function try_insert(MC::StochOMMC,
 
     # Calculate update for Λ
     G₁ = SE.Λ[:,t]
-    G₂ = calc_lambda(Rnew, SC.grid, SC.𝕊ᵥ)
-    G₃ = calc_lambda(Radd, SC.grid, SC.𝕊ᵥ)
+    G₂ = eval_lambda(Rnew, SC.grid, SC.𝕊ᵥ)
+    G₃ = eval_lambda(Radd, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G₁ + G₂ + G₃, SC.Gᵥ, SC.σ¹)
@@ -1252,7 +1252,7 @@ function try_remove(MC::StochOMMC,
     G₁ = SE.Λ[:,t₁]
     G₂ = SE.Λ[:,t₂]
     Gₑ = SE.Λ[:,csize]
-    G₂ₙ = calc_lambda(R₂ₙ, SC.grid, SC.𝕊ᵥ)
+    G₂ₙ = eval_lambda(R₂ₙ, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G₁ - G₂ + G₂ₙ, SC.Gᵥ, SC.σ¹)
@@ -1324,7 +1324,7 @@ function try_shift(MC::StochOMMC,
 
     # Calculate update for Λ
     G₁ = SE.Λ[:,t]
-    G₂ = calc_lambda(Rₙ, SC.grid, SC.𝕊ᵥ)
+    G₂ = eval_lambda(Rₙ, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G₁ + G₂, SC.Gᵥ, SC.σ¹)
@@ -1391,7 +1391,7 @@ function try_width(MC::StochOMMC,
 
     # Calculate update for Λ
     G₁ = SE.Λ[:,t]
-    G₂ = calc_lambda(Rₙ, SC.grid, SC.𝕊ᵥ)
+    G₂ = eval_lambda(Rₙ, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G₁ + G₂, SC.Gᵥ, SC.σ¹)
@@ -1459,9 +1459,9 @@ function try_height(MC::StochOMMC,
 
     # Calculate update for Λ
     G₁A = SE.Λ[:,t₁]
-    G₁B = calc_lambda(R₁ₙ, SC.grid, SC.𝕊ᵥ)
+    G₁B = eval_lambda(R₁ₙ, SC.grid, SC.𝕊ᵥ)
     G₂A = SE.Λ[:,t₂]
-    G₂B = calc_lambda(R₂ₙ, SC.grid, SC.𝕊ᵥ)
+    G₂B = eval_lambda(R₂ₙ, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G₁A + G₁B - G₂A + G₂B, SC.Gᵥ, SC.σ¹)
@@ -1549,8 +1549,8 @@ function try_split(MC::StochOMMC,
 
         # Calculate update for Λ
         G₁ = SE.Λ[:,t]
-        G₂ = calc_lambda(R₂, SC.grid, SC.𝕊ᵥ)
-        G₃ = calc_lambda(R₃, SC.grid, SC.𝕊ᵥ)
+        G₂ = eval_lambda(R₂, SC.grid, SC.𝕊ᵥ)
+        G₃ = eval_lambda(R₃, SC.grid, SC.𝕊ᵥ)
 
         # Calculate new Δ function, it is actually the error function.
         Δ = calc_error(SE.G - G₁ + G₂ + G₃, SC.Gᵥ, SC.σ¹)
@@ -1633,7 +1633,7 @@ function try_merge(MC::StochOMMC,
     G₁ = SE.Λ[:,t₁]
     G₂ = SE.Λ[:,t₂]
     Gₑ = SE.Λ[:,csize]
-    Gₙ = calc_lambda(Rₙ, SC.grid, SC.𝕊ᵥ)
+    Gₙ = eval_lambda(Rₙ, SC.grid, SC.𝕊ᵥ)
 
     # Calculate new Δ function, it is actually the error function.
     Δ = calc_error(SE.G - G₁ - G₂ + Gₙ, SC.Gᵥ, SC.σ¹)
