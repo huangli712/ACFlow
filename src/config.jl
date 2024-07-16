@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/15
+# Last modified: 2024/07/16
 #
 
 """
@@ -469,8 +469,8 @@ function chk_dict()
         @case "StochOM"
             push!(PA, PStochOM)
             #
-            @assert get_s("ntry")  ≥ 40
-            @assert get_s("nstep") ≥ 100
+            @assert get_s("ntry")  ≥ 200
+            @assert get_s("nstep") ≥ 1000
             @assert get_s("nbox")  ≥ 100
             @assert get_s("sbox")  > 0.0
             @assert get_s("wbox")  > 0.0
