@@ -29,6 +29,7 @@ makedocs(
             "Input Files" => "man/input.md",
             "Output Files" => "man/output.md",
             "Parameters" => "man/param.md",
+            "Tricks and tips" => "man/tricks.md",
         ],
         "Examples" => Any[
             "Matsubara Self-Energy Function" => "examples/sigma.md",
