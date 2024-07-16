@@ -21,6 +21,8 @@ G(\tau) = \frac{1}{\beta} \sum_n e^{i\omega_n \tau} G(i\omega_n).
 ```
 Here, ``\beta`` means the inverse temperature (``\beta \equiv 1/T``) and ``\omega_n`` is the Matsubara frequency. Note that ``\omega_n`` is equal to ``(2n + 1) \pi / \beta`` for fermions and ``2n\pi/ \beta`` for bosons (``n`` is an integer).
 
+---
+
 ## [Spectral representation](@id spectrum)
 
 Supposed that the spectral density of the single-particle Green's function is ``A(\omega)``, then we have:
@@ -131,6 +133,8 @@ Especially, ``K(0,0) = -2``. Perhaps the longitudinal spin susceptibility ``\chi
 As mentioned above, the kernel function is quite strange. The values of ``K(\tau,\omega)`` could change by tens of orders of magnitude. Especially, at large positive and negative frequencies, ``K(\tau,\omega)`` is exponentially small. It implies that at large ``|\omega|`` the features of ``A(\omega)`` depend upon the fine structures of ``G(\tau)``. However, the ``G(\tau)`` data provided by QMC simulations are always fluctuant and noisy. Tiny deviations in ``G(\tau)`` from its expected values can lead to enormous changes in ``A(\omega)``. Thus, analytic continuation is often characterized as an ill-posed problem.
 
 In principle, for incomplete and noise ``G(\tau)`` or ``G(i\omega_n)``, the number of spectral functions ``A(\omega)`` that satisfy Eq.(4) and Eq.(5) is infinite. So the question becomes which ``A(\omega)`` should be chosen. Now there are two different strategies to solve this problem. The first one is to choose the most likely ``A(\omega)``. The second one is to evaluate the average of all the candidate spectral functions.
+
+---
 
 ## Pole representation
 
@@ -257,6 +261,8 @@ and
 \sum^{N^{-}_p}_{\gamma = 1} A^{-}_{\gamma} = 0.
 \end{equation}
 ```
+
+---
 
 ## Relevant parameters
 
