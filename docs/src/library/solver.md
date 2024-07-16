@@ -11,7 +11,9 @@ Now the ACFlow toolkit supports six analytic continuation solvers. They are:
 * `StochOM` (Stochastic Optimization Method, see `som.jl`)
 * `StochPX` (Stochastic Pole Expansion, see `spx.jl`)
 
-Note that the `StochAC` solver is based on the Beach's variant, while the `StochSK` solver is based on the Sandvik's variant.
+!!! note
+
+The `StochAC` solver is based on the Beach's variant, while the `StochSK` solver is based on the Sandvik's variant.
 
 ## Contents
 
@@ -91,7 +93,7 @@ calc_abcd
 calc_hbasis
 calc_hmatrix
 calc_theta(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
-calc_green
+calc_green(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
 calc_noptim
 calc_hmin!
 calc_hopt!
@@ -202,14 +204,7 @@ init_mc(S::StochOMSolver)
 init_element(MC::StochOMMC, SC::StochOMContext)
 init_iodata(S::StochOMSolver, rd::RawData)
 init_context(S::StochOMSolver, grid::AbstractGrid)
-ACFlow.calc_lambda(r::Box, grid::FermionicMatsubaraGrid, 𝕊::Vector{<:AbstractInterpolation})
-calc_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid, 𝕊::Vector{<:AbstractInterpolation})
-calc_lambda(r::Box, grid::FermionicImaginaryTimeGrid, 𝕊::Vector{<:AbstractInterpolation})
-calc_lambda(r::Box, grid::FermionicFragmentTimeGrid, 𝕊::Vector{<:AbstractInterpolation})
-calc_lambda(r::Box, grid::BosonicMatsubaraGrid, 𝕊::Vector{<:AbstractInterpolation})
-calc_lambda(r::Box, grid::BosonicFragmentMatsubaraGrid, 𝕊::Vector{<:AbstractInterpolation})
-calc_lambda(r::Box, grid::BosonicImaginaryTimeGrid, 𝕊::Vector{<:AbstractInterpolation})
-calc_lambda(r::Box, grid::BosonicFragmentTimeGrid, 𝕊::Vector{<:AbstractInterpolation})
+eval_lambda
 calc_error
 calc_green(Λ::Array{F64,2}, nk::I64)
 calc_norm
