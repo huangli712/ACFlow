@@ -72,3 +72,11 @@ Depth = 3
 1. If the spectrum is expected to be broad, please set `method = 'mean'`. If the spectrum is expected to be ``\delta``-like, please set `method = 'best'`. See [`method`](@ref stochpx_method).
 
 2. Run it parallelly (use `Pacrun.jl`).
+
+3. Increase `ntry` to get smooth spectrum. See [`ntry`](@ref stochpx_ntry)
+
+4. The `nstep` parameter is related with the `npole` parameter. If `npole` is large, `nstep` could be small. If `npole` is small, `nstep` should be large. See [`nstep`](@ref stochpx_nstep) and [`npole`](@ref stochpx_npole).
+
+5. For condensed matter cases, `npole` should be quite large. While for molecule cases, `npole` should be small. See [`npole`](@ref stochpx_npole).
+
+6. How to determine the `nstep` parameter? We just increase `nstep` from its default value and observe the terminal output of the `StochPX` solver. If ``\chi^2`` becomes stable (it means that the value of ``\chi^2`` can be oscillating, but increasing `nstep` can not suppress ``\chi^2`` further), the corresponding `nstep` is optimal. See [`nstep`](@ref stochpx_nstep).

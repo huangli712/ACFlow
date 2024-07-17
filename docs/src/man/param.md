@@ -1146,7 +1146,7 @@ Depth = 3
 
 > This parameter is mandatory. Note that the "mean" method is suitable for the condensed matter cases (broad and smooth peaks), while the "best" method is useful for the molecule cases (sharp peaks).
 
-### nfine
+### [nfine](@id stochpx_nfine)
 
 *Definition:*
 
@@ -1164,7 +1164,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### npole
+### [npole](@id stochpx_npole)
 
 *Definition:*
 
@@ -1182,7 +1182,7 @@ Depth = 3
 
 > This parameter is mandatory. For condensed matter cases, `npole` should be quite large. While for molecule cases, `npole` should be small.
 
-### ntry
+### [ntry](@id stochpx_ntry)
 
 *Definition:*
 
@@ -1200,7 +1200,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### nstep
+### [nstep](@id stochpx_nstep)
 
 *Definition:*
 
@@ -1218,7 +1218,7 @@ Depth = 3
 
 > This parameter is mandatory. This parameter is related to the `npole` parameter. If `npole` is large, `nstep` could be small. If `npole` is small, `nstep` should be large.
 
-### theta
+### [theta](@id stochpx_theta)
 
 *Definition:*
 
@@ -1236,7 +1236,7 @@ Depth = 3
 
 > This parameter is mandatory. The users can check the `stat.data` file to judge whether the `theta` parameter is reasonable.
 
-### eta
+### [eta](@id stochpx_eta)
 
 *Definition:*
 
