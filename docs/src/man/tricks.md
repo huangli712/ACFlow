@@ -85,4 +85,4 @@ Depth = 3
 
 8. If you want to obtain a smoother spectrum, please increase `eta`, or else reduce `eta`. See [`eta`])(@ref stochpx_eta).
 
-9. If the spectrum contains many sharp features, the `constrained sampling algorithm` and `self-adaptive sampling algorithm` can help. See [`constrained sampling algorithm`](@id stochpx_csa) and [`self-adaptive sampling algorithm`](id stochpx ssa) for the basic principles.
+9. If the spectrum contains many sharp features, the `constrained sampling algorithm` and `self-adaptive sampling algorithm` can help. See [`constrained sampling algorithm`](@ref stochpx_csa) and [`self-adaptive sampling algorithm`](@ref stochpx_ssa) for the basic principles.
