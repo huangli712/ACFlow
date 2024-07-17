@@ -1668,7 +1668,7 @@ end
 #=
 *Remarks* : *Probability Density Function*
 
-Every Every proposed elementary update is parametrized by a real number
+Every proposed elementary update is parametrized by a real number
 ``\delta\xi \in [\delta\xi_{min}:\delta\xi_{max}]``. A concrete meaning
 of ``\delta\xi`` depends on the elementary update in question. For
 instance, ``\delta\xi`` can be a shift of the centre of an existing
