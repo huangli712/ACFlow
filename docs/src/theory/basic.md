@@ -40,7 +40,7 @@ G(i\omega_n) = \int^{+\infty}_{-\infty} d\omega
                \frac{1}{i\omega_n - \omega} A(\omega).
 \end{equation}
 ```
-The two equations denote the spectral representation of Green's function. We notice that the SPX method, as well as the other analytic continuation methods that are classified as ASM, are closely related to the spectral representation. Next we would like to make further discussions about this representation for the fermionic and bosonic correlators.  
+The two equations denote the spectral representation of Green's function. We notice that the SPX method, as well as the other analytic continuation methods that are classified as ASM, are closely related to the spectral representation. Next we would like to make further discussions about this representation for the fermionic and bosonic correlators.
 
 ### Fermionic correlators
 
@@ -237,7 +237,7 @@ The constraints for ``\tilde{A}_{\gamma}`` and ``P_{\gamma}`` are also defined i
 As for the off-diagonal cases (``a \neq b``), it is lightly to prove that ``\sum_{\gamma} A_{\gamma} = 0``. It implies that there exist poles with negative weights. Hence we can split the poles into two groups according to the signs of their amplitudes. The Matsubara Green's function can be expressed as follows:
 ```math
 \begin{align}
-G(i\omega_n) &= \sum^{N^{+}_p}_{\gamma = 1} 
+G(i\omega_n) &= \sum^{N^{+}_p}_{\gamma = 1}
                \frac{A^{+}_{\gamma}}{i\omega_n - P^{+}_{\gamma}} -
                \sum^{N^{-}_p}_{\gamma = 1}
                \frac{A^{-}_{\gamma}}{i\omega_n - P^{-}_{\gamma}} \\
@@ -257,7 +257,7 @@ N_p = N^{+}_p + N^{-}_p,
 and
 ```math
 \begin{equation}
-\sum^{N^{+}_p}_{\gamma = 1} A^{+}_{\gamma} - 
+\sum^{N^{+}_p}_{\gamma = 1} A^{+}_{\gamma} -
 \sum^{N^{-}_p}_{\gamma = 1} A^{-}_{\gamma} = 0.
 \end{equation}
 ```
