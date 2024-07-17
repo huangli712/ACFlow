@@ -461,7 +461,7 @@ Depth = 3
 
 > This parameter is mandatory. As for the underlying principles of these algorithms, please see [Maximum Entropy Method](@ref mem).
 
-### [stype](@id stype)
+### [stype](@id maxent_stype)
 
 *Definition:*
 
@@ -484,7 +484,7 @@ Depth = 3
 
 > This parameter is mandatory. As for the underlying principles of these entropic factors, please see [Maximum Entropy Method](@ref mem).
 
-### nalph
+### [nalph](@id maxent_nalph)
 
 *Definition:*
 
@@ -502,7 +502,7 @@ Depth = 3
 
 > This parameter is mandatory. Only the `chi2kink` algorithm needs this parameter to control the number of ``\alpha`` parameters.
 
-### alpha
+### [alpha](@id maxent_alpha)
 
 *Definition:*
 
@@ -520,7 +520,7 @@ Depth = 3
 
 > This parameter is mandatory. It should be a very large number, such as ``10^9 \sim 10^{13}``.
 
-### ratio
+### [ratio](@id maxent_ratio)
 
 *Definition:*
 
@@ -538,7 +538,7 @@ Depth = 3
 
 > This parameter is mandatory. It muse be larger than 1.0.
 
-### blur
+### [blur](@id maxent_blur)
 
 *Definition:*
 
@@ -570,7 +570,7 @@ Depth = 3
 
     This solver is numerically unstable, so use it at your own risk.
 
-### pick
+### [pick](@id nevanac_pick)
 
 *Definition:*
 
@@ -588,7 +588,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### [hardy](@id hardy)
+### [hardy](@id nevanac_hardy)
 
 *Definition:*
 
@@ -606,7 +606,7 @@ Depth = 3
 
 > This parameter is mandatory. See also [`hmax`](@ref hmax).
 
-### [hmax](@id hmax)
+### [hmax](@id nevanac_hmax)
 
 *Definition:*
 
@@ -624,7 +624,7 @@ Depth = 3
 
 > This parameter is mandatory. See also [`hardy`](@ref hardy).
 
-### alpha
+### [alpha](@id nevanac_alpha)
 
 *Definition:*
 
@@ -642,7 +642,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### eta
+### [eta](@id nevanac_eta)
 
 *Definition:*
 
