@@ -80,3 +80,9 @@ Depth = 3
 5. For condensed matter cases, `npole` should be quite large. While for molecule cases, `npole` should be small. See [`npole`](@ref stochpx_npole).
 
 6. How to determine the `nstep` parameter? We just increase `nstep` from its default value and observe the terminal output of the `StochPX` solver. If ``\chi^2`` becomes stable (it means that the value of ``\chi^2`` can be oscillating, but increasing `nstep` can not suppress ``\chi^2`` further), the corresponding `nstep` is optimal. See [`nstep`](@ref stochpx_nstep).
+
+7. How to determine the `theta` parameter? Please look at the acceptance probabilities for various Monte Carlo proposals in the `stat.data` file. They should not be too large or too small, or else we should adjust `theta`. See [`theta`](@ref stochpx_theta).
+
+8. If you want to obtain a smoother spectrum, please increase `eta`, or else reduce `eta`. See [`eta`])(@ref stochpx_eta).
+
+9. If the spectrum contains many sharp features, the `constrained sampling algorithm` and `self-adaptive sampling algorithm` can help. See [`constrained sampling algorithm`](@id stochpx_csa) and [`self-adaptive sampling algorithm`](id stochpx ssa) for the basic principles.
