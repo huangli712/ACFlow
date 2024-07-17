@@ -604,7 +604,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory. See also [`hmax`](@ref hmax).
+> This parameter is mandatory. See also [`hmax`](@ref nevanac_hmax).
 
 ### [hmax](@id nevanac_hmax)
 
@@ -622,7 +622,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory. See also [`hardy`](@ref hardy).
+> This parameter is mandatory. See also [`hardy`](@ref nevanac_hardy).
 
 ### [alpha](@id nevanac_alpha)
 
