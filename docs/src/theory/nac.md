@@ -4,6 +4,10 @@
 
     The NevanAC solver is experimental. Please use it at your own risk.
 
+!!! info
+
+    This page is written by Dr. Shuang Liang.
+
 ## Nevanlinna interpolation
 
 It is well known that the retarded Green's function, denoted as ``G^{R}(\omega + i0^{+})``, and the Matsubara Green's function, denoted as ``G(i\omega_n)``, can both be consistently represented as ``G(z)``, where ``z \in \mathbb{C} \backslash \mathbb{R}``. The Nevanlinna analytical continuation (NAC) method utilizes the fact that the negative fermionic Green's function, denoted as ``f(z) = -G(z)``, belongs to the class of Nevanlinna functions. By applying the invertible M``\ddot{\text{o}}``bius transform ``h(z) = (z-i)/(z+i)`` to the function value of ``f(z)``, the Nevanlinna function is mapped in a one-to-one fashion to a contractive function ``\theta(z) = h[f(z)]``. This contractive function ``\theta(z)`` can be expressed in the form of a continued fraction expansion, and an iterative algorithm can be constructed accordingly. The recursion relation between two steps $\theta_j(z)$ and $\theta_{j+1}(z)$ is given by:
