@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/15
+# Last modified: 2024/07/18
 #
 
 """
@@ -443,10 +443,19 @@ function make_mesh(; T::DataType = F64)
     end
 
     # Get essential parameters
+    ktype = get_b("ktype")
     nmesh = get_b("nmesh")
     mesh = get_b("mesh")
     wmax::T = get_b("wmax")
     wmin::T = get_b("wmin")
+    #
+    # For bosonic correlators of Hermitian operators, the spectral
+    # function is defined in (0, ∞) only.
+    if ktype == "bsymm"
+        @assert wmin ≥ 0.0
+        @assert wmax ≥ 0.0
+        @assert wmax > wmin
+    end
 
     # Try to generate the required mesh
     @cswitch mesh begin
