@@ -5,7 +5,7 @@ using ACFlow
 makedocs(
     sitename = "ACFlow",
     clean = false,
-    authors = "Li Huang",
+    authors = "Li Huang <huangli@caep.cn> and contributors",
     format = Documenter.HTML(
         prettyurls = false,
         ansicolor = true,
