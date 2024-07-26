@@ -12,6 +12,93 @@
 =#
 
 """
+        (type) Polar
+Polar representation of a complex value.
+"""
+struct Polar{T<:AbstractFloat} <: Number
+    mod::T
+    ang::T
+    function Polar{T}(r::Real, ϕ::Real) where {T<:AbstractFloat}
+        if r < 0
+            @error "Cannot create Polar number with negative modulus"
+        else
+            new(T(r), T(ϕ))
+        end
+    end
+end
+
+"""
+        (type) Spherical
+Representation of a complex value on the Riemann sphere.
+"""
+struct Spherical{T<:AbstractFloat} <: Number
+    lat::T
+    lon::T
+end
+
+#using ComplexValues
+AnyComplex{T<:AbstractFloat} = Union{Complex{T},Polar{T},Spherical{T}}
+const RealComplex{T} = Union{T, AnyComplex{T}}
+const VectorVectorRealComplex{T} = Union{Vector{Vector{T}},Vector{Vector{Complex{T}}}}
+
+#####
+"""
+    ConvergenceStats{T}(bestidx, error, nbad, nodes, values, weights, poles)
+
+Convergence statistics for a sequence of rational approximations.
+
+# Fields
+- `bestidx`: the index of the best approximation
+- `error`: the error of each approximation
+- `nbad`: the number of bad nodes in each approximation
+- `nodes`: the nodes of each approximation
+- `values`: the values of each approximation
+- `weights`: the weights of each approximation
+- `poles`: the poles of each approximation
+
+See also: [`approximate`](@ref), [`Barycentric`](@ref)
+"""
+struct ConvergenceStats{T}
+    bestidx::Int
+    error::Vector{<:AbstractFloat}
+    nbad::Vector{Int}
+    nodes::VectorVectorRealComplex{T}
+    values::VectorVectorRealComplex{T}
+    weights::VectorVectorRealComplex{T}
+    poles::Vector{Vector{Complex{T}}}
+end
+
+"""
+    Barycentric (type)
+
+Barycentric representation of a rational function.
+
+# Fields
+- `node`: the nodes of the rational function
+- `value`: the values of the rational function
+- `weight`: the weights of the rational function
+- `wf`: the weighted values of the rational function
+- `stats`: convergence statistics
+"""
+struct Barycentric{T,S} <: Function
+    nodes::Vector{S}
+    values::Vector{S}
+    weights::Vector{S}
+    w_times_f::Vector{S}
+    stats::Union{Missing,ConvergenceStats{T}}
+    function Barycentric{T}(
+        node::AbstractVector{S},
+        value::AbstractVector{S},
+        weight::AbstractVector{S},
+        wf::AbstractVector{S} = value.*weight;
+        stats::Union{Missing,ConvergenceStats{T}} = missing
+        )  where {T <: AbstractFloat, S <: RealComplex{T}}
+        @assert length(node) == length(value) == length(weight) == length(wf)
+        new{T,S}(node, value, weight, wf, stats)
+    end
+end
+
+"""
     BarRatContext
 
 Mutable struct. It is used within the BarRat solver only.
@@ -133,92 +220,9 @@ weights(r::Barycentric, m::Integer) = r.stats.weights[m]
 nodes(r::Barycentric) = r.nodes
 nodes(r::Barycentric, m::Integer) = r.stats.nodes[m]
 
-"""
-        (type) Polar
-Polar representation of a complex value.
-"""
-struct Polar{T<:AbstractFloat} <: Number
-    mod::T
-    ang::T
-    function Polar{T}(r::Real, ϕ::Real) where {T<:AbstractFloat}
-        if r < 0
-            @error "Cannot create Polar number with negative modulus"
-        else
-            new(T(r), T(ϕ))
-        end
-    end
-end
 
-"""
-        (type) Spherical
-Representation of a complex value on the Riemann sphere.
-"""
-struct Spherical{T<:AbstractFloat} <: Number
-    lat::T
-    lon::T
-end
 
-#using ComplexValues
-AnyComplex{T<:AbstractFloat} = Union{Complex{T},Polar{T},Spherical{T}}
-const RealComplex{T} = Union{T, AnyComplex{T}}
-const VectorVectorRealComplex{T} = Union{Vector{Vector{T}},Vector{Vector{Complex{T}}}}
 
-#####
-"""
-    ConvergenceStats{T}(bestidx, error, nbad, nodes, values, weights, poles)
-
-Convergence statistics for a sequence of rational approximations.
-
-# Fields
-- `bestidx`: the index of the best approximation
-- `error`: the error of each approximation
-- `nbad`: the number of bad nodes in each approximation
-- `nodes`: the nodes of each approximation
-- `values`: the values of each approximation
-- `weights`: the weights of each approximation
-- `poles`: the poles of each approximation
-
-See also: [`approximate`](@ref), [`Barycentric`](@ref)
-"""
-struct ConvergenceStats{T}
-    bestidx::Int
-    error::Vector{<:AbstractFloat}
-    nbad::Vector{Int}
-    nodes::VectorVectorRealComplex{T}
-    values::VectorVectorRealComplex{T}
-    weights::VectorVectorRealComplex{T}
-    poles::Vector{Vector{Complex{T}}}
-end
-
-"""
-    Barycentric (type)
-
-Barycentric representation of a rational function.
-
-# Fields
-- `node`: the nodes of the rational function
-- `value`: the values of the rational function
-- `weight`: the weights of the rational function
-- `wf`: the weighted values of the rational function
-- `stats`: convergence statistics
-"""
-struct Barycentric{T,S} <: Function
-    nodes::Vector{S}
-    values::Vector{S}
-    weights::Vector{S}
-    w_times_f::Vector{S}
-    stats::Union{Missing,ConvergenceStats{T}}
-    function Barycentric{T}(
-        node::AbstractVector{S},
-        value::AbstractVector{S},
-        weight::AbstractVector{S},
-        wf::AbstractVector{S} = value.*weight;
-        stats::Union{Missing,ConvergenceStats{T}} = missing
-        )  where {T <: AbstractFloat, S <: RealComplex{T}}
-        @assert length(node) == length(value) == length(weight) == length(wf)
-        new{T,S}(node, value, weight, wf, stats)
-    end
-end
 
 """
     Barycentric(node, value, weight, wf=value.*weight; stats=missing)
