@@ -272,6 +272,14 @@ maximum entropy method.
 struct MaxEntSolver <: AbstractSolver end
 
 """
+    BarRatSolver
+
+It represents the analytic continuation solver that implements the
+Barycentric rational function method.
+"""
+struct BarRatSolver <: AbstractSolver end
+
+"""
     NevanACSolver
 
 It represents the analytic continuation solver that implements the
