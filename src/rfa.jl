@@ -113,7 +113,7 @@ mutable struct  BarRatContext
     Gᵥ   :: Vector{C64}
     grid :: AbstractGrid
     mesh :: AbstractMesh
-    ℬ    :: Barycentric{F64, C64}
+    ℬ    :: Union{Missing,Barycentric{F64,C64}}
 end
 
 #=
@@ -154,7 +154,7 @@ function init(S::BarRatSolver, rd::RawData)
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    return BarRatContext(Gᵥ, grid, mesh, nothing)
+    return BarRatContext(Gᵥ, grid, mesh, missing)
 end
 
 function run(brc::BarRatContext)
@@ -176,7 +176,7 @@ function last(brc::BarRatContext)
     fwrite && write_complete(brc.mesh, _G)
 
     # Calculate and write the spectral function
-    Aout = imag.(_G) ./ π
+    Aout = -imag.(_G) ./ π
     fwrite && write_spectrum(brc.mesh, Aout)
 
     # Regenerate the input data and write them
@@ -220,7 +220,28 @@ weights(r::Barycentric, m::Integer) = r.stats.weights[m]
 nodes(r::Barycentric) = r.nodes
 nodes(r::Barycentric, m::Integer) = r.stats.nodes[m]
 
+"""
+    r(z)
+    evaluate(r, z)
 
+Evaluate the rational function at `z`.
+"""
+
+(r::Barycentric)(z) = evaluate(r, z)
+#(f::Approximation)(z) = evaluate(f.fun, z)
+
+function evaluate(r::Barycentric, z::Number)
+    if isinf(z)
+        return sum(r.w_times_f) / sum(r.weights)
+    end
+    k = findfirst(z .== r.nodes)
+    if isnothing(k)         # not at a node
+        C = @. 1 / (z - r.nodes)
+        return sum(C .* r.w_times_f) / sum(C .* r.weights)
+    else                    # interpolation at node
+        return r.values[k]
+    end
+end
 
 
 
