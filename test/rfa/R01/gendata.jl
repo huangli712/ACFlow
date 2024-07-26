@@ -1,5 +1,5 @@
 #!/usr/bin/env julia
-
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/ACFlow/src")
 using Random
 using Printf
 using ACFlow
@@ -8,7 +8,7 @@ using ACFlow
 wmin = -5.0  # Left boundary
 wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
-niw  = 10    # Number of Matsubara frequencies
+niw  = 100   # Number of Matsubara frequencies
 beta = 10.0  # Inverse temperature
 ϵ₁   = 2.50  # Parameters for gaussian peaks
 ϵ₂   = -2.5

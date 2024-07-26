@@ -1,19 +1,19 @@
 #
-# Test: X01
+# Test: R01
 #
 # 0. Run gendata.jl to generate input data at first.
-# 1. Change [BASE] -> solver (MaxEnt or StochPX).
+# 1. Change [BASE] -> solver (MaxEnt or BarRat).
 # 2. Execute ../../../util/acrun.jl ac.toml.
 #
 
 [BASE]
 finput = "giw.data"
-solver = "StochPX"
+solver = "BarRat"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
 mesh   = "linear"
-ngrid  = 10
+ngrid  = 100
 nmesh  = 501
 wmax   = 5.0
 wmin   = -5.0
@@ -28,11 +28,5 @@ alpha  = 1e9
 ratio  = 10.0
 blur   = -1.0
 
-[StochPX]
-method = "mean"
-nfine  = 100000
-npole  = 2000
-ntry   = 2000
-nstep  = 100
-theta  = 1e+8
-eta    = 1e-3
+[BarRat]
+denoise = "none"
