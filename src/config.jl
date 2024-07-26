@@ -448,7 +448,7 @@ Validate the correctness and consistency of configurations.
 See also: [`fil_dict`](@ref), [`_v`](@ref).
 """
 function chk_dict()
-    @assert get_b("solver") in ("MaxEnt", "NevanAC", "StochAC", "StochSK", "StochOM", "StochPX")
+    @assert get_b("solver") in ("MaxEnt", "BarRat", "NevanAC", "StochAC", "StochSK", "StochOM", "StochPX")
     @assert get_b("ktype") in ("fermi", "boson", "bsymm")
     @assert get_b("mtype") in ("flat", "gauss", "1gauss", "2gauss", "lorentz", "1lorentz", "2lorentz", "risedecay", "file")
     @assert get_b("grid") in ("ftime", "fpart", "btime", "bpart", "ffreq", "ffrag", "bfreq", "bfrag")
@@ -472,10 +472,20 @@ function chk_dict()
             @assert get_m("ratio") > 0.0
             break
 
+        # For BarRat solver
+        @case "BarRat"
+            push!(PA, PBarRat)
+            # It does not support imaginary time data.
+            @assert get_b("grid") in ("ffreq", "ffrag", "bfreq", "bfrag")
+            #
+            @assert get_r("denoise") in ("none", "prony")
+            break
+
         # For NevanAC solver
         @case "NevanAC"
             push!(PA, PNevanAC)
             # It does not support imaginary time data.
+            # It does not support bosonic frequency data directly.
             @assert get_b("grid") in ("ffreq", "ffrag")
             #
             @assert get_n("hmax")  ≥ 10
@@ -591,6 +601,21 @@ See also: [`PMaxEnt`](@ref).
         PMaxEnt[key][1]
     else
         error("Sorry, PMaxEnt does not contain key: $key")
+    end
+end
+
+"""
+    get_r(key::String)
+
+Extract configurations from dict: PBarRat.
+
+See also: [`PBarRat`](@ref).
+"""
+@inline function get_r(key::String)
+    if haskey(PBarRat, key)
+        PBarRat[key][1]
+    else
+        error("Sorry, PBarRat does not contain key: $key")
     end
 end
 
