@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/18
+# Last modified: 2024/07/26
 #
 
 """
@@ -39,11 +39,13 @@ a fixed value `1.0e-4`.
 function solve(grid::Vector{F64}, Gval::Vector{T}) where {T}
     Gerr = similar(Gval)
     err = 1.0e-4
+    #
     if T == F64
         fill!(Gerr, err)
     else
         fill!(Gerr, err + err * im)
     end
+    #
     return solve(RawData(grid, Gval, Gerr))
 end
 
@@ -63,6 +65,10 @@ function solve(rd::RawData)
     @cswitch solver begin
         @case "MaxEnt"
             return solve(MaxEntSolver(),  rd)
+            break
+
+        @case "BarRat"
+            return solve(BarRatSolver(),  rd)
             break
 
         @case "NevanAC"
@@ -190,13 +196,15 @@ dictionaries will be reset to their default values at first. Later, `C`
 See also: [`read_param`](@ref).
 """
 function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = true)
-    # _PBASE, _PMaxEnt, _PNevanAC, _PStochAC, _PStochSK, _PStochOM, and
-    # _PStochPX contain the default parameters. If reset is true, they
-    # will be used to update the PBASE, PMaxEnt, PNevanAC, PStochAC,
-    # PStochSK, PStochOM, and PStochPX dictionaries, respectively.
+    # _PBASE, _PMaxEnt, _PBarRat, _PNevanAC, _PStochAC, _PStochSK,
+    # _PStochOM, and _PStochPX contain the default parameters. If reset
+    # is true, they will be used to update the PBASE, PMaxEnt, PBarRat,
+    # PNevanAC, PStochAC, PStochSK, PStochOM, and PStochPX dictionaries,
+    # respectively.
     reset && begin
         rev_dict_b(_PBASE)
         rev_dict_m(MaxEntSolver(),   _PMaxEnt)
+        rev_dict_r(BarRatSolver(),   _PBarRat)
         rev_dict_n(NevanACSolver(), _PNevanAC)
         rev_dict_a(StochACSolver(), _PStochAC)
         rev_dict_k(StochSKSolver(), _PStochSK)
@@ -207,9 +215,14 @@ function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = tru
     rev_dict_b(C)
     #
     solver = get_b("solver")
+    #
     @cswitch solver begin
         @case "MaxEnt"
             rev_dict_m(MaxEntSolver(),  S)
+            break
+
+        @case "BarRat"
+            rev_dict_r(BarRatSolver(),  S)
             break
 
         @case "NevanAC"
