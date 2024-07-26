@@ -18,11 +18,11 @@ toolkit is under heavy development. **PLEASE USE IT AT YOUR OWN RISK**.
 Nowadays the ACFlow toolkit supports the following algorithms:
 
 * Maximum Entropy Method (`MaxEnt` solver, `recommended`)
+* Barycentric Rational Function Method (`BarRat` solver, `experimental`)
 * Nevanlinna Analytical Continuation (`NevanAC` solver, `experimental`)
 * Stochastic Analytic Continuation (`StochAC` and `StochSK` solvers)
 * Stochastic Optimization Method (`StochOM` solver)
 * Stochastic Pole eXpansion (`StochPX` solver, `recommended`)
-* Barycentric Rational Function Method (`BarRat` solver, `experimental`)
 
 More algorithms will be implemented in the future.
 
@@ -133,6 +133,7 @@ ADT             -> Customized type.
 #
 PBASE           -> Dict for general setup.
 PMaxEnt         -> Dict for MaxEnt solver.
+PBarRat         -> Dict for BarRat solver.
 PNevanAC        -> Dict for NevanAC solver.
 PStochAC        -> Dict for StochAC solver.
 PStochSK        -> Dict for StochSK solver.
@@ -141,6 +142,7 @@ PStochPX        -> Dict for StochPX solver.
 #
 AbstractSolver  -> Abstract AC solver.
 MaxEntSolver    -> It represents the MaxEnt solver.
+BarRatSolver    -> It represents the BarRat solver.
 NevanACSolver   -> It represents the NevanAC solver.
 StochACSolver   -> It represents the StochAC solver.
 StochSKSolver   -> It represents the StochSK solver.
@@ -184,6 +186,7 @@ export ADT
 #
 export PBASE
 export PMaxEnt
+export PBarRat
 export PNevanAC
 export PStochAC
 export PStochSK
@@ -192,6 +195,7 @@ export PStochPX
 #
 export AbstractSolver
 export MaxEntSolver
+export BarRatSolver
 export NevanACSolver
 export StochACSolver
 export StochSKSolver
