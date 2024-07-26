@@ -26,6 +26,7 @@ mutable struct  BarRatContext
     Gᵥ   :: Vector{C64}
     grid :: AbstractGrid
     mesh :: AbstractMesh
+    ℬ    :: Barycentric{F64, C64}
 end
 
 #=
@@ -66,11 +67,315 @@ function init(S::BarRatSolver, rd::RawData)
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    return BarRatContext(Gᵥ, grid, mesh)
+    return BarRatContext(Gᵥ, grid, mesh, nothing)
 end
 
 function run(brc::BarRatContext)
+    r = aaa(brc.grid.ω * im, brc.Gᵥ)
+    @show r
+    @show poles(r)
+    @show typeof(r)
+    brc.ℬ = r
 end
 
 function last(brc::BarRatContext)
+    # By default, we should write the analytic continuation results
+    # into the external files.
+    _fwrite = get_b("fwrite")
+    fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
+    # Calculate full response function on real axis and write them
+    _G = brc.ℬ.(brc.mesh.mesh)
+    fwrite && write_complete(brc.mesh, _G)
+
+    # Calculate and write the spectral function
+    Aout = imag.(_G) ./ π
+    fwrite && write_spectrum(brc.mesh, Aout)
+
+    # Regenerate the input data and write them
+    kernel = make_kernel(brc.mesh, brc.grid)
+    G = reprod(brc.mesh, kernel, Aout)
+    fwrite && write_backward(brc.grid, G)
+
+    return Aout, _G
+end
+
+"""
+    poles(r)
+
+Return the poles of the rational function `r`.
+"""
+#poles(F::Approximation) = poles(F.fun)
+function poles(r::Barycentric{T}) where T
+    w = weights(r)
+    nonzero = @. !iszero(w)
+    z, w = nodes(r)[nonzero], w[nonzero]
+    m = length(w)
+    B = diagm( [zero(T); ones(T, m)] )
+    E = [zero(T) transpose(w); ones(T, m) diagm(z) ];
+    pol = []  # put it into scope
+    try
+        pol = filter( isfinite, eigvals(E, B) )
+    catch
+        # generalized eigen not available in extended precision, so:
+        λ = filter( z->abs(z)>1e-13, eigvals(E\B) )
+        pol = 1 ./ λ
+    end
+    return pol
+end
+
+"weights(r) returns the weights of the rational interpolant `r` as a vector."
+weights(r::Barycentric) = r.weights
+weights(r::Barycentric, m::Integer) = r.stats.weights[m]
+
+# convenience accessors and overloads
+"nodes(r) returns the nodes of the rational interpolant `r` as a vector."
+nodes(r::Barycentric) = r.nodes
+nodes(r::Barycentric, m::Integer) = r.stats.nodes[m]
+
+"""
+        (type) Polar
+Polar representation of a complex value.
+"""
+struct Polar{T<:AbstractFloat} <: Number
+    mod::T
+    ang::T
+    function Polar{T}(r::Real, ϕ::Real) where {T<:AbstractFloat}
+        if r < 0
+            @error "Cannot create Polar number with negative modulus"
+        else
+            new(T(r), T(ϕ))
+        end
+    end
+end
+
+"""
+        (type) Spherical
+Representation of a complex value on the Riemann sphere.
+"""
+struct Spherical{T<:AbstractFloat} <: Number
+    lat::T
+    lon::T
+end
+
+#using ComplexValues
+AnyComplex{T<:AbstractFloat} = Union{Complex{T},Polar{T},Spherical{T}}
+const RealComplex{T} = Union{T, AnyComplex{T}}
+const VectorVectorRealComplex{T} = Union{Vector{Vector{T}},Vector{Vector{Complex{T}}}}
+
+#####
+"""
+    ConvergenceStats{T}(bestidx, error, nbad, nodes, values, weights, poles)
+
+Convergence statistics for a sequence of rational approximations.
+
+# Fields
+- `bestidx`: the index of the best approximation
+- `error`: the error of each approximation
+- `nbad`: the number of bad nodes in each approximation
+- `nodes`: the nodes of each approximation
+- `values`: the values of each approximation
+- `weights`: the weights of each approximation
+- `poles`: the poles of each approximation
+
+See also: [`approximate`](@ref), [`Barycentric`](@ref)
+"""
+struct ConvergenceStats{T}
+    bestidx::Int
+    error::Vector{<:AbstractFloat}
+    nbad::Vector{Int}
+    nodes::VectorVectorRealComplex{T}
+    values::VectorVectorRealComplex{T}
+    weights::VectorVectorRealComplex{T}
+    poles::Vector{Vector{Complex{T}}}
+end
+
+"""
+    Barycentric (type)
+
+Barycentric representation of a rational function.
+
+# Fields
+- `node`: the nodes of the rational function
+- `value`: the values of the rational function
+- `weight`: the weights of the rational function
+- `wf`: the weighted values of the rational function
+- `stats`: convergence statistics
+"""
+struct Barycentric{T,S} <: Function
+    nodes::Vector{S}
+    values::Vector{S}
+    weights::Vector{S}
+    w_times_f::Vector{S}
+    stats::Union{Missing,ConvergenceStats{T}}
+    function Barycentric{T}(
+        node::AbstractVector{S},
+        value::AbstractVector{S},
+        weight::AbstractVector{S},
+        wf::AbstractVector{S} = value.*weight;
+        stats::Union{Missing,ConvergenceStats{T}} = missing
+        )  where {T <: AbstractFloat, S <: RealComplex{T}}
+        @assert length(node) == length(value) == length(weight) == length(wf)
+        new{T,S}(node, value, weight, wf, stats)
+    end
+end
+
+"""
+    Barycentric(node, value, weight, wf=value.*weight; stats=missing)
+
+Construct a `Barycentric` rational function.
+
+# Arguments
+- `node::AbstractVector`: interpolation nodes
+- `value::AbstractVector`: values at the interpolation nodes
+- `weight::AbstractVector`: barycentric weights
+- `wf::AbstractVector`: weights times values (optional)
+- `stats::ConvergenceStatistics``: convergence statistics (optional)
+
+# Examples
+```jldoctest
+julia> r = Barycentric([1, 2, 3], [1, 2, 3], [1/2, -1, 1/2])
+Barycentric function with 3 nodes and values:
+    1.0=>1.0,  2.0=>2.0,  3.0=>3.0
+
+julia> r(1.5)
+1.5
+```
+"""
+function Barycentric(node, value, weight, wf=value.*weight; stats=missing)
+    Barycentric( promote(float(node), float(value), float(weight))..., float(wf); stats )
+end
+
+function Barycentric(
+    node::Vector{S}, value::Vector{S}, weight::Vector{S}, wf=value.*weight;
+    stats=missing
+    ) where {T<:AbstractFloat, S<:RealComplex{T}}
+    return Barycentric{T}(node, value, weight, wf; stats)
+end
+
+"""
+    aaa(z, y)
+    aaa(f)
+
+Adaptively compute a rational interpolant.
+
+# Arguments
+
+## discrete mode
+- `z::AbstractVector{<:Number}`: interpolation nodes
+- `y::AbstractVector{<:Number}`: values at nodes
+
+## continuous mode
+- `f::Function`: function to approximate on the interval [-1,1]
+
+# Keyword arguments
+- `max_degree::Integer=150`: maximum numerator/denominator degree to use
+- `float_type::Type=Float64`: floating point type to use for the computation
+- `tol::Real=1000*eps(float_type)`: tolerance for stopping
+- `lookahead::Integer=10`: number of iterations to determines stagnation
+- `stats::Bool=false`: return convergence statistics
+
+# Returns
+- `r::Barycentric`: the rational interpolant
+- `stats::NamedTuple`: convergence statistics, if keyword `stats=true`
+
+# Examples
+```julia-repl
+julia> z = 1im * range(-10, 10, 500);
+
+julia> y = @. exp(z);
+
+julia> r = aaa(z, y);
+
+julia> degree(r)   # both numerator and denominator
+12
+
+julia> first(nodes(r), 4)
+4-element Vector{ComplexF64}:
+ 0.0 - 6.272545090180361im
+ 0.0 + 9.43887775551102im
+ 0.0 - 1.1022044088176353im
+ 0.0 + 4.909819639278557im
+
+julia> r(1im * π / 2)
+-2.637151617496356e-15 + 1.0000000000000002im
+```
+
+See also [`approximate`](@ref) for approximating a function on a curve or region.
+"""
+function aaa(z::AbstractVector{<:Number}, y::AbstractVector{<:Number};
+    max_degree = 150, float_type = Float64, tol = 1000*eps(float_type),
+    lookahead = 10, stats = false
+    )
+
+    @assert float_type <: AbstractFloat
+    T = float_type
+    fmax = norm(y, Inf)    # for scaling
+    m = length(z)
+    iteration = NamedTuple[]
+    err = T[]
+    besterr, bestidx, best = Inf, NaN, nothing
+
+    # Allocate space for Cauchy matrix, Loewner matrix, and residual
+    C = similar(z, (m, m))
+    L = similar(z, (m, m))
+    R = complex(zeros(size(z)))
+
+    ȳ = sum(y) / m
+    s, idx = findmax(abs(y - ȳ) for y in y)
+    push!(err, s)
+
+    # The ordering of nodes matters, while the order of test points does not.
+    node_index = Int[]
+    push!(node_index, idx)
+    test_index = Set(1:m)
+    delete!(test_index, idx)
+
+    n = 0    # number of poles
+    while true
+        n += 1
+        σ = view(z, node_index)
+        fσ = view(y, node_index)
+        # Fill in matrices for the latest node
+        @inbounds @fastmath for i in test_index
+            δ = z[i] - σ[n]
+            # δ can be zero if there are repeats in z
+            C[i, n] = iszero(δ) ? 1 / eps() : 1 / δ
+            L[i, n] = (y[i] - fσ[n]) * C[i, n]
+        end
+        istest = collect(test_index)
+        _, _, V = svd( view(L, istest, 1:n) )
+        w = V[:, end]    # barycentric weights
+
+        CC = view(C, istest, 1:n)
+        num = CC * (w.*fσ)
+        den = CC * w
+        @. R[istest] = y[istest] - num / den
+        push!(err, norm(R, Inf))
+        push!(iteration, (; weights=w, active=copy(node_index)))
+
+        if (Base.last(err) < besterr)
+            besterr, bestidx, best = Base.last(err), length(iteration), Base.last(iteration)
+        end
+
+        # Are we done?
+        if (besterr <= tol*fmax) ||
+            (n == max_degree + 1) ||
+            ((length(iteration) - bestidx >= lookahead) && (besterr < 1e-2*fmax))
+            break
+        end
+
+        _, j = findmax(abs, R)
+        push!(node_index, j)
+        delete!(test_index, j)
+        R[j] = 0
+    end
+
+    idx, w = best.active, best.weights
+    r = Barycentric(z[idx], y[idx], w)
+    if stats
+        return r, (;err, iteration)
+    else
+        return r
+    end
 end
