@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/15
+# Last modified: 2024/07/26
 #
 
 #
@@ -68,9 +68,11 @@ continuation method.
 """
 function solve(S::NevanACSolver, rd::RawData)
     println("[ NevanAC ]")
+    #
     nac = init(S, rd)
     run(nac)
     Aout, Gout = last(nac)
+    #
     return nac.mesh.mesh, Aout, Gout
 end
 
