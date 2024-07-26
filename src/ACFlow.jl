@@ -393,6 +393,7 @@ inp_toml   -> Parse case.toml, return raw configuration information.
 fil_dict   -> Fill dicts for configuration parameters.
 rev_dict_b -> Update dict (PBASE) for configuration parameters.
 rev_dict_m -> Update dict (PMaxEnt) for configuration parameters.
+rev_dict_r -> Update dict (PBarRat) for configuration parameters.
 rev_dict_n -> Update dict (PNevanAC) for configuration parameters.
 rev_dict_a -> Update dict (PStochAC) for configuration parameters.
 rev_dict_k -> Update dict (PStochSK) for configuration parameters.
@@ -402,6 +403,7 @@ chk_dict   -> Check dicts for configuration parameters.
 _v         -> Verify dict's values.
 get_b      -> Extract value from dict (PBASE dict), return raw value.
 get_m      -> Extract value from dict (PMaxEnt dict), return raw value.
+get_r      -> Extract value from dict (PBarRat dict), return raw value.
 get_n      -> Extract value from dict (PNevanAC dict), return raw value.
 get_a      -> Extract value from dict (PStochAC dict), return raw value.
 get_k      -> Extract value from dict (PStochSK dict), return raw value.
@@ -417,6 +419,7 @@ export inp_toml
 export fil_dict
 export rev_dict_b
 export rev_dict_m
+export rev_dict_r
 export rev_dict_n
 export rev_dict_a
 export rev_dict_k
@@ -426,6 +429,7 @@ export chk_dict
 export _v
 export get_b
 export get_m
+export get_r
 export get_n
 export get_a
 export get_k
