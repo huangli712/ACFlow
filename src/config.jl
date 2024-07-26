@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/16
+# Last modified: 2024/07/26
 #
 
 """
@@ -53,8 +53,8 @@ end
     fil_dict(cfg::Dict{String,Any})
 
 Transfer configurations from dict `cfg` to internal dicts (including
-`PBASE`, `PMaxEnt`, `PNevanAC`, `PStochAC`, `PStochSK`, `PStochOM` and
-`PStochPX` etc).
+`PBASE`, `PMaxEnt`, `PBarRat`, `PNevanAC`, `PStochAC`, `PStochSK`,
+`PStochOM` and `PStochPX` etc).
 """
 function fil_dict(cfg::Dict{String,Any})
     # For BASE block
@@ -73,6 +73,18 @@ function fil_dict(cfg::Dict{String,Any})
         for key in keys(MaxEnt)
             if haskey(PMaxEnt, key)
                 PMaxEnt[key][1] = MaxEnt[key]
+            else
+                error("Sorry, $key is not supported currently")
+            end
+        end
+    end
+
+    # For BarRat block
+    if haskey(cfg, "BarRat")
+        BarRat = cfg["BarRat"]
+        for key in keys(BarRat)
+            if haskey(PBarRat, key)
+                PBarRat[key][1] = BarRat[key]
             else
                 error("Sorry, $key is not supported currently")
             end
@@ -210,6 +222,42 @@ function rev_dict_m(S::MaxEntSolver, MaxEnt::Dict{String,Vector{Any}})
         end
     end
     foreach(x -> _v(x.first, x.second), PMaxEnt)
+end
+
+"""
+    rev_dict_r(S::BarRatSolver, BarRat::Dict{String,Any})
+
+Setup the configuration dictionary: `PBarRat`.
+
+See also: [`PBarRat`](@ref).
+"""
+function rev_dict_r(S::BarRatSolver, BarRat::Dict{String,Any})
+    for key in keys(BarRat)
+        if haskey(PBarRat, key)
+            PBarRat[key][1] = BarRat[key]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+    foreach(x -> _v(x.first, x.second), PBarRat)
+end
+
+"""
+    rev_dict_r(S::BarRatSolver, BarRat::Dict{String,Vector{Any}})
+
+Setup the configuration dictionary: `PBarRat`.
+
+See also: [`PBarRat`](@ref).
+"""
+function rev_dict_r(S::BarRatSolver, BarRat::Dict{String,Vector{Any}})
+    for key in keys(BarRat)
+        if haskey(PBarRat, key)
+            PBarRat[key][1] = BarRat[key][1]
+        else
+            error("Sorry, $key is not supported currently")
+        end
+    end
+    foreach(x -> _v(x.first, x.second), PBarRat)
 end
 
 """
