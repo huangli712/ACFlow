@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/13
+# Last modified: 2024/07/26
 #
 
 #=
@@ -98,6 +98,21 @@ const _PMaxEnt = Dict{String,Any}(
     "alpha"   => 1e9,
     "ratio"   => 10.0,
     "blur"    => -1.0, # Negative value means off.
+)
+
+"""
+    PBarRat
+
+Dictionary for configuration parameters:
+the Barycentric rational function method.
+"""
+const PBarRat  = Dict{String,ADT}(
+    "denoise" => [missing, 1, :String, "How to denoise the input data"],
+)
+
+# Default parameters for PBarRat
+const _PBarRat = Dict{String,Any}(
+    "denoise" => "prony",
 )
 
 """

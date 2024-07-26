@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/11
+# Last modified: 2024/07/26
 #
 
 """
@@ -22,6 +22,7 @@ Nowadays the ACFlow toolkit supports the following algorithms:
 * Stochastic Analytic Continuation (`StochAC` and `StochSK` solvers)
 * Stochastic Optimization Method (`StochOM` solver)
 * Stochastic Pole eXpansion (`StochPX` solver, `recommended`)
+* Barycentric Rational Function Method (`BarRat` solver, `experimental`)
 
 More algorithms will be implemented in the future.
 
@@ -612,6 +613,39 @@ export calc_entropy_od
 export calc_bayes
 export calc_bayes_od
 export calc_chi2
+
+#=
+### *Includes And Exports* : *rfa.jl*
+=#
+
+#=
+*Summary* :
+
+To implement the BarRat solver for analytic continuation problem.
+
+*Members* :
+
+```text
+BarRatContext   -> Essential struct for the BarRat solver.
+#
+solve           -> Wrapper function for the BarRat solver.
+init            -> Initialize Barycentric rational function simulation.
+run             -> Perform Barycentric rational function simulation.
+last            -> Postprocess the calculated results and write them.
+#
+#
+```
+=#
+
+#
+include("rfa.jl")
+#
+export BarRatContext
+#
+export solve
+export init
+export run
+export last
 
 #=
 ### *Includes And Exports* : *nac.jl*
