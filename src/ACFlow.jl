@@ -131,14 +131,14 @@ parameters or represent some essential data structures.
 DType           -> Customized type.
 ADT             -> Customized type.
 #
-PBASE           -> Dict for general setup.
-PMaxEnt         -> Dict for MaxEnt solver.
-PBarRat         -> Dict for BarRat solver.
-PNevanAC        -> Dict for NevanAC solver.
-PStochAC        -> Dict for StochAC solver.
-PStochSK        -> Dict for StochSK solver.
-PStochOM        -> Dict for StochOM solver.
-PStochPX        -> Dict for StochPX solver.
+PBASE           -> Configuration dict for general setup.
+PMaxEnt         -> Configuration dict for MaxEnt solver.
+PBarRat         -> Configuration dict for BarRat solver.
+PNevanAC        -> Configuration dict for NevanAC solver.
+PStochAC        -> Configuration dict for StochAC solver.
+PStochSK        -> Configuration dict for StochSK solver.
+PStochOM        -> Configuration dict for StochOM solver.
+PStochPX        -> Configuration dict for StochPX solver.
 #
 AbstractSolver  -> Abstract AC solver.
 MaxEntSolver    -> It represents the MaxEnt solver.

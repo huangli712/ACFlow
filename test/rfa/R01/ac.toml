@@ -8,7 +8,7 @@
 
 [BASE]
 finput = "giw.data"
-solver = "BarRat"
+solver = "MaxEnt"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"

@@ -196,11 +196,16 @@ dictionaries will be reset to their default values at first. Later, `C`
 See also: [`read_param`](@ref).
 """
 function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = true)
-    # _PBASE, _PMaxEnt, _PBarRat, _PNevanAC, _PStochAC, _PStochSK,
-    # _PStochOM, and _PStochPX contain the default parameters. If reset
-    # is true, they will be used to update the PBASE, PMaxEnt, PBarRat,
-    # PNevanAC, PStochAC, PStochSK, PStochOM, and PStochPX dictionaries,
-    # respectively.
+    # _PBASE, _PMaxEnt, _PBarRat, _PNevanAC,
+    # _PStochAC, _PStochSK, _PStochOM, and _PStochPX
+    #
+    # contain the default parameters. If reset is true, they will be used
+    # to update the
+    #
+    # PBASE, PMaxEnt, PBarRat, PNevanAC,
+    # PStochAC, PStochSK, PStochOM, and PStochPX
+    #
+    # dictionaries, respectively.
     reset && begin
         rev_dict_b(_PBASE)
         rev_dict_m(MaxEntSolver(),   _PMaxEnt)
