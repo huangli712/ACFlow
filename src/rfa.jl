@@ -11,8 +11,7 @@
 ### *Customized Structs* : *BarRat Solver*
 =#
 
-AnyComplex{T<:AbstractFloat} = Complex{T}
-const RealComplex{T} = Union{T, AnyComplex{T}}
+const RealComplex{T} = Union{T, Complex{T}}
 const VectorVectorRealComplex{T} = Union{Vector{Vector{T}},Vector{Vector{Complex{T}}}}
 
 #####
@@ -66,7 +65,7 @@ struct Barycentric{T,S} <: Function
         weight::AbstractVector{S},
         wf::AbstractVector{S} = value.*weight;
         stats::Union{Missing,ConvergenceStats{T}} = missing
-        )  where {T <: AbstractFloat, S <: RealComplex{T}}
+        ) where {T <: AbstractFloat, S <: RealComplex{T}}
         @assert length(node) == length(value) == length(weight) == length(wf)
         new{T,S}(node, value, weight, wf, stats)
     end
@@ -186,11 +185,9 @@ end
 
 "weights(r) returns the weights of the rational interpolant `r` as a vector."
 weights(r::Barycentric) = r.weights
-weights(r::Barycentric, m::Integer) = r.stats.weights[m]
 
 "nodes(r) returns the nodes of the rational interpolant `r` as a vector."
 nodes(r::Barycentric) = r.nodes
-nodes(r::Barycentric, m::Integer) = r.stats.nodes[m]
 
 """
     r(z)
