@@ -11,8 +11,6 @@
 ### *Customized Structs* : *BarRat Solver*
 =#
 
-#const RealComplex{T} = Union{T, Complex{T}}
-
 """
     Barycentric (type)
 
