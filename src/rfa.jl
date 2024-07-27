@@ -30,6 +30,16 @@ mutable struct Barycentric <: Function
     w_times_f :: Vector{C64}
 end
 
+"""
+    Barycentric(node, value, weight)
+
+Construct a `Barycentric` type rational function.
+
+### Arguments
+* `node::Vector`   -> Interpolation nodes.
+* `value::Vector`  -> Values at the interpolation nodes.
+* `weight::Vector` -> Barycentric weights.
+"""
 function Barycentric(node::Vector{C64}, value::Vector{C64}, weight::Vector{C64})
     @assert length(node) == length(value) == length(weight)
     wf = value .* weight
