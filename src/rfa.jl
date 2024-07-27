@@ -53,21 +53,21 @@ Barycentric representation of a rational function.
 - `wf`: the weighted values of the rational function
 - `stats`: convergence statistics
 """
-struct Barycentric{T,S} <: Function
-    nodes::Vector{S}
-    values::Vector{S}
-    weights::Vector{S}
-    w_times_f::Vector{S}
-    stats::Union{Missing,ConvergenceStats{T}}
-    function Barycentric{T}(
-        node::AbstractVector{S},
-        value::AbstractVector{S},
-        weight::AbstractVector{S},
-        wf::AbstractVector{S} = value.*weight;
-        stats::Union{Missing,ConvergenceStats{T}} = missing
-        ) where {T <: AbstractFloat, S <: RealComplex{T}}
+struct Barycentric <: Function
+    nodes::Vector{C64}
+    values::Vector{C64}
+    weights::Vector{C64}
+    w_times_f::Vector{C64}
+    stats::Union{Missing,ConvergenceStats{F64}}
+    function Barycentric(
+        node::AbstractVector{C64},
+        value::AbstractVector{C64},
+        weight::AbstractVector{C64},
+        wf::AbstractVector{C64} = value.*weight;
+        stats::Union{Missing,ConvergenceStats{F64}} = missing
+        )
         @assert length(node) == length(value) == length(weight) == length(wf)
-        new{T,S}(node, value, weight, wf, stats)
+        new(node, value, weight, wf, stats)
     end
 end
 
@@ -86,7 +86,7 @@ mutable struct  BarRatContext
     Gᵥ   :: Vector{C64}
     grid :: AbstractGrid
     mesh :: AbstractMesh
-    ℬ    :: Union{Missing,Barycentric{F64,C64}}
+    ℬ    :: Union{Missing,Barycentric}
 end
 
 #=
