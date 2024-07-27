@@ -72,7 +72,7 @@ Returns the weights of the rational interpolant `r` as a vector.
 weights(r::Barycentric) = r.weights
 
 """
-    poles(r)
+    poles(r::Barycentric)
 
 Return the poles of the rational function `r`.
 """
@@ -102,8 +102,9 @@ end
 Evaluate the rational function at `z`.
 """
 
-(r::Barycentric)(z) = evaluate(r, z)
-function evaluate(r::Barycentric, z::Number)
+#(r::Barycentric)(z) #= evaluate(r, z)
+#function evaluate(r::Barycentric, z::Number)
+function (r::Barycentric)(z::Number)
     if isinf(z)
         return sum(r.w_times_f) / sum(r.weights)
     end
