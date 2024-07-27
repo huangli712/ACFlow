@@ -232,9 +232,9 @@ julia> r(1.5)
 1.5
 ```
 """
-function Barycentric(node, value, weight, wf=value.*weight; stats=missing)
-    Barycentric( promote(float(node), float(value), float(weight))..., float(wf); stats )
-end
+#function Barycentric(node, value, weight, wf=value.*weight; stats=missing)
+#    Barycentric( promote(float(node), float(value), float(weight))..., float(wf); stats )
+#end
 
 function Barycentric(
     node::Vector{S}, value::Vector{S}, weight::Vector{S}, wf=value.*weight;
