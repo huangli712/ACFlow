@@ -35,6 +35,57 @@ function Barycentric(node::Vector{C64}, value::Vector{C64}, weight::Vector{C64})
     Barycentric(node, value, weight, wf)
 end
 
+"weights(r) returns the weights of the rational interpolant `r` as a vector."
+weights(r::Barycentric) = r.weights
+
+"nodes(r) returns the nodes of the rational interpolant `r` as a vector."
+nodes(r::Barycentric) = r.nodes
+
+"""
+    poles(r)
+
+Return the poles of the rational function `r`.
+"""
+function poles(r::Barycentric)
+    T = F64
+    w = weights(r)
+    nonzero = @. !iszero(w)
+    z, w = nodes(r)[nonzero], w[nonzero]
+    m = length(w)
+    B = diagm( [zero(T); ones(T, m)] )
+    E = [zero(T) transpose(w); ones(T, m) diagm(z) ];
+    pol = []  # put it into scope
+    try
+        pol = filter( isfinite, eigvals(E, B) )
+    catch
+        # generalized eigen not available in extended precision, so:
+        λ = filter( z->abs(z)>1e-13, eigvals(E\B) )
+        pol = 1 ./ λ
+    end
+    return pol
+end
+
+"""
+    r(z)
+    evaluate(r, z)
+
+Evaluate the rational function at `z`.
+"""
+
+(r::Barycentric)(z) = evaluate(r, z)
+function evaluate(r::Barycentric, z::Number)
+    if isinf(z)
+        return sum(r.w_times_f) / sum(r.weights)
+    end
+    k = findfirst(z .== r.nodes)
+    if isnothing(k)         # not at a node
+        C = @. 1 / (z - r.nodes)
+        return sum(C .* r.w_times_f) / sum(C .* r.weights)
+    else                    # interpolation at node
+        return r.values[k]
+    end
+end
+
 """
     BarRatContext
 
@@ -122,57 +173,6 @@ function last(brc::BarRatContext)
     fwrite && write_backward(brc.grid, G)
 
     return Aout, _G
-end
-
-"""
-    poles(r)
-
-Return the poles of the rational function `r`.
-"""
-function poles(r::Barycentric)
-    T = F64
-    w = weights(r)
-    nonzero = @. !iszero(w)
-    z, w = nodes(r)[nonzero], w[nonzero]
-    m = length(w)
-    B = diagm( [zero(T); ones(T, m)] )
-    E = [zero(T) transpose(w); ones(T, m) diagm(z) ];
-    pol = []  # put it into scope
-    try
-        pol = filter( isfinite, eigvals(E, B) )
-    catch
-        # generalized eigen not available in extended precision, so:
-        λ = filter( z->abs(z)>1e-13, eigvals(E\B) )
-        pol = 1 ./ λ
-    end
-    return pol
-end
-
-"weights(r) returns the weights of the rational interpolant `r` as a vector."
-weights(r::Barycentric) = r.weights
-
-"nodes(r) returns the nodes of the rational interpolant `r` as a vector."
-nodes(r::Barycentric) = r.nodes
-
-"""
-    r(z)
-    evaluate(r, z)
-
-Evaluate the rational function at `z`.
-"""
-
-(r::Barycentric)(z) = evaluate(r, z)
-function evaluate(r::Barycentric, z::Number)
-    if isinf(z)
-        return sum(r.w_times_f) / sum(r.weights)
-    end
-    k = findfirst(z .== r.nodes)
-    if isnothing(k)         # not at a node
-        C = @. 1 / (z - r.nodes)
-        return sum(C .* r.w_times_f) / sum(C .* r.weights)
-    else                    # interpolation at node
-        return r.values[k]
-    end
 end
 
 """
