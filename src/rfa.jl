@@ -243,8 +243,6 @@ function evaluate(r::Barycentric, z::Number)
     end
 end
 
-
-
 """
     Barycentric(node, value, weight, wf=value.*weight; stats=missing)
 
@@ -280,7 +278,6 @@ end
 
 """
     aaa(z, y)
-    aaa(f)
 
 Adaptively compute a rational interpolant.
 
@@ -356,7 +353,7 @@ function aaa(z::AbstractVector{<:Number}, y::AbstractVector{<:Number};
     test_index = Set(1:m)
     delete!(test_index, idx)
 
-    n = 0    # number of poles
+    n = 0 # number of poles
     while true
         n += 1
         σ = view(z, node_index)
