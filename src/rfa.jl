@@ -28,7 +28,6 @@ struct Barycentric{T} <: Function
     values::Vector{C64}
     weights::Vector{C64}
     w_times_f::Vector{C64}
-    #stats::Missing
     function Barycentric{T}(
         node::AbstractVector{C64},
         value::AbstractVector{C64},
