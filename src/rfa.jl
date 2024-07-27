@@ -27,15 +27,12 @@ struct Barycentric <: Function
     values::Vector{C64}
     weights::Vector{C64}
     w_times_f::Vector{C64}
-    function Barycentric(
-        node::AbstractVector{C64},
-        value::AbstractVector{C64},
-        weight::AbstractVector{C64},
-        wf::AbstractVector{C64} = value.*weight
-        )
-        @assert length(node) == length(value) == length(weight) == length(wf)
-        new(node, value, weight, wf)
-    end
+end
+
+function Barycentric(node::Vector{C64}, value::Vector{C64}, weight::Vector{C64})
+    @assert length(node) == length(value) == length(weight)
+    wf = value .* weight
+    Barycentric(node, value, weight, wf)
 end
 
 """
