@@ -68,6 +68,13 @@ Returns the weights of the rational interpolant `r` as a vector.
 weights(r::Barycentric) = r.weights
 
 """
+    degree(r::Barycentric)
+
+Returns the degree of the numerator and denominator of the rational `r`.
+"""
+degree(r::Barycentric) = length(r.nodes) - 1
+
+"""
     poles(r::Barycentric)
 
 Return the poles of the rational function `r`.
@@ -90,6 +97,7 @@ function poles(r::Barycentric)
     end
     return pol
 end
+
 
 """
     r(z)
