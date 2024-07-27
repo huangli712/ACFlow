@@ -58,12 +58,18 @@ Returns the nodes of the rational interpolant `r` as a vector.
 nodes(r::Barycentric) = r.nodes
 
 """
+    Base.values(r::Barycentric)
+
+Returns the nodal values of the rational interpolant `r` as a vector.
+"""
+Base.values(r::Barycentric) = r.values
+
+"""
     weights(r::Barycentric)
 
 Returns the weights of the rational interpolant `r` as a vector.
 """
 weights(r::Barycentric) = r.weights
-
 
 """
     poles(r)
