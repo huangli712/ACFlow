@@ -12,34 +12,7 @@
 =#
 
 const RealComplex{T} = Union{T, Complex{T}}
-const VectorVectorRealComplex{T} = Union{Vector{Vector{T}},Vector{Vector{Complex{T}}}}
-
-#####
-"""
-    ConvergenceStats{T}(bestidx, error, nbad, nodes, values, weights, poles)
-
-Convergence statistics for a sequence of rational approximations.
-
-# Fields
-- `bestidx`: the index of the best approximation
-- `error`: the error of each approximation
-- `nbad`: the number of bad nodes in each approximation
-- `nodes`: the nodes of each approximation
-- `values`: the values of each approximation
-- `weights`: the weights of each approximation
-- `poles`: the poles of each approximation
-
-See also: [`Barycentric`](@ref).
-"""
-struct ConvergenceStats{T}
-    bestidx::Int
-    error::Vector{<:AbstractFloat}
-    nbad::Vector{Int}
-    nodes::VectorVectorRealComplex{T}
-    values::VectorVectorRealComplex{T}
-    weights::VectorVectorRealComplex{T}
-    poles::Vector{Vector{Complex{T}}}
-end
+#const VectorVectorRealComplex{T} = Union{Vector{Vector{T}},Vector{Vector{Complex{T}}}}
 
 """
     Barycentric (type)
@@ -58,13 +31,13 @@ struct Barycentric{T} <: Function
     values::Vector{C64}
     weights::Vector{C64}
     w_times_f::Vector{C64}
-    stats::Missing #Union{Missing,ConvergenceStats{T}}
+    stats::Missing
     function Barycentric{T}(
         node::AbstractVector{C64},
         value::AbstractVector{C64},
         weight::AbstractVector{C64},
         wf::AbstractVector{C64} = value.*weight;
-        stats::Missing = missing #Union{Missing,ConvergenceStats{T}} = missing
+        stats::Missing = missing
         ) where {T <: AbstractFloat}
         @assert length(node) == length(value) == length(weight) == length(wf)
         new{T}(node, value, weight, wf, stats)
