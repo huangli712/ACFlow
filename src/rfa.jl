@@ -40,10 +40,14 @@ Construct a `Barycentric` type rational function.
 * `value::Vector`  -> Values at the interpolation nodes.
 * `weight::Vector` -> Barycentric weights.
 """
-function Barycentric(node::Vector{C64}, value::Vector{C64}, weight::Vector{C64})
+function Barycentric(
+    node   :: Vector{C64},
+    value  :: Vector{C64},
+    weight :: Vector{C64}
+    )
     @assert length(node) == length(value) == length(weight)
     wf = value .* weight
-    Barycentric(node, value, weight, wf)
+    return Barycentric(node, value, weight, wf)
 end
 
 "weights(r) returns the weights of the rational interpolant `r` as a vector."
