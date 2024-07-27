@@ -68,8 +68,8 @@ julia> r(1.5)
 function Barycentric(
     node::Vector{S}, value::Vector{S}, weight::Vector{S}, wf=value.*weight;
     stats=missing
-    ) where {T<:AbstractFloat, S<:RealComplex{T}}
-    return Barycentric{T}(node, value, weight, wf; stats)
+    ) where {S<:C64}
+    return Barycentric{F64}(node, value, weight, wf; stats)
 end
 
 """
