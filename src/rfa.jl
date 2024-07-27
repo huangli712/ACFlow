@@ -12,15 +12,16 @@
 =#
 
 """
-    Barycentric (type)
+    Barycentric
 
-Barycentric representation of a rational function.
+Mutable struct. Barycentric representation of a rational function.
 
-# Fields
-- `node`: the nodes of the rational function
-- `value`: the values of the rational function
-- `weight`: the weights of the rational function
-- `wf`: the weighted values of the rational function
+### Members
+
+* nodes     -> Nodes of the rational function
+* values    -> Values of the rational function
+* weights   -> Weights of the rational function
+* w_times_f -> Weighted values of the rational function
 """
 struct Barycentric <: Function
     nodes::Vector{C64}
