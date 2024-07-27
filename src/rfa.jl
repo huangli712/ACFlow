@@ -28,16 +28,15 @@ struct Barycentric{T} <: Function
     values::Vector{C64}
     weights::Vector{C64}
     w_times_f::Vector{C64}
-    stats::Missing
+    #stats::Missing
     function Barycentric{T}(
         node::AbstractVector{C64},
         value::AbstractVector{C64},
         weight::AbstractVector{C64},
-        wf::AbstractVector{C64} = value.*weight;
-        stats::Missing = missing
+        wf::AbstractVector{C64} = value.*weight
         ) where {T <: AbstractFloat}
         @assert length(node) == length(value) == length(weight) == length(wf)
-        new{T}(node, value, weight, wf, stats)
+        new{T}(node, value, weight, wf)
     end
 end
 
@@ -64,10 +63,9 @@ julia> r(1.5)
 ```
 """
 function Barycentric(
-    node::Vector{S}, value::Vector{S}, weight::Vector{S}, wf=value.*weight;
-    stats=missing
+    node::Vector{S}, value::Vector{S}, weight::Vector{S}, wf=value.*weight
     ) where {S<:C64}
-    return Barycentric{F64}(node, value, weight, wf; stats)
+    return Barycentric{F64}(node, value, weight, wf)
 end
 
 """
@@ -134,7 +132,6 @@ function run(brc::BarRatContext)
     @show r
     @show poles(r)
     @show typeof(r)
-    @show r.stats
     brc.ℬ = r
 end
 
