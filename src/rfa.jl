@@ -22,19 +22,22 @@ Barycentric representation of a rational function.
 - `weight`: the weights of the rational function
 - `wf`: the weighted values of the rational function
 """
-struct Barycentric{T} <: Function
+#struct Barycentric{T} <: Function
+struct Barycentric <: Function
     nodes::Vector{C64}
     values::Vector{C64}
     weights::Vector{C64}
     w_times_f::Vector{C64}
-    function Barycentric{T}(
+    #function Barycentric{T}(
+    function Barycentric(
         node::AbstractVector{C64},
         value::AbstractVector{C64},
         weight::AbstractVector{C64},
         wf::AbstractVector{C64} = value.*weight
-        ) where {T <: AbstractFloat}
+        ) #where {T <: AbstractFloat}
         @assert length(node) == length(value) == length(weight) == length(wf)
-        new{T}(node, value, weight, wf)
+        #new{T}(node, value, weight, wf)
+        new(node, value, weight, wf)
     end
 end
 
@@ -59,11 +62,12 @@ julia> r(1.5)
 1.5
 ```
 """
-function Barycentric(
-    node::Vector{S}, value::Vector{S}, weight::Vector{S}, wf=value.*weight
-    ) where {S<:C64}
-    return Barycentric{F64}(node, value, weight, wf)
-end
+#function Barycentric(
+#    node::Vector{S}, value::Vector{S}, weight::Vector{S}, wf=value.*weight
+#    ) where {S<:C64}
+#    #return Barycentric{F64}(node, value, weight, wf)
+#    return Barycentric(node, value, weight, wf)
+#end
 
 """
     BarRatContext
@@ -80,7 +84,8 @@ mutable struct  BarRatContext
     Gᵥ   :: Vector{C64}
     grid :: AbstractGrid
     mesh :: AbstractMesh
-    ℬ    :: Union{Missing,Barycentric{F64}}
+    #ℬ    :: Union{Missing,Barycentric{F64}}
+    ℬ    :: Union{Missing,Barycentric}
 end
 
 #=
@@ -159,7 +164,9 @@ end
 
 Return the poles of the rational function `r`.
 """
-function poles(r::Barycentric{T}) where T
+#function poles(r::Barycentric{T}) where T
+function poles(r::Barycentric)
+    T = F64
     w = weights(r)
     nonzero = @. !iszero(w)
     z, w = nodes(r)[nonzero], w[nonzero]
