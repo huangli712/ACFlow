@@ -18,16 +18,16 @@ Mutable struct. Barycentric representation of a rational function.
 
 ### Members
 
-* nodes     -> Nodes of the rational function
-* values    -> Values of the rational function
-* weights   -> Weights of the rational function
-* w_times_f -> Weighted values of the rational function
+* nodes     -> Nodes of the rational function.
+* values    -> Values of the rational function.
+* weights   -> Weights of the rational function.
+* w_times_f -> Weighted values of the rational function.
 """
-struct Barycentric <: Function
-    nodes::Vector{C64}
-    values::Vector{C64}
-    weights::Vector{C64}
-    w_times_f::Vector{C64}
+mutable struct Barycentric <: Function
+    nodes     :: Vector{C64}
+    values    :: Vector{C64}
+    weights   :: Vector{C64}
+    w_times_f :: Vector{C64}
 end
 
 function Barycentric(node::Vector{C64}, value::Vector{C64}, weight::Vector{C64})
