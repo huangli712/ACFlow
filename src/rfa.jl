@@ -30,7 +30,7 @@ Convergence statistics for a sequence of rational approximations.
 - `weights`: the weights of each approximation
 - `poles`: the poles of each approximation
 
-See also: [`approximate`](@ref), [`Barycentric`](@ref)
+See also: [`Barycentric`](@ref).
 """
 struct ConvergenceStats{T}
     bestidx::Int
