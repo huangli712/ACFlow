@@ -50,11 +50,20 @@ function Barycentric(
     return Barycentric(node, value, weight, wf)
 end
 
-"weights(r) returns the weights of the rational interpolant `r` as a vector."
+"""
+    nodes(r::Barycentric)
+
+Returns the nodes of the rational interpolant `r` as a vector.
+"""
+nodes(r::Barycentric) = r.nodes
+
+"""
+    weights(r::Barycentric)
+
+Returns the weights of the rational interpolant `r` as a vector.
+"""
 weights(r::Barycentric) = r.weights
 
-"nodes(r) returns the nodes of the rational interpolant `r` as a vector."
-nodes(r::Barycentric) = r.nodes
 
 """
     poles(r)
