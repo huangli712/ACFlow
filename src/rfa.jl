@@ -192,7 +192,6 @@ end
 
 Return the poles of the rational function `r`.
 """
-#poles(F::Approximation) = poles(F.fun)
 function poles(r::Barycentric{T}) where T
     w = weights(r)
     nonzero = @. !iszero(w)
@@ -215,7 +214,6 @@ end
 weights(r::Barycentric) = r.weights
 weights(r::Barycentric, m::Integer) = r.stats.weights[m]
 
-# convenience accessors and overloads
 "nodes(r) returns the nodes of the rational interpolant `r` as a vector."
 nodes(r::Barycentric) = r.nodes
 nodes(r::Barycentric, m::Integer) = r.stats.nodes[m]
@@ -228,8 +226,6 @@ Evaluate the rational function at `z`.
 """
 
 (r::Barycentric)(z) = evaluate(r, z)
-#(f::Approximation)(z) = evaluate(f.fun, z)
-
 function evaluate(r::Barycentric, z::Number)
     if isinf(z)
         return sum(r.w_times_f) / sum(r.weights)
