@@ -11,33 +11,7 @@
 ### *Customized Structs* : *BarRat Solver*
 =#
 
-"""
-        (type) Polar
-Polar representation of a complex value.
-"""
-struct Polar{T<:AbstractFloat} <: Number
-    mod::T
-    ang::T
-    function Polar{T}(r::Real, ϕ::Real) where {T<:AbstractFloat}
-        if r < 0
-            @error "Cannot create Polar number with negative modulus"
-        else
-            new(T(r), T(ϕ))
-        end
-    end
-end
-
-"""
-        (type) Spherical
-Representation of a complex value on the Riemann sphere.
-"""
-struct Spherical{T<:AbstractFloat} <: Number
-    lat::T
-    lon::T
-end
-
-#using ComplexValues
-AnyComplex{T<:AbstractFloat} = Union{Complex{T},Polar{T},Spherical{T}}
+AnyComplex{T<:AbstractFloat} = Complex{T}
 const RealComplex{T} = Union{T, AnyComplex{T}}
 const VectorVectorRealComplex{T} = Union{Vector{Vector{T}},Vector{Vector{Complex{T}}}}
 
