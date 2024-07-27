@@ -21,7 +21,6 @@ Barycentric representation of a rational function.
 - `value`: the values of the rational function
 - `weight`: the weights of the rational function
 - `wf`: the weighted values of the rational function
-- `stats`: convergence statistics
 """
 struct Barycentric{T} <: Function
     nodes::Vector{C64}
@@ -40,7 +39,7 @@ struct Barycentric{T} <: Function
 end
 
 """
-    Barycentric(node, value, weight, wf=value.*weight; stats=missing)
+    Barycentric(node, value, weight, wf=value.*weight)
 
 Construct a `Barycentric` rational function.
 
@@ -49,7 +48,6 @@ Construct a `Barycentric` rational function.
 - `value::AbstractVector`: values at the interpolation nodes
 - `weight::AbstractVector`: barycentric weights
 - `wf::AbstractVector`: weights times values (optional)
-- `stats::ConvergenceStatistics``: convergence statistics (optional)
 
 # Examples
 ```jldoctest
