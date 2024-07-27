@@ -12,7 +12,6 @@
 =#
 
 const RealComplex{T} = Union{T, Complex{T}}
-#const VectorVectorRealComplex{T} = Union{Vector{Vector{T}},Vector{Vector{Complex{T}}}}
 
 """
     Barycentric (type)
