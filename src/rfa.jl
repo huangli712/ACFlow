@@ -7,10 +7,6 @@
 # Last modified: 2024/07/27
 #
 
-#=
-### *Customized Structs* : *BarRat Solver*
-=#
-
 """
     Barycentric
 
@@ -97,25 +93,27 @@ end
 
 """
     r(z)
-    evaluate(r, z)
 
 Evaluate the rational function at `z`.
 """
-
-#(r::Barycentric)(z) #= evaluate(r, z)
-#function evaluate(r::Barycentric, z::Number)
 function (r::Barycentric)(z::Number)
     if isinf(z)
         return sum(r.w_times_f) / sum(r.weights)
     end
+    #
     k = findfirst(z .== r.nodes)
-    if isnothing(k)         # not at a node
+    #
+    if isnothing(k) # not at a node
         C = @. 1 / (z - r.nodes)
         return sum(C .* r.w_times_f) / sum(C .* r.weights)
-    else                    # interpolation at node
+    else            # interpolation at node
         return r.values[k]
     end
 end
+
+#=
+### *Customized Structs* : *BarRat Solver*
+=#
 
 """
     BarRatContext
