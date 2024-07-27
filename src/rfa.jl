@@ -132,7 +132,6 @@ end
 
 Return the poles of the rational function `r`.
 """
-#function poles(r::Barycentric{T}) where T
 function poles(r::Barycentric)
     T = F64
     w = weights(r)
