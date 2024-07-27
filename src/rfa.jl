@@ -72,6 +72,35 @@ struct Barycentric{T} <: Function
 end
 
 """
+    Barycentric(node, value, weight, wf=value.*weight; stats=missing)
+
+Construct a `Barycentric` rational function.
+
+# Arguments
+- `node::AbstractVector`: interpolation nodes
+- `value::AbstractVector`: values at the interpolation nodes
+- `weight::AbstractVector`: barycentric weights
+- `wf::AbstractVector`: weights times values (optional)
+- `stats::ConvergenceStatistics``: convergence statistics (optional)
+
+# Examples
+```jldoctest
+julia> r = Barycentric([1, 2, 3], [1, 2, 3], [1/2, -1, 1/2])
+Barycentric function with 3 nodes and values:
+    1.0=>1.0,  2.0=>2.0,  3.0=>3.0
+
+julia> r(1.5)
+1.5
+```
+"""
+function Barycentric(
+    node::Vector{S}, value::Vector{S}, weight::Vector{S}, wf=value.*weight;
+    stats=missing
+    ) where {T<:AbstractFloat, S<:RealComplex{T}}
+    return Barycentric{T}(node, value, weight, wf; stats)
+end
+
+"""
     BarRatContext
 
 Mutable struct. It is used within the BarRat solver only.
@@ -208,39 +237,6 @@ function evaluate(r::Barycentric, z::Number)
     else                    # interpolation at node
         return r.values[k]
     end
-end
-
-"""
-    Barycentric(node, value, weight, wf=value.*weight; stats=missing)
-
-Construct a `Barycentric` rational function.
-
-# Arguments
-- `node::AbstractVector`: interpolation nodes
-- `value::AbstractVector`: values at the interpolation nodes
-- `weight::AbstractVector`: barycentric weights
-- `wf::AbstractVector`: weights times values (optional)
-- `stats::ConvergenceStatistics``: convergence statistics (optional)
-
-# Examples
-```jldoctest
-julia> r = Barycentric([1, 2, 3], [1, 2, 3], [1/2, -1, 1/2])
-Barycentric function with 3 nodes and values:
-    1.0=>1.0,  2.0=>2.0,  3.0=>3.0
-
-julia> r(1.5)
-1.5
-```
-"""
-#function Barycentric(node, value, weight, wf=value.*weight; stats=missing)
-#    Barycentric( promote(float(node), float(value), float(weight))..., float(wf); stats )
-#end
-
-function Barycentric(
-    node::Vector{S}, value::Vector{S}, weight::Vector{S}, wf=value.*weight;
-    stats=missing
-    ) where {T<:AbstractFloat, S<:RealComplex{T}}
-    return Barycentric{T}(node, value, weight, wf; stats)
 end
 
 """
