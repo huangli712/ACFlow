@@ -2,6 +2,22 @@ using DelimitedFiles
 using LinearAlgebra
 using Statistics
 
+function get_data()
+    data = readdlm("giw.data")
+    w = data[:,1]
+    gre = data[:,2]
+    gim = data[:,3]
+    G = gre + gim * im
+
+    osize = length(w)
+    nsize = iseven(osize) ? osize - 1 : osize
+    N = div(nsize, 2)
+    w = w[1:nsize]
+    G = G[1:nsize]
+
+    return N, w, G
+end
+
 function get_svd(N, w, G)
     a = w[1]
     b = w[end]
@@ -74,19 +90,9 @@ function get_value(omega, gamma, x, a, b, N)
     return A * omega
 end
 
-data = readdlm("giw.data")
-w = data[:,1]
-gre = data[:,2]
-gim = data[:,3]
-G = gre + gim * im
-
-osize = length(w)
-nsize = iseven(osize) ? osize - 1 : osize
-N = div(nsize, 2)
-w = w[1:nsize]
-G = G[1:nsize]
-
 err = 1.0e-3
+N, w, G = get_data()
+
 a, b, x_k, S, V = get_svd(N, w, G)
 idx = find_idx_with_err(S, err)
 sigma, v = find_v_with_idx(S, V, idx)
@@ -101,7 +107,6 @@ idx_sort = sortperm(abs.(omega))
 reverse!(idx_sort)
 omega = omega[idx_sort]
 gamma = gamma[idx_sort]
-
 
 value = get_value(omega, gamma, x_k, a, b, N)
 @show length(value)
