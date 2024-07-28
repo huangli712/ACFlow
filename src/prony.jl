@@ -30,7 +30,7 @@ function prony_svd(N, G)
     return S, V
 end
 
-function find_idx_with_err(S, V, err)
+function prony_v(S, V, err)
     idx = 1
     for i in eachindex(S)
         if S[i] < err
@@ -76,11 +76,11 @@ function prony_approx(N, G, err)
 
     S, V = prony_svd(N, G)
     
-    v = find_idx_with_err(S, V, err)
+    v = prony_v(S, V, err)
 
     gamma = prony_gamma(v, cutoff)
     omega = prony_omega(G, gamma)
-    
+
     idx_sort = sortperm(abs.(omega))
     reverse!(idx_sort)
     omega = omega[idx_sort]
