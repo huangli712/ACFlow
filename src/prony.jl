@@ -54,7 +54,8 @@ function find_idx_with_err(S, err)
 end
 
 function find_v_with_idx(V, idx)
-    return V[:, idx]
+    v = V[:, idx]
+    return reverse!(v)
 end
 
 function roots(u)
@@ -93,12 +94,10 @@ N, w, G = get_data()
 a, b, x_k = new_mesh(N, w)
 S, V = get_svd(N, G)
 
+cutoff = 1.0 + 0.5 / N
 idx = find_idx_with_err(S, err)
 v = find_v_with_idx(V, idx)
-
-cutoff = 1.0 + 0.5 / N
-vinv = reverse(v)
-gamma = roots(vinv)
+gamma = roots(v)
 filter!(x -> abs(x) < cutoff, gamma)
 omega = find_omega(G, gamma)
 
