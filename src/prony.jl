@@ -91,9 +91,8 @@ end
 
 err = 1.0e-3
 N, w, G = get_data()
-a, b, x_k = new_mesh(N, w)
-S, V = get_svd(N, G)
 
+S, V = get_svd(N, G)
 cutoff = 1.0 + 0.5 / N
 idx = find_idx_with_err(S, err)
 v = find_v_with_idx(V, idx)
@@ -106,6 +105,7 @@ reverse!(idx_sort)
 omega = omega[idx_sort]
 gamma = gamma[idx_sort]
 
+a, b, x_k = new_mesh(N, w)
 value = get_value(omega, gamma, x_k, a, b, N)
 @show length(value)
 @show length(G)
