@@ -46,22 +46,12 @@ end
 function roots(u)
     non_zero = findall(!iszero, u)
     trailing_zeros = length(u) - non_zero[end]
-    #@show trailing_zeros
     unew = u[non_zero[1]:non_zero[end]]
-    #@show length(unew)
     N = length(unew)
     if N > 1
         A = diagm(-1=>ones(ComplexF64, N - 2))
-        #println(A[end,:])
         @. A[1,:] = -unew[2:end] / unew[1]
-        #for i = 1:49
-        #    println(i, " ", A[1,i])
-        #end
-        #println(A[1,:])
-        #println(A[end,:])
-        #println(size(A))
         roots = eigvals(A)
-        #@show size(roots)
     else
     end
     return vcat(roots, zeros(ComplexF64, trailing_zeros))
@@ -113,12 +103,11 @@ filter!(x -> abs(x) < cutoff, gamma)
 omega = find_omega(G, gamma)
 
 idx_sort = sortperm(abs.(omega))
-#@show idx_sort
 reverse!(idx_sort)
 omega = omega[idx_sort]
 gamma = gamma[idx_sort]
-#@show omega
-#@show gamma
+
+
 value = get_value(omega, gamma, x_k, a, b, N)
 @show length(value)
 @show length(G)
