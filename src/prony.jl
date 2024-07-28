@@ -71,7 +71,15 @@ function prony_omega(G, gamma)
     return pinv(A) * G
 end
 
-function prony_approx(err)
+mutable struct PronyApproximation
+    𝑁ₚ :: Int64
+    ωₚ :: Vector{Float64}
+    𝐺ₚ :: Vector{ComplexF64}
+    Γₚ :: Vector{ComplexF64}
+    Ωₚ :: Vector{ComplexF64}
+end
+
+function PronyApproximation(err)
     N, w, G = prony_data()
 
     S, V = prony_svd(N, G)
@@ -87,7 +95,7 @@ function prony_approx(err)
     omega = omega[idx_sort]
     gamma = gamma[idx_sort]
 
-    return N, w, G, omega, gamma
+    return PronyApproximation(N, w, G, gamma, omega)
 end
 
 function get_value(omega, gamma, w, N)
@@ -100,7 +108,7 @@ function get_value(omega, gamma, w, N)
 end
 
 err = 1.0e-3
-N, w, G, omega, gamma = prony_approx(err)
-value = get_value(omega, gamma, w, N)
-@show maximum(abs.(G - value))
-@show mean(abs.(G - value))
+pa = PronyApproximation(err)
+value = get_value(pa.Ωₚ, pa.Γₚ, pa.ωₚ, pa.𝑁ₚ)
+@show maximum(abs.(pa.𝐺ₚ - value))
+@show mean(abs.(pa.𝐺ₚ - value))
