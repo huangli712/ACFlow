@@ -53,14 +53,8 @@ function find_idx_with_err(S, err)
     return idx
 end
 
-function find_v_with_idx(S, V, idx)
-    if idx >= length(S)
-        @error "index is invalid!"
-    end
-
-    sigma = S[idx]
-    v = V[:, idx]
-    return sigma, v
+function find_v_with_idx(V, idx)
+    return V[:, idx]
 end
 
 function roots(u)
@@ -96,11 +90,11 @@ end
 
 err = 1.0e-3
 N, w, G = get_data()
-
 a, b, x_k = new_mesh(N, w)
 S, V = get_svd(N, G)
+
 idx = find_idx_with_err(S, err)
-sigma, v = find_v_with_idx(S, V, idx)
+v = find_v_with_idx(V, idx)
 
 cutoff = 1.0 + 0.5 / N
 vinv = reverse(v)
