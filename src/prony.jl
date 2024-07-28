@@ -58,9 +58,7 @@ function roots(u)
 end
 
 function find_omega(G, gamma)
-    #@show size(G), size(gamma)
     A = zeros(ComplexF64, length(G), length(gamma))
-    #@show size(A)
     for i = 1:length(G)
         A[i,:] = gamma .^ (i - 1)
     end
@@ -69,14 +67,11 @@ end
 
 function get_value(omega, gamma, x, a, b, N)
     x0 = @. (x - a) / (b - a)
-    #@show x0 
     A = zeros(ComplexF64, length(x0), length(omega))
     for i = 1:length(x0)
         @. A[i,:] = gamma ^ (2.0 * N * x0[i])
     end
-    #@show A[1,:]
-    #@show A[end,:]
-    value = A * omega
+    return A * omega
 end
 
 data = readdlm("giw.data")
