@@ -89,24 +89,30 @@ function get_value(omega, gamma, x, a, b, N)
     return A * omega
 end
 
+function prony_approx(N, G, err)
+    S, V = get_svd(N, G)
+    cutoff = 1.0 + 0.5 / N
+    idx = find_idx_with_err(S, err)
+    v = find_v_with_idx(V, idx)
+    gamma = roots(v)
+    filter!(x -> abs(x) < cutoff, gamma)
+    omega = find_omega(G, gamma)
+    
+    idx_sort = sortperm(abs.(omega))
+    reverse!(idx_sort)
+    omega = omega[idx_sort]
+    gamma = gamma[idx_sort]
+
+    return omega, gamma
+end
+
 err = 1.0e-3
 N, w, G = get_data()
-
-S, V = get_svd(N, G)
-cutoff = 1.0 + 0.5 / N
-idx = find_idx_with_err(S, err)
-v = find_v_with_idx(V, idx)
-gamma = roots(v)
-filter!(x -> abs(x) < cutoff, gamma)
-omega = find_omega(G, gamma)
-
-idx_sort = sortperm(abs.(omega))
-reverse!(idx_sort)
-omega = omega[idx_sort]
-gamma = gamma[idx_sort]
+omega, gamma = prony_approx(N, G, err)
 
 a, b, x_k = new_mesh(N, w)
 value = get_value(omega, gamma, x_k, a, b, N)
+
 @show length(value)
 @show length(G)
 @show maximum(abs.(G - value))
