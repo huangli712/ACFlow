@@ -2,7 +2,7 @@ using DelimitedFiles
 using LinearAlgebra
 using Statistics
 
-function get_data()
+function prony_data()
     data = readdlm("giw.data")
     w = data[:,1]
     gre = data[:,2]
@@ -18,7 +18,7 @@ function get_data()
     return N, w, G
 end
 
-function get_svd(N, G)
+function prony_svd(N, G)
     H = zeros(ComplexF64, N + 1, N + 1)
 
     for i = 1 : N + 1
@@ -47,7 +47,7 @@ function find_idx_with_err(S, V, err)
     return reverse!(v)
 end
 
-function find_gamma(u, cutoff)
+function prony_gamma(u, cutoff)
     non_zero = findall(!iszero, u)
     trailing_zeros = length(u) - non_zero[end]
     unew = u[non_zero[1]:non_zero[end]]
@@ -63,7 +63,7 @@ function find_gamma(u, cutoff)
     return gamma
 end
 
-function find_omega(G, gamma)
+function prony_omega(G, gamma)
     A = zeros(ComplexF64, length(G), length(gamma))
     for i = 1:length(G)
         A[i,:] = gamma .^ (i - 1)
@@ -74,12 +74,12 @@ end
 function prony_approx(N, G, err)
     cutoff = 1.0 + 0.5 / N
 
-    S, V = get_svd(N, G)
+    S, V = prony_svd(N, G)
     
     v = find_idx_with_err(S, V, err)
 
-    gamma = find_gamma(v, cutoff)
-    omega = find_omega(G, gamma)
+    gamma = prony_gamma(v, cutoff)
+    omega = prony_omega(G, gamma)
     
     idx_sort = sortperm(abs.(omega))
     reverse!(idx_sort)
@@ -99,7 +99,7 @@ function get_value(omega, gamma, w, N)
 end
 
 err = 1.0e-3
-N, w, G = get_data()
+N, w, G = prony_data()
 omega, gamma = prony_approx(N, G, err)
 
 value = get_value(omega, gamma, w, N)
