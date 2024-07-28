@@ -2,18 +2,6 @@ using DelimitedFiles
 using LinearAlgebra
 using Statistics
 
-data = readdlm("giw.data")
-w = data[:,1]
-gre = data[:,2]
-gim = data[:,3]
-G = gre + gim * im
-
-osize = length(w)
-nsize = iseven(osize) ? osize - 1 : osize
-N = div(nsize, 2)
-w = w[1:nsize]
-G = G[1:nsize]
-
 function get_svd(N, w, G)
     a = w[1]
     b = w[end]
@@ -100,6 +88,18 @@ function get_value(omega, gamma, x, a, b, N)
     #@show A[end,:]
     value = A * omega
 end
+
+data = readdlm("giw.data")
+w = data[:,1]
+gre = data[:,2]
+gim = data[:,3]
+G = gre + gim * im
+
+osize = length(w)
+nsize = iseven(osize) ? osize - 1 : osize
+N = div(nsize, 2)
+w = w[1:nsize]
+G = G[1:nsize]
 
 err = 1.0e-3
 a, b, x_k, S, V = get_svd(N, w, G)
