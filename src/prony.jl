@@ -105,27 +105,12 @@ err = 1.0e-3
 a, b, x_k, S, V = get_svd(N, w, G)
 idx = find_idx_with_err(S, err)
 sigma, v = find_v_with_idx(S, V, idx)
-#@show sigma
-#@show v
 
 cutoff = 1.0 + 0.5 / N
-#@show cutoff
-
-#using Roots
 vinv = reverse(v)
-#@show v
-#@show vinv
-
 gamma = roots(vinv)
-#@show gamma
 filter!(x -> abs(x) < cutoff, gamma)
-#@show length(gamma)
-#@show gamma
-
 omega = find_omega(G, gamma)
-
-#@show gamma
-#@show omega
 
 idx_sort = sortperm(abs.(omega))
 #@show idx_sort
