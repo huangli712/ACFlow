@@ -71,13 +71,14 @@ function prony_omega(G, gamma)
     return pinv(A) * G
 end
 
-function prony_approx(N, G, err)
-    cutoff = 1.0 + 0.5 / N
+function prony_approx(err)
+    N, w, G = prony_data()
 
     S, V = prony_svd(N, G)
     
     v = prony_v(S, V, err)
 
+    cutoff = 1.0 + 0.5 / N
     gamma = prony_gamma(v, cutoff)
     omega = prony_omega(G, gamma)
 
@@ -86,7 +87,7 @@ function prony_approx(N, G, err)
     omega = omega[idx_sort]
     gamma = gamma[idx_sort]
 
-    return omega, gamma
+    return w, omega, gamma
 end
 
 function get_value(omega, gamma, w, N)
@@ -99,10 +100,7 @@ function get_value(omega, gamma, w, N)
 end
 
 err = 1.0e-3
-N, w, G = prony_data()
-omega, gamma = prony_approx(N, G, err)
-
+w, omega, gamma = prony_approx(err)
 value = get_value(omega, gamma, w, N)
-
 @show maximum(abs.(G - value))
 @show mean(abs.(G - value))
