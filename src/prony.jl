@@ -6,37 +6,28 @@ data = readdlm("giw.data")
 w = data[:,1]
 gre = data[:,2]
 gim = data[:,3]
-
 G = gre + gim * im
 
 osize = length(w)
 nsize = iseven(osize) ? osize - 1 : osize
-
+N = div(nsize, 2)
 w = w[1:nsize]
 G = G[1:nsize]
 
-N = div(nsize, 2)
-a = w[1]
-b = w[end]
+function get_svd(N, w, G)
+    a = w[1]
+    b = w[end]
+    x_k = range(a, b, 2 * N + 1)
+    H = zeros(ComplexF64, N + 1, N + 1)
 
-x_k = range(a, b, 2 * N + 1)
+    for i = 1 : N + 1
+        H[i,:] = G[i:i+N]
+    end
 
-H = zeros(ComplexF64, N + 1, N + 1)
+    _, S, V = svd(H)
 
-#@show size(H)
-for i = 1 : N + 1
-    #@show i, i + N
-    H[i,:] = G[i:i+N]
-    #@show H[i,:]
+    return a, b, x_k, S, V
 end
-
-U, S, V = svd(H)
-#@show S
-#@show V[1,:]
-#@show V[49,:]
-#@show V[50,:]
-
-err = 1.0e-3
 
 function find_idx_with_err(S, err)
     idx = 1
@@ -110,6 +101,8 @@ function get_value(omega, gamma, x, a, b, N)
     value = A * omega
 end
 
+err = 1.0e-3
+a, b, x_k, S, V = get_svd(N, w, G)
 idx = find_idx_with_err(S, err)
 sigma, v = find_v_with_idx(S, V, idx)
 #@show sigma
