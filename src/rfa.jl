@@ -442,7 +442,7 @@ end
 
 function run(brc::BarRatContext)
     r = aaa(brc.grid.ω * im, brc.Gᵥ)
-    @show poles(r)
+    @show bc_poles(r)
     brc.ℬ = r
 end
 
