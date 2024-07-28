@@ -68,7 +68,7 @@ end
 function get_value(omega, gamma, x, a, b, N)
     x0 = @. (x - a) / (b - a)
     A = zeros(ComplexF64, length(x0), length(omega))
-    for i = 1:length(x0)
+    for i in eachindex(x0)
         @. A[i,:] = gamma ^ (2.0 * N * x0[i])
     end
     return A * omega
