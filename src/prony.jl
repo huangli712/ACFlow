@@ -30,7 +30,7 @@ function get_svd(N, G)
     return S, V
 end
 
-function find_idx_with_err(S, err)
+function find_idx_with_err(S, V, err)
     idx = 1
     for i in eachindex(S)
         if S[i] < err
@@ -43,15 +43,11 @@ function find_idx_with_err(S, err)
         @error "err is set to be too small!"
     end
 
-    return idx
-end
-
-function find_v_with_idx(V, idx)
     v = V[:, idx]
     return reverse!(v)
 end
 
-function roots(u)
+function find_gamma(u, cutoff)
     non_zero = findall(!iszero, u)
     trailing_zeros = length(u) - non_zero[end]
     unew = u[non_zero[1]:non_zero[end]]
@@ -62,7 +58,9 @@ function roots(u)
         roots = eigvals(A)
     else
     end
-    return vcat(roots, zeros(ComplexF64, trailing_zeros))
+    gamma = vcat(roots, zeros(ComplexF64, trailing_zeros))
+    filter!(x -> abs(x) < cutoff, gamma)
+    return gamma
 end
 
 function find_omega(G, gamma)
@@ -73,22 +71,14 @@ function find_omega(G, gamma)
     return pinv(A) * G
 end
 
-function get_value(omega, gamma, w, N)
-    x0 = @. (w - w[1]) / (w[end] - w[1])
-    A = zeros(ComplexF64, length(x0), length(omega))
-    for i in eachindex(x0)
-        @. A[i,:] = gamma ^ (2.0 * N * x0[i])
-    end
-    return A * omega
-end
-
 function prony_approx(N, G, err)
-    S, V = get_svd(N, G)
     cutoff = 1.0 + 0.5 / N
-    idx = find_idx_with_err(S, err)
-    v = find_v_with_idx(V, idx)
-    gamma = roots(v)
-    filter!(x -> abs(x) < cutoff, gamma)
+
+    S, V = get_svd(N, G)
+    
+    v = find_idx_with_err(S, V, err)
+
+    gamma = find_gamma(v, cutoff)
     omega = find_omega(G, gamma)
     
     idx_sort = sortperm(abs.(omega))
@@ -97,6 +87,15 @@ function prony_approx(N, G, err)
     gamma = gamma[idx_sort]
 
     return omega, gamma
+end
+
+function get_value(omega, gamma, w, N)
+    x0 = @. (w - w[1]) / (w[end] - w[1])
+    A = zeros(ComplexF64, length(x0), length(omega))
+    for i in eachindex(x0)
+        @. A[i,:] = gamma ^ (2.0 * N * x0[i])
+    end
+    return A * omega
 end
 
 err = 1.0e-3
