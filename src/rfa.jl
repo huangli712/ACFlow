@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/27
+# Last modified: 2024/07/29
 #
 
 #
@@ -68,43 +68,43 @@ function Barycentric(
 end
 
 """
-    nodes(r::Barycentric)
+    bc_nodes(r::Barycentric)
 
 Returns the nodes of the rational interpolant `r` as a vector.
 """
-nodes(r::Barycentric) = r.nodes
+bc_nodes(r::Barycentric) = r.nodes
 
 """
-    Base.values(r::Barycentric)
+    bc_values(r::Barycentric)
 
 Returns the nodal values of the rational interpolant `r` as a vector.
 """
-Base.values(r::Barycentric) = r.values
+bc_values(r::Barycentric) = r.values
 
 """
-    weights(r::Barycentric)
+    bc_weights(r::Barycentric)
 
 Returns the weights of the rational interpolant `r` as a vector.
 """
-weights(r::Barycentric) = r.weights
+bc_weights(r::Barycentric) = r.weights
 
 """
-    degree(r::Barycentric)
+    bc_degree(r::Barycentric)
 
 Returns the degree of the numerator and denominator of the rational `r`.
 """
-degree(r::Barycentric) = length(r.nodes) - 1
+bc_degree(r::Barycentric) = length(r.nodes) - 1
 
 """
-    poles(r::Barycentric)
+    bc_poles(r::Barycentric)
 
 Return the poles of the rational function `r`.
 """
-function poles(r::Barycentric)
+function bc_poles(r::Barycentric)
     T = F64
-    w = weights(r)
+    w = bc_weights(r)
     nonzero = @. !iszero(w)
-    z, w = nodes(r)[nonzero], w[nonzero]
+    z, w = bc_nodes(r)[nonzero], w[nonzero]
     m = length(w)
     B = diagm( [zero(T); ones(T, m)] )
     E = [zero(T) transpose(w); ones(T, m) diagm(z) ];
