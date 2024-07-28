@@ -18,13 +18,6 @@ function get_data()
     return N, w, G
 end
 
-function new_mesh(N, w)
-    a = w[1]
-    b = w[end]
-    x_k = range(a, b, 2 * N + 1)
-    return a, b, x_k
-end
-
 function get_svd(N, G)
     H = zeros(ComplexF64, N + 1, N + 1)
 
@@ -80,8 +73,8 @@ function find_omega(G, gamma)
     return pinv(A) * G
 end
 
-function get_value(omega, gamma, x, a, b, N)
-    x0 = @. (x - a) / (b - a)
+function get_value(omega, gamma, w, N)
+    x0 = @. (w - w[1]) / (w[end] - w[1])
     A = zeros(ComplexF64, length(x0), length(omega))
     for i in eachindex(x0)
         @. A[i,:] = gamma ^ (2.0 * N * x0[i])
@@ -110,10 +103,7 @@ err = 1.0e-3
 N, w, G = get_data()
 omega, gamma = prony_approx(N, G, err)
 
-a, b, x_k = new_mesh(N, w)
-value = get_value(omega, gamma, x_k, a, b, N)
+value = get_value(omega, gamma, w, N)
 
-@show length(value)
-@show length(G)
 @show maximum(abs.(G - value))
 @show mean(abs.(G - value))
