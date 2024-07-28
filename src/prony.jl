@@ -98,15 +98,6 @@ function PronyApproximation(err)
     return PronyApproximation(N, w, G, gamma, omega)
 end
 
-function get_value(omega, gamma, w, N)
-    x0 = @. (w - w[1]) / (w[end] - w[1])
-    A = zeros(ComplexF64, length(x0), length(omega))
-    for i in eachindex(x0)
-        @. A[i,:] = gamma ^ (2.0 * N * x0[i])
-    end
-    return A * omega
-end
-
 function (pa::PronyApproximation)(w::Vector{Float64})
     x0 = @. (w - w[1]) / (w[end] - w[1])
     A = zeros(ComplexF64, length(x0), length(pa.Ωₚ))
@@ -118,6 +109,6 @@ end
 
 err = 1.0e-3
 pa = PronyApproximation(err)
-value = pa(pa.ωₚ) #get_value(pa.Ωₚ, pa.Γₚ, pa.ωₚ, pa.𝑁ₚ)
+value = pa(pa.ωₚ)
 @show maximum(abs.(pa.𝐺ₚ - value))
 @show mean(abs.(pa.𝐺ₚ - value))
