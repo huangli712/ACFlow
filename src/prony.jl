@@ -87,7 +87,7 @@ function prony_approx(err)
     omega = omega[idx_sort]
     gamma = gamma[idx_sort]
 
-    return N, w, omega, gamma
+    return N, w, G, omega, gamma
 end
 
 function get_value(omega, gamma, w, N)
@@ -100,7 +100,7 @@ function get_value(omega, gamma, w, N)
 end
 
 err = 1.0e-3
-N, w, omega, gamma = prony_approx(err)
+N, w, G, omega, gamma = prony_approx(err)
 value = get_value(omega, gamma, w, N)
 @show maximum(abs.(G - value))
 @show mean(abs.(G - value))
