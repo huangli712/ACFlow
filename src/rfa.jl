@@ -474,10 +474,10 @@ function prony_v(S, V, ε)
     return reverse!(v)
 end
 
-function prony_gamma(u, cutoff)
-    non_zero = findall(!iszero, u)
-    trailing_zeros = length(u) - non_zero[end]
-    unew = u[non_zero[1]:non_zero[end]]
+function prony_gamma(v, cutoff)
+    non_zero = findall(!iszero, v)
+    trailing_zeros = length(v) - non_zero[end]
+    unew = v[non_zero[1]:non_zero[end]]
     N = length(unew)
     if N > 1
         A = diagm(-1=>ones(C64, N - 2))
