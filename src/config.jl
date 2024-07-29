@@ -207,6 +207,14 @@ function see_dict()
 
         # For StochAC solver
         @case "StochAC"
+            println("nfine : ", get_a("nfine"))
+            println("ngamm : ", get_a("ngamm"))
+            println("nwarm : ", get_a("nwarm"))
+            println("nstep : ", get_a("nstep"))
+            println("ndump : ", get_a("ndump"))
+            println("nalph : ", get_a("nalph"))
+            println("alpha : ", get_a("alpha"))
+            println("ratio : ", get_a("ratio"))
             break
 
         # For StochSK solver
