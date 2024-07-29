@@ -475,18 +475,26 @@ function prony_v(S, V, ε)
 end
 
 function prony_gamma(v, Λ)
+    # The following codes actually calculate the roots of a polynominal
+    # with coefficients given in v. The roots are Γₚ.
     non_zero = findall(!iszero, v)
     trailing_zeros = length(v) - non_zero[end]
-    unew = v[non_zero[1]:non_zero[end]]
+    #
+    vnew = v[non_zero[1]:non_zero[end]]
     N = length(unew)
+    #
     if N > 1
         A = diagm(-1=>ones(C64, N - 2))
-        @. A[1,:] = -unew[2:end] / unew[1]
+        @. A[1,:] = -vnew[2:end] / vnew[1]
         roots = eigvals(A)
     else
+        roots = []
     end
+    #
     Γₚ = vcat(roots, zeros(C64, trailing_zeros))
+
     filter!(x -> abs(x) < Λ, Γₚ)
+
     return Γₚ
 end
 
