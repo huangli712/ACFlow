@@ -153,11 +153,11 @@ function bc_poles(r::BarycentricFunction)
 end
 
 """
-    (r::Barycentric)(z::Number)
+    (r::BarycentricFunction)(z::Number)
 
 Evaluate the rational function at `z`.
 """
-function (r::Barycentric)(z::Number)
+function (r::BarycentricFunction)(z::Number)
     if isinf(z)
         return sum(r.w_times_f) / sum(r.weights)
     end
