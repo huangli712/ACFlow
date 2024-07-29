@@ -180,6 +180,7 @@ function see_dict()
     println("exclude : ", get_b("exclude"))
     #
     println("[ Param: solver ]")
+    #
     @cswitch get_b("solver") begin
         # For MaxEnt solver
         @case "MaxEnt"
@@ -581,6 +582,7 @@ function chk_dict()
         @case "BarRat"
             push!(PA, PBarRat)
             # It does not support imaginary time data.
+            # The Prony approximation doesn't support broken data.
             @assert get_b("grid") in ("ffreq", "ffrag", "bfreq", "bfrag")
             #
             @assert get_r("denoise") in ("none", "prony")
