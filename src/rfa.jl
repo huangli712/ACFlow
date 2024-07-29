@@ -474,7 +474,7 @@ function prony_v(S, V, ε)
     return reverse!(v)
 end
 
-function prony_gamma(v, cutoff)
+function prony_gamma(v, Λ)
     non_zero = findall(!iszero, v)
     trailing_zeros = length(v) - non_zero[end]
     unew = v[non_zero[1]:non_zero[end]]
@@ -485,9 +485,9 @@ function prony_gamma(v, cutoff)
         roots = eigvals(A)
     else
     end
-    gamma = vcat(roots, zeros(C64, trailing_zeros))
-    filter!(x -> abs(x) < cutoff, gamma)
-    return gamma
+    Γₚ = vcat(roots, zeros(C64, trailing_zeros))
+    filter!(x -> abs(x) < Λ, Γₚ)
+    return Γₚ
 end
 
 function prony_omega(G, gamma)
