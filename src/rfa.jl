@@ -96,25 +96,25 @@ function BarycentricFunction(
 end
 
 """
-    bc_nodes(r::Barycentric)
+    bc_nodes(r::BarycentricFunction)
 
 Returns the nodes of the rational interpolant `r` as a vector.
 """
-bc_nodes(r::Barycentric) = r.nodes
+bc_nodes(r::BarycentricFunction) = r.nodes
 
 """
-    bc_values(r::Barycentric)
+    bc_values(r::BarycentricFunction)
 
 Returns the nodal values of the rational interpolant `r` as a vector.
 """
-bc_values(r::Barycentric) = r.values
+bc_values(r::BarycentricFunction) = r.values
 
 """
-    bc_weights(r::Barycentric)
+    bc_weights(r::BarycentricFunction)
 
 Returns the weights of the rational interpolant `r` as a vector.
 """
-bc_weights(r::Barycentric) = r.weights
+bc_weights(r::BarycentricFunction) = r.weights
 
 """
     bc_degree(r::Barycentric)
