@@ -352,7 +352,7 @@ all ``N`` nodes in the Prony approximation have weights
 ``|w_i| > \varepsilon``. Thus, we have
 
 ```math
-\left|G_k - \sum^{K-1}_{i=0} w_i \gamma^k_i\right| \le \varepsilon
+\left|G_k - \sum^{K-1}_{i=0} w_i \gamma^k_i\right| \le \varepsilon,
 ```
 
 for all ``0 \le k \le 2N``.
@@ -367,9 +367,9 @@ Mutable struct. Prony approximation to a complex-valued Matsubara function.
 
 * 𝑁ₚ -> Number of nodes.
 * ωₚ -> Non-negative Matsubara frequency.
-* 𝐺ₚ -> Values at the nodes.
-* Γₚ -> Nodes for Prony approximation ``\gamma_i``.
-* Ωₚ -> Weights for Prony approximation ``w_i``.
+* 𝐺ₚ -> Complex values at ωₚ.
+* Γₚ -> Nodes for Prony approximation, ``γ_i``.
+* Ωₚ -> Weights for Prony approximation, ``w_i``.
 """
 mutable struct PronyApproximation
     𝑁ₚ :: I64
