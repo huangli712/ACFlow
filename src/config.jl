@@ -242,6 +242,13 @@ function see_dict()
 
         # For StochPX solver
         @case "StochPX"
+            println("method : ", get_x("method"))
+            println("nfine  : ", get_x("nfine") )
+            println("npole  : ", get_x("npole") )
+            println("ntry   : ", get_x("ntry")  )
+            println("nstep  : ", get_x("nstep") )
+            println("theta  : ", get_x("theta") )
+            println("eta    : ", get_x("eta")   )
             break
     end
     #
