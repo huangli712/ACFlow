@@ -448,20 +448,26 @@ function prony_svd(𝑁ₚ, 𝐺ₚ)
     return S, V
 end
 
-function prony_v(S, V, err)
+"""
+"""
+function prony_v(S, V, ε)
+    # Return idx, such that S[idx] < ε.
     idx = 1
     for i in eachindex(S)
-        if S[i] < err
+        if S[i] < ε
             idx = i
             break
         end
     end
-
-    if S[idx] >= err
-        @error "err is set to be too small!"
+    #
+    # Check idx
+    if S[idx] >= ε
+        @error "please increase ε and try again!"
     end
+    #
+    # Extract v from V
+    v = V[:,idx]
 
-    v = V[:, idx]
     return reverse!(v)
 end
 
