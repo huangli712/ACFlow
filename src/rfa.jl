@@ -371,7 +371,7 @@ Mutable struct. Prony approximation to a complex-valued Matsubara function.
 * Γₚ -> Nodes for Prony approximation, ``γ_i``.
 * Ωₚ -> Weights for Prony approximation, ``w_i``.
 """
-mutable struct PronyApproximation
+mutable struct PronyApproximation <: Function
     𝑁ₚ :: I64
     ωₚ :: Vector{F64}
     𝐺ₚ :: Vector{C64}
@@ -379,8 +379,18 @@ mutable struct PronyApproximation
     Ωₚ :: Vector{C64}
 end
 
-function PronyApproximation(winp, Ginp, err)
-    N, w, G = prony_data(winp, Ginp)
+"""
+    PronyApproximation(ωₚ, Gₚ, err)
+
+Construct a `PronyApproximation` type interpolant function.
+
+### Arguments
+* `ωₚ::Vector{F64}` -> Non-negative Matsubara frequency.
+* `Gₚ::Vector{C64}` -> Complex values at ωₚ.
+* `err::F64` -> Barycentric weights, ``w_i``.
+"""
+function PronyApproximation(ωₚ, Gₚ, err)
+    N, w, G = prony_data(ωₚ, Gₚ)
 
     S, V = prony_svd(N, G)
     
