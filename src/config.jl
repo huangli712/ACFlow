@@ -183,6 +183,38 @@ function see_dict()
     @cswitch get_b("solver") begin
         # For MaxEnt solver
         @case "MaxEnt"
+            println("method : ", get_m("method"))
+            println("stype  : ", get_m("stype") )
+            println("nalph  : ", get_m("nalph") )
+            println("alpha  : ", get_m("alpha") )
+            println("ratio  : ", get_m("ratio") )
+            println("blur   : ", get_m("blur")  )
+            break
+
+        # For BarRat solver
+        @case "BarRat"
+            println("denoise : ", get_r("denoise"))
+            break
+
+        # For NevanAC solver
+        @case "NevanAC"
+            println("pick  : ", get_n("pick") )
+            println("hardy : ", get_n("hardy"))
+            println("hmax  : ", get_n("hmax") )
+            println("alpha : ", get_n("alpha"))
+            println("eta   : ", get_n("eta")  )
+            break
+
+        # For StochAC solver
+        @case "StochAC"
+            break
+
+        # For StochSK solver
+        @case "StochSK"
+            break
+
+        # For StochOM solver
+        @case "StochOM"
             break
 
         # For StochPX solver
