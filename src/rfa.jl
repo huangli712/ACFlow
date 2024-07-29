@@ -303,8 +303,31 @@ function aaa(
     end
 end
 
+#
+# Note:
+#
+# The following codes for the Prony approximation are mostly adapted from
+#
+#     https://github.com/Green-Phys/PronyAC
+#
+# See
+#
+#     Minimal Pole Representation and Controlled Analytic Continuation
+#     of Matsubara Response Functions
+#     Lei Zhang and Emanuel Gull 
+#     arXiv:2312.10576 (2024)
+#     
+# for more details.
+#
+
+#=
+### *Customized Structs* : *PronyApproximation*
+=#
+
+
+
 mutable struct PronyApproximation
-    𝑁ₚ :: Int64
+    𝑁ₚ :: I64
     ωₚ :: Vector{F64}
     𝐺ₚ :: Vector{C64}
     Γₚ :: Vector{C64}
