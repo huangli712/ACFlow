@@ -385,21 +385,25 @@ end
 Construct a `PronyApproximation` type interpolant function.
 
 ### Arguments
-* `ωₚ::Vector{F64}` -> Non-negative Matsubara frequency.
-* `Gₚ::Vector{C64}` -> Complex values at ωₚ.
-* `err::F64` -> Barycentric weights, ``w_i``.
+* `ωₚ::Vector{F64}` -> Non-negative Matsubara frequency (raw).
+* `Gₚ::Vector{C64}` -> Complex values at ωₚ (raw).
+* `err::F64` -> Threshold for the Prony approximation.
 """
 function PronyApproximation(ωₚ, Gₚ, err)
+    # Get number of Prony nodes, frequency points w, and Matsubara data G.   
     N, w, G = prony_data(ωₚ, Gₚ)
 
+    # Singular value decomposition
     S, V = prony_svd(N, G)
     
     v = prony_v(S, V, err)
 
+    # Evaluate Γₚ and Ωₚ
     cutoff = 1.0 + 0.5 / N
     gamma = prony_gamma(v, cutoff)
     omega = prony_omega(G, gamma)
 
+    # Sort Γₚ and Ωₚ
     idx_sort = sortperm(abs.(omega))
     reverse!(idx_sort)
     omega = omega[idx_sort]
