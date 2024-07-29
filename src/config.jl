@@ -219,6 +219,15 @@ function see_dict()
 
         # For StochSK solver
         @case "StochSK"
+            println("method : ", get_k("method"))
+            println("nfine  : ", get_k("nfine") )
+            println("ngamm  : ", get_k("ngamm") )
+            println("nwarm  : ", get_k("nwarm") )
+            println("nstep  : ", get_k("nstep") )
+            println("ndump  : ", get_k("ndump") )
+            println("retry  : ", get_k("retry") )
+            println("theta  : ", get_k("theta") )
+            println("ratio  : ", get_k("ratio") )
             break
 
         # For StochOM solver
