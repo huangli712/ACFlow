@@ -278,8 +278,8 @@ mutable struct PronyApproximation
     Ωₚ :: Vector{ComplexF64}
 end
 
-function PronyApproximation(err)
-    N, w, G = prony_data()
+function PronyApproximation(winp, Ginp, err)
+    N, w, G = prony_data(winp, Ginp)
 
     S, V = prony_svd(N, G)
     
@@ -297,20 +297,20 @@ function PronyApproximation(err)
     return PronyApproximation(N, w, G, gamma, omega)
 end
 
-function prony_data()
-    data = readdlm("giw.data")
-    w = data[:,1]
-    gre = data[:,2]
-    gim = data[:,3]
-    G = gre + gim * im
+function prony_data(w, G)
+    #data = readdlm("giw.data")
+    #w = data[:,1]
+    #gre = data[:,2]
+    #gim = data[:,3]
+    #G = gre + gim * im
 
     osize = length(w)
     nsize = iseven(osize) ? osize - 1 : osize
-    N = div(nsize, 2)
-    w = w[1:nsize]
-    G = G[1:nsize]
+    N_ = div(nsize, 2)
+    w_ = w[1:nsize]
+    G_ = G[1:nsize]
 
-    return N, w, G
+    return N_, w_, G_
 end
 
 function prony_svd(N, G)
@@ -374,8 +374,6 @@ function (pa::PronyApproximation)(w::Vector{Float64})
     end
     return A * pa.Ωₚ
 end
-
-
 
 #=
 ### *Customized Structs* : *BarRat Solver*
@@ -441,7 +439,11 @@ function init(S::BarRatSolver, rd::RawData)
 end
 
 function run(brc::BarRatContext)
-    r = aaa(brc.grid.ω * im, brc.Gᵥ)
+    err = 1.0e-12
+    pa = PronyApproximation(brc.grid.ω, brc.Gᵥ, err)
+    @show pa(brc.grid.ω) .- brc.Gᵥ
+    #r = aaa(brc.grid.ω * im, brc.Gᵥ)
+    r = aaa(brc.grid.ω * im, pa(brc.grid.ω))
     @show bc_poles(r)
     brc.ℬ = r
 end
