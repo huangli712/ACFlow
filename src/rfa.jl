@@ -382,7 +382,8 @@ end
 """
     PronyApproximation(ω₁, 𝐺₁, ε)
 
-Construct a `PronyApproximation` type interpolant function.
+Construct a `PronyApproximation` type interpolant function. Once it is
+available, then it can be used to produce a smooth G at ω.
 
 ### Arguments
 * `ω₁::Vector{F64}` -> Non-negative Matsubara frequency (raw).
@@ -411,20 +412,21 @@ function PronyApproximation(ω₁, 𝐺₁, ε)
     return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, Γₚ, Ωₚ)
 end
 
-function prony_data(w, G)
-    #data = readdlm("giw.data")
-    #w = data[:,1]
-    #gre = data[:,2]
-    #gim = data[:,3]
-    #G = gre + gim * im
+"""
+    prony_data(ω₁, 𝐺₁)
 
-    osize = length(w)
+Prepare data for later Prony approximation. It will return the number
+of nodes, frequency mesh ωₚ, and Green's function data 𝐺ₚ at this mesh.
+"""
+function prony_data(ω₁, 𝐺₁)
+    osize = length(ω₁)
     nsize = iseven(osize) ? osize - 1 : osize
-    N_ = div(nsize, 2)
-    w_ = w[1:nsize]
-    G_ = G[1:nsize]
-
-    return N_, w_, G_
+    #
+    𝑁ₚ = div(nsize, 2)
+    ωₚ = ω₁[1:nsize]
+    𝐺ₚ = 𝐺₁[1:nsize]
+    #
+    return 𝑁ₚ, ωₚ, 𝐺ₚ
 end
 
 function prony_svd(N, G)
