@@ -50,7 +50,7 @@ r(z) = \frac{n(z)}{d(z)}
 
 where ``m \ge 1`` is an integer, ``z_1, \cdots, z_m`` are a set of real
 or complex distinct support points (`nodes`), ``f_1, \cdots, f_m`` are a
-set of real or complex data values, and ``w_1, \cdots, w_m`` are a set
+set of real or complex data `values`, and ``w_1, \cdots, w_m`` are a set
 of real or complex `weights`. As indicated in this equation, we just let
 ``n(z)`` and ``d(z)`` stand for the partial fractions in the numerator
 and the denominator.
@@ -98,37 +98,40 @@ end
 """
     bc_nodes(r::BarycentricFunction)
 
-Returns the nodes of the rational interpolant `r` as a vector.
+Returns the nodes of the rational interpolant `r` as a vector. Actually,
+they are ``z_i``.
 """
 bc_nodes(r::BarycentricFunction) = r.nodes
 
 """
     bc_values(r::BarycentricFunction)
 
-Returns the nodal values of the rational interpolant `r` as a vector.
+Returns the nodal values of the rational interpolant `r` as a vector. They
+are ``r(z_i) \equiv f_i``.
 """
 bc_values(r::BarycentricFunction) = r.values
 
 """
     bc_weights(r::BarycentricFunction)
 
-Returns the weights of the rational interpolant `r` as a vector.
+Returns the weights of the rational interpolant `r` as a vector. Actually,
+they are ``w_i``.
 """
 bc_weights(r::BarycentricFunction) = r.weights
 
 """
-    bc_degree(r::Barycentric)
+    bc_degree(r::BarycentricFunction)
 
 Returns the degree of the numerator and denominator of the rational `r`.
 """
-bc_degree(r::Barycentric) = length(r.nodes) - 1
+bc_degree(r::BarycentricFunction) = length(r.nodes) - 1
 
 """
-    bc_poles(r::Barycentric)
+    bc_poles(r::BarycentricFunction)
 
 Return the poles of the rational function `r`.
 """
-function bc_poles(r::Barycentric)
+function bc_poles(r::BarycentricFunction)
     T = F64
     w = bc_weights(r)
     nonzero = @. !iszero(w)
