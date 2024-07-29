@@ -153,6 +153,16 @@ function fil_dict(cfg::Dict{String,Any})
 end
 
 """
+    see_dict()
+
+Display all of the relevant configuration parameters to the terminal.
+
+See also: [`fil_dict`](@ref).
+"""
+function see_dict()
+end
+
+"""
     rev_dict_b(BASE::Dict{String,Any})
 
 Setup the configuration dictionary: `PBASE`.

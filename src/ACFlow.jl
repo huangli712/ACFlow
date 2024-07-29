@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/26
+# Last modified: 2024/07/29
 #
 
 """
@@ -395,6 +395,7 @@ They are stored in external files (case.toml) or dictionaries.
 ```text
 inp_toml   -> Parse case.toml, return raw configuration information.
 fil_dict   -> Fill dicts for configuration parameters.
+see_dict   -> Display all the relevant configuration parameters.
 rev_dict_b -> Update dict (PBASE) for configuration parameters.
 rev_dict_m -> Update dict (PMaxEnt) for configuration parameters.
 rev_dict_r -> Update dict (PBarRat) for configuration parameters.
@@ -421,6 +422,7 @@ include("config.jl")
 #
 export inp_toml
 export fil_dict
+export see_dict
 export rev_dict_b
 export rev_dict_m
 export rev_dict_r
