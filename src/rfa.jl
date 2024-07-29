@@ -430,6 +430,12 @@ function prony_data(ω₁, 𝐺₁)
     return 𝑁ₚ, ωₚ, 𝐺ₚ
 end
 
+"""
+    prony_svd(𝑁ₚ, 𝐺ₚ)
+
+Perform singular value decomposition for the matrix ℋ that is constructed
+from 𝐺ₚ.
+"""
 function prony_svd(𝑁ₚ, 𝐺ₚ)
     ℋ = zeros(C64, 𝑁ₚ + 1, 𝑁ₚ + 1)
     #
