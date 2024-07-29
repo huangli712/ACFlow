@@ -132,24 +132,25 @@ bc_degree(r::BarycentricFunction) = length(r.nodes) - 1
 Return the poles of the rational function `r`.
 """
 function bc_poles(r::BarycentricFunction)
-    T = F64
     w = bc_weights(r)
+    z = bc_nodes(r)
     nonzero = @. !iszero(w)
-    z, w = bc_nodes(r)[nonzero], w[nonzero]
+    z, w = z[nonzero], w[nonzero]
+    #
     m = length(w)
-    B = diagm( [zero(T); ones(T, m)] )
-    E = [zero(T) transpose(w); ones(T, m) diagm(z) ];
-
-    pol = [] # Put it into scope
+    B = diagm( [zero(F64); ones(F64, m)] )
+    E = [zero(F64) transpose(w); ones(F64, m) diagm(z) ];
+    #
+    pole = [] # Put it into scope
     try
-        pol = filter( isfinite, eigvals(E, B) )
+        pole = filter( isfinite, eigvals(E, B) )
     catch
         # Generalized eigen not available in extended precision, so:
         λ = filter( z->abs(z)>1e-13, eigvals(E\B) )
-        pol = 1 ./ λ
+        pole = 1 ./ λ
     end
 
-    return pol
+    return pole
 end
 
 """
