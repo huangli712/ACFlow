@@ -503,12 +503,19 @@ function prony_gamma(v, Λ)
     return Γₚ
 end
 
-function prony_omega(G, gamma)
-    A = zeros(C64, length(G), length(gamma))
-    for i = 1:length(G)
-        A[i,:] = gamma .^ (i - 1)
+"""
+    prony_omega(𝐺ₚ, Γₚ)
+
+Try to calculate Ωₚ.
+"""
+function prony_omega(𝐺ₚ, Γₚ)
+    A = zeros(C64, length(𝐺ₚ), length(Γₚ))
+    #
+    for i in eachindex(𝐺ₚ)
+        A[i,:] = Γₚ .^ (i - 1)
     end
-    return pinv(A) * G
+    #
+    return pinv(A) * 𝐺ₚ
 end
 
 function (pa::PronyApproximation)(w::Vector{F64})
