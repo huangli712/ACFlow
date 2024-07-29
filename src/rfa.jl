@@ -419,6 +419,7 @@ Prepare data for later Prony approximation. It will return the number
 of nodes, frequency mesh ωₚ, and Green's function data 𝐺ₚ at this mesh.
 """
 function prony_data(ω₁, 𝐺₁)
+    # We have to make sure the number of data points is odd.
     osize = length(ω₁)
     nsize = iseven(osize) ? osize - 1 : osize
     #
@@ -429,14 +430,14 @@ function prony_data(ω₁, 𝐺₁)
     return 𝑁ₚ, ωₚ, 𝐺ₚ
 end
 
-function prony_svd(N, G)
-    H = zeros(C64, N + 1, N + 1)
-
-    for i = 1 : N + 1
-        H[i,:] = G[i:i+N]
+function prony_svd(𝑁ₚ, 𝐺ₚ)
+    ℋ = zeros(C64, 𝑁ₚ + 1, 𝑁ₚ + 1)
+    #
+    for i = 1 : 𝑁ₚ + 1
+        ℋ[i,:] = 𝐺ₚ[i:i+𝑁ₚ]
     end
-
-    _, S, V = svd(H)
+    #
+    _, S, V = svd(ℋ)
 
     return S, V
 end
