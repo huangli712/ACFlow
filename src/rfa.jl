@@ -380,36 +380,36 @@ mutable struct PronyApproximation <: Function
 end
 
 """
-    PronyApproximation(ωₚ, Gₚ, err)
+    PronyApproximation(ω₁, 𝐺₁, ε)
 
 Construct a `PronyApproximation` type interpolant function.
 
 ### Arguments
-* `ωₚ::Vector{F64}` -> Non-negative Matsubara frequency (raw).
-* `Gₚ::Vector{C64}` -> Complex values at ωₚ (raw).
-* `err::F64` -> Threshold for the Prony approximation.
+* `ω₁::Vector{F64}` -> Non-negative Matsubara frequency (raw).
+* `𝐺₁::Vector{C64}` -> Complex values at ωₚ (raw).
+* `ε::F64` -> Threshold for the Prony approximation.
 """
-function PronyApproximation(ωₚ, Gₚ, err)
-    # Get number of Prony nodes, frequency points w, and Matsubara data G.   
-    N, w, G = prony_data(ωₚ, Gₚ)
+function PronyApproximation(ω₁, 𝐺₁, ε)
+    # Get number of nodes, frequency points ωₚ, and Matsubara data 𝐺ₚ.   
+    𝑁ₚ, ωₚ, 𝐺ₚ = prony_data(ω₁, G₁)
 
     # Singular value decomposition
-    S, V = prony_svd(N, G)
+    S, V = prony_svd(𝑁ₚ, 𝐺ₚ)
     
-    v = prony_v(S, V, err)
+    v = prony_v(S, V, ε)
 
     # Evaluate Γₚ and Ωₚ
-    cutoff = 1.0 + 0.5 / N
-    gamma = prony_gamma(v, cutoff)
-    omega = prony_omega(G, gamma)
+    Λ = 1.0 + 0.5 / 𝑁ₚ
+    Γₚ = prony_gamma(v, Λ)
+    Ωₚ = prony_omega(𝐺ₚ, Γₚ)
 
     # Sort Γₚ and Ωₚ
-    idx_sort = sortperm(abs.(omega))
+    idx_sort = sortperm(abs.(Ωₚ))
     reverse!(idx_sort)
-    omega = omega[idx_sort]
-    gamma = gamma[idx_sort]
+    Ωₚ = Ωₚ[idx_sort]
+    Γₚ = Γₚ[idx_sort]
 
-    return PronyApproximation(N, w, G, gamma, omega)
+    return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, Γₚ, Ωₚ)
 end
 
 function prony_data(w, G)
