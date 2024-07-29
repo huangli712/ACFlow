@@ -161,6 +161,7 @@ See also: [`fil_dict`](@ref).
 """
 function see_dict()
     println("[ Param: base ]")
+    #
     println("finput  : ", get_b("finput") )
     println("solver  : ", get_b("solver") )
     println("ktype   : ", get_b("ktype")  )
@@ -177,7 +178,18 @@ function see_dict()
     println("pmodel  : ", get_b("pmodel") )
     println("pmesh   : ", get_b("pmesh")  )
     println("exclude : ", get_b("exclude"))
+    #
     println("[ Param: solver ]")
+    @cswitch get_b("solver") begin
+        # For MaxEnt solver
+        @case "MaxEnt"
+            break
+
+        # For StochPX solver
+        @case "StochPX"
+            break
+    end
+    #
     println()
     #
     flush(stdout)
