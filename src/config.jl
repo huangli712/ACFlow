@@ -160,6 +160,27 @@ Display all of the relevant configuration parameters to the terminal.
 See also: [`fil_dict`](@ref).
 """
 function see_dict()
+    println("[ Param: base ]")
+    println("finput  : ", get_b("finput") )
+    println("solver  : ", get_b("solver") )
+    println("ktype   : ", get_b("ktype")  )
+    println("mtype   : ", get_b("mtype")  )
+    println("grid    : ", get_b("grid")   )
+    println("mesh    : ", get_b("mesh")   )
+    println("ngrid   : ", get_b("ngrid")  )
+    println("nmesh   : ", get_b("nmesh")  )
+    println("wmax    : ", get_b("wmax")   )
+    println("wmin    : ", get_b("wmin")   )
+    println("beta    : ", get_b("beta")   )
+    println("offdiag : ", get_b("offdiag"))
+    println("fwrite  : ", get_b("fwrite") )
+    println("pmodel  : ", get_b("pmodel") )
+    println("pmesh   : ", get_b("pmesh")  )
+    println("exclude : ", get_b("exclude"))
+    println("[ Param: solver ]")
+    println()
+    #
+    flush(stdout)
 end
 
 """

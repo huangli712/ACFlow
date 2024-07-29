@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/26
+# Last modified: 2024/07/29
 #
 
 """
@@ -268,6 +268,7 @@ function read_param()
     cfg = inp_toml(query_args(), true)
     fil_dict(cfg)
     chk_dict()
+    see_dict()
 end
 
 """
