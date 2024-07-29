@@ -518,13 +518,20 @@ function prony_omega(𝐺ₚ, Γₚ)
     return pinv(A) * 𝐺ₚ
 end
 
-function (pa::PronyApproximation)(w::Vector{F64})
-    x0 = @. (w - w[1]) / (w[end] - w[1])
-    A = zeros(C64, length(x0), length(pa.Ωₚ))
-    for i in eachindex(x0)
-        @. A[i,:] = pa.Γₚ ^ (2.0 * pa.𝑁ₚ * x0[i])
+"""
+    (p::PronyApproximation)(w::Vector{F64})
+
+Evaluate the Prony approximation at `w`.
+"""
+function (p::PronyApproximation)(w::Vector{F64})
+    x₀ = @. (w - w[1]) / (w[end] - w[1])
+    A = zeros(C64, length(x₀), length(p.Ωₚ))
+    #
+    for i in eachindex(x₀)
+        @. A[i,:] = p.Γₚ ^ (2.0 * p.𝑁ₚ * x₀[i])
     end
-    return A * pa.Ωₚ
+    #
+    return A * p.Ωₚ
 end
 
 #=
