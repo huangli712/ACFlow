@@ -17,19 +17,25 @@
 #
 # See
 #
+#     The AAA algorithm for rational approximation
+#     Yuji Nakatsukasa, Olivier Sète, Lloyd N. Trefethen
+#     SIAM Journal on Scientific Computing 40, A1494 (2018)
+#
+# and
+#
 #     AAA Rational Approximation on a Continuum
 #     Tobin A. Driscoll, Yuji Nakatsukasa, Lloyd N. Trefethen
-#     SIAM Journal on Scientific Computing 46, A929 (2024) 
+#     SIAM Journal on Scientific Computing 46, A929 (2024)
 #     
 # for more details.
 #
 
 #=
-### *Customized Structs* : *Barycentric*
+### *Customized Structs* : *BarycentricFunction*
 =#
 
 """
-    Barycentric
+    BarycentricFunction
 
 Mutable struct. Barycentric representation of a rational function.
 
@@ -40,7 +46,7 @@ Mutable struct. Barycentric representation of a rational function.
 * weights   -> Weights of the rational function.
 * w_times_f -> Weighted values of the rational function.
 """
-mutable struct Barycentric <: Function
+mutable struct BarycentricFunction <: Function
     nodes     :: Vector{C64}
     values    :: Vector{C64}
     weights   :: Vector{C64}
