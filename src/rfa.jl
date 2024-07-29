@@ -324,8 +324,53 @@ end
 ### *Customized Structs* : *PronyApproximation*
 =#
 
+#=
+*Remarks* :
 
+**Prony interpolation**
 
+Our input data consists of an odd number ``2N + 1`` of Matsubara points
+``G(i\omega_n)`` that are uniformly spaced. Prony's interpolation method
+interpolates ``G_k`` as a sum of exponentials
+
+```math
+G_k = \sum^{N-1}_{i=0} w_i \gamma^k_i,
+```
+
+where ``0 \le k \le 2N``, ``w_i`` denote complex weights and ``\gamma_i``
+corresponding nodes.
+
+---
+
+**Prony approximation**
+
+Prony's interpolation method is unstable. We therefore employs a Prony
+approximation, rather than an interpolation of ``G``. For the physical
+Matsubara functions, which decay in magnitude to zero for
+``i\omega_n \to i\infty``, only ``K \propto \log{1/\varepsilon}`` out of
+all ``N`` nodes in the Prony approximation have weights
+``|w_i| > \varepsilon``. Thus, we have
+
+```math
+|G_k - \sum^{K-1}_{i=0} w_i \gamma^k_i| \le \varepsilon
+```
+
+for all ``0 \le k \le 2N``.
+=#
+
+"""
+    PronyApproximation
+
+Mutable struct. Prony approximation to a complex-valued function.
+
+### Members
+
+* 𝑁ₚ ->.
+* ωₚ -> Non-negative Matsubara frequency.
+* 𝐺ₚ -> 
+* Γₚ ->
+* Ωₚ ->
+"""
 mutable struct PronyApproximation
     𝑁ₚ :: I64
     ωₚ :: Vector{F64}
