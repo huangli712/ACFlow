@@ -230,7 +230,7 @@ function aaa(
 
     @assert float_type <: AbstractFloat
     T = float_type
-    fmax = norm(y, Inf) # for scaling
+    fmax = norm(y, Inf) # For scaling
     m = length(z)
     iteration = NamedTuple[]
     err = T[]
