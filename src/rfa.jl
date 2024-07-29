@@ -26,7 +26,7 @@
 #     AAA Rational Approximation on a Continuum
 #     Tobin A. Driscoll, Yuji Nakatsukasa, Lloyd N. Trefethen
 #     SIAM Journal on Scientific Computing 46, A929 (2024)
-#     
+#
 # for more details.
 #
 
@@ -314,9 +314,9 @@ end
 #
 #     Minimal Pole Representation and Controlled Analytic Continuation
 #     of Matsubara Response Functions
-#     Lei Zhang and Emanuel Gull 
+#     Lei Zhang and Emanuel Gull
 #     arXiv:2312.10576 (2024)
-#     
+#
 # for more details.
 #
 
@@ -391,7 +391,7 @@ available, then it can be used to produce a smooth G at ω.
 * `ε::F64` -> Threshold for the Prony approximation.
 """
 function PronyApproximation(ω₁, 𝐺₁, ε)
-    # Get number of nodes, frequency points ωₚ, and Matsubara data 𝐺ₚ.   
+    # Get number of nodes, frequency points ωₚ, and Matsubara data 𝐺ₚ.
     𝑁ₚ, ωₚ, 𝐺ₚ = prony_data(ω₁, 𝐺₁)
 
     # Singular value decomposition
@@ -628,4 +628,3 @@ function last(brc::BarRatContext)
 
     return Aout, _G
 end
-
