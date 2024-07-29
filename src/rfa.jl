@@ -156,13 +156,14 @@ end
 """
     (r::BarycentricFunction)(z::Number)
 
-Evaluate the rational function at `z`.
+Evaluate the Barycentric rational function at `z`.
 """
 function (r::BarycentricFunction)(z::Number)
     if isinf(z)
         return sum(r.w_times_f) / sum(r.weights)
     end
     #
+    # Try to determine whether z is a valid node
     k = findfirst(z .== r.nodes)
     #
     if isnothing(k) # Not at a node
