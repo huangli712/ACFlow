@@ -34,6 +34,28 @@
 ### *Customized Structs* : *BarycentricFunction*
 =#
 
+#=
+*Remarks* :
+
+**Rational Barycentric Representation**
+
+The barycentric formula takes the form of a quotient of two partial
+fractions,
+
+```math
+r(z) = \frac{n(z)}{d(z)}
+     = \sum^m_{j=1} \frac{w_j f_j}{z - z_j}
+     {\huge/} \sum^m_{j=1} \frac{w_j}{z - z_j},
+```
+
+where ``m \ge 1`` is an integer, ``z_1, \cdots, z_m`` are a set of real
+or complex distinct support points (`nodes`), ``f_1, \cdots, f_m`` are a
+set of real or complex data values, and ``w_1, \cdots, w_m`` are a set
+of real or complex `weights`. As indicated in this equation, we just let
+``n(z)`` and ``d(z)`` stand for the partial fractions in the numerator
+and the denominator.
+=#
+
 """
     BarycentricFunction
 
@@ -41,10 +63,10 @@ Mutable struct. Barycentric representation of a rational function.
 
 ### Members
 
-* nodes     -> Nodes of the rational function.
-* values    -> Values of the rational function.
-* weights   -> Weights of the rational function.
-* w_times_f -> Weighted values of the rational function.
+* nodes     -> Nodes of the rational function, ``z_i``.
+* values    -> Values of the rational function, ``r(z_i)``.
+* weights   -> Weights of the rational function, ``w_i``.
+* w_times_f -> Weighted values of the rational function, ``w_i f_i``.
 """
 mutable struct BarycentricFunction <: Function
     nodes     :: Vector{C64}
