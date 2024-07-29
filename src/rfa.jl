@@ -449,6 +449,9 @@ function prony_svd(𝑁ₚ, 𝐺ₚ)
 end
 
 """
+    prony_v(S, V, ε)
+
+Extract suitable vector from V according to the threshold ε.
 """
 function prony_v(S, V, ε)
     # Return idx, such that S[idx] < ε.
