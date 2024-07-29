@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/26
+# Last modified: 2024/07/29
 #
 
 """
@@ -178,6 +178,8 @@ function see_dict()
     println("pmodel  : ", get_b("pmodel") )
     println("pmesh   : ", get_b("pmesh")  )
     println("exclude : ", get_b("exclude"))
+    #
+    println()
     #
     println("[ Param: solver ]")
     #
