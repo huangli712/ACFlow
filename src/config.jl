@@ -232,6 +232,12 @@ function see_dict()
 
         # For StochOM solver
         @case "StochOM"
+            println("ntry  : ", get_s("ntry") )
+            println("nstep : ", get_s("nstep"))
+            println("nbox  : ", get_s("nbox") )
+            println("sbox  : ", get_s("sbox") )
+            println("wbox  : ", get_s("wbox") )
+            println("norm  : ", get_s("norm") )
             break
 
         # For StochPX solver
