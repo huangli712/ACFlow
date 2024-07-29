@@ -293,7 +293,7 @@ function aaa(
     end
 
     idx, w = best.active, best.weights
-    r = Barycentric(z[idx], y[idx], w)
+    r = BarycentricFunction(z[idx], y[idx], w)
     if stats
         return r, (;err, iteration)
     else
@@ -425,7 +425,7 @@ mutable struct  BarRatContext
     Gᵥ   :: Vector{C64}
     grid :: AbstractGrid
     mesh :: AbstractMesh
-    ℬ    :: Union{Missing,Barycentric}
+    ℬ    :: Union{Missing,BarycentricFunction}
 end
 
 #=
