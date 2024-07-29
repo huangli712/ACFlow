@@ -181,20 +181,20 @@ end
 """
     aaa(z, y)
 
-Adaptively compute a rational interpolant.
+Adaptively compute a Barycentric rational interpolant.
 
 ### Arguments
 * `z::AbstractVector{<:Number}` -> Interpolation nodes.
 * `y::AbstractVector{<:Number}` -> Values at nodes.
 * `max_degree::Integer=150` -> Maximum numerator/denominator degree to use.
-* `float_type::Type=Float64` -> Floating point type to use for the computation.
+* `float_type::Type=F64` -> Floating point type to use for the computation.
 * `tol::Real=1000*eps(float_type)` -> Tolerance for stopping.
 * `lookahead::Integer=10` -> Number of iterations to determines stagnation.
 * `stats::Bool=false` -> Return convergence statistics.
 
 ### Returns
-* `r::Barycentric` -> The rational interpolant.
-* `stats::NamedTuple` -> Convergence statistics, if keyword `stats=true`.
+* `r::BarycentricFunction` -> The rational interpolant.
+* `stats::NamedTuple` -> Convergence statistics, if keyword `stats = true`.
 
 ### Examples
 ```julia-repl
@@ -204,7 +204,7 @@ julia> y = @. exp(z);
 
 julia> r = aaa(z, y);
 
-julia> degree(r)   # both numerator and denominator
+julia> bc_degree(r) # both numerator and denominator
 12
 
 julia> first(nodes(r), 4)
@@ -222,7 +222,7 @@ function aaa(
     z::AbstractVector{<:Number},
     y::AbstractVector{<:Number};
     max_degree = 150,
-    float_type = Float64,
+    float_type = F64,
     tol = 1000 * eps(float_type),
     lookahead = 10,
     stats = false
@@ -305,10 +305,10 @@ end
 
 mutable struct PronyApproximation
     𝑁ₚ :: Int64
-    ωₚ :: Vector{Float64}
-    𝐺ₚ :: Vector{ComplexF64}
-    Γₚ :: Vector{ComplexF64}
-    Ωₚ :: Vector{ComplexF64}
+    ωₚ :: Vector{F64}
+    𝐺ₚ :: Vector{C64}
+    Γₚ :: Vector{C64}
+    Ωₚ :: Vector{C64}
 end
 
 function PronyApproximation(winp, Ginp, err)
@@ -347,7 +347,7 @@ function prony_data(w, G)
 end
 
 function prony_svd(N, G)
-    H = zeros(ComplexF64, N + 1, N + 1)
+    H = zeros(C64, N + 1, N + 1)
 
     for i = 1 : N + 1
         H[i,:] = G[i:i+N]
@@ -381,27 +381,27 @@ function prony_gamma(u, cutoff)
     unew = u[non_zero[1]:non_zero[end]]
     N = length(unew)
     if N > 1
-        A = diagm(-1=>ones(ComplexF64, N - 2))
+        A = diagm(-1=>ones(C64, N - 2))
         @. A[1,:] = -unew[2:end] / unew[1]
         roots = eigvals(A)
     else
     end
-    gamma = vcat(roots, zeros(ComplexF64, trailing_zeros))
+    gamma = vcat(roots, zeros(C64, trailing_zeros))
     filter!(x -> abs(x) < cutoff, gamma)
     return gamma
 end
 
 function prony_omega(G, gamma)
-    A = zeros(ComplexF64, length(G), length(gamma))
+    A = zeros(C64, length(G), length(gamma))
     for i = 1:length(G)
         A[i,:] = gamma .^ (i - 1)
     end
     return pinv(A) * G
 end
 
-function (pa::PronyApproximation)(w::Vector{Float64})
+function (pa::PronyApproximation)(w::Vector{F64})
     x0 = @. (w - w[1]) / (w[end] - w[1])
-    A = zeros(ComplexF64, length(x0), length(pa.Ωₚ))
+    A = zeros(C64, length(x0), length(pa.Ωₚ))
     for i in eachindex(x0)
         @. A[i,:] = pa.Γₚ ^ (2.0 * pa.𝑁ₚ * x0[i])
     end
