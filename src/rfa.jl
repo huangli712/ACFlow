@@ -391,11 +391,10 @@ Construct a `PronyApproximation` type interpolant function.
 """
 function PronyApproximation(ω₁, 𝐺₁, ε)
     # Get number of nodes, frequency points ωₚ, and Matsubara data 𝐺ₚ.   
-    𝑁ₚ, ωₚ, 𝐺ₚ = prony_data(ω₁, G₁)
+    𝑁ₚ, ωₚ, 𝐺ₚ = prony_data(ω₁, 𝐺₁)
 
     # Singular value decomposition
     S, V = prony_svd(𝑁ₚ, 𝐺ₚ)
-    
     v = prony_v(S, V, ε)
 
     # Evaluate Γₚ and Ωₚ
