@@ -650,6 +650,8 @@ last            -> Postprocess the calculated results and write them.
 #
 include("rfa.jl")
 #
+export BarycentricFunction
+#
 export BarRatContext
 #
 export solve
