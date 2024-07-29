@@ -85,7 +85,7 @@ Construct a `BarycentricFunction` type rational function.
 * `values::Vector`  -> Values at the interpolation nodes, ``r(z_i)``.
 * `weights::Vector` -> Barycentric weights, ``w_i``.
 """
-function Barycentric(
+function BarycentricFunction(
     nodes   :: Vector{C64},
     values  :: Vector{C64},
     weights :: Vector{C64}
