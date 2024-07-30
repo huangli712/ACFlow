@@ -554,11 +554,14 @@ Mutable struct. It is used within the BarRat solver only.
 * Gᵥ   -> Input data for correlator.
 * grid -> Grid for input data.
 * mesh -> Mesh for output spectrum.
+* 𝒫    -> Prony approximation for the input data.
+* ℬ    -> Barycentric rational function approximation for the input data.
 """
 mutable struct BarRatContext
     Gᵥ   :: Vector{C64}
     grid :: AbstractGrid
     mesh :: AbstractMesh
+    𝒫    :: Union{Missing,PronyApproximation}
     ℬ    :: Union{Missing,BarycentricFunction}
 end
 
@@ -600,7 +603,7 @@ function init(S::BarRatSolver, rd::RawData)
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    return BarRatContext(Gᵥ, grid, mesh, missing)
+    return BarRatContext(Gᵥ, grid, mesh, missing, missing)
 end
 
 """
@@ -623,6 +626,7 @@ function run(brc::BarRatContext)
     if denoise == "prony"
         println("Activate Prony approximation to denoise the input data")
         pa = PronyApproximation(ω, G, ε)
+        brc.𝒫 = pa
         #
         println("Construct Barycentric rational function approximation")
         brc.ℬ = aaa(iω, pa(ω))
