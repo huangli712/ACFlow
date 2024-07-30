@@ -423,9 +423,9 @@ function prony_data(ω₁, 𝐺₁)
     osize = length(ω₁)
     nsize = iseven(osize) ? osize - 1 : osize
     #
-    𝑁ₚ = div(nsize, 2)
-    ωₚ = ω₁[1:nsize]
-    𝐺ₚ = 𝐺₁[1:nsize]
+    𝑁ₚ = div(nsize, 2) # Number of nodes for Prony approximation
+    ωₚ = ω₁[1:nsize]   # Matsubara frequency, ωₙ
+    𝐺ₚ = 𝐺₁[1:nsize]   # Matsubara Green's function, G(iωₙ)
     #
     return 𝑁ₚ, ωₚ, 𝐺ₚ
 end
@@ -434,7 +434,7 @@ end
     prony_svd(𝑁ₚ, 𝐺ₚ)
 
 Perform singular value decomposition for the matrix ℋ that is constructed
-from 𝐺ₚ.
+from 𝐺ₚ. It will return the singular values `S` and orthogonal matrix `V`.
 """
 function prony_svd(𝑁ₚ, 𝐺ₚ)
     ℋ = zeros(C64, 𝑁ₚ + 1, 𝑁ₚ + 1)
@@ -451,7 +451,10 @@ end
 """
     prony_v(S, V, ε)
 
-Extract suitable vector from V according to the threshold ε.
+Extract suitable vector `v` from orthogonal matrix `V` according to the
+threshold `ε`. The diagonal matrix (singular values) `S` is used to test
+whether the threshold `ε` is reasonable and figure out the index for
+extracting `v` from `V`.
 """
 function prony_v(S, V, ε)
     # Return idx, such that S[idx] < ε.
@@ -464,7 +467,7 @@ function prony_v(S, V, ε)
     end
     #
     # Check idx
-    if S[idx] >= ε
+    if S[idx] ≥ ε
         @error "please increase ε and try again!"
     end
     #
