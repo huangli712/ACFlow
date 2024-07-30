@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/29
+# Last modified: 2024/07/30
 #
 
 #
@@ -81,9 +81,9 @@ end
 Construct a `BarycentricFunction` type rational function.
 
 ### Arguments
-* `nodes::Vector`   -> Interpolation nodes, ``z_i``.
-* `values::Vector`  -> Values at the interpolation nodes, ``r(z_i)``.
-* `weights::Vector` -> Barycentric weights, ``w_i``.
+* nodes::Vector   -> Interpolation nodes, ``z_i``.
+* values::Vector  -> Values at the interpolation nodes, ``r(z_i)``.
+* weights::Vector -> Barycentric weights, ``w_i``.
 """
 function BarycentricFunction(
     nodes   :: Vector{C64},
@@ -184,13 +184,13 @@ end
 Adaptively compute a Barycentric rational interpolant.
 
 ### Arguments
-* `z::AbstractVector{<:Number}` -> Interpolation nodes.
-* `y::AbstractVector{<:Number}` -> Values at nodes.
-* `max_degree::Integer=150` -> Maximum numerator/denominator degree to use.
-* `float_type::Type=F64` -> Floating point type to use for the computation.
-* `tol::Real=1000*eps(float_type)` -> Tolerance for stopping.
-* `lookahead::Integer=10` -> Number of iterations to determines stagnation.
-* `stats::Bool=false` -> Return convergence statistics.
+* z::AbstractVector{<:Number} -> Interpolation nodes.
+* y::AbstractVector{<:Number} -> Values at nodes.
+* max_degree::Integer=150 -> Maximum numerator/denominator degree to use.
+* float_type::Type=F64 -> Floating point type to use for the computation.
+* tol::Real=1000*eps(float_type) -> Tolerance for stopping.
+* lookahead::Integer=10 -> Number of iterations to determines stagnation.
+* stats::Bool=false -> Return convergence statistics.
 
 ### Returns
 * `r::BarycentricFunction` -> The rational interpolant.
@@ -386,9 +386,9 @@ Construct a `PronyApproximation` type interpolant function. Once it is
 available, then it can be used to produce a smooth G at ω.
 
 ### Arguments
-* `ω₁::Vector{F64}` -> Non-negative Matsubara frequency (raw).
-* `𝐺₁::Vector{C64}` -> Complex values at ωₚ (raw).
-* `ε::F64` -> Threshold for the Prony approximation.
+* ω₁::Vector{F64} -> Non-negative Matsubara frequency (raw).
+* 𝐺₁::Vector{C64} -> Complex values at ωₚ (raw).
+* ε::F64 -> Threshold for the Prony approximation.
 """
 function PronyApproximation(ω₁, 𝐺₁, ε)
     # Get number of nodes, frequency points ωₚ, and Matsubara data 𝐺ₚ.
@@ -480,7 +480,9 @@ end
 """
     prony_gamma(v, Λ)
 
-Try to calculate Γₚ.
+Try to calculate Γₚ. Actually, Γₚ are eigenvalues of a matrix constructed
+by `v`. `Λ` is a cutoff for Γₚ. Only those Γₚ that are smaller than `Λ`
+are kept.
 """
 function prony_gamma(v, Λ)
     # The following codes actually calculate the roots of a polynominal
