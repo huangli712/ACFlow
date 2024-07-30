@@ -632,6 +632,13 @@ function run(brc::BarRatContext)
     @show bc_poles(brc.ℬ)
 end
 
+"""
+    last(brc::BarRatContext)
+
+It will process and write the calculated results by the BarRat solver,
+including correlator at real axis, final spectral function, reproduced
+correlator.
+"""
 function last(brc::BarRatContext)
     # By default, we should write the analytic continuation results
     # into the external files.

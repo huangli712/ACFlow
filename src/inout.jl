@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/05/13
+# Last modified: 2024/07/30
 #
 
 #=
@@ -281,6 +281,49 @@ function write_model(am::AbstractMesh, D::Vector{F64})
     open("model.data", "w") do fout
         for i in eachindex(am)
             @printf(fout, "%16.12f %16.12f\n", am[i], D[i])
+        end
+    end
+end
+
+"""
+    write_barycentric(nodes::Vector{C64}, values::Vector{C64}, weights::Vector{C64})
+
+Write Barycentric rational function approximation to the input correlator.
+This information can be used to reconstruct or interpolate the correlator.
+This function is only useful for the `BarRat` solver.
+"""
+function write_barycentric(
+    nodes   :: Vector{C64},
+    values  :: Vector{C64},
+    weights :: Vector{C64}
+    )
+    w_times_f = values .* weights
+
+    open("barycentric.data", "w") do fout
+        println(fout, "# Barycentric Rational Function Approximation")
+        #
+        println(fout, "# nodes :")
+        for i in eachindex(nodes)
+            z = nodes[i]
+            @printf(fout, "%4i %16.12f %16.12f\n", i, real(z), imag(z))
+        end
+        #
+        println(fout, "# values :")
+        for i in eachindex(values)
+            z = values[i]
+            @printf(fout, "%4i %16.12f %16.12f\n", i, real(z), imag(z))
+        end
+        #
+        println(fout, "# weights :")
+        for i in eachindex(weights)
+            z = weights[i]
+            @printf(fout, "%4i %16.12f %16.12f\n", i, real(z), imag(z))
+        end
+        #
+        println(fout, "# w_times_f :")
+        for i in eachindex(w_times_f)
+            z = w_times_f[i]
+            @printf(fout, "%4i %16.12f %16.12f\n", i, real(z), imag(z))
         end
     end
 end
