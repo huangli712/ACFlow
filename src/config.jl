@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/29
+# Last modified: 2024/07/30
 #
 
 """
@@ -197,6 +197,7 @@ function see_dict()
         # For BarRat solver
         @case "BarRat"
             println("denoise : ", get_r("denoise"))
+            println("epsilon : ", get_r("epsilon"))
             break
 
         # For NevanAC solver
@@ -588,6 +589,7 @@ function chk_dict()
             @assert get_b("grid") in ("ffreq", "ffrag", "bfreq", "bfrag")
             #
             @assert get_r("denoise") in ("none", "prony")
+            @assert get_r("epsilon") ≥ 0.0
             break
 
         # For NevanAC solver
