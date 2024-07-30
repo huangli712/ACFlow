@@ -468,8 +468,10 @@ function prony_v(S, V, ε)
     #
     # Check idx
     if S[idx] ≥ ε
-        @error "please increase ε and try again!"
+        
+        error("Please increase ε and try again!")
     end
+    @info "Singular values are in $([S[1], S[end]])"
     #
     # Extract v from V
     v = V[:,idx]
