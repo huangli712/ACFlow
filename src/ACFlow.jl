@@ -640,14 +640,27 @@ To implement the BarRat solver for analytic continuation problem.
 *Members* :
 
 ```text
+BarycentricFunction -> Barycentric representation of a rational function.
+bc_nodes        -> Return nodes of the rational function.
+bc_values       -> Return values of the rational function.
+bc_weights      -> Return weights of the rational function.
+bc_degree       -> Return degree of the rational function.
+bc_poles        -> Return poles of the rational function.
+aaa             -> Adaptive Antoulas-Anderson algorithm.
+#
+PronyApproximation -> Prony approximation of a complex-valued function.
+prony_data      -> Preprocess the input Matsubara data.
+prony_svd       -> Perform singular value decomposition.
+prony_v         -> Extract a vector from the orthogonal matrix V.
+prony_gamma     -> Evaluate Γₚ for Prony approximation.
+prony_omega     -> Evaluate Ωₚ for Prony approximation.
+#
 BarRatContext   -> Essential struct for the BarRat solver.
 #
 solve           -> Wrapper function for the BarRat solver.
 init            -> Initialize Barycentric rational function simulation.
 run             -> Perform Barycentric rational function simulation.
 last            -> Postprocess the calculated results and write them.
-#
-#
 ```
 =#
 
@@ -655,6 +668,19 @@ last            -> Postprocess the calculated results and write them.
 include("rfa.jl")
 #
 export BarycentricFunction
+export bc_nodes
+export bc_values
+export bc_weights
+export bc_degree
+export bc_poles
+export aaa
+#
+export PronyApproximation
+export prony_data
+export prony_svd
+export prony_v
+export prony_gamma
+export prony_omega
 #
 export BarRatContext
 #
