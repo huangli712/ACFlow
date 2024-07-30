@@ -554,7 +554,7 @@ Mutable struct. It is used within the BarRat solver only.
 * grid -> Grid for input data.
 * mesh -> Mesh for output spectrum.
 """
-mutable struct  BarRatContext
+mutable struct BarRatContext
     Gᵥ   :: Vector{C64}
     grid :: AbstractGrid
     mesh :: AbstractMesh
@@ -602,6 +602,15 @@ function init(S::BarRatSolver, rd::RawData)
     return BarRatContext(Gᵥ, grid, mesh, missing)
 end
 
+"""
+    run(brc::BarRatContext)
+
+At first, it will try to construct a Prony approximation for the input
+Matsubara data. Then the Prony approximation is used to build smooth data
+set (data denoising). Finally, the Barycentric rational function for this
+data set is constructed. The member `ℬ` of the BarRatContext object
+(`brc`) should be updated in this function.
+"""
 function run(brc::BarRatContext)
     err = 1.0e-12
     pa = PronyApproximation(brc.grid.ω, brc.Gᵥ, err)
