@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/29
+# Last modified: 2024/07/31
 #
 
 """
@@ -463,6 +463,8 @@ write_complete    -> Write full data in real axis.
 write_misfit      -> Write α-dependent χ².
 write_goodness    -> Write Θ-dependent χ².
 write_model       -> Write default model function.
+write_prony       -> Write Prony approximation.
+write_barycentric -> Write Barycentric rational function approximation. 
 write_hamiltonian -> Write effective hamiltonian for StochAC solver.
 write_passed      -> Write indices of selected solutions StochOM and StochPX solvers.
 write_pole        -> Write details of generated poles for StochPX solver.
@@ -483,6 +485,8 @@ export write_complete
 export write_misfit
 export write_goodness
 export write_model
+export write_prony
+export write_barycentric
 export write_hamiltonian
 export write_passed
 export write_pole
