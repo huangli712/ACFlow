@@ -642,13 +642,17 @@ end
 
 It will process and write the calculated results by the BarRat solver,
 including correlator at real axis, final spectral function, reproduced
-correlator.
+correlator. The information about Prony approximation and Barycentric
+rational function approximation will be written as well.
 """
 function last(brc::BarRatContext)
     # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
+
+    # Write information about Prony approximation
+    fwrite && (get_r("denoise") == "prony") && write_prony(brc.𝒫.𝑁ₚ, brc.𝒫.Γₚ, brc.𝒫.Ωₚ)
 
     # Write information about Barycentric rational function
     fwrite && write_barycentric(brc.ℬ.nodes, brc.ℬ.values, brc.ℬ.weights)
