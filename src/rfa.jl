@@ -460,7 +460,7 @@ function prony_v(S, V, ε)
     # Write singular values
     println("List of singular values:")
     for i in eachindex(S)
-        @printf("%4i %16.12f", i, S[i])
+        @printf("%4i %16.12e\n", i, S[i])
     end
 
     # Determine idx, such that S[idx] < ε.
@@ -478,7 +478,7 @@ function prony_v(S, V, ε)
     end
 
     # Extract v from V
-    println("Selected vector from orthogonal matrix V:", idx)
+    println("Selected vector from orthogonal matrix V: ", idx)
     v = V[:,idx]
 
     return reverse!(v)
