@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/26
+# Last modified: 2024/07/30
 #
 
 #=
@@ -108,11 +108,13 @@ the Barycentric rational function method.
 """
 const PBarRat  = Dict{String,ADT}(
     "denoise" => [missing, 1, :String, "How to denoise the input data"],
+    "epsilon" => [missing, 1, :F64   , "Threshold for the Prony approximation"],
 )
 
 # Default parameters for PBarRat
 const _PBarRat = Dict{String,Any}(
     "denoise" => "prony",
+    "epsilon" => 1e-10,
 )
 
 """

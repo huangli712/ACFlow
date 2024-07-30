@@ -612,7 +612,7 @@ data set is constructed. The member `ℬ` of the BarRatContext object
 (`brc`) should be updated in this function.
 """
 function run(brc::BarRatContext)
-    err = 1.0e-12
+    ε = get_r()
     pa = PronyApproximation(brc.grid.ω, brc.Gᵥ, err)
     @show pa(brc.grid.ω) .- brc.Gᵥ
     #r = aaa(brc.grid.ω * im, brc.Gᵥ)
