@@ -457,7 +457,13 @@ whether the threshold `ε` is reasonable and figure out the index for
 extracting `v` from `V`.
 """
 function prony_v(S, V, ε)
-    # Return idx, such that S[idx] < ε.
+    # Write singular values
+    println("List of singular values:")
+    for i in eachindex(S)
+        @printf("%4i %16.12f", i, S[i])
+    end
+
+    # Determine idx, such that S[idx] < ε.
     idx = 1
     for i in eachindex(S)
         if S[i] < ε
@@ -465,14 +471,14 @@ function prony_v(S, V, ε)
             break
         end
     end
-    #
+
     # Check idx
     if S[idx] ≥ ε
-        @info "Singular values are in $([S[1], S[end]])"
         error("Please increase ε and try again!")
     end
-    #
+
     # Extract v from V
+    println("Selected vector from orthogonal matrix V:", idx)
     v = V[:,idx]
 
     return reverse!(v)
