@@ -285,6 +285,27 @@ function write_model(am::AbstractMesh, D::Vector{F64})
     end
 end
 
+function write_prony(𝑁ₚ::I64, Γₚ::Vector{C64}, Ωₚ::Vector{C64})
+    open("prony.data", "w") do fout
+        println(fout, "# Prony Approximation")
+        #
+        println(fout, "# 𝑁ₚ :")
+        @printf(fout, "%4i\n", 𝑁ₚ)
+        #
+        println(fout, "# Γₚ :")
+        for i in eachindex(Γₚ)
+            z = Γₚ[i]
+            @printf(fout, "%4i %16.12f %16.12f\n", i, real(z), imag(z))
+        end
+        #
+        println(fout, "# Ωₚ :")
+        for i in eachindex(Ωₚ)
+            z = Ωₚ[i]
+            @printf(fout, "%4i %16.12f %16.12f\n", i, real(z), imag(z))
+        end
+    end
+end
+
 """
     write_barycentric(nodes::Vector{C64}, values::Vector{C64}, weights::Vector{C64})
 
