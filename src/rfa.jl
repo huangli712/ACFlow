@@ -612,13 +612,21 @@ data set is constructed. The member `ℬ` of the BarRatContext object
 (`brc`) should be updated in this function.
 """
 function run(brc::BarRatContext)
-    ε = get_r()
-    pa = PronyApproximation(brc.grid.ω, brc.Gᵥ, err)
-    @show pa(brc.grid.ω) .- brc.Gᵥ
-    #r = aaa(brc.grid.ω * im, brc.Gᵥ)
-    r = aaa(brc.grid.ω * im, pa(brc.grid.ω))
-    @show bc_poles(r)
-    brc.ℬ = r
+    denoise = get_r("denoise")
+    ε = get_r("epsilon")
+
+    ω = brc.grid.ω
+    iω = ω * im
+    G = brc.Gᵥ
+
+    if denoise == "prony"
+        pa = PronyApproximation(ω, G, ε)
+        brc.ℬ = aaa(iω, pa(ω))
+    else
+        brc.ℬ = aaa(iω, G)
+    end
+
+    @show bc_poles(brc.ℬ)
 end
 
 function last(brc::BarRatContext)
