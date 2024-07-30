@@ -285,6 +285,13 @@ function write_model(am::AbstractMesh, D::Vector{F64})
     end
 end
 
+"""
+    write_prony(𝑁ₚ::I64, Γₚ::Vector{C64}, Ωₚ::Vector{C64})
+
+Write Prony approximation to the input correlator. This information can
+be used to reconstruct or interpolate the correlator. This function is
+only useful for the `BarRat` solver.
+"""
 function write_prony(𝑁ₚ::I64, Γₚ::Vector{C64}, Ωₚ::Vector{C64})
     open("prony.data", "w") do fout
         println(fout, "# Prony Approximation")
