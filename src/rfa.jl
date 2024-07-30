@@ -412,6 +412,34 @@ function PronyApproximation(ω₁, 𝐺₁, ε)
     return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, Γₚ, Ωₚ)
 end
 
+function PronyApproximation(ω₁, 𝐺₁)
+    # Get number of nodes, frequency points ωₚ, and Matsubara data 𝐺ₚ.
+    𝑁ₚ, ωₚ, 𝐺ₚ = prony_data(ω₁, 𝐺₁)
+
+    # Singular value decomposition
+    _, V = prony_svd(𝑁ₚ, 𝐺ₚ)
+
+    num_v, _ = size(V)
+    for i = 1:num_v
+        @show i
+        v = V[i,:]
+
+        # Evaluate Γₚ and Ωₚ
+        Λ = 1.0 + 0.5 / 𝑁ₚ
+        Γₚ = prony_gamma(v, Λ)
+        Ωₚ = prony_omega(𝐺ₚ, Γₚ)
+
+        # Sort Γₚ and Ωₚ
+        idx_sort = sortperm(abs.(Ωₚ))
+        reverse!(idx_sort)
+        Ωₚ = Ωₚ[idx_sort]
+        Γₚ = Γₚ[idx_sort]
+    end
+
+    exit()
+    return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, Γₚ, Ωₚ)
+end
+
 """
     prony_data(ω₁, 𝐺₁)
 
@@ -622,7 +650,8 @@ function run(brc::BarRatContext)
 
     if denoise == "prony"
         println("Activate Prony approximation to denoise the input data")
-        pa = PronyApproximation(ω, G, ε)
+        #pa = PronyApproximation(ω, G, ε)
+        pa = PronyApproximation(ω, G)
         #
         println("Construct Barycentric rational function approximation")
         brc.ℬ = aaa(iω, pa(ω))
