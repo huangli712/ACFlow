@@ -645,6 +645,9 @@ function last(brc::BarRatContext)
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
 
+    # Write information about Barycentric rational function
+    fwrite && write_barycentric(brc.ℬ.nodes, brc.ℬ.values, brc.ℬ.weights)
+
     # Calculate full response function on real axis and write them
     _G = brc.ℬ.(brc.mesh.mesh)
     fwrite && write_complete(brc.mesh, _G)
