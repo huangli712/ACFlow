@@ -446,8 +446,24 @@ function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64}, ε::F64)
     return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)
 end
 
-function PronyApproximation(ω₁, 𝐺₁)
+"""
+    PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
+
+Construct a `PronyApproximation` type interpolant function. Once it is
+available, then it can be used to produce a smooth G at ω. Note that this
+function employs a smart and iterative algorithm to determine the optimal
+Prony approximation.
+
+### Arguments
+* ω₁ -> Non-negative Matsubara frequency (raw).
+* 𝐺₁ -> Complex values at ωₚ (raw).
+"""
+function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
+    # Preprocess the input data to get the number of nodes, frequency
+    # points ωₚ, and Matsubara data 𝐺ₚ.
     𝑁ₚ, ωₚ, 𝐺ₚ = prony_data(ω₁, 𝐺₁)
+
+    # Perform singular value decomposition
     S, V = prony_svd(𝑁ₚ, 𝐺ₚ)
 
     exp_idx = find_idx_with_exp_decay(S)
