@@ -466,26 +466,40 @@ function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
     # Perform singular value decomposition
     S, V = prony_svd(𝑁ₚ, 𝐺ₚ)
 
+    # Next we should determine the optimal `v`
+    #
+    # (1) Find maximum index for the exponentially decaying region.
     exp_idx = find_idx_with_exp_decay(S)
+    #
+    # (2) Find minimum index
     ε = 1000 * S[exp_idx]
     new_idx = findfirst(x -> x < ε, S)
-
-    idx_list = collect(range(new_idx, min(exp_idx + 10, length(S))))
+    #
+    # (3) Create lists for chosen indices and the corresponding errors.
+    idxrange = range( new_idx, min(exp_idx + 10, length(S)) )
+    idx_list = collect(idxrange)
     err_list = zeros(F64, length(idx_list))
-
+    #
+    # (4) Create pseudo PronyApproximation, and evaluate its correctness.
     for i in eachindex(idx_list)
         idx = idx_list[i]
+        #
+        # Extract `v`
         v = V[:,idx]
         reverse!(v)
-
-        Gn = PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)(ωₚ)
-        err_ave = mean(abs.(Gn - 𝐺ₚ))
-        @show i, idx, err_ave
+        #
+        # Reproduce G using pseudo PronyApproximation
+        𝐺ₙ = PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)(ωₚ)
+        #
+        # Evaluate the difference and record it
+        err_ave = mean(abs.(𝐺ₙ - 𝐺ₚ))
         err_list[i] = err_ave
+        #
+        @show i, idx, err_ave
     end
-
+    #
+    # (5) Find the optimal `v`, which will minimizes |𝐺ₙ - 𝐺ₚ|
     idx = idx_list[argmin(err_list)]
-    #@show idx, S[idx]
     v = V[:,idx]
     reverse!(v)
 
@@ -717,7 +731,8 @@ function run(brc::BarRatContext)
 
     if denoise == "prony"
         println("Activate Prony approximation to denoise the input data")
-        pa = PronyApproximation(ω, G, ε)
+        #pa = PronyApproximation(ω, G, ε)
+        pa = PronyApproximation(ω, G)
         brc.𝒫 = pa
         #
         println("Construct Barycentric rational function approximation")
