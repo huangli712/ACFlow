@@ -390,14 +390,7 @@ available, then it can be used to produce a smooth G at ω.
 * 𝐺₁::Vector{C64} -> Complex values at ωₚ (raw).
 * ε::F64 -> Threshold for the Prony approximation.
 """
-function PronyApproximation(ω₁, 𝐺₁, ε)
-    # Get number of nodes, frequency points ωₚ, and Matsubara data 𝐺ₚ.
-    𝑁ₚ, ωₚ, 𝐺ₚ = prony_data(ω₁, 𝐺₁)
-
-    # Singular value decomposition
-    S, V = prony_svd(𝑁ₚ, 𝐺ₚ)
-    v = prony_v(S, V, ε)
-
+function PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)
     # Evaluate Γₚ and Ωₚ
     Λ = 1.0 + 0.5 / 𝑁ₚ
     Γₚ = prony_gamma(v, Λ)
@@ -410,6 +403,47 @@ function PronyApproximation(ω₁, 𝐺₁, ε)
     Γₚ = Γₚ[idx_sort]
 
     return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, Γₚ, Ωₚ)
+end
+
+function PronyApproximation(ω₁, 𝐺₁, ε)
+    # Get number of nodes, frequency points ωₚ, and Matsubara data 𝐺ₚ.
+    𝑁ₚ, ωₚ, 𝐺ₚ = prony_data(ω₁, 𝐺₁)
+
+    # Singular value decomposition
+    S, V = prony_svd(𝑁ₚ, 𝐺ₚ)
+    v = prony_v(S, V, ε)
+
+    return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)
+end
+
+function PronyApproximation(ω₁, 𝐺₁)
+    𝑁ₚ, ωₚ, 𝐺ₚ = prony_data(ω₁, 𝐺₁)
+    S, V = prony_svd(𝑁ₚ, 𝐺ₚ)
+
+    exp_idx = find_idx_with_exp_decay(S)
+    ε = 1000 * S[exp_idx]
+    new_idx = findfirst(x -> x < ε, S)
+
+    idx_list = collect(range(new_idx, min(exp_idx + 10, length(S))))
+    err_list = zeros(F64, length(idx_list))
+
+    for i in eachindex(idx_list)
+        idx = idx_list[i]
+        v = V[:,idx]
+        reverse!(v)
+
+        Gn = PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)(ωₚ)
+        err_ave = mean(abs.(Gn - 𝐺ₚ))
+        @show i, idx, err_ave
+        err_list[i] = err_ave
+    end
+
+    idx = idx_list[argmin(err_list)]
+    #@show idx, S[idx]
+    v = V[:,idx]
+    reverse!(v)
+
+    return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)
 end
 
 """
@@ -464,16 +498,10 @@ function prony_v(S, V, ε)
     end
 
     # Determine idx, such that S[idx] < ε.
-    idx = 1
-    for i in eachindex(S)
-        if S[i] < ε
-            idx = i
-            break
-        end
-    end
+    idx = findfirst(x -> x < ε, S)
 
     # Check idx
-    if S[idx] ≥ ε
+    if isnothing(idx)
         error("Please increase ε and try again!")
     end
 
@@ -544,6 +572,18 @@ function (p::PronyApproximation)(w::Vector{F64})
     end
     #
     return A * p.Ωₚ
+end
+
+function find_idx_with_exp_decay(S::Vector{F64})
+    n_max = min(3 * floor(I64, log(1.0e12)), floor(I64, 0.8 * length(S)))
+    #@show n_max
+    idx_fit = collect(range(ceil(I64, 0.8*n_max), n_max))
+    val_fit = S[idx_fit]
+    A = hcat(idx_fit, ones(I64, length(idx_fit)))
+    a, b = pinv(A) * log.(val_fit)
+    S_approx = exp.(a .* collect(range(1,n_max)) .+ b)
+    idx = count(S[1:n_max] .> 5.0 * S_approx) + 1
+    return idx
 end
 
 #=
