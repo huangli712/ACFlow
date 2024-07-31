@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/30
+# Last modified: 2024/08/01
 #
 
 #
@@ -76,14 +76,18 @@ mutable struct BarycentricFunction <: Function
 end
 
 """
-    BarycentricFunction(nodes, values, weights)
+    BarycentricFunction(
+        nodes   :: Vector{C64},
+        values  :: Vector{C64},
+        weights :: Vector{C64}
+        )
 
 Construct a `BarycentricFunction` type rational function.
 
 ### Arguments
-* nodes::Vector   -> Interpolation nodes, ``z_i``.
-* values::Vector  -> Values at the interpolation nodes, ``r(z_i)``.
-* weights::Vector -> Barycentric weights, ``w_i``.
+* nodes   -> Interpolation nodes, ``z_i``.
+* values  -> Values at the interpolation nodes, ``r(z_i)``.
+* weights -> Barycentric weights, ``w_i``.
 """
 function BarycentricFunction(
     nodes   :: Vector{C64},
@@ -380,10 +384,10 @@ mutable struct PronyApproximation <: Function
 end
 
 """
-    PronyApproximation(ω₁, 𝐺₁, ε)
+    PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)
 
 Construct a `PronyApproximation` type interpolant function. Once it is
-available, then it can be used to produce a smooth G at ω.
+available, then it can be used to produce a smooth G at given ω.
 
 ### Arguments
 * ω₁::Vector{F64} -> Non-negative Matsubara frequency (raw).
@@ -405,6 +409,17 @@ function PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)
     return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, Γₚ, Ωₚ)
 end
 
+"""
+    PronyApproximation(ω₁, 𝐺₁, ε)
+
+Construct a `PronyApproximation` type interpolant function. Once it is
+available, then it can be used to produce a smooth G at ω.
+
+### Arguments
+* ω₁::Vector{F64} -> Non-negative Matsubara frequency (raw).
+* 𝐺₁::Vector{C64} -> Complex values at ωₚ (raw).
+* ε::F64 -> Threshold for the Prony approximation.
+"""
 function PronyApproximation(ω₁, 𝐺₁, ε)
     # Get number of nodes, frequency points ωₚ, and Matsubara data 𝐺ₚ.
     𝑁ₚ, ωₚ, 𝐺ₚ = prony_data(ω₁, 𝐺₁)
