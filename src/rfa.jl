@@ -369,7 +369,7 @@ Mutable struct. Prony approximation to a complex-valued Matsubara function.
 
 ### Members
 
-* 𝑁ₚ -> Number of nodes.
+* 𝑁ₚ -> Number of nodes for Prony approximation.
 * ωₚ -> Non-negative Matsubara frequency.
 * 𝐺ₚ -> Complex values at ωₚ.
 * Γₚ -> Nodes for Prony approximation, ``γ_i``.
@@ -384,19 +384,32 @@ mutable struct PronyApproximation <: Function
 end
 
 """
-    PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)
+    PronyApproximation(
+        𝑁ₚ :: I64,
+        ωₚ :: Vector{F64},
+        𝐺ₚ :: Vector{C64},
+        v  :: Vector{C64}
+        )
 
 Construct a `PronyApproximation` type interpolant function. Once it is
 available, then it can be used to produce a smooth G at given ω.
 
 ### Arguments
-* ω₁::Vector{F64} -> Non-negative Matsubara frequency (raw).
-* 𝐺₁::Vector{C64} -> Complex values at ωₚ (raw).
-* ε::F64 -> Threshold for the Prony approximation.
+* 𝑁ₚ -> Number of nodes for Prony approximation.
+* ωₚ -> Non-negative Matsubara frequency (postprocessed).
+* 𝐺ₚ -> Complex values at ωₚ (postprocessed).
+* v  -> Selected vector from the orthogonal matrix `V`.
 """
-function PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)
-    # Evaluate Γₚ and Ωₚ
+function PronyApproximation(
+    𝑁ₚ :: I64,
+    ωₚ :: Vector{F64},
+    𝐺ₚ :: Vector{C64},
+    v  :: Vector{C64}
+    )
+    # Evaluate cutoff for Γₚ
     Λ = 1.0 + 0.5 / 𝑁ₚ
+
+    # Evaluate Γₚ and Ωₚ
     Γₚ = prony_gamma(v, Λ)
     Ωₚ = prony_omega(𝐺ₚ, Γₚ)
 
@@ -406,25 +419,27 @@ function PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)
     Ωₚ = Ωₚ[idx_sort]
     Γₚ = Γₚ[idx_sort]
 
+    # Return a PronyApproximation object
     return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, Γₚ, Ωₚ)
 end
 
 """
-    PronyApproximation(ω₁, 𝐺₁, ε)
+    PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64}, ε::F64)
 
 Construct a `PronyApproximation` type interpolant function. Once it is
 available, then it can be used to produce a smooth G at ω.
 
 ### Arguments
-* ω₁::Vector{F64} -> Non-negative Matsubara frequency (raw).
-* 𝐺₁::Vector{C64} -> Complex values at ωₚ (raw).
-* ε::F64 -> Threshold for the Prony approximation.
+* ω₁ -> Non-negative Matsubara frequency (raw).
+* 𝐺₁ -> Complex values at ωₚ (raw).
+* ε  -> Threshold for the Prony approximation.
 """
-function PronyApproximation(ω₁, 𝐺₁, ε)
-    # Get number of nodes, frequency points ωₚ, and Matsubara data 𝐺ₚ.
+function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64}, ε::F64)
+    # Preprocess the input data to get the number of nodes, frequency
+    # points ωₚ, and Matsubara data 𝐺ₚ.
     𝑁ₚ, ωₚ, 𝐺ₚ = prony_data(ω₁, 𝐺₁)
 
-    # Singular value decomposition
+    # Perform singular value decomposition and select reasonable `v`.
     S, V = prony_svd(𝑁ₚ, 𝐺ₚ)
     v = prony_v(S, V, ε)
 
