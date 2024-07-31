@@ -639,8 +639,6 @@ function run(brc::BarRatContext)
     else
         brc.ℬ = aaa(iω, G)
     end
-
-    @show bc_poles(brc.ℬ)
 end
 
 """
