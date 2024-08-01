@@ -477,7 +477,7 @@ function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
     # Next we should determine the optimal `v`
     #
     # (1) Find maximum index for the exponentially decaying region.
-    exp_idx = find_idx_with_exp_decay(S)
+    exp_idx = prony_idx(S)
     #
     # (2) Find minimum index
     ε = 1000 * S[exp_idx]
