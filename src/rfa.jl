@@ -508,19 +508,20 @@ function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
     #
     # (5) Find the optimal `v`, which should minimize |𝐺ₙ - 𝐺ₚ|
     idx = idx_list[argmin(err_list)]
-    v = prony(V, idx)
+    v = prony_v(V, idx)
     println("The optimal Prony approximation is $idx")
 
     return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)
 end
 
 """
-    prony_data(ω₁, 𝐺₁)
+    prony_data(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
 
-Prepare data for later Prony approximation. It will return the number
-of nodes, frequency mesh ωₚ, and Green's function data 𝐺ₚ at this mesh.
+Prepare essential data for the later Prony approximation. It will return
+the number of nodes, frequency mesh ωₚ, and Green's function data 𝐺ₚ at
+this mesh.
 """
-function prony_data(ω₁, 𝐺₁)
+function prony_data(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
     # We have to make sure the number of data points is odd.
     osize = length(ω₁)
     nsize = iseven(osize) ? osize - 1 : osize
@@ -533,12 +534,12 @@ function prony_data(ω₁, 𝐺₁)
 end
 
 """
-    prony_svd(𝑁ₚ, 𝐺ₚ)
+    prony_svd(𝑁ₚ::I64, 𝐺ₚ::Vector{C64})
 
 Perform singular value decomposition for the matrix ℋ that is constructed
 from 𝐺ₚ. It will return the singular values `S` and orthogonal matrix `V`.
 """
-function prony_svd(𝑁ₚ, 𝐺ₚ)
+function prony_svd(𝑁ₚ::I64, 𝐺ₚ::Vector{C64})
     ℋ = zeros(C64, 𝑁ₚ + 1, 𝑁ₚ + 1)
     #
     for i = 1 : 𝑁ₚ + 1
