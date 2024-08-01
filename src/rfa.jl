@@ -602,7 +602,7 @@ end
 Extract suitable vector `v` from orthogonal matrix `V` according to the
 threshold `ε`.
 """
-function prony_v(V, idx::I64)
+function prony_v(V::Matrix{C64}, idx::I64)
     # Extract v from V
     println("Selected vector from orthogonal matrix V: ", idx)
     v = V[:,idx]
@@ -611,13 +611,13 @@ function prony_v(V, idx::I64)
 end
 
 """
-    prony_gamma(v, Λ)
+    prony_gamma(v::Vector{C64}, Λ::F64)
 
 Try to calculate Γₚ. Actually, Γₚ are eigenvalues of a matrix constructed
 by `v`. `Λ` is a cutoff for Γₚ. Only those Γₚ that are smaller than `Λ`
 are kept.
 """
-function prony_gamma(v, Λ)
+function prony_gamma(v::Vector{C64}, Λ::F64)
     # The following codes actually calculate the roots of a polynominal
     # with coefficients given in v. The roots are Γₚ.
     non_zero = findall(!iszero, v)
@@ -657,19 +657,19 @@ function prony_omega(𝐺ₚ, Γₚ)
 end
 
 """
-    (p::PronyApproximation)(w::Vector{F64})
+    (𝑝::PronyApproximation)(w::Vector{F64})
 
 Evaluate the Prony approximation at `w`.
 """
-function (p::PronyApproximation)(w::Vector{F64})
+function (𝑝::PronyApproximation)(w::Vector{F64})
     x₀ = @. (w - w[1]) / (w[end] - w[1])
-    A = zeros(C64, length(x₀), length(p.Ωₚ))
+    𝔸 = zeros(C64, length(x₀), length(𝑝.Ωₚ))
     #
     for i in eachindex(x₀)
-        @. A[i,:] = p.Γₚ ^ (2.0 * p.𝑁ₚ * x₀[i])
+        @. 𝔸[i,:] = 𝑝.Γₚ ^ (2.0 * 𝑝.𝑁ₚ * x₀[i])
     end
     #
-    return A * p.Ωₚ
+    return 𝔸 * 𝑝.Ωₚ
 end
 
 #=
