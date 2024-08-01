@@ -597,12 +597,12 @@ function prony_idx(S::Vector{F64})
 end
 
 """
-    prony_v(V, idx::I64)
+    prony_v(V::Adjoint{C64, Matrix{C64}}, idx::I64)
 
 Extract suitable vector `v` from orthogonal matrix `V` according to the
 threshold `ε`.
 """
-function prony_v(V::Matrix{C64}, idx::I64)
+function prony_v(V::Adjoint{C64, Matrix{C64}}, idx::I64)
     # Extract v from V
     println("Selected vector from orthogonal matrix V: ", idx)
     v = V[:,idx]
