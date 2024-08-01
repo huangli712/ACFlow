@@ -446,7 +446,7 @@ function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64}, ε::F64)
 
     # Perform singular value decomposition and select reasonable `v`.
     S, V = prony_svd(𝑁ₚ, 𝐺ₚ)
-    v = prony_v(S, V, ε)
+    v = prony_v(V, prony_idx(S, ε))
 
     return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)
 end
