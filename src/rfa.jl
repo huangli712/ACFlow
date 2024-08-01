@@ -551,13 +551,16 @@ function prony_svd(𝑁ₚ::I64, 𝐺ₚ::Vector{C64})
     return S, V
 end
 
-function prony_idx(S::Vector{F64}, ε::F64)
-    # Write singular values
-    println("List of singular values:")
-    for i in eachindex(S)
-        @printf("%4i %16.12e\n", i, S[i])
-    end
+"""
+    prony_idx(S::Vector{F64}, ε::F64)
 
+The diagonal matrix (singular values) `S` is used to test whether the
+threshold `ε` is reasonable and figure out the index for extracting `v`
+from `V`.
+
+See also: [`prony_v`](@ref).
+"""
+function prony_idx(S::Vector{F64}, ε::F64)
     # Determine idx, such that S[idx] < ε.
     idx = findfirst(x -> x < ε, S)
 
@@ -569,15 +572,27 @@ function prony_idx(S::Vector{F64}, ε::F64)
     return idx
 end
 
+"""
+    prony_idx(S::Vector{F64})
+
+The diagonal matrix (singular values) `S` is used to figure out the index
+for extracting `v` from `V`. This function is try to evaluate the maximum
+index for the exponentially decaying region of `S`.
+
+See also: [`prony_v`](@ref).
+"""
 function prony_idx(S::Vector{F64})
     n_max = min(3 * floor(I64, log(1.0e12)), floor(I64, 0.8 * length(S)))
-    #@show n_max
+    #
     idx_fit = collect(range(ceil(I64, 0.8*n_max), n_max))
     val_fit = S[idx_fit]
-    A = hcat(idx_fit, ones(I64, length(idx_fit)))
-    a, b = pinv(A) * log.(val_fit)
-    S_approx = exp.(a .* collect(range(1,n_max)) .+ b)
-    idx = count(S[1:n_max] .> 5.0 * S_approx) + 1
+    𝔸 = hcat(idx_fit, ones(I64, length(idx_fit)))
+    #
+    𝑎, 𝑏 = pinv(𝔸) * log.(val_fit)
+    𝕊 = exp.(𝑎 .* collect(range(1,n_max)) .+ 𝑏)
+    #
+    idx = count(S[1:n_max] .> 5.0 * 𝕊) + 1
+
     return idx
 end
 
@@ -585,9 +600,7 @@ end
     prony_v(V, idx::I64)
 
 Extract suitable vector `v` from orthogonal matrix `V` according to the
-threshold `ε`. The diagonal matrix (singular values) `S` is used to test
-whether the threshold `ε` is reasonable and figure out the index for
-extracting `v` from `V`.
+threshold `ε`.
 """
 function prony_v(V, idx::I64)
     # Extract v from V
