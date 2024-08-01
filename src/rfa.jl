@@ -496,19 +496,20 @@ function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
         # Extract `v`
         v = prony_v(V, idx)
         #
-        # Reproduce G using pseudo PronyApproximation
+        # Reproduce G using the pseudo PronyApproximation
         𝐺ₙ = PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)(ωₚ)
         #
         # Evaluate the difference and record it
         err_ave = mean(abs.(𝐺ₙ - 𝐺ₚ))
         err_list[i] = err_ave
         #
-        @show i, idx, err_ave
+        @printf("Prony approximation %3i -> %16.12f\n", i, err_ave)
     end
     #
     # (5) Find the optimal `v`, which should minimize |𝐺ₙ - 𝐺ₚ|
     idx = idx_list[argmin(err_list)]
     v = prony(V, idx)
+    println("The optimal Prony approximation is $idx")
 
     return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)
 end
@@ -742,8 +743,8 @@ function run(brc::BarRatContext)
 
     if denoise == "prony"
         println("Activate Prony approximation to denoise the input data")
-        pa = PronyApproximation(ω, G, ε)
-        #pa = PronyApproximation(ω, G)
+        #pa = PronyApproximation(ω, G, ε)
+        pa = PronyApproximation(ω, G)
         brc.𝒫 = pa
         #
         println("Construct Barycentric rational function approximation")
