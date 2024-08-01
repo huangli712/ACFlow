@@ -394,6 +394,8 @@ end
 Construct a `PronyApproximation` type interpolant function. Once it is
 available, then it can be used to produce a smooth G at given ω.
 
+This function should not be called directly by the users.
+
 ### Arguments
 * 𝑁ₚ -> Number of nodes for Prony approximation.
 * ωₚ -> Non-negative Matsubara frequency (postprocessed).
@@ -429,6 +431,9 @@ end
 Construct a `PronyApproximation` type interpolant function. Once it is
 available, then it can be used to produce a smooth G at ω.
 
+If the noise level of the input data is known, this function is a good
+choice. The parameter `ε` can be set to the noise level.
+
 ### Arguments
 * ω₁ -> Non-negative Matsubara frequency (raw).
 * 𝐺₁ -> Complex values at ωₚ (raw).
@@ -453,6 +458,9 @@ Construct a `PronyApproximation` type interpolant function. Once it is
 available, then it can be used to produce a smooth G at ω. Note that this
 function employs a smart and iterative algorithm to determine the optimal
 Prony approximation.
+
+This function is time-consuming. But if the noise level of the input data
+is unknown, this function is useful.
 
 ### Arguments
 * ω₁ -> Non-negative Matsubara frequency (raw).
@@ -480,13 +488,13 @@ function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
     idx_list = collect(idxrange)
     err_list = zeros(F64, length(idx_list))
     #
-    # (4) Create pseudo PronyApproximation, and evaluate its correctness.
+    # (4) Create a list of pseudo-PronyApproximations, and then evaluate
+    # their reliabilities and accuracies.
     for i in eachindex(idx_list)
         idx = idx_list[i]
         #
         # Extract `v`
-        v = V[:,idx]
-        reverse!(v)
+        v = prony_v(V, idx)
         #
         # Reproduce G using pseudo PronyApproximation
         𝐺ₙ = PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)(ωₚ)
@@ -498,10 +506,9 @@ function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
         @show i, idx, err_ave
     end
     #
-    # (5) Find the optimal `v`, which will minimizes |𝐺ₙ - 𝐺ₚ|
+    # (5) Find the optimal `v`, which should minimize |𝐺ₙ - 𝐺ₚ|
     idx = idx_list[argmin(err_list)]
-    v = V[:,idx]
-    reverse!(v)
+    v = prony(V, idx)
 
     return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, v)
 end
@@ -542,15 +549,7 @@ function prony_svd(𝑁ₚ, 𝐺ₚ)
     return S, V
 end
 
-"""
-    prony_v(S, V, ε)
-
-Extract suitable vector `v` from orthogonal matrix `V` according to the
-threshold `ε`. The diagonal matrix (singular values) `S` is used to test
-whether the threshold `ε` is reasonable and figure out the index for
-extracting `v` from `V`.
-"""
-function prony_v(S, V, ε)
+function prony_idx(S::Vector{F64}, ε::F64)
     # Write singular values
     println("List of singular values:")
     for i in eachindex(S)
@@ -565,6 +564,30 @@ function prony_v(S, V, ε)
         error("Please increase ε and try again!")
     end
 
+    return idx
+end
+
+function prony_idx(S::Vector{F64})
+    n_max = min(3 * floor(I64, log(1.0e12)), floor(I64, 0.8 * length(S)))
+    #@show n_max
+    idx_fit = collect(range(ceil(I64, 0.8*n_max), n_max))
+    val_fit = S[idx_fit]
+    A = hcat(idx_fit, ones(I64, length(idx_fit)))
+    a, b = pinv(A) * log.(val_fit)
+    S_approx = exp.(a .* collect(range(1,n_max)) .+ b)
+    idx = count(S[1:n_max] .> 5.0 * S_approx) + 1
+    return idx
+end
+
+"""
+    prony_v(V, idx::I64)
+
+Extract suitable vector `v` from orthogonal matrix `V` according to the
+threshold `ε`. The diagonal matrix (singular values) `S` is used to test
+whether the threshold `ε` is reasonable and figure out the index for
+extracting `v` from `V`.
+"""
+function prony_v(V, idx::I64)
     # Extract v from V
     println("Selected vector from orthogonal matrix V: ", idx)
     v = V[:,idx]
@@ -632,18 +655,6 @@ function (p::PronyApproximation)(w::Vector{F64})
     end
     #
     return A * p.Ωₚ
-end
-
-function find_idx_with_exp_decay(S::Vector{F64})
-    n_max = min(3 * floor(I64, log(1.0e12)), floor(I64, 0.8 * length(S)))
-    #@show n_max
-    idx_fit = collect(range(ceil(I64, 0.8*n_max), n_max))
-    val_fit = S[idx_fit]
-    A = hcat(idx_fit, ones(I64, length(idx_fit)))
-    a, b = pinv(A) * log.(val_fit)
-    S_approx = exp.(a .* collect(range(1,n_max)) .+ b)
-    idx = count(S[1:n_max] .> 5.0 * S_approx) + 1
-    return idx
 end
 
 #=
@@ -731,8 +742,8 @@ function run(brc::BarRatContext)
 
     if denoise == "prony"
         println("Activate Prony approximation to denoise the input data")
-        #pa = PronyApproximation(ω, G, ε)
-        pa = PronyApproximation(ω, G)
+        pa = PronyApproximation(ω, G, ε)
+        #pa = PronyApproximation(ω, G)
         brc.𝒫 = pa
         #
         println("Construct Barycentric rational function approximation")
