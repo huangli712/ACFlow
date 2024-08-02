@@ -8,10 +8,12 @@ using ACFlow
 wmin = -5.0  # Left boundary
 wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
-niw  = 10    # Number of Matsubara frequencies
-beta = 20.0  # Inverse temperature
+niw  = 200   # Number of Matsubara frequencies
+beta = 100.0 # Inverse temperature
 ϵ₁   = 1.00  # Parameters for δ-like peaks
-A₁   = 1.00
+ϵ₂   = -1.0
+A₁   = 0.40
+A₂   = 0.60
 η    = 1e-2
 
 # Real frequency mesh
@@ -23,7 +25,7 @@ iωₙ = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
 # Noise
 seed = rand(1:100000000)
 rng = MersenneTwister(seed)
-noise_ampl = 1.0e-4
+noise_ampl = 1.0e-8
 noise_abs = randn(rng, F64, niw) * noise_ampl
 noise_phase = rand(rng, niw) * 2.0 * π
 noise = noise_abs .* exp.(noise_phase * im)
