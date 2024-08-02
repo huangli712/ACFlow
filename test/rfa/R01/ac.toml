@@ -13,11 +13,11 @@ ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
 mesh   = "linear"
-ngrid  = 100
-nmesh  = 501
-wmax   = 5.0
-wmin   = -5.0
-beta   = 10.0
+ngrid  = 200
+nmesh  = 1001
+wmax   = 10.0
+wmin   = -10.0
+beta   = 100.0
 offdiag = false
 
 [MaxEnt]
@@ -29,5 +29,5 @@ ratio  = 10.0
 blur   = -1.0
 
 [BarRat]
-denoise = "prony_o"
-epsilon = 1e-16
+denoise = "prony_s"
+epsilon = 1e-8
