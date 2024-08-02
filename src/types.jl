@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/30
+# Last modified: 2024/08/03
 #
 
 #=
@@ -107,12 +107,14 @@ Dictionary for configuration parameters:
 the Barycentric rational function method.
 """
 const PBarRat  = Dict{String,ADT}(
+    "atype"   => [missing, 1, :String, "Possible type of the spectrum"],
     "denoise" => [missing, 1, :String, "How to denoise the input data"],
     "epsilon" => [missing, 1, :F64   , "Threshold for the Prony approximation"],
 )
 
 # Default parameters for PBarRat
 const _PBarRat = Dict{String,Any}(
+    "atype"   => "cont"
     "denoise" => "prony",
     "epsilon" => 1e-10,
 )
