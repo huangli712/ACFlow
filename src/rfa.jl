@@ -548,6 +548,10 @@ function prony_svd(𝑁ₚ::I64, 𝐺ₚ::Vector{C64})
     #
     _, S, V = svd(ℋ)
 
+    for i in eachindex(S)
+        @printf("Singular values: %4i -> %16.12e\n", i, S[i])
+    end
+
     return S, V
 end
 
