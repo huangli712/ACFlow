@@ -782,7 +782,7 @@ function run(brc::BarRatContext)
         brc.ℬ = aaa(iω, G)
     end
 
-    get_r("atype") && poles!(brc)
+    get_r("atype") == "delta" && poles!(brc)
 end
 
 """
@@ -823,26 +823,52 @@ function last(brc::BarRatContext)
     return Aout, _G
 end
 
+"""
+    poles!(brc::BarRatContext)
+
+"""
 function poles!(brc::BarRatContext)
-    @show bc_poles(brc.ℬ)
-    poles = bc_poles(brc.ℬ)
-    filter!(z -> imag(z) < 1e-2, poles)
-    @show poles
-
-    function 𝑓(ampls::Vector{C64})
-        r = zeros(C64, length(brc.Gᵥ))
-        iω = brc.grid.ω * im
-        for i in eachindex(ampls)
-            @. r = r + ampls[i] / (iω - poles[i])
+    function 𝑓(x::Vector{C64})
+        Gₙ = zeros(C64, length(brc.Gᵥ))
+        iωₙ = brc.grid.ω * im
+        #
+        for i in eachindex(x)
+            @. Gₙ = Gₙ + x[i] / (iωₙ - brc.ℬP[i])
         end
-        return sum(abs.(r - brc.Gᵥ))
+        #
+        return sum(abs.(Gₙ - brc.Gᵥ))
     end
 
-    function 𝐽!(J::Vector{C64}, ampls::Vector{C64})
-        J .= gradient_via_fd(𝑓, ampls)
+    function 𝐽!(J::Vector{C64}, x::Vector{C64})
+        J .= gradient_via_fd(𝑓, x)
     end
 
-    ampl = zeros(C64, length(poles))
-    res = optimize(𝑓, 𝐽!, ampl, max_iter = 500)
-    @show res.minimizer
+    𝑃 = bc_poles(brc.ℬ)
+    #
+    println("Raw poles:")
+    for i in eachindex(𝑃)
+        z = 𝑃[i]
+        @printf("P %4i -> %16.12f + %16.12f im \n", i, real(z), imag(z))
+    end
+    #
+    filter!(z -> imag(z) < 1e-6, 𝑃)
+    #
+    println("New poles:")
+    for i in eachindex(𝑃)
+        z = 𝑃[i]
+        @printf("P %4i -> %16.12f + %16.12f im \n", i, real(z), imag(z))
+    end
+    #
+    brc.ℬP = 𝑃
+
+    𝐴 = zeros(C64, length(𝑃))
+    res = optimize(𝑓, 𝐽!, 𝐴, max_iter = 500)
+    brc.ℬA = res.minimizer
+    @assert all(z -> imag(z) < 1.0e-6, brc.ℬA)
+    #
+    println("New poles:")
+    for i in eachindex(𝐴)
+        z = brc.ℬA[i]
+        @printf("A %4i -> %16.12f + %16.12f im \n", i, real(z), imag(z))
+    end
 end
