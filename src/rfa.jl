@@ -826,6 +826,14 @@ end
 """
     poles!(brc::BarRatContext)
 
+Convert the Barycentric rational function approximation to the classic
+pole representation. Note that this feature is only suitable for the
+`atype` = "delta" case. In such case, the Barycenteric algorithm can find
+the accurate positions for the poles via the `bc_poles()` function. But
+it seems that the weights for these poles are wrong. In this function, we
+just use the BFGS method to solve this optimization problem to get the
+correct weights for the poles. And then the positions and weights of these
+poles will be stored in `brc`, a BarRatContext object.
 """
 function poles!(brc::BarRatContext)
     function 𝑓(x::Vector{C64})
