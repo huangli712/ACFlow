@@ -794,6 +794,13 @@ correlator. The information about Prony approximation and Barycentric
 rational function approximation will be written as well.
 """
 function last(brc::BarRatContext)
+    function pole_green!(_G::Vector{C64})
+        η = get_r("eta")
+        for i in eachindex(_G)
+            _G[i] = sum(@. brc.ℬA / (brc.mesh.mesh[i] - brc.ℬP + η * im))
+        end
+    end
+
     # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
@@ -809,11 +816,7 @@ function last(brc::BarRatContext)
 
     # Calculate full response function on real axis and write them
     _G = brc.ℬ.(brc.mesh.mesh)
-    get_r("atype") == "delta" && begin
-        for i in eachindex(_G)
-            _G[i] = sum(@. brc.ℬA / (brc.mesh.mesh[i] - brc.ℬP + 0.01im))
-        end
-    end
+    get_r("atype") == "delta" && pole_green!(_G)
     fwrite && write_complete(brc.mesh, _G)
 
     # Calculate and write the spectral function
