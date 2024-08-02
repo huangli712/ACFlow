@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/30
+# Last modified: 2024/08/02
 #
 
 """
@@ -588,7 +588,7 @@ function chk_dict()
             # The Prony approximation doesn't support broken data.
             @assert get_b("grid") in ("ffreq", "ffrag", "bfreq", "bfrag")
             #
-            @assert get_r("denoise") in ("none", "prony")
+            @assert get_r("denoise") in ("none", "prony_s", "prony_o")
             @assert get_r("epsilon") ≥ 0.0
             break
 
