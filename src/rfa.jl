@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/01
+# Last modified: 2024/08/03
 #
 
 #
@@ -692,6 +692,8 @@ Mutable struct. It is used within the BarRat solver only.
 * mesh -> Mesh for output spectrum.
 * 𝒫    -> Prony approximation for the input data.
 * ℬ    -> Barycentric rational function approximation for the input data.
+* ℬP   -> It means the positions of the poles.
+* ℬA   -> It means the weights / amplitudes of the poles.
 """
 mutable struct BarRatContext
     Gᵥ   :: Vector{C64}
@@ -699,6 +701,8 @@ mutable struct BarRatContext
     mesh :: AbstractMesh
     𝒫    :: Union{Missing,PronyApproximation}
     ℬ    :: Union{Missing,BarycentricFunction}
+    ℬP   :: Vector{C64}
+    ℬA   :: Vector{C64}
 end
 
 #=
@@ -739,7 +743,7 @@ function init(S::BarRatSolver, rd::RawData)
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    return BarRatContext(Gᵥ, grid, mesh, missing, missing)
+    return BarRatContext(Gᵥ, grid, mesh, missing, missing, C64[], C64[])
 end
 
 """
@@ -777,27 +781,8 @@ function run(brc::BarRatContext)
         println("Construct Barycentric rational function approximation")
         brc.ℬ = aaa(iω, G)
     end
-    @show bc_poles(brc.ℬ)
-    poles = bc_poles(brc.ℬ)
-    filter!(z -> imag(z) < 1e-2, poles)
-    @show poles
 
-    function 𝑓(ampls::Vector{C64})
-        r = zeros(C64, length(brc.Gᵥ))
-        iω = brc.grid.ω * im
-        for i in eachindex(ampls)
-            @. r = r + ampls[i] / (iω - poles[i])
-        end
-        return sum(abs.(r - brc.Gᵥ))
-    end
-
-    function 𝐽!(J::Vector{C64}, ampls::Vector{C64})
-        J .= gradient_via_fd(𝑓, ampls)
-    end
-
-    ampl = zeros(C64, length(poles))
-    res = optimize(𝑓, 𝐽!, ampl, max_iter = 500)
-    @show res.minimizer
+    get_r("atype") && poles!(brc)
 end
 
 """
@@ -838,5 +823,26 @@ function last(brc::BarRatContext)
     return Aout, _G
 end
 
-function poles(brc::BarRatContext)
+function poles!(brc::BarRatContext)
+    @show bc_poles(brc.ℬ)
+    poles = bc_poles(brc.ℬ)
+    filter!(z -> imag(z) < 1e-2, poles)
+    @show poles
+
+    function 𝑓(ampls::Vector{C64})
+        r = zeros(C64, length(brc.Gᵥ))
+        iω = brc.grid.ω * im
+        for i in eachindex(ampls)
+            @. r = r + ampls[i] / (iω - poles[i])
+        end
+        return sum(abs.(r - brc.Gᵥ))
+    end
+
+    function 𝐽!(J::Vector{C64}, ampls::Vector{C64})
+        J .= gradient_via_fd(𝑓, ampls)
+    end
+
+    ampl = zeros(C64, length(poles))
+    res = optimize(𝑓, 𝐽!, ampl, max_iter = 500)
+    @show res.minimizer
 end
