@@ -777,6 +777,27 @@ function run(brc::BarRatContext)
         println("Construct Barycentric rational function approximation")
         brc.ℬ = aaa(iω, G)
     end
+    @show bc_poles(brc.ℬ)
+    poles = bc_poles(brc.ℬ)
+    filter!(z -> imag(z) < 1e-2, poles)
+    @show poles
+
+    function 𝑓(ampls::Vector{C64})
+        r = zeros(C64, length(brc.Gᵥ))
+        iω = brc.grid.ω * im
+        for i in eachindex(ampls)
+            @. r = r + ampls[i] / (iω - poles[i])
+        end
+        return sum(abs.(r - brc.Gᵥ))
+    end
+
+    function 𝐽!(J::Vector{C64}, ampls::Vector{C64})
+        J .= gradient_via_fd(𝑓, ampls)
+    end
+
+    ampl = zeros(C64, length(poles))
+    res = optimize(𝑓, 𝐽!, ampl, max_iter = 500)
+    @show res.minimizer
 end
 
 """
