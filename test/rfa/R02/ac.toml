@@ -29,5 +29,6 @@ ratio  = 2.0
 blur   = -1.0
 
 [BarRat]
+atype   = "delta"
 denoise = "none"
 epsilon = 1e-8

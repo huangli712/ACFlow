@@ -114,7 +114,7 @@ const PBarRat  = Dict{String,ADT}(
 
 # Default parameters for PBarRat
 const _PBarRat = Dict{String,Any}(
-    "atype"   => "cont"
+    "atype"   => "cont",
     "denoise" => "prony",
     "epsilon" => 1e-10,
 )

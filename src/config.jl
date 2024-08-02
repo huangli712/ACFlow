@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/02
+# Last modified: 2024/08/03
 #
 
 """
@@ -196,6 +196,7 @@ function see_dict()
 
         # For BarRat solver
         @case "BarRat"
+            println("atype   : ", get_r("atype")  )
             println("denoise : ", get_r("denoise"))
             println("epsilon : ", get_r("epsilon"))
             break
@@ -588,6 +589,7 @@ function chk_dict()
             # The Prony approximation doesn't support broken data.
             @assert get_b("grid") in ("ffreq", "ffrag", "bfreq", "bfrag")
             #
+            @assert get_r("atype") in ("cont", "delta")
             @assert get_r("denoise") in ("none", "prony_s", "prony_o")
             @assert get_r("epsilon") ≥ 0.0
             break
