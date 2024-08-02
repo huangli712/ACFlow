@@ -503,7 +503,7 @@ function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
         err_ave = mean(abs.(𝐺ₙ - 𝐺ₚ))
         err_list[i] = err_ave
         #
-        @printf("Prony approximation %3i -> %16.12f\n", i, err_ave)
+        @printf("Prony approximation %3i -> %16.12f (%16.12e)\n", i, err_ave, S[idx])
     end
     #
     # (5) Find the optimal `v`, which should minimize |𝐺ₙ - 𝐺ₚ|
