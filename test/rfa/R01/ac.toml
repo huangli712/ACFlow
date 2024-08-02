@@ -29,4 +29,5 @@ ratio  = 10.0
 blur   = -1.0
 
 [BarRat]
-denoise = "none"
+denoise = "prony_o"
+epsilon = 1e-16
