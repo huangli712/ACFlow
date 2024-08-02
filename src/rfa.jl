@@ -809,6 +809,11 @@ function last(brc::BarRatContext)
 
     # Calculate full response function on real axis and write them
     _G = brc.ℬ.(brc.mesh.mesh)
+    get_r("atype") == "delta" && begin
+        for i in eachindex(_G)
+            _G[i] = sum(@. brc.ℬA / (brc.mesh.mesh[i] - brc.ℬP + 0.01im))
+        end
+    end
     fwrite && write_complete(brc.mesh, _G)
 
     # Calculate and write the spectral function
