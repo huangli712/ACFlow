@@ -566,7 +566,7 @@ function prony_idx(S::Vector{F64}, ε::F64)
 
     # Check idx
     if isnothing(idx)
-        error("Please increase ε and try again!")
+        error("Please increase ε and try again! ε ∈ [$(S[1]),$(S[end])]")
     end
 
     return idx
