@@ -851,29 +851,40 @@ function poles!(brc::BarRatContext)
         J .= gradient_via_fd(𝑓, x)
     end
 
+    # Get positions of the poles
     𝑃 = bc_poles(brc.ℬ)
     #
+    # Print their positions
     println("Raw poles:")
     for i in eachindex(𝑃)
         z = 𝑃[i]
         @printf("P %4i -> %16.12f + %16.12f im \n", i, real(z), imag(z))
     end
     #
+    # Filter unphysical poles
     filter!(z -> imag(z) < 1e-6, 𝑃)
     #
+    # Print their positions again
     println("New poles:")
     for i in eachindex(𝑃)
         z = 𝑃[i]
         @printf("P %4i -> %16.12f + %16.12f im \n", i, real(z), imag(z))
     end
     #
+    # Update BarRatContext
     brc.ℬP = 𝑃
 
+    # Now we know positions of these poles, and we need to figure out
+    # their amplitudes. This is a typical optimization problem. We just
+    # employ the BFGS algorithm to do this job. 
     𝐴 = zeros(C64, length(𝑃))
     res = optimize(𝑓, 𝐽!, 𝐴, max_iter = 500)
     brc.ℬA = res.minimizer
+    #
+    # Well, we should check whether these amplitudes are reasonable.
     @assert all(z -> imag(z) < 1.0e-6, brc.ℬA)
     #
+    # Print their weights / amplitudes.
     println("New poles:")
     for i in eachindex(𝐴)
         z = brc.ℬA[i]
