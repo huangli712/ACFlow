@@ -8,26 +8,26 @@
 
 [BASE]
 finput = "giw.data"
-solver = "MaxEnt"
+solver = "BarRat"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
 mesh   = "linear"
-ngrid  = 200
+ngrid  = 100
 nmesh  = 1001
 wmax   = 5.0
 wmin   = -5.0
-beta   = 100.0
+beta   = 50.0
 offdiag = false
 
 [MaxEnt]
 method = "chi2kink"
 stype  = "sj"
 nalph  = 12
-alpha  = 1e9
-ratio  = 10.0
+alpha  = 1e10
+ratio  = 2.0
 blur   = -1.0
 
 [BarRat]
-denoise = "prony_s"
+denoise = "none"
 epsilon = 1e-8

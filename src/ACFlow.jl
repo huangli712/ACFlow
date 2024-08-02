@@ -662,6 +662,7 @@ solve           -> Wrapper function for the BarRat solver.
 init            -> Initialize Barycentric rational function simulation.
 run             -> Perform Barycentric rational function simulation.
 last            -> Postprocess the calculated results and write them.
+poles           -> Get pole representation for the Matsubara Green's function.
 ```
 =#
 
@@ -690,6 +691,7 @@ export solve
 export init
 export run
 export last
+export poles
 
 #=
 ### *Includes And Exports* : *nac.jl*
