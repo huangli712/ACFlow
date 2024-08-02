@@ -1,5 +1,5 @@
 #!/usr/bin/env julia
-
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/ACFlow/src")
 using Random
 using Printf
 using ACFlow
@@ -34,14 +34,14 @@ noise = noise_abs .* exp.(noise_phase * im)
 giw = zeros(C64, niw)
 for i in eachindex(giw)
     giw[i] = (
-        A₁ / (iωₙ[i] * im - ϵ₁) + noise[i]
+        A₁ / (iωₙ[i] * im - ϵ₁) + A₂ / (iωₙ[i] * im - ϵ₂) + noise[i]
     )
 end
 #
 gre = zeros(C64, nmesh)
 for i in eachindex(gre)
     gre[i] = (
-        A₁ / (ω[i] + η * im - ϵ₁)
+        A₁ / (ω[i] + η * im - ϵ₁) + A₂ / (ω[i] + η * im - ϵ₂)
     )
 end
 
