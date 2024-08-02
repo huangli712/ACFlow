@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/31
+# Last modified: 2024/08/02
 #
 
 """
@@ -651,6 +651,7 @@ aaa             -> Adaptive Antoulas-Anderson algorithm.
 PronyApproximation -> Prony approximation of a complex-valued function.
 prony_data      -> Preprocess the input Matsubara data.
 prony_svd       -> Perform singular value decomposition.
+prony_idx       -> Choose an optimal vector in the orthogonal matrix V.
 prony_v         -> Extract a vector from the orthogonal matrix V.
 prony_gamma     -> Evaluate Γₚ for Prony approximation.
 prony_omega     -> Evaluate Ωₚ for Prony approximation.
@@ -678,6 +679,7 @@ export aaa
 export PronyApproximation
 export prony_data
 export prony_svd
+export prony_idx
 export prony_v
 export prony_gamma
 export prony_omega
