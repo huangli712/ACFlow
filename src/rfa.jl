@@ -755,15 +755,22 @@ function run(brc::BarRatContext)
     iω = ω * im
     G = brc.Gᵥ
 
-    if denoise == "prony"
+    if denoise == "prony_s"
         println("Activate Prony approximation to denoise the input data")
-        #pa = PronyApproximation(ω, G, ε)
-        pa = PronyApproximation(ω, G)
-        brc.𝒫 = pa
+        brc.𝒫 = PronyApproximation(ω, G, ε)
         #
         println("Construct Barycentric rational function approximation")
-        brc.ℬ = aaa(iω, pa(ω))
+        brc.ℬ = aaa(iω, brc.𝒫(ω))
+    #
+    elseif denoise == "prony_o"
+        println("Activate Prony approximation to denoise the input data")
+        brc.𝒫 = PronyApproximation(ω, G)
+        #
+        println("Construct Barycentric rational function approximation")
+        brc.ℬ = aaa(iω, brc.𝒫(ω))
+    #
     else
+        println("Construct Barycentric rational function approximation")
         brc.ℬ = aaa(iω, G)
     end
 end
