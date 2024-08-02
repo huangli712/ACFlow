@@ -837,3 +837,6 @@ function last(brc::BarRatContext)
 
     return Aout, _G
 end
+
+function poles(brc::BarRatContext)
+end
