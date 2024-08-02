@@ -172,7 +172,7 @@ Version of this julia toolkit.
 
 See also: [`__RELEASE__`](@ref).
 """
-const __VERSION__ = v"1.9.1-devel.240729"
+const __VERSION__ = v"1.9.2-devel.240802"
 
 """
     __RELEASE__
@@ -181,7 +181,7 @@ Release date of this julia toolkit.
 
 See also: [`__AUTHORS__`](@ref).
 """
-const __RELEASE__ = "2024/07"
+const __RELEASE__ = "2024/08"
 
 #=
 *Remarks* :
