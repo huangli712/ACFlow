@@ -199,6 +199,7 @@ function see_dict()
             println("atype   : ", get_r("atype")  )
             println("denoise : ", get_r("denoise"))
             println("epsilon : ", get_r("epsilon"))
+            println("eta     : ", get_r("eta")    )
             break
 
         # For NevanAC solver
@@ -592,6 +593,7 @@ function chk_dict()
             @assert get_r("atype") in ("cont", "delta")
             @assert get_r("denoise") in ("none", "prony_s", "prony_o")
             @assert get_r("epsilon") ≥ 0.0
+            @assert get_r("eta")     ≥ 1e-8
             break
 
         # For NevanAC solver
