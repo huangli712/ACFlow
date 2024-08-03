@@ -1,5 +1,5 @@
 #!/usr/bin/env julia
-
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/ACFlow/src")
 using Random
 using Printf
 using ACFlow
@@ -10,17 +10,15 @@ wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 100   # Number of Matsubara frequencies
 beta = 50.0  # Inverse temperature
-ϵ₁   = 1.00  # Parameters for δ-like peaks
-ϵ₂   = -1.0
-A₁   = 0.30
-A₂   = 0.70
-η    = 1e-2
+η    = 1e-2  # Parameters for δ-like peaks
+ϵ    = [-0.1, -0.3, 0.2, 0.4, -0.4, -0.2, 0.3, 0.1]
+A    = [-3.0, -2.0, -1.0, -0.02, 0.02, 1.0, 2.0, 3.0]
 
 # Real frequency mesh
 ω = collect(LinRange(wmin, wmax, nmesh))
 
 # Matsubara frequency mesh
-iωₙ = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
+iωₙ = π / beta * (2.0 * collect(0:niw-1) .+ 0.0)
 
 # Noise
 seed = rand(1:100000000)
@@ -33,16 +31,17 @@ noise = noise_abs .* exp.(noise_phase * im)
 # Build green's function
 giw = zeros(C64, niw)
 for i in eachindex(giw)
-    giw[i] = (
-        A₁ / (iωₙ[i] * im - ϵ₁) + A₂ / (iωₙ[i] * im - ϵ₂) + noise[i]
-    )
+    for j in eachindex(ϵ)
+        giw[i] = giw[i] + A[j] / (iωₙ[i] * im - ϵ[j])
+    end
+    giw[i] = giw[i] + noise[i]
 end
 #
 gre = zeros(C64, nmesh)
 for i in eachindex(gre)
-    gre[i] = (
-        A₁ / (ω[i] + η * im - ϵ₁) + A₂ / (ω[i] + η * im - ϵ₂)
-    )
+    for j in eachindex(ϵ)
+        gre[i] = gre[i] + A[j] / (ω[i] + η * im - ϵ[j])
+    end
 end
 
 # Build error
