@@ -1,5 +1,5 @@
 #!/usr/bin/env julia
-
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/ACFlow/src")
 using Random
 using Printf
 using ACFlow
@@ -10,15 +10,15 @@ wmax = +10.0 # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 200   # Number of Matsubara frequencies
 beta = 100.0 # Inverse temperature
-ϵ₁   = 0.00  # Parameters for gaussian peaks
-ϵ₂   = -2.5
-ϵ₃   = 2.50
+ϵ₁   = 3.00  # Parameters for gaussian peaks
+ϵ₂   = -3.0
+ϵ₃   = -1.0
 A₁   = 0.50
-A₂   = 0.30
-A₃   = 0.20
+A₂   = -0.1
+A₃   = 0.10
 Γ₁   = 0.50
-Γ₂   = 0.80
-Γ₃   = 0.80
+Γ₂   = 0.50
+Γ₃   = 1.00
 
 # Real frequency mesh
 rmesh = collect(LinRange(wmin, wmax, nmesh))
@@ -26,8 +26,8 @@ rmesh = collect(LinRange(wmin, wmax, nmesh))
 # Spectral function
 image = similar(rmesh)
 #
-@. image  = A₁ / π * Γ₁ / ((rmesh - ϵ₁) ^ 2.0 + Γ₁ ^ 2.0)
-@. image += A₂ / π * Γ₂ / ((rmesh - ϵ₂) ^ 2.0 + Γ₂ ^ 2.0)
+@. image  = A₁ * exp(-0.5 * ((rmesh - ϵ₁) / Γ₁) ^ 2.0) / (sqrt(2.0 * π) *  Γ₁)
+@. image += A₂ * exp(-0.5 * ((rmesh - ϵ₂) / Γ₂) ^ 2.0) / (sqrt(2.0 * π) *  Γ₂)
 @. image += A₃ * exp(-0.5 * ((rmesh - ϵ₃) / Γ₃) ^ 2.0) / (sqrt(2.0 * π) *  Γ₃)
 #
 image = image ./ trapz(rmesh, image)

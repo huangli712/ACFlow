@@ -1,5 +1,5 @@
 #
-# Test: R01
+# Test: R03
 #
 # 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or BarRat).
@@ -18,18 +18,18 @@ nmesh  = 1001
 wmax   = 10.0
 wmin   = -10.0
 beta   = 100.0
-offdiag = false
+offdiag = true
 
 [MaxEnt]
 method = "chi2kink"
 stype  = "sj"
-nalph  = 12
-alpha  = 1e9
+nalph  = 15
+alpha  = 1e15
 ratio  = 10.0
 blur   = -1.0
 
 [BarRat]
 atype   = "cont"
-denoise = "prony_s"
+denoise = "prony_o"
 epsilon = 1.0e-8
 eta     = 0.01
