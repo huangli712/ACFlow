@@ -8,7 +8,7 @@
 
 [BASE]
 finput = "giw.data"
-solver = "BarRat"
+solver = "MaxEnt"
 ktype  = "fermi"
 mtype  = "flat"
 grid   = "ffreq"
@@ -18,7 +18,7 @@ nmesh  = 1001
 wmax   = 5.0
 wmin   = -5.0
 beta   = 50.0
-offdiag = false
+offdiag = true
 
 [MaxEnt]
 method = "chi2kink"
