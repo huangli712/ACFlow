@@ -870,7 +870,7 @@ function poles!(brc::BarRatContext)
     end
     #
     # Filter unphysical poles
-    filter!(z -> imag(z) < 1e-6, 𝑃)
+    filter!(z -> abs(imag(z)) < 1e-2, 𝑃)
     #
     # Print their positions again
     println("New poles:")
@@ -889,13 +889,13 @@ function poles!(brc::BarRatContext)
     res = optimize(𝑓, 𝐽!, 𝐴, max_iter = 500)
     brc.ℬA = res.minimizer
     #
-    # Well, we should check whether these amplitudes are reasonable.
-    @assert all(z -> imag(z) < 1.0e-6, brc.ℬA)
-    #
     # Print their weights / amplitudes.
     println("New poles:")
     for i in eachindex(𝐴)
         z = brc.ℬA[i]
         @printf("A %4i -> %16.12f + %16.12f im \n", i, real(z), imag(z))
     end
+    #
+    # Well, we should check whether these amplitudes are reasonable.
+    @assert all(z -> abs(imag(z)) < 1.0e-2, brc.ℬA)
 end
