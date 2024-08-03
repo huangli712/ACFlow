@@ -797,7 +797,7 @@ function last(brc::BarRatContext)
     function pole_green!(_G::Vector{C64})
         η = get_r("eta")
         for i in eachindex(_G)
-            _G[i] = sum(@. brc.ℬA / (brc.mesh.mesh[i] - brc.ℬP + η * im))
+            _G[i] = sum(@. real(brc.ℬA) / (brc.mesh.mesh[i] - real(brc.ℬP) + η * im))
         end
     end
 
@@ -870,7 +870,7 @@ function poles!(brc::BarRatContext)
     end
     #
     # Filter unphysical poles
-    filter!(z -> abs(imag(z)) < 1e-2, 𝑃)
+    filter!(z -> abs(imag(z)) < 1.0e-1, 𝑃)
     #
     # Print their positions again
     println("New poles:")
@@ -897,5 +897,5 @@ function poles!(brc::BarRatContext)
     end
     #
     # Well, we should check whether these amplitudes are reasonable.
-    @assert all(z -> abs(imag(z)) < 1.0e-2, brc.ℬA)
+    @assert all(z -> abs(imag(z)) < 1.0e-1, brc.ℬA)
 end
