@@ -1,0 +1,60 @@
+#
+# Test: T04
+#
+# 0. Run gendata.jl to generate input data at first.
+# 1. Change [BASE] -> solver (MaxEnt or StochAC or StochSK or StochOM).
+# 2. If [BASE] -> solver is StochAC, [BASE] -> mtype must be flat.
+# 3. [BASE] -> finput must be compatible with [BASE] -> grid and [BASE] -> ngrid.
+# 4. Execute ../../util/acrun.jl ac.toml.
+#
+
+[BASE]
+finput = "chiw.data"
+solver = "MaxEnt"
+ktype  = "bsymm"
+mtype  = "flat"
+grid   = "bfreq"
+mesh   = "halflorentz"
+ngrid  = 10
+nmesh  = 801
+wmax   = 8.0
+wmin   = 0.0
+beta   = 20.0
+offdiag = false
+
+[MaxEnt]
+method = "chi2kink"
+stype  = "sj"
+nalph  = 14
+alpha  = 1e12
+ratio  = 10.0
+blur   = -1.0
+
+[StochAC]
+nfine  = 10000
+ngamm  = 512
+nwarm  = 40000
+nstep  = 10000000
+ndump  = 40000
+nalph  = 40
+alpha  = 1.00
+ratio  = 1.20
+
+[StochSK]
+method = "chi2min"
+nfine  = 40000
+ngamm  = 1000
+nwarm  = 1000
+nstep  = 20000
+ndump  = 200
+retry  = 10
+theta  = 1e+6
+ratio  = 0.90
+
+[StochOM]
+ntry   = 100000
+nstep  = 1000
+nbox   = 100
+sbox   = 0.005
+wbox   = 0.02
+norm   = -1.0
