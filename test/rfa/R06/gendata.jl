@@ -10,10 +10,10 @@ wmax = +10.0 # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 200   # Number of Matsubara frequencies
 beta = 100.0 # Inverse temperature
-ϵ₁   = 2.00  # Parameters for gaussian peaks
-ϵ₂   = -2.0
+ϵ₁   = 1.00  # Parameters for gaussian peaks
+ϵ₂   = -1.0
 A₁   = 0.50
-A₂   = 0.50
+A₂   = -0.4
 Γ₁   = 1.00
 Γ₂   = 1.00
 

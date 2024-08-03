@@ -1,5 +1,5 @@
 #
-# Test: R05
+# Test: R06
 #
 # 0. Run gendata.jl to generate input data at first.
 # 1. Change [BASE] -> solver (MaxEnt or BarRat).
@@ -18,7 +18,7 @@ nmesh  = 1001
 wmax   = 10.0
 wmin   = -10.0
 beta   = 100.0
-offdiag = false
+offdiag = true
 
 [MaxEnt]
 method = "chi2kink"
