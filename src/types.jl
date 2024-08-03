@@ -110,6 +110,7 @@ const PBarRat  = Dict{String,ADT}(
     "atype"   => [missing, 1, :String, "Possible type of the spectrum"],
     "denoise" => [missing, 1, :String, "How to denoise the input data"],
     "epsilon" => [missing, 1, :F64   , "Threshold for the Prony approximation"],
+    "pcut"    => [missing, 1, :F64   , "Cutoff for unphysical poles"],
     "eta"     => [missing, 1, :F64   , "Tiny distance from the real axis"],
 )
 
@@ -118,6 +119,7 @@ const _PBarRat = Dict{String,Any}(
     "atype"   => "cont",
     "denoise" => "prony",
     "epsilon" => 1e-10,
+    "pcut"    => 1e-3,
     "eta"     => 1e-2,
 )
 

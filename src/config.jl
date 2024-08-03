@@ -199,6 +199,7 @@ function see_dict()
             println("atype   : ", get_r("atype")  )
             println("denoise : ", get_r("denoise"))
             println("epsilon : ", get_r("epsilon"))
+            println("pcut    : ", get_r("pcut")   )
             println("eta     : ", get_r("eta")    )
             break
 
@@ -593,6 +594,7 @@ function chk_dict()
             @assert get_r("atype") in ("cont", "delta")
             @assert get_r("denoise") in ("none", "prony_s", "prony_o")
             @assert get_r("epsilon") ≥ 0.0
+            @assert get_r("pcut")    ≥ 1e-6
             @assert get_r("eta")     ≥ 1e-8
             break
 
