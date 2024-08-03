@@ -872,7 +872,7 @@ function poles!(brc::BarRatContext)
     end
     #
     # Filter unphysical poles
-    filter!(z -> abs(imag(z)) < 1.0e-1, 𝑃)
+    filter!(z -> abs(imag(z)) < get_r("pcut"), 𝑃)
     #
     # Print their positions again
     println("New poles:")
@@ -899,5 +899,5 @@ function poles!(brc::BarRatContext)
     end
     #
     # Well, we should check whether these amplitudes are reasonable.
-    @assert all(z -> abs(imag(z)) < 1.0e-1, brc.ℬA)
+    @assert all(z -> abs(imag(z)) < get_r("pcut"), brc.ℬA)
 end
