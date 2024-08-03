@@ -872,6 +872,7 @@ function poles!(brc::BarRatContext)
     end
     #
     # Filter unphysical poles
+    @show get_r("pcut")
     filter!(z -> abs(imag(z)) < get_r("pcut"), 𝑃)
     #
     # Print their positions again

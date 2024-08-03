@@ -15,8 +15,8 @@ grid   = "bfreq"
 mesh   = "linear"
 ngrid  = 100
 nmesh  = 1001
-wmax   = 1.0
-wmin   = -1.0
+wmax   = 1.50
+wmin   = -1.5
 beta   = 50.0
 offdiag = true
 
@@ -30,7 +30,7 @@ blur   = -1.0
 
 [BarRat]
 atype   = "delta"
-denoise = "none"
+denoise = "prony_o"
 epsilon = 1.0e-8
-pcut    = 1.0e-3
+pcut    = 1.0e-1
 eta     = 0.01
