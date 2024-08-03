@@ -8,7 +8,7 @@ using ACFlow
 wmin = +0.0  # Left boundary
 wmax = +8.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
-niw  = 10    # Number of Matsubara frequencies
+niw  = 100   # Number of Matsubara frequencies
 ntau = 501   # Number of imaginary time points
 beta = 20.0  # Inverse temperature
 W₁   = 0.30  # Parameters for gaussian peaks

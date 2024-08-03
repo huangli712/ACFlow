@@ -8,12 +8,12 @@
 
 [BASE]
 finput = "chiw.data"
-solver = "MaxEnt"
+solver = "BarRat"
 ktype  = "bsymm"
 mtype  = "flat"
 grid   = "bfreq"
 mesh   = "halflorentz"
-ngrid  = 10
+ngrid  = 100
 nmesh  = 801
 wmax   = 8.0
 wmin   = 0.0
