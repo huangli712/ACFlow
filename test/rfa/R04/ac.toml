@@ -32,4 +32,5 @@ blur   = -1.0
 atype   = "delta"
 denoise = "none"
 epsilon = 1.0e-8
+pcut    = 0.1
 eta     = 0.01

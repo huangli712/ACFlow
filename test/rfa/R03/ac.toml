@@ -32,4 +32,5 @@ blur   = -1.0
 atype   = "cont"
 denoise = "prony_o"
 epsilon = 1.0e-8
+pcut    = 1.0e-3
 eta     = 0.01
