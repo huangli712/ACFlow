@@ -1,0 +1,36 @@
+#
+# Test: R05
+#
+# 0. Run gendata.jl to generate input data at first.
+# 1. Change [BASE] -> solver (MaxEnt or BarRat).
+# 2. Execute ../../../util/acrun.jl ac.toml.
+#
+
+[BASE]
+finput = "giw.data"
+solver = "BarRat"
+ktype  = "fermi"
+mtype  = "flat"
+grid   = "ffreq"
+mesh   = "linear"
+ngrid  = 200
+nmesh  = 1001
+wmax   = 10.0
+wmin   = -10.0
+beta   = 100.0
+offdiag = true
+
+[MaxEnt]
+method = "chi2kink"
+stype  = "sj"
+nalph  = 15
+alpha  = 1e15
+ratio  = 10.0
+blur   = -1.0
+
+[BarRat]
+atype   = "cont"
+denoise = "prony_o"
+epsilon = 1.0e-8
+pcut    = 1.0e-3
+eta     = 0.01
