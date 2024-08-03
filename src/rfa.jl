@@ -796,8 +796,10 @@ rational function approximation will be written as well.
 function last(brc::BarRatContext)
     function pole_green!(_G::Vector{C64})
         η = get_r("eta")
+        rA = real(brc.ℬA)
+        rP = real(brc.ℬP)
         for i in eachindex(_G)
-            _G[i] = sum(@. real(brc.ℬA) / (brc.mesh.mesh[i] - real(brc.ℬP) + η * im))
+            _G[i] = sum(@. rA / (brc.mesh.mesh[i] - rP + η * im))
         end
     end
 
