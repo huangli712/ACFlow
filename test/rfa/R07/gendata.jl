@@ -5,8 +5,8 @@ using Printf
 using ACFlow
 
 # Setup parameters
-wmin = -5.0  # Left boundary
-wmax = +5.0  # Right boundary
+wmin = -1.0  # Left boundary
+wmax = +1.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 100   # Number of Matsubara frequencies
 beta = 50.0  # Inverse temperature
