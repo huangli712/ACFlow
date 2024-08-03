@@ -9,28 +9,28 @@
 [BASE]
 finput = "giw.data"
 solver = "BarRat"
-ktype  = "boson"
+ktype  = "fermi"
 mtype  = "flat"
-grid   = "bfreq"
+grid   = "ffreq"
 mesh   = "linear"
-ngrid  = 200
+ngrid  = 100
 nmesh  = 1001
-wmax   = 10.0
-wmin   = -10.0
-beta   = 100.0
-offdiag = true
+wmax   = 5.0
+wmin   = -5.0
+beta   = 50.0
+offdiag = false
 
 [MaxEnt]
 method = "chi2kink"
 stype  = "sj"
-nalph  = 15
-alpha  = 1e15
-ratio  = 10.0
+nalph  = 12
+alpha  = 1e10
+ratio  = 2.0
 blur   = -1.0
 
 [BarRat]
-atype   = "cont"
-denoise = "none"
+atype   = "delta"
+denoise = "prony_o"
 epsilon = 1.0e-8
 pcut    = 1.0e-3
 eta     = 0.01

@@ -1,35 +1,26 @@
 #!/usr/bin/env julia
-push!(LOAD_PATH, "/Users/lihuang/Working/devel/ACFlow/src")
+
 using Random
 using Printf
 using ACFlow
 
 # Setup parameters
-wmin = -10.0 # Left boundary
-wmax = +10.0 # Right boundary
+wmin = -5.0  # Left boundary
+wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
-niw  = 200   # Number of Matsubara frequencies
-beta = 100.0 # Inverse temperature
-ϵ₁   = 1.00  # Parameters for gaussian peaks
+niw  = 100   # Number of Matsubara frequencies
+beta = 50.0  # Inverse temperature
+ϵ₁   = 1.00  # Parameters for δ-like peaks
 ϵ₂   = -1.0
-A₁   = 0.50
-A₂   = -0.4
-Γ₁   = 1.00
-Γ₂   = 1.00
+A₁   = 0.30
+A₂   = 0.70
+η    = 1e-2
 
 # Real frequency mesh
-rmesh = collect(LinRange(wmin, wmax, nmesh))
-
-# Spectral function
-image = similar(rmesh)
-#
-@. image  = A₁ * exp(-0.5 * ((rmesh - ϵ₁) / Γ₁) ^ 2.0) / (sqrt(2.0 * π) *  Γ₁)
-@. image += A₂ * exp(-0.5 * ((rmesh - ϵ₂) / Γ₂) ^ 2.0) / (sqrt(2.0 * π) *  Γ₂)
-#
-image = image ./ trapz(rmesh, image)
+ω = collect(LinRange(wmin, wmax, nmesh))
 
 # Matsubara frequency mesh
-iw = π / beta * (2.0 * collect(0:niw-1) .+ 0.0)
+iωₙ = π / beta * (2.0 * collect(0:niw-1) .+ 1.0)
 
 # Noise
 seed = rand(1:100000000)
@@ -39,37 +30,36 @@ noise_abs = randn(rng, F64, niw) * noise_ampl
 noise_phase = rand(rng, niw) * 2.0 * π
 noise = noise_abs .* exp.(noise_phase * im)
 
-# Kernel function
-kernel = reshape(rmesh, (1,nmesh)) ./
-             (im * reshape(iw, (niw,1)) .- reshape(rmesh, (1,nmesh)))
-#
-# Locate the point at which ω = 0
-_, zero_point = findmin(abs.(rmesh))
-#
-# Treat special case with ωₙ = 0 and ω = 0
-kernel[1,zero_point] = -1.0
-
 # Build green's function
-KA = kernel .* reshape(image, (1,nmesh))
 giw = zeros(C64, niw)
 for i in eachindex(giw)
-    giw[i] = trapz(rmesh, KA[i,:]) + noise[i]
+    giw[i] = (
+        A₁ / (iωₙ[i] * im - ϵ₁) + A₂ / (iωₙ[i] * im - ϵ₂) + noise[i]
+    )
+end
+#
+gre = zeros(C64, nmesh)
+for i in eachindex(gre)
+    gre[i] = (
+        A₁ / (ω[i] + η * im - ϵ₁) + A₂ / (ω[i] + η * im - ϵ₂)
+    )
 end
 
 # Build error
 err = ones(F64, niw) * noise_ampl
 
-# Write green's function
+# Write green's function (Matsubara frequency axis)
 open("giw.data", "w") do fout
     for i in eachindex(giw)
         z = giw[i]
-        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iw[i], real(z), imag(z), err[i])
+        @printf(fout, "%20.16f %20.16f %20.16f %20.16f\n", iωₙ[i], real(z), imag(z), err[i])
     end
 end
 
-# Write spectral function
-open("image.data", "w") do fout
-    for i in eachindex(image)
-        @printf(fout, "%20.16f %20.16f\n", rmesh[i], image[i])
+# Write green's function (real frequency axis)
+open("gre.data", "w") do fout
+    for i in eachindex(gre)
+        z = gre[i]
+        @printf(fout, "%20.16f %20.16f %20.16f\n", ω[i], real(z), imag(z))
     end
 end
