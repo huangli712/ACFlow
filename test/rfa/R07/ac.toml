@@ -30,7 +30,7 @@ blur   = -1.0
 
 [BarRat]
 atype   = "delta"
-denoise = "prony_o"
+denoise = "none"
 epsilon = 1.0e-8
 pcut    = 1.0e-1
 eta     = 0.01
