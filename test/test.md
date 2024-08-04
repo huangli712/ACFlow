@@ -400,6 +400,36 @@ The following tests are designed to test the newly developed `BarRat` solver (ba
     * Fixed error bar
     * Two gaussian peaks
 
+* **rfa/R06**
+    * Bosonic + Matsubara
+    * Matrix-valued Green's functions (offdiagonal part)
+    * MaxEnt solver (chi2kink algorithm)
+    * BarRat solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Two gaussian peaks
+
+* **rfa/R07**
+    * Bosonic + Matsubara
+    * Matrix-valued Green's functions (offdiagonal part)
+    * MaxEnt solver (chi2kink algorithm)
+    * BarRat solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Six off-centered delta peaks
+
+* **rfa/R08**
+    * Bosonic (symm) + Matsubara
+    * Current-current correlation function
+    * MaxEnt solver (chi2kink algorithm)
+    * BarRat solver
+    * Flat model
+    * Half-Lorentzian mesh
+    * Fixed error bar
+    * A clone of **T04**
+
 ## LQCD tests
 
 The following tests are designed to test the newly developed `StochPX` solver (based on the `stochastic pole expansion` method) for analytical continuation of the lattice QCD datasets.
