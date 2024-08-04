@@ -836,8 +836,11 @@ function last(brc::BarRatContext)
         G = reprod(brc.mesh, kernel, Aout)
     else
         Aeff = Aout ./ brc.mesh.mesh
+        #
+        # When ω = 0.0, A(ω) / ω will produce Inf. We need to avoid this.
         @assert count(z -> isinf(z), Aeff) == 1
         ind = findfirst(z -> isinf(z), Aeff)
+        #
         if ind == 1
             Aeff[ind] = 2.0 * Aeff[ind+1] - Aeff[ind+2]
         elseif ind == length(Aeff)
@@ -845,6 +848,7 @@ function last(brc::BarRatContext)
         else
             Aeff[ind] = (Aeff[ind-1] + Aeff[ind+1]) / 2.0
         end
+        #
         G = reprod(brc.mesh, kernel, Aeff)
     end
     fwrite && write_backward(brc.grid, G)
