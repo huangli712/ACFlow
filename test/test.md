@@ -4,7 +4,7 @@
 
 ## Standard tests
 
-The following twelve tests are used to test the basic features of the ACFlow toolkit.
+The following twelve tests are used to test the basic features of the ACFlow toolkit (for `MaxEnt`, `StochAC`, `StochSK`, and `StochOM` solvers only).
 
 * **basic/A01**
     * Fermionic + Matsubara
@@ -178,9 +178,6 @@ The following tests are designed to test the newly developed `StochPX` solver (b
 * **pole/X03**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
-    * StochAC solver
-    * StochSK solver
-    * StochOM solver
     * StochPX solver
     * Flat model
     * Linear mesh
@@ -221,9 +218,6 @@ The following tests are designed to test the newly developed `StochPX` solver (b
 * **pole/X07**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
-    * StochAC solver
-    * StochSK solver
-    * StochOM solver
     * StochPX solver
     * Flat model
     * Linear mesh
@@ -354,6 +348,10 @@ The following tests are designed to test the newly developed `StochPX` solver (b
     * Fixed error bar
     * Four delta peaks
     * MaxEntAux algorithm + Direct algorithm
+
+## Experimental tests 3
+
+The following tests are designed to test the newly developed `StochPX` solver (based on the `stochastic pole expansion` method) only.
 
 ## LQCD tests
 
