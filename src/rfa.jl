@@ -835,7 +835,17 @@ function last(brc::BarRatContext)
     if get_b("ktype") == "fermi"
         G = reprod(brc.mesh, kernel, Aout)
     else
-        G = reprod(brc.mesh, kernel, Aout ./ brc.mesh.mesh)
+        Aeff = Aout ./ brc.mesh.mesh
+        @assert count(z -> isinf(z), Aeff) == 1
+        ind = findfirst(z -> isinf(z), Aeff)
+        if ind == 1
+            Aeff[ind] = 2.0 * Aeff[ind+1] - Aeff[ind+2]
+        elseif ind == length(Aeff)
+            Aeff[ind] = 2.0 * Aeff[ind-1] - Aeff[ind-2]
+        else
+            Aeff[ind] = (Aeff[ind-1] + Aeff[ind+1]) / 2.0
+        end
+        G = reprod(brc.mesh, kernel, Aeff)
     end
     fwrite && write_backward(brc.grid, G)
 
