@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/03
+# Last modified: 2024/08/04
 #
 
 #
@@ -858,6 +858,7 @@ function poles!(brc::BarRatContext)
     end
 
     function 𝐽!(J::Vector{C64}, x::Vector{C64})
+        # The Zygote.gradient() fails here.
         J .= gradient_via_fd(𝑓, x)
     end
 
@@ -887,7 +888,7 @@ function poles!(brc::BarRatContext)
 
     # Now we know positions of these poles, and we need to figure out
     # their amplitudes. This is a typical optimization problem. We just
-    # employ the BFGS algorithm to do this job. 
+    # employ the BFGS algorithm to do this job.
     𝐴 = zeros(C64, length(𝑃))
     res = optimize(𝑓, 𝐽!, 𝐴, max_iter = 500)
     brc.ℬA = res.minimizer
