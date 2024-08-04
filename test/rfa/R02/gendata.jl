@@ -1,5 +1,5 @@
 #!/usr/bin/env julia
-
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/ACFlow/src")
 using Random
 using Printf
 using ACFlow
