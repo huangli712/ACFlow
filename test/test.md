@@ -351,7 +351,17 @@ The following tests are designed to test the newly developed `StochPX` solver (b
 
 ## Experimental tests 3
 
-The following tests are designed to test the newly developed `StochPX` solver (based on the `stochastic pole expansion` method) only.
+The following tests are designed to test the newly developed `BarRat` solver (based on the `Barycentric rational function approximation` method) only.
+
+* **rfa/R01**
+    * Fermionic + Matsubara
+    * MaxEnt solver (chi2kink algorithm)
+    * StochPX solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Two gaussian peaks + big gap
+
 
 ## LQCD tests
 
