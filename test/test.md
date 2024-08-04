@@ -394,7 +394,7 @@ The following tests are designed to test the newly developed `BarRat` solver (ba
 * **rfa/R05**
     * Bosonic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
-    * BarRat solver
+    * BarRat solver (denoising: none)
     * Flat model
     * Linear mesh
     * Fixed error bar
