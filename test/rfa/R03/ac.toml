@@ -17,7 +17,7 @@ ngrid  = 200
 nmesh  = 1001
 wmax   = 10.0
 wmin   = -10.0
-beta   = 100.0
+beta   = 50.0
 offdiag = true
 
 [MaxEnt]
