@@ -404,7 +404,7 @@ The following tests are designed to test the newly developed `BarRat` solver (ba
     * Bosonic + Matsubara
     * Matrix-valued Green's functions (offdiagonal part)
     * MaxEnt solver (chi2kink algorithm)
-    * BarRat solver
+    * BarRat solver (denoising: none)
     * Flat model
     * Linear mesh
     * Fixed error bar
@@ -414,7 +414,7 @@ The following tests are designed to test the newly developed `BarRat` solver (ba
     * Bosonic + Matsubara
     * Matrix-valued Green's functions (offdiagonal part)
     * MaxEnt solver (chi2kink algorithm)
-    * BarRat solver
+    * BarRat solver (denoising: none)
     * Flat model
     * Linear mesh
     * Fixed error bar
@@ -424,7 +424,7 @@ The following tests are designed to test the newly developed `BarRat` solver (ba
     * Bosonic (symm) + Matsubara
     * Current-current correlation function
     * MaxEnt solver (chi2kink algorithm)
-    * BarRat solver
+    * BarRat solver (denoising: prony_o)
     * Flat model
     * Half-Lorentzian mesh
     * Fixed error bar
