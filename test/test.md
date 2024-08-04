@@ -398,7 +398,7 @@ The following tests are designed to test the newly developed `BarRat` solver (ba
     * Flat model
     * Linear mesh
     * Fixed error bar
-    * Two gaussian peaks
+    * Two gaussian peaks + big gap
 
 * **rfa/R06**
     * Bosonic + Matsubara
