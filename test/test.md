@@ -371,6 +371,25 @@ The following tests are designed to test the newly developed `BarRat` solver (ba
     * Fixed error bar
     * Two off-centered delta peaks
 
+* **rfa/R03**
+    * Fermionic + Matsubara
+    * Matrix-valued Green's functions (offdiagonal part)
+    * MaxEnt solver (chi2kink algorithm)
+    * BarRat solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Three gaussian peaks
+
+* **rfa/R04**
+    * Fermionic + Matsubara
+    * Matrix-valued Green's functions (offdiagonal part)
+    * MaxEnt solver (chi2kink algorithm)
+    * BarRat solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Six off-centered delta peaks
 
 ## LQCD tests
 
