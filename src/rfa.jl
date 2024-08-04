@@ -826,8 +826,17 @@ function last(brc::BarRatContext)
     fwrite && write_spectrum(brc.mesh, Aout)
 
     # Regenerate the input data and write them
+    #
+    # Be careful, BarRat will always give A(ω), instead of A(ω)/ω. This
+    # will lead to problem when we try to reproduce the input data, becase
+    # A(ω) is not compatible with the predefined kernel. So we need to
+    # convert A(ω) to A(ω)/ω when the system is bosonic.
     kernel = make_kernel(brc.mesh, brc.grid)
-    G = reprod(brc.mesh, kernel, Aout)
+    if get_b("ktype") == "fermi"
+        G = reprod(brc.mesh, kernel, Aout)
+    else
+        G = reprod(brc.mesh, kernel, Aout ./ brc.mesh.mesh)
+    end
     fwrite && write_backward(brc.grid, G)
 
     return Aout, _G
