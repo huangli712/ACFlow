@@ -5,17 +5,17 @@ using Printf
 using ACFlow
 
 # Setup parameters
-wmin = -10.0 # Left boundary
-wmax = +10.0 # Right boundary
+wmin = -5.0  # Left boundary
+wmax = +5.0  # Right boundary
 nmesh = 2001 # Number of real-frequency points
 niw  = 100   # Number of Matsubara frequencies
 beta = 50.0  # Inverse temperature
-ϵ₁   = 2.00  # Parameters for gaussian peaks
-ϵ₂   = -2.0
+ϵ₁   = 2.50  # Parameters for gaussian peaks
+ϵ₂   = -2.5
 A₁   = 0.50
 A₂   = 0.50
-Γ₁   = 1.00
-Γ₂   = 1.00
+Γ₁   = 0.50
+Γ₂   = 0.50
 
 # Real frequency mesh
 rmesh = collect(LinRange(wmin, wmax, nmesh))
