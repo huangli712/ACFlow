@@ -360,7 +360,7 @@ The following tests are designed to test the newly developed `BarRat` solver (ba
     * Flat model
     * Linear mesh
     * Fixed error bar
-    * Two lorentzian peaks + one gaussian peak
+    * Three lorentzian peaks
 
 * **rfa/R02**
     * Fermionic + Matsubara

@@ -28,7 +28,7 @@ image = similar(rmesh)
 #
 @. image  = A₁ / π * Γ₁ / ((rmesh - ϵ₁) ^ 2.0 + Γ₁ ^ 2.0)
 @. image += A₂ / π * Γ₂ / ((rmesh - ϵ₂) ^ 2.0 + Γ₂ ^ 2.0)
-@. image += A₃ / π * Γ₂ / ((rmesh - ϵ₃) ^ 2.0 + Γ₃ ^ 2.0)
+@. image += A₃ / π * Γ₃ / ((rmesh - ϵ₃) ^ 2.0 + Γ₃ ^ 2.0)
 #
 image = image ./ trapz(rmesh, image)
 
