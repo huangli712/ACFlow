@@ -30,7 +30,7 @@ blur   = -1.0
 
 [BarRat]
 atype   = "cont"
-denoise = "none"
+denoise = "prony_s"
 epsilon = 1.0e-8
 pcut    = 1.0e-3
 eta     = 0.01
