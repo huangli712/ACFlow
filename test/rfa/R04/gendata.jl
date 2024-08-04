@@ -11,8 +11,8 @@ nmesh = 2001 # Number of real-frequency points
 niw  = 100   # Number of Matsubara frequencies
 beta = 50.0  # Inverse temperature
 η    = 1e-2  # Parameters for δ-like peaks
-ϵ    = [-4.6, -2.6, 0.8, 1.6, 3.3, 4.0]
-A    = [-0.1, 0.3, 0.1, -0.3, -0.2, 0.2]
+ϵ    = [-4.0, -2.6, 0.8, 2.0, 3.5]
+A    = [-0.1, 0.3, 0.1, -0.3, 0.2]
 
 # Real frequency mesh
 ω = collect(LinRange(wmin, wmax, nmesh))
