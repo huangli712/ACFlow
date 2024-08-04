@@ -356,11 +356,20 @@ The following tests are designed to test the newly developed `BarRat` solver (ba
 * **rfa/R01**
     * Fermionic + Matsubara
     * MaxEnt solver (chi2kink algorithm)
-    * StochPX solver
+    * BarRat solver
     * Flat model
     * Linear mesh
     * Fixed error bar
-    * Two gaussian peaks + big gap
+    * Two lorentzian peaks + one gaussian peak
+
+* **rfa/R02**
+    * Fermionic + Matsubara
+    * MaxEnt solver (chi2kink algorithm)
+    * BarRat solver
+    * Flat model
+    * Linear mesh
+    * Fixed error bar
+    * Two lorentzian peaks + one gaussian peak
 
 
 ## LQCD tests
