@@ -15,7 +15,7 @@ beta = 50.0  # Inverse temperature
 ϵ₃   = 2.50
 A₁   = 0.50
 A₂   = 0.30
-A₃   = 0.20
+A₃   = 0.30
 Γ₁   = 0.50
 Γ₂   = 0.80
 Γ₃   = 0.80
@@ -28,7 +28,8 @@ image = similar(rmesh)
 #
 @. image  = A₁ / π * Γ₁ / ((rmesh - ϵ₁) ^ 2.0 + Γ₁ ^ 2.0)
 @. image += A₂ / π * Γ₂ / ((rmesh - ϵ₂) ^ 2.0 + Γ₂ ^ 2.0)
-@. image += A₃ * exp(-0.5 * ((rmesh - ϵ₃) / Γ₃) ^ 2.0) / (sqrt(2.0 * π) *  Γ₃)
+@. image += A₃ / π * Γ₂ / ((rmesh - ϵ₃) ^ 2.0 + Γ₃ ^ 2.0)
+#@. image += A₃ * exp(-0.5 * ((rmesh - ϵ₃) / Γ₃) ^ 2.0) / (sqrt(2.0 * π) *  Γ₃)
 #
 image = image ./ trapz(rmesh, image)
 
