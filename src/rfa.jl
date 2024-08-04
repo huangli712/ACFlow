@@ -809,7 +809,7 @@ function last(brc::BarRatContext)
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
 
     # Write information about Prony approximation
-    fwrite && (get_r("denoise") == "prony") && begin
+    fwrite && (get_r("denoise") != "none") && begin
         write_prony(brc.𝒫.𝑁ₚ, brc.𝒫.Γₚ, brc.𝒫.Ωₚ)
     end
 
