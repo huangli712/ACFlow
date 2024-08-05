@@ -76,6 +76,17 @@ calc_chi2(mec::MaxEntContext, A::Vector{F64})
 ```@docs
 BarRatSolver
 BarRatContext
+BarycentricFunction
+PronyApproximation
+```
+
+### Functions
+
+```@docs
+solve(S::BarRatSolver, rd::RawData)
+init(S::BarRatSolver, rd::RawData)
+ACFlow.run(brc::BarRatContext)
+ACFlow.last(brc::BarRatContext)
 ```
 
 ## NevanAC Solver
