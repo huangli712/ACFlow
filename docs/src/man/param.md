@@ -587,7 +587,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory. If `atype` is "delta", then the `pcut` and `eta` parameters will .
+> This parameter is mandatory. If `atype` is "delta", then the `pcut` and `eta` parameters will take effect.
 
 ### [denoise](@id barrat_denoise)
 
@@ -602,6 +602,60 @@ Depth = 3
 *Example:*
 
 > denoise = "none"
+
+*Comment:*
+
+>
+
+### [epsilon](@id barrat_epsilon)
+
+*Definition:*
+
+>
+
+*Type:*
+
+> Float.
+
+*Example:*
+
+> epsilon = 1e-10
+
+*Comment:*
+
+>
+
+### [pcut](@id barrat_pcut)
+
+*Definition:*
+
+>
+
+*Type:*
+
+> Float.
+
+*Example:*
+
+> pcut = 1e-3
+
+*Comment:*
+
+>
+
+### [eta](@id barrat_eta)
+
+*Definition:*
+
+>
+
+*Type:*
+
+> String.
+
+*Example:*
+
+> eta = 1e-2
 
 *Comment:*
 
