@@ -1,36 +1,37 @@
 # Main Features
 
-Now the ACFlow toolkit supports five analytic continuation methods as introduced before. It includes six different analytic continuation solvers, namely
+Now the ACFlow toolkit supports six analytic continuation methods as introduced before. It includes seven different analytic continuation solvers, namely
 
 * `MaxEnt`
+* `BarRat`
 * `NevanAC`
 * `StochAC`
 * `StochSK`
 * `StochOM`
 * `StochPX`
 
-Just as their names suggested, the `MaxEnt` solver implements the maximum entropy method. The `NevanAC` solver implements the Nevanlinna analytical continuation. The `StochAC` and `StochSK` solvers implement the K. S. D. Beach's algorithm and A. W. Sandvik's algorithm of the stochastic analytic continuation, respectively. The `StochOM` solver implements the stochastic optimization method. The `StochPX` solver implements the stochastic pole expansion method. The ACFlow toolkit also provides a convenient library, which can be used to prepare and carry out analytic continuation calculations flexibly. The major features of the present ACFlow toolkit (*v1.8.0* and above) are summarized in **Table 1**.
+Just as their names suggested, the `MaxEnt` solver implements the maximum entropy method. The `BarRat` solver implements the Barycentric rational function approximation. The `NevanAC` solver implements the Nevanlinna analytical continuation. The `StochAC` and `StochSK` solvers implement the K. S. D. Beach's algorithm and A. W. Sandvik's algorithm of the stochastic analytic continuation, respectively. The `StochOM` solver implements the stochastic optimization method. The `StochPX` solver implements the stochastic pole expansion method. The ACFlow toolkit also provides a convenient library, which can be used to prepare and carry out analytic continuation calculations flexibly. The major features of the present ACFlow toolkit (*v1.9.0* and above) are summarized in **Table 1**.
 
-| Features | MaxEnt | NevanAC | StochAC | StochSK | StochOM | StochPX |
-| :------- | :----: | :-----: | :-----: | :-----: | :-----: | :-----: |
-|Matrix-valued Green's function | Y | N | N | N | N | Y |
-|Fragment input grid            | Y | Y | Y | Y | Y | Y |
-|Imaginary time grid            | Y | N | Y | Y | Y | N |
-|Matsubara frequency grid       | Y | Y | Y | Y | Y | Y |
-|Linear mesh                    | Y | Y | Y | Y | Y | Y |
-|Nonlinear mesh                 | Y | Y | Y | Y | Y | Y |
-|Fermionic kernel               | Y | Y | Y | Y | Y | Y |
-|Bosonic kernel                 | Y | N | Y | Y | Y | Y |
-|Self-defined model function    | Y | N | N | N | N | N |
-|Constrained analytic continuation | N | N | Y | Y | Y | Y |
-|Self-adaptive parameterization | N | N | Y | N | N | Y |
-|Regeneration of input data     | Y | Y | Y | Y | Y | Y |
-|Kramers-Kronig transformation  | Y | Y | Y | Y | Y | Y |
-|Parallel computing             | N | N | Y | Y | Y | Y |
-|Parallel tempering             | N | N | Y | N | N | N |
-|Interactive mode               | Y | Y | Y | Y | Y | Y |
-|Script mode                    | Y | Y | Y | Y | Y | Y |
-|Standard mode                  | Y | Y | Y | Y | Y | Y |
+| Features | MaxEnt | BarRat | NevanAC | StochAC | StochSK | StochOM | StochPX |
+| :------- | :----: | :----: | :-----: | :-----: | :-----: | :-----: | :-----: |
+|Matrix-valued Green's function | Y | Y | N | N | N | N | Y |
+|Fragment input grid            | Y | N | Y | Y | Y | Y | Y |
+|Imaginary time grid            | Y | N | N | Y | Y | Y | N |
+|Matsubara frequency grid       | Y | Y | Y | Y | Y | Y | Y |
+|Linear mesh                    | Y | Y | Y | Y | Y | Y | Y |
+|Nonlinear mesh                 | Y | Y | Y | Y | Y | Y | Y |
+|Fermionic kernel               | Y | Y | Y | Y | Y | Y | Y |
+|Bosonic kernel                 | Y | Y | N | Y | Y | Y | Y |
+|Self-defined model function    | Y | N | N | N | N | N | N |
+|Constrained analytic continuation | N | N | N | Y | Y | Y | Y |
+|Self-adaptive parameterization | N | N | N | Y | N | N | Y |
+|Regeneration of input data     | Y | Y | Y | Y | Y | Y | Y |
+|Kramers-Kronig transformation  | Y | Y | Y | Y | Y | Y | Y |
+|Parallel computing             | N | N | N | Y | Y | Y | Y |
+|Parallel tempering             | N | N | N | Y | N | N | N |
+|Interactive mode               | Y | Y | Y | Y | Y | Y | Y |
+|Script mode                    | Y | Y | Y | Y | Y | Y | Y |
+|Standard mode                  | Y | Y | Y | Y | Y | Y | Y |
 
 **Table 1 |** Major features of the ACFlow toolkit. `MaxEnt`, `NevanAC`, `StochAC`, `StochSK`, `StochOM`, and `StochPX` are the six analytic continuation solvers as implemented in this toolkit.
 
