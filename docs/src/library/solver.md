@@ -87,12 +87,13 @@ solve(S::BarRatSolver, rd::RawData)
 init(S::BarRatSolver, rd::RawData)
 ACFlow.run(brc::BarRatContext)
 ACFlow.last(brc::BarRatContext)
+aaa
+poles!
 bc_nodes
 bc_values
 bc_weights
 bc_degree
 bc_poles
-aaa
 prony_data
 prony_svd
 prony_idx
