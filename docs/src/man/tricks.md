@@ -43,7 +43,7 @@ Depth = 3
 
 4. If there is a `NaN` error, please decrease the [`nalph`](@ref maxent_nalph) parameter at first. And then you can increase the [`alpha`](@ref maxent_alpha) parameter. Of cource, a different scheme for determining optimal ``\alpha`` is also possible. See [`method`](@ref maxent_method).
 
-## [MaxEnt solver](@id barrat)
+## [BarRat solver](@id barrat)
 
 1. If you know the possible type of the spectrum (continuum or discrete), please setup the `atype` parameter. See [`atype`](@ref barrat_atype). 
 
