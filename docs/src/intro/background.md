@@ -37,4 +37,4 @@ within an united framework. It provides an easy-to-used library and application 
 
 !!! info
 
-    Quite recently, two new analytic continuation methods, namely the stochastic pole expansion and the Nevanlinna analytical continuation, have been implemented in the ACFlow toolkit. So, now it supports five analytic continuation methods :-).
+    Quite recently, three new analytic continuation methods, namely the stochastic pole expansion, the Nevanlinna analytical continuation, and the Barycentric rational function approximation, have been implemented in the ACFlow toolkit. So, now it supports six analytic continuation methods :-).
