@@ -556,6 +556,40 @@ Depth = 3
 
 > This parameter is mandatory.
 
+## [[BarRat] Block](@id barrat_block)
+
+!!! note
+
+    The parameters in this block is valid for the `BarRat` solver only.
+
+!!! warning
+
+    If `solver = "BarRat"`, the `[BarRat]` block must be available.
+
+### [atype](@id barrat_atype)
+
+*Definition:*
+
+> How to determine the optimized ``\alpha`` parameter? The `MaxEnt` solver supports four different algorithms. They are
+>
+> * historic
+> * classic
+>
+> Usually, the `chi2kink` algorithm is preferred.
+
+*Type:*
+
+> String.
+
+*Example:*
+
+> atype = "cont"
+
+*Comment:*
+
+> This parameter is mandatory. As for the underlying principles of these algorithms, please see [Maximum Entropy Method](@ref mem).
+
+
 ## [[NevanAC] Block](@id nevanac_block)
 
 !!! note
