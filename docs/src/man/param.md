@@ -575,7 +575,7 @@ Depth = 3
 > * cont
 > * delta
 >
-> If it is `cont`, it means that the spectrum should be board and continuous. If it is `delta`, it means that the spectrum consists a few ``\delta``-like peaks.
+> If it is `cont`, it means that the spectrum should be board and continuous. If it is `delta`, it means that the spectrum consists a few ``\delta``-like peaks. The `BarRat` will deduce the positions of the poles from the Barycentric rational function approximation, and then the BFGS algorithm is used to determine the weights / amplitudes of these poles. The Green's function is then reconstructed by using the pole representation.
 
 *Type:*
 
@@ -587,7 +587,25 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory. As for the underlying principles of these algorithms, please see [Maximum Entropy Method](@ref mem).
+> This parameter is mandatory. If `atype` is "delta", then the `pcut` and `eta` parameters will .
+
+### [denoise](@id barrat_denoise)
+
+*Definition:*
+
+>
+
+*Type:*
+
+> String.
+
+*Example:*
+
+> denoise = "none"
+
+*Comment:*
+
+>
 
 
 ## [[NevanAC] Block](@id nevanac_block)
