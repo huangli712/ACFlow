@@ -95,6 +95,10 @@ bc_poles
 aaa
 prony_data
 prony_svd
+prony_idx
+prony_v
+prony_gamma
+prony_omega
 ```
 
 ## NevanAC Solver
