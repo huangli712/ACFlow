@@ -31,6 +31,8 @@ write_complete
 write_misfit
 write_goodness
 write_model
+write_prony
+write_barycentric
 write_hamiltonian
 write_passed
 write_pole
