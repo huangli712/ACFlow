@@ -14,7 +14,7 @@ Now the ACFlow toolkit supports seven analytic continuation solvers. They are:
 
 !!! note
 
-The `StochAC` solver is based on the Beach's variant, while the `StochSK` solver is based on the Sandvik's variant.
+    The `StochAC` solver is based on the Beach's variant, while the `StochSK` solver is based on the Sandvik's variant.
 
 ## Contents
 
