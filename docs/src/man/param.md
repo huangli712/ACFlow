@@ -647,7 +647,7 @@ Depth = 3
 
 *Definition:*
 
->
+> Tiny distance from the real axis. It is used to construct the Matsubara Green's function within the pole representation.
 
 *Type:*
 
@@ -659,7 +659,7 @@ Depth = 3
 
 *Comment:*
 
->
+> This parameter is mandatory. But it is only useful when `atype = "delta"`. See [`atype`](@ref barrat_atype) for more details.
 
 
 ## [[NevanAC] Block](@id nevanac_block)
