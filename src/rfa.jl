@@ -646,11 +646,11 @@ function prony_gamma(v::Vector{C64}, Λ::F64)
 end
 
 """
-    prony_omega(𝐺ₚ, Γₚ)
+    prony_omega(𝐺ₚ::Vector{C64}, Γₚ::Vector{C64})
 
 Try to calculate Ωₚ.
 """
-function prony_omega(𝐺ₚ, Γₚ)
+function prony_omega(𝐺ₚ::Vector{C64}, Γₚ::Vector{C64})
     A = zeros(C64, length(𝐺ₚ), length(Γₚ))
     #
     for i in eachindex(𝐺ₚ)
