@@ -73,3 +73,7 @@ It is limited by the available computational resources. A minimal PBS script is 
 ```
 
 It is used to submit parallel jobs to computer clusters. Be careful, in order to maintain load balancing, the number of allocated CPUs should be larger than the number of parallel workers.
+
+!!! note
+
+    Now the `MaxEnt`, `BarRat`, and `NevanAC` solvers don't support parallel calculations.
