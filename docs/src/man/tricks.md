@@ -45,7 +45,7 @@ Depth = 3
 
 ## [MaxEnt solver](@id barrat)
 
-1. If you know the possible type of the spectrum (continuum or discrete), please setup the `atype` parameter. See [`atype`](@ref atype_barrat). 
+1. If you know the possible type of the spectrum (continuum or discrete), please setup the `atype` parameter. See [`atype`](@ref barrat_atype). 
 
 ## [NevanAC solver](@id nevanac)
 

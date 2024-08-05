@@ -570,12 +570,12 @@ Depth = 3
 
 *Definition:*
 
-> How to determine the optimized ``\alpha`` parameter? The `MaxEnt` solver supports four different algorithms. They are
+> Possible type of the spectrum.
 >
-> * historic
-> * classic
+> * cont
+> * delta
 >
-> Usually, the `chi2kink` algorithm is preferred.
+> If it is `cont`, it means that the spectrum should be board and continuous. If it is `delta`, it means that the spectrum consists a few ``\delta``-like peaks.
 
 *Type:*
 
