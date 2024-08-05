@@ -20,6 +20,7 @@ The source codes of the ACFlow toolkit are placed in the `acflow/src` folder. Th
 | :------- | :---------- |
 | `ACFlow.jl` | Entry of the ACFlow module. |
 | `maxent.jl` | Maximum entropy method. |
+| `rfa.jl`    | Barycentric rational function approximation. |
 | `nac.jl`    | Nevanlinna analytical continuation. |
 | `sac.jl`    | Stochastic analytic continuation (K. S. D. Beach's algorithm). |
 | `san.jl`    | Stochastic analytic continuation (A. W. Sandvik's algorithm). |
@@ -53,4 +54,4 @@ https://huangli712.github.io/projects/acflow/index.html
 
 ## Tests and Examples
 
-Forty tests and four tutorials are also shipped with the ACFlow toolkit. The source codes for internal tests are placed in the `acflow/test` folder, while those for tutorials are saved in the `acflow/tutor` folder. See `acflow/test/test.md` and `acflow/tutor/tutor.md` for more details.
+Forty-eight tests and four tutorials are also shipped with the ACFlow toolkit. The source codes for internal tests are placed in the `acflow/test` folder, while those for tutorials are saved in the `acflow/tutor` folder. See `acflow/test/test.md` and `acflow/tutor/tutor.md` for more details.
