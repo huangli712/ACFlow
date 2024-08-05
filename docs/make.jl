@@ -42,6 +42,7 @@ makedocs(
         "Theory" => Any[
             "Basic Principles" => "theory/basic.md",
             "Maximum Entropy Method" => "theory/maxent.md",
+            "Barycentric Rational Function" => "theory/rfa.md",
             "Nevanlinna Analytical Continuation" => "theory/nac.md",
             "Stochastic Analytic Continuation 1" => "theory/sac1.md",
             "Stochastic Analytic Continuation 2" => "theory/sac2.md",
