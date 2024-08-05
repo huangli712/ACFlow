@@ -82,7 +82,7 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 |`atype`    | string  | ''cont''  | Possible type of the spectrum. |
-|`denoise`  | string  | ''prony'' | THow to denoise the input data. |
+|`denoise`  | string  | ''prony'' | How to denoise the input data. |
 |`epsilon`  | integer | 1e-10     | Threshold for the Prony approximation. |
 |`pcut`     | float   | 1e-3      | Cutoff for unphysical poles. |
 |`eta`      | float   | 1e-2      | Tiny distance from the real axis. |
