@@ -611,7 +611,7 @@ Depth = 3
 
 *Definition:*
 
->
+> Threshold for the Prony approximation. It is used to control the accuracy of the Prony approximation. It can be considered as a measurement of the noise level of the input Matsubara data.
 
 *Type:*
 
@@ -623,7 +623,9 @@ Depth = 3
 
 *Comment:*
 
+> This parameter is mandatory. But it is only useful when `denoise` is not "none". See [`denoise`](@ref barrat_denoise) for more details.
 >
+> `epsilon` should be set to the noise level of the input Matsubara data. It should not be too small or too large. In principle, `` \sigma[1] < epsilon < \sigma[end]``, where ``\sigma`` are the singular values.
 
 ### [pcut](@id barrat_pcut)
 
