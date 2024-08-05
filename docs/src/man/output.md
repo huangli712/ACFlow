@@ -11,6 +11,8 @@ Once the analytic continuation simulation is finished, the final spectral functi
 |`chi2.data` | ``\log_{10}(\chi^2)`` vs ``\log_{10}(\alpha)``. |
 |`goodness.dat` | ``\log_{10}(\chi^2)`` vs ``\log_{10}(\Theta)`` for the `StochSK` solver. |
 |`model.data` | Default model ``m(\omega)``. |
+|`prony.data` | Prony approximation to the Matsubara data (for the `BarRat` solver). |
+|`barycentric.data` | Barycentric rational function approximation to the Matsubara data (for the `BarRat` solver) |
 |`hamil.data` | ``U(\alpha)`` vs ``\alpha`` for the `StochAC` solver. |
 |`passed.data`| Indices of selected solutions for the `StochOM` and the `StochPX` solvers. |
 |`pole.data` | Amplitudes and positions of the poles for the `StochPX` solver. |
@@ -27,4 +29,6 @@ Once the analytic continuation simulation is finished, the final spectral functi
     \tilde{A}(\omega) = \frac{A(\omega)}{\omega},
     ```
 
-    or resort to `Gout.data`. On the other hand, the `StochPX` solver will always generate and output ``A(\omega)``, irrespective of bosonic and fermionic systems.
+    or resort to `Gout.data`. On the other hand, the `BarRat` and `StochPX` solvers will always generate and output ``A(\omega)``, irrespective of bosonic and fermionic systems.
+
+    The `NevanAC` solver doesn't support bosonic system directly.
