@@ -30,6 +30,7 @@ GreenData
 ```@docs
 PBASE
 PMaxEnt
+PBarRat
 PNevanAC
 PStochAC
 PStochSK

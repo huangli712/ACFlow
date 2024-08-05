@@ -20,8 +20,10 @@ Pages = ["config.md"]
 ```@docs
 inp_toml
 fil_dict
+see_dict
 rev_dict_b
 rev_dict_m
+rev_dict_r
 rev_dict_n
 rev_dict_a
 rev_dict_k
@@ -41,6 +43,7 @@ _v
 ```@docs
 get_b
 get_m
+get_r
 get_n
 get_a
 get_k
