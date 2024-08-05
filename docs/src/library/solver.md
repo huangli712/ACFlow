@@ -2,9 +2,10 @@
 
 *Define various solvers for the ACFlow toolkit.*
 
-Now the ACFlow toolkit supports six analytic continuation solvers. They are:
+Now the ACFlow toolkit supports seven analytic continuation solvers. They are:
 
 * `MaxEnt` (Maximum Entropy Method, see `maxent.jl`)
+* `BarRat` (Barycentric Rational Function Approximation, see `rfa.jl`)
 * `NevanAC` (Nevanlinna Analytical Continuation, see `nac.jl`)
 * `StochAC` (Stochastic Analytic Continuation, see `sac.jl`)
 * `StochSK` (Stochastic Analytic Continuation, see `san.jl`)
@@ -66,6 +67,15 @@ calc_entropy_od
 calc_bayes
 calc_bayes_od
 calc_chi2(mec::MaxEntContext, A::Vector{F64})
+```
+
+## BarRat Solver
+
+### Structs
+
+```@docs
+BarRatSolver
+BarRatContext
 ```
 
 ## NevanAC Solver
