@@ -596,10 +596,10 @@ Depth = 3
 > This parameter specifies how to denoise the input data.
 >
 > * none
-> * prony_s
-> * prony_o
+> * prony\_s
+> * prony\_o
 >
-> The BarRat solver will adopt the Prony approximation to approximate the Matsubara data and suppress the noise. The `denoise` parameter is used to control whether the Prony approximation is actived. If it is "none", the Prony approximation is disabled. If it is "prony_s", the Prony approximation will run once, and its accuracy is controlled by the `epsilon` parameter. If it is "prony_o", an optimal Prony approximation is automatically determined. In such a case, the `epsilon` parameter is nonsense.
+> The BarRat solver will adopt the Prony approximation to approximate the Matsubara data and suppress the noise. The `denoise` parameter is used to control whether the Prony approximation is actived. If it is "none", the Prony approximation is disabled. If it is "prony\_s", the Prony approximation will run once, and its accuracy is controlled by the `epsilon` parameter. If it is "prony\_o", an optimal Prony approximation is automatically determined. In such a case, the `epsilon` parameter is nonsense.
 
 *Type:*
 
@@ -611,7 +611,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory. If the noise level is obvious, please set `denoise` to "prony_s" or "prony_o". If the noise level is small (such as ``\epsilon < 10^{-8}``), Prony approximation could lead to worse results.
+> This parameter is mandatory. If the noise level is obvious, please set `denoise` to "prony\_s" or "prony\_o". If the noise level is small (such as ``\epsilon < 10^{-8}``), Prony approximation could lead to worse results.
 
 ### [epsilon](@id barrat_epsilon)
 
