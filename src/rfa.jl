@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/04
+# Last modified: 2024/08/06
 #
 
 #
@@ -837,9 +837,9 @@ function last(brc::BarRatContext)
     else
         Aeff = Aout ./ brc.mesh.mesh
         #
-        # When ω = 0.0, A(ω) / ω will produce Inf. We need to avoid this.
-        @assert count(z -> isinf(z), Aeff) == 1
-        ind = findfirst(z -> isinf(z), Aeff)
+        # When ω = 0.0, A(ω)/ω will produce Inf / NaN. We need to avoid this.
+        @assert count(z -> isinf(z) || isnan(z), Aeff) == 1
+        ind = findfirst(z -> isinf(z) || isnan(z), Aeff)
         #
         if ind == 1
             Aeff[ind] = 2.0 * Aeff[ind+1] - Aeff[ind+2]
