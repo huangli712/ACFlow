@@ -2,7 +2,7 @@
 
 ## Powered by Julia
 
-The ACFlow toolkit is developed with pure Julia language. Thanks to powerful type system and multiple dispatch paradigm of the Julia language, the five different analytic continuation solvers are integrated into an united software architecture. Redundant codes are greatly reduced. It is quite easy to implement new analytic continuation solver or add new features to the existing solvers if necessary. Distributed computing is a built-in feature of Julia. So, it is straightforward to realize parallel calculations in the ACFlow toolkit. Now except for the `MaxEnt` and `NevanAC` solvers, all the other solvers are parallelized.
+The ACFlow toolkit is developed with pure Julia language. Thanks to powerful type system and multiple dispatch paradigm of the Julia language, the seven different analytic continuation solvers are integrated into an united software architecture. Redundant codes are greatly reduced. It is quite easy to implement new analytic continuation solver or add new features to the existing solvers if necessary. Distributed computing is a built-in feature of Julia. So, it is straightforward to realize parallel calculations in the ACFlow toolkit. Now except for the `MaxEnt`, `BarRat`, and `NevanAC` solvers, all the other solvers are parallelized.
 
 ## Code Repository
 
