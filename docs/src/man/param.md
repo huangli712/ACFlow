@@ -257,6 +257,10 @@ Depth = 3
 
 > This parameter is mandatory. It must be compatible with the input data. See also [`grid`](@ref grid).
 
+!!! warning
+
+    If the `BarRat` solver is employed, the `ngrid` parameter should be large (~100-200).
+
 ### [nmesh](@id nmesh)
 
 *Definition:*
