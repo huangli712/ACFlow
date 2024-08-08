@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/25
+# Last modified: 2024/08/08
 #
 
 #=
@@ -364,24 +364,50 @@ const MODES = Dict{String,I64}(
 )
 
 """
-    colorize(c::String, s::String; bg::String = "default", m::String="default")
+    colorize(
+        c::String,
+        s::String;
+        bg::String = "default",
+        m::String="default"
+        )
 
 Return some escape sequences, which will be displayed as colorized texts
 in the terminal.
+
+### Arguments
+* c  -> Color names.
+* s  -> The string that want to be printed.
+* bg -> Background color.
+* m  -> Mode for output string.
 """
-function colorize(c::String, s::String; bg::String = "default", m::String="default")
+function colorize(
+    c::String,
+    s::String;
+    bg::String = "default",
+    m::String="default"
+    )
     C_OFFSET = 30
     B_OFFSET = 40
     "\033[$(MODES[m]);$(C_OFFSET + COLORS[c]);$(B_OFFSET + COLORS[bg])m$(s)\033[0m"
 end
 
 """
-    colorize(c::String, s::String; bg::String = "default", m::String="default")
+    colorize(
+        c::Symbol,
+        s::String;
+        bg::String = "default",
+        m::String="default"
+        )
 
 Return some escape sequences, which will be displayed as colorized texts
 in the terminal.
 """
-function colorize(c::Symbol, s::String; bg::String = "default", m::String="default")
+function colorize(
+    c::Symbol,
+    s::String;
+    bg::String = "default",
+    m::String="default"
+    )
     colorize(string(c), s; bg=bg, m=m)
 end
 
