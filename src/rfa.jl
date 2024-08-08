@@ -10,7 +10,7 @@
 #
 # Note:
 #
-# The following codes for the Barycentric rational function approximation
+# The following codes for the barycentric rational function approximation
 # are mostly adapted from
 #
 #     https://github.com/complexvariables/RationalFunctionApproximation.jl
@@ -160,7 +160,7 @@ end
 """
     (r::BarycentricFunction)(z::Number)
 
-Evaluate the Barycentric rational function at `z`.
+Evaluate the barycentric rational function at `z`.
 """
 function (r::BarycentricFunction)(z::Number)
     if isinf(z)
@@ -185,7 +185,7 @@ end
 """
     aaa(z, y)
 
-Adaptively compute a Barycentric rational interpolant.
+Adaptively compute a barycentric rational interpolant.
 
 ### Arguments
 * z::AbstractVector{<:Number} -> Interpolation nodes.
@@ -270,7 +270,7 @@ function aaa(
         end
         istest = collect(test_index)
         _, _, V = svd( view(L, istest, 1:n) )
-        w = V[:, end] # Barycentric weights
+        w = V[:, end] # barycentric weights
 
         CC = view(C, istest, 1:n)
         num = CC * (w.*fσ)
@@ -712,7 +712,7 @@ end
 """
     solve(S::BarRatSolver, rd::RawData)
 
-Solve the analytic continuation problem by the Barycentric rational
+Solve the analytic continuation problem by the barycentric rational
 function method.
 """
 function solve(S::BarRatSolver, rd::RawData)
@@ -751,7 +751,7 @@ end
 
 At first, it will try to construct a Prony approximation for the input
 Matsubara data. Then the Prony approximation is used to build smooth data
-set (data denoising). Finally, the Barycentric rational function for this
+set (data denoising). Finally, the barycentric rational function for this
 data set is constructed. The member `ℬ` of the BarRatContext object
 (`brc`) should be updated in this function.
 """
@@ -767,18 +767,18 @@ function run(brc::BarRatContext)
         println("Activate Prony approximation to denoise the input data")
         brc.𝒫 = PronyApproximation(ω, G, ε)
         #
-        println("Construct Barycentric rational function approximation")
+        println("Construct barycentric rational function approximation")
         brc.ℬ = aaa(iω, brc.𝒫(ω))
     #
     elseif denoise == "prony_o"
         println("Activate Prony approximation to denoise the input data")
         brc.𝒫 = PronyApproximation(ω, G)
         #
-        println("Construct Barycentric rational function approximation")
+        println("Construct barycentric rational function approximation")
         brc.ℬ = aaa(iω, brc.𝒫(ω))
     #
     else
-        println("Construct Barycentric rational function approximation")
+        println("Construct barycentric rational function approximation")
         brc.ℬ = aaa(iω, G)
     end
 
@@ -790,7 +790,7 @@ end
 
 It will process and write the calculated results by the BarRat solver,
 including correlator at real axis, final spectral function, reproduced
-correlator. The information about Prony approximation and Barycentric
+correlator. The information about Prony approximation and barycentric
 rational function approximation will be written as well.
 """
 function last(brc::BarRatContext)
@@ -813,7 +813,7 @@ function last(brc::BarRatContext)
         write_prony(brc.𝒫.𝑁ₚ, brc.𝒫.Γₚ, brc.𝒫.Ωₚ)
     end
 
-    # Write information about Barycentric rational function
+    # Write information about barycentric rational function
     fwrite && write_barycentric(brc.ℬ.nodes, brc.ℬ.values, brc.ℬ.weights)
 
     # Calculate full response function on real axis and write them
@@ -859,9 +859,9 @@ end
 """
     poles!(brc::BarRatContext)
 
-Convert the Barycentric rational function approximation to the classic
+Convert the barycentric rational function approximation to the classic
 pole representation. Note that this feature is only suitable for the
-`atype` = "delta" case. In such case, the Barycenteric algorithm can find
+`atype` = "delta" case. In such case, the barycenteric algorithm can find
 the accurate positions for the poles via the `bc_poles()` function. But
 it seems that the weights for these poles are wrong. In this function, we
 just use the BFGS method to solve this optimization problem to get the
