@@ -573,6 +573,10 @@ Depth = 3
 
     If `solver = "BarRat"`, the `[BarRat]` block must be available.
 
+!!! warning
+
+    The `BarRat` solver is still in development. Please use it at your own risk.
+
 ### [atype](@id barrat_atype)
 
 *Definition:*
