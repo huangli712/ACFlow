@@ -351,7 +351,7 @@ The following tests are designed to test the newly developed `StochPX` solver (b
 
 ## Experimental tests 3
 
-The following tests are designed to test the newly developed `BarRat` solver (based on the `Barycentric rational function approximation` method) only.
+The following tests are designed to test the newly developed `BarRat` solver (based on the `barycentric rational function approximation` method) only.
 
 * **rfa/R01**
     * Fermionic + Matsubara
