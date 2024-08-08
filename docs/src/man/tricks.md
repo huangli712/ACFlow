@@ -51,7 +51,9 @@ Depth = 3
 
 3. Sometimes the Prony approximation will lead to worse results. Use it carefully.
 
-4. If you know the noise level of input data, please set `epsilon` to it and let `denoise` = "prony_s". If you do not know the noise level of input data, just let `denoise` = "prony_o" or "none".
+4. If you know the noise level of input data, please set `epsilon` to it and let `denoise` = "prony\_s".
+
+5. If you do not know the noise level of input data, just let `denoise` = "prony\_o" or "none".
 
 ## [NevanAC solver](@id nevanac)
 
