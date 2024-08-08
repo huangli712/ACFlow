@@ -39,9 +39,10 @@ Depth = 3
 
 *Definition:*
 
-> This parameter specifies the solvers that used to solve the analytic continuation problem. Now the ACFlow toolkit supports six different solvers. They are as follows:
+> This parameter specifies the solvers that used to solve the analytic continuation problem. Now the ACFlow toolkit supports seven different solvers. They are as follows:
 >
 > * MaxEnt
+> * BarRat
 > * NevanAC
 > * StochAC
 > * StochSK
@@ -50,9 +51,11 @@ Depth = 3
 >
 > Here, `MaxEnt` means the maximum entropy method. The `MaxEnt` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "MaxEnt"`, then the `[MaxEnt]` block must be available in the configuration file.
 >
+> `BarRat` means the barycentric rational function approximation. The `BarRat` solver can be used to treat the correlators in Matsubara frequency axis only. If `solver = "BarRat"`, then the `[BarRat]` block must be available in the configuration file.
+>
 > `NevanAC` means the Nevanlinna analytical continuation. The `NevanAC` solver can be used to treat the fermionic correlators in Matsubara frequency. Note that this solver is extremely sensitive to the noise level of the input data.
 >
->`StochAC` means the stochastic analytic continuation method (K. S. D. Beach's algorithm). The `StochAC` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochAC"`, then the `[StochAC]` block must be available in the configuration file.
+> `StochAC` means the stochastic analytic continuation method (K. S. D. Beach's algorithm). The `StochAC` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochAC"`, then the `[StochAC]` block must be available in the configuration file.
 >
 > `StochSK` means the stochastic analytic continuation method (A. W. Sandvik's algorithm). The `StochSK` solver can be used to treat the correlators in Matsubara frequency or imaginary time axis. If `solver = "StochSK"`, then the `[StochSK]` block must be available in the configuration file.
 >
