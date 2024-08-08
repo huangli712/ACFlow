@@ -296,6 +296,10 @@ Write `log10(Θ)-log10(χ²)` data to `goodness.data`, which could be used
 to judge whether the obtained optimal Θ parameter is reasonable. This
 function is only useful for the `StochSK` solver.
 
+### Arguments
+* Θ_vec  -> List for Θ parameters.
+* χ²_vec -> Θ-dependent goodness-of-fit functional.
+
 See also: [`write_misfit`](@ref).
 """
 function write_goodness(Θ_vec::Vector{F64}, χ²_vec::Vector{F64})
@@ -316,6 +320,10 @@ end
     write_model(am::AbstractMesh, D::Vector{F64})
 
 Write the default model function to `model.data`.
+
+### Arguments
+* am -> Real frequency mesh.
+* D  -> Default model.
 """
 function write_model(am::AbstractMesh, D::Vector{F64})
     @assert length(am) == length(D)
@@ -333,6 +341,11 @@ end
 Write Prony approximation to the input correlator. This information can
 be used to reconstruct or interpolate the correlator. This function is
 only useful for the `BarRat` solver.
+
+### Arguments
+* 𝑁ₚ -> Number of nodes for Prony approximation.
+* Γₚ -> Nodes for Prony approximation, ``γ_i``.
+* Ωₚ -> Weights for Prony approximation, ``w_i``.
 """
 function write_prony(𝑁ₚ::I64, Γₚ::Vector{C64}, Ωₚ::Vector{C64})
     open("prony.data", "w") do fout
@@ -356,11 +369,20 @@ function write_prony(𝑁ₚ::I64, Γₚ::Vector{C64}, Ωₚ::Vector{C64})
 end
 
 """
-    write_barycentric(nodes::Vector{C64}, values::Vector{C64}, weights::Vector{C64})
+    write_barycentric(
+        nodes::Vector{C64},
+        values::Vector{C64},
+        weights::Vector{C64}
+        )
 
-Write Barycentric rational function approximation to the input correlator.
+Write barycentric rational function approximation to the input correlator.
 This information can be used to reconstruct or interpolate the correlator.
 This function is only useful for the `BarRat` solver.
+
+### Arguments
+* nodes   -> Nodes of the rational function, ``z_i``.
+* values  -> Values of the rational function, ``r(z_i)``.
+* weights -> Weights of the rational function, ``w_i``.
 """
 function write_barycentric(
     nodes   :: Vector{C64},
@@ -404,6 +426,10 @@ end
 Write `α-U(α)` data to `hamil.data`, which could be used to judge whether
 the obtained optimal α parameter is reasonable. This function is only
 useful for the `StochAC` solver.
+
+### Arguments
+* α_vec -> List for α parameters.
+* Uα    -> α-dependent Hamiltonian.
 """
 function write_hamiltonian(α_vec::Vector{F64}, Uα::Vector{F64})
     @assert length(α_vec) == length(Uα)
@@ -423,6 +449,11 @@ the averaged spectrum. Here, `passed` means the indices, `med` is the
 median value of χ², and `αgood` is the factor that is used to filter
 the solutions. This function is only useful for the `StochOM` and the
 `StochPX` solvers.
+
+### Arguments
+* passed -> Indices for selected solutions.
+* med    -> Median value of χ².
+* αgood  -> Predefined parameter used to filter the solutions (spectra).
 """
 function write_passed(passed::Vector{I64}, med::F64, αgood::F64)
     open("passed.data", "w") do fout
@@ -435,20 +466,27 @@ function write_passed(passed::Vector{I64}, med::F64, αgood::F64)
 end
 
 """
-    write_pole(Pᵥ::Vector{Vector{I64}},
-               Aᵥ::Vector{Vector{F64}},
-               𝕊ᵥ::Vector{Vector{F64}},
-               χ²::Vector{F64},
-               fmesh::AbstractMesh)
+    write_pole(
+        Pᵥ::Vector{Vector{I64}},
+        Aᵥ::Vector{Vector{F64}},
+        𝕊ᵥ::Vector{Vector{F64}},
+        χ²::Vector{F64},
+        fmesh::AbstractMesh
+        )
 
 Write positions, amplitudes, and signs of poles to `pole.data`. This
 function is only useful for the `StochPX` solver.
+
+### Arguments
+*
 """
-function write_pole(Pᵥ::Vector{Vector{I64}},
-                    Aᵥ::Vector{Vector{F64}},
-                    𝕊ᵥ::Vector{Vector{F64}},
-                    χ²::Vector{F64},
-                    fmesh::AbstractMesh)
+function write_pole(
+    Pᵥ::Vector{Vector{I64}},
+    Aᵥ::Vector{Vector{F64}},
+    𝕊ᵥ::Vector{Vector{F64}},
+    χ²::Vector{F64},
+    fmesh::AbstractMesh
+    )
     ntry = length(Pᵥ)
 
     open("pole.data", "w") do fout
