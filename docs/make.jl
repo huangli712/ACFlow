@@ -19,7 +19,8 @@ makedocs(
     pages = [
         "Home" => "index.md",
         "Introduction" => Any[
-            "Background" => "intro/background.md",
+            "Analytic Continuation" => "intro/acp.md",
+            "Motivation" => "intro/motivation.md",
             "Acknowledgements" => "intro/ack.md",
             "Citation" => "intro/cite.md",
         ],
