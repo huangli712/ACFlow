@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/03
+# Last modified: 2024/08/09
 #
 
 #=
@@ -104,7 +104,7 @@ const _PMaxEnt = Dict{String,Any}(
     PBarRat
 
 Dictionary for configuration parameters:
-the Barycentric rational function method.
+the barycentric rational function approximation method.
 """
 const PBarRat  = Dict{String,ADT}(
     "atype"   => [missing, 1, :String, "Possible type of the spectrum"],
@@ -283,7 +283,7 @@ struct MaxEntSolver <: AbstractSolver end
     BarRatSolver
 
 It represents the analytic continuation solver that implements the
-Barycentric rational function method.
+barycentric rational function method.
 """
 struct BarRatSolver <: AbstractSolver end
 
