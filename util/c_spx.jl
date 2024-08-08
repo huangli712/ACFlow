@@ -7,6 +7,8 @@
 # only 1 process. Note that this script does not support matrix-valued
 # green's function.
 #
+# This script is only for the developer.
+#
 # Usage:
 #
 #     $ c_spx.jl ac.toml
@@ -17,11 +19,21 @@ using Printf
 using ACFlow
 
 """
-    sample_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    sample_p(
+        t::I64,
+        MC::StochPXMC,
+        SE::StochPXElement,
+        SC::StochPXContext
+        )
 
 Try to sample the positions of poles only.
 """
-function sample_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+function sample_p(
+    t::I64,
+    MC::StochPXMC,
+    SE::StochPXElement,
+    SC::StochPXContext
+    )
     if rand(MC.rng) < 0.9
         try_move_s(t, MC, SE, SC)
     else
@@ -30,11 +42,21 @@ function sample_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 end
 
 """
-    sample_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    sample_a(
+        t::I64,
+        MC::StochPXMC,
+        SE::StochPXElement,
+        SC::StochPXContext
+        )
 
 Try to sample the amplitudes of poles only.
 """
-function sample_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+function sample_a(
+    t::I64,
+    MC::StochPXMC,
+    SE::StochPXElement,
+    SC::StochPXContext
+    )
     if rand(MC.rng) < 0.5
         try_move_a(t, MC, SE, SC)
     else
@@ -43,11 +65,19 @@ function sample_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 end
 
 """
-    reset_element_p(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
+    reset_element_p(
+        rng::AbstractRNG,
+        allow::Vector{I64},
+        SE::StochPXElement
+        )
 
 Reset the positions of poles.
 """
-function reset_element_p(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
+function reset_element_p(
+    rng::AbstractRNG,
+    allow::Vector{I64},
+    SE::StochPXElement
+    )
     npole = get_x("npole")
 
     # How many poles should be changed
@@ -73,11 +103,19 @@ function reset_element_p(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElemen
 end
 
 """
-    reset_element_a(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
+    reset_element_a(
+        rng::AbstractRNG,
+        allow::Vector{I64},
+        SE::StochPXElement
+        )
 
 Reset the amplitudes of poles.
 """
-function reset_element_a(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
+function reset_element_a(
+    rng::AbstractRNG,
+    allow::Vector{I64},
+    SE::StochPXElement
+    )
     npole = get_x("npole")
 
     # How many poles should be changed
