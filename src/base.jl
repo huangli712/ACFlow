@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/29
+# Last modified: 2024/08/09
 #
 
 """
@@ -185,7 +185,11 @@ function kramers(am::AbstractMesh, A::Vector{F64})
 end
 
 """
-    setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = true)
+    setup_param(
+        C::Dict{String,Any},
+        S::Dict{String,Any},
+        reset::Bool = true
+        )
 
 Setup the configuration dictionaries via function call. Here `C` contains
 parameters for general setup, while `S` contains parameters for selected
@@ -195,7 +199,11 @@ dictionaries will be reset to their default values at first. Later, `C`
 
 See also: [`read_param`](@ref).
 """
-function setup_param(C::Dict{String,Any}, S::Dict{String,Any}, reset::Bool = true)
+function setup_param(
+    C::Dict{String,Any},
+    S::Dict{String,Any},
+    reset::Bool = true
+    )
     # _PBASE, _PMaxEnt, _PBarRat, _PNevanAC,
     # _PStochAC, _PStochSK, _PStochOM, and _PStochPX
     #
@@ -506,6 +514,9 @@ end
 Try to generate a default model function at given mesh `am` through
 various schemes.
 
+### Arguments
+* am -> Real frequency mesh.
+
 See also: [`AbstractMesh`](@ref).
 """
 function make_model(am::AbstractMesh)
@@ -577,6 +588,10 @@ end
     make_kernel(am::AbstractMesh, ag::AbstractGrid)
 
 Try to generate various kernel functions.
+
+### Arguments
+* am -> Real frequency mesh.
+* ag -> Imaginary axis grid.
 
 See also: [`AbstractMesh`](@ref), [`AbstractGrid`](@ref).
 """
