@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/10
+# Last modified: 2024/08/08
 #
 
 #=
@@ -16,6 +16,11 @@
 
 A constructor for the LinearMesh struct, which is announced in
 `src/types.jl`.
+
+### Arguments
+* nmesh -> Number of mesh points.
+* wmin  -> Left boundary of the mesh.
+* wmax  -> Right boundary of the mesh.
 
 See also: [`LinearMesh`](@ref).
 """
@@ -42,6 +47,12 @@ end
 
 A constructor for the TangentMesh struct, which is announced in
 `src/types.jl`.
+
+### Arguments
+* nmesh -> Number of mesh points.
+* wmin  -> Left boundary of the mesh.
+* wmax  -> Right boundary of the mesh.
+* 𝑝     -> A customized parameter.
 
 See also: [`TangentMesh`](@ref).
 """
@@ -74,6 +85,12 @@ A constructor for the LorentzMesh struct, which is announced in
 is taken from:
 
 * https://github.com/CQMP/Maxent.
+
+### Arguments
+* nmesh -> Number of mesh points.
+* wmin  -> Left boundary of the mesh.
+* wmax  -> Right boundary of the mesh.
+* 𝑝     -> A customized parameter.
 
 See also: [`LorentzMesh`](@ref).
 """
@@ -119,6 +136,11 @@ in `src/types.jl`. The algorithm for generating a half-lorentzian
 mesh is taken from:
 
 * https://github.com/CQMP/Maxent.
+
+### Arguments
+* nmesh -> Number of mesh points.
+* wmax  -> Right boundary of the mesh (wmin ≡ 0.0).
+* 𝑝     -> A customized parameter.
 
 See also: [`HalfLorentzMesh`](@ref).
 """
