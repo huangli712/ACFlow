@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/10
+# Last modified: 2024/08/09
 #
 
 #=
@@ -16,6 +16,10 @@
 
 A constructor for the FermionicImaginaryTimeGrid struct, which is defined
 in `src/types.jl`.
+
+### Arguments
+* ntime -> Number of time slices in imaginary axis.
+* β     -> Inverse temperature.
 
 See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
@@ -151,6 +155,10 @@ end
 A constructor for the FermionicFragmentTimeGrid struct, which is defined
 in `src/types.jl`.
 
+### Arguments
+* β -> Inverse temperature.
+* τ -> Given imaginary time points.
+
 See also: [`FermionicFragmentTimeGrid`](@ref).
 """
 function FermionicFragmentTimeGrid(β::T, τ::Vector{T}) where {T}
@@ -285,6 +293,10 @@ end
 
 A constructor for the FermionicMatsubaraGrid struct, which is defined in
 `src/types.jl`. The Matsubara grid is evaluated as ωₙ = (2n - 1) π / β.
+
+### Arguments
+* nfreq -> Number of Matsubara frequencies.
+* β     -> Inverse temperature.
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
@@ -451,6 +463,10 @@ end
 
 A constructor for the FermionicFragmentMatsubaraGrid struct, which is
 defined in `src/types.jl`. The Matsubara grid is from input.
+
+### Arguments
+* β -> Inverse temperature.
+* ω -> Given Matsubara frequency points.
 
 See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
@@ -619,6 +635,10 @@ end
 A constructor for the BosonicImaginaryTimeGrid struct, which is defined
 in `src/types.jl`.
 
+### Arguments
+* ntime -> Number of time slices in imaginary axis.
+* β     -> Inverse temperature.
+
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
 function BosonicImaginaryTimeGrid(ntime::I64, β::T) where {T}
@@ -752,6 +772,10 @@ end
 
 A constructor for the BosonicFragmentTimeGrid struct, which is defined
 in `src/types.jl`.
+
+### Arguments
+* β -> Inverse temperature.
+* τ -> Given imaginary time points.
 
 See also: [`BosonicFragmentTimeGrid`](@ref).
 """
@@ -887,6 +911,10 @@ end
 
 A constructor for the BosonicMatsubaraGrid struct, which is defined in
 `src/types.jl`. The Matsubara grid is evaluated as ωₙ = (2n - 2) π / β.
+
+### Arguments
+* nfreq -> Number of Matsubara frequencies.
+* β     -> Inverse temperature.
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
@@ -1053,6 +1081,10 @@ end
 
 A constructor for the BosonicFragmentMatsubaraGrid struct, which is
 defined in `src/types.jl`. The Matsubara grid is from input.
+
+### Arguments
+* β -> Inverse temperature.
+* ω -> Given Matsubara frequency points.
 
 See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
