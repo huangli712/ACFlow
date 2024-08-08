@@ -861,7 +861,6 @@ Mutable struct. It is used for objectives and solvers where the gradient
 is available/exists.
 
 ### Members
-
 * ℱ! -> Objective. It is actually a function call and return objective.
 * 𝒥! -> It is a function call as well and returns jacobian of objective.
 * 𝐹  -> Cache for ℱ! output.
@@ -966,7 +965,6 @@ It is used to save the optimization results of the `levenberg_marquardt`
 algorithm.
 
 ### Members
-
 * x₀         -> Initial guess for the solution.
 * minimizer  -> Final results for the solution.
 * minimum    -> Residual.
@@ -1110,7 +1108,6 @@ end
 It encapsulates the results for curve fitting.
 
 ### Members
-
 * param     -> Fitted results, i.e, the fitting parameters.
 * resid     -> Residuals.
 * jacobian  -> Jacobian matrix.
@@ -1178,7 +1175,6 @@ Mutable struct. It is used for objectives and solvers where the gradient
 is available/exists.
 
 ### Members
-
 * ℱ! -> Objective. It is actually a function call and return objective.
 * 𝒟! -> It is a function call as well and returns derivative of objective.
 * 𝐹  -> Cache for ℱ! output.
@@ -1236,7 +1232,6 @@ end
 Mutable struct. It is used to trace the history of states visited.
 
 ### Members
-
 * x     -> Current position.
 * ls    -> Current search direction.
 * δx    -> Changes in position.
@@ -1265,7 +1260,6 @@ end
 It is used to save the optimization results of the BFGS algorithm.
 
 ### Members
-
 * x₀         -> Initial guess for the solution.
 * minimizer  -> Final results for the solution.
 * minimum    -> Objective at the final solution.
@@ -1627,7 +1621,6 @@ Mutable struct. It contains information about the error occured in
 the line search.
 
 ### Members
-
 * message -> Error message.
 * alpha   -> A key parameter used to control line search.
 """
