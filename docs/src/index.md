@@ -2,9 +2,13 @@
 
 *A full-fledged analytic continuation toolkit in Julia.*
 
-!!! note
+!!! info
 
     Thank you for using ACFlow. This documentation will help you to be familiar with and explore the ACFlow toolkit. It is just compatible with ACFlow v2.0.0-devel.240808.
+
+!!! note
+
+    Analytic continuation is an art of optimization. Please check your simulated results carefully.
 
 !!! warning
 
