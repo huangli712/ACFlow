@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/03
+# Last modified: 2024/08/09
 #
 
 """
@@ -464,7 +464,7 @@ write_misfit      -> Write α-dependent χ².
 write_goodness    -> Write Θ-dependent χ².
 write_model       -> Write default model function.
 write_prony       -> Write Prony approximation.
-write_barycentric -> Write Barycentric rational function approximation. 
+write_barycentric -> Write barycentric rational function approximation. 
 write_hamiltonian -> Write effective hamiltonian for StochAC solver.
 write_passed      -> Write indices of selected solutions StochOM and StochPX solvers.
 write_pole        -> Write details of generated poles for StochPX solver.
@@ -659,8 +659,8 @@ prony_omega     -> Evaluate Ωₚ for Prony approximation.
 BarRatContext   -> Essential struct for the BarRat solver.
 #
 solve           -> Wrapper function for the BarRat solver.
-init            -> Initialize Barycentric rational function simulation.
-run             -> Perform Barycentric rational function simulation.
+init            -> Initialize barycentric rational function simulation.
+run             -> Perform barycentric rational function simulation.
 last            -> Postprocess the calculated results and write them.
 poles!          -> Get pole representation for the Matsubara Green's function.
 ```
