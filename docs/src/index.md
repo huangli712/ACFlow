@@ -4,7 +4,7 @@
 
 !!! note
 
-    Thank you for using ACFlow. This documentation will help you to be familiar with and explore the ACFlow toolkit. It is just compatible with ACFlow v1.9.4-devel.240804.
+    Thank you for using ACFlow. This documentation will help you to be familiar with and explore the ACFlow toolkit. It is just compatible with ACFlow v2.0.0-devel.240808.
 
 !!! warning
 
@@ -14,7 +14,8 @@
 
 ```@contents
 Pages = [
-    "intro/background.md",
+    "intro/acp.md",
+    "intro/motivation.md",
     "intro/ack.md",
     "intro/cite.md",
 ]
