@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/30
+# Last modified: 2024/08/08
 #
 
 #=
@@ -18,6 +18,10 @@ Read input data. This function is used for imaginary time data. The input
 file should contain three columns. The first column is the imaginary time
 grid, the second column is the value, the third column is the standard
 deviation σ. Here, `ngrid` specifies the number of grid points.
+
+### Arguments
+* finput -> Filename for the input data.
+* ngrid  -> Number of grid points.
 
 See also: [`read_cmplx_data`](@ref).
 """
@@ -57,6 +61,10 @@ deviations σ for the real and imaginary parts, respectively. If there are
 only four columns, it means that the real and imaginary parts share the
 same standard deviations.
 
+### Arguments
+* finput -> Filename for the input data.
+* ngrid  -> Number of grid points.
+
 See also: [`read_real_data`](@ref).
 """
 function read_cmplx_data(finput::AbstractString, ngrid::I64)
@@ -92,7 +100,11 @@ function read_cmplx_data(finput::AbstractString, ngrid::I64)
 end
 
 """
-    read_cmplx_data(finput::AbstractString, ngrid::I64, only_real_part::Bool)
+    read_cmplx_data(
+        finput::AbstractString,
+        ngrid::I64,
+        only_real_part::Bool
+        )
 
 Read input data. This function is used for Matsubara frequency data. The
 input file only contains three columns. The first column is the Matsubara
@@ -101,9 +113,17 @@ the data (which is specified by the argument `only_real_part`), and the
 third column is the standard deviation σ. This function is for bosonic
 correlation function.
 
+### Arguments
+* finput -> Filename for the input data.
+* ngrid  -> Number of grid points.
+
 See also: [`read_real_data`](@ref).
 """
-function read_cmplx_data(finput::AbstractString, ngrid::I64, only_real_part::Bool)
+function read_cmplx_data(
+    finput::AbstractString,
+    ngrid::I64,
+    only_real_part::Bool
+    )
     # Allocate memory
     _grid = zeros(F64, ngrid)
     value = zeros(C64, ngrid)
@@ -142,6 +162,11 @@ end
 
 Write spectrum A(ω) to `Aout.data`. The grid is defined in `am`, and
 the spectral data are contained in `Aout`.
+
+### Arguments
+* am   -> Real frequency mesh.
+* Aout -> Spectral function.
+
 """
 function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
     @assert length(am) == length(Aout)
@@ -159,6 +184,11 @@ end
 Write α-resolved spectrum A(ω) to `Aout.data.alpha`. The grid is defined
 in `am`, the α-resolved spectrum is contained in `Aout`, `αₗ` is the list
 for the α parameters. This function is called by the `StochAC` solver.
+
+### Arguments
+* am   -> Real frequency mesh.
+* αₗ   -> List for α parameters.
+* Aout -> α-dependent spectral function.
 """
 function write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2})
     nmesh, nalph = size(Aout)
