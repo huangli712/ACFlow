@@ -66,7 +66,7 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 |`pmesh`   | array   | N/A            | Additional parameters for customizing the mesh. |
 |`exclude` | array   | N/A            | Restriction of energy range of the spectrum. |
 
-**Table 1 |** Possible parameters for the `[BASE]` block.
+**Table 1 |** Possible parameters for the `[BASE]` block (See [[BASE] Block](@ref base_block)).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -87,7 +87,7 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 |`pcut`     | float   | 1e-3      | Cutoff for unphysical poles. |
 |`eta`      | float   | 1e-2      | Tiny distance from the real axis. |
 
-**Table 3 |** Possible input parameters for the `[BarRat]` block, which are used to configure the solver based on the Barycentric rational function approximation.
+**Table 3 |** Possible input parameters for the `[BarRat]` block, which are used to configure the solver based on the Barycentric rational function approximation (See [[BarRat] Block](@ref barrat_block)).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -97,7 +97,7 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 |`alpha` | float   | 1e-4  | Regulation parameter for smooth norm. |
 |`eta`   | float   | 1e-2  | Tiny distance from the real axis. |
 
-**Table 4 |** Possible input parameters for the `[NevanAC]` block, which are used to configure the solver based on the Nevanlinna analytical continuation.
+**Table 4 |** Possible input parameters for the `[NevanAC]` block, which are used to configure the solver based on the Nevanlinna analytical continuation (See [[NevanAC] Block](@ref nevanac_block)).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -110,7 +110,7 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 |`alpha`  | float   | 1.0     | Starting value for the ``\alpha`` parameter. |
 |`ratio`  | float   | 1.2     | Scaling factor for the ``\alpha`` parameter. |
 
-**Table 5 |** Possible input parameters for the `[StochAC]` block, which are used to configure the solver based on the stochastic analytic continuation (Beach's algorithm).
+**Table 5 |** Possible input parameters for the `[StochAC]` block, which are used to configure the solver based on the stochastic analytic continuation (Beach's algorithm. See [[StochAC] Block](@ref stochac_block)).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -124,7 +124,7 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 |`theta`  | float   | 1e6         | Starting value for the ``\Theta`` parameter. |
 |`ratio`  | float   | 0.9         | Scaling factor for the ``\Theta`` parameter. |
 
-**Table 6 |** Possible input parameters for the `[StochSK]` block, which are used to configure the solver based on the stochastic analytic continuation (Sandvik's algorithm).
+**Table 6 |** Possible input parameters for the `[StochSK]` block, which are used to configure the solver based on the stochastic analytic continuation (Sandvik's algorithm. See [[StochSK] Block](@ref stochsk_block)).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -135,7 +135,7 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 |`wbox`   | float   | 0.02  | Minimum width of the randomly generated rectangles. |
 |`norm`   | float   | -1.0  | Is the norm calculated? |
 
-**Table 7 |** Possible input parameters for the `[StochOM]` block, which are used to configure the solver based on the stochastic optimization method.
+**Table 7 |** Possible input parameters for the `[StochOM]` block, which are used to configure the solver based on the stochastic optimization method (See [[StochOM] Block](@ref stochom_block)).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -147,4 +147,4 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 |`theta`  | float   | 1e+6     | Artificial inverse temperature ``\Theta``. |
 |`eta`    | float   | 1e-4     | Tiny distance from the real axis ``\eta``. |
 
-**Table 8 |** Possible input parameters for the `[StochPX]` block, which are used to configure the solver based on the stochastic pole expansion.
+**Table 8 |** Possible input parameters for the `[StochPX]` block, which are used to configure the solver based on the stochastic pole expansion (See [[StochPX] Block](@ref stochpx_block)).
