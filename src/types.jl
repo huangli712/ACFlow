@@ -347,7 +347,6 @@ Mutable struct. It represent the raw input data. The datatype `T` of raw
 data may be `Float64` or `ComplexF64`.
 
 ### Members
-
 * _grid -> Raw grid for the input data, such as τ or iωₙ.
 * value -> Raw input data, such as G(τ), G(iωₙ), or Σ(iωₙ).
 * error -> Error bar (standard deviation) of raw input data, σ.
@@ -367,7 +366,6 @@ Mutable struct. It represents the preprocessed input data. Note that it
 should support arbitrary precision via `T`
 
 ### Members
-
 * value -> Preprocessed input data.
 * error -> Preprocessed error bar.
 * covar -> Diagonal parts of the covariance matrix, σ².
@@ -398,7 +396,6 @@ abstract type AbstractGrid end
 Mutable struct. It represents the fermionic imaginary time grid.
 
 ### Members
-
 * ntime -> Number of time slices.
 * β     -> Inverse temperature.
 * τ     -> Vector of grid points.
@@ -418,7 +415,6 @@ Mutable struct. It represents part of the fermionic imaginary time grid.
 In other words, the grid might be fragmentary。
 
 ### Members
-
 * ntime -> Number of time slices.
 * β     -> Inverse temperature.
 * τ     -> Vector of grid points.
@@ -437,7 +433,6 @@ end
 Mutable struct. It represents the fermionic Matsubara frequency grid.
 
 ### Members
-
 * nfreq -> Number of Matsubara frequency points.
 * β     -> Inverse temperature.
 * ω     -> Vector of grid points.
@@ -457,7 +452,6 @@ Mutable struct. It represents part of the fermionic Matsubara frequency
 grid. In other words, the grid might be fragmentary。
 
 ### Members
-
 * nfreq -> Number of Matsubara frequency points.
 * β     -> Inverse temperature.
 * ω     -> Vector of grid points.
@@ -476,7 +470,6 @@ end
 Mutable struct. It represents the bosonic imaginary time grid.
 
 ### Members
-
 * ntime -> Number of time slices.
 * β     -> Inverse temperature.
 * τ     -> Vector of grid points.
@@ -496,7 +489,6 @@ Mutable struct. It represents part of the bosonic imaginary time grid.
 In other words, the grid might be fragmentary。
 
 ### Members
-
 * ntime -> Number of time slices.
 * β     -> Inverse temperature.
 * τ     -> Vector of grid points.
@@ -515,7 +507,6 @@ end
 Mutable struct. It represents the bosonic Matsubara frequency grid.
 
 ### Members
-
 * nfreq -> Number of Matsubara frequency points.
 * β     -> Inverse temperature.
 * ω     -> Vector of grid points.
@@ -536,7 +527,6 @@ grid. In other words, the grid might be fragmentary。 However, the first
 frequency point should be present (ωₙ ≡ 0.0).
 
 ### Members
-
 * nfreq -> Number of Matsubara frequency points.
 * β     -> Inverse temperature.
 * ω     -> Vector of grid points.
@@ -567,7 +557,6 @@ abstract type AbstractMesh end
 Mutable struct. A linear and uniform mesh.
 
 ### Members
-
 * nmesh  -> Number of mesh points.
 * wmax   -> Right boundary (maximum value).
 * wmin   -> Left boundary (minimum value).
@@ -591,7 +580,6 @@ Mutable struct. A non-linear and non-uniform mesh. Note that it should
 be defined on both negative and positive half-axis.
 
 ### Members
-
 * nmesh  -> Number of mesh points.
 * wmax   -> Right boundary (maximum value).
 * wmin   -> Left boundary (minimum value).
@@ -615,7 +603,6 @@ Mutable struct. A non-linear and non-uniform mesh. Note that it should
 be defined on both negative and positive half-axis.
 
 ### Members
-
 * nmesh  -> Number of mesh points.
 * wmax   -> Right boundary (maximum value).
 * wmin   -> Left boundary (minimum value).
@@ -639,7 +626,6 @@ Mutable struct. A non-linear and non-uniform mesh. Note that it should
 be defined on positive half-axis only.
 
 ### Members
-
 * nmesh  -> Number of mesh points.
 * wmax   -> Right boundary (maximum value).
 * wmin   -> Left boundary (minimum value). It must be 0.0.
@@ -666,7 +652,6 @@ initialization step. This mesh should not be used as a regular mesh for
 describing the spectral functions.
 
 ### Members
-
 * nmesh  -> Number of mesh points.
 * wmax   -> Right boundary (maximum value).
 * wmin   -> Left boundary (minimum value).
@@ -702,7 +687,6 @@ Mutable struct. It is used within the StochAC solver. It includes random
 number generator and some counters.
 
 ### Members
-
 * rng  -> Random number generator.
 * Macc -> Counter for move operation (accepted).
 * Mtry -> Counter for move operation (tried).
@@ -726,7 +710,6 @@ Mutable struct. It is used within the StochSK solver. It includes random
 number generator and some counters.
 
 ### Members
-
 * rng  -> Random number generator.
 * Sacc -> Counter for single-updated operation (accepted).
 * Stry -> Counter for single-updated operation (tried).
@@ -754,7 +737,6 @@ Mutable struct. It is used within the StochOM solver. It includes random
 number generator and some counters.
 
 ### Members
-
 * rng  -> Random number generator.
 * Macc -> Counter for move operation (accepted).
 * Mtry -> Counter for move operation (tried).
@@ -774,7 +756,6 @@ Mutable struct. It is used within the StochPX solver. It includes random
 number generator and some counters.
 
 ### Members
-
 * rng  -> Random number generator.
 * Sacc -> Counter for position-updated (type 1) operation (accepted).
 * Stry -> Counter for position-updated (type 1) operation (tried).
