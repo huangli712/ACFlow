@@ -17,7 +17,6 @@
 Mutable struct. It is used within the MaxEnt solver only.
 
 ### Members
-
 * Gᵥ     -> Input data for correlator.
 * σ²     -> Actually 1.0 / σ².
 * grid   -> Grid for input data.

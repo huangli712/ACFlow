@@ -62,7 +62,6 @@ and the denominator.
 Mutable struct. Barycentric representation of a rational function.
 
 ### Members
-
 * nodes     -> Nodes of the rational function, ``z_i``.
 * values    -> Values of the rational function, ``r(z_i)``.
 * weights   -> Weights of the rational function, ``w_i``.
@@ -368,7 +367,6 @@ for all ``0 \le k \le 2N``.
 Mutable struct. Prony approximation to a complex-valued Matsubara function.
 
 ### Members
-
 * 𝑁ₚ -> Number of nodes for Prony approximation.
 * ωₚ -> Non-negative Matsubara frequency.
 * 𝐺ₚ -> Complex values at ωₚ.
@@ -686,7 +684,6 @@ end
 Mutable struct. It is used within the BarRat solver only.
 
 ### Members
-
 * Gᵥ   -> Input data for correlator.
 * grid -> Grid for input data.
 * mesh -> Mesh for output spectrum.

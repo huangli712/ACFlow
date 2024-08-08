@@ -22,7 +22,6 @@ functions are fixed. But in principles, they could be sampled in the Monte
 Carlo procedure.
 
 ### Members
-
 * P -> It means the positions of the δ functions.
 * A -> It means the weights / amplitudes of the δ functions.
 * W -> It denotes the window that is used to shift the δ functions.
@@ -39,7 +38,6 @@ end
 Mutable struct. It is used within the StochSK solver only.
 
 ### Members
-
 * Gᵥ     -> Input data for correlator.
 * Gᵧ     -> Generated correlator.
 * σ¹     -> Actually 1.0 / σ¹.

@@ -22,7 +22,6 @@ signs of the poles (𝕊) could be negative (-1.0). However, for the other
 cases, 𝕊 is always positive (+1.0).
 
 ### Members
-
 * P -> It means the positions of the poles.
 * A -> It means the weights / amplitudes of the poles.
 * 𝕊 -> It means the signs of the poles.
@@ -39,7 +38,6 @@ end
 Mutable struct. It is used within the StochPX solver only.
 
 ### Members
-
 * Gᵥ     -> Input data for correlator.
 * Gᵧ     -> Generated correlator.
 * σ¹     -> Actually 1.0 / σ¹.

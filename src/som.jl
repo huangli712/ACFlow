@@ -19,7 +19,6 @@ various areas (width × height). We use the Metropolis important sampling
 algorithm to sample them and evaluate their contributions to the spectrum.
 
 ### Members
-
 * h -> Height of the box.
 * w -> Width of the box.
 * c -> Position of the box.
@@ -37,7 +36,6 @@ Mutable struct. It is used to record the field configurations, which will
 be sampled by Monte Carlo sweeping procedure.
 
 ### Members
-
 * C -> Field configuration.
 * Λ -> Contributions of the field configuration to the correlator.
 * G -> Reproduced correlator.
@@ -56,7 +54,6 @@ end
 Mutable struct. It is used within the StochOM solver only.
 
 ### Members
-
 * Gᵥ    -> Input data for correlator.
 * σ¹    -> Actually 1.0 / σ¹.
 * grid  -> Grid for input data.

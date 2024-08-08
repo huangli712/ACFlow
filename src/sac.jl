@@ -18,7 +18,6 @@ Mutable struct. It is used to record the field configurations, which will
 be sampled by  Monte Carlo sweeping procedure.
 
 ### Members
-
 * Γₚ -> It means the positions of the δ functions.
 * Γₐ -> It means the weights / amplitudes of the δ functions.
 """
@@ -33,7 +32,6 @@ end
 Mutable struct. It is used within the StochAC solver only.
 
 ### Members
-
 * Gᵥ     -> Input data for correlator.
 * σ¹     -> Actually 1.0 / σ¹.
 * allow  -> Allowable indices.
