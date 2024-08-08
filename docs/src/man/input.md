@@ -45,7 +45,7 @@ method = "mean"
 ...
 ```
 
-In the `[BASE]` block, the analytic continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[NevanAC]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]` blocks are used to customize the corresponding analytic continuation solvers further. In **Table 1**-**Table 7**, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please see [Parameters](@ref param).
+In the `[BASE]` block, the analytic continuation problem is defined. The solver used to solve the problem must be assigned. The types of mesh, grid, default model function, and kernel function are also determined. The `[MaxEnt]`, `[BarRat]`, `[NevanAC]`, `[StochAC]`, `[StochSK]`, `[StochOM]`, and `[StochPX]` blocks are used to customize the corresponding analytic continuation solvers further. In **Table 1**-**Table 8**, all the possible input parameters for these blocks are collected and summarized. As for detailed explanations of these parameters, please see [Parameters](@ref param).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
