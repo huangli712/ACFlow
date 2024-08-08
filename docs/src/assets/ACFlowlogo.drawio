@@ -1,0 +1,25 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" version="24.7.6">
+  <diagram name="Page-1" id="xgvkq3mLrKqCHa_ZYQ-y">
+    <mxGraphModel dx="1194" dy="545" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="1" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="IJruppQfkDTt7Cz1XM8O-1" value="" style="whiteSpace=wrap;html=1;shape=mxgraph.basic.pointed_oval;fillColor=#dae8fc;strokeColor=#6c8ebf;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;shadow=1;gradientColor=#FFFFFF;gradientDirection=south;" parent="1" vertex="1">
+          <mxGeometry x="240" y="390" width="50" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="IJruppQfkDTt7Cz1XM8O-4" value="" style="whiteSpace=wrap;html=1;shape=mxgraph.basic.pointed_oval;rotation=60;fillColor=#d5e8d4;strokeColor=#82b366;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;shadow=1;gradientColor=#FFFFFF;gradientDirection=north;" parent="1" vertex="1">
+          <mxGeometry x="190" y="470" width="50" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="IJruppQfkDTt7Cz1XM8O-7" value="" style="whiteSpace=wrap;html=1;shape=mxgraph.basic.pointed_oval;rotation=-60;fillColor=#f8cecc;strokeColor=#b85450;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;shadow=1;gradientColor=#FFFFFF;gradientDirection=north;" parent="1" vertex="1">
+          <mxGeometry x="290" y="470" width="50" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="IJruppQfkDTt7Cz1XM8O-8" value="&lt;font color=&quot;#a9c4eb&quot;&gt;A&lt;/font&gt;&lt;font color=&quot;#b9e0a5&quot;&gt;C&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot; style=&quot;font-size: 160px;&quot; color=&quot;#f19c99&quot;&gt;f&lt;/font&gt;low" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;strokeWidth=50;fontSize=100;fontFamily=Tahoma;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;shadow=0;" parent="1" vertex="1">
+          <mxGeometry x="402" y="477" width="250" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2nQxuvaWzjD0Rw9vIOW6-12" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.jumpInArrow;dy=10.5;dx=41;arrowHead=21;fillColor=#F19C99;gradientColor=#FFFFFF;gradientDirection=east;strokeColor=none;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" vertex="1" parent="1">
+          <mxGeometry x="549" y="390" width="141" height="48" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
