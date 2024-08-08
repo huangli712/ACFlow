@@ -19,7 +19,7 @@ Depth = 3
 
 1. It would be better to perform analytic continuation in Matsubara frequency axis, instead of imaginary time axis. See [`grid`](@ref grid) and [`ngrid`](@ref ngrid).
 
-2. Employ the MaxEnt solver for a fast analytic continuation task. And then the stochastic methods can be used to get a better spectrum. See [`solver`](@ref solver).
+2. Employ the BarRat or MaxEnt solver for a fast analytic continuation task. And then the stochastic methods (the StochPX solver is preferred) can be used to get a better spectrum. See [`solver`](@ref solver).
 
 3. If the input data is broken or discontinuous, please setup the [`grid`](@ref grid) parameter correctly.
 
@@ -45,7 +45,13 @@ Depth = 3
 
 ## [BarRat solver](@id barrat)
 
-1. If you know the possible type of the spectrum (continuum or discrete), please setup the `atype` parameter. See [`atype`](@ref barrat_atype). 
+1. If you know the possible type of the spectrum (continuum or discrete), please setup the `atype` parameter. See [`atype`](@ref barrat_atype).
+
+2. The BarRat solver wants more input data than the other solvers. The `ngrid` parameter should be at least 100. See [`ngrid`](@ref ngrid).
+
+3. Sometimes Prony approximation will lead to worse results. Use it carefully.
+
+4. If you know the noise level of input data, please set `epsilon` to it and let `denoise` = "prony_s". If you do not know the noise level of input data, just let `denoise` = "prony_o" or "none".
 
 ## [NevanAC solver](@id nevanac)
 
