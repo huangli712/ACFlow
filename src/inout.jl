@@ -213,6 +213,10 @@ data in imaginary axis. This function will write the reproduced data to
 `repr.data`, which can be compared with the original data. Here, `G` is
 the reproduced data.
 
+### Arguments
+* ag -> Grid for input data.
+* G  -> Reconstructed Green's function.
+
 See also: [`reprod`](@ref).
 """
 function write_backward(ag::AbstractGrid, G::Vector{F64})
@@ -243,6 +247,10 @@ end
 Write the full data at real axis to `Gout.data`. `am` denotes the real
 axis, `G` is the calculated green's function data. Note that its real
 part is obtained via the so-called Kramers-Kronig transformation.
+
+### Arguments
+* am -> Real frequency mesh.
+* G  -> Retarded Green's function.
 
 See also: [`kramers`](@ref).
 """
