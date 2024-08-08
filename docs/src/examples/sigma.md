@@ -9,7 +9,7 @@
 
     within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/tutor/T*` folders.
 
-# Matsubara Self-Energy Function
+# [Matsubara Self-Energy Function](@id ex_sigma)
 
 Now let us consider the following single-band Hubbard model on a Bethe lattice at first:
 ```math

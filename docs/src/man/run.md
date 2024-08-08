@@ -29,7 +29,7 @@ read_param()
 mesh, Aout, Gout = solve(read_data())
 ```
 
-Of course, this script can be extended to finish complex tasks. Later, a realistic example will be provided to show how to complete an analytic continuation of Matsubara self-energy function via the script mode.
+Of course, this script can be extended to finish complex tasks. Later, a realistic example will be provided to show how to complete an analytic continuation of Matsubara self-energy function via the script mode (See [`Matsubara Self-Energy Function`](@ref ex_sigma)).
 
 ## Standard Mode
 
