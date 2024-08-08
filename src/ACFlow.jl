@@ -464,7 +464,7 @@ write_misfit      -> Write α-dependent χ².
 write_goodness    -> Write Θ-dependent χ².
 write_model       -> Write default model function.
 write_prony       -> Write Prony approximation.
-write_barycentric -> Write barycentric rational function approximation. 
+write_barycentric -> Write barycentric rational function approximation.
 write_hamiltonian -> Write effective hamiltonian for StochAC solver.
 write_passed      -> Write indices of selected solutions StochOM and StochPX solvers.
 write_pole        -> Write details of generated poles for StochPX solver.
