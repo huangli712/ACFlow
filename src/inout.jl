@@ -478,7 +478,11 @@ Write positions, amplitudes, and signs of poles to `pole.data`. This
 function is only useful for the `StochPX` solver.
 
 ### Arguments
-*
+* Pᵥ    -> Positions of the poles.
+* Aᵥ    -> Amplitudes of the poles.
+* 𝕊ᵥ    -> Signs of the poles.
+* χ²    -> Goodness-of-fit functionals for all the solutions.
+* fmesh -> A dense mesh for the poles.
 """
 function write_pole(
     Pᵥ::Vector{Vector{I64}},
@@ -510,6 +514,10 @@ end
 
 Write `p(α)` data to `prob.data`. This function is only useful for the
 `MaxEnt` solver (`bryan` algorithm).
+
+### Arguments
+* α_vec -> List for α parameters.
+* p_vec -> α-dependent probabilities.
 """
 function write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
     @assert length(α_vec) == length(p_vec)
