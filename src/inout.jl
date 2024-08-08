@@ -271,6 +271,10 @@ end
 Write `log10(α)-log10(χ²)` data to `chi2.data`, which could be used to
 judge whether the obtained optimal α parameter is reasonable.
 
+### Arguments
+* α_vec  -> List for α parameters.
+* χ²_vec -> α-dependent goodness-of-fit functional.
+
 See also: [`write_goodness`](@ref).
 """
 function write_misfit(α_vec::Vector{F64}, χ²_vec::Vector{F64})
