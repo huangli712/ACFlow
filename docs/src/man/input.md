@@ -77,7 +77,7 @@ In the `[BASE]` block, the analytic continuation problem is defined. The solver 
 |`ratio`  | float   | 10.0         | Scaling factor for the ``\alpha`` parameter. |
 |`blur`   | float   | -1.0         | Shall we preblur the kernel and spectrum? |
 
-**Table 2 |** Possible input parameters for the `[MaxEnt]` block, which are used to configure the solver based on the maximum entropy method.
+**Table 2 |** Possible input parameters for the `[MaxEnt]` block, which are used to configure the solver based on the maximum entropy method (See [[MaxEnt] Block](@ref maxent_block)).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
