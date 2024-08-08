@@ -78,6 +78,10 @@ function generate_fmesh(mesh::Vector{F64}, image::Vector{F64})
             sorry()
             break
 
+        @case "BarRat"
+            sorry()
+            break
+
         @case "NevanAC"
             sorry()
             break
