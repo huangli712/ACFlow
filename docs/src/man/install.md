@@ -80,7 +80,6 @@ After a few seconds, the documentation is built and saved in the `acflow/docs/bu
 
         # Finite difference algorithm
         J .= gradient_via_fd(𝑓, x)
-        #
     end
     ```
 

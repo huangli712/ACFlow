@@ -59,25 +59,31 @@ Depth = 3
 
 1. It is extremely sensitive to the noise. So please make sure that the input data is smooth and is free of noise.
 
-2. to be done
+2. Actually, I think it is not suitable for quantum Monte Carlo data.
 
 ## [StochAC solver](@id stochac)
 
 1. Increase `nfine` to 20000.
 
-2. to be done.
+2. Perhaps more ``\alpha`` could help. See [`nalph`](@ref stochac_nalph).
+
+3. Run it parallelly (use `Pacrun.jl`).
 
 ## [StochSK solver](@id stochsk)
 
 1. The `chi2min` algorithm is recommended. See [`method`](@ref stochsk_method).
 
-2. to be done.
+2. Increase `nfine` and `nstep`.
+
+3. Run it parallelly (use `Pacrun.jl`).
 
 ## [StochOM solver](@id stochom)
 
 1. It is more efficient for Matsubara frequency Green's functions.
 
-2. to be done.
+2. Increase `ntry`, `nstep` and `nbox`.
+
+3. Run it parallelly (use `Pacrun.jl`).
 
 ## [StochPX solver](@id stochpx)
 
