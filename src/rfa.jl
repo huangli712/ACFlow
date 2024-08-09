@@ -196,8 +196,8 @@ Adaptively compute a barycentric rational interpolant.
 * stats::Bool=false -> Return convergence statistics.
 
 ### Returns
-* `r::BarycentricFunction` -> The rational interpolant.
-* `stats::NamedTuple` -> Convergence statistics, if keyword `stats = true`.
+* r::BarycentricFunction -> The rational interpolant.
+* stats::NamedTuple -> Convergence statistics, if keyword `stats = true`.
 
 ### Examples
 ```julia-repl
@@ -433,8 +433,8 @@ If the noise level of the input data is known, this function is a good
 choice. The parameter `ε` can be set to the noise level.
 
 ### Arguments
-* ω₁ -> Non-negative Matsubara frequency (raw).
-* 𝐺₁ -> Complex values at ωₚ (raw).
+* ω₁ -> Non-negative Matsubara frequency (raw values).
+* 𝐺₁ -> Complex values at ωₚ (raw values).
 * ε  -> Threshold for the Prony approximation.
 """
 function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64}, ε::F64)
@@ -461,8 +461,8 @@ This function is time-consuming. But if the noise level of the input data
 is unknown, this function is useful.
 
 ### Arguments
-* ω₁ -> Non-negative Matsubara frequency (raw).
-* 𝐺₁ -> Complex values at ωₚ (raw).
+* ω₁ -> Non-negative Matsubara frequency (raw values).
+* 𝐺₁ -> Complex values at ωₚ (raw values).
 """
 function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
     # Preprocess the input data to get the number of nodes, frequency
