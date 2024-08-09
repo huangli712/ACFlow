@@ -430,6 +430,10 @@ end
 
 Try to calculate the Φ vector, which is used to calculate the 𝒜 matrix.
 Note that Φ should not be changed anymore once it has been established.
+
+### Arguments
+* grid -> Grid in imaginary axis for input Green's function.
+* Gᵥ   -> Input Green's function.
 """
 function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
     ngrid = length(grid)
@@ -468,6 +472,11 @@ end
 
 Try to calculate the coefficients matrix abcd (here it is called 𝒜),
 which is then used to calculate θ. See Eq. (8) in Fei's NAC paper.
+
+### Arguments
+* grid -> Grid in imaginary axis for input Green's function.
+* mesh -> Real frequency mesh.
+* Φ    -> Φ vector calculated by `calc_phis()`.
 """
 function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     eta::APF = get_n("eta")
@@ -502,6 +511,10 @@ end
     calc_hbasis(z::APC, k::I64)
 
 Try to calculate the Hardy basis ``f^k(z)``.
+
+### Arguments
+* z -> A complex variable.
+* k -> Current order for the Hardy basis.
 """
 function calc_hbasis(z::APC, k::I64)
     w = ( z - im ) / ( z + im )
@@ -513,6 +526,10 @@ end
 
 Try to calculate ``[f^k(z), f^k(z)^*]`` for 0 ≤ 𝑘 ≤ 𝐻-1, which is
 called the hardy matrix (ℋ) and is used to evaluate ``\theta_{M+1}``.
+
+### Arguments
+* mesh -> Real frequency mesh.
+* H    -> Maximum order for the Hardy basis.
 """
 function calc_hmatrix(mesh::AbstractMesh, H::I64)
     # Build real axis
