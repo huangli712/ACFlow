@@ -502,6 +502,11 @@ end
 Randomize the configurations for future Monte Carlo sampling. It will
 return a StochACElement object.
 
+### Arguments
+* S     -> A StochACSolver object.
+* rng   -> Random number generator.
+* allow -> Allowed positions for the δ peaks.
+
 See also: [`StochACElement`](@ref).
 """
 function init_element(S::StochACSolver, rng::AbstractRNG, allow::Vector{I64})
