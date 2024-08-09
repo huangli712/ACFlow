@@ -759,6 +759,10 @@ end
 
 Try to blur the given spectrum `A`, which is defined in `am`. And `blur`
 is the blur parameter.
+
+### Arguments
+* am ->
+* 
 """
 function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     ktype = get_b("ktype")
@@ -848,6 +852,9 @@ Integration over the Gaussian from \(-5b\) to \(5b\) is certainly sufficient.
 Try to generate a series of gaussian peaks along a linear mesh, whose
 energy range is `[-5 * blur, +5 * blur]`. The number of gaussian peaks is
 fixed to 201.
+
+### Arguments
+* blur -> This parameter is used to control the width of gaussian peaks.
 """
 function make_gauss_peaks(blur::F64)
     @assert blur > 0.0
