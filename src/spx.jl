@@ -973,6 +973,10 @@ where
 
 Precompute the kernel matrix Λ (Λ ≡ 1 / (iωₙ - ϵ)).
 It is for the fermionic systems.
+
+### Arguments
+* grid  -> Imaginary axis grid for input data. 
+* fmesh -> Very dense mesh in [wmin, wmax].
 """
 function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh)
     ngrid = get_b("ngrid")
@@ -1004,6 +1008,12 @@ Precompute the kernel matrix Λ. Here, `χ₀` is actually -G(iωₙ = 0). And
 the argument `bsymm` is used to distinguish two different bosonic kernels.
 If `bsymm` is false, it means that the kernel is `boson`. If `bsymm` is
 true, the kernel is `bsymm`. This function is for the bosonic systems.
+
+### Arguments
+* grid  -> Imaginary axis grid for input data. 
+* fmesh -> Very dense mesh in [wmin, wmax].
+* χ₀    -> -G(0).
+* bsymm -> Type of bosonic kernel.
 """
 function calc_lambda(
     grid::AbstractGrid,
