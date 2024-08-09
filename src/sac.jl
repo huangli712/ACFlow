@@ -335,6 +335,11 @@ end
 It will process and write the calculated results by the StochAC solver,
 including effective hamiltonian, final spectral function, reproduced
 correlator.
+
+### Arguments
+* SC   -> A StochACContext object.
+* Aout -> α-dependent spectral functions.
+* Uα   -> α-dependent internal energies.
 """
 function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     function fitfun(x, p)
@@ -624,7 +629,12 @@ function calc_delta(fmesh::AbstractMesh, ϕ::Vector{F64})
 end
 
 """
-    calc_hamil(Γₚ, Γₐ, kernel, Gᵥ, σ¹)
+    calc_hamil(
+        Γₚ::Array{I64,2},
+        Γₐ::Array{I64,2},
+        kernel::Matrix{F64},
+        Gᵥ::Vector{F64}
+        )
 
 Initialize h(τ) and H(α) using Eq.(35) and Eq.(36), respectively. `Γₚ`
 and `Γₐ` represent n(x), `kernel` means the kernel function, `Gᵥ` is the
@@ -633,9 +643,12 @@ space. Please see comments in `init()` for more details.
 
 See also: [`calc_htau`](@ref).
 """
-function calc_hamil(Γₚ::Array{I64,2}, Γₐ::Array{F64,2},
-                    kernel::Matrix{F64},
-                    Gᵥ::Vector{F64})
+function calc_hamil(
+    Γₚ::Array{I64,2},
+    Γₐ::Array{F64,2},
+    kernel::Matrix{F64},
+    Gᵥ::Vector{F64}
+    )
     nalph = get_a("nalph")
     ngrid = length(Gᵥ) # It is not equal to get_b("ngrid") any more!
 
