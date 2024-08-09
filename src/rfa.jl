@@ -110,7 +110,7 @@ bc_nodes(r::BarycentricFunction) = r.nodes
     bc_values(r::BarycentricFunction)
 
 Returns the nodal values of the rational interpolant `r` as a vector. They
-are ``r(z_i) \equiv f_i``.
+are ``r(z_i) = f_i``.
 """
 bc_values(r::BarycentricFunction) = r.values
 

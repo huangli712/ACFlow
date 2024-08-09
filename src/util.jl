@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/08
+# Last modified: 2024/08/09
 #
 
 #=
@@ -368,7 +368,7 @@ const MODES = Dict{String,I64}(
         c::String,
         s::String;
         bg::String = "default",
-        m::String="default"
+        m::String = "default"
         )
 
 Return some escape sequences, which will be displayed as colorized texts
@@ -384,7 +384,7 @@ function colorize(
     c::String,
     s::String;
     bg::String = "default",
-    m::String="default"
+    m::String = "default"
     )
     C_OFFSET = 30
     B_OFFSET = 40
@@ -396,7 +396,7 @@ end
         c::Symbol,
         s::String;
         bg::String = "default",
-        m::String="default"
+        m::String = "default"
         )
 
 Return some escape sequences, which will be displayed as colorized texts
@@ -406,7 +406,7 @@ function colorize(
     c::Symbol,
     s::String;
     bg::String = "default",
-    m::String="default"
+    m::String = "default"
     )
     colorize(string(c), s; bg=bg, m=m)
 end
