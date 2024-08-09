@@ -318,6 +318,10 @@ end
 
 It will process and write the calculated results by the StochOM solver,
 including final spectral function and reproduced correlator.
+
+### Arguments
+* SC   -> A StochOMContext object.
+* Aout -> Spectral function.
 """
 function last(SC::StochOMContext, Aout::Vector{F64})
     # By default, we should write the analytic continuation results
