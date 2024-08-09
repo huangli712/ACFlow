@@ -559,6 +559,11 @@ end
 Randomize the configurations for future Monte Carlo sampling. It will
 return a StochPXElement object.
 
+### Arguments
+* S     -> A StochPXSolver object.
+* rng   -> Random number generator.
+* allow -> Allowed positions for the poles.
+
 See also: [`StochPXElement`](@ref).
 """
 function init_element(
