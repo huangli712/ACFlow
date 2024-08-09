@@ -741,14 +741,24 @@ function constraints(S::StochACSolver, fmesh::AbstractMesh)
 end
 
 """
-    try_move_a(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+    try_move_a(
+        i::I64,
+        MC::StochACMC,
+        SE::StochACElement,
+        SC::StochACContext
+        )
 
 Select two δ functions randomly and then change their weights. Here `i`
 means the index for α parameters.
 
 See also: [`try_move_p`](@ref).
 """
-function try_move_a(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+function try_move_a(
+    i::I64,
+    MC::StochACMC,
+    SE::StochACElement,
+    SC::StochACContext
+    )
     # Get current number of δ functions
     ngamm = get_a("ngamm")
 
