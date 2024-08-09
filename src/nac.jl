@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/26
+# Last modified: 2024/08/09
 #
 
 #
@@ -350,9 +350,11 @@ See `smooth_norm()`.
 =#
 
 """
-    precompute(grid::AbstractGrid,
-               mesh::AbstractMesh,
-               Gᵥ::Vector{APC})
+    precompute(
+        grid::AbstractGrid,
+        mesh::AbstractMesh,
+        Gᵥ::Vector{APC}
+        )
 
 Precompute some key quantities, such as `Φ`, `𝒜`, `ℋ`, and `𝑎𝑏`. Note
 that `Φ` and `𝒜` won't be changed any more. But `ℋ` and `𝑎𝑏` should be
@@ -360,9 +362,11 @@ updated by the Hardy basis optimization to get a smooth spectrum. Here
 `Gᵥ` is input data, `grid` is the grid for input data, and `mesh` is
 the mesh for output spectrum.
 """
-function precompute(grid::AbstractGrid,
-                    mesh::AbstractMesh,
-                    Gᵥ::Vector{APC})
+function precompute(
+    grid::AbstractGrid,
+    mesh::AbstractMesh,
+    Gᵥ::Vector{APC}
+    )
     # Evaluate ϕ and `abcd` matrices
     Φ = calc_phis(grid, Gᵥ)
     𝒜 = calc_abcd(grid, mesh, Φ)
@@ -398,6 +402,11 @@ end
 
 Try to calculate the Pick matrix, anc check whether it is a positive
 semidefinite matrix. See Eq. (5) in Fei's NAC paper.
+
+### Arguments
+* k -> Size of the Pick matrix.
+* ℎ -> Vector ℎ. It is actually 𝑧.
+* λ -> Vector λ. It is actually 𝒢(𝑧).
 """
 function calc_pick(k::I64, ℎ::Vector{APC}, λ::Vector{APC})
     pick = zeros(APC, k, k)
