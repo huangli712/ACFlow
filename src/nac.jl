@@ -598,6 +598,10 @@ end
 Evaluate the optimal value for the size of input data (how may frequency
 points are actually used in the analytic continuation simulations) via
 the Pick criterion.
+
+### Arguments
+* ωₙ -> Matsubara frequency points (the 𝑖 unit is not included).
+* Gₙ -> Matsubara Green's function.
 """
 function calc_noptim(ωₙ::Vector{APC}, Gₙ::Vector{APC})
     # Get size of input data
@@ -704,18 +708,28 @@ function calc_hopt!(nac::NevanACContext)
 end
 
 """
-    hardy_optimize!(nac::NevanACContext,
-                    ℋ::Array{APC,2},
-                    𝑎𝑏::Vector{C64},
-                    H::I64)
+    hardy_optimize!(
+        nac::NevanACContext,
+        ℋ::Array{APC,2},
+        𝑎𝑏::Vector{C64},
+        H::I64
+        )
 
 For given Hardy matrix ℋ, try to update the expanding coefficients 𝑎𝑏
 by minimizing the smooth norm.
+
+### Arguments
+* nac -> A NevanACContext object.
+* ℋ   -> Hardy matrix, which contains the Hardy basis.
+* 𝑎𝑏  -> Expansion coefficients 𝑎 and 𝑏 for the contractive function θ.
+* H   -> Maximum order of the Hardy basis.
 """
-function hardy_optimize!(nac::NevanACContext,
-                         ℋ::Array{APC,2},
-                         𝑎𝑏::Vector{C64},
-                         H::I64)
+function hardy_optimize!(
+    nac::NevanACContext,
+    ℋ::Array{APC,2},
+    𝑎𝑏::Vector{C64},
+    H::I64
+    )
     # Function call to the smooth norm.
     function 𝑓(x::Vector{C64})
         return smooth_norm(nac, ℋ, x)
