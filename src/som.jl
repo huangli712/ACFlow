@@ -1221,17 +1221,21 @@ function constraints(e₁::F64, e₂::F64)
 end
 
 """
-    try_insert(MC::StochOMMC,
-               SE::StochOMElement,
-               SC::StochOMContext,
-               dacc::F64)
+    try_insert(
+        MC::StochOMMC,
+        SE::StochOMElement,
+        SC::StochOMContext,
+        dacc::F64
+        )
 
 Insert a new box into the field configuration.
 """
-function try_insert(MC::StochOMMC,
-                    SE::StochOMElement,
-                    SC::StochOMContext,
-                    dacc::F64)
+function try_insert(
+    MC::StochOMMC,
+    SE::StochOMElement,
+    SC::StochOMContext,
+    dacc::F64
+    )
     sbox = get_s("sbox")
     wbox = get_s("wbox")
     wmin = get_b("wmin")
@@ -1304,17 +1308,21 @@ function try_insert(MC::StochOMMC,
 end
 
 """
-    try_remove(MC::StochOMMC,
-               SE::StochOMElement,
-               SC::StochOMContext,
-               dacc::F64)
+    try_remove(
+        MC::StochOMMC,
+        SE::StochOMElement,
+        SC::StochOMContext,
+        dacc::F64
+        )
 
 Remove an old box from the field configuration.
 """
-function try_remove(MC::StochOMMC,
-                    SE::StochOMElement,
-                    SC::StochOMContext,
-                    dacc::F64)
+function try_remove(
+    MC::StochOMMC,
+    SE::StochOMElement,
+    SC::StochOMContext,
+    dacc::F64
+    )
     csize = length(SE.C)
 
     # Choose two boxes randomly
@@ -1378,17 +1386,21 @@ function try_remove(MC::StochOMMC,
 end
 
 """
-    try_shift(MC::StochOMMC,
-              SE::StochOMElement,
-              SC::StochOMContext,
-              dacc::F64)
+    try_shift(
+        MC::StochOMMC,
+        SE::StochOMElement,
+        SC::StochOMContext,
+        dacc::F64
+        )
 
 Change the position of given box in the field configuration.
 """
-function try_shift(MC::StochOMMC,
-                   SE::StochOMElement,
-                   SC::StochOMContext,
-                   dacc::F64)
+function try_shift(
+    MC::StochOMMC,
+    SE::StochOMElement,
+    SC::StochOMContext,
+    dacc::F64
+    )
     wmin = get_b("wmin")
     wmax = get_b("wmax")
     csize = length(SE.C)
@@ -1439,18 +1451,22 @@ function try_shift(MC::StochOMMC,
 end
 
 """
-    try_width(MC::StochOMMC,
-              SE::StochOMElement,
-              SC::StochOMContext,
-              dacc::F64)
+    try_width(
+        MC::StochOMMC,
+        SE::StochOMElement,
+        SC::StochOMContext,
+        dacc::F64
+        )
 
 Change the width and height of given box in the field configuration. Note
 that the box's area is kept.
 """
-function try_width(MC::StochOMMC,
-                   SE::StochOMElement,
-                   SC::StochOMContext,
-                   dacc::F64)
+function try_width(
+    MC::StochOMMC,
+    SE::StochOMElement,
+    SC::StochOMContext,
+    dacc::F64
+    )
     wbox = get_s("wbox")
     wmin = get_b("wmin")
     wmax = get_b("wmax")
@@ -1506,17 +1522,21 @@ function try_width(MC::StochOMMC,
 end
 
 """
-    try_height(MC::StochOMMC,
-               SE::StochOMElement,
-               SC::StochOMContext,
-               dacc::F64)
+    try_height(
+        MC::StochOMMC,
+        SE::StochOMElement,
+        SC::StochOMContext,
+        dacc::F64
+        )
 
 Change the heights of two given boxes in the field configuration.
 """
-function try_height(MC::StochOMMC,
-                    SE::StochOMElement,
-                    SC::StochOMContext,
-                    dacc::F64)
+function try_height(
+    MC::StochOMMC,
+    SE::StochOMElement,
+    SC::StochOMContext,
+    dacc::F64
+    )
     sbox  = get_s("sbox")
     csize = length(SE.C)
 
@@ -1578,17 +1598,21 @@ function try_height(MC::StochOMMC,
 end
 
 """
-    try_split(MC::StochOMMC,
-              SE::StochOMElement,
-              SC::StochOMContext,
-              dacc::F64)
+    try_split(
+        MC::StochOMMC,
+        SE::StochOMElement,
+        SC::StochOMContext,
+        dacc::F64
+        )
 
 Split a given box into two boxes in the field configuration.
 """
-function try_split(MC::StochOMMC,
-                   SE::StochOMElement,
-                   SC::StochOMContext,
-                   dacc::F64)
+function try_split(
+    MC::StochOMMC,
+    SE::StochOMElement,
+    SC::StochOMContext,
+    dacc::F64
+    )
     wbox = get_s("wbox")
     sbox = get_s("sbox")
     wmin = get_b("wmin")
@@ -1668,17 +1692,21 @@ function try_split(MC::StochOMMC,
 end
 
 """
-    try_merge(MC::StochOMMC,
-              SE::StochOMElement,
-              SC::StochOMContext,
-              dacc::F64)
+    try_merge(
+        MC::StochOMMC,
+        SE::StochOMElement,
+        SC::StochOMContext,
+        dacc::F64
+        )
 
 Merge two given boxes into one box in the field configuration.
 """
-function try_merge(MC::StochOMMC,
-                   SE::StochOMElement,
-                   SC::StochOMContext,
-                   dacc::F64)
+function try_merge(
+    MC::StochOMMC,
+    SE::StochOMElement,
+    SC::StochOMContext,
+    dacc::F64
+    )
     wmin = get_b("wmin")
     wmax = get_b("wmax")
     csize = length(SE.C)
