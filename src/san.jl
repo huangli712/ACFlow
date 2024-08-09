@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/27
+# Last modified: 2024/08/09
 #
 
 #=
@@ -249,18 +249,26 @@ function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 end
 
 """
-    prun(S::StochSKSolver,
-         p1::Dict{String,Vector{Any}},
-         p2::Dict{String,Vector{Any}},
-         MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+    prun(
+        S::StochSKSolver,
+        p1::Dict{String,Vector{Any}},
+        p2::Dict{String,Vector{Any}},
+        MC::StochSKMC,
+        SE::StochSKElement,
+        SC::StochSKContext
+        )
 
 Perform stochastic analytic continuation simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochSK, respectively.
 """
-function prun(S::StochSKSolver,
-              p1::Dict{String,Vector{Any}},
-              p2::Dict{String,Vector{Any}},
-              MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
+function prun(
+    S::StochSKSolver,
+    p1::Dict{String,Vector{Any}},
+    p2::Dict{String,Vector{Any}},
+    MC::StochSKMC,
+    SE::StochSKElement,
+    SC::StochSKContext
+    )
     # Revise parameteric dicts
     rev_dict_b(p1)
     rev_dict_k(S, p2)
