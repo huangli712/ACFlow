@@ -145,6 +145,9 @@ end
 
 Postprocess the results generated during the Nevanlinna analytical
 continuation simulations.
+
+### Arguments
+* nac -> A NevanACContext object.
 """
 function last(nac::NevanACContext)
     # By default, we should write the analytic continuation results

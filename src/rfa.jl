@@ -789,6 +789,9 @@ It will process and write the calculated results by the BarRat solver,
 including correlator at real axis, final spectral function, reproduced
 correlator. The information about Prony approximation and barycentric
 rational function approximation will be written as well.
+
+### Arguments
+* brc -> A BarRatContext object.
 """
 function last(brc::BarRatContext)
     function pole_green!(_G::Vector{C64})
