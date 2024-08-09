@@ -430,18 +430,22 @@ function average(SC::StochPXContext)
 end
 
 """
-    last(SC::StochPXContext,
-         Aout::Vector{F64},
-         Gout::Vector{C64},
-         Gᵣ::Vector{F64})
+    last(
+        SC::StochPXContext,
+        Aout::Vector{F64},
+        Gout::Vector{C64},
+        Gᵣ::Vector{F64}
+        )
 
 It will write the calculated results by the StochPX solver, including
 final spectral function and reproduced correlator.
 """
-function last(SC::StochPXContext,
-              Aout::Vector{F64},
-              Gout::Vector{C64},
-              Gᵣ::Vector{F64})
+function last(
+    SC::StochPXContext,
+    Aout::Vector{F64},
+    Gout::Vector{C64},
+    Gᵣ::Vector{F64}
+    )
     # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
