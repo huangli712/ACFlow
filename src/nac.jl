@@ -777,6 +777,11 @@ end
 
 Establish the smooth norm, which is used to improve the smoothness of
 the output spectrum.
+
+### Arguments
+* nac -> A NevanACContext object.
+* ℋ   -> Hardy matrix, which contains the Hardy basis.
+* 𝑎𝑏  -> Expansion coefficients 𝑎 and 𝑏 for the contractive function θ.
 """
 function smooth_norm(nac::NevanACContext, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     # Get regulation parameter
