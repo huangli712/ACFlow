@@ -326,6 +326,10 @@ end
 
 Postprocess the results generated during the stochastic analytic
 continuation simulations. It will generate the spectral functions.
+
+### Arguments
+* step -> Number of Monte Carlo samplings.
+* SC   -> A StochSKContext object.
 """
 function average(step::F64, SC::StochSKContext)
     SC.Aout = SC.Aout ./ (step * SC.mesh.weight)
