@@ -659,6 +659,10 @@ Try to calculate correlator with the kernel function and the Monte Carlo
 field configuration. This correlator will then be used to evaluate the
 goodness function.
 
+### Arguments
+* SE     -> A StochSKElement object.
+* kernel -> The fermionic or bosonic kernel.
+
 See also: [`calc_goodness`](@ref).
 """
 function calc_correlator(SE::StochSKElement, kernel::Array{F64,2})
@@ -673,6 +677,10 @@ end
 
 Try to calculate the goodness function (i.e, χ²), which measures the
 distance between input and regenerated correlators.
+
+### Arguments
+* Gₙ -> Reconstructed correlators.
+* Gᵥ -> Input (original) correlators.
 
 See also: [`calc_correlator`](@ref).
 """
