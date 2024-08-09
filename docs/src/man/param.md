@@ -795,7 +795,7 @@ Depth = 3
 
     If `solver = "StochAC"`, the `[StochAC]` block must be available.
 
-### nfine
+### [nfine](@id stochac_nfine)
 
 *Definition:*
 
@@ -813,7 +813,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### ngamm
+### [ngamm](@id stochac_ngamm)
 
 *Definition:*
 
@@ -831,7 +831,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### nwarm
+### [nwarm](@id stochac_nwarm)
 
 *Definition:*
 
@@ -849,7 +849,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### nstep
+### [nstep](@id stochac_nstep)
 
 *Definition:*
 
@@ -867,7 +867,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### ndump
+### [ndump](@id stochac_ndump)
 
 *Definition:*
 
@@ -885,7 +885,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### nalph
+### [nalph](@id stochac_nalph)
 
 *Definition:*
 
@@ -903,7 +903,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### alpha
+### [alpha](@id stochac_alpha)
 
 *Definition:*
 
@@ -921,7 +921,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### ratio
+### [ratio](@id stochac_ratio)
 
 *Definition:*
 
@@ -972,7 +972,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### nfine
+### [nfine](@id stochsk_nfine)
 
 *Definition:*
 
@@ -990,7 +990,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### ngamm
+### [ngamm](@id stochsk_ngamm)
 
 *Definition:*
 
@@ -1008,7 +1008,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### nwarm
+### [nwarm](@id stochsk_nwarm)
 
 *Definition:*
 
@@ -1026,7 +1026,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### nstep
+### [nstep](@id stochsk_nstep)
 
 *Definition:*
 
@@ -1044,7 +1044,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### ndump
+### [ndump](@id stochsk_ndump)
 
 *Definition:*
 
@@ -1062,7 +1062,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### retry
+### [retry](@id stochsk_retry)
 
 *Definition:*
 
@@ -1080,7 +1080,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### theta
+### [theta](@id stochsk_theta)
 
 *Definition:*
 
@@ -1098,7 +1098,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### ratio
+### [ratio](@id stochsk_ratio)
 
 *Definition:*
 
@@ -1126,7 +1126,7 @@ Depth = 3
 
     If `solver = "StochOM"`, the `[StochOM]` block must be available.
 
-### ntry
+### [ntry](@id stochom_ntry)
 
 *Definition:*
 
@@ -1144,7 +1144,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### nstep
+### [nstep](@id stochom_nstep)
 
 *Definition:*
 
@@ -1162,7 +1162,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### nbox
+### [nbox](@id stochom_nbox)
 
 *Definition:*
 
@@ -1180,7 +1180,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### sbox
+### [sbox](@id stochom_sbox)
 
 *Definition:*
 
@@ -1198,7 +1198,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### wbox
+### [wbox](@id stochom_wbox)
 
 *Definition:*
 
@@ -1216,7 +1216,7 @@ Depth = 3
 
 > This parameter is mandatory.
 
-### norm
+### [norm](@id stochom_norm)
 
 *Definition:*
 
