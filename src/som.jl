@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/07/16
+# Last modified: 2024/08/09
 #
 
 #=
@@ -191,18 +191,24 @@ function run(MC::StochOMMC, SC::StochOMContext)
 end
 
 """
-    prun(S::StochOMSolver,
-         p1::Dict{String,Vector{Any}},
-         p2::Dict{String,Vector{Any}},
-         MC::StochOMMC, SC::StochOMContext)
+    prun(
+        S::StochOMSolver,
+        p1::Dict{String,Vector{Any}},
+        p2::Dict{String,Vector{Any}},
+        MC::StochOMMC,
+        SC::StochOMContext
+        )
 
 Perform stochastic optimization simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochOM, respectively.
 """
-function prun(S::StochOMSolver,
-              p1::Dict{String,Vector{Any}},
-              p2::Dict{String,Vector{Any}},
-              MC::StochOMMC, SC::StochOMContext)
+function prun(
+    S::StochOMSolver,
+    p1::Dict{String,Vector{Any}},
+    p2::Dict{String,Vector{Any}},
+    MC::StochOMMC,
+    SC::StochOMContext
+    )
     # Revise parameteric dicts
     rev_dict_b(p1)
     rev_dict_s(S, p2)
@@ -817,8 +823,11 @@ We have implemented the above formulas in `eval_lambda()`.
 =#
 
 """
-    eval_lambda(r::Box, grid::FermionicMatsubaraGrid,
-                𝕊::Vector{<:AbstractInterpolation})
+    eval_lambda(
+        r::Box,
+        grid::FermionicMatsubaraGrid,
+        𝕊::Vector{<:AbstractInterpolation}
+        )
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for FermionicMatsubaraGrid only. Because there is an
@@ -826,10 +835,18 @@ analytic expression for this case, 𝕊 is useless.
 
 Actually, 𝕊 is undefined here. See init_context().
 
+### Arguments
+* r    -> A box or rectangle.
+* grid -> Imaginary axis grid for input data.
+* 𝕊    -> An interpolant.
+
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
-function eval_lambda(r::Box, grid::FermionicMatsubaraGrid,
-                     𝕊::Vector{<:AbstractInterpolation})
+function eval_lambda(
+    r::Box,
+    grid::FermionicMatsubaraGrid,
+    𝕊::Vector{<:AbstractInterpolation}
+    )
     # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
@@ -842,8 +859,11 @@ function eval_lambda(r::Box, grid::FermionicMatsubaraGrid,
 end
 
 """
-    eval_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid,
-                𝕊::Vector{<:AbstractInterpolation})
+    eval_lambda(
+        r::Box,
+        grid::FermionicFragmentMatsubaraGrid,
+        𝕊::Vector{<:AbstractInterpolation}
+        )
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for FermionicFragmentMatsubaraGrid only. Because there
@@ -851,10 +871,18 @@ is an analytic expression for this case, 𝕊 is useless.
 
 Actually, 𝕊 is undefined here. See init_context().
 
+### Arguments
+* r    -> A box or rectangle.
+* grid -> Imaginary axis grid for input data.
+* 𝕊    -> An interpolant.
+
 See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
-function eval_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid,
-                     𝕊::Vector{<:AbstractInterpolation})
+function eval_lambda(
+    r::Box,
+    grid::FermionicFragmentMatsubaraGrid,
+    𝕊::Vector{<:AbstractInterpolation}
+    )
     # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
@@ -867,18 +895,29 @@ function eval_lambda(r::Box, grid::FermionicFragmentMatsubaraGrid,
 end
 
 """
-    eval_lambda(r::Box, grid::FermionicImaginaryTimeGrid,
-                𝕊::Vector{<:AbstractInterpolation})
+    eval_lambda(
+        r::Box,
+        grid::FermionicImaginaryTimeGrid,
+        𝕊::Vector{<:AbstractInterpolation}
+        )
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for FermionicImaginaryTimeGrid only. Since there is
 not analytic expressions for this case, the cubic spline interpolation
 algorithm is adopted. Here, 𝕊 is initialized in init_context().
 
+### Arguments
+* r    -> A box or rectangle.
+* grid -> Imaginary axis grid for input data.
+* 𝕊    -> An interpolant.
+
 See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
-function eval_lambda(r::Box, grid::FermionicImaginaryTimeGrid,
-                     𝕊::Vector{<:AbstractInterpolation})
+function eval_lambda(
+    r::Box,
+    grid::FermionicImaginaryTimeGrid,
+    𝕊::Vector{<:AbstractInterpolation}
+    )
     # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
