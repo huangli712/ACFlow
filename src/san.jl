@@ -578,10 +578,19 @@ function init_mc(S::StochSKSolver)
 end
 
 """
-    init_element(S::StochSKSolver, rng::AbstractRNG, allow::Vector{I64})
+    init_element(
+        S::StochSKSolver,
+        rng::AbstractRNG,
+        allow::Vector{I64}
+        )
 
 Randomize the configurations for future Monte Carlo sampling. It will
 return a StochSKElement object.
+
+### Arguments
+* S     -> A StochSKSolver object.
+* rng   -> Random number generator.
+* allow -> Allowed positions for the δ peaks.
 
 See also: [`StochSKElement`](@ref).
 """
