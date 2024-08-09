@@ -813,14 +813,24 @@ function try_move_a(
 end
 
 """
-    try_move_p(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+    try_move_p(
+        i::I64,
+        MC::StochACMC,
+        SE::StochACElement,
+        SC::StochACContext
+        )
 
 Select two δ functions randomly and then change their positions. Here `i`
 means the index for α parameters.
 
 See also: [`try_move_a`](@ref).
 """
-function try_move_p(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+function try_move_p(
+    i::I64,
+    MC::StochACMC,
+    SE::StochACElement,
+    SC::StochACContext
+    )
     # Get current number of δ functions
     ngamm = get_a("ngamm")
 
@@ -870,11 +880,20 @@ function try_move_p(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContex
 end
 
 """
-    try_move_x(MC::StochACMC, SE::StochACElement, SC::StochACContext)
+    try_move_x(
+        MC::StochACMC,
+        SE::StochACElement,
+        SC::StochACContext
+        )
 
-Try to exchange field configurations between two adjacent layers.
+Try to exchange field configurations between two adjacent layers. Because
+this function involves two layers, so it doesn't need the argument `i`.
 """
-function try_move_x(MC::StochACMC, SE::StochACElement, SC::StochACContext)
+function try_move_x(
+    MC::StochACMC,
+    SE::StochACElement,
+    SC::StochACContext
+    )
     # Get number of α parameters
     nalph = get_a("nalph")
 
