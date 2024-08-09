@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/14
+# Last modified: 2024/08/09
 #
 
 #
@@ -153,6 +153,10 @@ end
 
 Perform numerical integration by using the composite trapezoidal rule.
 
+### Arguments
+* x -> Real frequency mesh.
+* y -> Function values at real axis.
+
 See also: [`simpson`](@ref).
 """
 function trapz(x::AbstractMesh,
@@ -168,6 +172,11 @@ end
 
 Perform numerical integration by using the composite trapezoidal rule.
 Note that it supports arbitrary precision via BigFloat.
+
+### Arguments
+* x      -> Real frequency mesh.
+* y      -> Function values at real axis.
+* linear -> Whether the given mesh is linear?
 
 See also: [`simpson`](@ref).
 """
@@ -199,6 +208,10 @@ Perform numerical integration by using the simpson rule. Note that the
 length of `x` and `y` must be odd numbers. And `x` must be a linear and
 uniform mesh.
 
+### Arguments
+* x -> Real frequency mesh.
+* y -> Function values at real axis.
+
 See also: [`trapz`](@ref).
 """
 function simpson(x::AbstractVector{S},
@@ -227,6 +240,10 @@ end
 
 Compute second derivative y''(x). If the length of `x` and `y` is `N`,
 the length of the returned vector is `N-2`.
+
+### Arguments
+* x -> Real frequency mesh.
+* y -> Function values at real axis.
 """
 function second_derivative(x::AbstractVector, y::AbstractVector)
     @assert length(x) == length(y)
@@ -1491,8 +1508,8 @@ function update_h!(d::BFGSDifferentiable, s::BFGSState)
                 c2uj  = c2 *  u[j]'
                 for i in 1:n
                     H⁻¹[i, j] = muladd(dx[i], c1dxj,
-                                        muladd(-u[i], c2dxj,
-                                              muladd(c2uj, -dx[i], H⁻¹[i, j])))
+                                    muladd(-u[i], c2dxj,
+                                        muladd(c2uj, -dx[i], H⁻¹[i, j])))
                 end
             end
         else
