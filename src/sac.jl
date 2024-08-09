@@ -714,6 +714,10 @@ method. This function will return a collection. It contains all the
 allowable indices. Be careful, the constrained stochastic analytic
 continuation method is compatible with the self-adaptive mesh.
 
+### Arguments
+* S     -> A StochACSolver object.
+* fmesh -> Very dense mesh for the δ peaks.
+
 See also: [`StochACSolver`](@ref).
 """
 function constraints(S::StochACSolver, fmesh::AbstractMesh)

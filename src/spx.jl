@@ -1233,6 +1233,10 @@ function will return a collection. It contains all the allowable indices.
 Be careful, the constrained stochastic pole expansion method is
 compatible with the self-adaptive mesh.
 
+### Arguments
+* S     -> A StochPXSolver object.
+* fmesh -> Very dense mesh for the poles.
+
 See also: [`StochPXSolver`](@ref).
 """
 function constraints(S::StochPXSolver, fmesh::AbstractMesh)
