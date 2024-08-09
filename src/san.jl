@@ -326,16 +326,28 @@ function average(step::F64, SC::StochSKContext)
 end
 
 """
-    last(SC::StochSKContext,
-         Asum::Vector{F64},
-         χ²vec::Vector{F64}, Θvec::Vector{F64})
+    last(
+        SC::StochSKContext,
+        Asum::Vector{F64},
+        χ²vec::Vector{F64},
+        Θvec::Vector{F64}
+        )
 
 It will process and write the calculated results by the StochSK solver,
 including final spectral function and reproduced correlator.
+
+### Arguments
+* SC    -> A StochSKContext object.
+* Asum  -> Spectral function.
+* χ²vec -> Θ-dependent χ².
+* Θvec  -> List of the Θ parameters.
 """
-function last(SC::StochSKContext,
-              Asum::Vector{F64},
-              χ²vec::Vector{F64}, Θvec::Vector{F64})
+function last(
+    SC::StochSKContext,
+    Asum::Vector{F64},
+    χ²vec::Vector{F64},
+    Θvec::Vector{F64}
+    )
     # By default, we should write the analytic continuation results
     # into the external files.
     _fwrite = get_b("fwrite")
