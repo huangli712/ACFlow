@@ -1154,6 +1154,15 @@ Reconstruct green's function at real axis by the pole expansion. Here,
 distinguish two different bosonic kernels. If `bsymm` is false, it means
 that the kernel is `boson`. If `bsymm` is true, the kernel is `bsymm`.
 It is for the bosonic systems only.
+
+### Arguments
+* P     -> Positions of poles.
+* A     -> Amplitudes of poles.
+* 𝕊     -> Signs of poles.
+* mesh  -> Real frequency mesh for spectral functions.
+* fmesh -> Very dense real frequency mesh for poles.
+* χ₀    -> -G(0).
+* bsymm -> Type of bosonic kernel.
 """
 function calc_green(
     P::Vector{I64},
@@ -1193,6 +1202,10 @@ end
 
 Try to calculate the goodness function (i.e, χ²), which measures the
 distance between input and regenerated correlators.
+
+### Arguments
+* Gₙ -> Reconstructed Green's function.
+* Gᵥ -> Original Green's function.
 
 See also: [`calc_green`](@ref).
 """
