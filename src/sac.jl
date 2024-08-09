@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/27
+# Last modified: 2024/08/09
 #
 
 #=
@@ -235,18 +235,26 @@ function run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 end
 
 """
-    prun(S::StochACSolver,
-         p1::Dict{String,Vector{Any}},
-         p2::Dict{String,Vector{Any}},
-         MC::StochACMC, SE::StochACElement, SC::StochACContext)
+    prun(
+        S::StochACSolver,
+        p1::Dict{String,Vector{Any}},
+        p2::Dict{String,Vector{Any}},
+        MC::StochACMC,
+        SE::StochACElement,
+        SC::StochACContext
+        )
 
 Perform stochastic analytic continuation simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochAC, respectively.
 """
-function prun(S::StochACSolver,
-              p1::Dict{String,Vector{Any}},
-              p2::Dict{String,Vector{Any}},
-              MC::StochACMC, SE::StochACElement, SC::StochACContext)
+function prun(
+    S::StochACSolver,
+    p1::Dict{String,Vector{Any}},
+    p2::Dict{String,Vector{Any}},
+    MC::StochACMC,
+    SE::StochACElement,
+    SC::StochACContext
+    )
     # Revise parameteric dicts
     rev_dict_b(p1)
     rev_dict_a(S, p2)
@@ -297,6 +305,10 @@ end
 Postprocess the results generated during the stochastic analytic
 continuation simulations. It will calculate the spectral functions, and
 internal energies.
+
+### Arguments
+* step -> How many steps are there in the Monte Carlo samplings.
+* SC   -> A StochACContext object.
 """
 function average(step::F64, SC::StochACContext)
     # Get key parameters
