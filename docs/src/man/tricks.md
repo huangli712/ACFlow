@@ -73,7 +73,7 @@ Depth = 3
 
 1. The `chi2min` algorithm is recommended. See [`method`](@ref stochsk_method).
 
-2. Increase `nfine` and `nstep`. See [`nfine`](@ref stochsk_nfine)
+2. Increase `nfine` and `nstep`. See [`nfine`](@ref stochsk_nfine).
 
 3. Run it parallelly (use `Pacrun.jl`).
 
@@ -91,7 +91,7 @@ Depth = 3
 
 2. Run it parallelly (use `Pacrun.jl`).
 
-3. Increase `ntry` to get smooth spectrum. See [`ntry`](@ref stochpx_ntry)
+3. Increase `ntry` to get smooth spectrum. See [`ntry`](@ref stochpx_ntry).
 
 4. The `nstep` parameter is related with the `npole` parameter. If `npole` is large, `nstep` could be small. If `npole` is small, `nstep` should be large. See [`nstep`](@ref stochpx_nstep) and [`npole`](@ref stochpx_npole).
 
