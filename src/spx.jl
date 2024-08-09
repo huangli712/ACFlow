@@ -439,6 +439,12 @@ end
 
 It will write the calculated results by the StochPX solver, including
 final spectral function and reproduced correlator.
+
+### Arguments
+* SC   -> A StochPXContext object.
+* Aout -> Spectral function.
+* Gout -> Retarded Green's function.
+* Gᵣ   -> Reconstructed Green's function.
 """
 function last(
     SC::StochPXContext,
