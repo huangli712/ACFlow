@@ -594,7 +594,11 @@ return a StochSKElement object.
 
 See also: [`StochSKElement`](@ref).
 """
-function init_element(S::StochSKSolver, rng::AbstractRNG, allow::Vector{I64})
+function init_element(
+    S::StochSKSolver,
+    rng::AbstractRNG,
+    allow::Vector{I64}
+    )
     β = get_b("beta")
     wmax = get_b("wmax")
     wmin = get_b("wmin")
