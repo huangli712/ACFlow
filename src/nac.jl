@@ -555,6 +555,11 @@ end
 Try to calculate the contractive function θ(z). 𝒜 is the coefficients
 matrix abcd, ℋ is the Hardy matrix, and 𝑎𝑏 are complex coefficients
 for expanding θₘ₊₁. See Eq. (7) in Fei's NAC paper.
+
+### Arguments
+* 𝒜  -> Matrix 𝑎𝑏𝑐𝑑.
+* ℋ  -> Hardy matrix.
+* 𝑎𝑏 -> Expansion coefficients 𝑎 and 𝑏 for the contractive function θ.
 """
 function calc_theta(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     # Well, we should calculate θₘ₊₁ at first.
@@ -574,6 +579,11 @@ end
 Firstly we try to calculate θ. Then θ is back transformed to a Nevanlinna
 interpolant via the inverse Mobius transform. Here, `𝒜` (`abcd` matrix),
 `ℋ` (Hardy matrix), and `𝑎𝑏` are used to evaluate θ.
+
+### Arguments
+* 𝒜  -> Matrix 𝑎𝑏𝑐𝑑.
+* ℋ  -> Hardy matrix.
+* 𝑎𝑏 -> Expansion coefficients 𝑎 and 𝑏 for the contractive function θ.
 """
 function calc_green(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     θ = calc_theta(𝒜, ℋ, 𝑎𝑏)
