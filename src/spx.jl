@@ -250,18 +250,26 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 end
 
 """
-    prun(S::StochPXSolver,
-         p1::Dict{String,Vector{Any}},
-         p2::Dict{String,Vector{Any}},
-         MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    prun(
+        S::StochPXSolver,
+        p1::Dict{String,Vector{Any}},
+        p2::Dict{String,Vector{Any}},
+        MC::StochPXMC,
+        SE::StochPXElement,
+        SC::StochPXContext
+        )
 
 Perform stochastic pole expansion simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochPX, respectively.
 """
-function prun(S::StochPXSolver,
-              p1::Dict{String,Vector{Any}},
-              p2::Dict{String,Vector{Any}},
-              MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+function prun(
+    S::StochPXSolver,
+    p1::Dict{String,Vector{Any}},
+    p2::Dict{String,Vector{Any}},
+    MC::StochPXMC,
+    SE::StochPXElement,
+    SC::StochPXContext
+    )
     # Revise parameteric dicts
     rev_dict_b(p1)
     rev_dict_x(S, p2)
