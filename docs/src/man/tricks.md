@@ -53,7 +53,7 @@ Depth = 3
 
 4. If you know the noise level of input data, please set `epsilon` to it and let `denoise` = "prony\_s".
 
-5. If you do not know the noise level of input data, just let `denoise` = "prony\_o" or "none".
+5. If you do not know the noise level of input data, just let `denoise` = "prony\_o" or "none". See [`denoise`](@ref barrat_denoise).
 
 ## [NevanAC solver](@id nevanac)
 
@@ -73,7 +73,7 @@ Depth = 3
 
 1. The `chi2min` algorithm is recommended. See [`method`](@ref stochsk_method).
 
-2. Increase `nfine` and `nstep`.
+2. Increase `nfine` and `nstep`. See [`nfine`](@ref stochsk_nfine)
 
 3. Run it parallelly (use `Pacrun.jl`).
 
@@ -81,7 +81,7 @@ Depth = 3
 
 1. It is more efficient for Matsubara frequency Green's functions.
 
-2. Increase `ntry`, `nstep` and `nbox`.
+2. Increase `ntry`, `nstep` and `nbox`. See [`ntry`](@ref stochom_ntry).
 
 3. Run it parallelly (use `Pacrun.jl`).
 
