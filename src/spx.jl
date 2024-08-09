@@ -1076,6 +1076,12 @@ end
         )
 
 Reconstruct green's function at imaginary axis by the pole expansion.
+
+### Arguments
+* P -> Positions of poles.
+* A -> Amplitudes of poles.
+* 𝕊 -> Signs of poles.
+* Λ -> Kernel matrix Λ.
 """
 function calc_green(
     P::Vector{I64},
@@ -1105,6 +1111,13 @@ end
 
 Reconstruct green's function at real axis by the pole expansion. It is
 for the fermionic systems only.
+
+### Arguments
+* P     -> Positions of poles.
+* A     -> Amplitudes of poles.
+* 𝕊     -> Signs of poles.
+* mesh  -> Real frequency mesh for spectral functions.
+* fmesh -> Very dense real frequency mesh for poles.
 """
 function calc_green(
     P::Vector{I64},
