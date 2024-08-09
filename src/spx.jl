@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/09/27
+# Last modified: 2024/08/09
 #
 
 #=
@@ -454,12 +454,22 @@ end
 =#
 
 """
-    sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    sample(
+        t::I64,
+        MC::StochPXMC,
+        SE::StochPXElement,
+        SC::StochPXContext
+        )
 
 Try to search the configuration space to locate the minimum by using the
 simulated annealing algorithm. Here, `t` means the t-th attempt.
 """
-function sample(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+function sample(
+    t::I64,
+    MC::StochPXMC,
+    SE::StochPXElement,
+    SC::StochPXContext
+    )
     # Try to change positions of poles
     if rand(MC.rng) < 0.5
         if rand(MC.rng) < 0.9
@@ -522,14 +532,22 @@ function init_mc(S::StochPXSolver)
 end
 
 """
-    init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
+    init_element(
+        S::StochPXSolver,
+        rng::AbstractRNG,
+        allow::Vector{I64}
+        )
 
 Randomize the configurations for future Monte Carlo sampling. It will
 return a StochPXElement object.
 
 See also: [`StochPXElement`](@ref).
 """
-function init_element(S::StochPXSolver, rng::AbstractRNG, allow::Vector{I64})
+function init_element(
+    S::StochPXSolver,
+    rng::AbstractRNG,
+    allow::Vector{I64}
+    )
     offdiag = get_b("offdiag")
     npole = get_x("npole")
 
@@ -642,12 +660,20 @@ function reset_mc(MC::StochPXMC)
 end
 
 """
-    reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
+    reset_element(
+        rng::AbstractRNG,
+        allow::Vector{I64},
+        SE::StochPXElement
+        )
 
 Reset the Monte Carlo field configurations (i.e. positions and amplitudes
 of the poles). Note that the signs of the poles should not be changed.
 """
-function reset_element(rng::AbstractRNG, allow::Vector{I64}, SE::StochPXElement)
+function reset_element(
+    rng::AbstractRNG,
+    allow::Vector{I64},
+    SE::StochPXElement
+    )
     offdiag = get_b("offdiag")
     npole = get_x("npole")
 
@@ -955,20 +981,24 @@ function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh)
 end
 
 """
-    calc_lambda(grid::AbstractGrid,
-                fmesh::AbstractMesh,
-                χ₀::F64,
-                bsymm::Bool)
+    calc_lambda(
+        grid::AbstractGrid,
+        fmesh::AbstractMesh,
+        χ₀::F64,
+        bsymm::Bool
+        )
 
 Precompute the kernel matrix Λ. Here, `χ₀` is actually -G(iωₙ = 0). And
 the argument `bsymm` is used to distinguish two different bosonic kernels.
 If `bsymm` is false, it means that the kernel is `boson`. If `bsymm` is
 true, the kernel is `bsymm`. This function is for the bosonic systems.
 """
-function calc_lambda(grid::AbstractGrid,
-                     fmesh::AbstractMesh,
-                     χ₀::F64,
-                     bsymm::Bool)
+function calc_lambda(
+    grid::AbstractGrid,
+    fmesh::AbstractMesh,
+    χ₀::F64,
+    bsymm::Bool
+    )
     ngrid = get_b("ngrid")
     nfine = get_x("nfine")
 
@@ -1016,17 +1046,21 @@ function calc_lambda(grid::AbstractGrid,
 end
 
 """
-    calc_green(P::Vector{I64},
-               A::Vector{F64},
-               𝕊::Vector{F64},
-               Λ::Array{F64,2})
+    calc_green(
+        P::Vector{I64},
+        A::Vector{F64},
+        𝕊::Vector{F64},
+        Λ::Array{F64,2}
+        )
 
 Reconstruct green's function at imaginary axis by the pole expansion.
 """
-function calc_green(P::Vector{I64},
-                    A::Vector{F64},
-                    𝕊::Vector{F64},
-                    Λ::Array{F64,2})
+function calc_green(
+    P::Vector{I64},
+    A::Vector{F64},
+    𝕊::Vector{F64},
+    Λ::Array{F64,2}
+    )
     # Note that here `ngrid` is equal to 2 × ngrid sometimes.
     ngrid, _ = size(Λ)
 
@@ -1039,20 +1073,24 @@ function calc_green(P::Vector{I64},
 end
 
 """
-    calc_green(P::Vector{I64},
-               A::Vector{F64},
-               𝕊::Vector{F64},
-               mesh::AbstractMesh,
-               fmesh::AbstractMesh)
+    calc_green(
+        P::Vector{I64},
+        A::Vector{F64},
+        𝕊::Vector{F64},
+        mesh::AbstractMesh,
+        fmesh::AbstractMesh
+        )
 
 Reconstruct green's function at real axis by the pole expansion. It is
 for the fermionic systems only.
 """
-function calc_green(P::Vector{I64},
-                    A::Vector{F64},
-                    𝕊::Vector{F64},
-                    mesh::AbstractMesh,
-                    fmesh::AbstractMesh)
+function calc_green(
+    P::Vector{I64},
+    A::Vector{F64},
+    𝕊::Vector{F64},
+    mesh::AbstractMesh,
+    fmesh::AbstractMesh
+    )
     η = get_x("eta")
     nmesh = length(mesh)
 
@@ -1066,11 +1104,15 @@ function calc_green(P::Vector{I64},
 end
 
 """
-    calc_green(P::Vector{I64},
-               A::Vector{F64},
-               𝕊::Vector{F64},
-               mesh::AbstractMesh,
-               fmesh::AbstractMesh, χ₀::F64, bsymm::Bool)
+    calc_green(
+        P::Vector{I64},
+        A::Vector{F64},
+        𝕊::Vector{F64},
+        mesh::AbstractMesh,
+        fmesh::AbstractMesh,
+        χ₀::F64,
+        bsymm::Bool
+        )
 
 Reconstruct green's function at real axis by the pole expansion. Here,
 `χ₀` is actually -G(iωₙ = 0). And the argument `bsymm` is used to
@@ -1078,11 +1120,15 @@ distinguish two different bosonic kernels. If `bsymm` is false, it means
 that the kernel is `boson`. If `bsymm` is true, the kernel is `bsymm`.
 It is for the bosonic systems only.
 """
-function calc_green(P::Vector{I64},
-                    A::Vector{F64},
-                    𝕊::Vector{F64},
-                    mesh::AbstractMesh,
-                    fmesh::AbstractMesh, χ₀::F64, bsymm::Bool)
+function calc_green(
+    P::Vector{I64},
+    A::Vector{F64},
+    𝕊::Vector{F64},
+    mesh::AbstractMesh,
+    fmesh::AbstractMesh,
+    χ₀::F64,
+    bsymm::Bool
+    )
     η = get_x("eta")
     nmesh = length(mesh)
 
@@ -1168,13 +1214,23 @@ function constraints(S::StochPXSolver, fmesh::AbstractMesh)
 end
 
 """
-    try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    try_move_s(
+        t::I64,
+        MC::StochPXMC,
+        SE::StochPXElement,
+        SC::StochPXContext
+        )
 
 Change the position of one randomly selected pole.
 
 See also: [`try_move_p`](@ref).
 """
-function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+function try_move_s(
+    t::I64,
+    MC::StochPXMC,
+    SE::StochPXElement,
+    SC::StochPXContext
+    )
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
     nfine = get_x("nfine")
@@ -1247,13 +1303,23 @@ function try_move_s(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 end
 
 """
-    try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    try_move_p(
+        t::I64,
+        MC::StochPXMC,
+        SE::StochPXElement,
+        SC::StochPXContext
+        )
 
 Change the positions of two randomly selected poles.
 
 See also: [`try_move_s`](@ref).
 """
-function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+function try_move_p(
+    t::I64,
+    MC::StochPXMC,
+    SE::StochPXElement,
+    SC::StochPXContext
+    )
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
     npole = get_x("npole")
@@ -1338,13 +1404,23 @@ function try_move_p(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 end
 
 """
-    try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    try_move_a(
+        t::I64,
+        MC::StochPXMC,
+        SE::StochPXElement,
+        SC::StochPXContext
+        )
 
 Change the amplitudes of two randomly selected poles.
 
 See also: [`try_move_x`](@ref).
 """
-function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+function try_move_a(
+    t::I64,
+    MC::StochPXMC,
+    SE::StochPXElement,
+    SC::StochPXContext
+    )
     # Get parameters
     ngrid = length(SC.Gᵧ) # get_b("ngrid")
     npole = get_x("npole")
@@ -1440,7 +1516,12 @@ function try_move_a(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
 end
 
 """
-    try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
+    try_move_x(
+        t::I64,
+        MC::StochPXMC,
+        SE::StochPXElement,
+        SC::StochPXContext
+        )
 
 Exchange the amplitudes of two randomly selected poles.
 
