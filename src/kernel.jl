@@ -790,7 +790,11 @@ end
 """
     make_singular_space(kernel::Matrix{F64})
 
-Perform singular value decomposition for the input matrix.
+Perform singular value decomposition for the input matrix `kernel`.
+
+### Arguments
+
+* kernel -> Fermionic or bosonic kernel matrix.
 """
 function make_singular_space(kernel::Matrix{F64})
     U, S, V = svd(kernel)
@@ -842,7 +846,8 @@ Integration over the Gaussian from \(-5b\) to \(5b\) is certainly sufficient.
     make_gauss_peaks(blur::F64)
 
 Try to generate a series of gaussian peaks along a linear mesh, whose
-energy range is `[-5 * blur, +5 * blur]`.
+energy range is `[-5 * blur, +5 * blur]`. The number of gaussian peaks is
+fixed to 201.
 """
 function make_gauss_peaks(blur::F64)
     @assert blur > 0.0
