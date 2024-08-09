@@ -749,7 +749,6 @@ function hardy_optimize!(
 
         # Finite difference algorithm
         # J .= gradient_via_fd(𝑓, x)
-        #
     end
 
     # Perform numerical optimization by the BFGS algorithm.
