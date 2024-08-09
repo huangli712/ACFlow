@@ -57,7 +57,7 @@ classic
 bryan
 chi2kink
 optimizer
-precompute
+precompute(Gᵥ::Vector{F64}, σ²::Vector{F64}, am::AbstractMesh, D::Vector{F64}, K::Matrix{F64})
 f_and_J
 f_and_J_od
 svd_to_real
