@@ -423,7 +423,12 @@ function chi2kink(mec::MaxEntContext)
 end
 
 """
-    optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool)
+    optimizer(
+        mec::MaxEntContext,
+        α::F64,
+        us::Vector{F64},
+        use_bayes::Bool
+        )
 
 Optimization of maxent functional for a given value of `α`. Since a priori
 the best value of `α` is unknown, this function has to be called several
@@ -439,7 +444,12 @@ inference parameters for `α`.
 This function will return a dictionary object that holds the results of
 the optimization, e.g. spectral function, χ² deviation.
 """
-function optimizer(mec::MaxEntContext, α::F64, us::Vector{F64}, use_bayes::Bool)
+function optimizer(
+    mec::MaxEntContext,
+    α::F64,
+    us::Vector{F64},
+    use_bayes::Bool
+    )
     blur = get_m("blur")
     offdiag = get_b("offdiag")
 
@@ -545,19 +555,25 @@ L = \frac{1}{2} \chi^2,
 =#
 
 """
-    precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
-               am::AbstractMesh,
-               D::Vector{F64},
-               K::Matrix{F64})
+    precompute(
+        Gᵥ::Vector{F64},
+        σ²::Vector{F64},
+        am::AbstractMesh,
+        D::Vector{F64},
+        K::Matrix{F64}
+        )
 
 Precompute some key coefficients. Here `Gᵥ` and `σ²` are input data, `am`
 is the mesh for spectrum, `D` is the default model, and `K` is the kernel
 function.
 """
-function precompute(Gᵥ::Vector{F64}, σ²::Vector{F64},
-                    am::AbstractMesh,
-                    D::Vector{F64},
-                    K::Matrix{F64})
+function precompute(
+    Gᵥ::Vector{F64},
+    σ²::Vector{F64},
+    am::AbstractMesh,
+    D::Vector{F64},
+    K::Matrix{F64}
+    )
     # Create singular value space
     U, V, S = make_singular_space(K)
 
@@ -1156,9 +1172,13 @@ Z_j = \frac{\left(\sqrt{A^2_j + m^2_j} + m_j + A_j\right)}{\sqrt{2\Delta_j}}
 =#
 
 """
-    calc_bayes(mec::MaxEntContext,
-               A::Vector{F64},
-               S::F64, χ²::F64, α::F64)
+    calc_bayes(
+        mec::MaxEntContext,
+        A::Vector{F64},
+        S::F64,
+        χ²::F64,
+        α::F64
+        )
 
 It calculates Bayesian convergence criterion (`ng`, `tr`, and `conv`) for
 classic maxent (maximum of probablility distribution) and then Bayesian
@@ -1169,9 +1189,13 @@ and `α` weight factor of the entropy.
 
 See also: [`calc_bayes_od`](@ref).
 """
-function calc_bayes(mec::MaxEntContext,
-                    A::Vector{F64},
-                    S::F64, χ²::F64, α::F64)
+function calc_bayes(
+    mec::MaxEntContext,
+    A::Vector{F64},
+    S::F64,
+    χ²::F64,
+    α::F64
+    )
     stype = get_m("stype")
     mesh = mec.mesh
 
@@ -1194,9 +1218,13 @@ function calc_bayes(mec::MaxEntContext,
 end
 
 """
-    calc_bayes_od(mec::MaxEntContext,
-                  A::Vector{F64},
-                  S::F64, χ²::F64, α::F64)
+    calc_bayes_od(
+        mec::MaxEntContext,
+        A::Vector{F64},
+        S::F64,
+        χ²::F64,
+        α::F64
+        )
 
 It calculates Bayesian convergence criterion (`ng`, `tr`, and `conv`) for
 classic maxent (maximum of probablility distribution) and then Bayesian
@@ -1209,9 +1237,13 @@ It is just a offdiagonal version of `calc_bayes()`.
 
 See also: [`calc_bayes`](@ref).
 """
-function calc_bayes_od(mec::MaxEntContext,
-                       A::Vector{F64},
-                       S::F64, χ²::F64, α::F64)
+function calc_bayes_od(
+    mec::MaxEntContext,
+    A::Vector{F64},
+    S::F64,
+    χ²::F64,
+    α::F64
+    )
     stype = get_m("stype")
     mesh = mec.mesh
 
