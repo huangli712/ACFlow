@@ -63,7 +63,7 @@ Depth = 3
 
 ## [StochAC solver](@id stochac)
 
-1. Increase `nfine` to 20000.
+1. Increase `nfine` to 20000. See [`nfine`](@ref stochac_nfine).
 
 2. Perhaps more ``\alpha`` could help. See [`nalph`](@ref stochac_nalph).
 
