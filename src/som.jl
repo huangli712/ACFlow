@@ -936,18 +936,29 @@ function eval_lambda(
 end
 
 """
-    eval_lambda(r::Box, grid::FermionicFragmentTimeGrid,
-                𝕊::Vector{<:AbstractInterpolation})
+    eval_lambda(
+        r::Box,
+        grid::FermionicFragmentTimeGrid,
+        𝕊::Vector{<:AbstractInterpolation}
+        )
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for FermionicFragmentTimeGrid only. Since there is
 not analytic expressions for this case, the cubic spline interpolation
 algorithm is adopted. Here, 𝕊 is initialized in init_context().
 
+### Arguments
+* r    -> A box or rectangle.
+* grid -> Imaginary axis grid for input data.
+* 𝕊    -> An interpolant.
+
 See also: [`FermionicFragmentTimeGrid`](@ref).
 """
-function eval_lambda(r::Box, grid::FermionicFragmentTimeGrid,
-                     𝕊::Vector{<:AbstractInterpolation})
+function eval_lambda(
+    r::Box,
+    grid::FermionicFragmentTimeGrid,
+    𝕊::Vector{<:AbstractInterpolation}
+    )
     # Get left and right boundaries of the given box
     e₁ = r.c - 0.5 * r.w
     e₂ = r.c + 0.5 * r.w
@@ -966,8 +977,11 @@ function eval_lambda(r::Box, grid::FermionicFragmentTimeGrid,
 end
 
 """
-    eval_lambda(r::Box, grid::BosonicMatsubaraGrid,
-                𝕊::Vector{<:AbstractInterpolation})
+    eval_lambda(
+        r::Box,
+        grid::BosonicMatsubaraGrid,
+        𝕊::Vector{<:AbstractInterpolation}
+        )
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for BosonicMatsubaraGrid only. Because there is an
@@ -975,10 +989,18 @@ analytic expression for this case, 𝕊 is useless.
 
 Actually, 𝕊 is undefined here. See init_context().
 
+### Arguments
+* r    -> A box or rectangle.
+* grid -> Imaginary axis grid for input data.
+* 𝕊    -> An interpolant.
+
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
-function eval_lambda(r::Box, grid::BosonicMatsubaraGrid,
-                     𝕊::Vector{<:AbstractInterpolation})
+function eval_lambda(
+    r::Box,
+    grid::BosonicMatsubaraGrid,
+    𝕊::Vector{<:AbstractInterpolation}
+    )
     # Get type of bosonic kernel
     ktype = get_b("ktype")
 
