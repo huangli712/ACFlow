@@ -42,8 +42,8 @@ Mutable struct. It is used within the StochSK solver only.
 * Gᵧ     -> Generated correlator.
 * σ¹     -> Actually 1.0 / σ¹.
 * allow  -> Allowable indices.
-* grid   -> Grid for input data.
-* mesh   -> Mesh for output spectrum.
+* grid   -> Imaginary axis grid for input data.
+* mesh   -> Real frequency mesh for output spectrum.
 * kernel -> Default kernel function.
 * Aout   -> Calculated spectral function.
 * χ²     -> Current goodness function.
@@ -741,6 +741,10 @@ end
 Try to implement the constrained stochastic analytic continuation
 method. This function will return a collection. It contains all the
 allowable indices. Be careful, `fmesh` should be a fine linear mesh.
+
+### Arguments
+* S     -> A StochSKSolver object.
+* fmesh -> Very dense mesh for the δ peaks.
 
 See also: [`StochSKSolver`](@ref).
 """
