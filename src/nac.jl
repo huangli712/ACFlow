@@ -745,10 +745,10 @@ function hardy_optimize!(
     # norm. Of course, we can turn to the finite difference algorithm,
     # which is less efficient.
     function 𝐽!(J::Vector{C64}, x::Vector{C64})
-        J .= Zygote.gradient(𝑓, x)[1]
+        #J .= Zygote.gradient(𝑓, x)[1]
 
         # Finite difference algorithm
-        # J .= gradient_via_fd(𝑓, x)
+        J .= gradient_via_fd(𝑓, x)
     end
 
     # Perform numerical optimization by the BFGS algorithm.
