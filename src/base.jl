@@ -32,6 +32,19 @@ end
 
 Solve the analytic continuation problem. The arguments `grid`, `Gval`,
 and `err` are the grid, value, and error bar, respectively.
+
+Here, we just assume that the standard deviations for correlators are
+fixed to  a constant value, `err`.
+
+### Arguments
+* grid -> Imaginary axis grid for correlators, τ or ωₙ.
+* Gval -> Function values for correlators, G(τ) or G(iωₙ). 
+* err  -> Standard deviations for correlators.
+
+### Returns
+* mesh -> Real frequency mesh, ω, Vector{F64}.
+* Aout -> Spectral function, A(ω), Vector{F64}.
+* Gout -> Retarded Green's function, G(ω), Vector{C64}.
 """
 function solve(grid::Vector{F64}, Gval::Vector{T}, err::T) where {T}
     Gerr = similar(Gval)
@@ -45,6 +58,15 @@ end
 Solve the analytic continuation problem. The arguments `grid` and `Gval`
 are the grid and value, respectively. Furthermore, the error bar is set to
 a fixed value `1.0e-4`.
+
+### Arguments
+* grid -> Imaginary axis grid for correlators, τ or ωₙ.
+* Gval -> Function values for correlators, G(τ) or G(iωₙ). 
+
+### Returns
+* mesh -> Real frequency mesh, ω, Vector{F64}.
+* Aout -> Spectral function, A(ω), Vector{F64}.
+* Gout -> Retarded Green's function, G(ω), Vector{C64}.
 """
 function solve(grid::Vector{F64}, Gval::Vector{T}) where {T}
     Gerr = similar(Gval)
