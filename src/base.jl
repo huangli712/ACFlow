@@ -148,6 +148,9 @@ Try to reproduce the input data using the calculated spectrum function
 `A`. `kernel` is the kernel function, and `am` is the mesh in which the
 spectrum is defined.
 
+### Returns
+* G -> Reconstructed correlators, G(τ) or G(iωₙ), Vector{F64}.
+
 See also: [`AbstractMesh`](@ref).
 """
 function reprod(am::AbstractMesh, kernel::Matrix{F64}, A::Vector{F64})
