@@ -88,6 +88,18 @@ Solve the analytic continuation problem. The input data are encapsulated
 in a `RawData` struct. This function call is the actual interface to the
 desired analytic continuation solvers.
 
+### Examples
+```julia
+# Setup the configuration file
+setup_args("ac.toml")
+
+# Read the parameters
+read_param()
+
+# Call the solver.
+mesh, Aout, Gout = solve(read_data())
+```
+
 See also: [`RawData`](@ref).
 """
 function solve(rd::RawData)
