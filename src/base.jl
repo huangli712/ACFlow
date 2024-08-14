@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/09
+# Last modified: 2024/08/14
 #
 
 """
@@ -12,6 +12,16 @@
 
 Solve the analytic continuation problem. The arguments `grid`, `Gval`,
 and `Gerr` are the grid, value, and error bar, respectively.
+
+### Arguments
+* grid -> Imaginary axis grid for correlators, τ or ωₙ.
+* Gval -> Function values for correlators, G(τ) or G(iωₙ). 
+* Gerr -> Standard deviations for correlators.
+
+### Returns
+* mesh -> Real frequency mesh, ω, Vector{F64}.
+* Aout -> Spectral function, A(ω), Vector{F64}.
+* Gout -> Retarded Green's function, G(ω), Vector{C64}.
 """
 function solve(grid::Vector{F64}, Gval::Vector{T}, Gerr::Vector{T}) where {T}
     return solve(RawData(grid, Gval, Gerr))
