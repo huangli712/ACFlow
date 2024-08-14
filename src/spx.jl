@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/09
+# Last modified: 2024/08/14
 #
 
 #=
@@ -17,7 +17,7 @@
 Mutable struct. It is used to record the field configurations, which will
 be sampled by Monte Carlo sweeping procedure.
 
-For the off-diagonal elements of the matrix-valued green's function, the
+For the off-diagonal elements of the matrix-valued Green's function, the
 signs of the poles (𝕊) could be negative (-1.0). However, for the other
 cases, 𝕊 is always positive (+1.0).
 
@@ -330,7 +330,7 @@ end
 
 Postprocess the results generated during the stochastic pole expansion
 simulations. It will generate the spectral functions, real frequency
-green's function, and imaginary frequency green's function.
+Green's function, and imaginary frequency Green's function.
 """
 function average(SC::StochPXContext)
     # By default, we should write the analytic continuation results
@@ -345,8 +345,8 @@ function average(SC::StochPXContext)
     ntry = get_x("ntry")
 
     # Allocate memory
-    # Gout: real frequency green's function, G(ω).
-    # Gᵣ: imaginary frequency green's function, G(iωₙ)
+    # Gout: real frequency Green's function, G(ω).
+    # Gᵣ: imaginary frequency Green's function, G(iωₙ)
     ngrid, _ = size(SC.Λ)
     Gout = zeros(C64, nmesh)
     Gᵣ = zeros(F64, ngrid)
@@ -801,7 +801,7 @@ end
 """
     reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
 
-Recalculate imaginary frequency green's function and goodness-of-fit
+Recalculate imaginary frequency Green's function and goodness-of-fit
 function by new Monte Carlo field configurations for the t-th attempts.
 """
 function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
@@ -1086,7 +1086,7 @@ end
         Λ::Array{F64,2}
         )
 
-Reconstruct green's function at imaginary axis by the pole expansion.
+Reconstruct Green's function at imaginary axis by the pole expansion.
 
 ### Arguments
 * P -> Positions of poles.
@@ -1120,7 +1120,7 @@ end
         fmesh::AbstractMesh
         )
 
-Reconstruct green's function at real axis by the pole expansion. It is
+Reconstruct Green's function at real axis by the pole expansion. It is
 for the fermionic systems only.
 
 ### Arguments
@@ -1160,7 +1160,7 @@ end
         bsymm::Bool
         )
 
-Reconstruct green's function at real axis by the pole expansion. Here,
+Reconstruct Green's function at real axis by the pole expansion. Here,
 `χ₀` is actually -G(iωₙ = 0). And the argument `bsymm` is used to
 distinguish two different bosonic kernels. If `bsymm` is false, it means
 that the kernel is `boson`. If `bsymm` is true, the kernel is `bsymm`.
@@ -1300,7 +1300,7 @@ function try_move_s(
     npole = get_x("npole")
     move_window = nfine ÷ 100
 
-    # It is used to save the change of green's function
+    # It is used to save the change of Green's function
     δG = zeros(F64, ngrid)
     Gₙ = zeros(F64, ngrid)
 
@@ -1330,12 +1330,12 @@ function try_move_s(
             !(-P₂ in SC.allow) && continue
         end
 
-        # Calculate change of green's function
+        # Calculate change of Green's function
         Λ₁ = view(SC.Λ, :, P₁)
         Λ₂ = view(SC.Λ, :, P₂)
         @. δG = 𝕊ₛ * Aₛ * (Λ₂ - Λ₁)
 
-        # Calculate new green's function and goodness-of-fit function
+        # Calculate new Green's function and goodness-of-fit function
         @. Gₙ = δG + SC.Gᵧ
         χ² = calc_chi2(Gₙ, SC.Gᵥ)
         δχ² = χ² - SC.χ²[t]
@@ -1346,7 +1346,7 @@ function try_move_s(
             # Update Monte Carlo configuration
             SE.P[s] = P₂
 
-            # Update reconstructed green's function
+            # Update reconstructed Green's function
             @. SC.Gᵧ = Gₙ
 
             # Update goodness-of-fit function
@@ -1392,7 +1392,7 @@ function try_move_p(
         return
     end
 
-    # It is used to save the change of green's function
+    # It is used to save the change of Green's function
     δG = zeros(F64, ngrid)
     Gₙ = zeros(F64, ngrid)
 
@@ -1428,14 +1428,14 @@ function try_move_p(
         end
         P₄ = abs(P₄)
 
-        # Calculate change of green's function
+        # Calculate change of Green's function
         Λ₁ = view(SC.Λ, :, P₁)
         Λ₂ = view(SC.Λ, :, P₂)
         Λ₃ = view(SC.Λ, :, P₃)
         Λ₄ = view(SC.Λ, :, P₄)
         @. δG = 𝕊₁ * A₁ * (Λ₃ - Λ₁) + 𝕊₂ * A₂ * (Λ₄ - Λ₂)
 
-        # Calculate new green's function and goodness-of-fit function
+        # Calculate new Green's function and goodness-of-fit function
         @. Gₙ = δG + SC.Gᵧ
         χ² = calc_chi2(Gₙ, SC.Gᵥ)
         δχ² = χ² - SC.χ²[t]
@@ -1447,7 +1447,7 @@ function try_move_p(
             SE.P[s₁] = P₃
             SE.P[s₂] = P₄
 
-            # Update reconstructed green's function
+            # Update reconstructed Green's function
             @. SC.Gᵧ = Gₙ
 
             # Update goodness-of-fit function
@@ -1493,7 +1493,7 @@ function try_move_a(
         return
     end
 
-    # It is used to save the change of green's function
+    # It is used to save the change of Green's function
     δG = zeros(F64, ngrid)
     Gₙ = zeros(F64, ngrid)
 
@@ -1542,12 +1542,12 @@ function try_move_a(
             end
         end
 
-        # Calculate change of green's function
+        # Calculate change of Green's function
         Λ₁ = view(SC.Λ, :, P₁)
         Λ₂ = view(SC.Λ, :, P₂)
         @. δG = 𝕊₁ * (A₃ - A₁) * Λ₁ + 𝕊₂ * (A₄ - A₂) * Λ₂
 
-        # Calculate new green's function and goodness-of-fit function
+        # Calculate new Green's function and goodness-of-fit function
         @. Gₙ = δG + SC.Gᵧ
         χ² = calc_chi2(Gₙ, SC.Gᵥ)
         δχ² = χ² - SC.χ²[t]
@@ -1559,7 +1559,7 @@ function try_move_a(
             SE.A[s₁] = A₃
             SE.A[s₂] = A₄
 
-            # Update reconstructed green's function
+            # Update reconstructed Green's function
             @. SC.Gᵧ = Gₙ
 
             # Update goodness-of-fit function
@@ -1607,7 +1607,7 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         end
     end
 
-    # It is used to save the change of green's function
+    # It is used to save the change of Green's function
     δG = zeros(F64, ngrid)
     Gₙ = zeros(F64, ngrid)
 
@@ -1634,12 +1634,12 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         𝕊₁ = SE.𝕊[s₁]
         𝕊₂ = SE.𝕊[s₂]
 
-        # Calculate change of green's function
+        # Calculate change of Green's function
         Λ₁ = view(SC.Λ, :, P₁)
         Λ₂ = view(SC.Λ, :, P₂)
         @. δG = 𝕊₁ * (A₃ - A₁) * Λ₁ + 𝕊₂ * (A₄ - A₂) * Λ₂
 
-        # Calculate new green's function and goodness-of-fit function
+        # Calculate new Green's function and goodness-of-fit function
         @. Gₙ = δG + SC.Gᵧ
         χ² = calc_chi2(Gₙ, SC.Gᵥ)
         δχ² = χ² - SC.χ²[t]
@@ -1651,7 +1651,7 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
             SE.A[s₁] = A₃
             SE.A[s₂] = A₄
 
-            # Update reconstructed green's function
+            # Update reconstructed Green's function
             @. SC.Gᵧ = Gₙ
 
             # Update goodness-of-fit function
