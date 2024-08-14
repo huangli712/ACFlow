@@ -203,7 +203,16 @@ response function, and vice versa.
     kramers(am::AbstractMesh, A::Vector{F64})
 
 Try to calculate the real part of the Green's function from its imaginary
-part via the Kramers-Kronig relations. 
+part via the Kramers-Kronig relations. The objective of this function is
+to get the full retarded Green's function.
+
+### Arguments
+* am -> Real frequency mesh.
+* A  -> Spectral function at real frequency mesh, A(ω).
+
+### Returns
+* G  -> Retarded Green's function, G(ω), Vector{C64}.
+
 """
 function kramers(am::AbstractMesh, A::Vector{F64})
     nmesh = length(am)
