@@ -203,7 +203,7 @@ response function, and vice versa.
     kramers(am::AbstractMesh, A::Vector{F64})
 
 Try to calculate the real part of the green's function from its imaginary
-part via the Kramers-Kronig relations.
+part via the Kramers-Kronig relations. 
 """
 function kramers(am::AbstractMesh, A::Vector{F64})
     nmesh = length(am)
