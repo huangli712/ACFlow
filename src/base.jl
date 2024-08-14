@@ -15,7 +15,7 @@ and `Gerr` are the grid, value, and error bar, respectively.
 
 ### Arguments
 * grid -> Imaginary axis grid for correlators, τ or ωₙ.
-* Gval -> Function values for correlators, G(τ) or G(iωₙ). 
+* Gval -> Function values for correlators, G(τ) or G(iωₙ).
 * Gerr -> Standard deviations for correlators.
 
 ### Returns
@@ -38,7 +38,7 @@ fixed to  a constant value, `err`.
 
 ### Arguments
 * grid -> Imaginary axis grid for correlators, τ or ωₙ.
-* Gval -> Function values for correlators, G(τ) or G(iωₙ). 
+* Gval -> Function values for correlators, G(τ) or G(iωₙ).
 * err  -> Standard deviations for correlators.
 
 ### Returns
@@ -61,7 +61,7 @@ a fixed value `1.0e-4`.
 
 ### Arguments
 * grid -> Imaginary axis grid for correlators, τ or ωₙ.
-* Gval -> Function values for correlators, G(τ) or G(iωₙ). 
+* Gval -> Function values for correlators, G(τ) or G(iωₙ).
 
 ### Returns
 * mesh -> Real frequency mesh, ω, Vector{F64}.
@@ -339,7 +339,7 @@ end
     read_data(only_real_part::Bool = true)
 
 Read data in imaginary axis and return a `RawData` struct. The argument
-`only_real_part` is only useful for bosonic cases. If the kernel is 
+`only_real_part` is only useful for bosonic cases. If the kernel is
 `bsymm` (it means a symmetric bosonic kernel) and the grid is `bfreq` or
 `bfrag` (it means Matsubara frequency grid), the function values for
 input correators should be real in principle. In these cases, we should
