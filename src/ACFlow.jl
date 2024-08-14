@@ -721,7 +721,7 @@ calc_abcd       -> Try to calculate the coefficients matrix abcd.
 calc_hbasis     -> Try to calculate the Hardy basis.
 calc_hmatrix    -> Try to calculate ``[f^k(z), f^k(z)^*]`` for 0 ≤ 𝑘 ≤ 𝐻-1.
 calc_theta      -> Try to calculate the contractive function θ(z).
-calc_green      -> Evaluate the green's function via Nevanlinna interpolant.
+calc_green      -> Evaluate the Green's function via Nevanlinna interpolant.
 calc_noptim     -> Evaluate the optimal value for the size of input data.
 calc_hmin!      -> Evaluate the minimum value for the order of Hardy basis.
 calc_hopt!      -> Evaluate the optimal value for the order of Hardy basis.
@@ -941,7 +941,7 @@ init_context   -> Prepare data for a StochOMContext struct.
 #
 eval_lambda    -> Build Λ function.
 calc_error     -> Calculate χ² function.
-calc_green     -> Reproduce green's function via the field configurations.
+calc_green     -> Reproduce Green's function via the field configurations.
 calc_norm      -> Calculate norm of the field configurations.
 constraints    -> Limit the position of δ functions.
 #
@@ -1025,11 +1025,11 @@ init_context   -> Prepare data for a StochPXContext struct.
 #
 reset_mc       -> Reset counters in StochPXMC struct.
 reset_element  -> Reset Monte Carlo field configurations.
-reset_context  -> Reset green's function and goodness-of-fit function.
+reset_context  -> Reset Green's function and goodness-of-fit function.
 #
 calc_fmesh     -> Build very dense mesh for poles.
 calc_lambda    -> Precompute 1 / (iωₙ - ϵ).
-calc_green     -> Reproduce green's function via the field configurations.
+calc_green     -> Reproduce Green's function via the field configurations.
 calc_chi2      -> Calculate goodness-of-fit function.
 constraints    -> Limit the position of poles.
 #

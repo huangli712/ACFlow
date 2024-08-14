@@ -170,7 +170,7 @@ end
 #=
 *Remarks* : Kramers-Kronig Transformation
 
-The real and imaginary parts of green's functions obey the following
+The real and imaginary parts of Green's functions obey the following
 Kramers-Kronig relation.
 
 ```math
@@ -202,7 +202,7 @@ response function, and vice versa.
 """
     kramers(am::AbstractMesh, A::Vector{F64})
 
-Try to calculate the real part of the green's function from its imaginary
+Try to calculate the real part of the Green's function from its imaginary
 part via the Kramers-Kronig relations. 
 """
 function kramers(am::AbstractMesh, A::Vector{F64})

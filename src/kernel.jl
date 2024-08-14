@@ -21,7 +21,7 @@ The purpose of `ACFlow` is to solve the following equation:
 ```
 
 Here, ``\mathbf{G}``, ``\mathbf{K}``, and ``\mathbf{A}`` are the input
-green's function, kernel function, and spectral density, respectively.
+Green's function, kernel function, and spectral density, respectively.
 `ACFlow` supports various kernel functions. Here, we would like to dive
 into them.
 

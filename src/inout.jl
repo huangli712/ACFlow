@@ -245,7 +245,7 @@ end
     write_complete(am::AbstractMesh, G::Vector{C64})
 
 Write the full data at real axis to `Gout.data`. `am` denotes the real
-axis, `G` is the calculated green's function data. Note that its real
+axis, `G` is the calculated Green's function data. Note that its real
 part is obtained via the so-called Kramers-Kronig transformation.
 
 ### Arguments

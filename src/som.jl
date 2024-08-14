@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/09
+# Last modified: 2024/08/14
 #
 
 #=
@@ -557,7 +557,7 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
         Λ[:,k] .= eval_lambda(R, SC.grid, SC.𝕊ᵥ)
     end
     #
-    # Calculate green's function and relative error using boxes
+    # Calculate Green's function and relative error using boxes
     G = calc_green(Λ, _Know)
     Δ = calc_error(G, SC.Gᵥ, SC.σ¹)
 
