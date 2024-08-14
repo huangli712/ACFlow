@@ -338,7 +338,15 @@ end
 """
     read_data(only_real_part::Bool = true)
 
-Read data in imaginary axis and return a `RawData` struct.
+Read data in imaginary axis and return a `RawData` struct. The argument
+`only_real_part` is only useful for bosonic cases. If the kernel is 
+`bsymm` (it means a symmetric bosonic kernel) and the grid is `bfreq` or
+`bfrag` (it means Matsubara frequency grid), the function values for
+input correators should be real in principle. In these cases, we should
+set `only_real_part = true`.
+
+### Returns
+* rd -> Raw input data that is encapsulated in a `RawData` struct.
 
 See also: [`RawData`](@ref).
 """
