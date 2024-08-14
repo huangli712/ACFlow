@@ -581,6 +581,9 @@ various schemes.
 ### Arguments
 * am -> Real frequency mesh.
 
+### Returns
+* model -> A normalized model function.
+
 See also: [`AbstractMesh`](@ref).
 """
 function make_model(am::AbstractMesh)
@@ -656,6 +659,9 @@ Try to generate various kernel functions.
 ### Arguments
 * am -> Real frequency mesh.
 * ag -> Imaginary axis grid.
+
+### Returns
+* kernel -> Kernel function, a 2D array, (ntime,nmesh) or (nfreq,nmesh).
 
 See also: [`AbstractMesh`](@ref), [`AbstractGrid`](@ref).
 """
