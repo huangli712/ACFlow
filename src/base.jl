@@ -168,7 +168,7 @@ function reprod(am::AbstractMesh, kernel::Matrix{F64}, A::Vector{F64})
 end
 
 #=
-*Remarks* : Kramers-Kronig Transformation
+*Remarks* : *Kramers-Kronig Transformation*
 
 The real and imaginary parts of Green's functions obey the following
 Kramers-Kronig relation.

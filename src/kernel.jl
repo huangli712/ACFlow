@@ -813,7 +813,7 @@ function make_singular_space(kernel::Matrix{F64})
 end
 
 #=
-*Remarks* : About Preblur
+*Remarks* : *About Preblur*
 
 The Gaussian is
 

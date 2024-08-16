@@ -8,7 +8,7 @@
 #
 
 #=
-*Remarks* : Default Models
+*Remarks* : *Default Models*
 
 Now `ACFlow` supports various default model functions `m(ω)`. Note that
 the `NevanAC` solver (based on the Nevanlinna analytical continuation),
