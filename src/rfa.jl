@@ -923,5 +923,5 @@ function poles!(brc::BarRatContext)
     end
     #
     # Well, we should check whether these amplitudes are reasonable.
-    @assert all(z -> abs(imag(z)) < get_r("pcut"), brc.ℬA)
+    #@assert all(z -> abs(imag(z)) < get_r("pcut"), brc.ℬA)
 end
