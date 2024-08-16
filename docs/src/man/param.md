@@ -673,18 +673,18 @@ Depth = 3
 > If eta is smaller than 1.0, then
 >
 > ```math
-> G(\omega) = \sum_j \frac{\operatorname Re A_j}{\omega - \operatorname Re P_j + i\eta }
+> G(\omega) = \sum_j \frac{\operatorname{Re} A_j}{\omega - \operatorname{Re} P_j + i\eta }
 > ```
 >
 > If eta is larger than 1.0, then
 >
 > ```math
-> G(\omega) = \sum_j \frac{A_j}{\omega - P_j + i(\eta - 1) }
+> G(\omega) = \sum_j \frac{A_j}{\omega - \operatorname{Re} P_j + i(\eta - 1) }
 > ```
 
 *Type:*
 
-> String.
+> Float.
 
 *Example:*
 
