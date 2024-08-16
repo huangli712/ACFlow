@@ -166,7 +166,6 @@ the spectral data are contained in `Aout`.
 ### Arguments
 * am   -> Real frequency mesh.
 * Aout -> Spectral function.
-
 """
 function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
     @assert length(am) == length(Aout)
