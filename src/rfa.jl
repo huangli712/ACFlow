@@ -908,6 +908,9 @@ function poles!(brc::BarRatContext)
     #
     # Filter unphysical poles
     filter!(z -> abs(imag(z)) < get_r("pcut"), 𝑃)
+    if length(𝑃) == 0
+        error("The number of poles is zero. You should increase pcut")
+    end
     #
     # Print their positions again
     println("New poles:")
