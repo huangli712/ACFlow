@@ -23,6 +23,9 @@ deviation σ. Here, `ngrid` specifies the number of grid points.
 * finput -> Filename for the input data.
 * ngrid  -> Number of grid points.
 
+### Returns
+* rd -> A RawData struct.
+
 See also: [`read_cmplx_data`](@ref).
 """
 function read_real_data(finput::AbstractString, ngrid::I64)
@@ -64,6 +67,9 @@ same standard deviations.
 ### Arguments
 * finput -> Filename for the input data.
 * ngrid  -> Number of grid points.
+
+### Returns
+* rd -> A RawData struct.
 
 See also: [`read_real_data`](@ref).
 """
@@ -117,6 +123,9 @@ correlation function.
 * finput -> Filename for the input data.
 * ngrid  -> Number of grid points.
 
+### Returns
+* rd -> A RawData struct.
+
 See also: [`read_real_data`](@ref).
 """
 function read_cmplx_data(
@@ -166,6 +175,9 @@ the spectral data are contained in `Aout`.
 ### Arguments
 * am   -> Real frequency mesh.
 * Aout -> Spectral function.
+
+### Returns
+N/A
 """
 function write_spectrum(am::AbstractMesh, Aout::Vector{F64})
     @assert length(am) == length(Aout)
@@ -188,6 +200,9 @@ for the α parameters. This function is called by the `StochAC` solver.
 * am   -> Real frequency mesh.
 * αₗ   -> List for α parameters.
 * Aout -> α-dependent spectral function.
+
+### Returns
+N/A
 """
 function write_spectrum(am::AbstractMesh, αₗ::Vector{F64}, Aout::Array{F64,2})
     nmesh, nalph = size(Aout)
@@ -215,6 +230,9 @@ the reproduced data.
 ### Arguments
 * ag -> Grid for input data.
 * G  -> Reconstructed Green's function.
+
+### Returns
+N/A
 
 See also: [`reprod`](@ref).
 """
@@ -251,6 +269,9 @@ part is obtained via the so-called Kramers-Kronig transformation.
 * am -> Real frequency mesh.
 * G  -> Retarded Green's function.
 
+### Returns
+N/A
+
 See also: [`kramers`](@ref).
 """
 function write_complete(am::AbstractMesh, G::Vector{C64})
@@ -273,6 +294,9 @@ judge whether the obtained optimal α parameter is reasonable.
 ### Arguments
 * α_vec  -> List for α parameters.
 * χ²_vec -> α-dependent goodness-of-fit functional.
+
+### Returns
+N/A
 
 See also: [`write_goodness`](@ref).
 """
@@ -299,6 +323,9 @@ function is only useful for the `StochSK` solver.
 * Θ_vec  -> List for Θ parameters.
 * χ²_vec -> Θ-dependent goodness-of-fit functional.
 
+### Returns
+N/A
+
 See also: [`write_misfit`](@ref).
 """
 function write_goodness(Θ_vec::Vector{F64}, χ²_vec::Vector{F64})
@@ -323,6 +350,9 @@ Write the default model function to `model.data`.
 ### Arguments
 * am -> Real frequency mesh.
 * D  -> Default model.
+
+### Returns
+N/A
 """
 function write_model(am::AbstractMesh, D::Vector{F64})
     @assert length(am) == length(D)
@@ -345,6 +375,9 @@ only useful for the `BarRat` solver.
 * 𝑁ₚ -> Number of nodes for Prony approximation.
 * Γₚ -> Nodes for Prony approximation, ``γ_i``.
 * Ωₚ -> Weights for Prony approximation, ``w_i``.
+
+### Returns
+N/A
 """
 function write_prony(𝑁ₚ::I64, Γₚ::Vector{C64}, Ωₚ::Vector{C64})
     open("prony.data", "w") do fout
@@ -382,6 +415,9 @@ This function is only useful for the `BarRat` solver.
 * nodes   -> Nodes of the rational function, ``z_i``.
 * values  -> Values of the rational function, ``r(z_i)``.
 * weights -> Weights of the rational function, ``w_i``.
+
+### Returns
+N/A
 """
 function write_barycentric(
     nodes   :: Vector{C64},
@@ -429,6 +465,9 @@ useful for the `StochAC` solver.
 ### Arguments
 * α_vec -> List for α parameters.
 * Uα    -> α-dependent Hamiltonian.
+
+### Returns
+N/A
 """
 function write_hamiltonian(α_vec::Vector{F64}, Uα::Vector{F64})
     @assert length(α_vec) == length(Uα)
@@ -453,6 +492,9 @@ the solutions. This function is only useful for the `StochOM` and the
 * passed -> Indices for selected solutions.
 * med    -> Median value of χ².
 * αgood  -> Predefined parameter used to filter the solutions (spectra).
+
+### Returns
+N/A
 """
 function write_passed(passed::Vector{I64}, med::F64, αgood::F64)
     open("passed.data", "w") do fout
@@ -482,6 +524,9 @@ function is only useful for the `StochPX` solver.
 * 𝕊ᵥ    -> Signs of the poles.
 * χ²    -> Goodness-of-fit functionals for all the solutions.
 * fmesh -> A dense mesh for the poles.
+
+### Returns
+N/A
 """
 function write_pole(
     Pᵥ::Vector{Vector{I64}},
@@ -517,6 +562,9 @@ Write `p(α)` data to `prob.data`. This function is only useful for the
 ### Arguments
 * α_vec -> List for α parameters.
 * p_vec -> α-dependent probabilities.
+
+### Returns
+N/A
 """
 function write_probability(α_vec::Vector{F64}, p_vec::Vector{F64})
     @assert length(α_vec) == length(p_vec)
@@ -535,6 +583,9 @@ end
 
 Write Monte Carlo statistical information for the `StochAC` solver. Note
 that the `StochAC` solver is based on a stochastic approach.
+
+### Returns
+N/A
 
 See also: [`PStochAC`](@ref), [`StochACMC`](@ref).
 """
@@ -559,6 +610,9 @@ end
 
 Write Monte Carlo statistical information for the `StochSK` solver. Note
 that the `StochSK` solver is based on a stochastic approach.
+
+### Returns
+N/A
 
 See also: [`PStochSK`](@ref), [`StochSKMC`](@ref).
 """
@@ -587,6 +641,9 @@ end
 Write Monte Carlo statistical information for the `StochOM` solver. Note
 that the `StochOM` solver is based on a stochastic approach.
 
+### Returns
+N/A
+
 See also: [`PStochOM`](@ref), [`StochOMMC`](@ref).
 """
 function write_statistics(MC::StochOMMC)
@@ -607,6 +664,9 @@ end
 
 Write Monte Carlo statistical information for the `StochPX` solver. Note
 that the `StochPX` solver is based on a stochastic approach.
+
+### Returns
+N/A
 
 See also: [`PStochPX`](@ref), [`StochPXMC`](@ref).
 """
