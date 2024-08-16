@@ -330,6 +330,12 @@ function is defined.
 
 Try to build fermionic kernel function in imaginary time axis.
 
+### Arguments
+* am -> Real frequency mesh.
+* fg -> Imaginary time grid.
+
+### Returns
+
 See also: [`AbstractMesh`](@ref), [`FermionicImaginaryTimeGrid`](@ref).
 """
 function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
@@ -353,6 +359,10 @@ end
 
 Try to build fermionic kernel function in imaginary time axis. Note that
 `fg` contains incomplete imaginary time data.
+
+### Arguments
+* am -> Real frequency mesh.
+* fg -> Imaginary time grid.
 
 See also: [`AbstractMesh`](@ref), [`FermionicFragmentTimeGrid`](@ref).
 """
@@ -459,6 +469,10 @@ end
 
 Try to build bosonic kernel function in imaginary time axis.
 
+### Arguments
+* am -> Real frequency mesh.
+* bg -> Imaginary time grid.
+
 See also: [`AbstractMesh`](@ref), [`BosonicImaginaryTimeGrid`](@ref).
 """
 function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
@@ -490,6 +504,10 @@ end
 
 Try to build bosonic kernel function in imaginary time axis. Note that
 `bg` contains incomplete imaginary time data.
+
+### Arguments
+* am -> Real frequency mesh.
+* bg -> Imaginary time grid.
 
 See also: [`AbstractMesh`](@ref), [`BosonicFragmentTimeGrid`](@ref).
 """
@@ -585,6 +603,10 @@ end
 Try to build bosonic kernel function in imaginary time axis (just for
 correlator of Hermitian operator only).
 
+### Arguments
+* am -> Real frequency mesh.
+* bg -> Imaginary time grid.
+
 See also: [`AbstractMesh`](@ref), [`BosonicImaginaryTimeGrid`](@ref).
 """
 function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
@@ -614,6 +636,10 @@ end
 Try to build bosonic kernel function in imaginary time axis (just for
 correlator of Hermitian operator only). Note that `bg` contains
 incomplete imaginary time data.
+
+### Arguments
+* am -> Real frequency mesh.
+* bg -> Imaginary time grid.
 
 See also: [`AbstractMesh`](@ref), [`BosonicFragmentTimeGrid`](@ref).
 """
@@ -798,7 +824,6 @@ end
 Perform singular value decomposition for the input matrix `kernel`.
 
 ### Arguments
-
 * kernel -> Fermionic or bosonic kernel matrix.
 """
 function make_singular_space(kernel::Matrix{F64})
