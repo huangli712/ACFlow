@@ -388,6 +388,10 @@ end
 Try to build fermionic kernel function in Matsubara frequency axis. This
 function support preblur algorithm.
 
+### Arguments
+* am -> Real frequency mesh.
+* fg -> Matsubara frequency grid.
+
 See also: [`AbstractMesh`](@ref), [`FermionicMatsubaraGrid`](@ref).
 """
 function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
@@ -428,6 +432,10 @@ end
 
 Try to build fermionic kernel function in Matsubara frequency axis. This
 function support preblur algorithm.
+
+### Arguments
+* am -> Real frequency mesh.
+* fg -> Matsubara frequency grid.
 
 See also: [`AbstractMesh`](@ref), [`FermionicFragmentMatsubaraGrid`](@ref).
 """
@@ -540,6 +548,10 @@ end
 
 Try to build bosonic kernel function in Matsubara frequency axis.
 
+### Arguments
+* am -> Real frequency mesh.
+* bg -> Matsubara frequency grid.
+
 See also: [`AbstractMesh`](@ref), [`BosonicMatsubaraGrid`](@ref).
 """
 function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
@@ -570,6 +582,10 @@ end
     build_kernel(am::AbstractMesh, bg::BosonicFragmentMatsubaraGrid)
 
 Try to build bosonic kernel function in Matsubara frequency axis.
+
+### Arguments
+* am -> Real frequency mesh.
+* bg -> Matsubara frequency grid.
 
 See also: [`AbstractMesh`](@ref), [`BosonicFragmentMatsubaraGrid`](@ref).
 """
@@ -671,6 +687,10 @@ Try to build bosonic kernel function in Matsubara frequency axis (just
 for correlator of Hermitian operator only). This function support preblur
 algorithm.
 
+### Arguments
+* am -> Real frequency mesh.
+* bg -> Matsubara frequency grid.
+
 See also: [`AbstractMesh`](@ref), [`BosonicMatsubaraGrid`](@ref).
 """
 function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
@@ -728,6 +748,10 @@ end
 Try to build bosonic kernel function in Matsubara frequency axis (just
 for correlator of Hermitian operator only). This function support preblur
 algorithm.
+
+### Arguments
+* am -> Real frequency mesh.
+* bg -> Matsubara frequency grid.
 
 See also: [`AbstractMesh`](@ref), [`BosonicFragmentMatsubaraGrid`](@ref).
 """
