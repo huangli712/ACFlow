@@ -306,7 +306,7 @@ end
 """
     nearest(am::AbstractMesh, r::F64)
 
-Given a position (0.0 ≤ r ≤ 1.0), and return the index of the nearest
+Given a position `r` (0.0 ≤ r ≤ 1.0), and return the index of the nearest
 point in the mesh `am`.
 
 ### Examples
