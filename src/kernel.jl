@@ -335,6 +335,7 @@ Try to build fermionic kernel function in imaginary time axis.
 * fg -> Imaginary time grid.
 
 ### Returns
+* kernel -> Kernel function, K(τ,ω).
 
 See also: [`AbstractMesh`](@ref), [`FermionicImaginaryTimeGrid`](@ref).
 """
@@ -364,6 +365,9 @@ Try to build fermionic kernel function in imaginary time axis. Note that
 * am -> Real frequency mesh.
 * fg -> Imaginary time grid.
 
+### Returns
+* kernel -> Kernel function, K(τ,ω).
+
 See also: [`AbstractMesh`](@ref), [`FermionicFragmentTimeGrid`](@ref).
 """
 function build_kernel(am::AbstractMesh, fg::FermionicFragmentTimeGrid)
@@ -391,6 +395,9 @@ function support preblur algorithm.
 ### Arguments
 * am -> Real frequency mesh.
 * fg -> Matsubara frequency grid.
+
+### Returns
+* kernel -> Kernel function, K(iωₙ,ω).
 
 See also: [`AbstractMesh`](@ref), [`FermionicMatsubaraGrid`](@ref).
 """
@@ -437,6 +444,9 @@ function support preblur algorithm.
 * am -> Real frequency mesh.
 * fg -> Matsubara frequency grid.
 
+### Returns
+* kernel -> Kernel function, K(iωₙ,ω).
+
 See also: [`AbstractMesh`](@ref), [`FermionicFragmentMatsubaraGrid`](@ref).
 """
 function build_kernel(am::AbstractMesh, fg::FermionicFragmentMatsubaraGrid)
@@ -481,6 +491,9 @@ Try to build bosonic kernel function in imaginary time axis.
 * am -> Real frequency mesh.
 * bg -> Imaginary time grid.
 
+### Returns
+* kernel -> Kernel function, K(τ,ω).
+
 See also: [`AbstractMesh`](@ref), [`BosonicImaginaryTimeGrid`](@ref).
 """
 function build_kernel(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
@@ -517,6 +530,9 @@ Try to build bosonic kernel function in imaginary time axis. Note that
 * am -> Real frequency mesh.
 * bg -> Imaginary time grid.
 
+### Returns
+* kernel -> Kernel function, K(τ,ω).
+
 See also: [`AbstractMesh`](@ref), [`BosonicFragmentTimeGrid`](@ref).
 """
 function build_kernel(am::AbstractMesh, bg::BosonicFragmentTimeGrid)
@@ -552,6 +568,9 @@ Try to build bosonic kernel function in Matsubara frequency axis.
 * am -> Real frequency mesh.
 * bg -> Matsubara frequency grid.
 
+### Returns
+* kernel -> Kernel function, K(iωₙ,ω).
+
 See also: [`AbstractMesh`](@ref), [`BosonicMatsubaraGrid`](@ref).
 """
 function build_kernel(am::AbstractMesh, bg::BosonicMatsubaraGrid)
@@ -586,6 +605,9 @@ Try to build bosonic kernel function in Matsubara frequency axis.
 ### Arguments
 * am -> Real frequency mesh.
 * bg -> Matsubara frequency grid.
+
+### Returns
+* kernel -> Kernel function, K(iωₙ,ω).
 
 See also: [`AbstractMesh`](@ref), [`BosonicFragmentMatsubaraGrid`](@ref).
 """
@@ -623,6 +645,9 @@ correlator of Hermitian operator only).
 * am -> Real frequency mesh.
 * bg -> Imaginary time grid.
 
+### Returns
+* kernel -> Kernel function, K(τ,ω).
+
 See also: [`AbstractMesh`](@ref), [`BosonicImaginaryTimeGrid`](@ref).
 """
 function build_kernel_symm(am::AbstractMesh, bg::BosonicImaginaryTimeGrid)
@@ -657,6 +682,9 @@ incomplete imaginary time data.
 * am -> Real frequency mesh.
 * bg -> Imaginary time grid.
 
+### Returns
+* kernel -> Kernel function, K(τ,ω).
+
 See also: [`AbstractMesh`](@ref), [`BosonicFragmentTimeGrid`](@ref).
 """
 function build_kernel_symm(am::AbstractMesh, bg::BosonicFragmentTimeGrid)
@@ -690,6 +718,9 @@ algorithm.
 ### Arguments
 * am -> Real frequency mesh.
 * bg -> Matsubara frequency grid.
+
+### Returns
+* kernel -> Kernel function, K(iωₙ,ω).
 
 See also: [`AbstractMesh`](@ref), [`BosonicMatsubaraGrid`](@ref).
 """
@@ -752,6 +783,9 @@ algorithm.
 ### Arguments
 * am -> Real frequency mesh.
 * bg -> Matsubara frequency grid.
+
+### Returns
+* kernel -> Kernel function, K(iωₙ,ω).
 
 See also: [`AbstractMesh`](@ref), [`BosonicFragmentMatsubaraGrid`](@ref).
 """
