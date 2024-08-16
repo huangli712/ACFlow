@@ -807,9 +807,9 @@ function last(brc::BarRatContext)
             end
         else
             iA = brc.ℬA
-            iP = brc.ℬP
+            rP = real(brc.ℬP)
             for i in eachindex(_G)
-                _G[i] = sum(@. iA / (brc.mesh.mesh[i] - iP + (η - 1) * im))
+                _G[i] = sum(@. iA / (brc.mesh.mesh[i] - rP + (η - 1) * im))
             end
         end
     end
