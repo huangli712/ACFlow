@@ -794,12 +794,23 @@ rational function approximation will be written as well.
 * brc -> A BarRatContext object.
 """
 function last(brc::BarRatContext)
+    # Reconstruct retarded Green's function using pole representation
     function pole_green!(_G::Vector{C64})
         η = get_r("eta")
-        rA = real(brc.ℬA)
-        rP = real(brc.ℬP)
-        for i in eachindex(_G)
-            _G[i] = sum(@. rA / (brc.mesh.mesh[i] - rP + η * im))
+        if η < 1.0
+            # Here we should make sure that the imaginary parts of brc.ℬA
+            # and brc.ℬP are quite small. Such that we can ignore them.
+            rA = real(brc.ℬA)
+            rP = real(brc.ℬP)
+            for i in eachindex(_G)
+                _G[i] = sum(@. rA / (brc.mesh.mesh[i] - rP + η * im))
+            end
+        else
+            iA = brc.ℬA
+            iP = brc.ℬP
+            for i in eachindex(_G)
+                _G[i] = sum(@. iA / (brc.mesh.mesh[i] - iP + (η - 1) * im))
+            end
         end
     end
 
