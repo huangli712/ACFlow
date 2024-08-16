@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/06
+# Last modified: 2024/08/16
 #
 
 #
@@ -896,7 +896,6 @@ function poles!(brc::BarRatContext)
     end
     #
     # Filter unphysical poles
-    @show get_r("pcut")
     filter!(z -> abs(imag(z)) < get_r("pcut"), 𝑃)
     #
     # Print their positions again
