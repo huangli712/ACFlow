@@ -55,7 +55,7 @@ Depth = 3
 
 5. If you do not know the noise level of input data, just let `denoise` = "prony\_o" or "none". See [`denoise`](@ref barrat_denoise).
 
-6. If the spectrum is discrete, the BarRat solver will output the positions of the poles. Please adjust the `pcut` parameter to control how many poles are kept.
+6. If the spectrum is discrete, the BarRat solver will output the positions of the poles. Please adjust the `pcut` parameter to control how many poles are kept. See [`pcut`](@ref barrat_pcut).
 
 ## [NevanAC solver](@id nevanac)
 
