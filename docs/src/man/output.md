@@ -12,6 +12,7 @@ Once the analytic continuation simulation is finished, the final spectral functi
 |`goodness.dat` | ``\log_{10}(\chi^2)`` vs ``\log_{10}(\Theta)`` for the `StochSK` solver. |
 |`model.data` | Default model ``m(\omega)``. |
 |`prony.data` | Prony approximation to the Matsubara data (for the `BarRat` solver). |
+|`Gprony.data` | Preprocessed Matsubara data by Prony approximation (for the `BarRat` solver). |
 |`barycentric.data` | Barycentric rational function approximation to the Matsubara data (for the `BarRat` solver) |
 |`hamil.data` | ``U(\alpha)`` vs ``\alpha`` for the `StochAC` solver. |
 |`passed.data`| Indices of selected solutions for the `StochOM` and the `StochPX` solvers. |
