@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/08
+# Last modified: 2024/08/19
 #
 
 #=
@@ -396,6 +396,19 @@ function write_prony(𝑁ₚ::I64, Γₚ::Vector{C64}, Ωₚ::Vector{C64})
         for i in eachindex(Ωₚ)
             z = Ωₚ[i]
             @printf(fout, "%4i %16.12f %16.12f\n", i, real(z), imag(z))
+        end
+    end
+end
+
+function write_prony(ag::AbstractGrid, G::Vector{C64})
+    ngrid = length(ag)
+    ng = length(G)
+    @assert ngrid == ng
+
+    open("Gprony.data", "w") do fout
+        for i in eachindex(ag)
+            z = G[i]
+            @printf(fout, "%16.12f %16.12f %16.12f\n", ag[i], real(z), imag(z))
         end
     end
 end

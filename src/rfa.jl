@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/16
+# Last modified: 2024/08/19
 #
 
 #
@@ -822,6 +822,7 @@ function last(brc::BarRatContext)
     # Write information about Prony approximation
     fwrite && (get_r("denoise") != "none") && begin
         write_prony(brc.𝒫.𝑁ₚ, brc.𝒫.Γₚ, brc.𝒫.Ωₚ)
+        write_prony(brc.grid, brc.𝒫(brc.grid.ω))
     end
 
     # Write information about barycentric rational function
