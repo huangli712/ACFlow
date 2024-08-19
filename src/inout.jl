@@ -400,6 +400,18 @@ function write_prony(𝑁ₚ::I64, Γₚ::Vector{C64}, Ωₚ::Vector{C64})
     end
 end
 
+"""
+    write_prony(ag::AbstractGrid, G::Vector{C64})
+
+Write Matsubara Green's function approximated by the Prony approximation.
+
+### Arguments
+* ag -> Grid for input data.
+* G  -> Approximated Green's function.
+
+### Returns
+N/A
+"""
 function write_prony(ag::AbstractGrid, G::Vector{C64})
     ngrid = length(ag)
     ng = length(G)
