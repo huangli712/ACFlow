@@ -528,7 +528,7 @@ end
     calc_hmatrix(mesh::AbstractMesh, H::I64)
 
 Try to calculate ``[f^k(z), f^k(z)^*]`` for 0 ≤ 𝑘 ≤ 𝐻-1, which is
-called the hardy matrix (ℋ) and is used to evaluate ``\theta_{M+1}``.
+called the hardy matrix (ℋ) and is used to evaluate θₘ₊₁.
 
 ### Arguments
 * mesh -> Real frequency mesh.
