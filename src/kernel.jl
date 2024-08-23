@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/09
+# Last modified: 2024/08/23
 #
 
 #=
@@ -345,10 +345,41 @@ function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
     β = fg.β
 
     kernel = zeros(F64, ntime, nmesh)
+
+    # Old implementation
+    # exp(ω ≈ 700.0) should throw an Inf and K becomes NaN.
+    # We should avoid this situation.
+    #
+    # for i = 1:nmesh
+    #     de = 1.0 + exp(-β * am[i])
+    #     for j = 1:ntime
+    #         kernel[j,i] = exp(-fg[j] * am[i]) / de
+    #     end
+    # end
+    #
+    # New implementation to avoid numerical overflow
+    #
     for i = 1:nmesh
-        de = 1.0 + exp(-β * am[i])
-        for j = 1:ntime
-            kernel[j,i] = exp(-fg[j] * am[i]) / de
+        # ω ≥ 0.0
+        if am[i] ≥ 0.0
+            de = 1.0 + exp(-β * am[i])
+            for j = 1:ntime
+                kernel[j,i] = exp(-fg[j] * am[i]) / de
+            end
+        # ω < 0.0
+        else
+            for j = 1:ntime
+                # Now denominator goes to infinity and K goes to zero.
+                if (fg[j] - β) * am[i] ≥ 700.0
+                    kernel[j,i] = 0.0
+                else
+                    # de1 is always smaller than 1.0 because τω < 0.0.
+                    # de2 could be a large number.
+                    de1 = exp(fg[j] * am[i])
+                    de2 = exp((fg[j] - β) * am[i])
+                    kernel[j,i] = 1.0 / (de1 + de2)
+                end
+            end
         end
     end
 
