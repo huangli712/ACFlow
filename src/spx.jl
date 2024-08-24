@@ -77,8 +77,9 @@ end
 """
     solve(S::StochPXSolver, rd::RawData)
 
-Solve the analytic continuation problem by the stochastic
-pole expansion. Note that this solver is still `experimental`.
+Solve the analytic continuation problem by the stochastic pole expansion.
+Note that this solver is still `experimental`. It is useful for analytic
+continuation of Matsubara data.
 
 ### Arguments
 * S -> A StochPXSolver struct.
@@ -88,7 +89,6 @@ pole expansion. Note that this solver is still `experimental`.
 * mesh -> Real frequency mesh, ω.
 * Aout -> Spectral function, A(ω).
 * Gout -> Retarded Green's function, G(ω).
-
 """
 function solve(S::StochPXSolver, rd::RawData)
     ktype = get_b("ktype")
@@ -152,7 +152,16 @@ end
     init(S::StochPXSolver, rd::RawData)
 
 Initialize the StochPX solver and return the StochPXMC, StochPXElement,
-and StochPXContext structs.
+and StochPXContext structs. Please don't call this function directly.
+
+### Arguments
+* S -> A StochPXSolver struct.
+* rd -> A RawData struct, containing raw data for input correlator.
+
+### Returns
+* MC -> A StochPXMC struct.
+* SE -> A StochPXElement struct.
+* SC -> A StochPXContext struct.
 """
 function init(S::StochPXSolver, rd::RawData)
     # Initialize possible constraints.
