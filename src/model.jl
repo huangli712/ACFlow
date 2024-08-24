@@ -111,6 +111,9 @@ you can modified them according to the `pmodel` parameter.
 Try to build a flat model in `am`. Then this model function is normalized.
 Only this model function is suitable for the `StochAC` solver.
 
+### Arguments
+* am -> Real frequency mesh.
+
 ### Returns
 * model -> Default model function, m(ω). ω is compatible with `am`.
 
@@ -128,6 +131,10 @@ end
 
 Try to build a Gaussian model, which is then normalized. The argument
 `Γ` is used to control the width of the Gaussian peak.
+
+### Arguments
+* am -> Real frequency mesh.
+* Γ -> Parameter to control width of the peak.
 
 ### Returns
 * model -> Default model function, m(ω). ω is compatible with `am`.
@@ -148,6 +155,11 @@ Try to build a shifted Gaussian model, which is then normalized. The
 argument `Γ` is used to control the width of the Gaussian peak, and `s`
 means the shift of the central peak. If `s > 0`, the peak is shifted to
 positive half-axis, and vice versa.
+
+### Arguments
+* am -> Real frequency mesh.
+* Γ -> Parameter to control width of the peak.
+* s -> Distance of the peak from the ω = 0.
 
 ### Returns
 * model -> Default model function, m(ω). ω is compatible with `am`.
