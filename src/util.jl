@@ -143,6 +143,9 @@ toolkit is minimizing the dependence on the third-party libraries as
 far as possible. Note that the `ACFlow` toolkit relys on the `TOML`
 package to parse the *.toml file. Only in v1.6.0 and higher versions,
 julia includes the `TOML` package in its standard library.
+
+### Returns
+N/A
 """
 function require()
     if VERSION < v"1.6-"
@@ -209,6 +212,9 @@ end
     welcome()
 
 Print out the welcome messages to the screen.
+
+### Returns
+N/A
 """
 function welcome()
     println(  red("╔═╗╔═╗╔═╗"), magenta("┬  ┌─┐┬ ┬"))
@@ -229,6 +235,9 @@ end
     overview()
 
 Print out the overview of ACFlow to the screen.
+
+### Returns
+N/A
 """
 function overview()
     # Build strings
