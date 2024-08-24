@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/14
+# Last modified: 2024/08/24
 #
 
 """
@@ -444,6 +444,9 @@ end
 Extract grid for input data from a `RawData` struct. It will return a
 sub-type of the AbstractGrid struct.
 
+### Returns
+* grid -> Imaginary time or imaginary frequency grid.
+
 See also: [`RawData`](@ref), [`AbstractGrid`](@ref).
 """
 function make_grid(rd::RawData; T::DataType = F64)
@@ -511,6 +514,9 @@ Try to generate an uniform (linear) or non-uniform (non-linear) mesh for
 the spectral function in real axis. Notice that it supports arbitrary
 precision mesh. By default, the precision is F64. One can specify the
 precision by the argument `T`.
+
+### Returns
+* mesh -> Real frequency mesh. It should be a subtype of AbstractMesh.
 
 See also: [`LinearMesh`](@ref), [`TangentMesh`](@ref), [`LorentzMesh`](@ref).
 """

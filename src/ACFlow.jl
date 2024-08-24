@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/09
+# Last modified: 2024/08/24
 #
 
 """
@@ -18,7 +18,7 @@ toolkit is under heavy development. **PLEASE USE IT AT YOUR OWN RISK**.
 Nowadays the ACFlow toolkit supports the following algorithms:
 
 * Maximum Entropy Method (`MaxEnt` solver, `recommended`)
-* Barycentric Rational Function Method (`BarRat` solver, `experimental`)
+* Barycentric Rational Function Method (`BarRat` solver, `recommended`)
 * Nevanlinna Analytical Continuation (`NevanAC` solver, `experimental`)
 * Stochastic Analytic Continuation (`StochAC` and `StochSK` solvers)
 * Stochastic Optimization Method (`StochOM` solver)

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/03
+# Last modified: 2024/08/24
 #
 
 """
@@ -12,6 +12,14 @@
 
 Parse the configuration file (in toml format). It reads only parts of
 the configuration file, which depends on the value of `key`.
+
+### Arguments
+* f -> Configuration file.
+* key -> Parameter's name.
+* necessary -> If it is true and configuration is absent, raise an error.
+
+### Returns
+* value -> Parameter's value.
 """
 function inp_toml(f::String, key::String, necessary::Bool)
     if isfile(f)
@@ -35,6 +43,13 @@ end
     inp_toml(f::String, necessary::Bool)
 
 Parse the configuration file (in toml format). It reads the whole file.
+
+### Arguments
+* f -> Configuration file.
+* necessary -> If it is true and configuration is absent, raise an error.
+
+### Returns
+* dict -> A Dictionary struct that contains all the key-value pairs.
 """
 function inp_toml(f::String, necessary::Bool)
     if isfile(f)
@@ -54,7 +69,11 @@ end
 
 Transfer configurations from dict `cfg` to internal dicts (including
 `PBASE`, `PMaxEnt`, `PBarRat`, `PNevanAC`, `PStochAC`, `PStochSK`,
-`PStochOM` and `PStochPX` etc).
+`PStochOM` and `PStochPX` etc). In other words, all the relevant internal
+dicts should be filled / updated in this function.
+
+### Returns
+N/A
 """
 function fil_dict(cfg::Dict{String,Any})
     # For BASE block
@@ -156,6 +175,9 @@ end
     see_dict()
 
 Display all of the relevant configuration parameters to the terminal.
+
+### Returns
+N/A
 
 See also: [`fil_dict`](@ref).
 """
@@ -268,6 +290,9 @@ end
     rev_dict_b(BASE::Dict{String,Any})
 
 Setup the configuration dictionary: `PBASE`.
+
+### Returns
+N/A
 
 See also: [`PBASE`](@ref).
 """
