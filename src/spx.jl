@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/14
+# Last modified: 2024/08/24
 #
 
 #=
@@ -79,6 +79,16 @@ end
 
 Solve the analytic continuation problem by the stochastic
 pole expansion. Note that this solver is still `experimental`.
+
+### Arguments
+* S -> A StochPXSolver struct.
+* rd -> A RawData struct, containing raw data for input correlator.
+
+### Returns
+* mesh -> Real frequency mesh, ω.
+* Aout -> Spectral function, A(ω).
+* Gout -> Retarded Green's function, G(ω).
+
 """
 function solve(S::StochPXSolver, rd::RawData)
     ktype = get_b("ktype")
