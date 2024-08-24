@@ -73,7 +73,7 @@ Depth = 3
 
 *Comment:*
 
-> This parameter is mandatory.
+> This parameter is mandatory. Overall, we recommend the `MaxEnt`, `BarRat`, and `StochPX` solvers.
 
 ### [ktype](@id ktype)
 
@@ -199,6 +199,10 @@ Depth = 3
 *Comment:*
 
 > This parameter is mandatory. It must be compatible with the `ktype` parameter. If grid is "bfrag", the first Matsubara frequency point, i.e. ``i\omega_0 = 0``, should be kept. See also [`ngrid`](@ref ngrid).
+
+!!! warning
+
+    If the `BarRat` solver is employed, the `grid` parameter should be "ffreq", "ffrag", "bfreq", or "bfrag".
 
 !!! warning
 
@@ -611,6 +615,8 @@ Depth = 3
 > * prony\_o
 >
 > The BarRat solver will adopt the Prony approximation to approximate the Matsubara data and suppress the noise. The `denoise` parameter is used to control whether the Prony approximation is actived. If it is "none", the Prony approximation is disabled. If it is "prony\_s", the Prony approximation will run once, and its accuracy is controlled by the `epsilon` parameter. If it is "prony\_o", an optimal Prony approximation is automatically determined. In such a case, the `epsilon` parameter is nonsense.
+>
+> If the Prony approximation is activated, the grid parameter should not be `ffrag` or `bfrag`.
 
 *Type:*
 
