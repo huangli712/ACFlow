@@ -4,13 +4,14 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/11/10
+# Last modified: 2024/08/24
 #
 
 #=
 *Remarks* : *Default Models*
 
 Now `ACFlow` supports various default model functions `m(ω)`. Note that
+the `BarRat` solver (based on the barycentric rational function method),
 the `NevanAC` solver (based on the Nevanlinna analytical continuation),
 the `StochOM` solver (based on the stochastic optimization method), the
 `StochSK` solver (based on the stochastic analytic continuation method),
@@ -110,6 +111,9 @@ you can modified them according to the `pmodel` parameter.
 Try to build a flat model in `am`. Then this model function is normalized.
 Only this model function is suitable for the `StochAC` solver.
 
+### Returns
+* model -> Default model function, m(ω). ω is compatible with `am`.
+
 See also: [`AbstractMesh`](@ref).
 """
 function build_flat_model(am::AbstractMesh)
@@ -124,6 +128,9 @@ end
 
 Try to build a Gaussian model, which is then normalized. The argument
 `Γ` is used to control the width of the Gaussian peak.
+
+### Returns
+* model -> Default model function, m(ω). ω is compatible with `am`.
 
 See also: [`AbstractMesh`](@ref).
 """
@@ -142,6 +149,9 @@ argument `Γ` is used to control the width of the Gaussian peak, and `s`
 means the shift of the central peak. If `s > 0`, the peak is shifted to
 positive half-axis, and vice versa.
 
+### Returns
+* model -> Default model function, m(ω). ω is compatible with `am`.
+
 See also: [`AbstractMesh`](@ref).
 """
 function build_1gaussian_model(am::AbstractMesh, Γ::F64, s::F64)
@@ -158,6 +168,9 @@ end
 Try to build a Two Gaussians model, which is then normalized. The
 argument `Γ` is used to control the width of the Gaussian peak, and
 `s₁` and `s₂` denote the centers of the two peaks.
+
+### Returns
+* model -> Default model function, m(ω). ω is compatible with `am`.
 
 See also: [`AbstractMesh`](@ref).
 """
@@ -176,6 +189,9 @@ end
 Try to build a Lorentzian model, which is then normalized. The argument
 `Γ` is used to control the width of the Lorentzian peak.
 
+### Returns
+* model -> Default model function, m(ω). ω is compatible with `am`.
+
 See also: [`AbstractMesh`](@ref).
 """
 function build_lorentzian_model(am::AbstractMesh, Γ::F64)
@@ -193,6 +209,9 @@ argument `Γ` is used to control the width of the Lorentzian peak, and `s`
 means the shift of the central peak. If `s > 0`, the peak is shifted to
 positive half-axis, and vice versa.
 
+### Returns
+* model -> Default model function, m(ω). ω is compatible with `am`.
+
 See also: [`AbstractMesh`](@ref).
 """
 function build_1lorentzian_model(am::AbstractMesh, Γ::F64, s::F64)
@@ -208,6 +227,9 @@ end
 Try to build a Two-Lorentzians model, which is then normalized. The
 argument `Γ` is used to control the width of the Lorentzian peak, and
 `s₁` and `s₂` denote the centers of the two peaks.
+
+### Returns
+* model -> Default model function, m(ω). ω is compatible with `am`.
 
 See also: [`AbstractMesh`](@ref).
 """
@@ -227,6 +249,9 @@ Try to build a Rise-And-Decay model, which is then normalized. This model
 function is defined on positive half-axis, so it is more suitable for the
 bosonic response function.
 
+### Returns
+* model -> Default model function, m(ω). ω is compatible with `am`.
+
 See also: [`AbstractMesh`](@ref).
 """
 function build_risedecay_model(am::AbstractMesh, Γ::F64)
@@ -243,6 +268,9 @@ end
 Try to read a model function from external file (specified by `fn`). Note
 that the mesh used to generate the model function must be compatible with
 `am`. In addition, the model function will be normalized automatically.
+
+### Returns
+* model -> Default model function, m(ω). ω is compatible with `am`.
 
 See also: [`AbstractMesh`](@ref).
 """
@@ -273,6 +301,9 @@ end
 Try to build a model function by customized function `fun`. `kwargs`
 denotes the arguments required by `fun`. Actually, this feature does
 **not** really work.
+
+### Returns
+* model -> Default model function, m(ω). ω is compatible with `am`.
 
 See also: [`AbstractMesh`](@ref).
 """
