@@ -159,7 +159,7 @@ positive half-axis, and vice versa.
 ### Arguments
 * am -> Real frequency mesh.
 * Γ -> Parameter to control width of the peak.
-* s -> Distance of the peak from the ω = 0.
+* s -> Distance of the peak from ω = 0.
 
 ### Returns
 * model -> Default model function, m(ω). ω is compatible with `am`.
@@ -180,6 +180,12 @@ end
 Try to build a Two Gaussians model, which is then normalized. The
 argument `Γ` is used to control the width of the Gaussian peak, and
 `s₁` and `s₂` denote the centers of the two peaks.
+
+### Arguments
+* am -> Real frequency mesh.
+* Γ -> Parameter to control width of the peak.
+* s₁ -> Distance of the first peak from ω = 0.
+* s₂ -> Distance of the second peak from ω = 0.
 
 ### Returns
 * model -> Default model function, m(ω). ω is compatible with `am`.
