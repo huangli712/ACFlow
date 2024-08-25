@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/24
+# Last modified: 2024/08/26
 #
 
 """
@@ -14,7 +14,7 @@ Parse the configuration file (in toml format). It reads only parts of
 the configuration file, which depends on the value of `key`.
 
 ### Arguments
-* f -> Configuration file.
+* f -> Filename of configuration.
 * key -> Parameter's name.
 * necessary -> If it is true and configuration is absent, raise an error.
 
@@ -24,7 +24,7 @@ the configuration file, which depends on the value of `key`.
 function inp_toml(f::String, key::String, necessary::Bool)
     if isfile(f)
         dict = TOML.parsefile(f)
-
+        #
         if haskey(dict, key)
             dict[key]
         else
@@ -45,7 +45,7 @@ end
 Parse the configuration file (in toml format). It reads the whole file.
 
 ### Arguments
-* f -> Configuration file.
+* f -> Filename of configuration.
 * necessary -> If it is true and configuration is absent, raise an error.
 
 ### Returns
@@ -71,6 +71,9 @@ Transfer configurations from dict `cfg` to internal dicts (including
 `PBASE`, `PMaxEnt`, `PBarRat`, `PNevanAC`, `PStochAC`, `PStochSK`,
 `PStochOM` and `PStochPX` etc). In other words, all the relevant internal
 dicts should be filled / updated in this function.
+
+### Arguments
+* cfg -> A dict struct that contains all the configurations (from ac.toml).
 
 ### Returns
 N/A
@@ -175,6 +178,9 @@ end
     see_dict()
 
 Display all of the relevant configuration parameters to the terminal.
+
+### Arguments
+N/A
 
 ### Returns
 N/A
@@ -291,6 +297,9 @@ end
 
 Setup the configuration dictionary: `PBASE`.
 
+### Arguments
+* BASE -> A dict struct that contains configurations from the [BASE] block.
+
 ### Returns
 N/A
 
@@ -312,6 +321,12 @@ end
 
 Setup the configuration dictionary: `PBASE`.
 
+### Arguments
+* BASE -> A dict struct that contains configurations from the [BASE] block.
+
+### Returns
+N/A
+
 See also: [`PBASE`](@ref).
 """
 function rev_dict_b(BASE::Dict{String,Vector{Any}})
@@ -329,6 +344,13 @@ end
     rev_dict_m(S::MaxEntSolver, MaxEnt::Dict{String,Any})
 
 Setup the configuration dictionary: `PMaxEnt`.
+
+### Arguments
+* S -> A MaxEntSolver object.
+* MaxEnt -> A dict struct that contains configurations from the [MaxEnt] block.
+
+### Returns
+N/A
 
 See also: [`PMaxEnt`](@ref).
 """
@@ -348,6 +370,13 @@ end
 
 Setup the configuration dictionary: `PMaxEnt`.
 
+### Arguments
+* S -> A MaxEntSolver object.
+* MaxEnt -> A dict struct that contains configurations from the [MaxEnt] block.
+
+### Returns
+N/A
+
 See also: [`PMaxEnt`](@ref).
 """
 function rev_dict_m(S::MaxEntSolver, MaxEnt::Dict{String,Vector{Any}})
@@ -365,6 +394,13 @@ end
     rev_dict_r(S::BarRatSolver, BarRat::Dict{String,Any})
 
 Setup the configuration dictionary: `PBarRat`.
+
+### Arguments
+* S -> A BarRatSolver object.
+* BarRat -> A dict struct that contains configurations from the [BarRat] block.
+
+### Returns
+N/A
 
 See also: [`PBarRat`](@ref).
 """
@@ -384,6 +420,13 @@ end
 
 Setup the configuration dictionary: `PBarRat`.
 
+### Arguments
+* S -> A BarRatSolver object.
+* BarRat -> A dict struct that contains configurations from the [BarRat] block.
+
+### Returns
+N/A
+
 See also: [`PBarRat`](@ref).
 """
 function rev_dict_r(S::BarRatSolver, BarRat::Dict{String,Vector{Any}})
@@ -401,6 +444,13 @@ end
     rev_dict_n(S::NevanACSolver, NevanAC::Dict{String,Any})
 
 Setup the configuration dictionary: `PNevanAC`.
+
+### Arguments
+* S -> A NevanACSolver object.
+* NevanAC -> A dict struct that contains configurations from the [NevanAC] block.
+
+### Returns
+N/A
 
 See also: [`PNevanAC`](@ref).
 """
@@ -420,6 +470,13 @@ end
 
 Setup the configuration dictionary: `PNevanAC`.
 
+### Arguments
+* S -> A NevanACSolver object.
+* NevanAC -> A dict struct that contains configurations from the [NevanAC] block.
+
+### Returns
+N/A
+
 See also: [`PNevanAC`](@ref).
 """
 function rev_dict_n(S::NevanACSolver, NevanAC::Dict{String,Vector{Any}})
@@ -437,6 +494,13 @@ end
     rev_dict_a(S::StochACSolver, StochAC::Dict{String,Any})
 
 Setup the configuration dictionary: `PStochAC`.
+
+### Arguments
+* S -> A StochACSolver object.
+* StochAC -> A dict struct that contains configurations from the [StochAC] block.
+
+### Returns
+N/A
 
 See also: [`PStochAC`](@ref).
 """
@@ -456,6 +520,13 @@ end
 
 Setup the configuration dictionary: `PStochAC`.
 
+### Arguments
+* S -> A StochACSolver object.
+* StochAC -> A dict struct that contains configurations from the [StochAC] block.
+
+### Returns
+N/A
+
 See also: [`PStochAC`](@ref).
 """
 function rev_dict_a(S::StochACSolver, StochAC::Dict{String,Vector{Any}})
@@ -473,6 +544,13 @@ end
     rev_dict_k(S::StochSKSolver, StochSK::Dict{String,Any})
 
 Setup the configuration dictionary: `PStochSK`.
+
+### Arguments
+* S -> A StochSKSolver object.
+* StochSK -> A dict struct that contains configurations from the [StochSK] block.
+
+### Returns
+N/A
 
 See also: [`PStochSK`](@ref).
 """
@@ -492,6 +570,13 @@ end
 
 Setup the configuration dictionary: `PStochSK`.
 
+### Arguments
+* S -> A StochSKSolver object.
+* StochSK -> A dict struct that contains configurations from the [StochSK] block.
+
+### Returns
+N/A
+
 See also: [`PStochSK`](@ref).
 """
 function rev_dict_k(S::StochSKSolver, StochSK::Dict{String,Vector{Any}})
@@ -509,6 +594,13 @@ end
     rev_dict_s(S::StochOMSolver, StochOM::Dict{String,Any})
 
 Setup the configuration dictionary: `PStochOM`.
+
+### Arguments
+* S -> A StochOMSolver object.
+* StochOM -> A dict struct that contains configurations from the [StochOM] block.
+
+### Returns
+N/A
 
 See also: [`PStochOM`](@ref).
 """
@@ -528,6 +620,13 @@ end
 
 Setup the configuration dictionary: `PStochOM`.
 
+### Arguments
+* S -> A StochOMSolver object.
+* StochOM -> A dict struct that contains configurations from the [StochOM] block.
+
+### Returns
+N/A
+
 See also: [`PStochOM`](@ref).
 """
 function rev_dict_s(S::StochOMSolver, StochOM::Dict{String,Vector{Any}})
@@ -545,6 +644,13 @@ end
     rev_dict_x(S::StochPXSolver, StochPX::Dict{String,Any})
 
 Setup the configuration dictionary: `PStochPX`.
+
+### Arguments
+* S -> A StochPXSolver object.
+* StochPX -> A dict struct that contains configurations from the [StochPX] block.
+
+### Returns
+N/A
 
 See also: [`PStochPX`](@ref).
 """
@@ -564,6 +670,13 @@ end
 
 Setup the configuration dictionary: `PStochPX`.
 
+### Arguments
+* S -> A StochPXSolver object.
+* StochPX -> A dict struct that contains configurations from the [StochPX] block.
+
+### Returns
+N/A
+
 See also: [`PStochPX`](@ref).
 """
 function rev_dict_x(S::StochPXSolver, StochPX::Dict{String,Vector{Any}})
@@ -581,6 +694,12 @@ end
     chk_dict()
 
 Validate the correctness and consistency of configurations.
+
+### Arguments
+N/A
+
+### Returns
+N/A
 
 See also: [`fil_dict`](@ref), [`_v`](@ref).
 """
@@ -702,6 +821,13 @@ end
 
 Verify the value array. Called by chk_dict() function only.
 
+### Arguments
+* key -> Key of parameter.
+* val -> Value of parameter.
+
+### Returns
+N/A
+
 See also: [`chk_dict`](@ref).
 """
 @inline function _v(key::String, val::Array{Any,1})
@@ -721,6 +847,12 @@ end
 
 Extract configurations from dict: PBASE.
 
+### Arguments
+* key -> Key of parameter.
+
+### Returns
+* value -> Value of parameter.
+
 See also: [`PBASE`](@ref).
 """
 @inline function get_b(key::String)
@@ -735,6 +867,12 @@ end
     get_m(key::String)
 
 Extract configurations from dict: PMaxEnt.
+
+### Arguments
+* key -> Key of parameter.
+
+### Returns
+* value -> Value of parameter.
 
 See also: [`PMaxEnt`](@ref).
 """
@@ -751,6 +889,12 @@ end
 
 Extract configurations from dict: PBarRat.
 
+### Arguments
+* key -> Key of parameter.
+
+### Returns
+* value -> Value of parameter.
+
 See also: [`PBarRat`](@ref).
 """
 @inline function get_r(key::String)
@@ -765,6 +909,12 @@ end
     get_n(key::String)
 
 Extract configurations from dict: PNevanAC.
+
+### Arguments
+* key -> Key of parameter.
+
+### Returns
+* value -> Value of parameter.
 
 See also: [`PNevanAC`](@ref).
 """
@@ -781,6 +931,12 @@ end
 
 Extract configurations from dict: PStochAC.
 
+### Arguments
+* key -> Key of parameter.
+
+### Returns
+* value -> Value of parameter.
+
 See also: [`PStochAC`](@ref).
 """
 @inline function get_a(key::String)
@@ -795,6 +951,12 @@ end
     get_k(key::String)
 
 Extract configurations from dict: PStochSK.
+
+### Arguments
+* key -> Key of parameter.
+
+### Returns
+* value -> Value of parameter.
 
 See also: [`PStochSK`](@ref).
 """
@@ -811,6 +973,12 @@ end
 
 Extract configurations from dict: PStochOM.
 
+### Arguments
+* key -> Key of parameter.
+
+### Returns
+* value -> Value of parameter.
+
 See also: [`PStochOM`](@ref).
 """
 @inline function get_s(key::String)
@@ -825,6 +993,12 @@ end
     get_x(key::String)
 
 Extract configurations from dict: PStochPX.
+
+### Arguments
+* key -> Key of parameter.
+
+### Returns
+* value -> Value of parameter.
 
 See also: [`PStochPX`](@ref).
 """
