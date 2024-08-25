@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/24
+# Last modified: 2024/08/26
 #
 
 #=
@@ -158,7 +158,7 @@ positive half-axis, and vice versa.
 
 ### Arguments
 * am -> Real frequency mesh.
-* Γ -> Parameter to control width of the peak.
+* Γ -> Parameter to control width of the gaussian peak.
 * s -> Distance of the peak from ω = 0.
 
 ### Returns
@@ -183,7 +183,7 @@ argument `Γ` is used to control the width of the Gaussian peak, and
 
 ### Arguments
 * am -> Real frequency mesh.
-* Γ -> Parameter to control width of the peak.
+* Γ -> Parameter to control width of the gaussian peaks.
 * s₁ -> Distance of the first peak from ω = 0.
 * s₂ -> Distance of the second peak from ω = 0.
 
@@ -207,6 +207,10 @@ end
 Try to build a Lorentzian model, which is then normalized. The argument
 `Γ` is used to control the width of the Lorentzian peak.
 
+### Arguments
+* am -> Real frequency mesh.
+* Γ -> Parameter to control broadening of the lorentzian peak.
+
 ### Returns
 * model -> Default model function, m(ω). ω is compatible with `am`.
 
@@ -227,6 +231,11 @@ argument `Γ` is used to control the width of the Lorentzian peak, and `s`
 means the shift of the central peak. If `s > 0`, the peak is shifted to
 positive half-axis, and vice versa.
 
+### Arguments
+* am -> Real frequency mesh.
+* Γ -> Parameter to control broadening of the lorentzian peak.
+* s -> Distance of the peak from ω = 0.
+
 ### Returns
 * model -> Default model function, m(ω). ω is compatible with `am`.
 
@@ -245,6 +254,12 @@ end
 Try to build a Two-Lorentzians model, which is then normalized. The
 argument `Γ` is used to control the width of the Lorentzian peak, and
 `s₁` and `s₂` denote the centers of the two peaks.
+
+### Arguments
+* am -> Real frequency mesh.
+* Γ -> Parameter to control broadening of the lorentzian peaks.
+* s₁ -> Distance of the first peak from ω = 0.
+* s₂ -> Distance of the second peak from ω = 0.
 
 ### Returns
 * model -> Default model function, m(ω). ω is compatible with `am`.
@@ -267,6 +282,10 @@ Try to build a Rise-And-Decay model, which is then normalized. This model
 function is defined on positive half-axis, so it is more suitable for the
 bosonic response function.
 
+### Arguments
+* am -> Real frequency mesh.
+* Γ -> Parameter to control rise and decay of the peak.
+
 ### Returns
 * model -> Default model function, m(ω). ω is compatible with `am`.
 
@@ -286,6 +305,10 @@ end
 Try to read a model function from external file (specified by `fn`). Note
 that the mesh used to generate the model function must be compatible with
 `am`. In addition, the model function will be normalized automatically.
+
+### Arguments
+* am -> Real frequency mesh.
+* fn -> Filename for external model function.
 
 ### Returns
 * model -> Default model function, m(ω). ω is compatible with `am`.
@@ -319,6 +342,11 @@ end
 Try to build a model function by customized function `fun`. `kwargs`
 denotes the arguments required by `fun`. Actually, this feature does
 **not** really work.
+
+### Arguments
+* fun -> A external funtion call to build the model function.
+* am -> Real frequency mesh.
+* kwargs -> Arguments that passed to `fun`.
 
 ### Returns
 * model -> Default model function, m(ω). ω is compatible with `am`.
