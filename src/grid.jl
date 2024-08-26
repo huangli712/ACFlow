@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/09
+# Last modified: 2024/08/26
 #
 
 #=
@@ -20,6 +20,9 @@ in `src/types.jl`.
 ### Arguments
 * ntime -> Number of time slices in imaginary axis.
 * β     -> Inverse temperature.
+
+### Returns
+* grid -> A FermionicImaginaryTimeGrid struct.
 
 See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
@@ -135,6 +138,14 @@ end
 Rebuild the FermionicImaginaryTimeGrid struct via new `ntime` and `β`
 parameters.
 
+### Arguments
+* fg -> A FermionicImaginaryTimeGrid struct.
+* ntime -> Number of time slice.
+* β -> Inverse temperature.
+
+### Returns
+N/A
+
 See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
 function rebuild!(fg::FermionicImaginaryTimeGrid, ntime::I64, β::T) where {T}
@@ -158,6 +169,9 @@ in `src/types.jl`.
 ### Arguments
 * β -> Inverse temperature.
 * τ -> Given imaginary time points.
+
+### Returns
+* grid -> A FermionicFragmentTimeGrid struct.
 
 See also: [`FermionicFragmentTimeGrid`](@ref).
 """
@@ -274,6 +288,14 @@ end
 Rebuild the FermionicFragmentTimeGrid struct via new `ntime` and `β`
 parameters. Now its imaginary time points are continuous and complete.
 
+### Arguments
+* fg -> A FermionicFragmentTimeGrid struct.
+* ntime -> Number of time slice.
+* β -> Inverse temperature.
+
+### Returns
+N/A
+
 See also: [`FermionicFragmentTimeGrid`](@ref).
 """
 function rebuild!(fg::FermionicFragmentTimeGrid, ntime::I64, β::T) where {T}
@@ -297,6 +319,9 @@ A constructor for the FermionicMatsubaraGrid struct, which is defined in
 ### Arguments
 * nfreq -> Number of Matsubara frequencies.
 * β     -> Inverse temperature.
+
+### Returns
+* grid -> A FermionicMatsubaraGrid struct.
 
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
