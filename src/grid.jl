@@ -1184,6 +1184,9 @@ defined in `src/types.jl`. The Matsubara grid is from input.
 * β -> Inverse temperature.
 * ω -> Given Matsubara frequency points.
 
+### Returns
+* grid -> A BosonicFragmentMatsubaraGrid struct.
+
 See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
 function BosonicFragmentMatsubaraGrid(β::T, ω::Vector{T}) where {T}
@@ -1301,6 +1304,14 @@ end
 Rebuild the BosonicFragmentMatsubaraGrid struct via new `nfreq` and `β`
 parameters. Now its Matsubara frequency points are continuous and complete.
 
+### Arguments
+* bg -> A BosonicFragmentMatsubaraGrid struct.
+* nfreq -> Number of Matsubara frequencies.
+* β -> Inverse temperature.
+
+### Returns
+N/A
+
 See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
 function rebuild!(bg::BosonicFragmentMatsubaraGrid, nfreq::I64, β::T) where {T}
@@ -1320,6 +1331,13 @@ end
 Reduce the size of the bosonic fragment Matsubara grid. Note that
 `nfreq` should be smaller than or equal to `bg.nfreq`. This function
 is called by the NevanAC solver only.
+
+### Arguments
+* bg -> A BosonicFragmentMatsubaraGrid struct.
+* nfreq -> Number of Matsubara frequencies.
+
+### Returns
+N/A
 
 See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
