@@ -140,7 +140,7 @@ parameters.
 
 ### Arguments
 * fg -> A FermionicImaginaryTimeGrid struct.
-* ntime -> Number of time slice.
+* ntime -> Number of time slices.
 * β -> Inverse temperature.
 
 ### Returns
@@ -290,7 +290,7 @@ parameters. Now its imaginary time points are continuous and complete.
 
 ### Arguments
 * fg -> A FermionicFragmentTimeGrid struct.
-* ntime -> Number of time slice.
+* ntime -> Number of time slices.
 * β -> Inverse temperature.
 
 ### Returns
@@ -814,6 +814,14 @@ end
 Rebuild the BosonicImaginaryTimeGrid struct via new `ntime` and `β`
 parameters.
 
+### Arguments
+* bg -> A BosonicImaginaryTimeGrid struct.
+* ntime -> Number of time slices.
+* β -> Inverse temperature.
+
+### Returns
+N/A
+
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
 function rebuild!(bg::BosonicImaginaryTimeGrid, ntime::I64, β::T) where {T}
@@ -837,6 +845,9 @@ in `src/types.jl`.
 ### Arguments
 * β -> Inverse temperature.
 * τ -> Given imaginary time points.
+
+### Returns
+* grid -> A BosonicFragmentTimeGrid struct.
 
 See also: [`BosonicFragmentTimeGrid`](@ref).
 """
@@ -952,6 +963,14 @@ end
 
 Rebuild the BosonicFragmentTimeGrid struct via new `ntime` and `β`
 parameters. Now its imaginary time points are continuous and complete.
+
+### Arguments
+* bg -> A BosonicFragmentTimeGrid struct.
+* ntime -> Number of time slices.
+* β -> Inverse temperature.
+
+### Returns
+N/A
 
 See also: [`BosonicFragmentTimeGrid`](@ref).
 """
