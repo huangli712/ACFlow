@@ -697,6 +697,9 @@ in `src/types.jl`.
 * ntime -> Number of time slices in imaginary axis.
 * β     -> Inverse temperature.
 
+### Returns
+* grid -> A BosonicImaginaryTimeGrid struct.
+
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
 function BosonicImaginaryTimeGrid(ntime::I64, β::T) where {T}
