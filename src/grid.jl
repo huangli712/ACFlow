@@ -439,6 +439,14 @@ end
 Rebuild the FermionicMatsubaraGrid struct via new `nfreq` and `β`
 parameters.
 
+### Arguments
+* fg -> A FermionicMatsubaraGrid struct.
+* nfreq -> Number of Matsubara frequencies.
+* β -> Inverse temperature.
+
+### Returns
+N/A
+
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
 function rebuild!(fg::FermionicMatsubaraGrid, nfreq::I64, β::T) where {T}
