@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/08
+# Last modified: 2024/08/26
 #
 
 #=
@@ -21,6 +21,9 @@ A constructor for the LinearMesh struct, which is announced in
 * nmesh -> Number of mesh points.
 * wmin  -> Left boundary of the mesh.
 * wmax  -> Right boundary of the mesh.
+
+### Returns
+* lm -> A LinearMesh struct.
 
 See also: [`LinearMesh`](@ref).
 """
@@ -53,6 +56,9 @@ A constructor for the TangentMesh struct, which is announced in
 * wmin  -> Left boundary of the mesh.
 * wmax  -> Right boundary of the mesh.
 * 𝑝     -> A customized parameter.
+
+### Returns
+* tm -> A TangentMesh struct.
 
 See also: [`TangentMesh`](@ref).
 """
@@ -91,6 +97,9 @@ is taken from:
 * wmin  -> Left boundary of the mesh.
 * wmax  -> Right boundary of the mesh.
 * 𝑝     -> A customized parameter.
+
+### Returns
+* lm -> A LorentzMesh struct.
 
 See also: [`LorentzMesh`](@ref).
 """
@@ -142,6 +151,9 @@ mesh is taken from:
 * wmax  -> Right boundary of the mesh (wmin ≡ 0.0).
 * 𝑝     -> A customized parameter.
 
+### Returns
+* hm -> A HalfLorentzMesh struct.
+
 See also: [`HalfLorentzMesh`](@ref).
 """
 function HalfLorentzMesh(nmesh::I64, wmax::T, 𝑝::T = 0.01) where {T}
@@ -185,6 +197,12 @@ A constructor for the DynamicMesh struct, which is announced in
 `src/types.jl`. The δ peaks in the stochastic analytic continuation
 or the poles in the stochastic pole expansion method could be placed
 in this mesh. This mesh should not be used to define the spectrum.
+
+### Arguments
+* mesh -> Usually a mesh from file `fmesh.inp`. See util/gmesh.jl.
+
+### Returns
+* dm -> A DynamicMesh struct.
 
 See also: [`DynamicMesh`](@ref).
 """
@@ -308,6 +326,12 @@ end
 
 Given a position `r` (0.0 ≤ r ≤ 1.0), and return the index of the nearest
 point in the mesh `am`.
+
+### Arguments
+See above explanations.
+
+### Returns
+See above explanations.
 
 ### Examples
 ```julia
