@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/24
+# Last modified: 2024/08/26
 #
 
 """
@@ -34,7 +34,7 @@ Solve the analytic continuation problem. The arguments `grid`, `Gval`,
 and `err` are the grid, value, and error bar, respectively.
 
 Here, we just assume that the standard deviations for correlators are
-fixed to  a constant value, `err`.
+fixed to a constant value, `err`.
 
 ### Arguments
 * grid -> Imaginary axis grid for correlators, τ or ωₙ.
@@ -87,6 +87,14 @@ end
 Solve the analytic continuation problem. The input data are encapsulated
 in a `RawData` struct. This function call is the actual interface to the
 desired analytic continuation solvers.
+
+### Arguments
+* rd -> A RawData struct that contains the grid, correator, and error bar.
+
+### Returns
+* mesh -> Real frequency mesh, ω, Vector{F64}.
+* Aout -> Spectral function, A(ω), Vector{F64}.
+* Gout -> Retarded Green's function, G(ω), Vector{C64}.
 
 ### Examples
 ```julia
@@ -144,9 +152,13 @@ end
 """
     reprod(am::AbstractMesh, kernel::Matrix{F64}, A::Vector{F64})
 
-Try to reproduce the input data using the calculated spectrum function
-`A`. `kernel` is the kernel function, and `am` is the mesh in which the
-spectrum is defined.
+Try to reproduce the input data, which can be compared with the raw data
+to see whether the analytic continuation is reasonable.
+
+### Arguments
+* am -> Real frequency mesh.
+* kernel -> The kernel function.
+* A -> The calculated spectral function, A(ω).
 
 ### Returns
 * G -> Reconstructed correlators, G(τ) or G(iωₙ), Vector{F64}.
@@ -212,7 +224,6 @@ to get the full retarded Green's function.
 
 ### Returns
 * G  -> Retarded Green's function, G(ω), Vector{C64}.
-
 """
 function kramers(am::AbstractMesh, A::Vector{F64})
     nmesh = length(am)
@@ -251,7 +262,13 @@ Setup the configuration dictionaries via function call. Here `C` contains
 parameters for general setup, while `S` contains parameters for selected
 analytic continuation solver. If `reset` is true, then the configuration
 dictionaries will be reset to their default values at first. Later, `C`
-`S` will be used to customized the dictionaries further.
+and `S` will be used to customized the dictionaries further.
+
+### Arguments
+See above explanations.
+
+### Returns
+N/A
 
 See also: [`read_param`](@ref).
 """
@@ -326,6 +343,12 @@ end
 Setup the configuration dictionaries via an external file. The valid
 format of a configuration file is `toml`.
 
+### Arguments
+N/A
+
+### Returns
+N/A
+
 See also: [`read_param`](@ref).
 """
 function read_param()
@@ -344,6 +367,9 @@ Read data in imaginary axis and return a `RawData` struct. The argument
 `bfrag` (it means Matsubara frequency grid), the function values for
 input correators should be real in principle. In these cases, we should
 set `only_real_part = true`.
+
+### Arguments
+See above explanations.
 
 ### Returns
 * rd -> Raw input data that is encapsulated in a `RawData` struct.
@@ -411,6 +437,12 @@ various analytic continuation solvers and algorithms. Note that the
 `GreenData` struct is accessed and manipulated by this code internally,
 while the `RawData` struct is exposed to the users.
 
+### Arguments
+See above explanations.
+
+### Returns
+* gd -> A GreenData struct.
+ 
 See also: [`RawData`](@ref), [`GreenData`](@ref).
 """
 function make_data(rd::RawData; T::DataType = F64)
@@ -441,8 +473,11 @@ end
 """
     make_grid(rd::RawData; T::DataType = F64)
 
-Extract grid for input data from a `RawData` struct. It will return a
-sub-type of the AbstractGrid struct.
+Extract grid for input data from a `RawData` struct (`RD`). It will return
+a sub-type of the AbstractGrid struct.
+
+### Arguments
+See above explanations.
 
 ### Returns
 * grid -> Imaginary time or imaginary frequency grid.
@@ -514,6 +549,9 @@ Try to generate an uniform (linear) or non-uniform (non-linear) mesh for
 the spectral function in real axis. Notice that it supports arbitrary
 precision mesh. By default, the precision is F64. One can specify the
 precision by the argument `T`.
+
+### Arguments
+See above explanations.
 
 ### Returns
 * mesh -> Real frequency mesh. It should be a subtype of AbstractMesh.
