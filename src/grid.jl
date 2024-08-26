@@ -996,6 +996,9 @@ A constructor for the BosonicMatsubaraGrid struct, which is defined in
 * nfreq -> Number of Matsubara frequencies.
 * β     -> Inverse temperature.
 
+### Returns
+* grid -> A BosonicMatsubaraGrid struct.
+
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
 function BosonicMatsubaraGrid(nfreq::I64, β::T) where {T}
@@ -1112,6 +1115,14 @@ end
 Rebuild the BosonicMatsubaraGrid struct via new `nfreq` and `β`
 parameters.
 
+### Arguments
+* bg -> A BosonicMatsubaraGrid struct.
+* nfreq -> Number of Matsubara frequencies.
+* β -> Inverse temperature.
+
+### Returns
+N/A
+
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
 function rebuild!(bg::BosonicMatsubaraGrid, nfreq::I64, β::T) where {T}
@@ -1131,6 +1142,13 @@ end
 Reduce the size of the bosonic Matsubara grid. Note that `nfreq` should
 be smaller than or equal to `bg.nfreq`. This function is called by the
 NevanAC solver only.
+
+### Arguments
+* bg -> A BosonicMatsubaraGrid struct.
+* nfreq -> Number of Matsubara frequencies.
+
+### Returns
+N/A
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
