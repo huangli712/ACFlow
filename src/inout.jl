@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/19
+# Last modified: 2024/08/26
 #
 
 #=
@@ -122,6 +122,7 @@ correlation function.
 ### Arguments
 * finput -> Filename for the input data.
 * ngrid  -> Number of grid points.
+* only_real_part -> See above explanations.
 
 ### Returns
 * rd -> A RawData struct.
@@ -345,11 +346,12 @@ end
 """
     write_model(am::AbstractMesh, D::Vector{F64})
 
-Write the default model function to `model.data`.
+Write the default model function to `model.data`. This function is usually
+for the MaxEnt solver.
 
 ### Arguments
-* am -> Real frequency mesh.
-* D  -> Default model.
+* am -> Real frequency mesh, ω.
+* D  -> Default model, m(ω).
 
 ### Returns
 N/A
@@ -609,6 +611,9 @@ end
 Write Monte Carlo statistical information for the `StochAC` solver. Note
 that the `StochAC` solver is based on a stochastic approach.
 
+### Arguments
+* MC -> A StochACMC struct.
+
 ### Returns
 N/A
 
@@ -635,6 +640,9 @@ end
 
 Write Monte Carlo statistical information for the `StochSK` solver. Note
 that the `StochSK` solver is based on a stochastic approach.
+
+### Arguments
+* MC -> A StochSKMC struct.
 
 ### Returns
 N/A
@@ -666,6 +674,9 @@ end
 Write Monte Carlo statistical information for the `StochOM` solver. Note
 that the `StochOM` solver is based on a stochastic approach.
 
+### Arguments
+* MC -> A StochOMMC struct.
+
 ### Returns
 N/A
 
@@ -689,6 +700,9 @@ end
 
 Write Monte Carlo statistical information for the `StochPX` solver. Note
 that the `StochPX` solver is based on a stochastic approach.
+
+### Arguments
+* MC -> A StochPXMC struct.
 
 ### Returns
 N/A
