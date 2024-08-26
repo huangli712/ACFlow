@@ -467,6 +467,13 @@ Reduce the size of the fermionic Matsubara grid. Note that `nfreq` should
 be smaller than or equal to `fg.nfreq`. This function is called by the
 NevanAC solver only.
 
+### Arguments
+* fg -> A FermionicMatsubaraGrid struct.
+* nfreq -> Number of Matsubara frequencies.
+
+### Returns
+N/A
+
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
 function Base.resize!(fg::FermionicMatsubaraGrid, nfreq::I64)
@@ -500,6 +507,9 @@ defined in `src/types.jl`. The Matsubara grid is from input.
 ### Arguments
 * β -> Inverse temperature.
 * ω -> Given Matsubara frequency points.
+
+### Returns
+* grid -> A FermionicFragmentMatsubaraGrid struct.
 
 See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
@@ -618,6 +628,14 @@ end
 Rebuild the FermionicFragmentMatsubaraGrid struct via new `nfreq` and `β`
 parameters. Now its Matsubara frequency points are continuous and complete.
 
+### Arguments
+* fg -> A FermionicFragmentMatsubaraGrid struct.
+* nfreq -> Number of Matsubara frequencies.
+* β -> Inverse temperature.
+
+### Returns
+N/A
+
 See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
 function rebuild!(fg::FermionicFragmentMatsubaraGrid, nfreq::I64, β::T) where {T}
@@ -637,6 +655,13 @@ end
 Reduce the size of the fermionic fragment Matsubara grid. Note that
 `nfreq` should be smaller than or equal to `fg.nfreq`. This function
 is called by the NevanAC solver only.
+
+### Arguments
+* fg -> A FermionicFragmentMatsubaraGrid struct.
+* nfreq -> Number of Matsubara frequencies.
+
+### Returns
+N/A
 
 See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
