@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/09
+# Last modified: 2024/08/28
 #
 
 #=
@@ -144,6 +144,9 @@ far as possible. Note that the `ACFlow` toolkit relys on the `TOML`
 package to parse the *.toml file. Only in v1.6.0 and higher versions,
 julia includes the `TOML` package in its standard library.
 
+### Arguments
+N/A
+
 ### Returns
 N/A
 """
@@ -159,6 +162,12 @@ end
 Setup `ARGS` manually. This function is used only in `REPL` environment.
 We can use this function to update `ARGS`, so that the `query_args()`
 and the other related functions can work correctly.
+
+### Arguments
+* x -> Filename of configuration file.
+
+### Returns
+* ARGS -> Global variable.
 
 ### Examples
 ```julia-repl
@@ -193,6 +202,12 @@ end
 
 Check whether the configuration file (`case.toml`) is provided.
 
+### Arguments
+N/A
+
+### Returns
+* x -> ARGS[1], where ARGS is a global variable.
+
 See also: [`setup_args`](@ref).
 """
 function query_args()
@@ -212,6 +227,9 @@ end
     welcome()
 
 Print out the welcome messages to the screen.
+
+### Arguments
+N/A
 
 ### Returns
 N/A
@@ -236,6 +254,9 @@ end
 
 Print out the overview of ACFlow to the screen.
 
+### Arguments
+N/A
+
 ### Returns
 N/A
 """
@@ -259,6 +280,12 @@ end
     goodbye()
 
 Print the goodbye messages to the screen.
+
+### Arguments
+N/A
+
+### Returns
+N/A
 """
 function goodbye()
     println("The analytic continuation problem is solved successfully.")
@@ -271,6 +298,12 @@ end
     sorry()
 
 Print an error message to the screen.
+
+### Arguments
+N/A
+
+### Returns
+N/A
 """
 function sorry()
     error("Sorry, this feature has not been implemented")
@@ -280,6 +313,12 @@ end
     prompt(msg::String)
 
 Print a stylized ACFlow message to the screen.
+
+### Arguments
+* msg -> Message that need to be printed.
+
+### Returns
+N/A
 """
 function prompt(msg::String)
     print(green("ACFlow > "))
@@ -410,7 +449,10 @@ in the terminal.
 * c  -> Color names.
 * s  -> The string that want to be printed.
 * bg -> Background color.
-* m  -> Mode for output string.
+* m  -> Output mode.
+
+### Returns
+* See above explanations.
 """
 function colorize(
     c::String,
@@ -433,6 +475,15 @@ end
 
 Return some escape sequences, which will be displayed as colorized texts
 in the terminal.
+
+### Arguments
+* c  -> Color names.
+* s  -> The string that want to be printed.
+* bg -> Background color.
+* m  -> Output mode.
+
+### Returns
+* See above explanations.
 """
 function colorize(
     c::Symbol,
