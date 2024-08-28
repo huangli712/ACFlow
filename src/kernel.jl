@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/24
+# Last modified: 2024/08/28
 #
 
 #=
@@ -114,8 +114,8 @@ K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega},
 \end{equation}
 ```
 
-The spectral density ``A(\omega)`` is defined on ``(-\infty,\infty)``. It is causal,
-i.e., ``A(\omega) \ge 0``.
+The spectral density ``A(\omega)`` is defined on ``(-\infty,\infty)``.
+It is causal, i.e., ``A(\omega) \ge 0``.
 
 It is also possible to analytically continue similar anti-periodic
 functions, such as the fermionic self-energy function ``\Sigma(i\omega_n)``,
@@ -202,8 +202,8 @@ K(0,0) = -1.
 \end{equation}
 ```
 
-Here, the spectral density ``A(\omega)``, or equivalently ``\tilde{A}(\omega)``,
-is defined on ``(-\infty,\infty)``.
+Here, the spectral density ``A(\omega)``, or equivalently
+``\tilde{A}(\omega)``, is defined on ``(-\infty,\infty)``.
 
 Typical examples of this case include Green's function of bosons
 
@@ -249,8 +249,9 @@ G_{B}(\tau) = \int^{\infty}_{0} d\omega
 
 ```math
 \begin{equation}
-K(\tau,\omega) = \frac{\omega [e^{-\tau\omega} + e^{-(\beta - \tau)\omega}]}
-                      {1 - e^{-\beta\omega}}.
+K(\tau,\omega) =
+    \frac{\omega [e^{-\tau\omega} + e^{-(\beta - \tau)\omega}]}
+    {1 - e^{-\beta\omega}}.
 \end{equation}
 ```
 
@@ -347,7 +348,7 @@ function build_kernel(am::AbstractMesh, fg::FermionicImaginaryTimeGrid)
     kernel = zeros(F64, ntime, nmesh)
 
     # Old implementation
-    # exp(ω ≈ 700.0) should throw an Inf and K becomes NaN.
+    # exp(βω ≈ 700.0) will throw an Inf and K becomes NaN.
     # We should avoid this situation.
     #
     # for i = 1:nmesh
@@ -409,7 +410,7 @@ function build_kernel(am::AbstractMesh, fg::FermionicFragmentTimeGrid)
     kernel = zeros(F64, ntime, nmesh)
 
     # Old implementation
-    # exp(ω ≈ 700.0) should throw an Inf and K becomes NaN.
+    # exp(βω ≈ 700.0) will throw an Inf and K becomes NaN.
     # We should avoid this situation.
     #
     # for i = 1:nmesh
@@ -452,7 +453,7 @@ end
     build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
 
 Try to build fermionic kernel function in Matsubara frequency axis. This
-function support preblur algorithm.
+function support the so-called preblur algorithm.
 
 ### Arguments
 * am -> Real frequency mesh.
@@ -470,12 +471,14 @@ function build_kernel(am::AbstractMesh, fg::FermionicMatsubaraGrid)
 
     _kernel = zeros(C64, nfreq, nmesh)
 
+    # No preblur
     if blur isa Missing || blur < 0.0
         for i = 1:nmesh
             for j = 1:nfreq
                 _kernel[j,i] = 1.0 / (im * fg[j] - am[i])
             end
         end
+    # The preblur trick is used
     else
         bmesh, gaussian = make_gauss_peaks(blur)
         nsize = length(bmesh)
@@ -500,7 +503,7 @@ end
     build_kernel(am::AbstractMesh, fg::FermionicFragmentMatsubaraGrid)
 
 Try to build fermionic kernel function in Matsubara frequency axis. This
-function support preblur algorithm.
+function support the so-called preblur algorithm.
 
 ### Arguments
 * am -> Real frequency mesh.
@@ -518,12 +521,14 @@ function build_kernel(am::AbstractMesh, fg::FermionicFragmentMatsubaraGrid)
 
     _kernel = zeros(C64, nfreq, nmesh)
 
+    # No preblur
     if blur isa Missing || blur < 0.0
         for i = 1:nmesh
             for j = 1:nfreq
                 _kernel[j,i] = 1.0 / (im * fg[j] - am[i])
             end
         end
+    # The preblur trick is used
     else
         bmesh, gaussian = make_gauss_peaks(blur)
         nsize = length(bmesh)
@@ -774,8 +779,8 @@ end
     build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 
 Try to build bosonic kernel function in Matsubara frequency axis (just
-for correlator of Hermitian operator only). This function support preblur
-algorithm.
+for correlator of Hermitian operator only). This function support the
+so-called preblur algorithm.
 
 ### Arguments
 * am -> Real frequency mesh.
@@ -793,6 +798,7 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
 
     kernel = zeros(F64, nfreq, nmesh)
 
+    # No preblur
     if blur isa Missing || blur < 0.0
         for i = 1:nmesh
             for j = 1:nfreq
@@ -804,6 +810,7 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicMatsubaraGrid)
         if am[1] == 0.0 && bg[1] == 0.0
             kernel[1,1] = -2.0
         end
+    # The preblur trick is used
     else
         bmesh, gaussian = make_gauss_peaks(blur)
         nsize = length(bmesh)
@@ -839,8 +846,8 @@ end
     build_kernel_symm(am::AbstractMesh, bg::BosonicFragmentMatsubaraGrid)
 
 Try to build bosonic kernel function in Matsubara frequency axis (just
-for correlator of Hermitian operator only). This function support preblur
-algorithm.
+for correlator of Hermitian operator only). This function support the
+so-called preblur algorithm.
 
 ### Arguments
 * am -> Real frequency mesh.
@@ -858,6 +865,7 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicFragmentMatsubaraGrid)
 
     kernel = zeros(F64, nfreq, nmesh)
 
+    # No preblur
     if blur isa Missing || blur < 0.0
         for i = 1:nmesh
             for j = 1:nfreq
@@ -869,6 +877,7 @@ function build_kernel_symm(am::AbstractMesh, bg::BosonicFragmentMatsubaraGrid)
         if am[1] == 0.0 && bg[1] == 0.0
             kernel[1,1] = -2.0
         end
+    # The preblur trick is used
     else
         bmesh, gaussian = make_gauss_peaks(blur)
         nsize = length(bmesh)
@@ -910,6 +919,9 @@ is the blur parameter.
 * am   -> Real frequency mesh.
 * A    -> Spectral function.
 * blur -> Blur parameter. It must be larger than 0.0.
+
+### Returns
+* A    -> It is updated in this function.
 """
 function make_blur(am::AbstractMesh, A::Vector{F64}, blur::F64)
     ktype = get_b("ktype")
@@ -943,8 +955,18 @@ end
 
 Perform singular value decomposition for the input matrix `kernel`.
 
+kernel = U Σ Vᵀ
+
+Supposed that kernel is a m × n matrix, then U is m × m, Σ is m × n,
+and V is n × n. For Σ, only the diagonal elements are non-zero. 
+
 ### Arguments
 * kernel -> Fermionic or bosonic kernel matrix.
+
+### Returns
+* U -> A m × n matrix.
+* S -> Diagonal elements of Σ.
+* V -> A n × n matrix.
 """
 function make_singular_space(kernel::Matrix{F64})
     U, S, V = svd(kernel)
@@ -995,12 +1017,15 @@ Integration over the Gaussian from \(-5b\) to \(5b\) is certainly sufficient.
 """
     make_gauss_peaks(blur::F64)
 
-Try to generate a series of gaussian peaks along a linear mesh, whose
-energy range is `[-5 * blur, +5 * blur]`. The number of gaussian peaks is
-fixed to 201.
+Try to generate a gaussian peak along a linear mesh, whose energy range
+is `[-5 * blur, +5 * blur]`. The number of mesh points is fixed to 201.
 
 ### Arguments
-* blur -> This parameter is used to control the width of gaussian peaks.
+* blur -> This parameter is used to control the width of gaussian peak.
+
+### Returns
+* bmesh -> A linear mesh in [-5 * blur, 5 * blur].
+* gaussian -> A gaussian peak at `bmesh`.
 """
 function make_gauss_peaks(blur::F64)
     @assert blur > 0.0
