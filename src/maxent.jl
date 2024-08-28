@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/09
+# Last modified: 2024/08/28
 #
 
 #=
@@ -50,12 +50,23 @@ end
     solve(S::MaxEntSolver, rd::RawData)
 
 Solve the analytic continuation problem by the maximum entropy method.
+
+### Arguments
+* S -> A MaxEntSolver struct.
+* rd -> A RawData struct, containing raw data for input correlator.
+
+### Returns
+* mesh -> Real frequency mesh, ω.
+* Aout -> Spectral function, A(ω).
+* Gout -> Retarded Green's function, G(ω).
 """
 function solve(S::MaxEntSolver, rd::RawData)
     println("[ MaxEnt ]")
+    #
     mec = init(S, rd)
     darr, sol = run(mec)
     gout = last(mec, darr, sol)
+    #
     return mec.mesh.mesh, sol[:A], gout
 end
 
@@ -63,25 +74,38 @@ end
     init(S::MaxEntSolver, rd::RawData)
 
 Initialize the MaxEnt solver and return a MaxEntContext struct.
+
+### Arguments
+* S -> A MaxEntSolver struct.
+* rd -> A RawData struct, containing raw data for input correlator.
+
+### Returns
+* mec -> A MaxEntContext struct.
 """
 function init(S::MaxEntSolver, rd::RawData)
+    # Prepera input data
     G = make_data(rd)
     Gᵥ = G.value
     σ² = 1.0 ./ G.covar
     println("Postprocess input data: ", length(σ²), " points")
 
+    # Prepare grid for input data
     grid = make_grid(rd)
     println("Build grid for input data: ", length(grid), " points")
 
+    # Prepare mesh for output spectrum
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
+    # Prepare default model function
     model = make_model(mesh)
     println("Build default model: ", get_b("mtype"))
 
+    # Prepare kernel function
     kernel = make_kernel(mesh, grid)
     println("Build default kernel: ", get_b("ktype"))
 
+    # Prepare some essential intermediate variables
     Vₛ, W₂, W₃, Bₘ, hess = precompute(Gᵥ, σ², mesh, model, kernel)
     println("Precompute key coefficients")
 
@@ -94,6 +118,13 @@ end
 
 Perform maximum entropy simulation with different algorithms. Now it
 supports the `historic`, `classic`, `bryan`, and `chi2kink` algorithms.
+
+### Arguments
+* mec -> A MaxEntContext struct.
+
+### Returns
+* svec -> A vector of dictionaries. It contains the intermediate solutions.
+* sol -> Dictionary. It contains the final solution.
 """
 function run(mec::MaxEntContext)
     stype = get_m("stype")
@@ -133,6 +164,14 @@ Postprocess the results generated during the maximum entropy simulations.
 Here `sol` is the final solution for the analytic continuation problem,
 while `svec` contains all the intermediate results (it is a vector of
 dictionary actually).
+
+### Arguments
+* mec -> A MaxEntContext struct.
+* svec -> See above explanations.
+* sol -> See above explanations.
+
+### Returns
+* G -> Retarded Green's function, G(ω).
 """
 function last(mec::MaxEntContext, svec::Vector, sol::Dict)
     # By default, we should write the analytic continuation results
@@ -186,6 +225,13 @@ It choose α in a way that χ² ≈ N.
 For the historic algorithm, `alpha` is usually 10⁶, and `ratio` is 10.0.
 It is compatible with the Bayesian Reconstruction entropy.
 
+### Arguments
+* mec -> A MaxEntContext struct.
+
+### Returns
+* svec -> A vector of dictionaries. It contains the intermediate solutions.
+* sol -> Dictionary. It contains the final solution.
+
 See also: [`MaxEntContext`](@ref).
 """
 function historic(mec::MaxEntContext)
@@ -238,6 +284,13 @@ speedup into this procedure.
 
 For the classic algorithm, `alpha` is usually 10⁶, and `ratio` is 10.0.
 It is incompatible with the Bayesian Reconstruction entropy.
+
+### Arguments
+* mec -> A MaxEntContext struct.
+
+### Returns
+* svec -> A vector of dictionaries. It contains the intermediate solutions.
+* sol -> Dictionary. It contains the final solution.
 
 See also: [`MaxEntContext`](@ref).
 """
@@ -296,6 +349,13 @@ their Bayesian probability.
 
 For the bryan algorithm, `alpha` is usually 500, and `ratio` is 1.1.
 It is incompatible with the Bayesian Reconstruction entropy.
+
+### Arguments
+* mec -> A MaxEntContext struct.
+
+### Returns
+* svec -> A vector of dictionaries. It contains the intermediate solutions.
+* sol -> Dictionary. It contains the final solution.
 
 See also: [`MaxEntContext`](@ref).
 """
@@ -367,6 +427,13 @@ and
 For the chi2kink algorithm, `alpha` is usually 10⁹, `ratio` is 10.0, the
 number of alpha parameters is 12. It is compatible with the Bayesian
 Reconstruction entropy.
+
+### Arguments
+* mec -> A MaxEntContext struct.
+
+### Returns
+* svec -> A vector of dictionaries. It contains the intermediate solutions.
+* sol -> Dictionary. It contains the final solution.
 
 See also: [`MaxEntContext`](@ref).
 """
@@ -443,6 +510,15 @@ inference parameters for `α`.
 
 This function will return a dictionary object that holds the results of
 the optimization, e.g. spectral function, χ² deviation.
+
+### Arguments
+* mec -> A MaxEntContext struct.
+* α -> See above explanations.
+* us -> See above explanations.
+* use_bayes -> See above explanations.
+
+### Returns
+* dict -> A dictionary, the solution to analytic continuation problem.
 """
 function optimizer(
     mec::MaxEntContext,
@@ -566,6 +642,20 @@ L = \frac{1}{2} \chi^2,
 Precompute some key coefficients. Here `Gᵥ` and `σ²` are input data, `am`
 is the mesh for spectrum, `D` is the default model, and `K` is the kernel
 function.
+
+### Arguments
+* Gᵥ -> Input correlator.
+* σ² -> Error bar for input correlator.
+* am -> See above explanations.
+* D -> See above explanations.
+* K -> See above explanations.
+
+### Returns
+* V -> An orthogonal matrix from singular value decomposition of kernel.
+* W₂ -> The Wₘₗ matrix.
+* W₃ -> The Wₘₗᵢ tensor.
+* Bₘ -> The Bₘ vector.
+* hess -> The Hessian matrix.
 """
 function precompute(
     Gᵥ::Vector{F64},
@@ -661,6 +751,12 @@ and `α` is a (positive) weight factor of the entropy.
 It returns `f`, value of the function whose zero we want to find, and
 `J`, jacobian at the current position.
 
+### Arguments
+See above explanations.
+
+### Returns
+See above explanations.
+
 See also: [`f_and_J_od`](@ref).
 """
 function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
@@ -669,6 +765,7 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
     n_svd = length(mec.Bₘ)
     J = diagm([α for i = 1:n_svd])
 
+    # For Shannon–Jaynes entropy
     if stype == "sj"
         w = exp.(mec.Vₛ * u)
         #
@@ -679,6 +776,7 @@ function f_and_J(u::Vector{F64}, mec::MaxEntContext, α::F64)
         end
         #
         f = α * u + mec.W₂ * w - mec.Bₘ
+    # For Bayesian Reconstruction entropy
     else
         w = mec.Vₛ * u
         w₁ = 1.0 ./ (1.0 .- mec.model .* w)
@@ -762,6 +860,12 @@ It returns `f`, value of the function whose zero we want to find, and
 
 This function is similar to `f_and_J`, but for offdiagonal elements.
 
+### Arguments
+See above explanations.
+
+### Returns
+See above explanations.
+
 See also: [`f_and_J`](@ref).
 """
 function f_and_J_od(u::Vector{F64}, mec::MaxEntContext, α::F64)
@@ -770,6 +874,7 @@ function f_and_J_od(u::Vector{F64}, mec::MaxEntContext, α::F64)
     n_svd = length(mec.Bₘ)
     J = diagm([α for i = 1:n_svd])
 
+    # For Shannon–Jaynes entropy
     if stype == "sj"
         w = exp.(mec.Vₛ * u)
         #
@@ -785,6 +890,7 @@ function f_and_J_od(u::Vector{F64}, mec::MaxEntContext, α::F64)
         end
         #
         f = α * u + mec.W₂ * a₁ - mec.Bₘ
+    # For Bayesian Reconstruction entropy
     else
         w = mec.Vₛ * u
         #
@@ -832,18 +938,26 @@ A_l = \frac{D_l}{ 1 - D_l \sum_m V_{lm} u_m}.
 
 Go from singular value space to real space. It will transform the singular
 space vector `u` into real-frequency space (to get the spectral function)
-by `A(ω) = D(ω) eⱽᵘ`, where `D(ω)` is the default model `V` is the matrix
+by `A(ω) = D(ω) eⱽᵘ`, where `D(ω)` is the default model, `V` is the matrix
 from the singular value decomposition. The argument `u` means a singular
 space vector that parametrizes the spectral function.
+
+### Arguments
+See above explanations.
+
+### Returns
+See above explanations.
 
 See also: [`svd_to_real_od`](@ref).
 """
 function svd_to_real(mec::MaxEntContext, u::Vector{F64})
     stype = get_m("stype")
     #
+    # For Shannon–Jaynes entropy
     if stype == "sj"
         w = exp.(mec.Vₛ * u)
         return mec.model .* w
+    # For Bayesian Reconstruction entropy
     else
         w = mec.Vₛ * u
         return mec.model ./ (1.0 .- mec.model .* w)
@@ -892,16 +1006,25 @@ Go from singular value space to real space. It will transform the singular
 space vector `u` into real-frequency space in the case of an offdiagonal
 element. It will return the spectral function.
 
+### Arguments
+* mec -> A MaxEntContext struct.
+* u -> A singular space vector that parametrizes the spectral function.
+
+### Returns
+See above explanations.
+
 See also: [`svd_to_real`](@ref).
 """
 function svd_to_real_od(mec::MaxEntContext, u::Vector{F64})
     stype = get_m("stype")
     #
+    # For Shannon–Jaynes entropy
     if stype == "sj"
         w = exp.(mec.Vₛ * u)
         w⁺ = w
         w⁻ = 1.0 ./ w
         return mec.model .* (w⁺ .- w⁻)
+    # For Bayesian Reconstruction entropy
     else
         w = mec.Vₛ * u
         w⁺ = 1.0 ./ (1.0 .- mec.model .* w)
@@ -966,15 +1089,24 @@ It computes entropy for positive definite spectral function. Here the
 arguments `A` means spectral function and `u` means a singular space
 vector that parametrizes the spectral function.
 
+### Arguments
+See above explanations.
+
+### Returns
+* S -> Entropy.
+
 See also: [`calc_entropy_od`](@ref).
 """
 function calc_entropy(mec::MaxEntContext, A::Vector{F64}, u::Vector{F64})
     stype = get_m("stype")
     #
+    # For Shannon–Jaynes entropy
     if stype == "sj"
         f = A - mec.model - A .* (mec.Vₛ * u)
+    # For Bayesian Reconstruction entropy
     else
         𝑅 = A ./ mec.model
+        #
         if any(x -> x < 0.0, 𝑅)
             @info "Negative spectrum occurs!"
             @info "The results might be questionable."
@@ -994,15 +1126,23 @@ end
 It compute *positive-negative entropy* for spectral function with norm 0.
 Here the argument `A` means spectral function.
 
+### Arguments
+See above explanations.
+
+### Returns
+* S -> Entropy.
+
 See also: [`calc_entropy`](@ref).
 """
 function calc_entropy_od(mec::MaxEntContext, A::Vector{F64})
     stype = get_m("stype")
     #
+    # For Shannon–Jaynes entropy
     if stype == "sj"
         root = sqrt.(A .^ 2.0 + 4.0 .* mec.model .* mec.model)
         f = root - 2.0 .* mec.model
         f = f - A .* log.((root + A) ./ (2.0 .* mec.model))
+    # For Bayesian Reconstruction entropy
     else
         root = sqrt.(A .^ 2.0 + mec.model .^ 2.0) + mec.model
         f = 2.0 .- (root ./ mec.model) + log.(root ./ (2.0 .* mec.model))
@@ -1187,6 +1327,15 @@ a-posteriori probability (`log_prob`) for `α` after optimization of `A`.
 Here, `A` is the spectral function, `S` the entropy, `χ²` the deviation,
 and `α` weight factor of the entropy.
 
+### Arguments
+See above explanations.
+
+### Returns
+* ng -> -2.0αS.
+* tr -> Tr(Λ / (αI + Λ)).
+* conv -> Ratio between `ng` and `tr`.
+* prob -> Pr[α | \\bar{G}].
+
 See also: [`calc_bayes_od`](@ref).
 """
 function calc_bayes(
@@ -1235,6 +1384,15 @@ and `α` weight factor of the entropy.
 
 It is just a offdiagonal version of `calc_bayes()`.
 
+### Arguments
+See above explanations.
+
+### Returns
+* ng -> -2.0αS.
+* tr -> Tr(Λ / (αI + Λ)).
+* conv -> Ratio between `ng` and `tr`.
+* prob -> Pr[α | \\bar{G}].
+
 See also: [`calc_bayes`](@ref).
 """
 function calc_bayes_od(
@@ -1273,6 +1431,13 @@ end
     calc_chi2(mec::MaxEntContext, A::Vector{F64})
 
 It computes the χ²-deviation of the spectral function `A`.
+
+### Arguments
+* mec -> A MaxEntContext struct.
+* A -> Spectral function.
+
+### Returns
+* χ² -> Goodness-of-fit functional.
 """
 function calc_chi2(mec::MaxEntContext, A::Vector{F64})
     Gₙ = reprod(mec.mesh, mec.kernel, A)
