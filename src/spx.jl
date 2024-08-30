@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/24
+# Last modified: 2024/08/31
 #
 
 #=
@@ -48,7 +48,7 @@ Mutable struct. It is used within the StochPX solver only.
 * Λ      -> Precomputed kernel matrix.
 * Θ      -> Artificial inverse temperature.
 * χ²min  -> Minimum of χ²min.
-* χ²     -> Vector of goodness function.
+* χ²     -> Vector of goodness-of-the-fit functional.
 * Pᵥ     -> Vector of poles' positions.
 * Aᵥ     -> Vector of poles' amplitudes.
 * 𝕊ᵥ     -> Vector of poles' signs.
@@ -79,7 +79,8 @@ end
 
 Solve the analytic continuation problem by the stochastic pole expansion.
 Note that this solver is still `experimental`. It is useful for analytic
-continuation of Matsubara data.
+continuation of Matsubara data. In other words, it should not be used to
+treat imagnary-time Green's function.
 
 ### Arguments
 * S -> A StochPXSolver struct.
@@ -100,6 +101,7 @@ function solve(S::StochPXSolver, rd::RawData)
 
     # Parallel version
     if nworkers() > 1
+        #
         println("Using $(nworkers()) workers")
         #
         # Copy configuration dicts
@@ -137,12 +139,13 @@ function solve(S::StochPXSolver, rd::RawData)
         #
         # Postprocess the solutions
         last(SC, Aout, Gout, Gᵣ)
-
+        #
     # Sequential version
     else
+        #
         Aout, Gout, Gᵣ = run(MC, SE, SC)
         last(SC, Aout, Gout, Gᵣ)
-
+        #
     end
 
     return SC.mesh.mesh, Aout, Gout
@@ -169,18 +172,23 @@ function init(S::StochPXSolver, rd::RawData)
     fmesh = calc_fmesh(S)
     allow = constraints(S, fmesh)
 
+    # Initialize counters for Monte Carlo engine
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
+    # Initialize Monte Carlo configurations
     SE = init_element(S, MC.rng, allow)
     println("Randomize Monte Carlo configurations")
 
+    # Prepare input data
     Gᵥ, σ¹ = init_iodata(S, rd)
     println("Postprocess input data: ", length(σ¹), " points")
 
+    # Prepare grid for input data
     grid = make_grid(rd)
     println("Build grid for input data: ", length(grid), " points")
 
+    # Prepare mesh for output spectrum
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
@@ -218,6 +226,16 @@ end
     run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
 
 Perform stochastic pole expansion simulation, sequential version.
+
+### Arguments
+* MC -> A StochPXMC struct.
+* SE -> A StochPXElement struct.
+* SC -> A StochPXContext struct.
+
+### Returns
+* Aout -> Spectral function, A(ω).
+* Gout -> Retarded Green's function, G(ω).
+* Gᵣ -> Reproduced Green's function, G(iωₙ).
 """
 function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # By default, we should write the analytic continuation results
@@ -255,7 +273,8 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         # Write Monte Carlo statistics
         fwrite && write_statistics(MC)
 
-        # Update χ²[t] to be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
+        # Update χ²[t]
+        # It must be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
         SC.χ²[t] = SC.χ²min
         @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²min)
         flush(stdout)
@@ -276,10 +295,23 @@ end
         MC::StochPXMC,
         SE::StochPXElement,
         SC::StochPXContext
-        )
+    )
 
 Perform stochastic pole expansion simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochPX, respectively.
+
+### Arguments
+* S -> A StochPXSolver struct.
+* p1 -> A copy of PBASE.
+* p2 -> A copy of PStochPX.
+* MC -> A StochPXMC struct.
+* SE -> A StochPXElement struct.
+* SC -> A StochPXContext struct.
+
+### Returns
+* Aout -> Spectral function, A(ω).
+* Gout -> Retarded Green's function, G(ω).
+* Gᵣ -> Reproduced Green's function, G(iωₙ).
 """
 function prun(
     S::StochPXSolver,
@@ -331,7 +363,8 @@ function prun(
         # Write Monte Carlo statistics
         myid() == 2 && fwrite && write_statistics(MC)
 
-        # Update χ²[t] to be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
+        # Update χ²[t]
+        # It must be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
         SC.χ²[t] = SC.χ²min
         @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²min)
         flush(stdout)
@@ -350,6 +383,14 @@ end
 Postprocess the results generated during the stochastic pole expansion
 simulations. It will generate the spectral functions, real frequency
 Green's function, and imaginary frequency Green's function.
+
+### Arguments
+* SC -> A StochPXContext struct.
+
+### Returns
+* Aout -> Spectral function, A(ω).
+* Gout -> Retarded Green's function, G(ω).
+* Gᵣ -> Reproduced Green's function, G(iωₙ).
 """
 function average(SC::StochPXContext)
     # By default, we should write the analytic continuation results
@@ -372,6 +413,7 @@ function average(SC::StochPXContext)
 
     # Choose the best solution
     if method == "best"
+        # The χ² for the best solution should be the smallest.
         p = argmin(SC.χ²)
         χ₀ = -SC.Gᵥ[1]
 
@@ -403,7 +445,7 @@ function average(SC::StochPXContext)
         end
 
         # Go through all the solutions
-        c = 0.0
+        c = 0.0 # A counter
         χ₀ = -SC.Gᵥ[1]
         passed = I64[]
         for i = 1:ntry
@@ -454,9 +496,9 @@ end
         Aout::Vector{F64},
         Gout::Vector{C64},
         Gᵣ::Vector{F64}
-        )
+    )
 
-It will write the calculated results by the StochPX solver, including
+It will write the calculated results by the StochPX solver, including the
 final spectral function and reproduced correlator.
 
 ### Arguments
@@ -464,6 +506,9 @@ final spectral function and reproduced correlator.
 * Aout -> Spectral function.
 * Gout -> Retarded Green's function.
 * Gᵣ   -> Reconstructed Green's function.
+
+### Returns
+N/A
 """
 function last(
     SC::StochPXContext,

@@ -197,7 +197,7 @@ end
         p2::Dict{String,Vector{Any}},
         MC::StochOMMC,
         SC::StochOMContext
-        )
+    )
 
 Perform stochastic optimization simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochOM, respectively.

@@ -256,7 +256,7 @@ end
         MC::StochSKMC,
         SE::StochSKElement,
         SC::StochSKContext
-        )
+    )
 
 Perform stochastic analytic continuation simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochSK, respectively.
@@ -343,7 +343,7 @@ end
         Asum::Vector{F64},
         χ²vec::Vector{F64},
         Θvec::Vector{F64}
-        )
+    )
 
 It will process and write the calculated results by the StochSK solver,
 including final spectral function and reproduced correlator.

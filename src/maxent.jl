@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/28
+# Last modified: 2024/08/31
 #
 
 #=
@@ -495,7 +495,7 @@ end
         α::F64,
         us::Vector{F64},
         use_bayes::Bool
-        )
+    )
 
 Optimization of maxent functional for a given value of `α`. Since a priori
 the best value of `α` is unknown, this function has to be called several
@@ -637,7 +637,7 @@ L = \frac{1}{2} \chi^2,
         am::AbstractMesh,
         D::Vector{F64},
         K::Matrix{F64}
-        )
+    )
 
 Precompute some key coefficients. Here `Gᵥ` and `σ²` are input data, `am`
 is the mesh for spectrum, `D` is the default model, and `K` is the kernel
@@ -1318,7 +1318,7 @@ Z_j = \frac{\left(\sqrt{A^2_j + m^2_j} + m_j + A_j\right)}{\sqrt{2\Delta_j}}
         S::F64,
         χ²::F64,
         α::F64
-        )
+    )
 
 It calculates Bayesian convergence criterion (`ng`, `tr`, and `conv`) for
 classic maxent (maximum of probablility distribution) and then Bayesian
@@ -1373,7 +1373,7 @@ end
         S::F64,
         χ²::F64,
         α::F64
-        )
+    )
 
 It calculates Bayesian convergence criterion (`ng`, `tr`, and `conv`) for
 classic maxent (maximum of probablility distribution) and then Bayesian

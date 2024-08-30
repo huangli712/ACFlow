@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/09
+# Last modified: 2024/08/31
 #
 
 #
@@ -357,7 +357,7 @@ See `smooth_norm()`.
         grid::AbstractGrid,
         mesh::AbstractMesh,
         Gᵥ::Vector{APC}
-        )
+    )
 
 Precompute some key quantities, such as `Φ`, `𝒜`, `ℋ`, and `𝑎𝑏`. Note
 that `Φ` and `𝒜` won't be changed any more. But `ℋ` and `𝑎𝑏` should be
@@ -716,7 +716,7 @@ end
         ℋ::Array{APC,2},
         𝑎𝑏::Vector{C64},
         H::I64
-        )
+    )
 
 For given Hardy matrix ℋ, try to update the expanding coefficients 𝑎𝑏
 by minimizing the smooth norm.

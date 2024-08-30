@@ -242,7 +242,7 @@ end
         MC::StochACMC,
         SE::StochACElement,
         SC::StochACContext
-        )
+    )
 
 Perform stochastic analytic continuation simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochAC, respectively.
