@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/26
+# Last modified: 2024/08/31
 #
 
 #=
@@ -110,7 +110,7 @@ end
         finput::AbstractString,
         ngrid::I64,
         only_real_part::Bool
-        )
+    )
 
 Read input data. This function is used for Matsubara frequency data. The
 input file only contains three columns. The first column is the Matsubara
@@ -432,7 +432,7 @@ end
         nodes::Vector{C64},
         values::Vector{C64},
         weights::Vector{C64}
-        )
+    )
 
 Write barycentric rational function approximation to the input correlator.
 This information can be used to reconstruct or interpolate the correlator.
@@ -540,7 +540,7 @@ end
         𝕊ᵥ::Vector{Vector{F64}},
         χ²::Vector{F64},
         fmesh::AbstractMesh
-        )
+    )
 
 Write positions, amplitudes, and signs of poles to `pole.data`. This
 function is only useful for the `StochPX` solver.

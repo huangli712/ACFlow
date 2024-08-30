@@ -256,7 +256,7 @@ end
         C::Dict{String,Any},
         S::Dict{String,Any},
         reset::Bool = true
-        )
+    )
 
 Setup the configuration dictionaries via function call. Here `C` contains
 parameters for general setup, while `S` contains parameters for selected
