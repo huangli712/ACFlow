@@ -541,7 +541,7 @@ end
         MC::StochPXMC,
         SE::StochPXElement,
         SC::StochPXContext
-        )
+    )
 
 Try to search the configuration space to locate the minimum by using the
 simulated annealing algorithm. Here, `t` means the t-th attempt.
@@ -618,7 +618,7 @@ end
         S::StochPXSolver,
         rng::AbstractRNG,
         allow::Vector{I64}
-        )
+    )
 
 Randomize the configurations for future Monte Carlo sampling. It will
 return a StochPXElement object.
@@ -751,7 +751,7 @@ end
         rng::AbstractRNG,
         allow::Vector{I64},
         SE::StochPXElement
-        )
+    )
 
 Reset the Monte Carlo field configurations (i.e. positions and amplitudes
 of the poles). Note that the signs of the poles should not be changed.
@@ -1077,7 +1077,7 @@ end
         fmesh::AbstractMesh,
         χ₀::F64,
         bsymm::Bool
-        )
+    )
 
 Precompute the kernel matrix Λ. Here, `χ₀` is actually -G(iωₙ = 0). And
 the argument `bsymm` is used to distinguish two different bosonic kernels.
@@ -1148,7 +1148,7 @@ end
         A::Vector{F64},
         𝕊::Vector{F64},
         Λ::Array{F64,2}
-        )
+    )
 
 Reconstruct Green's function at imaginary axis by the pole expansion.
 
@@ -1182,7 +1182,7 @@ end
         𝕊::Vector{F64},
         mesh::AbstractMesh,
         fmesh::AbstractMesh
-        )
+    )
 
 Reconstruct Green's function at real axis by the pole expansion. It is
 for the fermionic systems only.
@@ -1222,7 +1222,7 @@ end
         fmesh::AbstractMesh,
         χ₀::F64,
         bsymm::Bool
-        )
+    )
 
 Reconstruct Green's function at real axis by the pole expansion. Here,
 `χ₀` is actually -G(iωₙ = 0). And the argument `bsymm` is used to
@@ -1346,7 +1346,7 @@ end
         MC::StochPXMC,
         SE::StochPXElement,
         SC::StochPXContext
-        )
+    )
 
 Change the position of one randomly selected pole.
 
@@ -1435,7 +1435,7 @@ end
         MC::StochPXMC,
         SE::StochPXElement,
         SC::StochPXContext
-        )
+    )
 
 Change the positions of two randomly selected poles.
 
@@ -1536,7 +1536,7 @@ end
         MC::StochPXMC,
         SE::StochPXElement,
         SC::StochPXContext
-        )
+    )
 
 Change the amplitudes of two randomly selected poles.
 
@@ -1648,7 +1648,7 @@ end
         MC::StochPXMC,
         SE::StochPXElement,
         SC::StochPXContext
-        )
+    )
 
 Exchange the amplitudes of two randomly selected poles.
 

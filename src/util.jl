@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/28
+# Last modified: 2024/08/31
 #
 
 #=
@@ -440,7 +440,7 @@ const MODES = Dict{String,I64}(
         s::String;
         bg::String = "default",
         m::String = "default"
-        )
+    )
 
 Return some escape sequences, which will be displayed as colorized texts
 in the terminal.
@@ -471,7 +471,7 @@ end
         s::String;
         bg::String = "default",
         m::String = "default"
-        )
+    )
 
 Return some escape sequences, which will be displayed as colorized texts
 in the terminal.

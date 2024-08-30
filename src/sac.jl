@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/09
+# Last modified: 2024/08/31
 #
 
 #=
@@ -639,7 +639,7 @@ end
         Γₐ::Array{I64,2},
         kernel::Matrix{F64},
         Gᵥ::Vector{F64}
-        )
+    )
 
 Initialize h(τ) and H(α) using Eq.(35) and Eq.(36), respectively. `Γₚ`
 and `Γₐ` represent n(x), `kernel` means the kernel function, `Gᵥ` is the
@@ -755,7 +755,7 @@ end
         MC::StochACMC,
         SE::StochACElement,
         SC::StochACContext
-        )
+    )
 
 Select two δ functions randomly and then change their weights. Here `i`
 means the index for α parameters.
@@ -827,7 +827,7 @@ end
         MC::StochACMC,
         SE::StochACElement,
         SC::StochACContext
-        )
+    )
 
 Select two δ functions randomly and then change their positions. Here `i`
 means the index for α parameters.
@@ -893,7 +893,7 @@ end
         MC::StochACMC,
         SE::StochACElement,
         SC::StochACContext
-        )
+    )
 
 Try to exchange field configurations between two adjacent layers. Because
 this function involves two layers, so it doesn't need the argument `i`.

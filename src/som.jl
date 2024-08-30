@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/14
+# Last modified: 2024/08/31
 #
 
 #=
@@ -831,7 +831,7 @@ We have implemented the above formulas in `eval_lambda()`.
         r::Box,
         grid::FermionicMatsubaraGrid,
         𝕊::Vector{<:AbstractInterpolation}
-        )
+    )
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for FermionicMatsubaraGrid only. Because there is an
@@ -867,7 +867,7 @@ end
         r::Box,
         grid::FermionicFragmentMatsubaraGrid,
         𝕊::Vector{<:AbstractInterpolation}
-        )
+    )
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for FermionicFragmentMatsubaraGrid only. Because there
@@ -903,7 +903,7 @@ end
         r::Box,
         grid::FermionicImaginaryTimeGrid,
         𝕊::Vector{<:AbstractInterpolation}
-        )
+    )
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for FermionicImaginaryTimeGrid only. Since there is
@@ -944,7 +944,7 @@ end
         r::Box,
         grid::FermionicFragmentTimeGrid,
         𝕊::Vector{<:AbstractInterpolation}
-        )
+    )
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for FermionicFragmentTimeGrid only. Since there is
@@ -985,7 +985,7 @@ end
         r::Box,
         grid::BosonicMatsubaraGrid,
         𝕊::Vector{<:AbstractInterpolation}
-        )
+    )
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for BosonicMatsubaraGrid only. Because there is an
@@ -1029,7 +1029,7 @@ end
         r::Box,
         grid::BosonicFragmentMatsubaraGrid,
         𝕊::Vector{<:AbstractInterpolation}
-        )
+    )
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for BosonicFragmentMatsubaraGrid only. Because there
@@ -1073,7 +1073,7 @@ end
         r::Box,
         grid::BosonicImaginaryTimeGrid,
         𝕊::Vector{<:AbstractInterpolation}
-        )
+    )
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for BosonicImaginaryTimeGrid only. Since there is
@@ -1114,7 +1114,7 @@ end
         r::Box,
         grid::BosonicFragmentTimeGrid,
         𝕊::Vector{<:AbstractInterpolation}
-        )
+    )
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for BosonicFragmentTimeGrid only. Since there is
@@ -1230,7 +1230,7 @@ end
         SE::StochOMElement,
         SC::StochOMContext,
         dacc::F64
-        )
+    )
 
 Insert a new box into the field configuration.
 """
@@ -1317,7 +1317,7 @@ end
         SE::StochOMElement,
         SC::StochOMContext,
         dacc::F64
-        )
+    )
 
 Remove an old box from the field configuration.
 """
@@ -1395,7 +1395,7 @@ end
         SE::StochOMElement,
         SC::StochOMContext,
         dacc::F64
-        )
+    )
 
 Change the position of given box in the field configuration.
 """
@@ -1460,7 +1460,7 @@ end
         SE::StochOMElement,
         SC::StochOMContext,
         dacc::F64
-        )
+    )
 
 Change the width and height of given box in the field configuration. Note
 that the box's area is kept.
@@ -1531,7 +1531,7 @@ end
         SE::StochOMElement,
         SC::StochOMContext,
         dacc::F64
-        )
+    )
 
 Change the heights of two given boxes in the field configuration.
 """
@@ -1607,7 +1607,7 @@ end
         SE::StochOMElement,
         SC::StochOMContext,
         dacc::F64
-        )
+    )
 
 Split a given box into two boxes in the field configuration.
 """
@@ -1701,7 +1701,7 @@ end
         SE::StochOMElement,
         SC::StochOMContext,
         dacc::F64
-        )
+    )
 
 Merge two given boxes into one box in the field configuration.
 """

@@ -582,7 +582,7 @@ end
         S::StochSKSolver,
         rng::AbstractRNG,
         allow::Vector{I64}
-        )
+    )
 
 Randomize the configurations for future Monte Carlo sampling. It will
 return a StochSKElement object.

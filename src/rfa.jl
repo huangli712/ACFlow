@@ -79,7 +79,7 @@ end
         nodes   :: Vector{C64},
         values  :: Vector{C64},
         weights :: Vector{C64}
-        )
+    )
 
 Construct a `BarycentricFunction` type rational function.
 
@@ -387,7 +387,7 @@ end
         ωₚ :: Vector{F64},
         𝐺ₚ :: Vector{C64},
         v  :: Vector{C64}
-        )
+    )
 
 Construct a `PronyApproximation` type interpolant function. Once it is
 available, then it can be used to produce a smooth G at given ω.
