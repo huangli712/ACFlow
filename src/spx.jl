@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/31
+# Last modified: 2024/09/01
 #
 
 #=
@@ -322,6 +322,7 @@ function prun(
     SC::StochPXContext
     )
     # Revise parameteric dicts
+    # We have to make sure that all processes share the same parameters.
     rev_dict_b(p1)
     rev_dict_x(S, p2)
 
@@ -413,7 +414,7 @@ function average(SC::StochPXContext)
 
     # Choose the best solution
     if method == "best"
-        # The χ² for the best solution should be the smallest.
+        # The χ² of the best solution should be the smallest.
         p = argmin(SC.χ²)
         χ₀ = -SC.Gᵥ[1]
 
@@ -503,9 +504,9 @@ final spectral function and reproduced correlator.
 
 ### Arguments
 * SC   -> A StochPXContext object.
-* Aout -> Spectral function.
-* Gout -> Retarded Green's function.
-* Gᵣ   -> Reconstructed Green's function.
+* Aout -> Spectral function, A(ω).
+* Gout -> Retarded Green's function, G(ω).
+* Gᵣ   -> Reconstructed Green's function, G(iωₙ).
 
 ### Returns
 N/A
@@ -521,13 +522,13 @@ function last(
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
 
-    # Write the spectral function
+    # Write the spectral function, A(ω).
     fwrite && write_spectrum(SC.mesh, Aout)
 
-    # Reproduce input data and write them
+    # Reproduce input data and write them, G(iωₙ).
     fwrite && write_backward(SC.grid, Gᵣ)
 
-    # Write full response function on real axis
+    # Write full response function on real axis, G(ω).
     fwrite && write_complete(SC.mesh, Gout)
 end
 
