@@ -546,6 +546,15 @@ end
 
 Try to search the configuration space to locate the minimum by using the
 simulated annealing algorithm. Here, `t` means the t-th attempt.
+
+### Arguments
+* t -> Counter for attempts.
+* MC -> A StochPXMC struct.
+* SE -> A StochPXElement struct.
+* SC -> A StochPXContext struct.
+
+### Returns
+N/A
 """
 function sample(
     t::I64,
@@ -574,7 +583,16 @@ end
     measure(t::I64, SE::StochPXElement, SC::StochPXContext)
 
 Store Monte Carlo field configurations (positions, amplitudes, and signs
-of many poles) for the `t`-th attempt.
+of many poles) for the `t`-th attempt. In other words, the current field
+configuration (recorded in `SE`) will be saved in `SC`.
+
+### Arguments
+* t -> Counter for the attemps.
+* SE -> A StochPXElement struct.
+* SC -> A StochPXContext struct.
+
+### Returns
+N/A
 """
 function measure(t::I64, SE::StochPXElement, SC::StochPXContext)
     @. SC.Pᵥ[t] = SE.P
@@ -589,7 +607,14 @@ end
 """
     init_mc(S::StochPXSolver)
 
-Try to create a StochPXMC struct.
+Try to create a StochPXMC struct. Some counters for Monte Carlo updates
+are initialized here.
+
+### Arguments
+* S -> A StochPXSolver struct.
+
+### Returns
+* MC -> A StochPXMC struct.
 
 See also: [`StochPXMC`](@ref).
 """
@@ -628,6 +653,9 @@ return a StochPXElement object.
 * S     -> A StochPXSolver object.
 * rng   -> Random number generator.
 * allow -> Allowed positions for the poles.
+
+### Returns
+* SE -> A StochPXElement struct.
 
 See also: [`StochPXElement`](@ref).
 """
