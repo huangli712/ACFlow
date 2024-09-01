@@ -47,7 +47,7 @@ Mutable struct. It is used within the StochPX solver only.
 * fmesh  -> Very dense mesh for the poles.
 * Λ      -> Precomputed kernel matrix.
 * Θ      -> Artificial inverse temperature.
-* χ²min  -> Minimum of χ²min.
+* χ²min  -> Local minimum of χ².
 * χ²     -> Vector of goodness-of-the-fit functional.
 * Pᵥ     -> Vector of poles' positions.
 * Aᵥ     -> Vector of poles' amplitudes.
@@ -586,6 +586,12 @@ Store Monte Carlo field configurations (positions, amplitudes, and signs
 of many poles) for the `t`-th attempt. In other words, the current field
 configuration (recorded in `SE`) will be saved in `SC`.
 
+Note that not all configurations for the `t`-th attempt will be saved.
+Only the solution that exhibits the smallest χ² will be saved. For the
+`t`-th attempt, the StochPX solver will do `nstep` Monte Carlo updates.
+It will calculate the corresponding χ², and try to figure out the smallest
+one. Then the corresponding configuration (solution) will be saved.
+
 ### Arguments
 * t -> Counter for the attemps.
 * SE -> A StochPXElement struct.
@@ -719,6 +725,14 @@ end
 
 Preprocess the input data (`rd`).
 
+### Arguments
+* S -> A StochPXSolver struct.
+* rd -> A RawData struct, which contains essential input data.
+
+### Returns
+* Gᵥ -> Input correlator.
+* σ¹ -> 1.0 / σ¹.
+
 See also: [`RawData`](@ref).
 """
 function init_iodata(S::StochPXSolver, rd::RawData)
@@ -732,7 +746,20 @@ end
 """
     init_context(S::StochPXSolver)
 
-Try to initialize the key members of a StochPXContext struct.
+Try to initialize the key members of a StochPXContext struct. It will try
+to return some key variables, which should be used to construct the
+StochPXContext struct.
+
+### Arguments
+* S -> A StochPXSolver struct.
+
+### Returns
+* Θ -> Artificial inverse temperature.
+* χ²min -> Local minimum of χ².
+* χ² -> Vector of goodness-of-the-fit functional.
+* Pᵥ -> Vector of poles' positions.
+* Aᵥ -> Vector of poles' amplitudes.
+* 𝕊ᵥ -> Vector of poles' signs.
 
 See also: [`StochPXContext`](@ref).
 """
@@ -740,13 +767,14 @@ function init_context(S::StochPXSolver)
     ntry = get_x("ntry")
     npole = get_x("npole")
     Θ = get_x("theta")
-
+    #
     χ²min = 1e10
     χ² = zeros(F64, ntry)
-
+    #
     Pᵥ = Vector{I64}[]
     Aᵥ = Vector{F64}[]
     𝕊ᵥ = Vector{F64}[]
+    #
     for _ = 1:ntry
         push!(Pᵥ,  ones(I64, npole))
         push!(Aᵥ, zeros(F64, npole))
@@ -760,6 +788,12 @@ end
     reset_mc(MC::StochPXMC)
 
 Reset the counters in StochPXMC struct.
+
+### Arguments
+* MC -> A StochPXMC struct.
+
+### Returns
+N/A
 """
 function reset_mc(MC::StochPXMC)
     MC.Sacc = 0
@@ -895,7 +929,7 @@ end
     reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
 
 Recalculate imaginary frequency Green's function and goodness-of-fit
-function by new Monte Carlo field configurations for the t-th attempts.
+function by new Monte Carlo field configurations for the `t`-th attempts.
 """
 function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
     Gᵧ = calc_green(SE.P, SE.A, SE.𝕊, SC.Λ)
