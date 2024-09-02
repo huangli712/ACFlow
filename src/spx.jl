@@ -555,8 +555,8 @@ configuration (recorded in `SE`) will be saved in `SC`.
 Note that not all configurations for the `t`-th attempt will be saved.
 Only the solution that exhibits the smallest χ² will be saved. For the
 `t`-th attempt, the StochPX solver will do `nstep` Monte Carlo updates.
-It will calculate the corresponding χ², and try to figure out the smallest
-one. Then the corresponding configuration (solution) will be saved.
+It will calculate every χ², and try to figure out the smallest one. Then
+the corresponding configuration (solution) will be saved.
 
 ### Arguments
 * t -> Counter for the attemps.
@@ -646,7 +646,8 @@ end
     )
 
 Randomize the configurations for future Monte Carlo sampling. It will
-return a StochPXElement object.
+return a StochPXElement object. Note that `allow` is generated in the
+`constraints()` function.
 
 ### Arguments
 * S     -> A StochPXSolver object.
@@ -746,9 +747,13 @@ function init_context(S::StochPXSolver)
     npole = get_x("npole")
     Θ = get_x("theta")
     #
+    # χ²ᵥ is initialized by a large number. Later it will be updated by
+    # the smallest χ² during the simulation.
     χ²ᵥ = zeros(F64, ntry)
     @. χ²ᵥ = 1e10
     #
+    # P, A, and 𝕊 should be always compatible with χ². They are updated
+    # in the `measure()` function.
     Pᵥ = Vector{I64}[]
     Aᵥ = Vector{F64}[]
     𝕊ᵥ = Vector{F64}[]
@@ -796,7 +801,7 @@ end
 
 Reset the Monte Carlo field configurations (i.e. positions and amplitudes
 of the poles). Note that the signs of the poles should not be changed.
-In addition, χ² and Gᵧ will be updated in reset_context().
+In addition, χ² and Gᵧ will be updated in the `reset_context()` function.
 
 ### Arguments
 * rng   -> Random number generator.
