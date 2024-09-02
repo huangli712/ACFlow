@@ -591,7 +591,7 @@ Preprocess the input data (`rd`).
 * Gᵥ -> Input correlator.
 * σ¹ -> 1.0 / σ¹.
 
-See also: [`RawData`](@ref).
+See also: [`RawData`](@ref), [`GreenData`](@ref).
 """
 function init_iodata(S::StochPXSolver, rd::RawData)
     G = make_data(rd)
@@ -630,7 +630,7 @@ function init_mc(S::StochPXSolver)
     #
     Xacc = 0
     Xtry = 0
-
+    #
     MC = StochPXMC(rng, Sacc, Stry, Pacc, Ptry, Aacc, Atry, Xacc, Xtry)
 
     return MC

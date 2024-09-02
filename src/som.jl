@@ -580,7 +580,14 @@ end
 """
     init_mc(S::StochOMSolver)
 
-Try to create a StochOMMC struct.
+Try to create a StochOMMC struct. Some counters for Monte Carlo updates
+are initialized here.
+
+### Arguments
+* S -> A StochOMSolver struct.
+
+### Returns
+* MC -> A StochOMMC struct.
 
 See also: [`StochOMMC`](@ref).
 """
