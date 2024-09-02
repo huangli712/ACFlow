@@ -195,7 +195,6 @@ function init(S::StochPXSolver, rd::RawData)
     # Note that Λ depends on the type of kernel.
     Λ = calc_lambda(grid, fmesh, Gᵥ)
     println("Precompute kernel matrix Λ")
-    error()
 
     # Initialize Monte Carlo configurations
     SE = init_element(S, MC.rng, allow)
@@ -1126,15 +1125,15 @@ function calc_lambda(
 
     @cswitch ktype begin
         #
-        case "fermi"
+        @case "fermi"
             Λ = calc_lambda(grid, fmesh)
             break
         #
-        case "boson"
+        @case "boson"
             Λ = calc_lambda(grid, fmesh, χ₀, false)
             break
         #
-        case "bsymm"
+        @case "bsymm"
             Λ = calc_lambda(grid, fmesh, χ₀, true)
             break
         #
