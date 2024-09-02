@@ -1536,6 +1536,15 @@ end
 
 Change the position of one randomly selected pole.
 
+### Arguments
+* t -> Counter of attempts.
+* MC -> A StochPXMC struct.
+* SE -> A StochPXElement struct.
+* SC -> A StochPXContext struct.
+
+### Returns
+N/A
+
 See also: [`try_move_p`](@ref).
 """
 function try_move_s(
@@ -1606,8 +1615,7 @@ function try_move_s(
             MC.Sacc = MC.Sacc + 1
 
             # Save optimal solution
-            if χ² < SC.χ²ᵥ[t]
-                SC.χ²ᵥ[t] = χ²
+            if SE.χ² < SC.χ²ᵥ[t]
                 measure(t, SE, SC)
             end
         end
@@ -1624,6 +1632,15 @@ end
     )
 
 Change the positions of two randomly selected poles.
+
+### Arguments
+* t -> Counter of attempts.
+* MC -> A StochPXMC struct.
+* SE -> A StochPXElement struct.
+* SC -> A StochPXContext struct.
+
+### Returns
+N/A
 
 See also: [`try_move_s`](@ref).
 """
@@ -1707,8 +1724,7 @@ function try_move_p(
             MC.Pacc = MC.Pacc + 1
 
             # Save optimal solution
-            if χ² < SC.χ²ᵥ[t]
-                SC.χ²ᵥ[t] = χ²
+            if SE.χ² < SC.χ²ᵥ[t]
                 measure(t, SE, SC)
             end
         end
@@ -1725,6 +1741,15 @@ end
     )
 
 Change the amplitudes of two randomly selected poles.
+
+### Arguments
+* t -> Counter of attempts.
+* MC -> A StochPXMC struct.
+* SE -> A StochPXElement struct.
+* SC -> A StochPXContext struct.
+
+### Returns
+N/A
 
 See also: [`try_move_x`](@ref).
 """
@@ -1819,8 +1844,7 @@ function try_move_a(
             MC.Aacc = MC.Aacc + 1
 
             # Save optimal solution
-            if χ² < SC.χ²ᵥ[t]
-                SC.χ²ᵥ[t] = χ²
+            if SE.χ² < SC.χ²ᵥ[t]
                 measure(t, SE, SC)
             end
         end
@@ -1837,6 +1861,15 @@ end
     )
 
 Exchange the amplitudes of two randomly selected poles.
+
+### Arguments
+* t -> Counter of attempts.
+* MC -> A StochPXMC struct.
+* SE -> A StochPXElement struct.
+* SC -> A StochPXContext struct.
+
+### Returns
+N/A
 
 See also: [`try_move_a`](@ref).
 """
@@ -1911,8 +1944,7 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
             MC.Xacc = MC.Xacc + 1
 
             # Save optimal solution
-            if χ² < SC.χ²ᵥ[t]
-                SC.χ²ᵥ[t] = χ²
+            if SE.χ² < SC.χ²ᵥ[t]
                 measure(t, SE, SC)
             end
         end
