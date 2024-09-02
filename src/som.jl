@@ -951,6 +951,9 @@ Actually, 𝕊 is undefined here. See init_context().
 * grid -> Imaginary axis grid for input data.
 * 𝕊    -> An interpolant.
 
+### Returns
+* Λ -> Λ(iωₙ) function, 1D function.
+
 See also: [`FermionicMatsubaraGrid`](@ref).
 """
 function eval_lambda(
@@ -986,6 +989,9 @@ Actually, 𝕊 is undefined here. See init_context().
 * r    -> A box or rectangle.
 * grid -> Imaginary axis grid for input data.
 * 𝕊    -> An interpolant.
+
+### Returns
+* Λ -> Λ(iωₙ) function, 1D function.
 
 See also: [`FermionicFragmentMatsubaraGrid`](@ref).
 """
