@@ -1280,7 +1280,17 @@ end
 """
     calc_green(t::I64, SC::StochPXContext, real_axis::Bool)
 
+Reconstruct Green's function at imaginary axis or real axis by using the
+pole expansion. It is a driver function. If `real_axis = true`, it will
+returns G(ω), or else G(iωₙ).
 
+### Arguments
+* t -> Index of the current attempt.
+* SC -> A StochPXContext struct.
+* real_axis -> Working at real axis or imaginary axis?
+
+### Returns
+* G -> Reconstructed Green's function, G(ω) or G(iωₙ).
 """
 function calc_green(t::I64, SC::StochPXContext, real_axis::Bool)
     ktype = get_b("ktype")
