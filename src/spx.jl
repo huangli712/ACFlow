@@ -584,6 +584,8 @@ one. Then the corresponding configuration (solution) will be saved.
 N/A
 """
 function measure(t::I64, SE::StochPXElement, SC::StochPXContext)
+    SC.χ²ᵥ[t] = SE.χ²
+    #
     @. SC.Pᵥ[t] = SE.P
     @. SC.Aᵥ[t] = SE.A
     @. SC.𝕊ᵥ[t] = SE.𝕊
@@ -667,6 +669,8 @@ return a StochPXElement object.
 * S     -> A StochPXSolver object.
 * rng   -> Random number generator.
 * allow -> Allowed positions for the poles.
+* Λ     -> Precomputed kernel matrix.
+* Gᵥ    -> Preprocessed input correlator.
 
 ### Returns
 * SE -> A StochPXElement struct.
@@ -809,10 +813,15 @@ end
 
 Reset the Monte Carlo field configurations (i.e. positions and amplitudes
 of the poles). Note that the signs of the poles should not be changed.
+In addition, χ² and Gᵧ will be updated in reset_context().
 
 ### Arguments
+* rng   -> Random number generator.
+* allow -> Allowed positions for the poles.
+* SE -> A StochPXElement struct.
 
 ### Returns
+N/A
 """
 function reset_element(
     rng::AbstractRNG,
