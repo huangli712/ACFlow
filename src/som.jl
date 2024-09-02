@@ -308,6 +308,12 @@ end
 
 Postprocess the collected results after the stochastic optimization
 simulations. It will generate the spectral functions.
+
+### Arguments
+* SC -> A StochOMContext struct.
+
+### Returns
+* Aout -> Spectral function, A(ω).
 """
 function average(SC::StochOMContext)
     # By default, we should write the analytic continuation results
@@ -357,7 +363,8 @@ function average(SC::StochOMContext)
     Lgood = count(x -> x < dev_ave / αgood, SC.Δᵥ)
     @assert Lgood == length(passed)
     @. Aom = Aom / Lgood
-    @printf("Median χ² : %16.12e Accepted configurations : %5i\n", dev_ave, Lgood)
+    @printf("Median χ² : %16.12e\n", dev_ave)
+    @printf("Accepted configurations : %5i\n", Lgood)
 
     # Write indices of selected solutions
     if nworkers() > 1
