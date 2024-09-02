@@ -606,7 +606,15 @@ end
 """
     init_element(MC::StochOMMC, SC::StochOMContext)
 
-Try to initialize a StochOMElement struct.
+Try to initialize a StochOMElement struct. In other words, we should
+randomize the configurations for future Monte Carlo sampling here.
+
+### Arguments
+* MC -> A StochOMMC struct.
+* SC -> A StochOMContext struct.
+
+### Returns
+* SE -> A StochOMElement struct.
 
 See also: [`StochOMElement`](@ref).
 """
