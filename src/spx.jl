@@ -411,10 +411,10 @@ function average(SC::StochPXContext)
         #    Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.mesh, SC.fmesh, χ₀, true)
         ##
         #end
-        @. Gout = calc_green(p, SC, true)
+        Gout = calc_green(p, SC, true)
 
         #Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.Λ)
-        @. Gᵣ = calc_green(p, SC, false)
+        Gᵣ = calc_green(p, SC, false)
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, SC.χ²ᵥ[p])
     #
     # Collect the `good` solutions and calculate their average.
