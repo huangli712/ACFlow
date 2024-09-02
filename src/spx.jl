@@ -751,7 +751,7 @@ StochPXContext struct.
 
 ### Returns
 * Θ  -> Artificial inverse temperature.
-* χ²ᵥ -> Vector of goodness-of-the-fit functional.
+* χ²ᵥ -> Vector of goodness-of-fit functional.
 * Pᵥ -> Vector of poles' positions.
 * Aᵥ -> Vector of poles' amplitudes.
 * 𝕊ᵥ -> Vector of poles' signs.
@@ -1505,7 +1505,7 @@ function try_move_s(
     SC::StochPXContext
     )
     # Get parameters
-    ngrid = length(SC.Gᵧ) # get_b("ngrid")
+    ngrid = length(SC.Gᵥ) # get_b("ngrid")
     nfine = get_x("nfine")
     npole = get_x("npole")
     move_window = nfine ÷ 100
@@ -1594,7 +1594,7 @@ function try_move_p(
     SC::StochPXContext
     )
     # Get parameters
-    ngrid = length(SC.Gᵧ) # get_b("ngrid")
+    ngrid = length(SC.Gᵥ) # get_b("ngrid")
     npole = get_x("npole")
 
     # Sanity check
@@ -1695,7 +1695,7 @@ function try_move_a(
     SC::StochPXContext
     )
     # Get parameters
-    ngrid = length(SC.Gᵧ) # get_b("ngrid")
+    ngrid = length(SC.Gᵥ) # get_b("ngrid")
     npole = get_x("npole")
 
     # Sanity check
@@ -1802,7 +1802,7 @@ See also: [`try_move_a`](@ref).
 """
 function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
     # Get parameters
-    ngrid = length(SC.Gᵧ) # get_b("ngrid")
+    ngrid = length(SC.Gᵥ) # get_b("ngrid")
     offdiag = get_b("offdiag")
     npole = get_x("npole")
 
