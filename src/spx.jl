@@ -1115,7 +1115,6 @@ Precompute the kernel matrix Λ (Λ ≡ 1 / (iωₙ - ϵ)). It is the driver fun
 
 ### Returns
 * Λ -> The kernel matrix, a 2D array.
-
 """
 function calc_lambda(
     grid::AbstractGrid,
@@ -1153,6 +1152,9 @@ It is for the fermionic systems.
 ### Arguments
 * grid  -> Imaginary axis grid for input data. 
 * fmesh -> Very dense mesh in [wmin, wmax].
+
+### Returns
+* Λ -> The kernel matrix, a 2D array.
 """
 function calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh)
     ngrid = get_b("ngrid")
@@ -1190,6 +1192,9 @@ true, the kernel is `bsymm`. This function is for the bosonic systems.
 * fmesh -> Very dense mesh in [wmin, wmax].
 * χ₀    -> -G(0).
 * bsymm -> Type of bosonic kernel.
+
+### Returns
+* Λ -> The kernel matrix, a 2D array.
 """
 function calc_lambda(
     grid::AbstractGrid,
