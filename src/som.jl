@@ -156,19 +156,25 @@ structs. Please don't call this function directly.
 * SC -> A StochOMContext struct.
 """
 function init(S::StochOMSolver, rd::RawData)
-    MC = init_mc(S)
-    println("Create infrastructure for Monte Carlo sampling")
-
+    # Prepare input data
     Gᵥ, σ¹ = init_iodata(S, rd)
     println("Postprocess input data: ", length(σ¹), " points")
 
+    # Prepare grid for input data
     grid = make_grid(rd)
     println("Build grid for input data: ", length(grid), " points")
 
+    # Prepare mesh for output spectrum
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
+    # Initialize counters for Monte Carlo engine
+    MC = init_mc(S)
+    println("Create infrastructure for Monte Carlo sampling")
+
+    # Prepare some key variables
     Cᵥ, Δᵥ, 𝕊ᵥ = init_context(S, grid)
+
     SC = StochOMContext(Gᵥ, σ¹, grid, mesh, Cᵥ, Δᵥ, 𝕊ᵥ)
 
     return MC, SC
