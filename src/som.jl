@@ -245,7 +245,7 @@ The arguments `p1` and `p2` are copies of PBASE and PStochOM, respectively.
 ### Arguments
 * S -> A StochOMSolver struct.
 * p1 -> A copy of PBASE.
-* p2 -> A copy of PStochPX.
+* p2 -> A copy of PStochOM.
 * MC -> A StochOMMC struct.
 * SC -> A StochOMContext struct.
 
@@ -276,6 +276,7 @@ function prun(
     nstep = get_s("nstep")
 
     # Sample and collect data
+    println("Start stochastic sampling...")
     for l = 1:ntry
         # Re-initialize the simulation
         SE = init_element(MC, SC)
@@ -286,14 +287,19 @@ function prun(
             update(MC, SE, SC)
         end
 
-        # Accumulate the data and write some statistics
+        # Write Monte Carlo statistics
+        myid() == 2 && l % 10 == 0 && fwrite && write_statistics(MC)
+
+        # Accumulate the data
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
+
+        # Show error function for the current attempt
         @printf("try -> %6i (%6i) Δ -> %8.4e \n", l, ntry, SE.Δ)
         flush(stdout)
-        myid() == 2 && l % 10 == 0 && fwrite && write_statistics(MC)
     end
 
+    # Generate spectral density from Monte Carlo field configuration
     return average(SC)
 end
 
