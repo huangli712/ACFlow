@@ -1130,7 +1130,8 @@ where
         Gᵥ::Vector{F64}
     )
 
-Precompute the kernel matrix Λ (Λ ≡ 1 / (iωₙ - ϵ)). It is the driver function.
+Precompute the kernel matrix Λ (Λ ≡ 1 / (iωₙ - ϵ)). It is the essential
+driver function.
 
 ### Arguments
 * grid  -> Imaginary axis grid for input data. 
