@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/01
+# Last modified: 2024/09/02
 #
 
 #=
@@ -21,15 +21,20 @@ For the off-diagonal elements of the matrix-valued Green's function, the
 signs of the poles (𝕊) could be negative (-1.0). However, for the other
 cases, 𝕊 is always positive (+1.0).
 
+Note that χ² denotes the goodness-of-fit functional, it should be always
+compatible with P, A, and 𝕊.
+
 ### Members
-* P -> It means the positions of the poles.
-* A -> It means the weights / amplitudes of the poles.
-* 𝕊 -> It means the signs of the poles.
+* χ² -> Goodness-of-fit functional for the current configuration.
+* P  -> It means the positions of the poles.
+* A  -> It means the weights / amplitudes of the poles.
+* 𝕊  -> It means the signs of the poles.
 """
 mutable struct StochPXElement
-    P :: Vector{I64}
-    A :: Vector{F64}
-    𝕊 :: Vector{F64}
+    χ² :: F64
+    P  :: Vector{I64}
+    A  :: Vector{F64}
+    𝕊  :: Vector{F64}
 end
 
 """
