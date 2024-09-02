@@ -202,7 +202,6 @@ function init(S::StochPXSolver, rd::RawData)
 
     # Prepare some key variables
     Θ, χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S)
-    @show χ²ᵥ
 
     SC = StochPXContext(Gᵥ, σ¹, allow, grid, mesh, fmesh,
                         Λ, Θ, χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ)
@@ -250,7 +249,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         # Reset Monte Carlo field configuration
         reset_element(MC.rng, SC.allow, SE)
 
-        # Reset Gᵧ and χ²
+        # Reset Gᵧ and χ² in SE (StochACElement)
         reset_context(t, SE, SC)
 
         # Apply simulated annealing algorithm
@@ -261,15 +260,13 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         # Write Monte Carlo statistics
         fwrite && write_statistics(MC)
 
-        # Update χ²[t]
-        # It must be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
-        SC.χ²[t] = SC.χ²min
-        @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²min)
+        # Show the best χ² (the smallest) for the current attempt
+        @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²ᵥ[t])
         flush(stdout)
     end
 
     # Write pole expansion coefficients
-    fwrite && write_pole(SC.Pᵥ, SC.Aᵥ, SC.𝕊ᵥ, SC.χ², SC.fmesh)
+    fwrite && write_pole(SC.Pᵥ, SC.Aᵥ, SC.𝕊ᵥ, SC.χ²ᵥ, SC.fmesh)
 
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
@@ -929,6 +926,11 @@ end
 
 Recalculate imaginary frequency Green's function and goodness-of-fit
 function by new Monte Carlo field configurations for the `t`-th attempts.
+
+### Arguments
+
+### Returns
+N/A
 """
 function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
     SE.Gᵧ = calc_green(SE.P, SE.A, SE.𝕊, SC.Λ)
