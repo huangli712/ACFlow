@@ -60,7 +60,6 @@ Mutable struct. It is used within the StochPX solver only.
 """
 mutable struct StochPXContext
     Gᵥ    :: Vector{F64}
-    Gᵧ    :: Vector{F64}
     σ¹    :: Vector{F64}
     allow :: Vector{I64}
     grid  :: AbstractGrid
