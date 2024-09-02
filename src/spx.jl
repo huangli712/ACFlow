@@ -1119,7 +1119,7 @@ where
     )
 
 Precompute the kernel matrix Λ (Λ ≡ 1 / (iωₙ - ϵ)). It is the essential
-driver function.
+driver function. Note that Λ depends on the kernel's type (`ktype`).
 
 ### Arguments
 * grid  -> Imaginary axis grid for input data. 
@@ -1271,7 +1271,7 @@ returns G(ω), or else G(iωₙ).
 ### Arguments
 * t -> Index of the current attempt.
 * SC -> A StochPXContext struct.
-* real_axis -> Working at real axis or imaginary axis?
+* real_axis -> Working at real axis (true) or imaginary axis (false)?
 
 ### Returns
 * G -> Reconstructed Green's function, G(ω) or G(iωₙ).
@@ -1281,10 +1281,12 @@ function calc_green(t::I64, SC::StochPXContext, real_axis::Bool)
     ntry = get_x("ntry")
     @assert t ≤ ntry
 
+    # Calculate G(iωₙ)
     if real_axis == false
         return calc_green(SC.Pᵥ[t], SC.Aᵥ[t], SC.𝕊ᵥ[t], SC.Λ)
     end
 
+    # Calculate G(ω). Now we don't need SC.Λ.
     χ₀ = -SC.Gᵥ[1]
     @cswitch ktype begin
         @case "fermi"
