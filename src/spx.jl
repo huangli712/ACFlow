@@ -199,9 +199,9 @@ function init(S::StochPXSolver, rd::RawData)
     # Initialize Monte Carlo configurations
     SE = init_element(S, MC.rng, allow, Λ, Gᵥ)
     println("Randomize Monte Carlo configurations")
-    error()
+
     # Prepare some key variables
-    Θ, χ²min, χ², Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S)
+    Θ, χ², Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S)
 
     SC = StochPXContext(Gᵥ, σ¹, allow, grid, mesh, fmesh,
                         Λ, Θ, χ², Pᵥ, Aᵥ, 𝕊ᵥ)
@@ -750,9 +750,8 @@ StochPXContext struct.
 * S -> A StochPXSolver struct.
 
 ### Returns
-* Θ -> Artificial inverse temperature.
-* χ²min -> Local minimum of χ².
-* χ² -> Vector of goodness-of-the-fit functional.
+* Θ  -> Artificial inverse temperature.
+* χ²ᵥ -> Vector of goodness-of-the-fit functional.
 * Pᵥ -> Vector of poles' positions.
 * Aᵥ -> Vector of poles' amplitudes.
 * 𝕊ᵥ -> Vector of poles' signs.
@@ -764,8 +763,8 @@ function init_context(S::StochPXSolver)
     npole = get_x("npole")
     Θ = get_x("theta")
     #
-    χ²min = 1e10
-    χ² = zeros(F64, ntry)
+    χ²ᵥ = zeros(F64, ntry)
+    @. χ²ᵥ = 1e10
     #
     Pᵥ = Vector{I64}[]
     Aᵥ = Vector{F64}[]
@@ -777,7 +776,7 @@ function init_context(S::StochPXSolver)
         push!(𝕊ᵥ, zeros(F64, npole))
     end
 
-    return Θ, χ²min, χ², Pᵥ, Aᵥ, 𝕊ᵥ
+    return Θ, χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ
 end
 
 """
