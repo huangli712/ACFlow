@@ -179,10 +179,6 @@ function init(S::StochPXSolver, rd::RawData)
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
-    # Initialize Monte Carlo configurations
-    SE = init_element(S, MC.rng, allow)
-    println("Randomize Monte Carlo configurations")
-
     # Prepare input data
     Gᵥ, σ¹ = init_iodata(S, rd)
     println("Postprocess input data: ", length(σ¹), " points")
@@ -197,21 +193,13 @@ function init(S::StochPXSolver, rd::RawData)
 
     # Prepare the kernel matrix Λ. It is used to speed up the simulation.
     # Note that Λ depends on the type of kernel.
-    ktype = get_b("ktype")
-    χ₀ = -Gᵥ[1]
-    #
-    if     ktype == "fermi"
-        Λ = calc_lambda(grid, fmesh)
-    #
-    elseif ktype == "boson"
-        Λ = calc_lambda(grid, fmesh, χ₀, false)
-    #
-    elseif ktype == "bsymm"
-        Λ = calc_lambda(grid, fmesh, χ₀, true)
-    #
-    end
-    @show Λ
+    Λ = calc_lambda(grid, fmesh, Gᵥ)
+    println("Precompute kernel matrix Λ")
     error()
+
+    # Initialize Monte Carlo configurations
+    SE = init_element(S, MC.rng, allow)
+    println("Randomize Monte Carlo configurations")
 
     # Prepare some key variables
     Θ, χ²min, χ², Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S)
@@ -1112,6 +1100,22 @@ where
 =#
 
 """
+    calc_lambda(
+        grid::AbstractGrid,
+        fmesh::AbstractMesh,
+        Gᵥ::Vector{F64}
+    )
+
+Precompute the kernel matrix Λ (Λ ≡ 1 / (iωₙ - ϵ)). It is the driver function.
+
+### Arguments
+* grid  -> Imaginary axis grid for input data. 
+* fmesh -> Very dense mesh in [wmin, wmax].
+* Gᵥ -> Preprocessed input correlator.
+
+### Returns
+* Λ -> The kernel matrix, a 2D array.
+
 """
 function calc_lambda(
     grid::AbstractGrid,
@@ -1120,16 +1124,24 @@ function calc_lambda(
     )
     ktype = get_b("ktype")
     χ₀ = -Gᵥ[1]
-    if     ktype == "fermi"
-        Λ = calc_lambda(grid, fmesh)
-    #
-    elseif ktype == "boson"
-        Λ = calc_lambda(grid, fmesh, χ₀, false)
-    #
-    elseif ktype == "bsymm"
-        Λ = calc_lambda(grid, fmesh, χ₀, true)
-    #
+
+    @cswitch ktype begin
+        #
+        case "fermi"
+            Λ = calc_lambda(grid, fmesh)
+            break
+        #
+        case "boson"
+            Λ = calc_lambda(grid, fmesh, χ₀, false)
+            break
+        #
+        case "bsymm"
+            Λ = calc_lambda(grid, fmesh, χ₀, true)
+            break
+        #
     end
+
+    return Λ
 end
 
 """
