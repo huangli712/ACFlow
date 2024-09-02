@@ -184,6 +184,13 @@ end
     run(MC::StochOMMC, SC::StochOMContext)
 
 Perform stochastic optimization simulation, sequential version.
+
+### Arguments
+* MC -> A StochOMMC struct.
+* SC -> A StochOMContext struct.
+
+### Returns
+* Aout -> Spectral function, A(ω).
 """
 function run(MC::StochOMMC, SC::StochOMContext)
     # By default, we should write the analytic continuation results
