@@ -1274,6 +1274,38 @@ function calc_lambda(
 end
 
 """
+    calc_green(t::I64, SC::StochPXContext, real_axis::Bool)
+
+
+"""
+function calc_green(t::I64, SC::StochPXContext, real_axis::Bool)
+    ktype = get_b("ktype")
+    ntry = get_x("ntry")
+    @assert t ≤ ntry
+
+    if real_axis == false
+        return calc_green(SC.Pᵥ[t], SC.Aᵥ[t], SC.𝕊ᵥ[t], SC.Λ)
+    end
+
+    χ₀ = -SC.Gᵥ[1]
+    @cswitch ktype begin
+        @case "fermi"
+            G = calc_green(SC.Pᵥ[t], SC.Aᵥ[t], SC.𝕊ᵥ[t], SC.mesh, SC.fmesh)
+            break
+
+        @case "boson"
+            G = calc_green(SC.Pᵥ[t], SC.Aᵥ[t], SC.𝕊ᵥ[t], SC.mesh, SC.fmesh, χ₀, false)
+            break
+
+        @case "bsymm"
+            G = calc_green(SC.Pᵥ[t], SC.Aᵥ[t], SC.𝕊ᵥ[t], SC.mesh, SC.fmesh, χ₀, true)
+            break
+    end
+
+    return G
+end
+
+"""
     calc_green(
         P::Vector{I64},
         A::Vector{F64},
