@@ -933,8 +933,15 @@ end
 
 Recalculate imaginary frequency Green's function and goodness-of-fit
 function by new Monte Carlo field configurations for the `t`-th attempts.
+Then they are used to update `SE`.
+
+Some key variables in `SC` are also updated as well. Perhaps we should
+develop a smart algorhtm to update Θ here.
 
 ### Arguments
+* t -> Counter for attempts.
+* SE -> A StochPXElement struct.
+* SC -> A StochPXContext struct.
 
 ### Returns
 N/A
@@ -944,7 +951,7 @@ function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
     SE.χ² = calc_chi2(SE.Gᵧ, SC.Gᵥ)
 
     SC.Θ = get_x("theta")
-    SC.χ²[t] = 1e10
+    SC.χ²ᵥ[t] = 1e10
 end
 
 """
@@ -955,6 +962,12 @@ internally to represent the possible positions of poles. Note that this
 mesh could be non-uniform. If the file `fmesh.inp` exists, the code will
 try to load it to initialize the mesh. Or else the code will generate
 a linear mesh automatically.
+
+### Arguments
+* S -> A StochPXSolver struct.
+
+### Returns
+* fmesh -> A very fine, perhaps non-uniform mesh in [wmin, wmax]
 
 See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
 """
@@ -979,11 +992,9 @@ function calc_fmesh(S::StochPXSolver)
         end
         #
         fmesh = DynamicMesh(mesh)
-
     # Or else we will return a linear mesh directly.
     else
         fmesh = LinearMesh(nfine, wmin, wmax)
-
     end
 
     return fmesh
