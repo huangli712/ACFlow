@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/31
+# Last modified: 2024/09/02
 #
 
 #=
@@ -80,7 +80,18 @@ end
     solve(S::StochOMSolver, rd::RawData)
 
 Solve the analytic continuation problem by the stochastic optimization
-method.
+method. This solver requires a lot of computational resources to get
+reasonable results. It is suitable for both Matsubara and imaginary
+time correlators.
+
+### Arguments
+* S -> A StochOMSolver struct.
+* rd -> A RawData struct, containing raw data for input correlator.
+
+### Returns
+* mesh -> Real frequency mesh, ω.
+* Aout -> Spectral function, A(ω).
+* Gout -> Retarded Green's function, G(ω).
 """
 function solve(S::StochOMSolver, rd::RawData)
     println("[ StochOM ]")
@@ -88,6 +99,7 @@ function solve(S::StochOMSolver, rd::RawData)
 
     # Parallel version
     if nworkers() > 1
+        #
         println("Using $(nworkers()) workers")
         #
         # Copy configuration dicts
@@ -117,12 +129,13 @@ function solve(S::StochOMSolver, rd::RawData)
         #
         # Postprocess the solutions
         Gout = last(SC, Aout)
-
+        #
     # Sequential version
     else
+        #
         Aout = run(MC, SC)
         Gout = last(SC, Aout)
-
+        #
     end
 
     return SC.mesh.mesh, Aout, Gout
@@ -132,7 +145,15 @@ end
     init(S::StochOMSolver, rd::RawData)
 
 Initialize the StochOM solver and return the StochOMMC and StochOMContext
-structs.
+structs. Please don't call this function directly.
+
+### Arguments
+* S -> A StochOMSolver struct.
+* rd -> A RawData struct, containing raw data for input correlator.
+
+### Returns
+* MC -> A StochOMMC struct.
+* SC -> A StochOMContext struct.
 """
 function init(S::StochOMSolver, rd::RawData)
     MC = init_mc(S)
