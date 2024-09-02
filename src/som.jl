@@ -555,6 +555,29 @@ end
 =#
 
 """
+    init_iodata(S::StochOMSolver, rd::RawData)
+
+Preprocess the input data (`rd`).
+
+### Arguments
+* S -> A StochOMSolver struct.
+* rd -> A RawData struct, which contains essential input data.
+
+### Returns
+* Gᵥ -> Input correlator.
+* σ¹ -> 1.0 / σ¹.
+
+See also: [`RawData`](@ref), [`GreenData`](@ref).
+"""
+function init_iodata(S::StochOMSolver, rd::RawData)
+    G = make_data(rd)
+    Gᵥ = G.value
+    σ¹ = 1.0 ./ G.error
+
+    return Gᵥ, σ¹
+end
+
+"""
     init_mc(S::StochOMSolver)
 
 Try to create a StochOMMC struct.
@@ -636,21 +659,6 @@ function init_element(MC::StochOMMC, SC::StochOMContext)
     Δ = calc_error(G, SC.Gᵥ, SC.σ¹)
 
     return StochOMElement(C, Λ, G, Δ)
-end
-
-"""
-    init_iodata(S::StochOMSolver, rd::RawData)
-
-Preprocess the input data (`rd`).
-
-See also: [`RawData`](@ref), [`GreenData`](@ref).
-"""
-function init_iodata(S::StochOMSolver, rd::RawData)
-    G = make_data(rd)
-    Gᵥ = G.value
-    σ¹ = 1.0 ./ G.error
-
-    return Gᵥ, σ¹
 end
 
 """
