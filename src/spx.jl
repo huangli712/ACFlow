@@ -202,6 +202,7 @@ function init(S::StochPXSolver, rd::RawData)
 
     # Prepare some key variables
     Θ, χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S)
+    @show χ²ᵥ
 
     SC = StochPXContext(Gᵥ, σ¹, allow, grid, mesh, fmesh,
                         Λ, Θ, χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ)
@@ -813,6 +814,10 @@ end
 
 Reset the Monte Carlo field configurations (i.e. positions and amplitudes
 of the poles). Note that the signs of the poles should not be changed.
+
+### Arguments
+
+### Returns
 """
 function reset_element(
     rng::AbstractRNG,
@@ -917,7 +922,6 @@ function reset_element(
             @. SE.A[selected] = A₂
         end
     end
-
 end
 
 """
@@ -927,13 +931,11 @@ Recalculate imaginary frequency Green's function and goodness-of-fit
 function by new Monte Carlo field configurations for the `t`-th attempts.
 """
 function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
-    Gᵧ = calc_green(SE.P, SE.A, SE.𝕊, SC.Λ)
-    χ² = calc_chi2(Gᵧ, SC.Gᵥ)
+    SE.Gᵧ = calc_green(SE.P, SE.A, SE.𝕊, SC.Λ)
+    SE.χ² = calc_chi2(SE.Gᵧ, SC.Gᵥ)
 
-    @. SC.Gᵧ = Gᵧ
-    SC.χ²[t] = χ²
-    SC.χ²min = 1e10
     SC.Θ = get_x("theta")
+    SC.χ²[t] = 1e10
 end
 
 """
