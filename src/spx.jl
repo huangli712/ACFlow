@@ -399,20 +399,22 @@ function average(SC::StochPXContext)
     if method == "best"
         # The χ² of the best solution should be the smallest.
         p = argmin(SC.χ²ᵥ)
-        χ₀ = -SC.Gᵥ[1]
+        #χ₀ = -SC.Gᵥ[1]
 
-        if     ktype == "fermi"
-            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.mesh, SC.fmesh)
-        #
-        elseif ktype == "boson"
-            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.mesh, SC.fmesh, χ₀, false)
-        #
-        elseif ktype == "bsymm"
-            Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.mesh, SC.fmesh, χ₀, true)
-        #
-        end
+        #if     ktype == "fermi"
+        #    Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.mesh, SC.fmesh)
+        ##
+        #elseif ktype == "boson"
+        #    Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.mesh, SC.fmesh, χ₀, false)
+        ##
+        #elseif ktype == "bsymm"
+        #    Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.mesh, SC.fmesh, χ₀, true)
+        ##
+        #end
+        @. Gout = calc_green(p, SC, true)
 
-        Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.Λ)
+        #Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.Λ)
+        @. Gᵣ = calc_green(p, SC, false)
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, SC.χ²ᵥ[p])
     #
     # Collect the `good` solutions and calculate their average.
