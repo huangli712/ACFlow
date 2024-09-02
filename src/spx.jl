@@ -249,7 +249,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         # Reset Monte Carlo field configuration
         reset_element(MC.rng, SC.allow, SE)
 
-        # Reset Gᵧ and χ² in SE (StochACElement)
+        # Reset Gᵧ and χ² in SE (StochPXElement)
         reset_context(t, SE, SC)
 
         # Apply simulated annealing algorithm
@@ -338,7 +338,7 @@ function prun(
         # Reset Monte Carlo field configuration
         reset_element(MC.rng, SC.allow, SE)
 
-        # Reset Gᵧ and χ²
+        # Reset Gᵧ and χ² in SE (StochPXElement)
         reset_context(t, SE, SC)
 
         # Apply simulated annealing algorithm
@@ -349,15 +349,13 @@ function prun(
         # Write Monte Carlo statistics
         myid() == 2 && fwrite && write_statistics(MC)
 
-        # Update χ²[t]
-        # It must be consistent with SC.Pᵥ[t], SC.Aᵥ[t], and SC.𝕊ᵥ[t].
-        SC.χ²[t] = SC.χ²min
-        @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²min)
+        # Show the best χ² (the smallest) for the current attempt
+        @printf("try = %6i -> [χ² = %9.4e]\n", t, SC.χ²ᵥ[t])
         flush(stdout)
     end
 
     # Write pole expansion coefficients
-    myid() == 2 && fwrite && write_pole(SC.Pᵥ, SC.Aᵥ, SC.𝕊ᵥ, SC.χ², SC.fmesh)
+    myid() == 2 && fwrite && write_pole(SC.Pᵥ, SC.Aᵥ, SC.𝕊ᵥ, SC.χ²ᵥ, SC.fmesh)
 
     # Generate spectral density from Monte Carlo field configuration
     return average(SC)
