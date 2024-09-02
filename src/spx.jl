@@ -398,7 +398,7 @@ function average(SC::StochPXContext)
     # Choose the best solution
     if method == "best"
         # The χ² of the best solution should be the smallest.
-        p = argmin(SC.χ²)
+        p = argmin(SC.χ²ᵥ)
         χ₀ = -SC.Gᵥ[1]
 
         if     ktype == "fermi"
@@ -413,18 +413,18 @@ function average(SC::StochPXContext)
         end
 
         Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.Λ)
-        @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, SC.χ²[p])
+        @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, SC.χ²ᵥ[p])
     #
     # Collect the `good` solutions and calculate their average.
     else
-        # Calculate the median of SC.χ²
-        chi2_med = median(SC.χ²)
-        chi2_ave = mean(SC.χ²)
+        # Calculate the median of SC.χ²ᵥ
+        chi2_med = median(SC.χ²ᵥ)
+        chi2_ave = mean(SC.χ²ᵥ)
 
         # Determine the αgood parameter, which is used to filter the
         # calculated spectra.
         αgood = 1.2
-        if count(x -> x < chi2_med / αgood, SC.χ²) ≤ ntry / 10
+        if count(x -> x < chi2_med / αgood, SC.χ²ᵥ) ≤ ntry / 10
             αgood = 1.0
         end
 
@@ -433,7 +433,7 @@ function average(SC::StochPXContext)
         χ₀ = -SC.Gᵥ[1]
         passed = I64[]
         for i = 1:ntry
-            if SC.χ²[i] < chi2_med / αgood
+            if SC.χ²ᵥ[i] < chi2_med / αgood
                 if     ktype == "fermi"
                     G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.mesh, SC.fmesh)
                 #
