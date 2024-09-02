@@ -1422,6 +1422,9 @@ the distance between input and regenerated correlators.
 * Gₙ -> Reconstructed Green's function.
 * Gᵥ -> Original Green's function.
 
+### Returns
+* chi2 -> Goodness-of-fit functional, χ².
+
 See also: [`calc_green`](@ref).
 """
 function calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
