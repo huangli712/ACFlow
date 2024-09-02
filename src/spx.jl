@@ -1171,8 +1171,8 @@ end
 """
     calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh)
 
-Precompute the kernel matrix Λ (Λ ≡ 1 / (iωₙ - ϵ)).
-It is for the fermionic systems.
+Precompute the kernel matrix Λ (Λ ≡ 1 / (iωₙ - ϵ)). It is a service
+function and is for the fermionic systems.
 
 ### Arguments
 * grid  -> Imaginary axis grid for input data. 
@@ -1288,6 +1288,9 @@ Reconstruct Green's function at imaginary axis by the pole expansion.
 * A -> Amplitudes of poles.
 * 𝕊 -> Signs of poles.
 * Λ -> Kernel matrix Λ.
+
+### Returns
+* G -> Reconstructed Green's function, G(iωₙ).
 """
 function calc_green(
     P::Vector{I64},
