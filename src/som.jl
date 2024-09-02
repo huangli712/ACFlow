@@ -423,6 +423,14 @@ end
 
 Using the Metropolis algorithm to update the field configuration, i.e, a
 collection of hundreds of boxes.
+
+### Arguments
+* MC -> A StochOMMC struct.
+* SE -> A StochOMElement struct.
+* SC -> A StochOMContext struct.
+
+### Returns
+N/A
 """
 function update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
     Tmax = 100 # Length of the Markov chain
