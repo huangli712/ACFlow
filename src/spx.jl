@@ -175,10 +175,6 @@ function init(S::StochPXSolver, rd::RawData)
     fmesh = calc_fmesh(S)
     allow = constraints(S, fmesh)
 
-    # Initialize counters for Monte Carlo engine
-    MC = init_mc(S)
-    println("Create infrastructure for Monte Carlo sampling")
-
     # Prepare input data
     Gᵥ, σ¹ = init_iodata(S, rd)
     println("Postprocess input data: ", length(σ¹), " points")
@@ -195,6 +191,10 @@ function init(S::StochPXSolver, rd::RawData)
     # Note that Λ depends on the type of kernel.
     Λ = calc_lambda(grid, fmesh, Gᵥ)
     println("Precompute kernel matrix Λ")
+
+    # Initialize counters for Monte Carlo engine
+    MC = init_mc(S)
+    println("Create infrastructure for Monte Carlo sampling")
 
     # Initialize Monte Carlo configurations
     SE = init_element(S, MC.rng, allow, Λ, Gᵥ)
@@ -365,7 +365,7 @@ end
     average(SC::StochPXContext)
 
 Postprocess the results generated during the stochastic pole expansion
-simulations. It will generate the spectral functions, real frequency
+simulations. It will calculate the spectral functions, real frequency
 Green's function, and imaginary frequency Green's function.
 
 ### Arguments
@@ -383,7 +383,6 @@ function average(SC::StochPXContext)
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
 
     # Setup essential parameters
-    #ktype = get_b("ktype")
     nmesh = get_b("nmesh")
     method = get_x("method")
     ntry = get_x("ntry")
@@ -399,23 +398,13 @@ function average(SC::StochPXContext)
     if method == "best"
         # The χ² of the best solution should be the smallest.
         p = argmin(SC.χ²ᵥ)
-        #χ₀ = -SC.Gᵥ[1]
-
-        #if     ktype == "fermi"
-        #    Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.mesh, SC.fmesh)
-        ##
-        #elseif ktype == "boson"
-        #    Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.mesh, SC.fmesh, χ₀, false)
-        ##
-        #elseif ktype == "bsymm"
-        #    Gout = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.mesh, SC.fmesh, χ₀, true)
-        ##
-        #end
-        Gout = calc_green(p, SC, true)
-
-        #Gᵣ = calc_green(SC.Pᵥ[p], SC.Aᵥ[p], SC.𝕊ᵥ[p], SC.Λ)
-        Gᵣ = calc_green(p, SC, false)
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, SC.χ²ᵥ[p])
+        #
+        # Calculate G(ω)
+        Gout = calc_green(p, SC, true)
+        #
+        # Calculate G(iωₙ)
+        Gᵣ = calc_green(p, SC, false)
     #
     # Collect the `good` solutions and calculate their average.
     else
@@ -432,24 +421,14 @@ function average(SC::StochPXContext)
 
         # Go through all the solutions
         c = 0.0 # A counter
-        #χ₀ = -SC.Gᵥ[1]
         passed = I64[]
         for i = 1:ntry
             if SC.χ²ᵥ[i] < chi2_med / αgood
-                #if     ktype == "fermi"
-                #    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.mesh, SC.fmesh)
-                ##
-                #elseif ktype == "boson"
-                #    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.mesh, SC.fmesh, χ₀, false)
-                ##
-                #elseif ktype == "bsymm"
-                #    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.mesh, SC.fmesh, χ₀, true)
-                ##
-                #end
+                # Calculate and accumulate G(ω)
                 G = calc_green(i, SC, true)
                 @. Gout = Gout + G
                 #
-                #G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.Λ)
+                # Calculate and accumulate G(iωₙ)
                 G = calc_green(i, SC, false)
                 @. Gᵣ = Gᵣ + G
                 #
