@@ -43,20 +43,19 @@ end
 Mutable struct. It is used within the StochPX solver only.
 
 ### Members
-* Gᵥ     -> Input data for correlator.
-* Gᵧ     -> Generated correlator.
-* σ¹     -> Actually 1.0 / σ¹.
-* allow  -> Allowable indices.
-* grid   -> Grid for input data.
-* mesh   -> Mesh for output spectrum.
-* fmesh  -> Very dense mesh for the poles.
-* Λ      -> Precomputed kernel matrix.
-* Θ      -> Artificial inverse temperature.
-* χ²min  -> Local minimum of χ².
-* χ²     -> Vector of goodness-of-the-fit functional.
-* Pᵥ     -> Vector of poles' positions.
-* Aᵥ     -> Vector of poles' amplitudes.
-* 𝕊ᵥ     -> Vector of poles' signs.
+* Gᵥ    -> Input data for correlator.
+* Gᵧ    -> Generated correlator.
+* σ¹    -> Actually 1.0 / σ¹.
+* allow -> Allowable indices.
+* grid  -> Grid for input data.
+* mesh  -> Mesh for output spectrum.
+* fmesh -> Very dense mesh for the poles.
+* Λ     -> Precomputed kernel matrix.
+* Θ     -> Artificial inverse temperature.
+* χ²ᵥ   -> Vector of goodness-of-fit functional.
+* Pᵥ    -> Vector of poles' positions.
+* Aᵥ    -> Vector of poles' amplitudes.
+* 𝕊ᵥ    -> Vector of poles' signs.
 """
 mutable struct StochPXContext
     Gᵥ    :: Vector{F64}
@@ -68,8 +67,7 @@ mutable struct StochPXContext
     fmesh :: AbstractMesh
     Λ     :: Array{F64,2}
     Θ     :: F64
-    χ²min :: F64
-    χ²    :: Vector{F64}
+    χ²ᵥ   :: Vector{F64}
     Pᵥ    :: Vector{Vector{I64}}
     Aᵥ    :: Vector{Vector{F64}}
     𝕊ᵥ    :: Vector{Vector{F64}}
