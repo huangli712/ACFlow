@@ -1516,6 +1516,9 @@ function constraints(S::StochPXSolver, fmesh::AbstractMesh)
         end
     end
 
+    # If it is offdiagonal, then the spectral function can be negative.
+    # Now `allow` is for A(ω) > 0 and `unallow` is for A(ω) < 0. We have
+    # to distinguish them. 
     if offdiag
         append!(allow, unallow)
     end
