@@ -197,7 +197,7 @@ function init(S::StochPXSolver, rd::RawData)
     println("Precompute kernel matrix Λ")
 
     # Initialize Monte Carlo configurations
-    SE = init_element(S, MC.rng, allow)
+    SE = init_element(S, MC.rng, allow, Λ, Gᵥ)
     println("Randomize Monte Carlo configurations")
 
     # Prepare some key variables
@@ -638,10 +638,35 @@ function init_mc(S::StochPXSolver)
 end
 
 """
+    init_iodata(S::StochPXSolver, rd::RawData)
+
+Preprocess the input data (`rd`).
+
+### Arguments
+* S -> A StochPXSolver struct.
+* rd -> A RawData struct, which contains essential input data.
+
+### Returns
+* Gᵥ -> Input correlator.
+* σ¹ -> 1.0 / σ¹.
+
+See also: [`RawData`](@ref).
+"""
+function init_iodata(S::StochPXSolver, rd::RawData)
+    G = make_data(rd)
+    Gᵥ = G.value # Gᵥ = abs.(G.value)
+    σ¹ = 1.0 ./ sqrt.(G.covar)
+
+    return Gᵥ, σ¹
+end
+
+"""
     init_element(
         S::StochPXSolver,
         rng::AbstractRNG,
-        allow::Vector{I64}
+        allow::Vector{I64},
+        Λ::Array{F64,2},
+        Gᵥ::Vector{F64}
     )
 
 Randomize the configurations for future Monte Carlo sampling. It will
@@ -660,7 +685,9 @@ See also: [`StochPXElement`](@ref).
 function init_element(
     S::StochPXSolver,
     rng::AbstractRNG,
-    allow::Vector{I64}
+    allow::Vector{I64},
+    Λ::Array{F64,2},
+    Gᵥ::Vector{F64}
     )
     offdiag = get_b("offdiag")
     npole = get_x("npole")
@@ -710,29 +737,6 @@ function init_element(
     SE = StochPXElement(abs.(P), A, 𝕊)
 
     return SE
-end
-
-"""
-    init_iodata(S::StochPXSolver, rd::RawData)
-
-Preprocess the input data (`rd`).
-
-### Arguments
-* S -> A StochPXSolver struct.
-* rd -> A RawData struct, which contains essential input data.
-
-### Returns
-* Gᵥ -> Input correlator.
-* σ¹ -> 1.0 / σ¹.
-
-See also: [`RawData`](@ref).
-"""
-function init_iodata(S::StochPXSolver, rd::RawData)
-    G = make_data(rd)
-    Gᵥ = G.value # Gᵥ = abs.(G.value)
-    σ¹ = 1.0 ./ sqrt.(G.covar)
-
-    return Gᵥ, σ¹
 end
 
 """
