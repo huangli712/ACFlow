@@ -21,17 +21,19 @@ For the off-diagonal elements of the matrix-valued Green's function, the
 signs of the poles (𝕊) could be negative (-1.0). However, for the other
 cases, 𝕊 is always positive (+1.0).
 
-Note that χ² denotes the goodness-of-fit functional, it should be always
-compatible with P, A, and 𝕊.
+Note that χ² denotes the goodness-of-fit functional and Gᵧ denotes the
+reproduced correlator. They should be always compatible with P, A, and 𝕊.
 
 ### Members
 * χ² -> Goodness-of-fit functional for the current configuration.
+* Gᵧ -> Generated correlator.
 * P  -> It means the positions of the poles.
 * A  -> It means the weights / amplitudes of the poles.
 * 𝕊  -> It means the signs of the poles.
 """
 mutable struct StochPXElement
     χ² :: F64
+    Gᵧ :: Vector{F64}
     P  :: Vector{I64}
     A  :: Vector{F64}
     𝕊  :: Vector{F64}
@@ -44,7 +46,6 @@ Mutable struct. It is used within the StochPX solver only.
 
 ### Members
 * Gᵥ    -> Input data for correlator.
-* Gᵧ    -> Generated correlator.
 * σ¹    -> Actually 1.0 / σ¹.
 * allow -> Allowable indices.
 * grid  -> Grid for input data.
@@ -210,6 +211,8 @@ function init(S::StochPXSolver, rd::RawData)
         Λ = calc_lambda(grid, fmesh, χ₀, true)
     #
     end
+    @show Λ
+    error()
 
     # Prepare some key variables
     Θ, χ²min, χ², Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S)
@@ -1108,6 +1111,27 @@ where
 ---
 
 =#
+
+"""
+"""
+function calc_lambda(
+    grid::AbstractGrid,
+    fmesh::AbstractMesh,
+    Gᵥ::Vector{F64}
+    )
+    ktype = get_b("ktype")
+    χ₀ = -Gᵥ[1]
+    if     ktype == "fermi"
+        Λ = calc_lambda(grid, fmesh)
+    #
+    elseif ktype == "boson"
+        Λ = calc_lambda(grid, fmesh, χ₀, false)
+    #
+    elseif ktype == "bsymm"
+        Λ = calc_lambda(grid, fmesh, χ₀, true)
+    #
+    end
+end
 
 """
     calc_lambda(grid::AbstractGrid, fmesh::AbstractMesh)
