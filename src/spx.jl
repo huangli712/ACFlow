@@ -1760,7 +1760,7 @@ function try_move_a(
         # Calculate new Green's function and goodness-of-fit function
         @. Gₙ = δG + SE.Gᵧ
         χ² = calc_chi2(Gₙ, SC.Gᵥ)
-        δχ² = χ² - SC.χ²[t]
+        δχ² = χ² - SE.χ²
 
         # Simulated annealing algorithm
         MC.Atry = MC.Atry + 1
@@ -1770,17 +1770,17 @@ function try_move_a(
             SE.A[s₂] = A₄
 
             # Update reconstructed Green's function
-            @. SC.Gᵧ = Gₙ
+            @. SE.Gᵧ = Gₙ
 
             # Update goodness-of-fit function
-            SC.χ²[t] = χ²
+            SE.χ² = χ²
 
             # Update Monte Carlo counter
             MC.Aacc = MC.Aacc + 1
 
             # Save optimal solution
-            if χ² < SC.χ²min
-                SC.χ²min = χ²
+            if χ² < SC.χ²ᵥ[t]
+                SC.χ²ᵥ[t] = χ²
                 measure(t, SE, SC)
             end
         end
