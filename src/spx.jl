@@ -201,10 +201,10 @@ function init(S::StochPXSolver, rd::RawData)
     println("Randomize Monte Carlo configurations")
 
     # Prepare some key variables
-    Θ, χ², Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S)
+    Θ, χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S)
 
     SC = StochPXContext(Gᵥ, σ¹, allow, grid, mesh, fmesh,
-                        Λ, Θ, χ², Pᵥ, Aᵥ, 𝕊ᵥ)
+                        Λ, Θ, χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ)
 
     return MC, SE, SC
 end
