@@ -1437,12 +1437,15 @@ end
 
 Try to implement the constrained stochastic pole expansion. This
 function will return a collection. It contains all the allowable indices.
-Be careful, the constrained stochastic pole expansion method is
+Be careful, the constrained stochastic pole expansion method is always
 compatible with the self-adaptive mesh.
 
 ### Arguments
 * S     -> A StochPXSolver object.
 * fmesh -> Very dense mesh for the poles.
+
+### Returns
+* allow -> Allowable indices.
 
 See also: [`StochPXSolver`](@ref).
 """
