@@ -241,6 +241,16 @@ end
 
 Perform stochastic optimization simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochOM, respectively.
+
+### Arguments
+* S -> A StochOMSolver struct.
+* p1 -> A copy of PBASE.
+* p2 -> A copy of PStochPX.
+* MC -> A StochOMMC struct.
+* SC -> A StochOMContext struct.
+
+### Returns
+* Aout -> Spectral function, A(ω).
 """
 function prun(
     S::StochOMSolver,
