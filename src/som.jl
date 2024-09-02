@@ -203,6 +203,7 @@ function run(MC::StochOMMC, SC::StochOMContext)
     nstep = get_s("nstep")
 
     # Sample and collect data
+    println("Start stochastic sampling...")
     for l = 1:ntry
         # Re-initialize the simulation
         SE = init_element(MC, SC)
@@ -213,14 +214,19 @@ function run(MC::StochOMMC, SC::StochOMContext)
             update(MC, SE, SC)
         end
 
-        # Accumulate the data and write some statistics
+        # Write Monte Carlo statistics
+        l % 10 == 0 && fwrite && write_statistics(MC)
+
+        # Accumulate the data
         SC.Δᵥ[l] = SE.Δ
         SC.Cᵥ[l] = deepcopy(SE.C)
+
+        # Show error function for the current attempt
         @printf("try -> %6i (%6i) Δ -> %8.4e \n", l, ntry, SE.Δ)
-        flush(stdout)
-        l % 10 == 0 && fwrite && write_statistics(MC)
+        flush(stdout)        
     end
 
+    # Generate spectral density from Monte Carlo field configuration
     return average(SC)
 end
 
