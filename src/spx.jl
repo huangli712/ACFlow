@@ -1473,7 +1473,9 @@ Be careful, the constrained stochastic pole expansion method is always
 compatible with the self-adaptive mesh.
 
 If `offdiag = true`, the regions defined by `exclude` are for A(ω) < 0,
-while the other parts are for A(ω) > 0.
+the corresponding signs of poles are negative. While the other regions
+that are not included in `exclude` are for A(ω) > 0, and the corresponding
+signs of poles are positive.
 
 ### Arguments
 * S     -> A StochPXSolver object.
