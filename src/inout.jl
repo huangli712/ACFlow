@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/31
+# Last modified: 2024/09/02
 #
 
 #=
@@ -538,7 +538,7 @@ end
         Pᵥ::Vector{Vector{I64}},
         Aᵥ::Vector{Vector{F64}},
         𝕊ᵥ::Vector{Vector{F64}},
-        χ²::Vector{F64},
+        χ²ᵥ::Vector{F64},
         fmesh::AbstractMesh
     )
 
@@ -549,7 +549,7 @@ function is only useful for the `StochPX` solver.
 * Pᵥ    -> Positions of the poles.
 * Aᵥ    -> Amplitudes of the poles.
 * 𝕊ᵥ    -> Signs of the poles.
-* χ²    -> Goodness-of-fit functionals for all the solutions.
+* χ²ᵥ   -> Goodness-of-fit functionals for all the solutions.
 * fmesh -> A dense mesh for the poles.
 
 ### Returns
@@ -559,14 +559,15 @@ function write_pole(
     Pᵥ::Vector{Vector{I64}},
     Aᵥ::Vector{Vector{F64}},
     𝕊ᵥ::Vector{Vector{F64}},
-    χ²::Vector{F64},
+    χ²ᵥ::Vector{F64},
     fmesh::AbstractMesh
     )
     ntry = length(Pᵥ)
 
     open("pole.data", "w") do fout
         for i = 1:ntry
-            println(fout, "# Try: ", i, "  χ²: ", χ²[i])
+            println(fout, "# Try: ", i, "  χ²: ", χ²ᵥ[i])
+            #
             for j in eachindex(Pᵥ[i])
                 ℙ = Pᵥ[i][j]
                 𝔸 = Aᵥ[i][j]
@@ -574,6 +575,7 @@ function write_pole(
                 ω = fmesh[ℙ]
                 @printf(fout, "%4i %8i %16.12f %16.12f %6.2f\n", j, ℙ, ω, 𝔸, 𝕊)
             end
+            #
             println(fout)
             println(fout)
         end
