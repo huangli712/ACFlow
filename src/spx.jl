@@ -1472,6 +1472,9 @@ function will return a collection. It contains all the allowable indices.
 Be careful, the constrained stochastic pole expansion method is always
 compatible with the self-adaptive mesh.
 
+If `offdiag = true`, the regions defined by `exclude` are for A(ω) < 0,
+while the other parts are for A(ω) > 0.
+
 ### Arguments
 * S     -> A StochPXSolver object.
 * fmesh -> Very dense mesh for the poles.
