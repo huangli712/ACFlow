@@ -383,7 +383,7 @@ function average(SC::StochPXContext)
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
 
     # Setup essential parameters
-    ktype = get_b("ktype")
+    #ktype = get_b("ktype")
     nmesh = get_b("nmesh")
     method = get_x("method")
     ntry = get_x("ntry")
@@ -432,23 +432,25 @@ function average(SC::StochPXContext)
 
         # Go through all the solutions
         c = 0.0 # A counter
-        χ₀ = -SC.Gᵥ[1]
+        #χ₀ = -SC.Gᵥ[1]
         passed = I64[]
         for i = 1:ntry
             if SC.χ²ᵥ[i] < chi2_med / αgood
-                if     ktype == "fermi"
-                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.mesh, SC.fmesh)
-                #
-                elseif ktype == "boson"
-                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.mesh, SC.fmesh, χ₀, false)
-                #
-                elseif ktype == "bsymm"
-                    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.mesh, SC.fmesh, χ₀, true)
-                #
-                end
+                #if     ktype == "fermi"
+                #    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.mesh, SC.fmesh)
+                ##
+                #elseif ktype == "boson"
+                #    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.mesh, SC.fmesh, χ₀, false)
+                ##
+                #elseif ktype == "bsymm"
+                #    G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.mesh, SC.fmesh, χ₀, true)
+                ##
+                #end
+                G = calc_green(i, SC, true)
                 @. Gout = Gout + G
                 #
-                G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.Λ)
+                #G = calc_green(SC.Pᵥ[i], SC.Aᵥ[i], SC.𝕊ᵥ[i], SC.Λ)
+                G = calc_green(i, SC, false)
                 @. Gᵣ = Gᵣ + G
                 #
                 # Increase the counter
