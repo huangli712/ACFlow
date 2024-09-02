@@ -1415,8 +1415,8 @@ end
 """
     calc_chi2(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
 
-Try to calculate the goodness function (i.e, χ²), which measures the
-distance between input and regenerated correlators.
+Try to calculate the goodness-of-fit function (i.e, χ²), which measures
+the distance between input and regenerated correlators.
 
 ### Arguments
 * Gₙ -> Reconstructed Green's function.
