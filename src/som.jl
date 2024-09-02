@@ -681,6 +681,15 @@ end
 
 Try to initialize the key members of a StochOMContext struct.
 
+### Arguments
+* S -> A StochOMSolver struct.
+* grid -> Grid for input data.
+
+### Returns
+* Cᵥ -> Field configurations for all attempts.
+* Δᵥ -> Errors for all attempts.
+* 𝕊ᵥ -> Interpolators for the Λ functions.
+
 See also: [`StochOMContext`](@ref).
 """
 function init_context(S::StochOMSolver, grid::AbstractGrid)
@@ -719,6 +728,7 @@ function init_context(S::StochOMSolver, grid::AbstractGrid)
         # Calculate the interpolants at the nodes
         #
         # Initialize memory
+        # See below remarks for the Λ function
         Λ = zeros(F64, ngrid, nmesh)
         #
         # Just evaluate the interpolants
