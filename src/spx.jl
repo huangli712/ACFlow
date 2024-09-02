@@ -199,17 +199,12 @@ function init(S::StochPXSolver, rd::RawData)
     # Initialize Monte Carlo configurations
     SE = init_element(S, MC.rng, allow, Λ, Gᵥ)
     println("Randomize Monte Carlo configurations")
-
+    error()
     # Prepare some key variables
     Θ, χ²min, χ², Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S)
 
-    # We have to make sure that the starting Gᵧ and χ² (i.e. χ²[1]) are
-    # consistent with the current Monte Carlo configuration fields.
-    Gᵧ = calc_green(SE.P, SE.A, SE.𝕊, Λ)
-    χ²[1] = calc_chi2(Gᵧ, Gᵥ)
-
-    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh,
-                        Λ, Θ, χ²min, χ², Pᵥ, Aᵥ, 𝕊ᵥ)
+    SC = StochPXContext(Gᵥ, σ¹, allow, grid, mesh, fmesh,
+                        Λ, Θ, χ², Pᵥ, Aᵥ, 𝕊ᵥ)
 
     return MC, SE, SC
 end
@@ -734,7 +729,12 @@ function init_element(
         @. A = A / s
     end
 
-    SE = StochPXElement(abs.(P), A, 𝕊)
+    # We have to make sure that the starting Gᵧ and χ² are consistent with
+    # the current Monte Carlo configuration fields.
+    Gᵧ = calc_green(abs.(P), A, 𝕊, Λ)
+    χ² = calc_chi2(Gᵧ, Gᵥ)
+
+    SE = StochPXElement(χ², Gᵧ, abs.(P), A, 𝕊)
 
     return SE
 end
