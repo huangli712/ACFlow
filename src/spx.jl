@@ -1327,6 +1327,9 @@ for the fermionic systems only.
 * 𝕊     -> Signs of poles.
 * mesh  -> Real frequency mesh for spectral functions.
 * fmesh -> Very dense real frequency mesh for poles.
+
+### Returns
+* G -> Retarded Green's function, G(ω).
 """
 function calc_green(
     P::Vector{I64},
@@ -1372,6 +1375,9 @@ It is for the bosonic systems only.
 * fmesh -> Very dense real frequency mesh for poles.
 * χ₀    -> -G(0).
 * bsymm -> Type of bosonic kernel.
+
+### Returns
+G -> Retarded Green's function, G(ω).
 """
 function calc_green(
     P::Vector{I64},
