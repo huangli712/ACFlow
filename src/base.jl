@@ -442,7 +442,7 @@ See above explanations.
 
 ### Returns
 * gd -> A GreenData struct.
- 
+
 See also: [`RawData`](@ref), [`GreenData`](@ref).
 """
 function make_data(rd::RawData; T::DataType = F64)

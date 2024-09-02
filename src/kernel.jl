@@ -958,7 +958,7 @@ Perform singular value decomposition for the input matrix `kernel`.
 kernel = U Σ Vᵀ
 
 Supposed that kernel is a m × n matrix, then U is m × m, Σ is m × n,
-and V is n × n. For Σ, only the diagonal elements are non-zero. 
+and V is n × n. For Σ, only the diagonal elements are non-zero.
 
 ### Arguments
 * kernel -> Fermionic or bosonic kernel matrix.

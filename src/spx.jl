@@ -1122,7 +1122,7 @@ Precompute the kernel matrix Λ (Λ ≡ 1 / (iωₙ - ϵ)). It is the essential
 driver function. Note that Λ depends on the kernel's type (`ktype`).
 
 ### Arguments
-* grid  -> Imaginary axis grid for input data. 
+* grid  -> Imaginary axis grid for input data.
 * fmesh -> Very dense mesh in [wmin, wmax].
 * Gᵥ -> Preprocessed input correlator.
 
@@ -1163,7 +1163,7 @@ Precompute the kernel matrix Λ (Λ ≡ 1 / (iωₙ - ϵ)). It is a service
 function and is for the fermionic systems.
 
 ### Arguments
-* grid  -> Imaginary axis grid for input data. 
+* grid  -> Imaginary axis grid for input data.
 * fmesh -> Very dense mesh in [wmin, wmax].
 
 ### Returns
@@ -1201,7 +1201,7 @@ If `bsymm` is false, it means that the kernel is `boson`. If `bsymm` is
 true, the kernel is `bsymm`. This function is for the bosonic systems.
 
 ### Arguments
-* grid  -> Imaginary axis grid for input data. 
+* grid  -> Imaginary axis grid for input data.
 * fmesh -> Very dense mesh in [wmin, wmax].
 * χ₀    -> -G(0).
 * bsymm -> Type of bosonic kernel.
@@ -1518,7 +1518,7 @@ function constraints(S::StochPXSolver, fmesh::AbstractMesh)
 
     # If it is offdiagonal, then the spectral function can be negative.
     # Now `allow` is for A(ω) > 0 and `unallow` is for A(ω) < 0. We have
-    # to distinguish them. 
+    # to distinguish them.
     if offdiag
         append!(allow, unallow)
     end
