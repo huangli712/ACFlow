@@ -598,6 +598,29 @@ end
 =#
 
 """
+    init_iodata(S::StochPXSolver, rd::RawData)
+
+Preprocess the input data (`rd`).
+
+### Arguments
+* S -> A StochPXSolver struct.
+* rd -> A RawData struct, which contains essential input data.
+
+### Returns
+* Gᵥ -> Input correlator.
+* σ¹ -> 1.0 / σ¹.
+
+See also: [`RawData`](@ref).
+"""
+function init_iodata(S::StochPXSolver, rd::RawData)
+    G = make_data(rd)
+    Gᵥ = G.value # Gᵥ = abs.(G.value)
+    σ¹ = 1.0 ./ sqrt.(G.covar)
+
+    return Gᵥ, σ¹
+end
+
+"""
     init_mc(S::StochPXSolver)
 
 Try to create a StochPXMC struct. Some counters for Monte Carlo updates
@@ -630,29 +653,6 @@ function init_mc(S::StochPXSolver)
     MC = StochPXMC(rng, Sacc, Stry, Pacc, Ptry, Aacc, Atry, Xacc, Xtry)
 
     return MC
-end
-
-"""
-    init_iodata(S::StochPXSolver, rd::RawData)
-
-Preprocess the input data (`rd`).
-
-### Arguments
-* S -> A StochPXSolver struct.
-* rd -> A RawData struct, which contains essential input data.
-
-### Returns
-* Gᵥ -> Input correlator.
-* σ¹ -> 1.0 / σ¹.
-
-See also: [`RawData`](@ref).
-"""
-function init_iodata(S::StochPXSolver, rd::RawData)
-    G = make_data(rd)
-    Gᵥ = G.value # Gᵥ = abs.(G.value)
-    σ¹ = 1.0 ./ sqrt.(G.covar)
-
-    return Gᵥ, σ¹
 end
 
 """
