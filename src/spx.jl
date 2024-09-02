@@ -1377,7 +1377,7 @@ It is for the bosonic systems only.
 * bsymm -> Type of bosonic kernel.
 
 ### Returns
-G -> Retarded Green's function, G(ω).
+* G -> Retarded Green's function, G(ω).
 """
 function calc_green(
     P::Vector{I64},
