@@ -1394,6 +1394,15 @@ end
     )
 
 Insert a new box into the field configuration.
+
+### Arguments
+* MC -> A StochOMMC struct. It containts some counters.
+* SE -> A StochOMElement struct. It contains Monte Carlo configurations.
+* SC -> A StochOMContext struct. It contains grid, mesh, and Gᵥ.
+* dacc -> A predefined parameter used to calculate transition probability.
+
+### Returns
+N/A
 """
 function try_insert(
     MC::StochOMMC,
@@ -1481,6 +1490,15 @@ end
     )
 
 Remove an old box from the field configuration.
+
+### Arguments
+* MC -> A StochOMMC struct. It containts some counters.
+* SE -> A StochOMElement struct. It contains Monte Carlo configurations.
+* SC -> A StochOMContext struct. It contains grid, mesh, and Gᵥ.
+* dacc -> A predefined parameter used to calculate transition probability.
+
+### Returns
+N/A
 """
 function try_remove(
     MC::StochOMMC,
@@ -1559,6 +1577,15 @@ end
     )
 
 Change the position of given box in the field configuration.
+
+### Arguments
+* MC -> A StochOMMC struct. It containts some counters.
+* SE -> A StochOMElement struct. It contains Monte Carlo configurations.
+* SC -> A StochOMContext struct. It contains grid, mesh, and Gᵥ.
+* dacc -> A predefined parameter used to calculate transition probability.
+
+### Returns
+N/A
 """
 function try_shift(
     MC::StochOMMC,
@@ -1625,6 +1652,15 @@ end
 
 Change the width and height of given box in the field configuration. Note
 that the box's area is kept.
+
+### Arguments
+* MC -> A StochOMMC struct. It containts some counters.
+* SE -> A StochOMElement struct. It contains Monte Carlo configurations.
+* SC -> A StochOMContext struct. It contains grid, mesh, and Gᵥ.
+* dacc -> A predefined parameter used to calculate transition probability.
+
+### Returns
+N/A
 """
 function try_width(
     MC::StochOMMC,
@@ -1695,6 +1731,15 @@ end
     )
 
 Change the heights of two given boxes in the field configuration.
+
+### Arguments
+* MC -> A StochOMMC struct. It containts some counters.
+* SE -> A StochOMElement struct. It contains Monte Carlo configurations.
+* SC -> A StochOMContext struct. It contains grid, mesh, and Gᵥ.
+* dacc -> A predefined parameter used to calculate transition probability.
+
+### Returns
+N/A
 """
 function try_height(
     MC::StochOMMC,
@@ -1771,6 +1816,15 @@ end
     )
 
 Split a given box into two boxes in the field configuration.
+
+### Arguments
+* MC -> A StochOMMC struct. It containts some counters.
+* SE -> A StochOMElement struct. It contains Monte Carlo configurations.
+* SC -> A StochOMContext struct. It contains grid, mesh, and Gᵥ.
+* dacc -> A predefined parameter used to calculate transition probability.
+
+### Returns
+N/A
 """
 function try_split(
     MC::StochOMMC,
@@ -1865,6 +1919,15 @@ end
     )
 
 Merge two given boxes into one box in the field configuration.
+
+### Arguments
+* MC -> A StochOMMC struct. It containts some counters.
+* SE -> A StochOMElement struct. It contains Monte Carlo configurations.
+* SC -> A StochOMContext struct. It contains grid, mesh, and Gᵥ.
+* dacc -> A predefined parameter used to calculate transition probability.
+
+### Returns
+N/A
 """
 function try_merge(
     MC::StochOMMC,
