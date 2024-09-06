@@ -1290,6 +1290,12 @@ end
 Try to calculate χ². Here `Gᵥ` and `σ¹` denote the raw correlator and
 related standard deviation. `G` means the reproduced correlator.
 
+### Arguments
+See above explanations.
+
+### Returns
+* Δ -> χ², distance between reconstructed and raw correlators.
+
 See also: [`calc_green`](@ref).
 """
 function calc_error(G::Vector{F64}, Gᵥ::Vector{F64}, σ¹::Vector{F64})
@@ -1299,7 +1305,15 @@ end
 """
     calc_green(Λ::Array{F64,2}, nk::I64)
 
-Try to reconstruct the correlator via the field configuration.
+Try to reconstruct the correlator via the field configuration. Now this
+function is called by init_element(). But perhaps we can use it in last().
+
+### Arguments
+* Λ -> The Λ function. See above remarks.
+* nk -> Current number of boxes.
+
+### Returns
+* G -> Reconstructed Green's function.
 
 See also: [`calc_error`](@ref).
 """
@@ -1321,6 +1335,12 @@ end
     calc_norm(C::Vector{Box})
 
 Calculate the total area of all boxes.
+
+### Arguments
+* C -> The current Monte Carlo field configuration.
+
+### Returns
+* norm -> Area of all boxes.
 """
 function calc_norm(C::Vector{Box})
     norm = sum(map(x -> x.h * x.w, C))
