@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/02
+# Last modified: 2024/09/06
 #
 
 #=
@@ -422,12 +422,15 @@ end
     update(MC::StochOMMC, SE::StochOMElement, SC::StochOMContext)
 
 Using the Metropolis algorithm to update the field configuration, i.e, a
-collection of hundreds of boxes.
+collection of hundreds of boxes. Be careful, this function only updates
+the Monte Carlo configurations (in other words, `SE`). It doesn't record
+them. Measurements are done in `run()` and `prun()`. This is the reason
+why this function is named as `update()`, instead of `sample()`.
 
 ### Arguments
-* MC -> A StochOMMC struct.
-* SE -> A StochOMElement struct.
-* SC -> A StochOMContext struct.
+* MC -> A StochOMMC struct. It containts some counters.
+* SE -> A StochOMElement struct. It contains Monte Carlo configurations.
+* SC -> A StochOMContext struct. It contains grid, mesh, and Gᵥ.
 
 ### Returns
 N/A
