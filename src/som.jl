@@ -2054,7 +2054,17 @@ User can change parameter ``\gamma`` to control non-uniformity of the PDF.
 """
     Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
 
-Try to calculate the probability density function.
+Try to calculate the value of δξ for every elementary update according to
+the probability density function. The actual meaning of δξ depends on the
+elementary update.
+
+### Arguments
+* xmin -> Minimum value of δξ.
+* xmax -> Maximum value of δξ
+* rng -> Random number generator.
+
+### Returns
+* N -> Value of δξ.
 """
 function Pdx(xmin::F64, xmax::F64, rng::AbstractRNG)
     xmin_abs = abs(xmin)
