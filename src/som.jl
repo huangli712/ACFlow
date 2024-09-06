@@ -1023,13 +1023,16 @@ end
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for FermionicImaginaryTimeGrid only. Since there is
-not analytic expressions for this case, the cubic spline interpolation
+no analytic expressions for this case, the cubic spline interpolation
 algorithm is adopted. Here, 𝕊 is initialized in init_context().
 
 ### Arguments
 * r    -> A box or rectangle.
 * grid -> Imaginary axis grid for input data.
 * 𝕊    -> An interpolant.
+
+### Returns
+* Λ -> Λ(τ) function, 1D function.
 
 See also: [`FermionicImaginaryTimeGrid`](@ref).
 """
@@ -1064,13 +1067,16 @@ end
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for FermionicFragmentTimeGrid only. Since there is
-not analytic expressions for this case, the cubic spline interpolation
+no analytic expressions for this case, the cubic spline interpolation
 algorithm is adopted. Here, 𝕊 is initialized in init_context().
 
 ### Arguments
 * r    -> A box or rectangle.
 * grid -> Imaginary axis grid for input data.
 * 𝕊    -> An interpolant.
+
+### Returns
+* Λ -> Λ(τ) function, 1D function.
 
 See also: [`FermionicFragmentTimeGrid`](@ref).
 """
@@ -1113,6 +1119,9 @@ Actually, 𝕊 is undefined here. See init_context().
 * r    -> A box or rectangle.
 * grid -> Imaginary axis grid for input data.
 * 𝕊    -> An interpolant.
+
+### Returns
+* Λ -> Λ(iωₙ) function, 1D function.
 
 See also: [`BosonicMatsubaraGrid`](@ref).
 """
@@ -1158,6 +1167,9 @@ Actually, 𝕊 is undefined here. See init_context().
 * grid -> Imaginary axis grid for input data.
 * 𝕊    -> An interpolant.
 
+### Returns
+* Λ -> Λ(iωₙ) function, 1D function.
+
 See also: [`BosonicFragmentMatsubaraGrid`](@ref).
 """
 function eval_lambda(
@@ -1193,13 +1205,16 @@ end
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for BosonicImaginaryTimeGrid only. Since there is
-not analytic expressions for this case, the cubic spline interpolation
+no analytic expressions for this case, the cubic spline interpolation
 algorithm is adopted. Here, 𝕊 is initialized in init_context().
 
 ### Arguments
 * r    -> A box or rectangle.
 * grid -> Imaginary axis grid for input data.
 * 𝕊    -> An interpolant.
+
+### Returns
+* Λ -> Λ(τ) function, 1D function.
 
 See also: [`BosonicImaginaryTimeGrid`](@ref).
 """
@@ -1234,13 +1249,16 @@ end
 
 Try to calculate the contribution of a given box `r` to the Λ function.
 This function works for BosonicFragmentTimeGrid only. Since there is
-not analytic expressions for this case, the cubic spline interpolation
+no analytic expressions for this case, the cubic spline interpolation
 algorithm is adopted. Here, 𝕊 is initialized in init_context().
 
 ### Arguments
 * r    -> A box or rectangle.
 * grid -> Imaginary axis grid for input data.
 * 𝕊    -> An interpolant.
+
+### Returns
+* Λ -> Λ(τ) function, 1D function.
 
 See also: [`BosonicFragmentTimeGrid`](@ref).
 """
