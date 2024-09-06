@@ -1334,7 +1334,7 @@ end
 """
     calc_norm(C::Vector{Box})
 
-Calculate the total area of all boxes.
+Calculate the total area of all boxes. Now this function is not used.
 
 ### Arguments
 * C -> The current Monte Carlo field configuration.
@@ -1350,9 +1350,16 @@ end
 """
     constraints(e₁::F64, e₂::F64)
 
-This function is used to judege whether a given box overlapes with the
+This function is used to judge whether a given box overlapes with the
 forbidden zone. Here `e₁` and `e₂` denote the left and right boundaries
 of the box.
+
+### Arguments
+See above explanations.
+
+### Returns
+* ex -> Boolean, whether a given box is valid. 
+
 """
 function constraints(e₁::F64, e₂::F64)
     exclude = get_b("exclude")
