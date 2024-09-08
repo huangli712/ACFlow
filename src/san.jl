@@ -170,7 +170,7 @@ function init(S::StochSKSolver, rd::RawData)
     println("Randomize Monte Carlo configurations")
 
     # Prepare input data
-    Gᵥ, σ¹, Aout = init_iodata(S, rd)
+    Gᵥ, σ¹ = init_iodata(S, rd)
     println("Postprocess input data: ", length(σ¹), " points")
 
     grid = make_grid(rd)
@@ -211,6 +211,8 @@ function init(S::StochSKSolver, rd::RawData)
     Θ = get_k("theta")
     Θvec = zeros(F64, get_k("nwarm"))
     println("Setup Θ parameter")
+
+    Aout = init_context(S)
 
     SC = StochSKContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, kernel, Aout,
                         χ², χ²min, χ²vec, Θ, Θvec)
@@ -584,15 +586,11 @@ spectral functions.
 See also: [`RawData`](@ref).
 """
 function init_iodata(S::StochSKSolver, rd::RawData)
-    nmesh = get_b("nmesh")
-
-    Aout = zeros(F64, nmesh)
-
     G = make_data(rd)
     Gᵥ = G.value # Gᵥ = abs.(G.value)
     σ¹ = 1.0 ./ sqrt.(G.covar)
 
-    return Gᵥ, σ¹, Aout
+    return Gᵥ, σ¹
 end
 
 """
@@ -657,7 +655,12 @@ function init_element(
     return StochSKElement(position, amplitude, window_width)
 end
 
-function init_context()
+function init_context(S::StochSKSolver)
+    nmesh = get_b("nmesh")
+
+    Aout = zeros(F64, nmesh)
+
+    return Aout
 end
 
 """
