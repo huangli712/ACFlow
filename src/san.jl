@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/09
+# Last modified: 2024/09/08
 #
 
 #=
@@ -79,7 +79,7 @@ Solve the analytic continuation problem by the stochastic analytic
 continuation algorithm (A. W. Sandvik's version).
 
 ### Arguments
-* S -> A StochOMSolver struct.
+* S -> A StochSKSolver struct.
 * rd -> A RawData struct, containing raw data for input correlator.
 
 ### Returns
