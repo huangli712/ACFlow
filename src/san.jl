@@ -96,6 +96,7 @@ function solve(S::StochSKSolver, rd::RawData)
 
     # Parallel version
     if nworkers() > 1
+        #
         println("Using $(nworkers()) workers")
         #
         # Copy configuration dicts
@@ -129,12 +130,13 @@ function solve(S::StochSKSolver, rd::RawData)
         #
         # Postprocess the solutions
         Gout = last(SC, Aout, χ²out, Θout)
-
+        #
     # Sequential version
     else
+        #
         Aout, χ²out, Θout  = run(MC, SE, SC)
         Gout = last(SC, Aout, χ²out, Θout)
-
+        #
     end
 
     return SC.mesh.mesh, Aout, Gout
@@ -144,7 +146,16 @@ end
     init(S::StochSKSolver, rd::RawData)
 
 Initialize the StochSK solver and return the StochSKMC, StochSKElement,
-and StochSKContext structs.
+and StochSKContext structs. Please don't call this function directly.
+
+### Arguments
+* S -> A StochSKSolver struct.
+* rd -> A RawData struct, containing raw data for input correlator.
+
+### Returns
+* MC -> A StochSKMC struct.
+* SE -> A StochSKElement struct.
+* SC -> A StochSKContext struct.
 """
 function init(S::StochSKSolver, rd::RawData)
     # Initialize possible constraints.
@@ -158,6 +169,7 @@ function init(S::StochSKSolver, rd::RawData)
     SE = init_element(S, MC.rng, allow)
     println("Randomize Monte Carlo configurations")
 
+    # Prepare input data
     Gᵥ, σ¹, Aout = init_iodata(S, rd)
     println("Postprocess input data: ", length(σ¹), " points")
 
@@ -564,6 +576,26 @@ end
 =#
 
 """
+    init_iodata(S::StochSKSolver, rd::RawData)
+
+Preprocess the input data (`rd`), then allocate memory for the calculated
+spectral functions.
+
+See also: [`RawData`](@ref).
+"""
+function init_iodata(S::StochSKSolver, rd::RawData)
+    nmesh = get_b("nmesh")
+
+    Aout = zeros(F64, nmesh)
+
+    G = make_data(rd)
+    Gᵥ = G.value # Gᵥ = abs.(G.value)
+    σ¹ = 1.0 ./ sqrt.(G.covar)
+
+    return Gᵥ, σ¹, Aout
+end
+
+"""
     init_mc(S::StochSKSolver)
 
 Try to create a StochSKMC struct.
@@ -625,24 +657,7 @@ function init_element(
     return StochSKElement(position, amplitude, window_width)
 end
 
-"""
-    init_iodata(S::StochSKSolver, rd::RawData)
-
-Preprocess the input data (`rd`), then allocate memory for the calculated
-spectral functions.
-
-See also: [`RawData`](@ref).
-"""
-function init_iodata(S::StochSKSolver, rd::RawData)
-    nmesh = get_b("nmesh")
-
-    Aout = zeros(F64, nmesh)
-
-    G = make_data(rd)
-    Gᵥ = G.value # Gᵥ = abs.(G.value)
-    σ¹ = 1.0 ./ sqrt.(G.covar)
-
-    return Gᵥ, σ¹, Aout
+function init_context()
 end
 
 """
