@@ -246,6 +246,18 @@ end
 
 Perform stochastic analytic continuation simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochAC, respectively.
+
+### Arguments
+* S -> A StochACSolver struct.
+* p1 -> A copy of PBASE.
+* p2 -> A copy of PStochAC.
+* MC -> A StochACMC struct.
+* SE -> A StochACElement struct.
+* SC -> A StochACContext struct.
+
+### Returns
+* Aout -> Spectral function, A(ω).
+* Uα -> α-resolved internal energy.
 """
 function prun(
     S::StochACSolver,
