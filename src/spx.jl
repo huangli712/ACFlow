@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/02
+# Last modified: 2024/09/09
 #
 
 #=
@@ -187,24 +187,19 @@ function init(S::StochPXSolver, rd::RawData)
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    # Prepare the kernel matrix Λ. It is used to speed up the simulation.
-    # Note that Λ depends on the type of kernel.
-    Λ = calc_lambda(grid, fmesh, Gᵥ)
-    println("Precompute kernel matrix Λ")
-
     # Initialize counters for Monte Carlo engine
     MC = init_mc(S)
     println("Create infrastructure for Monte Carlo sampling")
 
     # Initialize Monte Carlo configurations
-    SE = init_element(S, MC.rng, allow, Λ, Gᵥ)
+    SE = init_element(S, MC.rng, allow, fmesh, grid, Gᵥ)
     println("Randomize Monte Carlo configurations")
 
     # Prepare some key variables
     Θ, χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S)
-
     SC = StochPXContext(Gᵥ, σ¹, allow, grid, mesh, fmesh,
                         Λ, Θ, χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ)
+    println("Initialize context for the StochPX solver")
 
     return MC, SE, SC
 end
@@ -641,7 +636,8 @@ end
         S::StochPXSolver,
         rng::AbstractRNG,
         allow::Vector{I64},
-        Λ::Array{F64,2},
+        fmesh::AbstractMesh,
+        grid::AbstractGrid,
         Gᵥ::Vector{F64}
     )
 
@@ -653,7 +649,8 @@ return a StochPXElement object. Note that `allow` is generated in the
 * S     -> A StochPXSolver object.
 * rng   -> Random number generator.
 * allow -> Allowed positions for the poles.
-* Λ     -> Precomputed kernel matrix.
+* fmesh -> Fine mesh in [wmin, wmax], used to build the kernel matrix Λ.
+* grid  -> Grid for input correlator.
 * Gᵥ    -> Preprocessed input correlator.
 
 ### Returns
@@ -665,7 +662,8 @@ function init_element(
     S::StochPXSolver,
     rng::AbstractRNG,
     allow::Vector{I64},
-    Λ::Array{F64,2},
+    fmesh::AbstractMesh,
+    grid::AbstractGrid,
     Gᵥ::Vector{F64}
     )
     offdiag = get_b("offdiag")
@@ -712,6 +710,10 @@ function init_element(
         s = sum(A)
         @. A = A / s
     end
+
+    # Prepare the kernel matrix Λ. It is used to speed up the simulation.
+    # Note that Λ depends on the type of kernel.
+    Λ = calc_lambda(grid, fmesh, Gᵥ)
 
     # We have to make sure that the starting Gᵧ and χ² are consistent with
     # the current Monte Carlo configuration fields.
