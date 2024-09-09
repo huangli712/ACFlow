@@ -155,58 +155,28 @@ function init(S::StochACSolver, rd::RawData)
     fmesh = calc_fmesh(S)
     allow = constraints(S, fmesh)
 
-    MC = init_mc(S)
-    println("Create infrastructure for Monte Carlo sampling")
-
-    SE = init_element(S, MC.rng, allow)
-    println("Randomize Monte Carlo configurations")
-
-    Gᵥ, σ¹, Aout = init_iodata(S, rd)
+    # Prepare input data
+    Gᵥ, σ¹ = init_iodata(S, rd)
     println("Postprocess input data: ", length(σ¹), " points")
 
+    # Prepare grid for input data
     grid = make_grid(rd)
     println("Build grid for input data: ", length(grid), " points")
 
+    # Prepare mesh for output spectrum
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
 
-    # Only flat model is valid for the StochAC solver.
-    model = make_model(mesh)
-    println("Build default model: ", get_b("mtype"))
+    # Initialize counters for Monte Carlo engine
+    MC = init_mc(S)
+    println("Create infrastructure for Monte Carlo sampling")
 
-    kernel = make_kernel(fmesh, grid)
-    println("Build default kernel: ", get_b("ktype"))
+    # Initialize Monte Carlo configurations
+    SE = init_element(S, MC.rng, allow)
+    println("Randomize Monte Carlo configurations")
 
-    ϕ = calc_phi(mesh, model)
-    Δ = calc_delta(fmesh, ϕ)
-    println("Precompute δ functions")
-
-    # In order to accelerate the calculations, the singular space of the
-    # kernel function is used. At first, we preform singular value
-    # decomposition for K/σ:
-    #     K/σ = U S Vᵀ
-    # Then
-    #     (G - KA)/σ = G/σ - K/σA
-    #                = UU'(G/σ - USVᵀA)
-    #                = U(U'G/σ - U'USVᵀA)
-    #                = U(U'G/σ - SVᵀA)
-    #                = U(G' - K'A)
-    # In the StochAC solver, let Gᵥ → G', kernel → K'. Then new χ² is
-    # calculated by
-    #     |G' - K'A|²
-    # instead of
-    #     |G - KA|²/σ²
-    U, V, S = make_singular_space(Diagonal(σ¹) * kernel)
-    Gᵥ = U' *  (Gᵥ .* σ¹)
-    kernel = Diagonal(S) * V'
-    hτ, Hα, Uα = calc_hamil(SE.Γₚ, SE.Γₐ, kernel, Gᵥ)
-    println("Precompute hamiltonian")
-
-    αₗ = calc_alpha()
-    println("Precompute α parameters")
-
-    SC = StochACContext(Gᵥ, σ¹, allow, grid, mesh, model,
-                        kernel, Aout, Δ, hτ, Hα, Uα, αₗ)
+    # Prepare some key variables
+    SC = init_context(SE)
 
     return MC, SE, SC
 end
@@ -503,16 +473,11 @@ spectral functions.
 See also: [`RawData`](@ref).
 """
 function init_iodata(S::StochACSolver, rd::RawData)
-    nalph = get_a("nalph")
-    nmesh = get_b("nmesh")
-
-    Aout = zeros(F64, nmesh, nalph)
-
     G = make_data(rd)
     Gᵥ = G.value # Gᵥ = abs.(G.value)
     σ¹ = 1.0 ./ sqrt.(G.covar)
 
-    return Gᵥ, σ¹, Aout
+    return Gᵥ, σ¹
 end
 
 """
@@ -568,7 +533,50 @@ function init_element(S::StochACSolver, rng::AbstractRNG, allow::Vector{I64})
     return SE
 end
 
-function init_context()
+function init_context(SE)
+    nalph = get_a("nalph")
+    nmesh = get_b("nmesh")
+
+    Aout = zeros(F64, nmesh, nalph)
+
+    # Prepare some key variables
+    # Only flat model is valid for the StochAC solver.
+    model = make_model(mesh)
+    println("Build default model: ", get_b("mtype"))
+
+    kernel = make_kernel(fmesh, grid)
+    println("Build default kernel: ", get_b("ktype"))
+
+    ϕ = calc_phi(mesh, model)
+    Δ = calc_delta(fmesh, ϕ)
+    println("Precompute δ functions")
+
+    # In order to accelerate the calculations, the singular space of the
+    # kernel function is used. At first, we preform singular value
+    # decomposition for K/σ:
+    #     K/σ = U S Vᵀ
+    # Then
+    #     (G - KA)/σ = G/σ - K/σA
+    #                = UU'(G/σ - USVᵀA)
+    #                = U(U'G/σ - U'USVᵀA)
+    #                = U(U'G/σ - SVᵀA)
+    #                = U(G' - K'A)
+    # In the StochAC solver, let Gᵥ → G', kernel → K'. Then new χ² is
+    # calculated by
+    #     |G' - K'A|²
+    # instead of
+    #     |G - KA|²/σ²
+    U, V, S = make_singular_space(Diagonal(σ¹) * kernel)
+    Gᵥ = U' *  (Gᵥ .* σ¹)
+    kernel = Diagonal(S) * V'
+    hτ, Hα, Uα = calc_hamil(SE.Γₚ, SE.Γₐ, kernel, Gᵥ)
+    println("Precompute hamiltonian")
+
+    αₗ = calc_alpha()
+    println("Precompute α parameters")
+
+    SC = StochACContext(Gᵥ, σ¹, allow, grid, mesh, model,
+                        kernel, Aout, Δ, hτ, Hα, Uα, αₗ)
 end
 
 """
