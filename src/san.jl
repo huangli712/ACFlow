@@ -962,6 +962,14 @@ end
 Try to update the Monte Carlo field configurations via the Metropolis
 algorithm. In each update, only single δ function is shifted.
 
+### Arguments
+* MC -> A StochSKMC struct.
+* SE -> A StochSKElement struct.
+* SC -> A StochSKContext struct.
+
+### Returns
+N/A
+
 See also: [`try_move_p`](@ref).
 """
 function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
