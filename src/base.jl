@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/26
+# Last modified: 2024/09/09
 #
 
 """
@@ -111,41 +111,62 @@ mesh, Aout, Gout = solve(read_data())
 See also: [`RawData`](@ref).
 """
 function solve(rd::RawData)
-    solver = get_b("solver")
+    function make_solver()
+        solver = get_b("solver")
 
-    # Choose suitable solver
-    @cswitch solver begin
-        @case "MaxEnt"
-            return solve(MaxEntSolver(),  rd)
-            break
+        # Choose suitable solver
+        @cswitch solver begin
+            @case "MaxEnt"
+                return MaxEntSolver()
+                break
 
-        @case "BarRat"
-            return solve(BarRatSolver(),  rd)
-            break
+            @case "BarRat"
+                return BarRatSolver()
+                break
 
-        @case "NevanAC"
-            return solve(NevanACSolver(), rd)
-            break
+            @case "NevanAC"
+                return NevanACSolver()
+                break
 
-        @case "StochAC"
-            return solve(StochACSolver(), rd)
-            break
+            @case "StochAC"
+                return StochACSolver()
+                break
 
-        @case "StochSK"
-            return solve(StochSKSolver(), rd)
-            break
+            @case "StochSK"
+                return StochSKSolver()
+                break
 
-        @case "StochOM"
-            return solve(StochOMSolver(), rd)
-            break
+            @case "StochOM"
+                return StochOMSolver()
+                break
 
-        @case "StochPX"
-            return solve(StochPXSolver(), rd)
-            break
+            @case "StochPX"
+                return StochPXSolver()
+                break
 
-        @default
-            sorry()
-            break
+            @default
+                sorry()
+                break
+        end
+    end
+
+    function myerror(io)
+        for (exc, btrace) in current_exceptions()
+            Base.showerror(io, exc, btrace)
+            println(io)
+        end 
+    end
+
+    try
+        return solve(make_solver(), rd)
+    catch ex
+        if isinteractive()
+            myerror(stdout)
+        else
+            open("err.msg", "a") do fio
+                myerror(fio)
+            end
+        end
     end
 end
 

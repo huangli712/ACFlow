@@ -223,12 +223,13 @@ function init(S::StochSKSolver, rd::RawData)
     println("Setup Θ parameter")
 
     
-
+    @show Gᵧ
+    error()
     SC = StochSKContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, kernel, Aout,
                         χ², χ²min, χ²vec, Θ, Θvec)
 
     return MC, SE, SC
-    
+
 end
 
 """
