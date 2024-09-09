@@ -824,11 +824,14 @@ end
 
 Try to calculate correlator with the kernel function and the Monte Carlo
 field configuration. This correlator will then be used to evaluate the
-goodness function.
+goodness-of-fit function χ².
 
 ### Arguments
 * SE     -> A StochSKElement object.
 * kernel -> The fermionic or bosonic kernel.
+
+### Returns
+* G -> Reconstructed correlator.
 
 See also: [`calc_goodness`](@ref).
 """
