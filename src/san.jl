@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/08
+# Last modified: 2024/09/09
 #
 
 #=
@@ -183,7 +183,9 @@ function init(S::StochSKSolver, rd::RawData)
     SE = init_element(S, MC.rng, allow)
     println("Randomize Monte Carlo configurations")
 
+    # Initialize StochSKContext, which contains some global arrays
     SC = init_context(SE, Gᵥ, σ¹, allow, grid, mesh, fmesh)
+    println("Initialize context for the StochSK solver")
 
     return MC, SE, SC
 end
