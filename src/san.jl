@@ -490,6 +490,14 @@ end
     sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
 Perform Monte Carlo sweeps and sample the field configurations.
+
+### Arguments
+* MC -> A StochSKMC struct.
+* SE -> A StochSKElement struct.
+* SC -> A StochSKContext struct.
+
+### Returns
+N/A
 """
 function sample(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     if rand(MC.rng) < 0.80
@@ -506,7 +514,14 @@ end
 """
     measure(SE::StochSKElement, SC::StochSKContext)
 
-Measure the final spectral functions.
+Accumulate the final spectral functions A(ω).
+
+### Arguments
+* SE -> A StochSKElement struct.
+* SC -> A StochSKContext struct.
+
+### Returns
+N/A
 
 See also: [`nearest`](@ref).
 """
@@ -516,12 +531,14 @@ function measure(SE::StochSKElement, SC::StochSKContext)
 
     for j = 1:ngamm
         d_pos = SE.P[j]
-        # d_pos / nfine denotes the position of the selected δ function
+        # d_pos / nfine denotes the position of the selected δ-like peak
         # in the fine linear mesh.
         #
         # The nearest() function is used to extract the approximated
         # position (index) of the selected δ function in the spectral
         # mesh, which could be linear or non-linear.
+        #
+        # Note that nearest() is defined in mesh.jl.
         s_pos = nearest(SC.mesh, d_pos / nfine)
         SC.Aout[s_pos] = SC.Aout[s_pos] + SE.A
     end
