@@ -922,6 +922,9 @@ allowable indices. Be careful, `fmesh` should be a fine linear mesh.
 * S     -> A StochSKSolver object.
 * fmesh -> Very dense mesh for the δ peaks.
 
+### Returns
+* allow -> Allowable indices.
+
 See also: [`StochSKSolver`](@ref).
 """
 function constraints(S::StochSKSolver, fmesh::AbstractMesh)
