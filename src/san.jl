@@ -986,7 +986,7 @@ function try_move_s(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     Gₙ = zeros(F64, size(SC.Gᵧ))
     ΔG = zeros(F64, size(SC.Gᵧ))
 
-    for i = 1:ngamm
+    for _ = 1:ngamm
         # Choose single δ function
         s = rand(MC.rng, 1:ngamm)
 
@@ -1043,6 +1043,14 @@ end
 Try to update the Monte Carlo field configurations via the Metropolis
 algorithm. In each update, only a pair of δ functions are shifted.
 
+### Arguments
+* MC -> A StochSKMC struct.
+* SE -> A StochSKElement struct.
+* SC -> A StochSKContext struct.
+
+### Returns
+N/A
+
 See also: [`try_move_s`](@ref).
 """
 function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
@@ -1059,7 +1067,7 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     Gₙ = zeros(F64, size(SC.Gᵧ))
     ΔG = zeros(F64, size(SC.Gᵧ))
 
-    for i = 1:ngamm
+    for _ = 1:ngamm
         # Choose a pair of δ functions
         s₁ = rand(MC.rng, 1:ngamm)
         s₂ = s₁
@@ -1131,6 +1139,14 @@ end
 Try to update the Monte Carlo field configurations via the Metropolis
 algorithm. In each update, four different δ functions are shifted.
 
+### Arguments
+* MC -> A StochSKMC struct.
+* SE -> A StochSKElement struct.
+* SC -> A StochSKContext struct.
+
+### Returns
+N/A
+
 See also: [`try_move_s`](@ref).
 """
 function try_move_q(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
@@ -1147,7 +1163,7 @@ function try_move_q(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     Gₙ = zeros(F64, size(SC.Gᵧ))
     ΔG = zeros(F64, size(SC.Gᵧ))
 
-    for i = 1:ngamm
+    for _ = 1:ngamm
         # Choose four different δ functions
         𝑆 = nothing
         while true
