@@ -186,6 +186,15 @@ end
     run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Perform stochastic analytic continuation simulation, sequential version.
+
+### Arguments
+* MC -> A StochACMC struct.
+* SE -> A StochACElement struct.
+* SC -> A StochACContext struct.
+
+### Returns
+* Aout -> Spectral function, A(ω).
+* Uα -> α-resolved internal energy.
 """
 function run(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # By default, we should write the analytic continuation results
