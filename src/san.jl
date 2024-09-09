@@ -183,53 +183,9 @@ function init(S::StochSKSolver, rd::RawData)
     SE = init_element(S, MC.rng, allow)
     println("Randomize Monte Carlo configurations")
 
-
-
-
-
-    Aout = init_context(S)
-
-    kernel = make_kernel(fmesh, grid)
-    println("Build default kernel: ", get_b("ktype"))
-
-    # In order to accelerate the calculations, the singular space of the
-    # kernel function is used. At first, we preform singular value
-    # decomposition for K/σ:
-    #     K/σ = U S Vᵀ
-    # Then
-    #     (G - KA)/σ = G/σ - K/σA
-    #                = UU'(G/σ - USVᵀA)
-    #                = U(U'G/σ - U'USVᵀA)
-    #                = U(U'G/σ - SVᵀA)
-    #                = U(G' - K'A)
-    # In the StochAC solver, let Gᵥ → G', kernel → K'. Then new χ² is
-    # calculated by
-    #     |G' - K'A|²
-    # instead of
-    #     |G - KA|²/σ²
-    U, V, S = make_singular_space(Diagonal(σ¹) * kernel)
-    Gᵥ = U' *  (Gᵥ .* σ¹)
-    kernel = Diagonal(S) * V'
-    Gᵧ = calc_correlator(SE, kernel)
-    println("Precompute correlator")
-
-    𝚾 = calc_goodness(Gᵧ, Gᵥ)
-    χ², χ²min = 𝚾, 𝚾
-    χ²vec = zeros(F64, get_k("nwarm"))
-    println("Precompute goodness function")
-
-    Θ = get_k("theta")
-    Θvec = zeros(F64, get_k("nwarm"))
-    println("Setup Θ parameter")
-
-    
-    @show Gᵧ
-    error()
-    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, kernel, Aout,
-                        χ², χ²min, χ²vec, Θ, Θvec)
+    SC = init_context(SE, Gᵥ, σ¹, allow, grid, mesh, fmesh)
 
     return MC, SE, SC
-
 end
 
 """
@@ -667,12 +623,46 @@ function init_element(
     return StochSKElement(position, amplitude, window_width)
 end
 
-function init_context(S::StochSKSolver)
+function init_context(SE::StochSKElement, Gᵥ, σ¹, allow, grid, mesh, fmesh)
     nmesh = get_b("nmesh")
 
     Aout = zeros(F64, nmesh)
 
-    return Aout
+    kernel = make_kernel(fmesh, grid)
+    println("Build default kernel: ", get_b("ktype"))
+
+    # In order to accelerate the calculations, the singular space of the
+    # kernel function is used. At first, we preform singular value
+    # decomposition for K/σ:
+    #     K/σ = U S Vᵀ
+    # Then
+    #     (G - KA)/σ = G/σ - K/σA
+    #                = UU'(G/σ - USVᵀA)
+    #                = U(U'G/σ - U'USVᵀA)
+    #                = U(U'G/σ - SVᵀA)
+    #                = U(G' - K'A)
+    # In the StochAC solver, let Gᵥ → G', kernel → K'. Then new χ² is
+    # calculated by
+    #     |G' - K'A|²
+    # instead of
+    #     |G - KA|²/σ²
+    U, V, S = make_singular_space(Diagonal(σ¹) * kernel)
+    Gᵥ = U' *  (Gᵥ .* σ¹)
+    kernel = Diagonal(S) * V'
+    Gᵧ = calc_correlator(SE, kernel)
+    println("Precompute correlator")
+
+    𝚾 = calc_goodness(Gᵧ, Gᵥ)
+    χ², χ²min = 𝚾, 𝚾
+    χ²vec = zeros(F64, get_k("nwarm"))
+    println("Precompute goodness function")
+
+    Θ = get_k("theta")
+    Θvec = zeros(F64, get_k("nwarm"))
+    println("Setup Θ parameter")
+
+    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, kernel, Aout,
+                        χ², χ²min, χ²vec, Θ, Θvec)
 end
 
 """
