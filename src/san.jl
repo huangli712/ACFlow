@@ -637,7 +637,14 @@ end
 """
     init_mc(S::StochSKSolver)
 
-Try to create a StochSKMC struct.
+Try to create a StochSKMC struct. Some counters for Monte Carlo updates
+are initialized here.
+
+### Arguments
+* S -> A StochSKSolver struct.
+
+### Returns
+* MC -> A StochSKMC struct.
 
 See also: [`StochSKMC`](@ref).
 """
@@ -651,7 +658,7 @@ function init_mc(S::StochSKSolver)
     Ptry = 0
     Qacc = 0
     Qtry = 0
-
+    #
     MC = StochSKMC(rng, Sacc, Stry, Pacc, Ptry, Qacc, Qtry)
 
     return MC
