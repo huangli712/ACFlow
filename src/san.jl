@@ -549,6 +549,14 @@ end
 
 Try to shuffle the Monte Carlo field configuration via the Metropolis
 algorithm. Then the window for shifting the δ functions is adjusted.
+
+### Arguments
+* MC -> A StochSKMC struct.
+* SE -> A StochSKElement struct.
+* SC -> A StochSKContext struct.
+
+### Returns
+N/A
 """
 function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Get/set essential parameters
@@ -606,8 +614,15 @@ end
 """
     init_iodata(S::StochSKSolver, rd::RawData)
 
-Preprocess the input data (`rd`), then allocate memory for the calculated
-spectral functions.
+Preprocess the input data (`rd`).
+
+### Arguments
+* S -> A StochSKSolver struct.
+* rd -> A RawData struct, which contains essential input data.
+
+### Returns
+* Gᵥ -> Input correlator.
+* σ¹ -> 1.0 / σ¹.
 
 See also: [`RawData`](@ref).
 """
