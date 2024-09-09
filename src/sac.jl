@@ -486,6 +486,27 @@ end
 =#
 
 """
+    init_iodata(S::StochACSolver, rd::RawData)
+
+Preprocess the input data (`rd`), then allocate memory for the α-resolved
+spectral functions.
+
+See also: [`RawData`](@ref).
+"""
+function init_iodata(S::StochACSolver, rd::RawData)
+    nalph = get_a("nalph")
+    nmesh = get_b("nmesh")
+
+    Aout = zeros(F64, nmesh, nalph)
+
+    G = make_data(rd)
+    Gᵥ = G.value # Gᵥ = abs.(G.value)
+    σ¹ = 1.0 ./ sqrt.(G.covar)
+
+    return Gᵥ, σ¹, Aout
+end
+
+"""
     init_mc(S::StochACSolver)
 
 Try to create a StochACMC struct.
@@ -538,25 +559,7 @@ function init_element(S::StochACSolver, rng::AbstractRNG, allow::Vector{I64})
     return SE
 end
 
-"""
-    init_iodata(S::StochACSolver, rd::RawData)
-
-Preprocess the input data (`rd`), then allocate memory for the α-resolved
-spectral functions.
-
-See also: [`RawData`](@ref).
-"""
-function init_iodata(S::StochACSolver, rd::RawData)
-    nalph = get_a("nalph")
-    nmesh = get_b("nmesh")
-
-    Aout = zeros(F64, nmesh, nalph)
-
-    G = make_data(rd)
-    Gᵥ = G.value # Gᵥ = abs.(G.value)
-    σ¹ = 1.0 ./ sqrt.(G.covar)
-
-    return Gᵥ, σ¹, Aout
+function init_context()
 end
 
 """
