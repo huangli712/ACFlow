@@ -646,7 +646,7 @@ return a StochPXElement object. Note that `allow` is generated in the
 `constraints()` function.
 
 ### Arguments
-* S     -> A StochPXSolver object.
+* S     -> A StochPXSolver struct.
 * rng   -> Random number generator.
 * allow -> Allowed positions for the poles.
 * fmesh -> Fine mesh in [wmin, wmax], used to build the kernel matrix Λ.

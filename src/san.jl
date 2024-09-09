@@ -675,9 +675,12 @@ Randomize the configurations for future Monte Carlo sampling. It will
 return a StochSKElement object.
 
 ### Arguments
-* S     -> A StochSKSolver object.
+* S     -> A StochSKSolver struct.
 * rng   -> Random number generator.
 * allow -> Allowed positions for the δ peaks.
+
+### Returns
+* SE -> A StochSKElement struct.
 
 See also: [`StochSKElement`](@ref).
 """
