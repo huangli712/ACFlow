@@ -134,7 +134,7 @@ function solve(S::StochSKSolver, rd::RawData)
     # Sequential version
     else
         #
-        Aout, χ²out, Θout  = run(MC, SE, SC)
+        Aout, χ²out, Θout = run(MC, SE, SC)
         Gout = last(SC, Aout, χ²out, Θout)
         #
     end

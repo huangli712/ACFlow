@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/31
+# Last modified: 2024/09/10
 #
 
 #=
@@ -15,7 +15,7 @@
     StochACElement
 
 Mutable struct. It is used to record the field configurations, which will
-be sampled by  Monte Carlo sweeping procedure.
+be sampled by Monte Carlo sweeping procedure.
 
 ### Members
 * Γₚ -> It means the positions of the δ functions.
@@ -35,8 +35,8 @@ Mutable struct. It is used within the StochAC solver only.
 * Gᵥ     -> Input data for correlator.
 * σ¹     -> Actually 1.0 / σ¹.
 * allow  -> Allowable indices.
-* grid   -> Grid for input data.
-* mesh   -> Mesh for output spectrum.
+* grid   -> Imaginary axis grid for input data.
+* mesh   -> Real frequency mesh for output spectrum.
 * model  -> Default model function.
 * kernel -> Default kernel function.
 * Aout   -> Calculated spectral function, it is actually ⟨n(x)⟩.
@@ -71,6 +71,15 @@ end
 
 Solve the analytic continuation problem by the stochastic analytic
 continuation algorithm (K. S. D. Beach's version).
+
+### Arguments
+* S -> A StochACSolver struct.
+* rd -> A RawData struct, containing raw data for input correlator.
+
+### Returns
+* mesh -> Real frequency mesh, ω.
+* Aout -> Spectral function, A(ω).
+* Gout -> Retarded Green's function, G(ω).
 """
 function solve(S::StochACSolver, rd::RawData)
     nmesh = get_b("nmesh")
@@ -81,6 +90,7 @@ function solve(S::StochACSolver, rd::RawData)
 
     # Parallel version
     if nworkers() > 1
+        #
         println("Using $(nworkers()) workers")
         #
         # Copy configuration dicts
@@ -112,12 +122,13 @@ function solve(S::StochACSolver, rd::RawData)
         #
         # Postprocess the solutions
         Gout = last(SC, Aout, Uα)
-
+        #
     # Sequential version
     else
+        #
         Aout, Uα = run(MC, SE, SC)
         Gout = last(SC, Aout, Uα)
-
+        #
     end
 
     return SC.mesh.mesh, Aout, Gout
