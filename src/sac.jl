@@ -138,7 +138,16 @@ end
     init(S::StochACSolver, rd::RawData)
 
 Initialize the StochAC solver and return the StochACMC, StochACElement,
-and StochACContext structs.
+and StochACContext structs. Please don't call this function directly.
+
+### Arguments
+* S -> A StochACSolver struct.
+* rd -> A RawData struct, containing raw data for input correlator.
+
+### Returns
+* MC -> A StochACMC struct.
+* SE -> A StochACElement struct.
+* SC -> A StochACContext struct.
 """
 function init(S::StochACSolver, rd::RawData)
     # Initialize possible constraints.
