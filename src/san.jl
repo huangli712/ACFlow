@@ -845,12 +845,15 @@ end
 """
     calc_goodness(Gₙ::Vector{F64}, Gᵥ::Vector{F64})
 
-Try to calculate the goodness function (i.e, χ²), which measures the
-distance between input and regenerated correlators.
+Try to calculate the goodness-of-fit function (i.e, χ²), which measures
+the distance between input and regenerated correlators.
 
 ### Arguments
 * Gₙ -> Reconstructed correlators.
 * Gᵥ -> Input (original) correlators.
+
+### Returns
+* χ² -> Goodness-of-fit function.
 
 See also: [`calc_correlator`](@ref).
 """
