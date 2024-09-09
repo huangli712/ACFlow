@@ -163,21 +163,31 @@ function init(S::StochSKSolver, rd::RawData)
     fmesh = calc_fmesh(S)
     allow = constraints(S, fmesh)
 
-    MC = init_mc(S)
-    println("Create infrastructure for Monte Carlo sampling")
-
-    SE = init_element(S, MC.rng, allow)
-    println("Randomize Monte Carlo configurations")
-
     # Prepare input data
     Gᵥ, σ¹ = init_iodata(S, rd)
     println("Postprocess input data: ", length(σ¹), " points")
 
+    # Prepare grid for input data
     grid = make_grid(rd)
     println("Build grid for input data: ", length(grid), " points")
 
+    # Prepare mesh for output spectrum
     mesh = make_mesh()
     println("Build mesh for spectrum: ", length(mesh), " points")
+
+    # Initialize counters for Monte Carlo engine
+    MC = init_mc(S)
+    println("Create infrastructure for Monte Carlo sampling")
+
+    # Initialize Monte Carlo configurations
+    SE = init_element(S, MC.rng, allow)
+    println("Randomize Monte Carlo configurations")
+
+
+
+
+
+    Aout = init_context(S)
 
     kernel = make_kernel(fmesh, grid)
     println("Build default kernel: ", get_b("ktype"))
@@ -212,12 +222,13 @@ function init(S::StochSKSolver, rd::RawData)
     Θvec = zeros(F64, get_k("nwarm"))
     println("Setup Θ parameter")
 
-    Aout = init_context(S)
+    
 
     SC = StochSKContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, kernel, Aout,
                         χ², χ²min, χ²vec, Θ, Θvec)
 
     return MC, SE, SC
+    
 end
 
 """
