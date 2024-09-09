@@ -166,10 +166,12 @@ function solve(rd::RawData)
     catch ex
         # For REPL case, error messages are written to terminal
         if isinteractive()
+            println(red("ERROR: "), magenta("The stacktrace is shown below"))
             myerror(stdout)
-        # For standard case, error messages will be written into err.msg.
+        # For standard case, error messages will be written into err.out.
         else
-            open("err.msg", "a") do fio
+            println("ERROR: The stacktrace is saved in err.out")
+            open("err.out", "a") do fio
                 myerror(fio)
             end
         end
