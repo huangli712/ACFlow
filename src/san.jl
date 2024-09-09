@@ -353,6 +353,12 @@ continuation simulations. It will generate the spectral functions.
 * Θvec -> List of Θ parameters.
 """
 function average(step::F64, SC::StochSKContext)
+    # Here, the factor SC.mesh.weight in denominator is used to make sure
+    # that the sum-rule
+    #
+    # ∫ A(ω) dω = 1
+    #
+    # is obeyed by the calculated A(ω).
     SC.Aout = SC.Aout ./ (step * SC.mesh.weight)
 
     return SC.Aout, SC.χ²vec, SC.Θvec
