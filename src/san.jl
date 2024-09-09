@@ -367,13 +367,16 @@ end
     )
 
 It will process and write the calculated results by the StochSK solver,
-including final spectral function and reproduced correlator.
+including the final spectral function and reproduced correlator.
 
 ### Arguments
-* SC    -> A StochSKContext object.
-* Asum  -> Spectral function.
+* SC    -> A StochSKContext struct.
+* Asum  -> Spectral function, A(ω).
 * χ²vec -> Θ-dependent χ².
-* Θvec  -> List of the Θ parameters.
+* Θvec  -> List of Θ parameters.
+
+### Returns
+* G -> Retarded Green's function, G(ω).
 """
 function last(
     SC::StochSKContext,

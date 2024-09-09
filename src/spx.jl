@@ -464,7 +464,7 @@ It will write the calculated results by the StochPX solver, including the
 final spectral function and reproduced correlator.
 
 ### Arguments
-* SC   -> A StochPXContext object.
+* SC   -> A StochPXContext struct.
 * Aout -> Spectral function, A(ω).
 * Gout -> Retarded Green's function, G(ω).
 * Gᵣ   -> Reconstructed Green's function, G(iωₙ).
