@@ -421,6 +421,14 @@ end
 Warmup the Monte Carlo engine to acheieve thermalized equilibrium. Then
 it will try to figure out the optimized Θ and the corresponding Monte
 Carlo field configuration.
+
+### Arguments
+* MC -> A StochSKMC struct.
+* SE -> A StochSKElement struct.
+* SC -> A StochSKContext struct.
+
+### Returns
+N/A
 """
 function warmup(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Get essential parameters
