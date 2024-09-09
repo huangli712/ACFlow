@@ -346,6 +346,11 @@ continuation simulations. It will generate the spectral functions.
 ### Arguments
 * step -> Number of Monte Carlo samplings.
 * SC   -> A StochSKContext object.
+
+### Returns
+* Aout -> Spectral function, A(ω).
+* χ²vec -> Θ-dependent χ², χ²(Θ).
+* Θvec -> List of Θ parameters.
 """
 function average(step::F64, SC::StochSKContext)
     SC.Aout = SC.Aout ./ (step * SC.mesh.weight)
