@@ -194,6 +194,16 @@ end
     run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
 Perform stochastic analytic continuation simulation, sequential version.
+
+### Arguments
+* MC -> A StochSKMC struct.
+* SE -> A StochSKElement struct.
+* SC -> A StochSKContext struct.
+
+### Returns
+* Aout -> Spectral function, A(ω).
+* χ²vec -> Θ-dependent χ², χ²(Θ).
+* Θvec -> List of Θ parameters.
 """
 function run(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # By default, we should write the analytic continuation results
