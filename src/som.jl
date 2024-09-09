@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/06
+# Last modified: 2024/09/09
 #
 
 #=
@@ -174,8 +174,8 @@ function init(S::StochOMSolver, rd::RawData)
 
     # Prepare some key variables
     Cᵥ, Δᵥ, 𝕊ᵥ = init_context(S, grid)
-
     SC = StochOMContext(Gᵥ, σ¹, grid, mesh, Cᵥ, Δᵥ, 𝕊ᵥ)
+    println("Initialize context for the StochOM solver")
 
     return MC, SC
 end

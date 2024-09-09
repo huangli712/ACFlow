@@ -183,7 +183,7 @@ function init(S::StochSKSolver, rd::RawData)
     SE = init_element(S, MC.rng, allow)
     println("Randomize Monte Carlo configurations")
 
-    # Initialize StochSKContext, which contains some global arrays
+    # Prepare some key variables
     SC = init_context(SE, Gᵥ, σ¹, allow, grid, mesh, fmesh)
     println("Initialize context for the StochSK solver")
 
