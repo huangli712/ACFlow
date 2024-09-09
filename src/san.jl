@@ -263,6 +263,19 @@ end
 
 Perform stochastic analytic continuation simulation, parallel version.
 The arguments `p1` and `p2` are copies of PBASE and PStochSK, respectively.
+
+### Arguments
+* S -> A StochSKSolver struct.
+* p1 -> A copy of PBASE.
+* p2 -> A copy of PStochSK.
+* MC -> A StochSKMC struct.
+* SE -> A StochSKElement struct.
+* SC -> A StochSKContext struct.
+
+### Returns
+* Aout -> Spectral function, A(ω).
+* χ²vec -> Θ-dependent χ², χ²(Θ).
+* Θvec -> List of Θ parameters.
 """
 function prun(
     S::StochSKSolver,
