@@ -313,7 +313,7 @@ simulations. It will generate the spectral functions.
 * SC -> A StochOMContext struct.
 
 ### Returns
-* Aout -> Spectral function, A(ω).
+* Aom -> Spectral function, A(ω).
 """
 function average(SC::StochOMContext)
     # By default, we should write the analytic continuation results

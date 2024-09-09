@@ -316,11 +316,15 @@ end
 
 Postprocess the results generated during the stochastic analytic
 continuation simulations. It will calculate the spectral functions, and
-internal energies.
+α-resolved internal energies.
 
 ### Arguments
 * step -> How many steps are there in the Monte Carlo samplings.
-* SC   -> A StochACContext object.
+* SC   -> A StochACContext struct.
+
+### Returns
+* Aout -> Spectral function, A(ω,α).
+* Uα -> α-resolved internal energy.
 """
 function average(step::F64, SC::StochACContext)
     # Get key parameters
