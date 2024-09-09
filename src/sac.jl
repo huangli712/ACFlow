@@ -176,7 +176,8 @@ function init(S::StochACSolver, rd::RawData)
     println("Randomize Monte Carlo configurations")
 
     # Prepare some key variables
-    SC = init_context(SE)
+    SC = init_context(SE, Gᵥ, σ¹, allow, grid, mesh, fmesh)
+    println("Initialize context for the StochAC solver")
 
     return MC, SE, SC
 end
@@ -533,23 +534,34 @@ function init_element(S::StochACSolver, rng::AbstractRNG, allow::Vector{I64})
     return SE
 end
 
-function init_context(SE)
-    nalph = get_a("nalph")
+"""
+"""
+function init_context(
+    SE::StochACElement,
+    Gᵥ::Vector{F64},
+    σ¹::Vector{F64},
+    allow::Vector{I64},
+    grid::AbstractGrid,
+    mesh::AbstractMesh,
+    fmesh::AbstractMesh
+    )
+    # Get parameters
     nmesh = get_b("nmesh")
-
+    nalph = get_a("nalph")
+    
+    # Allocate memory for spectral function, A(ω,α)
     Aout = zeros(F64, nmesh, nalph)
 
     # Prepare some key variables
     # Only flat model is valid for the StochAC solver.
     model = make_model(mesh)
-    println("Build default model: ", get_b("mtype"))
 
-    kernel = make_kernel(fmesh, grid)
-    println("Build default kernel: ", get_b("ktype"))
-
+    # Precompute δ functions
     ϕ = calc_phi(mesh, model)
     Δ = calc_delta(fmesh, ϕ)
-    println("Precompute δ functions")
+
+    # Build kernel matrix
+    kernel = make_kernel(fmesh, grid)
 
     # In order to accelerate the calculations, the singular space of the
     # kernel function is used. At first, we preform singular value
@@ -566,16 +578,23 @@ function init_context(SE)
     #     |G' - K'A|²
     # instead of
     #     |G - KA|²/σ²
+
+    # Singular value decomposition of K/σ
     U, V, S = make_singular_space(Diagonal(σ¹) * kernel)
-    Gᵥ = U' *  (Gᵥ .* σ¹)
+
+    # Get new kernel matrix
     kernel = Diagonal(S) * V'
+
+    # Get new (input) correlator
+    Gᵥ = U' *  (Gᵥ .* σ¹)
+    
+    # Precompute hamiltonian
     hτ, Hα, Uα = calc_hamil(SE.Γₚ, SE.Γₐ, kernel, Gᵥ)
-    println("Precompute hamiltonian")
 
+    # Precompute α parameters
     αₗ = calc_alpha()
-    println("Precompute α parameters")
 
-    SC = StochACContext(Gᵥ, σ¹, allow, grid, mesh, model,
+    return StochACContext(Gᵥ, σ¹, allow, grid, mesh, model,
                         kernel, Aout, Δ, hτ, Hα, Uα, αₗ)
 end
 
