@@ -801,6 +801,12 @@ is used internally to build the kernel function. Note that the stochastic
 analytic continuation method (A. W. Sandvik's version) does not support
 the self-adaptive mesh.
 
+### Arguments
+* S -> A StochSKSolver struct.
+
+### Returns
+* fmesh -> A very fine, uniform mesh in [wmin, wmax]
+
 See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
 """
 function calc_fmesh(S::StochSKSolver)
