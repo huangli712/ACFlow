@@ -706,13 +706,56 @@ function init_element(
     return StochSKElement(position, amplitude, window_width)
 end
 
-function init_context(SE::StochSKElement, Gᵥ, σ¹, allow, grid, mesh, fmesh)
-    nmesh = get_b("nmesh")
+"""
+    init_context(
+        SE::StochSKElement,
+        Gᵥ::Vector{F64},
+        σ¹::Vector{F64},
+        allow::Vector{I64},
+        grid::AbstractGrid,
+        mesh::AbstractMesh,
+        fmesh::AbstractMesh
+    )
 
+Try to create a StochSKContext struct, which contains some key variables,
+including grid, mesh, input correlator and the corresponding standard
+deviation, kernel matrix, spectral function, and goodness-of-fit function.
+
+### Arguments
+* SE -> A StochSKElement struct.
+* Gᵥ -> Input correlator. It will be changed in this function.
+* σ¹ -> Standard deviation for input correlator.
+* allow -> Allowable indices for δ-like peaks.
+* grid -> Imaginary axis grid for input data.
+* mesh -> Real frequency mesh for output spectrum.
+* fmesh -> Very fine mesh in [wmin, wmax].
+
+### Returns
+* SC -> A StochSKContext struct.
+"""
+function init_context(
+    SE::StochSKElement,
+    Gᵥ::Vector{F64},
+    σ¹::Vector{F64},
+    allow::Vector{I64},
+    grid::AbstractGrid,
+    mesh::AbstractMesh,
+    fmesh::AbstractMesh
+    )
+    # Get parameters
+    nmesh = get_b("nmesh")
+    nwarm = get_k("nwarm")
+    Θ = get_k("theta")
+
+    # Allocate memory for spectral function, A(ω)
     Aout = zeros(F64, nmesh)
 
+    # Allocate memory for χ² and Θ
+    χ²vec = zeros(F64, nwarm)
+    Θvec = zeros(F64, nwarm)
+
+    # Build kernel matrix
     kernel = make_kernel(fmesh, grid)
-    println("Build default kernel: ", get_b("ktype"))
 
     # In order to accelerate the calculations, the singular space of the
     # kernel function is used. At first, we preform singular value
@@ -729,22 +772,24 @@ function init_context(SE::StochSKElement, Gᵥ, σ¹, allow, grid, mesh, fmesh)
     #     |G' - K'A|²
     # instead of
     #     |G - KA|²/σ²
-    U, V, S = make_singular_space(Diagonal(σ¹) * kernel)
-    Gᵥ = U' *  (Gᵥ .* σ¹)
-    kernel = Diagonal(S) * V'
-    Gᵧ = calc_correlator(SE, kernel)
-    println("Precompute correlator")
 
+    # Singular value decomposition of K/σ
+    U, V, S = make_singular_space(Diagonal(σ¹) * kernel)
+
+    # Get new kernel matrix
+    kernel = Diagonal(S) * V'
+
+    # Get new (input) correlator
+    Gᵥ = U' *  (Gᵥ .* σ¹)
+
+    # Calculate reconstructed correlator using current field configuration
+    Gᵧ = calc_correlator(SE, kernel)
+
+    # Calculate goodness-of-fit functional χ²
     𝚾 = calc_goodness(Gᵧ, Gᵥ)
     χ², χ²min = 𝚾, 𝚾
-    χ²vec = zeros(F64, get_k("nwarm"))
-    println("Precompute goodness function")
 
-    Θ = get_k("theta")
-    Θvec = zeros(F64, get_k("nwarm"))
-    println("Setup Θ parameter")
-
-    SC = StochSKContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, kernel, Aout,
+    return StochSKContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, kernel, Aout,
                         χ², χ²min, χ²vec, Θ, Θvec)
 end
 
