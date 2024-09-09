@@ -111,6 +111,7 @@ mesh, Aout, Gout = solve(read_data())
 See also: [`RawData`](@ref).
 """
 function solve(rd::RawData)
+    # Return a valid solver object
     function make_solver()
         solver = get_b("solver")
 
@@ -150,6 +151,7 @@ function solve(rd::RawData)
         end
     end
 
+    # Write exceptions or errors to terminal or external file
     function myerror(io)
         for (exc, btrace) in current_exceptions()
             Base.showerror(io, exc, btrace)
@@ -157,11 +159,15 @@ function solve(rd::RawData)
         end 
     end
 
+    # We just use try...catch block to catch possible exceptions or errors
+    # during simulations.
     try
         return solve(make_solver(), rd)
     catch ex
+        # For REPL case, error messages are written to terminal
         if isinteractive()
             myerror(stdout)
+        # For standard case, error messages will be written into err.msg.
         else
             open("err.msg", "a") do fio
                 myerror(fio)
