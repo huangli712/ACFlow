@@ -867,6 +867,13 @@ end
 
 Try to locate the optimal Θ and χ². This function implements the `chi2min`
 and `chi2kink` algorithms. Note that the `chi2min` algorithm is preferred.
+
+### Arguments
+* len -> Length of vector Θ.
+* SC -> A StochSKContext struct.
+
+### Returns
+* c -> Selected index for optimal Θ.
 """
 function calc_theta(len::I64, SC::StochSKContext)
     function fitfun(x, p)
