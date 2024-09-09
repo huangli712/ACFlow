@@ -389,11 +389,11 @@ function last(
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
 
-    # Write final spectral function
-    fwrite && write_spectrum(SC.mesh, Asum)
-
     # Write Θ-dependent goodness function
     fwrite && write_goodness(Θvec, χ²vec)
+
+    # Write final spectral function
+    fwrite && write_spectrum(SC.mesh, Asum)
 
     # Reproduce input data and write them
     kernel = make_kernel(SC.mesh, SC.grid)
