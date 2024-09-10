@@ -455,6 +455,9 @@ choice. The parameter `ε` can be set to the noise level.
 * ω₁ -> Non-negative Matsubara frequency (raw values).
 * 𝐺₁ -> Complex values at ωₚ (raw values).
 * ε  -> Threshold for the Prony approximation.
+
+### Returns
+* pa -> A PronyApproximation struct.
 """
 function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64}, ε::F64)
     # Preprocess the input data to get the number of nodes, frequency
@@ -482,6 +485,9 @@ is unknown, this function is useful.
 ### Arguments
 * ω₁ -> Non-negative Matsubara frequency (raw values).
 * 𝐺₁ -> Complex values at ωₚ (raw values).
+
+### Returns
+* pa -> A PronyApproximation struct.
 """
 function PronyApproximation(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
     # Preprocess the input data to get the number of nodes, frequency
