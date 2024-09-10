@@ -754,6 +754,12 @@ end
 Try to calculate ϕ(ω) function. `am` is the mesh for calculated spectrum,
 and `model` means the default model function.
 
+### Arguments
+See above explanations.
+
+### Returns
+* ϕ -> The ϕ(ω) function.
+
 See also: [`AbstractMesh`](@ref), [`calc_delta`](@ref).
 """
 function calc_phi(am::AbstractMesh, model::Vector{F64})
