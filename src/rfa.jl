@@ -568,6 +568,15 @@ end
 
 Perform singular value decomposition for the matrix ℋ that is constructed
 from 𝐺ₚ. It will return the singular values `S` and orthogonal matrix `V`.
+
+### Arguments
+* 𝑁ₚ -> Number of nodes.
+* 𝐺ₚ -> Truncated Green's function data.
+
+### Returns
+See above explanations.
+
+See also: [`prony_data`](@ref).
 """
 function prony_svd(𝑁ₚ::I64, 𝐺ₚ::Vector{C64})
     ℋ = zeros(C64, 𝑁ₚ + 1, 𝑁ₚ + 1)
