@@ -763,7 +763,14 @@ calculate θ, which is then back transformed to generate smooth G (i.e.,
 the spectrum) at real axis.
 
 This function will determine the optimal value of H (hopt). Of course,
-ℋ and 𝑎𝑏 in NevanACContext struct are also changed.
+ℋ and 𝑎𝑏 in NevanACContext struct are also changed. Here, H means order
+of the Hardy basis.
+
+### Arguments
+* nac -> A NevanACContext struct.
+
+### Returns
+N/A
 """
 function calc_hopt!(nac::NevanACContext)
     hmax = get_n("hmax")
