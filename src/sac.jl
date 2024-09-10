@@ -493,7 +493,14 @@ end
 """
     measure(SE::StochACElement, SC::StochACContext)
 
-Measure the spectral functions and internal energies.
+Accumulate the α-resolved spectral functions and internal energies.
+
+### Arguments
+* SE -> A StochSKElement struct.
+* SC -> A StochSKContext struct.
+
+### Returns
+N/A
 """
 function measure(SE::StochACElement, SC::StochACContext)
     nalph = get_a("nalph")
