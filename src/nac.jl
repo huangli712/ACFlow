@@ -722,6 +722,12 @@ the spectrum) at real axis.
 
 This function will determine the minimal value of H (hmin). Of course,
 ℋ and 𝑎𝑏 in NevanACContext struct are also changed.
+
+### Arguments
+* nac -> A NevanACContext struct.
+
+### Returns
+N/A
 """
 function calc_hmin!(nac::NevanACContext)
     hmax = get_n("hmax")
