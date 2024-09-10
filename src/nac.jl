@@ -64,6 +64,15 @@ end
 
 Solve the analytic continuation problem by the Nevanlinna analytical
 continuation method.
+
+### Arguments
+* S -> A NevanACSolver struct.
+* rd -> A RawData struct, containing raw data for input correlator.
+
+### Returns
+* mesh -> Real frequency mesh, ω.
+* Aout -> Spectral function, A(ω).
+* Gout -> Retarded Green's function, G(ω).
 """
 function solve(S::NevanACSolver, rd::RawData)
     println("[ NevanAC ]")
