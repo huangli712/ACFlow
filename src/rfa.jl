@@ -741,6 +741,13 @@ end
     (𝑝::PronyApproximation)(w::Vector{F64})
 
 Evaluate the Prony approximation at `w`.
+
+### Arguments
+* w -> w \in ℝ.
+
+### Returns
+* val -> 𝑝.(w).
+
 """
 function (𝑝::PronyApproximation)(w::Vector{F64})
     x₀ = @. (w - w[1]) / (w[end] - w[1])
