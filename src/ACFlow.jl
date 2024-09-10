@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/24
+# Last modified: 2024/09/10
 #
 
 """
@@ -785,9 +785,10 @@ warmup         -> Warmup Monte Carlo engine.
 sample         -> Sample field configurations via metropolis algorithm.
 measure        -> Measure spectral functions and internal energies.
 #
+init_iodata    -> Preprocess the input data.
 init_mc        -> Create a StochACMC struct.
 init_element   -> Create a StochACElement struct.
-init_iodata    -> Preprocess the input data.
+init_context   -> Create a StochACContext struct.
 #
 calc_fmesh     -> Build very dense mesh in [wmin,wmax].
 calc_phi       -> Calculate ϕ function.
@@ -820,9 +821,10 @@ export warmup
 export sample
 export measure
 #
+export init_iodata
 export init_mc
 export init_element
-export init_iodata
+export init_context
 #
 export calc_fmesh
 export calc_phi
@@ -862,9 +864,10 @@ sample         -> Sample field configurations via metropolis algorithm.
 measure        -> Measure spectral functions.
 shuffle        -> Shuffle field configurations.
 #
+init_iodata    -> Preprocess the input data.
 init_mc        -> Create a StochSKMC struct.
 init_element   -> Create a StochSKElement struct.
-init_iodata    -> Preprocess the input data.
+init_context   -> Create a StochSKContext struct.
 #
 calc_fmesh     -> Build very dense mesh in [wmin,wmax].
 calc_correlator-> Calculate correlator function from field configuration.
@@ -896,9 +899,10 @@ export sample
 export measure
 export shuffle
 #
+export init_iodata
 export init_mc
 export init_element
-export init_iodata
+export init_context
 #
 export calc_fmesh
 export calc_correlator
@@ -934,9 +938,9 @@ last           -> Postprocess the calculated results and write them.
 #
 update         -> Sample field configurations via metropolis algorithm.
 #
+init_iodata    -> Preprocess the input data.
 init_mc        -> Create a StochOMMC struct.
 init_element   -> Create a StochOMElement struct.
-init_iodata    -> Preprocess the input data.
 init_context   -> Prepare data for a StochOMContext struct.
 #
 eval_lambda    -> Build Λ function.
@@ -973,9 +977,9 @@ export last
 #
 export update
 #
+export init_iodata
 export init_mc
 export init_element
-export init_iodata
 export init_context
 #
 export eval_lambda
@@ -1018,9 +1022,9 @@ last           -> Postprocess the calculated results and write them.
 sample         -> Sample field configurations via simulated annealing algorithm.
 measure        -> Record Monte Carlo field configurations.
 #
+init_iodata    -> Preprocess the input data.
 init_mc        -> Create a StochPXMC struct.
 init_element   -> Create a StochPXElement struct.
-init_iodata    -> Preprocess the input data.
 init_context   -> Prepare data for a StochPXContext struct.
 #
 reset_mc       -> Reset counters in StochPXMC struct.
@@ -1056,9 +1060,9 @@ export last
 export sample
 export measure
 #
+export init_iodata
 export init_mc
 export init_element
-export init_iodata
 export init_context
 #
 export reset_mc
