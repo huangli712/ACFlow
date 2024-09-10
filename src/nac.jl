@@ -399,6 +399,8 @@ See above explanations.
 * 𝒜 -> Coefficients matrix `abcd` in Schur algorithm.
 * ℋ -> Hardy matrix for Hardy basis optimization.
 * 𝑎𝑏 -> Coefficients matrix for expanding `θ` with Hardy basis.
+
+See also: [`NevanACContext`](@ref).
 """
 function precompute(
     grid::AbstractGrid,
