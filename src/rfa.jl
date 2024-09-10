@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/19
+# Last modified: 2024/09/10
 #
 
 #
@@ -37,7 +37,7 @@
 #=
 *Remarks* :
 
-**Rational Barycentric Representation**
+**Rational barycentric Representation**
 
 The barycentric formula takes the form of a quotient of two partial
 fractions,
@@ -87,6 +87,9 @@ Construct a `BarycentricFunction` type rational function.
 * nodes   -> Interpolation nodes, ``z_i``.
 * values  -> Values at the interpolation nodes, ``r(z_i)``.
 * weights -> Barycentric weights, ``w_i``.
+
+### Returns
+* bf -> A BarycentricFunction struct.
 """
 function BarycentricFunction(
     nodes   :: Vector{C64},
@@ -133,6 +136,12 @@ bc_degree(r::BarycentricFunction) = length(r.nodes) - 1
     bc_poles(r::BarycentricFunction)
 
 Return the poles of the rational function `r`.
+
+### Arguments
+* r -> A BarycentricFunction struct.
+
+### Returns
+* pole -> List of poles.
 """
 function bc_poles(r::BarycentricFunction)
     w = bc_weights(r)
@@ -160,6 +169,13 @@ end
     (r::BarycentricFunction)(z::Number)
 
 Evaluate the barycentric rational function at `z`.
+
+### Arguments
+* z -> z \in ℂ.
+
+### Returns
+* val -> r(z).
+
 """
 function (r::BarycentricFunction)(z::Number)
     if isinf(z)
@@ -399,6 +415,9 @@ This function should not be called directly by the users.
 * ωₚ -> Non-negative Matsubara frequency (postprocessed).
 * 𝐺ₚ -> Complex values at ωₚ (postprocessed).
 * v  -> Selected vector from the orthogonal matrix `V`.
+
+### Returns
+* pa -> A PronyApproximation struct.
 """
 function PronyApproximation(
     𝑁ₚ :: I64,
