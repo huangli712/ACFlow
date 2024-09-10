@@ -171,7 +171,7 @@ end
 Evaluate the barycentric rational function at `z`.
 
 ### Arguments
-* z -> z \in ℂ.
+* z -> z ∈ ℂ.
 
 ### Returns
 * val -> r(z).
@@ -742,7 +742,7 @@ end
 Evaluate the Prony approximation at `w`.
 
 ### Arguments
-* w -> w \in ℝ.
+* w -> w ∈ ℝ.
 
 ### Returns
 * val -> 𝑝.(w).
