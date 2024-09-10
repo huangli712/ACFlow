@@ -170,6 +170,10 @@ continuation simulations.
 
 ### Arguments
 * nac -> A NevanACContext struct.
+
+### Returns
+* Aout -> Spectral function, A(ω).
+* Gout -> Retarded Green's function, G(ω).
 """
 function last(nac::NevanACContext)
     # By default, we should write the analytic continuation results
