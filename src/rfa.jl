@@ -719,6 +719,13 @@ end
     prony_omega(𝐺ₚ::Vector{C64}, Γₚ::Vector{C64})
 
 Try to calculate Ωₚ.
+
+### Arguments
+* 𝐺ₚ -> Complex values at ωₚ.
+* Γₚ -> Nodes for Prony approximation, ``γ_i``.
+
+### Returns
+* Ωₚ -> Weights for Prony approximation, ``w_i``.
 """
 function prony_omega(𝐺ₚ::Vector{C64}, Γₚ::Vector{C64})
     A = zeros(C64, length(𝐺ₚ), length(Γₚ))
