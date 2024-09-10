@@ -356,6 +356,9 @@ correlator.
 * SC   -> A StochACContext object.
 * Aout -> α-dependent spectral functions.
 * Uα   -> α-dependent internal energies.
+
+### Returns
+* G -> Retarded Green's function, G(ω).
 """
 function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     function fitfun(x, p)
@@ -383,7 +386,7 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     println("Perhaps the optimal α is: ", aopt)
     fwrite && write_hamiltonian(SC.αₗ, Uα)
 
-    # Calculate final spectral function and write them
+    # Calculate final spectral functions and write them
     Asum = zeros(F64, nmesh)
     for i = close : nalph - 1
         @. Asum = Asum + (Uα[i] - Uα[i+1]) * Aout[:,i]
@@ -416,7 +419,16 @@ end
 """
     warmup(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
-Warmup the Monte Carlo engine to acheieve thermalized equilibrium.
+Warmup the Monte Carlo engine to acheieve thermalized equilibrium. After
+that, the Monte Carlo counters will be reset.
+
+### Arguments
+* MC -> A StochACMC struct.
+* SE -> A StochACElement struct.
+* SC -> A StochACContext struct.
+
+### Returns
+N/A
 """
 function warmup(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     # Set essential parameter
