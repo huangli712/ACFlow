@@ -423,6 +423,12 @@ end
     calc_mobius(z::Vector{APC})
 
 A direct Mobius transformation.
+
+### Arguments
+* z -> Complex vector.
+
+### Returns
+* val -> φ(z), Mobius transformation of z.
 """
 function calc_mobius(z::Vector{APC})
     return @. (z - im) / (z + im)
