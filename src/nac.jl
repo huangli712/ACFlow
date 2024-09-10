@@ -534,7 +534,10 @@ which is then used to calculate θ. See Eq. (8) in Fei's NAC paper.
 ### Arguments
 * grid -> Grid in imaginary axis for input Green's function.
 * mesh -> Real frequency mesh.
-* Φ    -> Φ vector calculated by `calc_phis()`.
+* Φ -> Φ vector calculated by `calc_phis()`.
+
+### Returns
+* 𝒜 -> Coefficients matrix `abcd` in Schur algorithm.
 """
 function calc_abcd(grid::AbstractGrid, mesh::AbstractMesh, Φ::Vector{APC})
     eta::APF = get_n("eta")
