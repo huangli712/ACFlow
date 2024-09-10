@@ -601,7 +601,14 @@ The diagonal matrix (singular values) `S` is used to test whether the
 threshold `ε` is reasonable and figure out the index for extracting `v`
 from `V`.
 
-See also: [`prony_v`](@ref).
+### Arguments
+* S -> Singular values of ℋ.
+* ε -> Threshold provided by the users.
+
+### Returns
+* idx -> Index for S[idx] < ε.
+
+See also: [`prony_v`](@ref) and [`prony_svd`](@ref).
 """
 function prony_idx(S::Vector{F64}, ε::F64)
     # Determine idx, such that S[idx] < ε.
