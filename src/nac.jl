@@ -814,7 +814,7 @@ by minimizing the smooth norm.
 * H   -> Current order of the Hardy basis.
 
 ### Returns
-* causality -> Test whether the solution is causality.
+* causality -> Test whether the solution is causal.
 * converged -> Check whether the optimization is converged.
 """
 function hardy_optimize!(
@@ -906,6 +906,12 @@ end
 Check whether the input data are valid (the Pick criterion is satisfied).
 Here, `wn` is the Matsubara frequency, `gw` is the Matsubara function,
 and `Nopt` is the optimized number of Matsubara data points.
+
+### Arguments
+See above explanations.
+
+### Returns
+N/A
 """
 function check_pick(wn::Vector{APC}, gw::Vector{APC}, Nopt::I64)
     freq = calc_mobius(wn[1:Nopt])
@@ -924,6 +930,13 @@ end
     check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
 
 Check causality of the Hardy coefficients `𝑎𝑏`.
+
+### Arguments
+* ℋ -> Hardy matrix for Hardy basis optimization.
+* 𝑎𝑏 -> Coefficients matrix for expanding `θ` with Hardy basis.
+
+### Returns
+* causality -> Test whether the Hardy coefficients are causal.
 """
 function check_causality(ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     θₘ₊₁ = ℋ * 𝑎𝑏
