@@ -751,7 +751,7 @@ function init_context(S::StochOMSolver, grid::AbstractGrid)
             end
         end
 
-        # Create CubicSplineInterpolation objects in the time grid
+        # Create CubicSplineInterpolation structs in time grid τ
         for i = 1:ngrid
             𝕊ᵥ[i] = CubicSplineInterpolation(Λ[i,:], am.mesh)
         end

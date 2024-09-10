@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/31
+# Last modified: 2024/09/10
 #
 
 #
@@ -123,7 +123,7 @@ end
     run(nac::NevanACContext)
 
 Perform Hardy basis optimization to smooth the spectrum. the members `ℋ`,
-`𝑎𝑏`, `hmin`, and `hopt` of the NevanACContext object (`nac`) should be
+`𝑎𝑏`, `hmin`, and `hopt` of the NevanACContext struct (`nac`) should be
 updated in this function.
 """
 function run(nac::NevanACContext)
@@ -147,7 +147,7 @@ Postprocess the results generated during the Nevanlinna analytical
 continuation simulations.
 
 ### Arguments
-* nac -> A NevanACContext object.
+* nac -> A NevanACContext struct.
 """
 function last(nac::NevanACContext)
     # By default, we should write the analytic continuation results
@@ -648,7 +648,7 @@ calculate θ, which is then back transformed to generate smooth G (i.e.,
 the spectrum) at real axis.
 
 This function will determine the minimal value of H (hmin). Of course,
-ℋ and 𝑎𝑏 in NevanACContext object are also changed.
+ℋ and 𝑎𝑏 in NevanACContext struct are also changed.
 """
 function calc_hmin!(nac::NevanACContext)
     hmax = get_n("hmax")
@@ -684,7 +684,7 @@ calculate θ, which is then back transformed to generate smooth G (i.e.,
 the spectrum) at real axis.
 
 This function will determine the optimal value of H (hopt). Of course,
-ℋ and 𝑎𝑏 in NevanACContext object are also changed.
+ℋ and 𝑎𝑏 in NevanACContext struct are also changed.
 """
 function calc_hopt!(nac::NevanACContext)
     hmax = get_n("hmax")
@@ -722,7 +722,7 @@ For given Hardy matrix ℋ, try to update the expanding coefficients 𝑎𝑏
 by minimizing the smooth norm.
 
 ### Arguments
-* nac -> A NevanACContext object.
+* nac -> A NevanACContext struct.
 * ℋ   -> Hardy matrix, which contains the Hardy basis.
 * 𝑎𝑏  -> Expansion coefficients 𝑎 and 𝑏 for the contractive function θ.
 * H   -> Maximum order of the Hardy basis.
@@ -781,7 +781,7 @@ Establish the smooth norm, which is used to improve the smoothness of
 the output spectrum.
 
 ### Arguments
-* nac -> A NevanACContext object.
+* nac -> A NevanACContext struct.
 * ℋ   -> Hardy matrix, which contains the Hardy basis.
 * 𝑎𝑏  -> Expansion coefficients 𝑎 and 𝑏 for the contractive function θ.
 """

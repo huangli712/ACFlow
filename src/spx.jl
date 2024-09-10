@@ -642,7 +642,7 @@ end
     )
 
 Randomize the configurations for future Monte Carlo sampling. It will
-return a StochPXElement object. Note that `allow` is generated in the
+return a StochPXElement struct. Note that `allow` is generated in the
 `constraints()` function.
 
 ### Arguments

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/26
+# Last modified: 2024/09/10
 #
 
 """
@@ -346,7 +346,7 @@ end
 Setup the configuration dictionary: `PMaxEnt`.
 
 ### Arguments
-* S -> A MaxEntSolver object.
+* S -> A MaxEntSolver struct.
 * MaxEnt -> A dict struct that contains configurations from the [MaxEnt] block.
 
 ### Returns
@@ -371,7 +371,7 @@ end
 Setup the configuration dictionary: `PMaxEnt`.
 
 ### Arguments
-* S -> A MaxEntSolver object.
+* S -> A MaxEntSolver struct.
 * MaxEnt -> A dict struct that contains configurations from the [MaxEnt] block.
 
 ### Returns
@@ -396,7 +396,7 @@ end
 Setup the configuration dictionary: `PBarRat`.
 
 ### Arguments
-* S -> A BarRatSolver object.
+* S -> A BarRatSolver struct.
 * BarRat -> A dict struct that contains configurations from the [BarRat] block.
 
 ### Returns
@@ -421,7 +421,7 @@ end
 Setup the configuration dictionary: `PBarRat`.
 
 ### Arguments
-* S -> A BarRatSolver object.
+* S -> A BarRatSolver struct.
 * BarRat -> A dict struct that contains configurations from the [BarRat] block.
 
 ### Returns
@@ -446,7 +446,7 @@ end
 Setup the configuration dictionary: `PNevanAC`.
 
 ### Arguments
-* S -> A NevanACSolver object.
+* S -> A NevanACSolver struct.
 * NevanAC -> A dict struct that contains configurations from the [NevanAC] block.
 
 ### Returns
@@ -471,7 +471,7 @@ end
 Setup the configuration dictionary: `PNevanAC`.
 
 ### Arguments
-* S -> A NevanACSolver object.
+* S -> A NevanACSolver struct.
 * NevanAC -> A dict struct that contains configurations from the [NevanAC] block.
 
 ### Returns
@@ -496,7 +496,7 @@ end
 Setup the configuration dictionary: `PStochAC`.
 
 ### Arguments
-* S -> A StochACSolver object.
+* S -> A StochACSolver struct.
 * StochAC -> A dict struct that contains configurations from the [StochAC] block.
 
 ### Returns
@@ -521,7 +521,7 @@ end
 Setup the configuration dictionary: `PStochAC`.
 
 ### Arguments
-* S -> A StochACSolver object.
+* S -> A StochACSolver struct.
 * StochAC -> A dict struct that contains configurations from the [StochAC] block.
 
 ### Returns
@@ -546,7 +546,7 @@ end
 Setup the configuration dictionary: `PStochSK`.
 
 ### Arguments
-* S -> A StochSKSolver object.
+* S -> A StochSKSolver struct.
 * StochSK -> A dict struct that contains configurations from the [StochSK] block.
 
 ### Returns
@@ -571,7 +571,7 @@ end
 Setup the configuration dictionary: `PStochSK`.
 
 ### Arguments
-* S -> A StochSKSolver object.
+* S -> A StochSKSolver struct.
 * StochSK -> A dict struct that contains configurations from the [StochSK] block.
 
 ### Returns
@@ -596,7 +596,7 @@ end
 Setup the configuration dictionary: `PStochOM`.
 
 ### Arguments
-* S -> A StochOMSolver object.
+* S -> A StochOMSolver struct.
 * StochOM -> A dict struct that contains configurations from the [StochOM] block.
 
 ### Returns
@@ -621,7 +621,7 @@ end
 Setup the configuration dictionary: `PStochOM`.
 
 ### Arguments
-* S -> A StochOMSolver object.
+* S -> A StochOMSolver struct.
 * StochOM -> A dict struct that contains configurations from the [StochOM] block.
 
 ### Returns
@@ -646,7 +646,7 @@ end
 Setup the configuration dictionary: `PStochPX`.
 
 ### Arguments
-* S -> A StochPXSolver object.
+* S -> A StochPXSolver struct.
 * StochPX -> A dict struct that contains configurations from the [StochPX] block.
 
 ### Returns
@@ -671,7 +671,7 @@ end
 Setup the configuration dictionary: `PStochPX`.
 
 ### Arguments
-* S -> A StochPXSolver object.
+* S -> A StochPXSolver struct.
 * StochPX -> A dict struct that contains configurations from the [StochPX] block.
 
 ### Returns

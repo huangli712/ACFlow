@@ -438,7 +438,7 @@ function PronyApproximation(
     Ωₚ = Ωₚ[idx_sort]
     Γₚ = Γₚ[idx_sort]
 
-    # Return a PronyApproximation object
+    # Return a PronyApproximation struct
     return PronyApproximation(𝑁ₚ, ωₚ, 𝐺ₚ, Γₚ, Ωₚ)
 end
 
@@ -828,7 +828,7 @@ end
 At first, it will try to construct a Prony approximation for the input
 Matsubara data. Then the Prony approximation is used to build smooth data
 set (data denoising). Finally, the barycentric rational function for this
-data set is constructed. The member `ℬ` of the BarRatContext object
+data set is constructed. The member `ℬ` of the BarRatContext struct
 (`brc`) should be updated in this function.
 """
 function run(brc::BarRatContext)
@@ -870,7 +870,7 @@ correlator. The information about Prony approximation and barycentric
 rational function approximation will be written as well.
 
 ### Arguments
-* brc -> A BarRatContext object.
+* brc -> A BarRatContext struct.
 """
 function last(brc::BarRatContext)
     # Reconstruct retarded Green's function using pole representation
@@ -957,7 +957,7 @@ the accurate positions for the poles via the `bc_poles()` function. But
 it seems that the weights for these poles are wrong. In this function, we
 just use the BFGS method to solve this optimization problem to get the
 correct weights for the poles. And then the positions and weights of these
-poles will be stored in `brc`, a BarRatContext object.
+poles will be stored in `brc`, a BarRatContext struct.
 """
 function poles!(brc::BarRatContext)
     function 𝑓(x::Vector{C64})

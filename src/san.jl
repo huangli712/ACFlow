@@ -678,7 +678,7 @@ end
     )
 
 Randomize the configurations for future Monte Carlo sampling. It will
-return a StochSKElement object.
+return a StochSKElement struct.
 
 ### Arguments
 * S     -> A StochSKSolver struct.
@@ -833,7 +833,7 @@ field configuration. This correlator will then be used to evaluate the
 goodness-of-fit function χ².
 
 ### Arguments
-* SE     -> A StochSKElement object.
+* SE     -> A StochSKElement struct.
 * kernel -> The fermionic or bosonic kernel.
 
 ### Returns

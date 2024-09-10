@@ -353,7 +353,7 @@ including effective hamiltonian, final spectral function, reproduced
 correlator.
 
 ### Arguments
-* SC   -> A StochACContext object.
+* SC   -> A StochACContext struct.
 * Aout -> α-dependent spectral functions.
 * Uα   -> α-dependent internal energies.
 
@@ -579,7 +579,7 @@ end
     )
 
 Randomize the configurations for future Monte Carlo sampling. It will
-return a StochACElement object.
+return a StochACElement struct.
 
 ### Arguments
 * S     -> A StochACSolver struct.
