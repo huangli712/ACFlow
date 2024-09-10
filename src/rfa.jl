@@ -541,8 +541,15 @@ end
     prony_data(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
 
 Prepare essential data for the later Prony approximation. It will return
-the number of nodes, frequency mesh ωₚ, and Green's function data 𝐺ₚ at
-this mesh.
+the number of nodes 𝑁ₚ, frequency mesh ωₚ, and Green's function data 𝐺ₚ
+at this mesh.
+
+### Arguments
+* ω₁ -> Non-negative Matsubara frequency (raw values).
+* 𝐺₁ -> Complex values at ωₚ (raw values), 𝐺₁ = G(ω₁).
+
+### Returns
+See above explanations.
 """
 function prony_data(ω₁::Vector{F64}, 𝐺₁::Vector{C64})
     # We have to make sure the number of data points is odd.
