@@ -614,6 +614,31 @@ function init_element(
 end
 
 """
+    init_context(
+        SE::StochACElement,
+        Gᵥ::Vector{F64},
+        σ¹::Vector{F64},
+        allow::Vector{I64},
+        grid::AbstractGrid,
+        mesh::AbstractMesh,
+        fmesh::AbstractMesh
+    )
+
+Try to create a StochACContext struct, which contains some key variables,
+including grid, mesh, input correlator and the corresponding standard
+deviation, kernel matrix, spectral function, and α-resolved Hamiltonian.
+
+### Arguments
+* SE -> A StochACElement struct.
+* Gᵥ -> Input correlator. It will be changed in this function.
+* σ¹ -> Standard deviation for input correlator.
+* allow -> Allowable indices for δ-like peaks.
+* grid -> Imaginary axis grid for input data.
+* mesh -> Real frequency mesh for output spectrum.
+* fmesh -> Very fine mesh in [wmin, wmax].
+
+### Returns
+* SC -> A StochACContext struct.
 """
 function init_context(
     SE::StochACElement,
