@@ -496,8 +496,8 @@ end
 Accumulate the α-resolved spectral functions and internal energies.
 
 ### Arguments
-* SE -> A StochSKElement struct.
-* SC -> A StochSKContext struct.
+* SE -> A StochACElement struct.
+* SC -> A StochACContext struct.
 
 ### Returns
 N/A
