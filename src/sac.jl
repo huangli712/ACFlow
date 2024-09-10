@@ -964,6 +964,14 @@ end
 Select two δ functions randomly and then change their weights. Here `i`
 means the index for α parameters.
 
+### Arguments
+* MC -> A StochACMC struct.
+* SE -> A StochACElement struct.
+* SC -> A StochACContext struct.
+
+### Returns
+N/A
+
 See also: [`try_move_p`](@ref).
 """
 function try_move_a(
