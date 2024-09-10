@@ -576,6 +576,9 @@ Try to calculate the Hardy basis ``f^k(z)``.
 ### Arguments
 * z -> A complex variable.
 * k -> Current order for the Hardy basis.
+
+### Returns
+See above explanations.
 """
 function calc_hbasis(z::APC, k::I64)
     w = ( z - im ) / ( z + im )
