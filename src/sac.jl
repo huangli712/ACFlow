@@ -544,7 +544,14 @@ end
 """
     init_mc(S::StochACSolver)
 
-Try to create a StochACMC struct.
+Try to create a StochACMC struct. Some counters for Monte Carlo updates
+are initialized here.
+
+### Arguments
+* S -> A StochACSolver struct.
+
+### Returns
+* MC -> A StochACMC struct.
 
 See also: [`StochACMC`](@ref).
 """
