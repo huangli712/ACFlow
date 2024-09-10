@@ -141,6 +141,12 @@ end
 Perform Hardy basis optimization to smooth the spectrum. the members `ℋ`,
 `𝑎𝑏`, `hmin`, and `hopt` of the NevanACContext struct (`nac`) should be
 updated in this function.
+
+### Arguments
+* nac -> A NevanACContext struct.
+
+### Returns
+N/A
 """
 function run(nac::NevanACContext)
     hardy = get_n("hardy")
