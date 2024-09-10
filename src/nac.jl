@@ -88,6 +88,13 @@ end
     init(S::NevanACSolver, rd::RawData)
 
 Initialize the NevanAC solver and return a NevanACContext struct.
+
+### Arguments
+* S -> A NevanACSolver struct.
+* rd -> A RawData struct, containing raw data for input correlator.
+
+### Returns
+* mec -> A NevanACContext struct.
 """
 function init(S::NevanACSolver, rd::RawData)
     # Setup numerical precision. Note that the NAC method is extremely
