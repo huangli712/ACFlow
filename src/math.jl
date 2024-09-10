@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/09
+# Last modified: 2024/09/10
 #
 
 #
@@ -30,6 +30,12 @@ guess, and `args...` denotes the required arguments for function call to
 `func`. In addition, the maximum iterations and tolerance are controled
 by `maxiter` and `tol`, respectively. Be careful, `func` must be a single
 variable function.
+
+### Arguments
+See above explanations.
+
+### Returns
+* 𝑝 -> The solution.
 
 See also: [`newton`](@ref).
 """
@@ -82,8 +88,13 @@ function secant(func, x0, args...; maxiter::I64 = 50, tol::F64 = 1.48e-8)
 end
 
 """
-    newton(fun::Function, guess, kwargs...;
-           maxiter::I64 = 20000, mixing::F64 = 0.5)
+    newton(
+        fun::Function,
+        guess,
+        kwargs...;
+        maxiter::I64 = 20000,
+        mixing::F64 = 0.5
+    )
 
 It implements the well-known newton algorithm to locate root of a given
 polynomial function. Here, `fun` means the function, `guess` is the initial
@@ -91,10 +102,22 @@ solution, and `kwargs...` denotes the required arguments for `fun`. Please
 be careful, `func` is a multiple variable function. It not only returns
 the value, but also the jacobian matrix of the function.
 
+### Arguments
+See above explanations.
+
+### Returns
+* sol -> Solution.
+* call -> Counter for function call to `fun()`.
+
 See also: [`secant`](@ref).
 """
-function newton(fun::Function, guess, kwargs...;
-                maxiter::I64 = 20000, mixing::F64 = 0.5)
+function newton(
+    fun::Function,
+    guess,
+    kwargs...;
+    maxiter::I64 = 20000,
+    mixing::F64 = 0.5
+    )
     function _apply(feed::Vector{T}, f::Vector{T}, J::Matrix{T}) where {T}
         resid = nothing
         step = 1.0
@@ -148,8 +171,7 @@ end
 =#
 
 """
-    trapz(x::AbstractMesh,
-          y::AbstractVector{T}) where {T<:N64}
+    trapz(x::AbstractMesh, y::AbstractVector{T}) where {T<:N64}
 
 Perform numerical integration by using the composite trapezoidal rule.
 
@@ -157,10 +179,12 @@ Perform numerical integration by using the composite trapezoidal rule.
 * x -> Real frequency mesh.
 * y -> Function values at real axis.
 
+### Returns
+* ℐ -> The final value.
+
 See also: [`simpson`](@ref).
 """
-function trapz(x::AbstractMesh,
-               y::AbstractVector{T}) where {T<:N64}
+function trapz(x::AbstractMesh, y::AbstractVector{T}) where {T<:N64}
     value = dot(x.weight, y)
     return value
 end
