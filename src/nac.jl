@@ -459,6 +459,9 @@ semidefinite matrix. See Eq. (5) in Fei's NAC paper.
 * k -> Size of the Pick matrix.
 * ℎ -> Vector ℎ. It is actually 𝑧.
 * λ -> Vector λ. It is actually 𝒢(𝑧).
+
+### Returns
+* success -> Test that a factorization of the Pick matrix succeeded.
 """
 function calc_pick(k::I64, ℎ::Vector{APC}, λ::Vector{APC})
     pick = zeros(APC, k, k)
