@@ -822,6 +822,14 @@ and `Γₐ` represent n(x), `kernel` means the kernel function, `Gᵥ` is the
 correlator. Note that `kernel` and `Gᵥ` have been rotated into singular
 space. Please see comments in `init()` for more details.
 
+### Arguments
+See above explanations.
+
+### Returns
+* hτ -> α-resolved h(τ).
+* Hα -> α-resolved Hc.
+* Uα -> α-resolved internal energy, it is actually ⟨Hα⟩.
+
 See also: [`calc_htau`](@ref).
 """
 function calc_hamil(
