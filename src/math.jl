@@ -232,8 +232,10 @@ function trapz(
 end
 
 """
-    simpson(x::AbstractVector{S},
-            y::AbstractVector{T}) where {S<:Number, T<:Number}
+    simpson(
+        x::AbstractVector{S},
+        y::AbstractVector{T}
+    ) where {S<:Number, T<:Number}
 
 Perform numerical integration by using the simpson rule. Note that the
 length of `x` and `y` must be odd numbers. And `x` must be a linear and
@@ -243,10 +245,15 @@ uniform mesh.
 * x -> Real frequency mesh.
 * y -> Function values at real axis.
 
+### Returns
+* ℐ -> The final value.
+
 See also: [`trapz`](@ref).
 """
-function simpson(x::AbstractVector{S},
-                 y::AbstractVector{T}) where {S<:Number, T<:Number}
+function simpson(
+    x::AbstractVector{S},
+    y::AbstractVector{T}
+    ) where {S<:Number, T<:Number}
     h = (x[2] - x[1]) / 3.0
 
     even_sum = 0.0
