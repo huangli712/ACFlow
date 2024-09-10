@@ -657,6 +657,15 @@ end
 
 Extract suitable vector `v` from orthogonal matrix `V` according to the
 threshold `ε`.
+
+### Arguments
+* V -> Orthogonal matrix from singular value decomposition of ℋ.
+* idx -> Index for extracting `v` from `V`.
+
+### Returns
+* v -> Vector `v` extracted from `V` according to `idx`.
+
+See also: [`prony_svd`](@ref).
 """
 function prony_v(V::Adjoint{C64, Matrix{C64}}, idx::I64)
     # Extract v from V
