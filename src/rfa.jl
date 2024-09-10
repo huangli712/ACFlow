@@ -681,6 +681,15 @@ end
 Try to calculate Γₚ. Actually, Γₚ are eigenvalues of a matrix constructed
 by `v`. `Λ` is a cutoff for Γₚ. Only those Γₚ that are smaller than `Λ`
 are kept.
+
+### Arguments
+* v -> A vector extracted from `V`.
+* Λ -> A cutoff for Γₚ.
+
+### Returns
+* Γₚ -> Roots of a polynominal with coefficients given in `v`.
+
+See also: [`prony_v`](@ref).
 """
 function prony_gamma(v::Vector{C64}, Λ::F64)
     # The following codes actually calculate the roots of a polynominal
