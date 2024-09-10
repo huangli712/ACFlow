@@ -961,10 +961,10 @@ end
         SC::StochACContext
     )
 
-Select two δ functions randomly and then change their weights. Here `i`
-means the index for α parameters.
+Select two δ functions randomly and then change their weights.
 
 ### Arguments
+* i -> Index for α parameters.
 * MC -> A StochACMC struct.
 * SE -> A StochACElement struct.
 * SC -> A StochACContext struct.
@@ -1041,8 +1041,16 @@ end
         SC::StochACContext
     )
 
-Select two δ functions randomly and then change their positions. Here `i`
-means the index for α parameters.
+Select two δ functions randomly and then change their positions.
+
+### Arguments
+* i -> Index for α parameters.
+* MC -> A StochACMC struct.
+* SE -> A StochACElement struct.
+* SC -> A StochACContext struct.
+
+### Returns
+N/A
 
 See also: [`try_move_a`](@ref).
 """
@@ -1109,6 +1117,14 @@ end
 
 Try to exchange field configurations between two adjacent layers. Because
 this function involves two layers, so it doesn't need the argument `i`.
+
+### Arguments
+* MC -> A StochACMC struct.
+* SE -> A StochACElement struct.
+* SC -> A StochACContext struct.
+
+### Returns
+N/A
 """
 function try_move_x(
     MC::StochACMC,
