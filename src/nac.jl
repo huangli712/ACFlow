@@ -593,7 +593,10 @@ called the hardy matrix (ℋ) and is used to evaluate θₘ₊₁.
 
 ### Arguments
 * mesh -> Real frequency mesh.
-* H    -> Maximum order for the Hardy basis.
+* H -> Maximum order for the Hardy basis.
+
+### Returns
+* ℋ -> Hardy matrix for Hardy basis optimization.
 """
 function calc_hmatrix(mesh::AbstractMesh, H::I64)
     # Build real axis
