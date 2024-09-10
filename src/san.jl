@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/09
+# Last modified: 2024/09/10
 #
 
 #=
@@ -811,7 +811,7 @@ the self-adaptive mesh.
 * S -> A StochSKSolver struct.
 
 ### Returns
-* fmesh -> A very fine, uniform mesh in [wmin, wmax]
+* fmesh -> A very fine, uniform mesh in [wmin, wmax].
 
 See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
 """

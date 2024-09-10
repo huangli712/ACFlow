@@ -711,6 +711,12 @@ non-uniform. If the file `fmesh.inp` exists, the code will try to load
 it to initialize the mesh. Or else the code will try to create a linear
 mesh automatically.
 
+### Arguments
+* S -> A StochACSolver struct.
+
+### Returns
+* fmesh -> A very fine, perhaps non-uniform mesh in [wmin, wmax].
+
 See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
 """
 function calc_fmesh(S::StochACSolver)
@@ -734,11 +740,9 @@ function calc_fmesh(S::StochACSolver)
         end
         #
         fmesh = DynamicMesh(mesh)
-
     # Or else we will return a linear mesh directly.
     else
         fmesh = LinearMesh(nfine, wmin, wmax)
-
     end
 
     return fmesh

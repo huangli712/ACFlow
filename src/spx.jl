@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/09
+# Last modified: 2024/09/10
 #
 
 #=
@@ -957,7 +957,7 @@ a linear mesh automatically.
 * S -> A StochPXSolver struct.
 
 ### Returns
-* fmesh -> A very fine, perhaps non-uniform mesh in [wmin, wmax]
+* fmesh -> A very fine, perhaps non-uniform mesh in [wmin, wmax].
 
 See also: [`LinearMesh`](@ref), [`DynamicMesh`](@ref).
 """
