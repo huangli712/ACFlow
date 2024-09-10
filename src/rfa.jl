@@ -175,7 +175,6 @@ Evaluate the barycentric rational function at `z`.
 
 ### Returns
 * val -> r(z).
-
 """
 function (r::BarycentricFunction)(z::Number)
     if isinf(z)
@@ -747,7 +746,6 @@ Evaluate the Prony approximation at `w`.
 
 ### Returns
 * val -> 𝑝.(w).
-
 """
 function (𝑝::PronyApproximation)(w::Vector{F64})
     x₀ = @. (w - w[1]) / (w[end] - w[1])
