@@ -900,6 +900,10 @@ rational function approximation will be written as well.
 
 ### Arguments
 * brc -> A BarRatContext struct.
+
+### Returns
+* Aout -> Spectral function, A(ω).
+* G -> Retarded Green's function, G(ω).
 """
 function last(brc::BarRatContext)
     # Reconstruct retarded Green's function using pole representation
