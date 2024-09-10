@@ -851,6 +851,12 @@ Matsubara data. Then the Prony approximation is used to build smooth data
 set (data denoising). Finally, the barycentric rational function for this
 data set is constructed. The member `ℬ` of the BarRatContext struct
 (`brc`) should be updated in this function.
+
+### Arguments
+* brc -> A BarRatContext struct.
+
+### Returns
+N/A
 """
 function run(brc::BarRatContext)
     denoise = get_r("denoise")
