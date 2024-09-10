@@ -854,12 +854,23 @@ function calc_hamil(
 end
 
 """
-    calc_htau(Γₚ, Γₐ, kernel, Gᵥ)
+    calc_htau(
+        Γₚ::Vector{I64},
+        Γₐ::Vector{F64},
+        kernel::Matrix{F64},
+        Gᵥ:Vector{F64}
+    )
 
 Try to calculate α-dependent h(τ) via Eq.(36). `Γₚ` and `Γₐ` represent
 n(x), `kernel` means the kernel function, `Gᵥ` is the correlator. Note
 that `kernel` and `Gᵥ` have been rotated into singular space. Please
-see comments in `init()` for more details.
+see comments in `init_context()` for more details.
+
+### Arguments
+See above explanations.
+
+### Returns
+* hτ -> α-resolved h(τ).
 
 See also: [`calc_hamil`](@ref).
 """
@@ -878,7 +889,13 @@ end
 """
     calc_alpha()
 
-Generate a list for the α parameters
+Generate a list for the α parameters.
+
+### Arguments
+N/A
+
+### Returns
+* αₗ -> List of the α parameters.
 """
 function calc_alpha()
     nalph = get_a("nalph")
