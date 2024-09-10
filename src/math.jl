@@ -190,9 +190,11 @@ function trapz(x::AbstractMesh, y::AbstractVector{T}) where {T<:N64}
 end
 
 """
-    trapz(x::AbstractVector{S},
-          y::AbstractVector{T},
-          linear::Bool = false) where {S<:Number, T<:Number}
+    trapz(
+        x::AbstractVector{S},
+        y::AbstractVector{T},
+        linear::Bool = false
+    ) where {S<:Number, T<:Number}
 
 Perform numerical integration by using the composite trapezoidal rule.
 Note that it supports arbitrary precision via BigFloat.
@@ -202,11 +204,16 @@ Note that it supports arbitrary precision via BigFloat.
 * y      -> Function values at real axis.
 * linear -> Whether the given mesh is linear?
 
+### Returns
+* ℐ -> The final value.
+
 See also: [`simpson`](@ref).
 """
-function trapz(x::AbstractVector{S},
-               y::AbstractVector{T},
-               linear::Bool = false) where {S<:Number, T<:Number}
+function trapz(
+    x::AbstractVector{S},
+    y::AbstractVector{T},
+    linear::Bool = false
+    ) where {S<:Number, T<:Number}
     # For linear mesh
     if linear
         h = x[2] - x[1]
