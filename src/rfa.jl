@@ -629,6 +629,12 @@ The diagonal matrix (singular values) `S` is used to figure out the index
 for extracting `v` from `V`. This function is try to evaluate the maximum
 index for the exponentially decaying region of `S`.
 
+### Arguments
+* S -> Singular values of ℋ.
+
+### Returns
+* idx -> Index for extracting `v` from `V`.
+
 See also: [`prony_v`](@ref).
 """
 function prony_idx(S::Vector{F64})
