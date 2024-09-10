@@ -811,7 +811,11 @@ by minimizing the smooth norm.
 * nac -> A NevanACContext struct.
 * ℋ   -> Hardy matrix, which contains the Hardy basis.
 * 𝑎𝑏  -> Expansion coefficients 𝑎 and 𝑏 for the contractive function θ.
-* H   -> Maximum order of the Hardy basis.
+* H   -> Current order of the Hardy basis.
+
+### Returns
+* causality -> Test whether the solution is causality.
+* converged -> Check whether the optimization is converged.
 """
 function hardy_optimize!(
     nac::NevanACContext,
