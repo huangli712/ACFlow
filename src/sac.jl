@@ -461,6 +461,14 @@ end
     sample(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 
 Perform Monte Carlo sweeps and sample the field configurations.
+
+### Arguments
+* MC -> A StochACMC struct.
+* SE -> A StochACElement struct.
+* SC -> A StochACContext struct.
+
+### Returns
+N/A
 """
 function sample(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     nalph = get_a("nalph")
