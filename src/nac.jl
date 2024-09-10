@@ -627,6 +627,9 @@ for expanding θₘ₊₁. See Eq. (7) in Fei's NAC paper.
 * 𝒜  -> Matrix 𝑎𝑏𝑐𝑑.
 * ℋ  -> Hardy matrix.
 * 𝑎𝑏 -> Expansion coefficients 𝑎 and 𝑏 for the contractive function θ.
+
+### Returns
+See above explanations.
 """
 function calc_theta(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     # Well, we should calculate θₘ₊₁ at first.
@@ -651,6 +654,9 @@ interpolant via the inverse Mobius transform. Here, `𝒜` (`abcd` matrix),
 * 𝒜  -> Matrix 𝑎𝑏𝑐𝑑.
 * ℋ  -> Hardy matrix.
 * 𝑎𝑏 -> Expansion coefficients 𝑎 and 𝑏 for the contractive function θ.
+
+### Returns
+Gout -> Retarded Green's function, G(ω).
 """
 function calc_green(𝒜::Array{APC,3}, ℋ::Array{APC,2}, 𝑎𝑏::Vector{C64})
     θ = calc_theta(𝒜, ℋ, 𝑎𝑏)
