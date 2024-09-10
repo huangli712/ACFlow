@@ -795,6 +795,15 @@ end
 
 Solve the analytic continuation problem by the barycentric rational
 function method.
+
+### Arguments
+* S -> A BarRatSolver struct.
+* rd -> A RawData struct, containing raw data for input correlator.
+
+### Returns
+* mesh -> Real frequency mesh, ω.
+* Aout -> Spectral function, A(ω).
+* Gout -> Retarded Green's function, G(ω).
 """
 function solve(S::BarRatSolver, rd::RawData)
     println("[ BarRat ]")
@@ -810,6 +819,13 @@ end
     init(S::BarRatSolver, rd::RawData)
 
 Initialize the BarRat solver and return a BarRatContext struct.
+
+### Arguments
+* S -> A BarRatSolver struct.
+* rd -> A RawData struct, containing raw data for input correlator.
+
+### Returns
+* mec -> A BarRatContext struct.
 """
 function init(S::BarRatSolver, rd::RawData)
     # Prepera input data
