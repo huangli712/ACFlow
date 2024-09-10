@@ -859,6 +859,7 @@ data set is constructed. The member `ℬ` of the BarRatContext struct
 N/A
 """
 function run(brc::BarRatContext)
+    # Get essential parameters
     denoise = get_r("denoise")
     ε = get_r("epsilon")
 
@@ -883,6 +884,7 @@ function run(brc::BarRatContext)
     else
         println("Construct barycentric rational function approximation")
         brc.ℬ = aaa(iω, G)
+    #
     end
 
     get_r("atype") == "delta" && poles!(brc)
