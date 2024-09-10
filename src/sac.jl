@@ -505,6 +505,7 @@ N/A
 function measure(SE::StochACElement, SC::StochACContext)
     nalph = get_a("nalph")
 
+    # Loop over each α parameter
     for ia = 1:nalph
         da = view(SE.Γₐ, :, ia)
         dp = view(SE.Γₚ, :, ia)
@@ -520,8 +521,15 @@ end
 """
     init_iodata(S::StochACSolver, rd::RawData)
 
-Preprocess the input data (`rd`), then allocate memory for the α-resolved
-spectral functions.
+Preprocess the input data (`rd`).
+
+### Arguments
+* S -> A StochACSolver struct.
+* rd -> A RawData struct, which contains essential input data.
+
+### Returns
+* Gᵥ -> Input correlator.
+* σ¹ -> 1.0 / σ¹.
 
 See also: [`RawData`](@ref).
 """
