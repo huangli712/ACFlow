@@ -282,6 +282,9 @@ the length of the returned vector is `N-2`.
 ### Arguments
 * x -> Real frequency mesh.
 * y -> Function values at real axis.
+
+### Returns
+* val -> y''(x).
 """
 function second_derivative(x::AbstractVector, y::AbstractVector)
     @assert length(x) == length(y)
@@ -306,6 +309,13 @@ Compute ∂f/∂x via finite difference method. It is less accurate and much
 slower than the automatic differentiation approach. Actually, we won't
 use this function to calculate gradient. The `Zygote.gradient()` function
 is always a better choice.
+
+### Arguments
+* x -> Real frequency mesh.
+* f -> Function values at real axis, f(x).
+
+### Returns
+* val -> ∂f/∂x.
 """
 function gradient_via_fd(f, x)
     𝑠 = cbrt(eps(F64))
