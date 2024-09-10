@@ -438,6 +438,12 @@ end
     calc_inv_mobius(z::Vector{APC})
 
 An inverse Mobius transformation.
+
+### Arguments
+* z -> Complex vector.
+
+### Returns
+* val -> φ⁻¹(z), inverse Mobius transformation of z.
 """
 function calc_inv_mobius(z::Vector{APC})
     return @. im * (one(APC) + z) / (one(APC) - z)
