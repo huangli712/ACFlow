@@ -903,7 +903,7 @@ rational function approximation will be written as well.
 
 ### Returns
 * Aout -> Spectral function, A(ω).
-* G -> Retarded Green's function, G(ω).
+* Gout -> Retarded Green's function, G(ω).
 """
 function last(brc::BarRatContext)
     # Reconstruct retarded Green's function using pole representation
@@ -991,6 +991,12 @@ it seems that the weights for these poles are wrong. In this function, we
 just use the BFGS method to solve this optimization problem to get the
 correct weights for the poles. And then the positions and weights of these
 poles will be stored in `brc`, a BarRatContext struct.
+
+### Arguments
+* brc -> A BarRatContext struct.
+
+### Returns
+N/A
 """
 function poles!(brc::BarRatContext)
     function 𝑓(x::Vector{C64})
