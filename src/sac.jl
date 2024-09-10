@@ -754,6 +754,9 @@ end
 Try to calculate ϕ(ω) function. `am` is the mesh for calculated spectrum,
 and `model` means the default model function.
 
+For the definition of the ϕ(ω) function, see Eq.(16) in arXiv:0403055. It
+creates a smooth mapping from ℝ to [0,1].
+
 ### Arguments
 See above explanations.
 
@@ -772,6 +775,9 @@ end
 
 Precompute the Δ functions. `fmesh` is a very dense mesh in [wmin, wmax]
 and `ϕ` is the ϕ function.
+
+Here we just use f(x) = η / (x² + η²) to approximate the δ function, where
+η is a small parameter.
 
 ### Arguments
 See above explanations.
