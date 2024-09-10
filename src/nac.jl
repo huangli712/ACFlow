@@ -390,6 +390,15 @@ that `Φ` and `𝒜` won't be changed any more. But `ℋ` and `𝑎𝑏` should 
 updated by the Hardy basis optimization to get a smooth spectrum. Here
 `Gᵥ` is input data, `grid` is the grid for input data, and `mesh` is
 the mesh for output spectrum.
+
+### Arguments
+See above explanations.
+
+### Returns
+* Φ -> `Φ` vector in Schur algorithm.
+* 𝒜 -> Coefficients matrix `abcd` in Schur algorithm.
+* ℋ -> Hardy matrix for Hardy basis optimization.
+* 𝑎𝑏 -> Coefficients matrix for expanding `θ` with Hardy basis.
 """
 function precompute(
     grid::AbstractGrid,
