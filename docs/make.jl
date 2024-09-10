@@ -12,6 +12,7 @@ makedocs(
         prettyurls = false,
         ansicolor = true,
         repolink = "https://github.com/huangli712/ACFlow",
+        size_threshold = 409600, # 400kb
     ),
     #format = Documenter.LaTeX(),
     remotes = nothing,

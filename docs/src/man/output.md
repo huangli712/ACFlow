@@ -19,6 +19,7 @@ Once the analytic continuation simulation is finished, the final spectral functi
 |`pole.data` | Amplitudes and positions of the poles for the `StochPX` solver. |
 |`prob.data` | ``P[\alpha\|\bar{G}]`` vs ``\alpha`` for the `MaxEnt` solver (`bryan` algorithm). |
 |`stat.data` | Monte Carlo statistical information for stochastic sampling methods. |
+|`err.data`| Error or exception messages (stacktrace) collected during simulation. |
 
 **Table 1 |** Possible output files of the ACFlow toolkit.
 
