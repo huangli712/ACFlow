@@ -557,33 +557,45 @@ See also: [`StochACMC`](@ref).
 """
 function init_mc(S::StochACSolver)
     nalph = get_a("nalph")
-
+    #
     seed = rand(1:100000000)
     rng = MersenneTwister(seed)
+    #
     Macc = zeros(F64, nalph)
     Mtry = zeros(F64, nalph)
     Sacc = zeros(F64, nalph)
     Stry = zeros(F64, nalph)
-
+    #
     MC = StochACMC(rng, Macc, Mtry, Sacc, Stry)
 
     return MC
 end
 
 """
-    init_element(S::StochACSolver, rng::AbstractRNG, allow::Vector{I64})
+    init_element(
+        S::StochACSolver,
+        rng::AbstractRNG,
+        allow::Vector{I64}
+    )
 
 Randomize the configurations for future Monte Carlo sampling. It will
 return a StochACElement object.
 
 ### Arguments
-* S     -> A StochACSolver object.
+* S     -> A StochACSolver struct.
 * rng   -> Random number generator.
 * allow -> Allowed positions for the δ peaks.
 
+### Returns
+* SE -> A StochACElement struct.
+
 See also: [`StochACElement`](@ref).
 """
-function init_element(S::StochACSolver, rng::AbstractRNG, allow::Vector{I64})
+function init_element(
+    S::StochACSolver,
+    rng::AbstractRNG,
+    allow::Vector{I64}
+    )
     nalph = get_a("nalph")
     ngamm = get_a("ngamm")
 
