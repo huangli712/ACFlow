@@ -675,6 +675,9 @@ the Pick criterion.
 ### Arguments
 * ωₙ -> Matsubara frequency points (the 𝑖 unit is not included).
 * Gₙ -> Matsubara Green's function.
+
+### Returns
+* ngrid -> Optimal number for the size of input data.
 """
 function calc_noptim(ωₙ::Vector{APC}, Gₙ::Vector{APC})
     # Get size of input data
