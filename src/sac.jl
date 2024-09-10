@@ -760,7 +760,7 @@ See above explanations.
 ### Returns
 * ϕ -> The ϕ(ω) function.
 
-See also: [`AbstractMesh`](@ref), [`calc_delta`](@ref).
+See also: [`calc_delta`](@ref).
 """
 function calc_phi(am::AbstractMesh, model::Vector{F64})
     ϕ = cumsum(model .* am.weight)
@@ -770,8 +770,14 @@ end
 """
     calc_delta(fmesh::AbstractMesh, ϕ::Vector{F64})
 
-Precompute the δ functions. `fmesh` is a very dense mesh in [wmin, wmax]
+Precompute the Δ functions. `fmesh` is a very dense mesh in [wmin, wmax]
 and `ϕ` is the ϕ function.
+
+### Arguments
+See above explanations.
+
+### Returns
+* Δ -> The Δ(ω) function.
 
 See also: [`calc_phi`](@ref).
 """
