@@ -488,7 +488,10 @@ Note that Φ should not be changed anymore once it has been established.
 
 ### Arguments
 * grid -> Grid in imaginary axis for input Green's function.
-* Gᵥ   -> Input Green's function.
+* Gᵥ -> Input Green's function.
+
+### Returns
+* Φ -> `Φ` vector in Schur algorithm.
 """
 function calc_phis(grid::AbstractGrid, Gᵥ::Vector{APC})
     ngrid = length(grid)
