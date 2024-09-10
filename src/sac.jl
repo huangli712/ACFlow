@@ -916,8 +916,11 @@ allowable indices. Be careful, the constrained stochastic analytic
 continuation method is compatible with the self-adaptive mesh.
 
 ### Arguments
-* S     -> A StochACSolver object.
+* S     -> A StochACSolver struct.
 * fmesh -> Very dense mesh for the δ peaks.
+
+### Returns
+* allow -> Allowable indices.
 
 See also: [`StochACSolver`](@ref).
 """
@@ -929,7 +932,7 @@ function constraints(S::StochACSolver, fmesh::AbstractMesh)
     allow = I64[]
 
     # Go through the fine mesh and check every mesh point.
-    # Is is excluded ?
+    # Is is excluded?
     for i in eachindex(fmesh)
         is_excluded = false
         #

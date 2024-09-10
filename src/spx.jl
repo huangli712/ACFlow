@@ -1480,7 +1480,7 @@ that are not included in `exclude` are for A(ω) > 0, and the corresponding
 signs of poles are positive.
 
 ### Arguments
-* S     -> A StochPXSolver object.
+* S     -> A StochPXSolver struct.
 * fmesh -> Very dense mesh for the poles.
 
 ### Returns
@@ -1498,7 +1498,7 @@ function constraints(S::StochPXSolver, fmesh::AbstractMesh)
     unallow = I64[]
 
     # Go through the fine mesh and check every mesh point.
-    # Is is excluded ?
+    # Is is excluded?
     for i in eachindex(fmesh)
         is_excluded = false
         #

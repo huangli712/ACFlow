@@ -925,7 +925,7 @@ method. This function will return a collection. It contains all the
 allowable indices. Be careful, `fmesh` should be a fine linear mesh.
 
 ### Arguments
-* S     -> A StochSKSolver object.
+* S     -> A StochSKSolver struct.
 * fmesh -> Very dense mesh for the δ peaks.
 
 ### Returns
@@ -941,7 +941,7 @@ function constraints(S::StochSKSolver, fmesh::AbstractMesh)
     allow = I64[]
 
     # Go through the fine mesh and check every mesh point.
-    # Is is excluded ?
+    # Is is excluded?
     for i in eachindex(fmesh)
         is_excluded = false
         #
