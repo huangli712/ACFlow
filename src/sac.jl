@@ -652,7 +652,7 @@ function init_context(
     # Get parameters
     nmesh = get_b("nmesh")
     nalph = get_a("nalph")
-    
+
     # Allocate memory for spectral function, A(ω,α)
     Aout = zeros(F64, nmesh, nalph)
 
@@ -691,7 +691,7 @@ function init_context(
 
     # Get new (input) correlator
     Gᵥ = U' *  (Gᵥ .* σ¹)
-    
+
     # Precompute hamiltonian
     hτ, Hα, Uα = calc_hamil(SE.Γₚ, SE.Γₐ, kernel, Gᵥ)
 

@@ -223,7 +223,7 @@ function run(MC::StochOMMC, SC::StochOMContext)
 
         # Show error function for the current attempt
         @printf("try -> %6i (%6i) Δ -> %8.4e \n", l, ntry, SE.Δ)
-        flush(stdout)        
+        flush(stdout)
     end
 
     # Generate spectral density from Monte Carlo field configuration
@@ -1358,7 +1358,7 @@ of the box.
 See above explanations.
 
 ### Returns
-* ex -> Boolean, whether a given box is valid. 
+* ex -> Boolean, whether a given box is valid.
 
 """
 function constraints(e₁::F64, e₂::F64)

@@ -156,7 +156,7 @@ function solve(rd::RawData)
         for (exc, btrace) in current_exceptions()
             Base.showerror(io, exc, btrace)
             println(io)
-        end 
+        end
     end
 
     # We just use try...catch block to catch possible exceptions or errors
