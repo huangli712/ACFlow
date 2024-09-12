@@ -1609,9 +1609,9 @@ function try_move_s(
         @. δG = 𝕊ₛ * Aₛ * (Λ₂ - Λ₁)
 
         # Calculate new Green's function and goodness-of-fit function
-        @. Gₙ = δG + SE.Gᵧ
+        @. Gₙ = δG + SC.Gᵧ
         χ² = calc_chi2(Gₙ, SC.Gᵥ)
-        δχ² = χ² - SE.χ²
+        δχ² = χ² - SC.χ²
 
         # Simulated annealing algorithm
         MC.Stry = MC.Stry + 1
@@ -1620,16 +1620,16 @@ function try_move_s(
             SE.P[s] = P₂
 
             # Update reconstructed Green's function
-            @. SE.Gᵧ = Gₙ
+            @. SC.Gᵧ = Gₙ
 
             # Update goodness-of-fit function
-            SE.χ² = χ²
+            SC.χ² = χ²
 
             # Update Monte Carlo counter
             MC.Sacc = MC.Sacc + 1
 
             # Save optimal solution
-            if SE.χ² < SC.χ²ᵥ[t]
+            if SC.χ² < SC.χ²ᵥ[t]
                 measure(t, SE, SC)
             end
         end
@@ -1717,9 +1717,9 @@ function try_move_p(
         @. δG = 𝕊₁ * A₁ * (Λ₃ - Λ₁) + 𝕊₂ * A₂ * (Λ₄ - Λ₂)
 
         # Calculate new Green's function and goodness-of-fit function
-        @. Gₙ = δG + SE.Gᵧ
+        @. Gₙ = δG + SC.Gᵧ
         χ² = calc_chi2(Gₙ, SC.Gᵥ)
-        δχ² = χ² - SE.χ²
+        δχ² = χ² - SC.χ²
 
         # Simulated annealing algorithm
         MC.Ptry = MC.Ptry + 1
@@ -1729,16 +1729,16 @@ function try_move_p(
             SE.P[s₂] = P₄
 
             # Update reconstructed Green's function
-            @. SE.Gᵧ = Gₙ
+            @. SC.Gᵧ = Gₙ
 
             # Update goodness-of-fit function
-            SE.χ² = χ²
+            SC.χ² = χ²
 
             # Update Monte Carlo counter
             MC.Pacc = MC.Pacc + 1
 
             # Save optimal solution
-            if SE.χ² < SC.χ²ᵥ[t]
+            if SC.χ² < SC.χ²ᵥ[t]
                 measure(t, SE, SC)
             end
         end
@@ -1837,9 +1837,9 @@ function try_move_a(
         @. δG = 𝕊₁ * (A₃ - A₁) * Λ₁ + 𝕊₂ * (A₄ - A₂) * Λ₂
 
         # Calculate new Green's function and goodness-of-fit function
-        @. Gₙ = δG + SE.Gᵧ
+        @. Gₙ = δG + SC.Gᵧ
         χ² = calc_chi2(Gₙ, SC.Gᵥ)
-        δχ² = χ² - SE.χ²
+        δχ² = χ² - SC.χ²
 
         # Simulated annealing algorithm
         MC.Atry = MC.Atry + 1
@@ -1849,16 +1849,16 @@ function try_move_a(
             SE.A[s₂] = A₄
 
             # Update reconstructed Green's function
-            @. SE.Gᵧ = Gₙ
+            @. SC.Gᵧ = Gₙ
 
             # Update goodness-of-fit function
-            SE.χ² = χ²
+            SC.χ² = χ²
 
             # Update Monte Carlo counter
             MC.Aacc = MC.Aacc + 1
 
             # Save optimal solution
-            if SE.χ² < SC.χ²ᵥ[t]
+            if SC.χ² < SC.χ²ᵥ[t]
                 measure(t, SE, SC)
             end
         end
@@ -1937,9 +1937,9 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
         @. δG = 𝕊₁ * (A₃ - A₁) * Λ₁ + 𝕊₂ * (A₄ - A₂) * Λ₂
 
         # Calculate new Green's function and goodness-of-fit function
-        @. Gₙ = δG + SE.Gᵧ
+        @. Gₙ = δG + SC.Gᵧ
         χ² = calc_chi2(Gₙ, SC.Gᵥ)
-        δχ² = χ² - SE.χ²
+        δχ² = χ² - SC.χ²
 
         # Simulated annealing algorithm
         MC.Xtry = MC.Xtry + 1
@@ -1949,16 +1949,16 @@ function try_move_x(t::I64, MC::StochPXMC, SE::StochPXElement, SC::StochPXContex
             SE.A[s₂] = A₄
 
             # Update reconstructed Green's function
-            @. SE.Gᵧ = Gₙ
+            @. SC.Gᵧ = Gₙ
 
             # Update goodness-of-fit function
-            SE.χ² = χ²
+            SC.χ² = χ²
 
             # Update Monte Carlo counter
             MC.Xacc = MC.Xacc + 1
 
             # Save optimal solution
-            if SE.χ² < SC.χ²ᵥ[t]
+            if SC.χ² < SC.χ²ᵥ[t]
                 measure(t, SE, SC)
             end
         end
