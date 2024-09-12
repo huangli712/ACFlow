@@ -934,9 +934,9 @@ end
 """
     reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
 
-Recalculate imaginary frequency Green's function and goodness-of-fit
-function by new Monte Carlo field configurations for the `t`-th attempts.
-Then they are used to update `SE`.
+Recalculate imaginary frequency Green's function Gᵧ and goodness-of-fit
+functional χ² by new Monte Carlo field configurations for the `t`-th
+attempts. They must be consistent with each other.
 
 Some key variables in `SC` are also updated as well. Perhaps we should
 develop a smart algorhtm to update Θ here.
