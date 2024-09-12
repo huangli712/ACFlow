@@ -950,10 +950,9 @@ develop a smart algorhtm to update Θ here.
 N/A
 """
 function reset_context(t::I64, SE::StochPXElement, SC::StochPXContext)
-    SE.Gᵧ = calc_green(SE.P, SE.A, SE.𝕊, SC.Λ)
-    SE.χ² = calc_chi2(SE.Gᵧ, SC.Gᵥ)
-
     SC.Θ = get_x("theta")
+    SC.Gᵧ = calc_green(SE.P, SE.A, SE.𝕊, SC.Λ)
+    SC.χ² = calc_chi2(SC.Gᵧ, SC.Gᵥ)
     SC.χ²ᵥ[t] = 1e10
 end
 
