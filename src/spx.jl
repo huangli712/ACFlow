@@ -774,7 +774,7 @@ function init_context(
 
     # We have to make sure that the starting Gᵧ and χ² are consistent with
     # the current Monte Carlo configuration fields.
-    Gᵧ = calc_green(abs.(SE.P), SE.A, SE.𝕊, Λ)
+    Gᵧ = calc_green(SE.P, SE.A, SE.𝕊, Λ)
     χ² = calc_chi2(Gᵧ, Gᵥ)
 
     return Gᵧ, Λ, Θ, χ², χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ
