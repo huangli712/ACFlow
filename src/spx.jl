@@ -197,7 +197,7 @@ function init(S::StochPXSolver, rd::RawData)
     println("Randomize Monte Carlo configurations")
 
     # Prepare some key variables
-    Gᵧ, Λ, Θ, χ², χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S, fmesh, grid, Gᵥ)
+    Gᵧ, Λ, Θ, χ², χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S, SE, grid, fmesh, Gᵥ)
     SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh,
                         Λ, Θ, χ², χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ)
     println("Initialize context for the StochPX solver")
@@ -711,8 +711,9 @@ end
 """
     init_context(
         S::StochPXSolver,
-        fmesh::AbstractMesh,
+        SE::StochPXElement,
         grid::AbstractGrid,
+        fmesh::AbstractMesh,
         Gᵥ::Vector{F64}
     )
 
@@ -722,22 +723,30 @@ StochPXContext struct.
 
 ### Arguments
 * S     -> A StochPXSolver struct.
-* fmesh -> Fine mesh in [wmin, wmax], used to build the kernel matrix Λ.
+* SE    -> A StochPXElement struct.
 * grid  -> Grid for input correlator.
+* fmesh -> Fine mesh in [wmin, wmax], used to build the kernel matrix Λ.
 * Gᵥ    -> Preprocessed input correlator.
 
 ### Returns
-* Θ  -> Artificial inverse temperature.
+* Gᵧ  -> Reconstructed correlator.
+* Λ   -> Precomputed kernel matrix.
+* Θ   -> Artificial inverse temperature.
+* χ²  -> Current goodness-of-fit functional.
 * χ²ᵥ -> Vector of goodness-of-fit functional.
-* Pᵥ -> Vector of poles' positions.
-* Aᵥ -> Vector of poles' amplitudes.
-* 𝕊ᵥ -> Vector of poles' signs.
+* Pᵥ  -> Vector of poles' positions.
+* Aᵥ  -> Vector of poles' amplitudes.
+* 𝕊ᵥ  -> Vector of poles' signs.
 
 See also: [`StochPXContext`](@ref).
 """
-function init_context(S::StochPXSolver, fmesh::AbstractMesh,
+function init_context(
+    S::StochPXSolver,
+    SE::StochPXElement,
     grid::AbstractGrid,
-    Gᵥ::Vector{F64})
+    fmesh::AbstractMesh,
+    Gᵥ::Vector{F64}
+    )
     ntry = get_x("ntry")
     npole = get_x("npole")
     Θ = get_x("theta")
@@ -765,10 +774,10 @@ function init_context(S::StochPXSolver, fmesh::AbstractMesh,
 
     # We have to make sure that the starting Gᵧ and χ² are consistent with
     # the current Monte Carlo configuration fields.
-    Gᵧ = calc_green(abs.(P), A, 𝕊, Λ)
+    Gᵧ = calc_green(abs.(SE.P), SE.A, SE.𝕊, Λ)
     χ² = calc_chi2(Gᵧ, Gᵥ)
 
-    return Θ, χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ
+    return Gᵧ, Λ, Θ, χ², χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ
 end
 
 """
