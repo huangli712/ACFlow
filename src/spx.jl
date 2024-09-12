@@ -551,7 +551,7 @@ configuration (recorded in `SE`) will be saved in `SC`.
 Note that not all configurations for the `t`-th attempt will be saved.
 Only the solution that exhibits the smallest χ² will be saved. For the
 `t`-th attempt, the StochPX solver will do `nstep` Monte Carlo updates.
-It will calculate every χ², and try to figure out the smallest one. Then
+It will calculate all χ², and try to figure out the smallest one. Then
 the corresponding configuration (solution) will be saved.
 
 ### Arguments
@@ -563,7 +563,7 @@ the corresponding configuration (solution) will be saved.
 N/A
 """
 function measure(t::I64, SE::StochPXElement, SC::StochPXContext)
-    SC.χ²ᵥ[t] = SE.χ²
+    SC.χ²ᵥ[t] = SC.χ²
     #
     @. SC.Pᵥ[t] = SE.P
     @. SC.Aᵥ[t] = SE.A
