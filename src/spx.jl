@@ -245,7 +245,7 @@ function run(MC::StochPXMC, SE::StochPXElement, SC::StochPXContext)
         # Reset Monte Carlo field configuration
         reset_element(MC.rng, SC.allow, SE)
 
-        # Reset Gᵧ and χ² in SE (StochPXElement)
+        # Reset Gᵧ and χ² in SC (StochPXContext)
         reset_context(t, SE, SC)
 
         # Apply simulated annealing algorithm
@@ -334,7 +334,7 @@ function prun(
         # Reset Monte Carlo field configuration
         reset_element(MC.rng, SC.allow, SE)
 
-        # Reset Gᵧ and χ² in SE (StochPXElement)
+        # Reset Gᵧ and χ² in SC (StochPXContext)
         reset_context(t, SE, SC)
 
         # Apply simulated annealing algorithm
