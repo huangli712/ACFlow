@@ -46,9 +46,9 @@ Mutable struct. It is used within the StochSK solver only.
 * mesh   -> Real frequency mesh for output spectrum.
 * kernel -> Default kernel function.
 * Aout   -> Calculated spectral function.
-* χ²     -> Current goodness function.
-* χ²min  -> Mininum goodness function.
-* χ²vec  -> Vector of goodness function.
+* χ²     -> Current goodness-of-fit function.
+* χ²min  -> Mininum goodness-of-fit function.
+* χ²vec  -> Vector of goodness-of-fit function.
 * Θ      -> Current Θ parameter.
 * Θvec   -> Vector of Θ parameter.
 """
@@ -395,7 +395,7 @@ function last(
     _fwrite = get_b("fwrite")
     fwrite = isa(_fwrite, Missing) || _fwrite ? true : false
 
-    # Write Θ-dependent goodness function
+    # Write Θ-dependent goodness-of-fit function
     fwrite && write_goodness(Θvec, χ²vec)
 
     # Write final spectral function
@@ -577,7 +577,7 @@ function shuffle(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
 
     # Perform Monte Carlo sweeping
     for s = 1:max_bin_size
-        # Recalculate the goodness function
+        # Recalculate the goodness-of-fit function
         if s % retry == 0
             SC.χ² = calc_goodness(SC.Gᵧ, SC.Gᵥ)
         end
