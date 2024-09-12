@@ -21,19 +21,12 @@ For the off-diagonal elements of the matrix-valued Green's function, the
 signs of the poles (𝕊) could be negative (-1.0). However, for the other
 cases, 𝕊 is always positive (+1.0).
 
-Note that χ² denotes the goodness-of-fit functional and Gᵧ denotes the
-reproduced correlator. They should be always compatible with P, A, and 𝕊.
-
 ### Members
-* χ² -> Goodness-of-fit functional for the current configuration.
-* Gᵧ -> Generated correlator.
 * P  -> It means the positions of the poles.
 * A  -> It means the weights / amplitudes of the poles.
 * 𝕊  -> It means the signs of the poles.
 """
 mutable struct StochPXElement
-    χ² :: F64
-    Gᵧ :: Vector{F64}
     P  :: Vector{I64}
     A  :: Vector{F64}
     𝕊  :: Vector{F64}
@@ -44,8 +37,13 @@ end
 
 Mutable struct. It is used within the StochPX solver only.
 
+Note that χ² denotes the goodness-of-fit functional, and Gᵧ denotes the
+reproduced correlator. They should be always compatible with P, A, and 𝕊
+in the StochPXElement struct.
+
 ### Members
 * Gᵥ    -> Input data for correlator.
+* Gᵧ    -> Generated correlator.
 * σ¹    -> Actually 1.0 / σ¹.
 * allow -> Allowable indices.
 * grid  -> Grid for input data.
@@ -53,6 +51,7 @@ Mutable struct. It is used within the StochPX solver only.
 * fmesh -> Very dense mesh for the poles.
 * Λ     -> Precomputed kernel matrix.
 * Θ     -> Artificial inverse temperature.
+* χ²    -> Goodness-of-fit functional for the current configuration.
 * χ²ᵥ   -> Vector of goodness-of-fit functional.
 * Pᵥ    -> Vector of poles' positions.
 * Aᵥ    -> Vector of poles' amplitudes.
@@ -60,6 +59,7 @@ Mutable struct. It is used within the StochPX solver only.
 """
 mutable struct StochPXContext
     Gᵥ    :: Vector{F64}
+    Gᵧ    :: Vector{F64}
     σ¹    :: Vector{F64}
     allow :: Vector{I64}
     grid  :: AbstractGrid
@@ -67,6 +67,7 @@ mutable struct StochPXContext
     fmesh :: AbstractMesh
     Λ     :: Array{F64,2}
     Θ     :: F64
+    χ²    :: F64
     χ²ᵥ   :: Vector{F64}
     Pᵥ    :: Vector{Vector{I64}}
     Aᵥ    :: Vector{Vector{F64}}
