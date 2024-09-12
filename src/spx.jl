@@ -815,7 +815,8 @@ end
 
 Reset the Monte Carlo field configurations (i.e. positions and amplitudes
 of the poles). Note that the signs of the poles should not be changed.
-In addition, χ² and Gᵧ will be updated in the `reset_context()` function.
+Be careful, the corresponding χ² (goodness-of-fit functional) and Gᵧ
+(generated correlator) will be updated in the `reset_context()` function.
 
 ### Arguments
 * rng   -> Random number generator.
