@@ -193,13 +193,13 @@ function init(S::StochPXSolver, rd::RawData)
     println("Create infrastructure for Monte Carlo sampling")
 
     # Initialize Monte Carlo configurations
-    SE = init_element(S, MC.rng, allow, fmesh, grid, Gᵥ)
+    SE = init_element(S, MC.rng, allow)
     println("Randomize Monte Carlo configurations")
 
     # Prepare some key variables
-    Θ, χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S)
-    SC = StochPXContext(Gᵥ, σ¹, allow, grid, mesh, fmesh,
-                        Λ, Θ, χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ)
+    Gᵧ, Λ, Θ, χ², χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ = init_context(S, fmesh, grid, Gᵥ)
+    SC = StochPXContext(Gᵥ, Gᵧ, σ¹, allow, grid, mesh, fmesh,
+                        Λ, Θ, χ², χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ)
     println("Initialize context for the StochPX solver")
 
     return MC, SE, SC
@@ -636,10 +636,7 @@ end
     init_element(
         S::StochPXSolver,
         rng::AbstractRNG,
-        allow::Vector{I64},
-        fmesh::AbstractMesh,
-        grid::AbstractGrid,
-        Gᵥ::Vector{F64}
+        allow::Vector{I64}
     )
 
 Randomize the configurations for future Monte Carlo sampling. It will
@@ -650,9 +647,6 @@ return a StochPXElement struct. Note that `allow` is generated in the
 * S     -> A StochPXSolver struct.
 * rng   -> Random number generator.
 * allow -> Allowed positions for the poles.
-* fmesh -> Fine mesh in [wmin, wmax], used to build the kernel matrix Λ.
-* grid  -> Grid for input correlator.
-* Gᵥ    -> Preprocessed input correlator.
 
 ### Returns
 * SE -> A StochPXElement struct.
@@ -662,10 +656,7 @@ See also: [`StochPXElement`](@ref).
 function init_element(
     S::StochPXSolver,
     rng::AbstractRNG,
-    allow::Vector{I64},
-    fmesh::AbstractMesh,
-    grid::AbstractGrid,
-    Gᵥ::Vector{F64}
+    allow::Vector{I64}
     )
     offdiag = get_b("offdiag")
     npole = get_x("npole")
@@ -712,22 +703,16 @@ function init_element(
         @. A = A / s
     end
 
-    # Prepare the kernel matrix Λ. It is used to speed up the simulation.
-    # Note that Λ depends on the type of kernel.
-    Λ = calc_lambda(grid, fmesh, Gᵥ)
-
-    # We have to make sure that the starting Gᵧ and χ² are consistent with
-    # the current Monte Carlo configuration fields.
-    Gᵧ = calc_green(abs.(P), A, 𝕊, Λ)
-    χ² = calc_chi2(Gᵧ, Gᵥ)
-
-    SE = StochPXElement(χ², Gᵧ, abs.(P), A, 𝕊)
+    SE = StochPXElement(abs.(P), A, 𝕊)
 
     return SE
 end
 
 """
     init_context(S::StochPXSolver)
+    fmesh::AbstractMesh,
+        grid::AbstractGrid,
+        Gᵥ::Vector{F64}
 
 Try to initialize the key members of a StochPXContext struct. It will try
 to return some key variables, which should be used to construct the
@@ -735,6 +720,9 @@ StochPXContext struct.
 
 ### Arguments
 * S -> A StochPXSolver struct.
+* fmesh -> Fine mesh in [wmin, wmax], used to build the kernel matrix Λ.
+* grid  -> Grid for input correlator.
+* Gᵥ    -> Preprocessed input correlator.
 
 ### Returns
 * Θ  -> Artificial inverse temperature.
@@ -745,7 +733,9 @@ StochPXContext struct.
 
 See also: [`StochPXContext`](@ref).
 """
-function init_context(S::StochPXSolver)
+function init_context(S::StochPXSolver, fmesh::AbstractMesh,
+    grid::AbstractGrid,
+    Gᵥ::Vector{F64})
     ntry = get_x("ntry")
     npole = get_x("npole")
     Θ = get_x("theta")
@@ -766,6 +756,15 @@ function init_context(S::StochPXSolver)
         push!(Aᵥ, zeros(F64, npole))
         push!(𝕊ᵥ, zeros(F64, npole))
     end
+
+    # Prepare the kernel matrix Λ. It is used to speed up the simulation.
+    # Note that Λ depends on the type of kernel.
+    Λ = calc_lambda(grid, fmesh, Gᵥ)
+
+    # We have to make sure that the starting Gᵧ and χ² are consistent with
+    # the current Monte Carlo configuration fields.
+    Gᵧ = calc_green(abs.(P), A, 𝕊, Λ)
+    χ² = calc_chi2(Gᵧ, Gᵥ)
 
     return Θ, χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ
 end
