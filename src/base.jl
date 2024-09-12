@@ -378,7 +378,7 @@ N/A
 ### Returns
 N/A
 
-See also: [`read_param`](@ref).
+See also: [`setup_param`](@ref).
 """
 function read_param()
     cfg = inp_toml(query_args(), true)
