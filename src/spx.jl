@@ -747,15 +747,25 @@ function init_context(
     fmesh::AbstractMesh,
     Gᵥ::Vector{F64}
     )
+    # Extract some parameters
     ntry = get_x("ntry")
     npole = get_x("npole")
     Θ = get_x("theta")
-    #
+
+    # Prepare the kernel matrix Λ. It is used to speed up the simulation.
+    # Note that Λ depends on the type of kernel.
+    Λ = calc_lambda(grid, fmesh, Gᵥ)
+
+    # We have to make sure that the starting Gᵧ and χ² are consistent with
+    # the current Monte Carlo configuration fields.
+    Gᵧ = calc_green(SE.P, SE.A, SE.𝕊, Λ)
+    χ² = calc_chi2(Gᵧ, Gᵥ)
+
     # χ²ᵥ is initialized by a large number. Later it will be updated by
     # the smallest χ² during the simulation.
     χ²ᵥ = zeros(F64, ntry)
     @. χ²ᵥ = 1e10
-    #
+
     # P, A, and 𝕊 should be always compatible with χ². They are updated
     # in the `measure()` function.
     Pᵥ = Vector{I64}[]
@@ -767,15 +777,6 @@ function init_context(
         push!(Aᵥ, zeros(F64, npole))
         push!(𝕊ᵥ, zeros(F64, npole))
     end
-
-    # Prepare the kernel matrix Λ. It is used to speed up the simulation.
-    # Note that Λ depends on the type of kernel.
-    Λ = calc_lambda(grid, fmesh, Gᵥ)
-
-    # We have to make sure that the starting Gᵧ and χ² are consistent with
-    # the current Monte Carlo configuration fields.
-    Gᵧ = calc_green(SE.P, SE.A, SE.𝕊, Λ)
-    χ² = calc_chi2(Gᵧ, Gᵥ)
 
     return Gᵧ, Λ, Θ, χ², χ²ᵥ, Pᵥ, Aᵥ, 𝕊ᵥ
 end
