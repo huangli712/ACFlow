@@ -709,17 +709,19 @@ function init_element(
 end
 
 """
-    init_context(S::StochPXSolver)
-    fmesh::AbstractMesh,
+    init_context(
+        S::StochPXSolver,
+        fmesh::AbstractMesh,
         grid::AbstractGrid,
         Gᵥ::Vector{F64}
+    )
 
 Try to initialize the key members of a StochPXContext struct. It will try
 to return some key variables, which should be used to construct the
 StochPXContext struct.
 
 ### Arguments
-* S -> A StochPXSolver struct.
+* S     -> A StochPXSolver struct.
 * fmesh -> Fine mesh in [wmin, wmax], used to build the kernel matrix Λ.
 * grid  -> Grid for input correlator.
 * Gᵥ    -> Preprocessed input correlator.
