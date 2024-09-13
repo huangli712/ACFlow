@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/10
+# Last modified: 2024/09/13
 #
 
 """
@@ -269,8 +269,6 @@ export @pcs
 export require
 export setup_args
 export query_args
-export welcome
-export overview
 export welcome
 export overview
 export goodbye
