@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/13
+# Last modified: 2024/09/15
 #
 
 """
@@ -347,6 +347,8 @@ To implement various grids for the input data.
 
 ```text
 rebuild! -> Rebuild the grid.
+resize!  -> Change size of the grid.
+reverse! -> Reverse the grid.
 ```
 =#
 
