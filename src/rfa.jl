@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/10
+# Last modified: 2024/09/14
 #
 
 #
@@ -37,7 +37,7 @@
 #=
 *Remarks* :
 
-**Rational barycentric Representation**
+**Rational barycentric representation**
 
 The barycentric formula takes the form of a quotient of two partial
 fractions,
