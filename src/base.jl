@@ -608,8 +608,8 @@ function make_mesh(; T::DataType = F64)
 
     # Get essential parameters
     ktype = get_b("ktype")
+    mesh  = get_b("mesh")
     nmesh = get_b("nmesh")
-    mesh = get_b("mesh")
     wmax::T = get_b("wmax")
     wmin::T = get_b("wmin")
     #
