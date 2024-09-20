@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/02
+# Last modified: 2024/09/20
 #
 
 #=
@@ -37,7 +37,7 @@ function read_real_data(finput::AbstractString, ngrid::I64)
     # We have to determine the number of columns and rows at first.
     dlm = readdlm(finput)
     nrows, ncols = size(dlm)
-    @assert nrows == ngrid
+    @assert nrows ≥ ngrid
     @assert ncols == 3
 
     # Read and parse the data
@@ -82,7 +82,7 @@ function read_cmplx_data(finput::AbstractString, ngrid::I64)
     # We have to determine the number of columns and rows at first.
     dlm = readdlm(finput)
     nrows, ncols = size(dlm)
-    @assert nrows == ngrid
+    @assert nrows ≥ ngrid
     @assert ncols in (4, 5)
 
     # Read and parse the data
@@ -142,7 +142,7 @@ function read_cmplx_data(
     # We have to determine the number of columns and rows at first.
     dlm = readdlm(finput)
     nrows, ncols = size(dlm)
-    @assert nrows == ngrid
+    @assert nrows ≥ ngrid
     @assert ncols == 3
 
     # Read and parse the data
