@@ -4,7 +4,7 @@
 
 !!! info
 
-    Thank you for using ACFlow. This documentation will help you to be familiar with and explore the ACFlow toolkit. It is just compatible with ACFlow v2.0.5-devel.240912.
+    Thank you for using ACFlow. This documentation will help you to be familiar with and explore the ACFlow toolkit. It is just compatible with ACFlow v2.0.6-devel.240920.
 
 !!! note
 
