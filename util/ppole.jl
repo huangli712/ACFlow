@@ -38,6 +38,8 @@ Reconstruct Green's function at real axis by using the pole expansion. It
 just calculates the contribution of the current solution (`spe`) to the
 final Green's function.
 
+Please see `calc_green()` in `src/spx.jl` for more details.
+
 ### Arguments
 * spe -> A StochPXElement struct.
 * mesh -> Mesh for output spectrum.
@@ -55,7 +57,6 @@ function calc_green_function(
     )
     ktype = get_b("ktype")
 
-    # Calculate G(ω)
     χ₀ = -Gᵥ[1]
     @cswitch ktype begin
         @case "fermi"
