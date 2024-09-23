@@ -12,29 +12,22 @@ using Printf
 using ACFlow
 
 """
-    calc_green(t::I64, SC::StochPXContext, real_axis::Bool)
+    calc_green(t::I64, SC::StochPXContext)
 
-Reconstruct Green's function at imaginary axis or real axis by using the
-pole expansion. It is a driver function. If `real_axis = true`, it will
-returns G(ω), or else G(iωₙ).
+Reconstruct Green's function at real axis by using the pole expansion. It
+is a driver function.
 
 ### Arguments
 * t -> Index of the current attempt.
 * SC -> A StochPXContext struct.
-* real_axis -> Working at real axis (true) or imaginary axis (false)?
 
 ### Returns
-* G -> Reconstructed Green's function, G(ω) or G(iωₙ).
+* G -> Reconstructed Green's function, G(ω).
 """
-function calc_green(t::I64, SC::StochPXContext, real_axis::Bool)
+function calc_green(t::I64, SC::StochPXContext)
     ktype = get_b("ktype")
     ntry = get_x("ntry")
     @assert t ≤ ntry
-
-    # Calculate G(iωₙ)
-    if real_axis == false
-        return calc_green(SC.Pᵥ[t], SC.Aᵥ[t], SC.𝕊ᵥ[t], SC.Λ)
-    end
 
     # Calculate G(ω). Now we don't need SC.Λ.
     χ₀ = -SC.Gᵥ[1]
