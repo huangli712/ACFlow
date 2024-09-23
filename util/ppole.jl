@@ -120,6 +120,11 @@ function pole_to_green()
     @assert solver == "StochPX"
     method = get_x("method")
 
+    S = StochPXSolver()
+    mesh = make_mesh()
+    fmesh = calc_fmesh(S)
+    Gᵥ, _ = init_iodata(S, read_data())
+
     χ²ᵥ, SPE = parse_pole_data()
 
     if method == "best"
@@ -128,7 +133,7 @@ function pole_to_green()
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, χ²ᵥ[p])
         #
         # Calculate G(ω)
-        #Gout = calc_green(p, SC, true)
+        Gout = calc_green(p, SPE, mesh, fmesh, Gᵥ)
     else
     end
 end
