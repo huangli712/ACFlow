@@ -12,36 +12,51 @@ using Printf
 using ACFlow
 
 """
-    calc_green(t::I64, SC::StochPXContext)
+    calc_green(
+        t::I64,
+        SPE::Vector{StochPXElement},
+        mesh::AbstractMesh,
+        fmesh::AbstractMesh,
+        Gᵥ::Vector{F64}
+    )
 
 Reconstruct Green's function at real axis by using the pole expansion. It
 is a driver function.
 
 ### Arguments
 * t -> Index of the current attempt.
-* SC -> A StochPXContext struct.
+* SPE -> A vector of StochPXElement. It contains all the poles.
+* mesh -> Mesh for output spectrum.
+* fmesh -> Very dense mesh for the poles.
+* Gᵥ -> Input data for correlator.
 
 ### Returns
 * G -> Reconstructed Green's function, G(ω).
 """
-function calc_green(t::I64, SC::StochPXContext)
+function calc_green(
+    t::I64,
+    SPE::Vector{StochPXElement},
+    mesh::AbstractMesh,
+    fmesh::AbstractMesh,
+    Gᵥ::Vector{F64}
+    )
     ktype = get_b("ktype")
     ntry = get_x("ntry")
     @assert t ≤ ntry
 
-    # Calculate G(ω). Now we don't need SC.Λ.
-    χ₀ = -SC.Gᵥ[1]
+    # Calculate G(ω)
+    χ₀ = -Gᵥ[1]
     @cswitch ktype begin
         @case "fermi"
-            G = calc_green(SC.Pᵥ[t], SC.Aᵥ[t], SC.𝕊ᵥ[t], SC.mesh, SC.fmesh)
+            G = calc_green(SPE[t].P, SPE[t].A, SPE[t].𝕊, mesh, fmesh)
             break
 
         @case "boson"
-            G = calc_green(SC.Pᵥ[t], SC.Aᵥ[t], SC.𝕊ᵥ[t], SC.mesh, SC.fmesh, χ₀, false)
+            G = calc_green(SPE[t].P, SPE[t].A, SPE[t].𝕊, mesh, fmesh, χ₀, false)
             break
 
         @case "bsymm"
-            G = calc_green(SC.Pᵥ[t], SC.Aᵥ[t], SC.𝕊ᵥ[t], SC.mesh, SC.fmesh, χ₀, true)
+            G = calc_green(SPE[t].P, SPE[t].A, SPE[t].𝕊, mesh, fmesh, χ₀, true)
             break
     end
 
@@ -113,7 +128,7 @@ function pole_to_green()
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, χ²ᵥ[p])
         #
         # Calculate G(ω)
-        Gout = calc_green(p, SC, true)
+        #Gout = calc_green(p, SC, true)
     else
     end
 end
