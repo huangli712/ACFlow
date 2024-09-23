@@ -76,6 +76,18 @@ function calc_green_function(
     return G
 end
 
+"""
+    parse_pole_data()
+
+Try to parse the `pole.data` file, and return all the poles and χ².
+
+### Arguments
+N/A
+
+### Returns
+* χ²ᵥ -> All the χ².
+* SPE -> A vector of StochPXElement struct. It contains all the poles.
+"""
 function parse_pole_data()
     ntry = get_x("ntry")
     npole = get_x("npole")
