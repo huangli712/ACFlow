@@ -48,15 +48,15 @@ function calc_green(
     χ₀ = -Gᵥ[1]
     @cswitch ktype begin
         @case "fermi"
-            G = calc_green(SPE[t].P, SPE[t].A, SPE[t].𝕊, mesh, fmesh)
+            G = ACFlow.calc_green(SPE[t].P, SPE[t].A, SPE[t].𝕊, mesh, fmesh)
             break
 
         @case "boson"
-            G = calc_green(SPE[t].P, SPE[t].A, SPE[t].𝕊, mesh, fmesh, χ₀, false)
+            G = ACFlow.calc_green(SPE[t].P, SPE[t].A, SPE[t].𝕊, mesh, fmesh, χ₀, false)
             break
 
         @case "bsymm"
-            G = calc_green(SPE[t].P, SPE[t].A, SPE[t].𝕊, mesh, fmesh, χ₀, true)
+            G = ACFlow.calc_green(SPE[t].P, SPE[t].A, SPE[t].𝕊, mesh, fmesh, χ₀, true)
             break
     end
 
