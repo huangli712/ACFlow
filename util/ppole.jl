@@ -113,8 +113,11 @@ end
 
 function pole_to_green()
     solver = get_b("solver")
+    nmesh = get_b("nmesh")
     @assert solver == "StochPX"
     method = get_x("method")
+
+    Gout = zeros(C64, nmesh)
 
     S = StochPXSolver()
     mesh = make_mesh()
@@ -131,7 +134,18 @@ function pole_to_green()
         # Calculate G(ω)
         Gout = calc_green(SPE[p], mesh, fmesh, Gᵥ)
     else
+        passed = filter_pole_data()
+        for p in passed
+            # Calculate and accumulate G(ω)
+            G = calc_green(SPE[p], mesh, fmesh, Gᵥ)
+            @. Gout = Gout + G
+        end
+        npass = length(passed)
+        @. Gout = Gout / npass
+        println("Accumulate $npass solutions to get the spectral density")
     end
+
+    write_complete(mesh, Gout)
 end
 
 welcome()
