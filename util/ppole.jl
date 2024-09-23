@@ -79,6 +79,12 @@ function pole_to_green()
 
     method = get_x("method")
     if method == "best"
+        # The χ² of the best solution should be the smallest.
+        p = argmin(χ²ᵥ)
+        @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, χ²ᵥ[p])
+        #
+        # Calculate G(ω)
+        #Gout = calc_green(p, SC, true)
     else
     end
 end
