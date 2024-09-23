@@ -13,19 +13,18 @@ using ACFlow
 
 """
     calc_green(
-        t::I64,
-        SPE::Vector{StochPXElement},
+        spe::StochPXElement,
         mesh::AbstractMesh,
         fmesh::AbstractMesh,
         Gᵥ::Vector{F64}
     )
 
 Reconstruct Green's function at real axis by using the pole expansion. It
-is a driver function.
+just calculates the contribution of the current solution (`spe`) to the
+final Green's function.
 
 ### Arguments
-* t -> Index of the current attempt.
-* SPE -> A vector of StochPXElement. It contains all the poles.
+* spe -> A StochPXElement struct.
 * mesh -> Mesh for output spectrum.
 * fmesh -> Very dense mesh for the poles.
 * Gᵥ -> Input data for correlator.
@@ -34,29 +33,26 @@ is a driver function.
 * G -> Reconstructed Green's function, G(ω).
 """
 function calc_green(
-    t::I64,
-    SPE::Vector{StochPXElement},
+    spe::StochPXElement,
     mesh::AbstractMesh,
     fmesh::AbstractMesh,
     Gᵥ::Vector{F64}
     )
     ktype = get_b("ktype")
-    ntry = get_x("ntry")
-    @assert t ≤ ntry
 
     # Calculate G(ω)
     χ₀ = -Gᵥ[1]
     @cswitch ktype begin
         @case "fermi"
-            G = ACFlow.calc_green(SPE[t].P, SPE[t].A, SPE[t].𝕊, mesh, fmesh)
+            G = ACFlow.calc_green(spe.p, spe.A, spe.𝕊, mesh, fmesh)
             break
 
         @case "boson"
-            G = ACFlow.calc_green(SPE[t].P, SPE[t].A, SPE[t].𝕊, mesh, fmesh, χ₀, false)
+            G = ACFlow.calc_green(spe.P, spe.A, spe.𝕊, mesh, fmesh, χ₀, false)
             break
 
         @case "bsymm"
-            G = ACFlow.calc_green(SPE[t].P, SPE[t].A, SPE[t].𝕊, mesh, fmesh, χ₀, true)
+            G = ACFlow.calc_green(spe.P, spe.A, spe.𝕊, mesh, fmesh, χ₀, true)
             break
     end
 
