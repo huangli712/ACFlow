@@ -12,7 +12,8 @@
 # make sure the existences of the `pole.data` file and `passed.data` file.
 #
 # Note that in addition to the `eta` parameter, the `method` parameter in
-# the `case.toml` file can be changed as well.
+# the `case.toml` file can be changed as well. However, the `wmax` and
+# `wmin` parameters should not be changed.
 #
 # Dr. Jia-Ming Wang (Renmin University) also contributes to this script.
 #
