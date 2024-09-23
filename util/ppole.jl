@@ -49,7 +49,7 @@ function parse_pole_data()
         end
     end
 
-    #@show SPE
+    return χ², SPE
 end
 
 function filter_pole_data()
