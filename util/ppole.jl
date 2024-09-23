@@ -167,7 +167,23 @@ function filter_pole_data()
     return passed
 end
 
-function pole_to_green()
+"""
+    pole2green()
+
+Main function of this script. It will read and parse the `case.toml`,
+`pole.data`, and `passed.data` files, extract information about poles,
+and then reconstruct the retarded Green's function and the corresponding
+spectral function.
+
+Note that it will override the `Aout.data` and `Gout.data` file.
+
+### Arguments
+N/A
+
+### Returns
+N/A
+"""
+function pole2green()
     solver = get_b("solver")
     nmesh = get_b("nmesh")
     @assert solver == "StochPX"
@@ -207,5 +223,5 @@ end
 welcome()
 overview()
 read_param()
-pole_to_green()
+pole2green()
 goodbye()
