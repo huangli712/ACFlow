@@ -237,7 +237,6 @@ function pole2green()
 
     # Write full response function on real axis, G(ω).
     write_complete(mesh, Gout)
-
 end
 
 welcome()
