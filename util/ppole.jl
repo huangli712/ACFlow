@@ -160,7 +160,7 @@ function filter_pole_data()
         npass = parse(I64, ldata[3])
         for i = 1:npass
             ldata = line_to_array(fin)
-            passed[i] = parse(I64, ldata[2])
+            push!(passed, parse(I64, ldata[2]))
         end
     end
 
