@@ -104,6 +104,7 @@ function parse_pole_data()
     fn = "pole.data"
     @assert isfile(fn) "Please make sure $fn is available"
 
+    println("Parse $fn to extract pole's data")
     open(fn, "r") do fin
         # There are `ntry` blocks in `pole.data` file.
         for i = 1:ntry
@@ -155,6 +156,7 @@ function filter_pole_data()
     passed = I64[]
 
     # Read the data
+    println("Parse $fn to get indices for selected solutions")
     open(fn, "r") do fin
         ldata = line_to_array(fin)
         npass = parse(I64, ldata[3])
