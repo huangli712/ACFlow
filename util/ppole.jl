@@ -1,6 +1,21 @@
 #!/usr/bin/env julia
 
 #
+# This script is used to regenerate the retarded Green's function and the
+# corresponding spectral function by using the pole expansion.
+#
+# The η parameter is quite essential for the StochPX solver. It controls
+# the broadening of the spectral function. Perhaps you would like to try
+# a different η, but you might not want to perform a regular StochPX job
+# again. At this time, this script can help. What you have to do is just
+# to modify the η parameter (`eta`) in the `case.toml` file, and then
+# make sure the existences of the `pole.data` file and `passed.data` file.
+#
+# Note that in addition to the `eta` parameter, the `method` parameter in
+# the `case.toml` file can be changed as well.
+#
+# Dr. Jia-Ming Wang (Renmin University) also contributes to this script.
+#
 # Usage:
 #
 #     $ ppole.jl ac.toml
