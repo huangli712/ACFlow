@@ -27,7 +27,7 @@ using Printf
 using ACFlow
 
 """
-    calc_green(
+    calc_green_function(
         spe::StochPXElement,
         mesh::AbstractMesh,
         fmesh::AbstractMesh,
@@ -47,7 +47,7 @@ final Green's function.
 ### Returns
 * G -> Reconstructed Green's function, G(ω).
 """
-function calc_green(
+function calc_green_function(
     spe::StochPXElement,
     mesh::AbstractMesh,
     fmesh::AbstractMesh,
@@ -59,15 +59,15 @@ function calc_green(
     χ₀ = -Gᵥ[1]
     @cswitch ktype begin
         @case "fermi"
-            G = ACFlow.calc_green(spe.P, spe.A, spe.𝕊, mesh, fmesh)
+            G = calc_green(spe.P, spe.A, spe.𝕊, mesh, fmesh)
             break
 
         @case "boson"
-            G = ACFlow.calc_green(spe.P, spe.A, spe.𝕊, mesh, fmesh, χ₀, false)
+            G = calc_green(spe.P, spe.A, spe.𝕊, mesh, fmesh, χ₀, false)
             break
 
         @case "bsymm"
-            G = ACFlow.calc_green(spe.P, spe.A, spe.𝕊, mesh, fmesh, χ₀, true)
+            G = calc_green(spe.P, spe.A, spe.𝕊, mesh, fmesh, χ₀, true)
             break
     end
 
@@ -147,12 +147,12 @@ function pole_to_green()
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, χ²ᵥ[p])
         #
         # Calculate G(ω)
-        Gout = calc_green(SPE[p], mesh, fmesh, Gᵥ)
+        Gout = calc_green_function(SPE[p], mesh, fmesh, Gᵥ)
     else
         passed = filter_pole_data()
         for p in passed
             # Calculate and accumulate G(ω)
-            G = calc_green(SPE[p], mesh, fmesh, Gᵥ)
+            G = calc_green_function(SPE[p], mesh, fmesh, Gᵥ)
             @. Gout = Gout + G
         end
         npass = length(passed)
