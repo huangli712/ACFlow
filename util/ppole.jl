@@ -44,7 +44,7 @@ function calc_green(
     χ₀ = -Gᵥ[1]
     @cswitch ktype begin
         @case "fermi"
-            G = ACFlow.calc_green(spe.p, spe.A, spe.𝕊, mesh, fmesh)
+            G = ACFlow.calc_green(spe.P, spe.A, spe.𝕊, mesh, fmesh)
             break
 
         @case "boson"
