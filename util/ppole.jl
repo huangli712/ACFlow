@@ -102,7 +102,7 @@ function parse_pole_data()
 
     # Check whether the `pole.data` file is available
     fn = "pole.data"
-    @assert isfile(fn)
+    @assert isfile(fn) "Please make sure $fn is available"
 
     open(fn, "r") do fin
         # There are `ntry` blocks in `pole.data` file.
@@ -149,7 +149,7 @@ N/A
 function filter_pole_data()
     # Check whether the `passed.data` file is available.
     fn = "passed.data"
-    @assert isfile(fn)
+    @assert isfile(fn) "Please make sure $fn is available"
 
     # Prepare the array
     passed = I64[]
@@ -188,7 +188,7 @@ function pole2green()
     solver = get_b("solver")
     nmesh = get_b("nmesh")
     method = get_x("method")
-    @assert solver == "StochPX"
+    @assert solver == "StochPX" "Please make sure the solver is StochPX"
 
     # Prepare the array
     Gout = zeros(C64, nmesh)
