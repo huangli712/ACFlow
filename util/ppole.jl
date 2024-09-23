@@ -233,7 +233,7 @@ function pole2green()
     end
 
     # Write the spectral function, A(ω).
-    write_complete(mesh, -imag.(Gout) / π)
+    write_spectrum(mesh, -imag.(Gout) / π)
 
     # Write full response function on real axis, G(ω).
     write_complete(mesh, Gout)
