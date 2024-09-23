@@ -11,11 +11,48 @@ push!(LOAD_PATH, "/Users/lihuang/Working/devel/ACFlow/src/")
 using Printf
 using ACFlow
 
-function calc_green_function()
-    η = get_x("eta")
-end
+"""
+    calc_green(t::I64, SC::StochPXContext, real_axis::Bool)
 
-function parse_green_data()
+Reconstruct Green's function at imaginary axis or real axis by using the
+pole expansion. It is a driver function. If `real_axis = true`, it will
+returns G(ω), or else G(iωₙ).
+
+### Arguments
+* t -> Index of the current attempt.
+* SC -> A StochPXContext struct.
+* real_axis -> Working at real axis (true) or imaginary axis (false)?
+
+### Returns
+* G -> Reconstructed Green's function, G(ω) or G(iωₙ).
+"""
+function calc_green(t::I64, SC::StochPXContext, real_axis::Bool)
+    ktype = get_b("ktype")
+    ntry = get_x("ntry")
+    @assert t ≤ ntry
+
+    # Calculate G(iωₙ)
+    if real_axis == false
+        return calc_green(SC.Pᵥ[t], SC.Aᵥ[t], SC.𝕊ᵥ[t], SC.Λ)
+    end
+
+    # Calculate G(ω). Now we don't need SC.Λ.
+    χ₀ = -SC.Gᵥ[1]
+    @cswitch ktype begin
+        @case "fermi"
+            G = calc_green(SC.Pᵥ[t], SC.Aᵥ[t], SC.𝕊ᵥ[t], SC.mesh, SC.fmesh)
+            break
+
+        @case "boson"
+            G = calc_green(SC.Pᵥ[t], SC.Aᵥ[t], SC.𝕊ᵥ[t], SC.mesh, SC.fmesh, χ₀, false)
+            break
+
+        @case "bsymm"
+            G = calc_green(SC.Pᵥ[t], SC.Aᵥ[t], SC.𝕊ᵥ[t], SC.mesh, SC.fmesh, χ₀, true)
+            break
+    end
+
+    return G
 end
 
 function parse_pole_data()
@@ -72,19 +109,18 @@ end
 
 function pole_to_green()
     solver = get_b("solver")
-    ktype = get_b("ktype")
     @assert solver == "StochPX"
+    method = get_x("method")
 
     χ²ᵥ, SPE = parse_pole_data()
 
-    method = get_x("method")
     if method == "best"
         # The χ² of the best solution should be the smallest.
         p = argmin(χ²ᵥ)
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, χ²ᵥ[p])
         #
         # Calculate G(ω)
-        #Gout = calc_green(p, SC, true)
+        Gout = calc_green(p, SC, true)
     else
     end
 end
