@@ -26,7 +26,7 @@ function parse_pole_data()
     P = zeros(I64, npole)
     A = zeros(F64, npole)
     𝕊 = zeros(F64, npole)
-    χ² = zeros(F64, ntry)
+    χ²ᵥ = zeros(F64, ntry)
 
     fn = "pole.data"
     @assert isfile(fn)
@@ -34,7 +34,7 @@ function parse_pole_data()
     open(fn, "r") do fin
         for i = 1:ntry
             ldata = line_to_array(fin)
-            χ²[i] = parse(F64, ldata[5])
+            χ²ᵥ[i] = parse(F64, ldata[5])
             for j = 1:npole
                 ldata = line_to_array(fin)
                 ind = parse(I64, ldata[1])
@@ -49,10 +49,25 @@ function parse_pole_data()
         end
     end
 
-    return χ², SPE
+    return χ²ᵥ, SPE
 end
 
 function filter_pole_data()
+    fn = "passed.data"
+    @assert isfile(fn)
+
+    passed = I64[]
+
+    open(fn, "r") do fin
+        ldata = line_to_array(fin)
+        npass = parse(I64, ldata[3])
+        for i = 1:npass
+            ldata = line_to_array(fin)
+            passed[i] = parse(I64, ldata[2])
+        end
+    end
+
+    return passed
 end
 
 function pole_to_green()
@@ -60,7 +75,12 @@ function pole_to_green()
     ktype = get_b("ktype")
     @assert solver == "StochPX"
 
-    parse_pole_data()
+    χ²ᵥ, SPE = parse_pole_data()
+
+    method = get_x("method")
+    if method == "best"
+    else
+    end
 end
 
 welcome()
