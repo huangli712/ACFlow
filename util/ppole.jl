@@ -26,13 +26,15 @@ function parse_pole_data()
     P = zeros(I64, npole)
     A = zeros(F64, npole)
     𝕊 = zeros(F64, npole)
+    χ² = zeros(F64, ntry)
 
     fn = "pole.data"
     @assert isfile(fn)
 
     open(fn, "r") do fin
-        for _ = 1:ntry
-            readline(fin)
+        for i = 1:ntry
+            ldata = line_to_array(fin)
+            χ²[i] = parse(F64, ldata[5])
             for j = 1:npole
                 ldata = line_to_array(fin)
                 ind = parse(I64, ldata[1])
@@ -47,7 +49,7 @@ function parse_pole_data()
         end
     end
 
-    return SPE
+    return χ², SPE
 end
 
 function filter_pole_data()
