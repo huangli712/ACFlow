@@ -134,6 +134,18 @@ function parse_pole_data()
     return χ²ᵥ, SPE
 end
 
+"""
+    filter_pole_data()
+
+Parse the `passed.data` file, and tell us which solutions can be used to
+reconstruct the Green's function and spectral function.
+
+### Arguments
+N/A
+
+### Returns
+* passed -> It contains the indices for selected solutions.
+"""
 function filter_pole_data()
     fn = "passed.data"
     @assert isfile(fn)
