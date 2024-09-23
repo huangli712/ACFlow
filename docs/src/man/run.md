@@ -42,14 +42,14 @@ $ /home/your_home/acflow/util/acrun.jl ac.toml
 or
 
 ```shell
-$ /home/your_home/acflow/util/Pacrun.jl ac.toml
+$ /home/your_home/acflow/util/acprun.jl ac.toml
 ```
 
-Noted that the `acrun.jl` script runs sequentially, while the `Pacrun.jl` script supports parallel and distributed computing. The two scripts are in the `acflow/util` folder. As we can conclude from the filename extension of configuration file (`ac.toml`), it adopts the `TOML` specification. The users may edit it with any text-based editors. Next we will introduce syntax and format of the input data files and configuration files.
+Noted that the `acrun.jl` script runs sequentially, while the `acprun.jl` script supports parallel and distributed computing. The two scripts are in the `acflow/util` folder. As we can conclude from the filename extension of configuration file (`ac.toml`), it adopts the `TOML` specification. The users may edit it with any text-based editors. Next we will introduce syntax and format of the input data files and configuration files.
 
 ## Parallel calculations
 
-Besides the `MaxEnt` solver, the computational efficiencies of the `StochAC`, `StochSK`, `StochOM`, and `StochPX` solvers are rather low. So, these solvers are parallelized to accelerate the analytic continuation simulations. The ACFlow toolkit provides a script, namely `Pacrun.jl`, to drive parallel calculations. Now the users should specify the number of parallel workers in this script:
+Besides the `MaxEnt` solver, the computational efficiencies of the `StochAC`, `StochSK`, `StochOM`, and `StochPX` solvers are rather low. So, these solvers are parallelized to accelerate the analytic continuation simulations. The ACFlow toolkit provides a script, namely `acprun.jl`, to drive parallel calculations. Now the users should specify the number of parallel workers in this script:
 
 ```julia
 #!/usr/bin/env julia
@@ -69,7 +69,7 @@ It is limited by the available computational resources. A minimal PBS script is 
 #PBS -l nodes=1:ppn=9
 #PBS -q score
 ...
-/home/your_home/acflow/util/Pacrun.jl ac.toml > nohup.dat 2>&1 # Please fix Pacrun.jl's path.
+/home/your_home/acflow/util/acprun.jl ac.toml > nohup.dat 2>&1 # Please fix acprun.jl's path.
 ```
 
 It is used to submit parallel jobs to computer clusters. Be careful, in order to maintain load balancing, the number of allocated CPUs should be larger than the number of parallel workers.
