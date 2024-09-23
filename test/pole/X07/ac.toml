@@ -33,6 +33,6 @@ method = "best"
 nfine  = 100000
 npole  = 4
 ntry   = 1000
-nstep  = 2000
+nstep  = 40000
 theta  = 1e+6
 eta    = 1e-2
