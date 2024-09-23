@@ -129,7 +129,7 @@ function pole_to_green()
         @printf("Best solution: try = %6i -> [χ² = %9.4e]\n", p, χ²ᵥ[p])
         #
         # Calculate G(ω)
-        Gout = calc_green(p, SPE, mesh, fmesh, Gᵥ)
+        Gout = calc_green(SPE[p], mesh, fmesh, Gᵥ)
     else
     end
 end
