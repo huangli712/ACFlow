@@ -100,7 +100,7 @@ function parse_pole_data()
     𝕊 = zeros(F64, npole)
     χ²ᵥ = zeros(F64, ntry)
 
-    # Check whether the `pole.data` file is available.
+    # Check whether the `pole.data` file is available
     fn = "pole.data"
     @assert isfile(fn)
 
@@ -147,11 +147,14 @@ N/A
 * passed -> It contains the indices for selected solutions.
 """
 function filter_pole_data()
+    # Check whether the `passed.data` file is available.
     fn = "passed.data"
     @assert isfile(fn)
 
+    # Prepare the array
     passed = I64[]
 
+    # Read the data
     open(fn, "r") do fin
         ldata = line_to_array(fin)
         npass = parse(I64, ldata[3])
