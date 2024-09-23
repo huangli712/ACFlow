@@ -231,6 +231,7 @@ function pole2green()
         @. Gout = Gout / npass
         println("Accumulate $npass solutions to get the spectral density")
     end
+    println()
 
     # Write the spectral function, A(ω).
     write_spectrum(mesh, -imag.(Gout) / π)
