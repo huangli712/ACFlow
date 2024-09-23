@@ -184,20 +184,30 @@ N/A
 N/A
 """
 function pole2green()
+    # Extract key parameters
     solver = get_b("solver")
     nmesh = get_b("nmesh")
-    @assert solver == "StochPX"
     method = get_x("method")
+    @assert solver == "StochPX"
 
+    # Prepare the array
     Gout = zeros(C64, nmesh)
 
+    # Generate meshes used by the StochPX solver
     S = StochPXSolver()
     mesh = make_mesh()
     fmesh = calc_fmesh(S)
+
+    # Get input correlator
     Gᵥ, _ = init_iodata(S, read_data())
 
+    # Get poles' data
     χ²ᵥ, SPE = parse_pole_data()
 
+    # Try to reconstruct retarded Green's function
+    #
+    # Note that you can change the `eta` and `method` parameters in the
+    # `case.toml` and see what happens.
     if method == "best"
         # The χ² of the best solution should be the smallest.
         p = argmin(χ²ᵥ)
@@ -206,18 +216,28 @@ function pole2green()
         # Calculate G(ω)
         Gout = calc_green_function(SPE[p], mesh, fmesh, Gᵥ)
     else
+        # Which solutions are retained?
+        # No need to analyze χ²ᵥ again. The indices are already stored in
+        # the `passed.data` file.
         passed = filter_pole_data()
         for p in passed
             # Calculate and accumulate G(ω)
             G = calc_green_function(SPE[p], mesh, fmesh, Gᵥ)
             @. Gout = Gout + G
         end
+        #
+        # Normalize G(ω)
         npass = length(passed)
         @. Gout = Gout / npass
         println("Accumulate $npass solutions to get the spectral density")
     end
 
+    # Write the spectral function, A(ω).
+    write_complete(mesh, -imag.(Gout) / π)
+
+    # Write full response function on real axis, G(ω).
     write_complete(mesh, Gout)
+
 end
 
 welcome()
