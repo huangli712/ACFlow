@@ -6,9 +6,10 @@
 #     $ ppole.jl ac.toml
 #
 
+push!(LOAD_PATH, "/Users/lihuang/Working/devel/ACFlow/src/")
+
 using Printf
 using ACFlow
-
 
 welcome()
 overview()
