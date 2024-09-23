@@ -127,7 +127,5 @@ end
 welcome()
 overview()
 read_param()
-
 write_fmesh( generate_fmesh( read_spectrum()... ) )
-
 goodbye()
