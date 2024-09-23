@@ -89,22 +89,30 @@ N/A
 * SPE -> A vector of StochPXElement struct. It contains all the poles.
 """
 function parse_pole_data()
+    # Extract key parameters
     ntry = get_x("ntry")
     npole = get_x("npole")
 
+    # Prepare arrays
     SPE = StochPXElement[]
     P = zeros(I64, npole)
     A = zeros(F64, npole)
     𝕊 = zeros(F64, npole)
     χ²ᵥ = zeros(F64, ntry)
 
+    # Check whether the `pole.data` file is available.
     fn = "pole.data"
     @assert isfile(fn)
 
     open(fn, "r") do fin
+        # There are `ntry` blocks in `pole.data` file.
         for i = 1:ntry
+            # Extract χ²
             ldata = line_to_array(fin)
             χ²ᵥ[i] = parse(F64, ldata[5])
+            #
+            # Extract information about poles
+            # For each block, there are `npole` lines
             for j = 1:npole
                 ldata = line_to_array(fin)
                 ind = parse(I64, ldata[1])
@@ -113,7 +121,11 @@ function parse_pole_data()
                 A[j] = parse(F64, ldata[4])
                 𝕊[j] = parse(F64, ldata[5])
             end
+            #
+            # Store the poles
             push!(SPE, StochPXElement(copy(P), copy(A), copy(𝕊)))
+            #
+            # Skip two blank lines between blocks
             readline(fin)
             readline(fin)
         end
