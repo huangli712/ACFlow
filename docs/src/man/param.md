@@ -15,7 +15,7 @@ Depth = 3
 
 !!! note
 
-    This block is mandatory. The parameters in this block is useful for all the solvers.
+    This block is mandatory. The parameters in this block are useful for all the solvers.
 
 ### [finput](@id finput)
 
@@ -441,7 +441,7 @@ Depth = 3
 
 !!! note
 
-    The parameters in this block is valid for the `MaxEnt` solver only.
+    The parameters in this block are valid for the `MaxEnt` solver only.
 
 !!! warning
 
@@ -571,7 +571,7 @@ Depth = 3
 
 !!! note
 
-    The parameters in this block is valid for the `BarRat` solver only.
+    The parameters in this block are valid for the `BarRat` solver only.
 
 !!! warning
 
@@ -706,7 +706,7 @@ Depth = 3
 
 !!! note
 
-    The parameters in this block is valid for the `NevanAC` solver only.
+    The parameters in this block are valid for the `NevanAC` solver only.
 
 !!! warning
 
@@ -810,7 +810,7 @@ Depth = 3
 
 !!! note
 
-    The parameters in this block is valid for the `StochAC` solver only.
+    The parameters in this block are valid for the `StochAC` solver only.
 
 !!! warning
 
@@ -964,7 +964,7 @@ Depth = 3
 
 !!! note
 
-    The parameters in this block is valid for the `StochSK` solver only.
+    The parameters in this block are valid for the `StochSK` solver only.
 
 !!! warning
 
@@ -1141,7 +1141,7 @@ Depth = 3
 
 !!! note
 
-    The parameters in this block is valid for the `StochOM` solver only.
+    The parameters in this block are valid for the `StochOM` solver only.
 
 !!! warning
 
@@ -1259,7 +1259,7 @@ Depth = 3
 
 !!! note
 
-    The parameters in this block is valid for the `StochPX` solver only.
+    The parameters in this block are valid for the `StochPX` solver only.
 
 !!! warning
 
