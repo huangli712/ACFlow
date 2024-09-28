@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/10
+# Last modified: 2024/09/29
 #
 
 #=
@@ -78,7 +78,7 @@ continuation algorithm (K. S. D. Beach's version).
 
 ### Returns
 * mesh -> Real frequency mesh, ω.
-* Aout -> Spectral function, A(ω).
+* Aout -> Spectral function, A(ω). Note that it is α-averaged.
 * Gout -> Retarded Green's function, G(ω).
 """
 function solve(S::StochACSolver, rd::RawData)
@@ -131,7 +131,7 @@ function solve(S::StochACSolver, rd::RawData)
         #
     end
 
-    return SC.mesh.mesh, Aout, Gout
+    return SC.mesh.mesh, -imag.(Gout) ./ π, Gout
 end
 
 """
