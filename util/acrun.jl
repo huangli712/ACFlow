@@ -1,8 +1,9 @@
 #!/usr/bin/env julia
 
 #
-# This script is used to start analytic continuation simulations.
-# It will launch only 1 process.
+# This julia script is used to perform analytic continuation calculations
+# sequentially. It suits for the MaxEnt, BarRat, and NevanAC solvers. It
+# will launch only 1 process.
 #
 # Usage:
 #
