@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/10
+# Last modified: 2024/09/29
 #
 
 """
@@ -775,7 +775,7 @@ function chk_dict()
             #
             @assert get_k("method") in ("chi2min", "chi2kink")
             @assert get_k("nfine") ≥ 10000
-            @assert get_k("ngamm") ≥ 1000
+            @assert get_k("ngamm") ≥ 1
             @assert get_k("nwarm") ≥ 1000
             @assert get_k("nstep") ≥ 10000
             @assert get_k("ndump") ≥ 100

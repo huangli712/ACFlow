@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/10
+# Last modified: 2024/09/29
 #
 
 #=
@@ -1063,6 +1063,7 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Get parameters
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
+    ngamm < 2 && return
 
     # Reset counters
     MC.Pacc = 0
@@ -1159,6 +1160,7 @@ function try_move_q(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Get parameters
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
+    ngamm < 4 && return
 
     # Reset counters
     MC.Qacc = 0
