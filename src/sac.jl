@@ -78,7 +78,7 @@ continuation algorithm (K. S. D. Beach's version).
 
 ### Returns
 * mesh -> Real frequency mesh, ω.
-* Aout -> Spectral function, A(ω). Note that it is α-averaged.
+* Asum -> Final spectral function, A(ω). Note that it is α-averaged.
 * Gout -> Retarded Green's function, G(ω).
 """
 function solve(S::StochACSolver, rd::RawData)
@@ -121,17 +121,17 @@ function solve(S::StochACSolver, rd::RawData)
         end
         #
         # Postprocess the solutions
-        Gout = last(SC, Aout, Uα)
+        Asum, Gout = last(SC, Aout, Uα)
         #
     # Sequential version
     else
         #
         Aout, Uα = run(MC, SE, SC)
-        Gout = last(SC, Aout, Uα)
+        Asum, Gout = last(SC, Aout, Uα)
         #
     end
 
-    return SC.mesh.mesh, -imag.(Gout) ./ π, Gout
+    return SC.mesh.mesh, Asum, Gout
 end
 
 """
@@ -358,6 +358,7 @@ correlator.
 * Uα   -> α-dependent internal energies.
 
 ### Returns
+* Asum -> Final spectral function (α-averaged), A(ω).
 * G -> Retarded Green's function, G(ω).
 """
 function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
@@ -409,7 +410,7 @@ function last(SC::StochACContext, Aout::Array{F64,2}, Uα::Vector{F64})
     end
     fwrite && write_complete(SC.mesh, _G)
 
-    return _G
+    return Asum, _G
 end
 
 #=
