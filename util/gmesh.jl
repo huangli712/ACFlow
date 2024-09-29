@@ -60,6 +60,13 @@ end
     write_fmesh(fmesh::Vector{F64}, fn::String = "fmesh.inp")
 
 Write the generated mesh to the file `fmesh.inp`.
+
+### Arguments
+* fmesh -> Dynamical mesh.
+* fn -> Filename for the output mesh.
+
+### Returns
+N/A
 """
 function write_fmesh(fmesh::Vector{F64}, fn::String = "fmesh.inp")
     open(fn, "w") do fout
