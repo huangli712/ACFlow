@@ -194,9 +194,9 @@ end
     DynamicMesh(mesh::Vector{T}) where {T}
 
 A constructor for the DynamicMesh struct, which is announced in
-`src/types.jl`. The δ peaks in the stochastic analytic continuation
-or the poles in the stochastic pole expansion method could be placed
-in this mesh. This mesh should not be used to define the spectrum.
+`src/types.jl`. The δ peaks in stochastic analytic continuation methods
+or poles in stochastic pole expansion method could be placed in this mesh.
+This mesh should not be used to define the spectrum.
 
 ### Arguments
 * mesh -> Usually a mesh from file `fmesh.inp`. See util/gmesh.jl.
@@ -229,7 +229,7 @@ end
 *Remarks* :
 
 Here we overload some essential functions in the Base module to support
-the basic operations for the following types of mesh:
+the basic operations for the following types of meshes:
 
 * LinearMesh
 * TangentMesh
