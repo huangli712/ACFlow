@@ -43,7 +43,7 @@ Please see `calc_green()` in `src/spx.jl` for more details.
 * spe -> A StochPXElement struct.
 * mesh -> Mesh for output spectrum.
 * fmesh -> Very dense mesh for the poles.
-* Gᵥ -> Input data for correlator.
+* Gᵥ -> Input data for correlator. It is useful for bosonic correators.
 
 ### Returns
 * G -> Reconstructed Green's function, G(ω).
