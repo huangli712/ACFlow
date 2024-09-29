@@ -21,6 +21,13 @@ using ACFlow
 
 Try to read the spectral function from the present directory. It will
 return the spectrum and the corresponding mesh in real axis.
+
+### Arguments
+* fn -> Filename for the spectral function.
+
+### Returns
+* mesh -> Real freqency mesh, ω.
+* Aout -> Spectral function, abs(A(ω)).
 """
 function read_spectrum(fn::String = "Aout.data")
     # Get essential parameter from the configuration file
@@ -43,8 +50,9 @@ function read_spectrum(fn::String = "Aout.data")
     end
 
     # Return the spectral data
+    #
     # For bosonic systems and matrix-valued Green's functions, the spectra
-    # could exhibit negative weights.
+    # could exhibit negative weights. We need the absolute values.
     return mesh, abs.(image)
 end
 
