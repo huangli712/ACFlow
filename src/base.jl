@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/12
+# Last modified: 2024/09/30
 #
 
 """
@@ -93,7 +93,7 @@ desired analytic continuation solvers.
 
 ### Returns
 * mesh -> Real frequency mesh, ω, Vector{F64}.
-* Aout -> Spectral function, A(ω), Vector{F64}.
+* Aout -> Spectral function, A(ω) or A(ω) / ω, Vector{F64}.
 * Gout -> Retarded Green's function, G(ω), Vector{C64}.
 
 ### Examples
@@ -156,7 +156,7 @@ function solve(rd::RawData)
     try
         return solve(make_solver(), rd)
     catch ex
-
+        catch_error()
     end
 end
 
