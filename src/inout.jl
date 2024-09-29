@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/20
+# Last modified: 2024/09/30
 #
 
 #=
@@ -170,12 +170,16 @@ end
 """
     write_spectrum(am::AbstractMesh, Aout::Vector{F64})
 
-Write spectrum A(ω) to `Aout.data`. The grid is defined in `am`, and
-the spectral data are contained in `Aout`.
+Write spectrum A(ω) or A(ω) / ω to `Aout.data`. The grid is defined in
+`am`, and the spectral data are contained in `Aout`.
+
+Note that for the MaxEnt, StochAC, StochSK, and StochOM solvers, `Aout`
+is actually A(ω) / ω, instead of A(ω). However, for the BarRat, NevanAC,
+and StochPX solvers, `Aout` is just A(ω).
 
 ### Arguments
 * am   -> Real frequency mesh.
-* Aout -> Spectral function.
+* Aout -> Spectral function. See above explanations.
 
 ### Returns
 N/A
@@ -196,6 +200,8 @@ end
 Write α-resolved spectrum A(ω) to `Aout.data.alpha`. The grid is defined
 in `am`, the α-resolved spectrum is contained in `Aout`, `αₗ` is the list
 for the α parameters. This function is called by the `StochAC` solver.
+
+Note that `Aout` is actually A(ω) / ω, instead of A(ω).
 
 ### Arguments
 * am   -> Real frequency mesh.
@@ -229,8 +235,8 @@ data in imaginary axis. This function will write the reproduced data to
 the reproduced data.
 
 ### Arguments
-* ag -> Grid for input data.
-* G  -> Reconstructed Green's function.
+* ag -> Grid for input data, τ or iωₙ.
+* G  -> Reconstructed Green's function, G(τ) or G(iωₙ).
 
 ### Returns
 N/A
@@ -267,8 +273,8 @@ axis, `G` is the calculated Green's function data. Note that its real
 part is obtained via the so-called Kramers-Kronig transformation.
 
 ### Arguments
-* am -> Real frequency mesh.
-* G  -> Retarded Green's function.
+* am -> Real frequency mesh, ω.
+* G  -> Retarded Green's function, G(ω).
 
 ### Returns
 N/A
@@ -290,7 +296,8 @@ end
     write_misfit(α_vec::Vector{F64}, χ²_vec::Vector{F64})
 
 Write `log10(α)-log10(χ²)` data to `chi2.data`, which could be used to
-judge whether the obtained optimal α parameter is reasonable.
+judge whether the obtained optimal α parameter is reasonable. It is used
+by the `MaxEnt` solver only.
 
 ### Arguments
 * α_vec  -> List for α parameters.
@@ -347,7 +354,7 @@ end
     write_model(am::AbstractMesh, D::Vector{F64})
 
 Write the default model function to `model.data`. This function is usually
-for the MaxEnt solver.
+for the `MaxEnt` solver.
 
 ### Arguments
 * am -> Real frequency mesh, ω.
@@ -406,10 +413,11 @@ end
     write_prony(ag::AbstractGrid, G::Vector{C64})
 
 Write Matsubara Green's function approximated by the Prony approximation.
+This function is only useful for the `BarRat` solver.
 
 ### Arguments
-* ag -> Grid for input data.
-* G  -> Approximated Green's function.
+* ag -> Grid for input data, iωₙ.
+* G  -> Approximated Green's function, G(iωₙ).
 
 ### Returns
 N/A
@@ -544,6 +552,10 @@ end
 
 Write positions, amplitudes, and signs of poles to `pole.data`. This
 function is only useful for the `StochPX` solver.
+
+Note that the `util/ppole.jl` script can read poles' information from
+the `pole.data` file, and construct new spectral functions with different
+`eta` parameters.
 
 ### Arguments
 * Pᵥ    -> Positions of the poles.
