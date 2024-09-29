@@ -59,7 +59,9 @@ end
 """
     write_fmesh(fmesh::Vector{F64}, fn::String = "fmesh.inp")
 
-Write the generated mesh to the file `fmesh.inp`.
+Write the generated mesh to the file `fmesh.inp`. This file can be used by
+some stochastic analytic continuation methods, such as the StochPX solver,
+to perform constrained sampling. 
 
 ### Arguments
 * fmesh -> Dynamical mesh.
@@ -81,6 +83,13 @@ end
 
 Try to generate a very dense and non-uniform mesh according to the given
 mesh and spectral function.
+
+### Arguments
+* mesh -> Real freqency mesh, ω.
+* image -> Spectral function, abs(A(ω)).
+
+### Returns
+* fmesh -> Generated mesh, which should be written into `fmesh.inp`.
 """
 function generate_fmesh(mesh::Vector{F64}, image::Vector{F64})
     # Get the analytic continuation solver
@@ -88,6 +97,7 @@ function generate_fmesh(mesh::Vector{F64}, image::Vector{F64})
 
     # Get number of points from the configuration file
     nfine = 10000
+    #
     @cswitch solver begin
         @case "MaxEnt"
             sorry()
