@@ -169,7 +169,7 @@ to see whether the analytic continuation is reasonable.
 ### Arguments
 * am -> Real frequency mesh.
 * kernel -> The kernel function.
-* A -> The calculated spectral function, A(ω).
+* A -> The calculated spectral function, A(ω) or A(ω) / ω.
 
 ### Returns
 * G -> Reconstructed correlators, G(τ) or G(iωₙ), Vector{F64}.
@@ -392,50 +392,56 @@ function read_data(only_real_part::Bool = true)
     ktype = get_b("ktype")
     ngrid = get_b("ngrid")
 
-    @cswitch get_b("grid") begin
-        @case "ftime"
-            return read_real_data(finput, ngrid)
-            break
+    try
+        #   
+        @cswitch get_b("grid") begin
+            @case "ftime"
+                return read_real_data(finput, ngrid)
+                break
 
-        @case "fpart"
-            return read_real_data(finput, ngrid)
-            break
+            @case "fpart"
+                return read_real_data(finput, ngrid)
+                break
 
-        @case "btime"
-            return read_real_data(finput, ngrid)
-            break
+            @case "btime"
+                return read_real_data(finput, ngrid)
+                break
 
-        @case "bpart"
-            return read_real_data(finput, ngrid)
-            break
+            @case "bpart"
+                return read_real_data(finput, ngrid)
+                break
 
-        @case "ffreq"
-            return read_cmplx_data(finput, ngrid)
-            break
-
-        @case "ffrag"
-            return read_cmplx_data(finput, ngrid)
-            break
-
-        @case "bfreq"
-            if ktype == "boson"
+            @case "ffreq"
                 return read_cmplx_data(finput, ngrid)
-            else # ktype == "bsymm"
-                return read_cmplx_data(finput, ngrid, only_real_part)
-            end
-            break
+                break
 
-        @case "bfrag"
-            if ktype == "boson"
+            @case "ffrag"
                 return read_cmplx_data(finput, ngrid)
-            else # ktype == "bsymm"
-                return read_cmplx_data(finput, ngrid, only_real_part)
-            end
-            break
+                break
 
-        @default
-            sorry()
-            break
+            @case "bfreq"
+                if ktype == "boson"
+                    return read_cmplx_data(finput, ngrid)
+                else # ktype == "bsymm"
+                    return read_cmplx_data(finput, ngrid, only_real_part)
+                end
+                break
+
+            @case "bfrag"
+                if ktype == "boson"
+                    return read_cmplx_data(finput, ngrid)
+                else # ktype == "bsymm"
+                    return read_cmplx_data(finput, ngrid, only_real_part)
+                end
+                break
+
+            @default
+                sorry()
+                break
+        end
+        #
+    catch ex
+        catch_error()
     end
 end
 
@@ -504,6 +510,7 @@ function make_grid(rd::RawData; T::DataType = F64)
     @assert ngrid == length(v)
 
     _grid = nothing
+    #
     @cswitch grid begin
         @case "ftime"
             _β = v[end]
@@ -580,6 +587,7 @@ function make_mesh(; T::DataType = F64)
 
     # Setup parameters according to case.toml
     pmesh = get_b("pmesh")
+    #
     if !isa(pmesh, Missing)
         (length(pmesh) == 1) && begin
             Γ, = pmesh
@@ -651,6 +659,7 @@ function make_model(am::AbstractMesh)
 
     # Setup parameters according to case.toml
     pmodel = get_b("pmodel")
+    #
     if !isa(pmodel, Missing)
         (length(pmodel) == 1) && begin Γ, = pmodel end
         (length(pmodel) == 2) && begin Γ, s = pmodel end
@@ -659,6 +668,7 @@ function make_model(am::AbstractMesh)
 
     # Try to generate the required model
     mtype = get_b("mtype")
+    #
     @cswitch mtype begin
         @case "flat"
             return build_flat_model(am)
