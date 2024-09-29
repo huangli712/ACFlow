@@ -151,30 +151,12 @@ function solve(rd::RawData)
         end
     end
 
-    # Write exceptions or errors to terminal or external file
-    function myerror(io)
-        for (exc, btrace) in current_exceptions()
-            Base.showerror(io, exc, btrace)
-            println(io)
-        end
-    end
-
     # We just use try...catch block to catch possible exceptions or errors
     # during simulations.
     try
         return solve(make_solver(), rd)
     catch ex
-        # For REPL case, error messages are written to terminal
-        if isinteractive()
-            println(red("ERROR: "), magenta("The stacktrace is shown below"))
-            myerror(stdout)
-        # For standard case, error messages will be written into err.out.
-        else
-            println("ERROR: The stacktrace is saved in err.out")
-            open("err.out", "a") do fio
-                myerror(fio)
-            end
-        end
+
     end
 end
 
