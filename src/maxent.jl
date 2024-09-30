@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/31
+# Last modified: 2024/09/30
 #
 
 #=
@@ -49,7 +49,16 @@ end
 """
     solve(S::MaxEntSolver, rd::RawData)
 
-Solve the analytic continuation problem by the maximum entropy method.
+Solve the analytic continuation problem by the maximum entropy method. It
+is the driver for the MaxEnt solver.
+
+If the input correlators are bosonic, this solver will return A(ω) / ω
+via `Aout`, instead of A(ω). At this time, `Aout` is not compatible with
+`Gout`. If the input correlators are fermionic, this solver will return
+A(ω) in `Aout`. Now it is compatible with `Gout`. These behaviors are just
+similar to the StochAC, StochSK, and StochOM solvers.
+
+It seems that the MaxEnt solver is hard to create δ-like spectra.
 
 ### Arguments
 * S -> A MaxEntSolver struct.
