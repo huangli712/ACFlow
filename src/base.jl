@@ -392,7 +392,7 @@ function read_data(only_real_part::Bool = true)
     ktype = get_b("ktype")
     ngrid = get_b("ngrid")
 
-    function call_read()
+    function read_dispatcher()
         @cswitch get_b("grid") begin
             @case "ftime"
                 return read_real_data(finput, ngrid)
@@ -443,7 +443,7 @@ function read_data(only_real_part::Bool = true)
     # We just use try...catch block to catch possible exceptions
     # or errors during simulations.
     try
-        return call_read()
+        return dispatcher()
     catch ex
         catch_error()
     end
