@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/10
+# Last modified: 2024/09/30
 #
 
 #
@@ -64,6 +64,10 @@ end
 
 Solve the analytic continuation problem by the Nevanlinna analytical
 continuation method.
+
+This solver suits Matsubara Green's functions for fermionic systems. It
+can not be used directly to treat the bosonic correlators. It will return
+A(ω) all the time.
 
 ### Arguments
 * S -> A NevanACSolver struct.
