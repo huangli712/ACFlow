@@ -426,18 +426,18 @@ function read_data(only_real_part::Bool = true)
                 end
                 break
 
-    @case "bfrag"
-        if ktype == "boson"
-            return read_cmplx_data(finput, ngrid)
-        else # ktype == "bsymm"
-            return read_cmplx_data(finput, ngrid, only_real_part)
-        end
-        break
+            @case "bfrag"
+                if ktype == "boson"
+                    return read_cmplx_data(finput, ngrid)
+                else # ktype == "bsymm"
+                    return read_cmplx_data(finput, ngrid, only_real_part)
+                end
+                break
 
-    @default
-        sorry()
-        break
-end
+            @default
+                sorry()
+                break
+        end
     end
 
     try
