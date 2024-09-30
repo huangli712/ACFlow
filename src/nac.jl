@@ -67,7 +67,7 @@ continuation method. It is the driver for the NevanAC solver.
 
 This solver suits Matsubara Green's functions for fermionic systems. It
 can not be used directly to treat the bosonic correlators. It will return
-A(ω) all the time.
+A(ω) all the time, similar to the StochPX and BarRat solvers.
 
 This solver is numerically unstable. Sometimes it is hard to get converged
 solution, especially when the noise is medium.
