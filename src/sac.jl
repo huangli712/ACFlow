@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/29
+# Last modified: 2024/09/30
 #
 
 #=
@@ -70,7 +70,16 @@ end
     solve(S::StochACSolver, rd::RawData)
 
 Solve the analytic continuation problem by the stochastic analytic
-continuation algorithm (K. S. D. Beach's version).
+continuation algorithm (K. S. D. Beach's version). This is the driver for
+the StochAC solver.
+
+If the input correlators are bosonic, this solver will return A(ω) / ω
+via `Asum`, instead of A(ω). At this time, `Asum` is not compatible with
+`Gout`. If the input correlators are fermionic, this solver will return
+A(ω) in `Asum`. Now it is compatible with `Gout`. These behaviors are just
+similar to the MaxEnt, StochSK, and StochOM solvers.
+
+Now the StochAC solver supports both continuous and δ-like spectra.
 
 ### Arguments
 * S -> A StochACSolver struct.
