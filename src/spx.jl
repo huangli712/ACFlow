@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/12
+# Last modified: 2024/09/30
 #
 
 #=
@@ -82,9 +82,12 @@ end
     solve(S::StochPXSolver, rd::RawData)
 
 Solve the analytic continuation problem by the stochastic pole expansion.
-Note that this solver is still `experimental`. It is useful for analytic
-continuation of Matsubara data. In other words, it should not be used to
-treat imagnary-time Green's function.
+It is the driver for the StochPX solver. Note that this solver is still
+`experimental`. It is useful for analytic continuation of Matsubara data.
+In other words, this solver should not be used to handle the imagnary-time
+Green's function.
+
+Similar to the BarRat and NevanAC solvers, this solver always returns A(ω).
 
 ### Arguments
 * S -> A StochPXSolver struct.
