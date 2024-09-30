@@ -85,6 +85,8 @@ via `Aout`, instead of A(ω). At this time, `Aout` is not compatible with
 A(ω) in `Aout`. Now it is compatible with `Gout`. These behaviors are just
 similar to the MaxEnt, StochAC, and StochOM solvers.
 
+Now the StochSK solver supports both continuous and δ-like spectra.
+
 ### Arguments
 * S -> A StochSKSolver struct.
 * rd -> A RawData struct, containing raw data for input correlator.
