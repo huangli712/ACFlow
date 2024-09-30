@@ -964,6 +964,70 @@ function constraints(S::StochACSolver, fmesh::AbstractMesh)
 end
 
 """
+    try_move_s(
+        i::I64,
+        MC::StochACMC,
+        SE::StochACElement,
+        SC::StochACContext
+    )
+
+Select one δ function randomly and then change its position.
+
+### Arguments
+* i -> Index for α parameters.
+* MC -> A StochACMC struct.
+* SE -> A StochACElement struct.
+* SC -> A StochACContext struct.
+
+### Returns
+N/A
+
+See also: [`try_move_p`](@ref).
+"""
+function try_move_s(
+    i::I64,
+    MC::StochACMC,
+    SE::StochACElement,
+    SC::StochACContext
+    )
+    # Get current number of δ functions
+    ngamm = get_a("ngamm")
+
+    # Choose one δ function
+    γ = rand(MC.rng, 1:ngamm)
+
+    # Extract weight for the δ function
+    a = SE.Γₐ[γ,i]
+
+    # Choose new position for the δ function
+    p = rand(MC.rng, SC.allow)
+
+    # Try to calculate the change of Hc using Eq.~(42).
+    hc = view(SC.hτ, :, i)
+    Kₚ = view(SC.kernel, :, p)
+    Kᵧ = view(SC.kernel, :, SE.Γₚ[γ,i])
+    #
+    δhc = a * (Kₚ - Kᵧ)
+    δH = dot(δhc, 2.0 * hc + δhc)
+
+    # Apply Metropolis algorithm
+    MC.Mtry[i] = MC.Mtry[i] + 1
+    if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
+        # Update Monte Carlo configurations
+        SE.Γₚ[γ,i] = p
+
+        # Update h(τ)
+        @. hc = hc + δhc
+
+        # Update Hc
+        SC.Hα[i] = SC.Hα[i] + δH
+
+        # Update Monte Carlo counter
+        MC.Macc[i] = MC.Macc[i] + 1
+    end
+end
+
+"""
     try_move_p(
         i::I64,
         MC::StochACMC,
@@ -982,7 +1046,7 @@ Select two δ functions randomly and then change their positions.
 ### Returns
 N/A
 
-See also: [`try_move_a`](@ref).
+See also: [`try_move_s`](@ref).
 """
 function try_move_p(
     i::I64,
@@ -1057,7 +1121,7 @@ Select two δ functions randomly and then change their weights.
 ### Returns
 N/A
 
-See also: [`try_move_p`](@ref).
+See also: [`try_move_x`](@ref).
 """
 function try_move_a(
     i::I64,
@@ -1135,6 +1199,8 @@ this function involves two layers, so it doesn't need the argument `i`.
 
 ### Returns
 N/A
+
+See also: [`try_move_a`](@ref).
 """
 function try_move_x(
     MC::StochACMC,
