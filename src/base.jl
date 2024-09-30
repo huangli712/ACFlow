@@ -151,8 +151,8 @@ function solve(rd::RawData)
         end
     end
 
-    # We just use try...catch block to catch possible exceptions or errors
-    # during simulations.
+    # We just use try...catch block to catch possible exceptions
+    # or errors during simulations.
     try
         return solve(make_solver(), rd)
     catch ex
@@ -440,6 +440,8 @@ function read_data(only_real_part::Bool = true)
         end
     end
 
+    # We just use try...catch block to catch possible exceptions
+    # or errors during simulations.
     try
         return call_read()
     catch ex
