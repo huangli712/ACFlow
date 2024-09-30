@@ -63,11 +63,14 @@ end
     solve(S::NevanACSolver, rd::RawData)
 
 Solve the analytic continuation problem by the Nevanlinna analytical
-continuation method.
+continuation method. It is the driver for the NevanAC solver.
 
 This solver suits Matsubara Green's functions for fermionic systems. It
 can not be used directly to treat the bosonic correlators. It will return
 A(ω) all the time.
+
+This solver is numerically unstable. Sometimes it is hard to get converged
+solution, especially when the noise is medium.
 
 ### Arguments
 * S -> A NevanACSolver struct.
