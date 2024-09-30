@@ -760,7 +760,7 @@ function chk_dict()
             @assert get_b("mtype") == "flat"
             #
             @assert get_a("nfine") ≥ 1000
-            @assert get_a("ngamm") ≥ 100
+            @assert get_a("ngamm") ≥ 1
             @assert get_a("nwarm") ≥ 100
             @assert get_a("nstep") ≥ 1000
             @assert get_a("ndump") ≥ 100

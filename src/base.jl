@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/30
+# Last modified: 2024/10/01
 #
 
 """
@@ -392,8 +392,7 @@ function read_data(only_real_part::Bool = true)
     ktype = get_b("ktype")
     ngrid = get_b("ngrid")
 
-    try
-        #   
+    function call_read()
         @cswitch get_b("grid") begin
             @case "ftime"
                 return read_real_data(finput, ngrid)
@@ -427,19 +426,22 @@ function read_data(only_real_part::Bool = true)
                 end
                 break
 
-            @case "bfrag"
-                if ktype == "boson"
-                    return read_cmplx_data(finput, ngrid)
-                else # ktype == "bsymm"
-                    return read_cmplx_data(finput, ngrid, only_real_part)
-                end
-                break
-
-            @default
-                sorry()
-                break
+    @case "bfrag"
+        if ktype == "boson"
+            return read_cmplx_data(finput, ngrid)
+        else # ktype == "bsymm"
+            return read_cmplx_data(finput, ngrid, only_real_part)
         end
-        #
+        break
+
+    @default
+        sorry()
+        break
+end
+    end
+
+    try
+        return call_read()
     catch ex
         catch_error()
     end
