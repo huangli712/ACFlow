@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/29
+# Last modified: 2024/09/30
 #
 
 #=
@@ -75,8 +75,15 @@ end
 """
     solve(S::StochSKSolver, rd::RawData)
 
-Solve the analytic continuation problem by the stochastic analytic
-continuation algorithm (A. W. Sandvik's version).
+Solve the analytic continuation problem by using the stochastic analytic
+continuation algorithm (A. W. Sandvik's version). It is the driver for the
+StochSK solver.
+
+If the input correlators are bosonic, this solver will return A(ω) / ω
+via `Aout`, instead of A(ω). At this time, `Aout` is not compatible with
+`Gout`. If the input correlators are fermionic, this solver will return
+A(ω) in `Aout`. Now it is compatible with `Gout`. These behaviors are just
+similar to the MaxEnt, StochAC, and StochOM solvers.
 
 ### Arguments
 * S -> A StochSKSolver struct.
@@ -353,12 +360,14 @@ continuation simulations. It will generate the spectral functions.
 * Θvec -> List of Θ parameters.
 """
 function average(step::F64, SC::StochSKContext)
+    #
     # Here, the factor SC.mesh.weight in denominator is used to make sure
     # that the sum-rule
     #
     # ∫ A(ω) dω = 1
     #
-    # is obeyed by the calculated A(ω).
+    # is obeyed by the obtained spectral function A(ω).
+    #
     SC.Aout = SC.Aout ./ (step * SC.mesh.weight)
 
     return SC.Aout, SC.χ²vec, SC.Θvec
@@ -1063,6 +1072,8 @@ function try_move_p(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Get parameters
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
+
+    # We have to make sure that there are at least two δ functions here.
     ngamm < 2 && return
 
     # Reset counters
@@ -1160,6 +1171,8 @@ function try_move_q(MC::StochSKMC, SE::StochSKElement, SC::StochSKContext)
     # Get parameters
     nfine = get_k("nfine")
     ngamm = get_k("ngamm")
+
+    # We have to make sure that there are at least four δ functions here.
     ngamm < 4 && return
 
     # Reset counters
