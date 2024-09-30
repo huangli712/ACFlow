@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/14
+# Last modified: 2024/09/30
 #
 
 #
@@ -794,7 +794,14 @@ end
     solve(S::BarRatSolver, rd::RawData)
 
 Solve the analytic continuation problem by the barycentric rational
-function method.
+function method. This is the driver for the BarRat solver.
+
+This solver suits Matsubara Green's functions. It supports both bosonic
+and fermionic systems, irrespective of diagonal or non-diagonal functions.
+It is extremely efficient. But sometimes the resulting spectral functions
+could violate the sum-rules.
+
+Similar to the StochPX and NevanAC solvers, it always returns A(ω).
 
 ### Arguments
 * S -> A BarRatSolver struct.
