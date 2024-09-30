@@ -489,8 +489,14 @@ function sample(MC::StochACMC, SE::StochACElement, SC::StochACContext)
                 try_move_a(i, MC, SE, SC)
             end
         else
-            for i = 1:nalph
-                try_move_p(i, MC, SE, SC)
+            if rand(MC.rng) > 0.2
+                for i = 1:nalph
+                    try_move_s(i, MC, SE, SC)
+                end
+            else
+                for i = 1:nalph
+                    try_move_p(i, MC, SE, SC)
+                end
             end
         end
     else
