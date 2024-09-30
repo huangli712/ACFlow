@@ -206,6 +206,9 @@ function last(mec::MaxEntContext, svec::Vector, sol::Dict)
     end
 
     # Regenerate the input data and write them
+    #
+    # Perhaps the spectral function (sol[:A]) is blurred.
+    # But we need the pure spectral function (sol[:Araw]).
     Aout = haskey(sol, :Araw) ? sol[:Araw] : sol[:A]
     G = reprod(mec.mesh, mec.kernel, Aout)
     fwrite && write_backward(mec.grid, G)
