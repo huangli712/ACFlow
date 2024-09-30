@@ -1056,6 +1056,10 @@ function try_move_p(
     )
     # Get current number of δ functions
     ngamm = get_a("ngamm")
+    #
+    if ngamm < 2
+        return
+    end
 
     # Choose two δ functions, they are labelled as γ₁ and γ₂, respectively.
     γ₁ = 1
@@ -1131,6 +1135,10 @@ function try_move_a(
     )
     # Get current number of δ functions
     ngamm = get_a("ngamm")
+    #
+    if ngamm < 2
+        return
+    end
 
     # Choose two δ functions, they are labelled as γ₁ and γ₂, respectively.
     γ₁ = 1
