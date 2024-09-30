@@ -443,7 +443,7 @@ function read_data(only_real_part::Bool = true)
     # We just use try...catch block to catch possible exceptions
     # or errors during simulations.
     try
-        return dispatcher()
+        return read_dispatcher()
     catch ex
         catch_error()
     end
