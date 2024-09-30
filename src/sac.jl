@@ -964,6 +964,81 @@ function constraints(S::StochACSolver, fmesh::AbstractMesh)
 end
 
 """
+    try_move_p(
+        i::I64,
+        MC::StochACMC,
+        SE::StochACElement,
+        SC::StochACContext
+    )
+
+Select two δ functions randomly and then change their positions.
+
+### Arguments
+* i -> Index for α parameters.
+* MC -> A StochACMC struct.
+* SE -> A StochACElement struct.
+* SC -> A StochACContext struct.
+
+### Returns
+N/A
+
+See also: [`try_move_a`](@ref).
+"""
+function try_move_p(
+    i::I64,
+    MC::StochACMC,
+    SE::StochACElement,
+    SC::StochACContext
+    )
+    # Get current number of δ functions
+    ngamm = get_a("ngamm")
+
+    # Choose two δ functions, they are labelled as γ₁ and γ₂, respectively.
+    γ₁ = 1
+    γ₂ = 1
+    while γ₁ == γ₂
+        γ₁ = rand(MC.rng, 1:ngamm)
+        γ₂ = rand(MC.rng, 1:ngamm)
+    end
+
+    # Extract weights for the two δ functions (a₁ and a₂)
+    a₁ = SE.Γₐ[γ₁,i]
+    a₂ = SE.Γₐ[γ₂,i]
+
+    # Choose new positions for the two δ functions (p₁ and p₂).
+    # Note that their old positions are SE.Γₚ[γ₁,i] and SE.Γₚ[γ₂,i].
+    p₁ = rand(MC.rng, SC.allow)
+    p₂ = rand(MC.rng, SC.allow)
+
+    # Try to calculate the change of Hc using Eq.~(42).
+    hc = view(SC.hτ, :, i)
+    K₁ = view(SC.kernel, :, p₁)
+    K₂ = view(SC.kernel, :, p₂)
+    K₃ = view(SC.kernel, :, SE.Γₚ[γ₁,i])
+    K₄ = view(SC.kernel, :, SE.Γₚ[γ₂,i])
+    #
+    δhc = a₁ * (K₁ - K₃) + a₂ * (K₂ - K₄)
+    δH = dot(δhc, 2.0 * hc + δhc)
+
+    # Apply Metropolis algorithm
+    MC.Mtry[i] = MC.Mtry[i] + 1
+    if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
+        # Update Monte Carlo configurations
+        SE.Γₚ[γ₁,i] = p₁
+        SE.Γₚ[γ₂,i] = p₂
+
+        # Update h(τ)
+        @. hc = hc + δhc
+
+        # Update Hc
+        SC.Hα[i] = SC.Hα[i] + δH
+
+        # Update Monte Carlo counter
+        MC.Macc[i] = MC.Macc[i] + 1
+    end
+end
+
+"""
     try_move_a(
         i::I64,
         MC::StochACMC,
@@ -1031,81 +1106,6 @@ function try_move_a(
         # Update Monte Carlo configurations
         SE.Γₐ[γ₁,i] = a₁
         SE.Γₐ[γ₂,i] = a₂
-
-        # Update h(τ)
-        @. hc = hc + δhc
-
-        # Update Hc
-        SC.Hα[i] = SC.Hα[i] + δH
-
-        # Update Monte Carlo counter
-        MC.Macc[i] = MC.Macc[i] + 1
-    end
-end
-
-"""
-    try_move_p(
-        i::I64,
-        MC::StochACMC,
-        SE::StochACElement,
-        SC::StochACContext
-    )
-
-Select two δ functions randomly and then change their positions.
-
-### Arguments
-* i -> Index for α parameters.
-* MC -> A StochACMC struct.
-* SE -> A StochACElement struct.
-* SC -> A StochACContext struct.
-
-### Returns
-N/A
-
-See also: [`try_move_a`](@ref).
-"""
-function try_move_p(
-    i::I64,
-    MC::StochACMC,
-    SE::StochACElement,
-    SC::StochACContext
-    )
-    # Get current number of δ functions
-    ngamm = get_a("ngamm")
-
-    # Choose two δ functions, they are labelled as γ₁ and γ₂, respectively.
-    γ₁ = 1
-    γ₂ = 1
-    while γ₁ == γ₂
-        γ₁ = rand(MC.rng, 1:ngamm)
-        γ₂ = rand(MC.rng, 1:ngamm)
-    end
-
-    # Extract weights for the two δ functions (a₁ and a₂)
-    a₁ = SE.Γₐ[γ₁,i]
-    a₂ = SE.Γₐ[γ₂,i]
-
-    # Choose new positions for the two δ functions (p₁ and p₂).
-    # Note that their old positions are SE.Γₚ[γ₁,i] and SE.Γₚ[γ₂,i].
-    p₁ = rand(MC.rng, SC.allow)
-    p₂ = rand(MC.rng, SC.allow)
-
-    # Try to calculate the change of Hc using Eq.~(42).
-    hc = view(SC.hτ, :, i)
-    K₁ = view(SC.kernel, :, p₁)
-    K₂ = view(SC.kernel, :, p₂)
-    K₃ = view(SC.kernel, :, SE.Γₚ[γ₁,i])
-    K₄ = view(SC.kernel, :, SE.Γₚ[γ₂,i])
-    #
-    δhc = a₁ * (K₁ - K₃) + a₂ * (K₂ - K₄)
-    δH = dot(δhc, 2.0 * hc + δhc)
-
-    # Apply Metropolis algorithm
-    MC.Mtry[i] = MC.Mtry[i] + 1
-    if δH ≤ 0.0 || exp(-SC.αₗ[i] * δH) > rand(MC.rng)
-        # Update Monte Carlo configurations
-        SE.Γₚ[γ₁,i] = p₁
-        SE.Γₚ[γ₂,i] = p₂
 
         # Update h(τ)
         @. hc = hc + δhc
