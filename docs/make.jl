@@ -14,7 +14,7 @@ makedocs(
         repolink = "https://github.com/huangli712/ACFlow",
         size_threshold = 409600, # 400kb
     ),
-    #format = Documenter.LaTeX(),
+    #format = Documenter.LaTeX(platform = "none"),
     remotes = nothing,
     modules = [ACFlow],
     pages = [
