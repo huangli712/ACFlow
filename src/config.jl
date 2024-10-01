@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/29
+# Last modified: 2024/10/01
 #
 
 """
@@ -790,7 +790,7 @@ function chk_dict()
             #
             @assert get_s("ntry")  ≥ 200
             @assert get_s("nstep") ≥ 1000
-            @assert get_s("nbox")  ≥ 1
+            @assert get_s("nbox")  ≥ 2
             @assert get_s("sbox")  > 0.0
             @assert get_s("wbox")  > 0.0
             break
