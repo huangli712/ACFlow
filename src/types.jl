@@ -377,7 +377,8 @@ struct NevanACSolver <: AbstractSolver end
 It represents the analytic continuation solver that implements the
 stochastic analytic continuation method (K. S. D. Beach's version).
 
-This solver is **moderately recommended**.
+This solver is **moderately recommended**. It is an alternative of
+the `StochSK` solver.
 
 ### Features
 * Only diagonal Green's functions are supported.
@@ -411,10 +412,25 @@ struct StochACSolver <: AbstractSolver end
 It represents the analytic continuation solver that implements the
 stochastic analytic continuation method (A. W. Sandvik's version).
 
-This solver is **moderately recommended**.
+This solver is **moderately recommended**. It is an alternative of
+the `StochAC` solver.
 
 ### Features
+* Only diagonal Green's functions are supported.
+* Both fermionic and bosonic correlators are supported.
+* Both continuous and discrete spectra are supported.
+* Both imaginary-time and Matsubara data are supported.
+* Good robustness with respect to noisy correlators.
+* Numerically stable.
+* It is parallelized.
+
 ### Known Limitations
+* It is quite slow.
+* It is less accurate than the `BarRat` solver at most cases.
+* It doesn't support off-diagonal Green's functions.
+* It doesn't support negative spectral weights.
+* If there are multiple δ-like peaks, it is not good.
+
 ### Implementation
 
 See `src/san.jl`.
