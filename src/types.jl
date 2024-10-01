@@ -276,6 +276,30 @@ abstract type AbstractSolver end
 
 It represents the analytic continuation solver that implements the
 maximum entropy method.
+
+**This solver is highly recommended.**
+
+### Features
+* Both off-diagonal and diagonal Green's functions.
+* Both fermionic and bosonic correlators.
+* The spectral weights can be negative.
+* Good robustness with respect to noisy correlators.
+* Numerically stable.
+* Fast.
+
+### Known Limitations
+* It always tends to generate broad and smooth spectra.
+* The fine features in the spectra could be smeared out.
+* Sometimes it would generate keen-edged and unphysical peaks.
+* When the spectra are sharp or discrete, this solver usually fails.
+
+### Implementation
+
+See `src/maxent.jl`.
+
+### Tests
+
+See `test/basic`.
 """
 struct MaxEntSolver <: AbstractSolver end
 
