@@ -42,7 +42,12 @@ The source codes of the ACFlow toolkit are placed in the `acflow/src` folder. Th
 
 !!! note
 
-    There are two more scripts (`acrun.jl` and `Pacrun.jl`) in the `acflow/util` folder. They are used to launch the analytic continuation tasks.
+    There are four more scripts in the `acflow/util` folder.
+    
+    * `acrun.jl` - It is used to launch the analytic continuation tasks sequentially.
+    * `acprun.jl` - It is used to launch the analytic continuation tasks parallelly.
+    * `ppole.jl` - It is used to postprocess the outputs by the StochPX solver.
+    * `gmesh.jl` -> It will generate a dynamical mesh for next analytic continuation simulation.
 
 ## Documentation
 
@@ -55,3 +60,11 @@ https://huangli712.github.io/projects/acflow/index.html
 ## Tests and Examples
 
 Forty-eight tests and four tutorials are also shipped with the ACFlow toolkit. The source codes for internal tests are placed in the `acflow/test` folder, while those for tutorials are saved in the `acflow/tutor` folder. See `acflow/test/test.md` and `acflow/tutor/tutor.md` for more details.
+
+!!! note
+
+    We also develop an individual package, namely `ACTest`, to benchmark various analytic continuation solvers / methods. Please check the following URL for more details:
+
+    ```text
+    https://github.com/huangli712/ACTest
+    ```
