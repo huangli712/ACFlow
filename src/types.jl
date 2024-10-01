@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/08/28
+# Last modified: 2024/10/01
 #
 
 #=
@@ -284,6 +284,29 @@ struct MaxEntSolver <: AbstractSolver end
 
 It represents the analytic continuation solver that implements the
 barycentric rational function approximation method.
+
+**This solver is highly recommended.**
+
+### Features
+* Both off-diagonal and diagonal Green's functions.
+* Both fermionic and bosonic correlators.
+* Both continuous and discrete spectra.
+* The spectral weights can be negative.
+* Moderate robustness with respect to noisy correlators.
+* Numerically stable.
+* Extremely fast.
+
+### Known Limitations
+* The imaginary-time correlation correlators are not supported.
+* Sometimes it would generate keen-edged and unphysical peaks.
+
+### Implementation
+
+See `src/rfa.jl`.
+
+### Tests
+
+See `test/rfa`.
 """
 struct BarRatSolver <: AbstractSolver end
 
