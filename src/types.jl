@@ -383,6 +383,7 @@ This solver is **moderately recommended**.
 * Only diagonal Green's functions are supported.
 * Both fermionic and bosonic correlators are supported.
 * Both continuous and discrete spectra are supported.
+* Both imaginary-time and Matsubara data are supported.
 * Good robustness with respect to noisy correlators.
 * Numerically stable.
 * It is parallelized.
