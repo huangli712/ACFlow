@@ -267,7 +267,16 @@ const _PStochPX= Dict{String,Any}(
 
 An abstract type representing the solver for analytic continuation
 problem. It is used to build the internal type system. All the other
-solvers are its sub-types.
+solvers are its subtypes.
+
+It has the following subtypes:
+* MaxEntSolver
+* BarRatSolver
+* NevanACSolver
+* StochACSolver
+* StochSKSolver
+* StochOMSolver
+* StochPXSolver
 """
 abstract type AbstractSolver end
 
