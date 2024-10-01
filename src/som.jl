@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/09
+# Last modified: 2024/10/01
 #
 
 #=
@@ -82,7 +82,15 @@ end
 Solve the analytic continuation problem by the stochastic optimization
 method. This solver requires a lot of computational resources to get
 reasonable results. It is suitable for both Matsubara and imaginary
-time correlators.
+time correlators. It is the driver for the StochOM solver.
+
+If the input correlators are bosonic, this solver will return A(ω) / ω
+via `Aout`, instead of A(ω). At this time, `Aout` is not compatible with
+`Gout`. If the input correlators are fermionic, this solver will return
+A(ω) in `Aout`. Now it is compatible with `Gout`. These behaviors are just
+similar to the MaxEnt, StochAC, and StochSK solvers.
+
+Now the StochOM solver supports both continuous and δ-like spectra.
 
 ### Arguments
 * S -> A StochOMSolver struct.
