@@ -389,6 +389,12 @@ This solver is **moderately recommended**.
 * It is parallelized.
 
 ### Known Limitations
+* It is quite slow.
+* It is less accurate than the `BarRat` solver at most cases.
+* It doesn't support off-diagonal Green's functions.
+* It doesn't support negative spectral weights.
+* If there are multiple δ-like peaks, it is not good.
+
 ### Implementation
 
 See `src/sac.jl`.
