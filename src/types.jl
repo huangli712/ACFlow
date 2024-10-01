@@ -344,6 +344,10 @@ confinuations for matrix-valued Green's functions).
 This solver is **not recommended**.
 
 ### Features
+* Only diagonal Green's functions are supported.
+* Only fermionic correlators are supported.
+* Both continuous and discrete spectra are supported.
+* It is quite accurate if the input correlators are noise-free.
 
 ### Known Limitations
 ### Implementation
