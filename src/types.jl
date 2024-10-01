@@ -341,7 +341,10 @@ It represents the analytic continuation solver that implements the
 Nevanlinna analytical continuation (It doesn't support the analytic
 confinuations for matrix-valued Green's functions).
 
+This solver is **not recommended**.
+
 ### Features
+
 ### Known Limitations
 ### Implementation
 
