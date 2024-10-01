@@ -354,6 +354,7 @@ is a better choice.
 * It is quite accurate if the input correlators are noise-free.
 
 ### Known Limitations
+* It needs Matsubara data.
 * It is quite slow if Hardy basis optimization is activated.
 * It doesn't support bosonic correlators directly.
 * It doesn't support off-diagonal Green's functions.
