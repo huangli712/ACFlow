@@ -277,7 +277,7 @@ abstract type AbstractSolver end
 It represents the analytic continuation solver that implements the
 maximum entropy method.
 
-**This solver is highly recommended.**
+This solver is **highly recommended.**
 
 ### Features
 * Both off-diagonal and diagonal Green's functions.
@@ -309,7 +309,7 @@ struct MaxEntSolver <: AbstractSolver end
 It represents the analytic continuation solver that implements the
 barycentric rational function approximation method.
 
-**This solver is highly recommended.**
+This solver is **highly recommended.**
 
 ### Features
 * Both off-diagonal and diagonal Green's functions.
@@ -442,6 +442,7 @@ This solver is **highly recommended.**
 ### Known Limitations
 * It is quite slow.
 * It is less accurate than the `BarRat` solver at most cases.
+* It requires Matsubara data as input.
 * If the spectra are discrete, `a priori` knowledge is essential.
 * If the spectra exhibit negative weights, `a priori` knowledge is essential.
 
