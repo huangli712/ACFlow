@@ -318,6 +318,7 @@ This solver is **highly recommended**.
 * The spectral weights can be negative.
 * Moderate robustness with respect to noisy correlators.
 * Numerically stable.
+* It can provide analytic expressions to approximate the correlators.
 * Extremely fast.
 
 ### Known Limitations
@@ -359,7 +360,7 @@ is a better choice.
 * It doesn't support bosonic correlators directly.
 * It doesn't support off-diagonal Green's functions.
 * It doesn't suit the noisy quantum Monte Carlo data.
-* It is numerically unstable.
+* It is numerically unstable when the input correlators are noisy.
 
 ### Implementation
 
@@ -485,11 +486,12 @@ stochastic pole expansion method.
 This solver is **highly recommended**.
 
 ### Features
-* Both off-diagonal and diagonal Green's functions.
-* Both fermionic and bosonic correlators.
-* Both continuous and discrete spectra.
+* Both off-diagonal and diagonal Green's functions are supported.
+* Both fermionic and bosonic correlators are supported.
+* Both continuous and discrete spectra are supported.
 * The spectral weights can be negative.
 * Good robustness with respect to noisy correlators.
+* It supports the constrained sampling algorithm.
 * Numerically stable.
 * It can provide analytic expressions to approximate the correlators.
 * It is parallelized.
