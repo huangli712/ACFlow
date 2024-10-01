@@ -395,8 +395,22 @@ struct StochSKSolver <: AbstractSolver end
 It represents the analytic continuation solver that implements the
 stochastic optimization method.
 
+This solver is **less recommended.**
+
 ### Features
+* Only diagonal Green's functions.
+* Both fermionic and bosonic correlators.
+* Only continuous spectra.
+* Good robustness with respect to noisy correlators.
+* Numerically stable.
+* It is parallelized.
+
 ### Known Limitations
+* It is very slow.
+* It is less accurate than the `BarRat` solver at most cases.
+* It doesn't support off-diagonal Green's functions.
+* It doesn't support discrete spectra.
+
 ### Implementation
 
 See `src/som.jl`.
@@ -413,7 +427,7 @@ struct StochOMSolver <: AbstractSolver end
 It represents the analytic continuation solver that implements the
 stochastic pole expansion method.
 
-**This solver is highly recommended.**
+This solver is **highly recommended.**
 
 ### Features
 * Both off-diagonal and diagonal Green's functions.
