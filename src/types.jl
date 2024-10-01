@@ -377,6 +377,8 @@ struct NevanACSolver <: AbstractSolver end
 It represents the analytic continuation solver that implements the
 stochastic analytic continuation method (K. S. D. Beach's version).
 
+This solver is **moderately recommended**.
+
 ### Features
 ### Known Limitations
 ### Implementation
@@ -394,6 +396,8 @@ struct StochACSolver <: AbstractSolver end
 
 It represents the analytic continuation solver that implements the
 stochastic analytic continuation method (A. W. Sandvik's version).
+
+This solver is **moderately recommended**.
 
 ### Features
 ### Known Limitations
@@ -413,7 +417,7 @@ struct StochSKSolver <: AbstractSolver end
 It represents the analytic continuation solver that implements the
 stochastic optimization method.
 
-This solver is **less recommended.**
+This solver is **less recommended**.
 
 ### Features
 * Only diagonal Green's functions.
@@ -445,7 +449,7 @@ struct StochOMSolver <: AbstractSolver end
 It represents the analytic continuation solver that implements the
 stochastic pole expansion method.
 
-This solver is **highly recommended.**
+This solver is **highly recommended**.
 
 ### Features
 * Both off-diagonal and diagonal Green's functions.
