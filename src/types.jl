@@ -343,6 +343,10 @@ confinuations for matrix-valued Green's functions).
 
 This solver is **not recommended**.
 
+This solver is not well tested. If you would like to use the Nevanlinna
+analytical continuation method, perhaps the official `Nevanlinna.jl`
+is a better choice.
+
 ### Features
 * Only diagonal Green's functions are supported.
 * Only fermionic correlators are supported.
