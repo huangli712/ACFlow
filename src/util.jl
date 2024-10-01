@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/30
+# Last modified: 2024/10/01
 #
 
 #=
@@ -256,6 +256,15 @@ N/A
 
 ### Returns
 N/A
+
+### Examples
+```julia
+try
+    return solve(read_data())
+catch ex
+    catch_error()
+end
+```
 
 See also: [`trace_error`](@ref).
 """
