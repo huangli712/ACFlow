@@ -344,6 +344,9 @@ confinuations for matrix-valued Green's functions).
 ### Features
 ### Known Limitations
 ### Implementation
+
+See `src/nac.jl`.
+
 ### Tests
 """
 struct NevanACSolver <: AbstractSolver end
@@ -357,6 +360,9 @@ stochastic analytic continuation method (K. S. D. Beach's version).
 ### Features
 ### Known Limitations
 ### Implementation
+
+See `src/sac.jl`.
+
 ### Tests
 """
 struct StochACSolver <: AbstractSolver end
@@ -370,6 +376,9 @@ stochastic analytic continuation method (A. W. Sandvik's version).
 ### Features
 ### Known Limitations
 ### Implementation
+
+See `src/san.jl`.
+
 ### Tests
 """
 struct StochSKSolver <: AbstractSolver end
@@ -383,6 +392,9 @@ stochastic optimization method.
 ### Features
 ### Known Limitations
 ### Implementation
+
+See `src/som.jl`.
+
 ### Tests
 """
 struct StochOMSolver <: AbstractSolver end
@@ -396,6 +408,9 @@ stochastic pole expansion method.
 ### Features
 ### Known Limitations
 ### Implementation
+
+See `src/spx.jl`.
+
 ### Tests
 """
 struct StochPXSolver <: AbstractSolver end
