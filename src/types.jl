@@ -277,11 +277,11 @@ abstract type AbstractSolver end
 It represents the analytic continuation solver that implements the
 maximum entropy method.
 
-This solver is **highly recommended.**
+This solver is **highly recommended**.
 
 ### Features
-* Both off-diagonal and diagonal Green's functions.
-* Both fermionic and bosonic correlators.
+* Both off-diagonal and diagonal Green's functions are supported.
+* Both fermionic and bosonic correlators are supported.
 * The spectral weights can be negative.
 * Good robustness with respect to noisy correlators.
 * Numerically stable.
@@ -309,12 +309,12 @@ struct MaxEntSolver <: AbstractSolver end
 It represents the analytic continuation solver that implements the
 barycentric rational function approximation method.
 
-This solver is **highly recommended.**
+This solver is **highly recommended**.
 
 ### Features
-* Both off-diagonal and diagonal Green's functions.
-* Both fermionic and bosonic correlators.
-* Both continuous and discrete spectra.
+* Both off-diagonal and diagonal Green's functions are supported.
+* Both fermionic and bosonic correlators are supported.
+* Both continuous and discrete spectra are supported.
 * The spectral weights can be negative.
 * Moderate robustness with respect to noisy correlators.
 * Numerically stable.
