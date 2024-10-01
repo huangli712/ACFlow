@@ -350,6 +350,12 @@ This solver is **not recommended**.
 * It is quite accurate if the input correlators are noise-free.
 
 ### Known Limitations
+* It is quite slow if Hardy basis optimization is activated.
+* It doesn't support bosonic correlators directly.
+* It doesn't support off-diagonal Green's functions.
+* It doesn't suit the noisy quantum Monte Carlo data.
+* It is numerically unstable.
+
 ### Implementation
 
 See `src/nac.jl`.
