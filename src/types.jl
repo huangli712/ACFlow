@@ -413,8 +413,24 @@ struct StochOMSolver <: AbstractSolver end
 It represents the analytic continuation solver that implements the
 stochastic pole expansion method.
 
+**This solver is highly recommended.**
+
 ### Features
+* Both off-diagonal and diagonal Green's functions.
+* Both fermionic and bosonic correlators.
+* Both continuous and discrete spectra.
+* The spectral weights can be negative.
+* Good robustness with respect to noisy correlators.
+* Numerically stable.
+* It can provide analytic expressions to approximate the correlators.
+* It is parallelized.
+
 ### Known Limitations
+* It is quite slow.
+* It is less accurate than the `BarRat` solver at most cases.
+* If the spectra are discrete, `a priori` knowledge is essential.
+* If the spectra exhibit negative weights, `a priori` knowledge is essential.
+
 ### Implementation
 
 See `src/spx.jl`.
