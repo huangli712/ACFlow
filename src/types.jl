@@ -340,6 +340,11 @@ struct BarRatSolver <: AbstractSolver end
 It represents the analytic continuation solver that implements the
 Nevanlinna analytical continuation (It doesn't support the analytic
 confinuations for matrix-valued Green's functions).
+
+### Features
+### Known Limitations
+### Implementation
+### Tests
 """
 struct NevanACSolver <: AbstractSolver end
 
@@ -348,6 +353,11 @@ struct NevanACSolver <: AbstractSolver end
 
 It represents the analytic continuation solver that implements the
 stochastic analytic continuation method (K. S. D. Beach's version).
+
+### Features
+### Known Limitations
+### Implementation
+### Tests
 """
 struct StochACSolver <: AbstractSolver end
 
@@ -356,6 +366,11 @@ struct StochACSolver <: AbstractSolver end
 
 It represents the analytic continuation solver that implements the
 stochastic analytic continuation method (A. W. Sandvik's version).
+
+### Features
+### Known Limitations
+### Implementation
+### Tests
 """
 struct StochSKSolver <: AbstractSolver end
 
@@ -364,6 +379,11 @@ struct StochSKSolver <: AbstractSolver end
 
 It represents the analytic continuation solver that implements the
 stochastic optimization method.
+
+### Features
+### Known Limitations
+### Implementation
+### Tests
 """
 struct StochOMSolver <: AbstractSolver end
 
@@ -372,6 +392,11 @@ struct StochOMSolver <: AbstractSolver end
 
 It represents the analytic continuation solver that implements the
 stochastic pole expansion method.
+
+### Features
+### Known Limitations
+### Implementation
+### Tests
 """
 struct StochPXSolver <: AbstractSolver end
 
