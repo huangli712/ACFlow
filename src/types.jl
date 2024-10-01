@@ -386,6 +386,7 @@ the `StochSK` solver.
 * Both continuous and discrete spectra are supported.
 * Both imaginary-time and Matsubara data are supported.
 * Good robustness with respect to noisy correlators.
+* It supports the constrained sampling algorithm.
 * Numerically stable.
 * It is parallelized.
 
@@ -421,6 +422,7 @@ the `StochAC` solver.
 * Both continuous and discrete spectra are supported.
 * Both imaginary-time and Matsubara data are supported.
 * Good robustness with respect to noisy correlators.
+* It supports the constrained sampling algorithm.
 * Numerically stable.
 * It is parallelized.
 
@@ -450,15 +452,16 @@ stochastic optimization method.
 This solver is **less recommended**.
 
 ### Features
-* Only diagonal Green's functions.
-* Both fermionic and bosonic correlators.
-* Only continuous spectra.
+* Only diagonal Green's functions are supported.
+* Both fermionic and bosonic correlators are supported.
+* Only continuous spectra are supported.
 * Good robustness with respect to noisy correlators.
+* It supports the constrained sampling algorithm.
 * Numerically stable.
 * It is parallelized.
 
 ### Known Limitations
-* It is very slow.
+* It is extremely slow.
 * It is less accurate than the `BarRat` solver at most cases.
 * It doesn't support off-diagonal Green's functions.
 * It doesn't support discrete spectra.
