@@ -474,7 +474,8 @@ This solver is **less recommended**.
 * It is extremely slow.
 * It is less accurate than the `BarRat` solver at most cases.
 * It doesn't support off-diagonal Green's functions.
-* It doesn't support discrete spectra.
+* It doesn't support negative spectral weights.
+* If there are multiple δ-like peaks, it is not good.
 
 ### Implementation
 
