@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/15
+# Last modified: 2024/10/01
 #
 
 """
@@ -70,7 +70,7 @@ see the comments in `nac.jl` about how to activate the built-in gradient
 function.
 =#
 
-using Zygote
+#using Zygote
 
 #=
 ### *Includes And Exports* : *global.jl*
@@ -250,6 +250,8 @@ input strings, etc.
 require       -> Check julia envirnoment.
 setup_args    -> Setup ARGS manually.
 query_args    -> Query program's arguments.
+trace_error   -> Write exceptions or errors to terminal or external file.
+catch_error   -> Catch the thrown exceptions or errors.
 welcome       -> Print welcome message.
 overview      -> Print runtime information of ACFlow.
 goodbye       -> Say goodbye.
@@ -269,6 +271,8 @@ export @pcs
 export require
 export setup_args
 export query_args
+export trace_error
+export catch_error
 export welcome
 export overview
 export goodbye
@@ -798,8 +802,9 @@ calc_htau      -> Calculate α-resolved h(τ).
 calc_alpha     -> Calculate α parameters.
 constraints    -> Limit the position of δ functions.
 #
-try_move_a     -> Try to change the weights of δ functions.
-try_move_p     -> Try to shift the positions of δ functions.
+try_move_s     -> Try to shift the position of single δ function.
+try_move_p     -> Try to shift the positions of two δ functions.
+try_move_a     -> Try to change the weights of two δ functions.
 try_move_x     -> Try to exchange configurations between two adjacent layers.
 ```
 =#
@@ -834,8 +839,9 @@ export calc_htau
 export calc_alpha
 export constraints
 #
-export try_move_a
+export try_move_s
 export try_move_p
+export try_move_a
 export try_move_x
 
 #=
