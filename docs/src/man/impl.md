@@ -63,7 +63,7 @@ Forty-eight tests and four tutorials are also shipped with the ACFlow toolkit. T
 
 !!! note
 
-    We also develop an individual package, namely `ACTest`, to benchmark various analytic continuation solvers / methods. Please check the following URL for more details:
+    We also develop an individual package, namely `ACTest`, to benchmark various analytic continuation solvers or methods. Please check the following URL for more details:
 
     ```text
     https://github.com/huangli712/ACTest
