@@ -171,8 +171,9 @@ calc_hamil
 calc_htau
 calc_alpha
 constraints(S::StochACSolver, fmesh::AbstractMesh)
-try_move_a(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+try_move_s(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 try_move_p(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
+try_move_a(i::I64, MC::StochACMC, SE::StochACElement, SC::StochACContext)
 try_move_x(MC::StochACMC, SE::StochACElement, SC::StochACContext)
 ```
 

@@ -38,6 +38,13 @@ setup_args
 query_args
 ```
 
+## Error Handler
+
+```@docs
+trace_error
+catch_error
+```
+
 ## Colorful Outputs
 
 ```@docs
