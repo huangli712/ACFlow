@@ -1,4 +1,4 @@
-# Input and output
+# Input and Output
 
 *Define input and output functions for the ACFlow toolkit.*
 
