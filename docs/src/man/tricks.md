@@ -1,4 +1,4 @@
-# [Tricks and tips](@id tricks)
+# [Tricks and Tips](@id tricks)
 
 *A comprehensive guide about how to perform reliable analytic continuation.*
 
