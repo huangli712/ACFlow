@@ -33,6 +33,8 @@ Depth = 3
 
 8. Employ the [`exclude`](@ref exclude) parameters to limit the distributions of random fields for the `StochAC`, `StochSK`, and `StochPX` solvers, if you have rough estimations about the band edges or band gaps in the spectra. Actually, we can use the constrained algorithm to determine the positions for these sharp features.
 
+---
+
 ## [MaxEnt solver](@id maxent)
 
 1. The `chi2kink` and `bryan` algorithms are recommended. See [`method`](@ref maxent_method).
@@ -42,6 +44,8 @@ Depth = 3
 3. Adjust the [`nalph`](@ref maxent_nalph), [`alpha`](@ref maxent_alpha), [`ratio`](@ref maxent_ratio) parameters to make sure that the ``\chi^2(\alpha)`` curve is reasonable. It means that the `default model region` and the `noise-fitting region` should exhibit similar lengths.
 
 4. If there is a `NaN` error, please decrease the [`nalph`](@ref maxent_nalph) parameter at first. And then you can increase the [`alpha`](@ref maxent_alpha) parameter. Of cource, a different scheme for determining optimal ``\alpha`` is also possible. See [`method`](@ref maxent_method).
+
+---
 
 ## [BarRat solver](@id barrat)
 
@@ -57,11 +61,15 @@ Depth = 3
 
 6. If the spectrum is discrete, the BarRat solver will output the positions of the poles. Please adjust the `pcut` parameter to control how many poles are kept. See [`pcut`](@ref barrat_pcut).
 
+---
+
 ## [NevanAC solver](@id nevanac)
 
 1. It is extremely sensitive to the noise. So please make sure that the input data is smooth and is free of noise.
 
 2. Actually, I think it is not suitable for quantum Monte Carlo data.
+
+---
 
 ## [StochAC solver](@id stochac)
 
@@ -71,6 +79,8 @@ Depth = 3
 
 3. Run it parallelly (use `Pacrun.jl`).
 
+---
+
 ## [StochSK solver](@id stochsk)
 
 1. The `chi2min` algorithm is recommended. See [`method`](@ref stochsk_method).
@@ -79,6 +89,8 @@ Depth = 3
 
 3. Run it parallelly (use `Pacrun.jl`).
 
+---
+
 ## [StochOM solver](@id stochom)
 
 1. It is more efficient for Matsubara frequency Green's functions.
@@ -86,6 +98,8 @@ Depth = 3
 2. Increase `ntry`, `nstep` and `nbox`. See [`ntry`](@ref stochom_ntry).
 
 3. Run it parallelly (use `Pacrun.jl`).
+
+---
 
 ## [StochPX solver](@id stochpx)
 
