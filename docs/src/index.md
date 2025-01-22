@@ -38,6 +38,8 @@ Pages = [
     "man/output.md",
     "man/param.md",
     "man/tricks.md",
+    "man/gui.md",
+    "man/test.md",
 ]
 Depth = 1
 ```
