@@ -1296,7 +1296,7 @@ Depth = 3
 
 *Definition:*
 
-> Number of points of a very fine linear mesh. This mesh is for the poles.
+> Number of grid points for a very fine mesh. This mesh is for the poles.
 
 *Type:*
 
