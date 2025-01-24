@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/10/01
+# Last modified: 2025/01/24
 #
 
 #=
@@ -239,7 +239,7 @@ the stochastic pole expansion method.
 """
 const PStochPX = Dict{String,ADT}(
     "method"  => [missing, 1, :String, "How to evaluate the final spectral density"],
-    "nfine"   => [missing, 1, :I64   , "Number of points of a very fine linear mesh"],
+    "nfine"   => [missing, 1, :I64   , "Number of grid points for a very fine mesh"],
     "npole"   => [missing, 1, :I64   , "Number of poles"],
     "ntry"    => [missing, 1, :I64   , "Number of attempts (tries) to seek the solution"],
     "nstep"   => [missing, 1, :I64   , "Number of Monte Carlo steps per attempt / try"],
