@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/01/24
+# Last modified: 2025/02/18
 #
 
 #=
@@ -83,7 +83,7 @@ the maximum entropy method.
 """
 const PMaxEnt  = Dict{String,ADT}(
     "method"  => [missing, 1, :String, "How to determine the optimized α parameter"],
-    "stype"   => [missing, 1, :String, "Type of the entropy term"],
+    "stype"   => [missing, 1, :String, "Type of the entropic term"],
     "nalph"   => [missing, 1, :I64   , "Total number of the chosen α parameters"],
     "alpha"   => [missing, 1, :F64   , "Starting value for the α parameter"],
     "ratio"   => [missing, 1, :F64   , "Scaling factor for the α parameter"],
