@@ -40,4 +40,4 @@
 
 **Barycentric rational function approximation**
 
-[1] Li Huang, Changming Yue, Barycentric rational function approximation made simple: A fast analytic continuation method for Matsubara Green's functions, *arXiv*:2412.18813 (2024).
+[1] Li Huang, Changming Yue, Barycentric rational function approximation made simple: A fast analytic continuation method for Matsubara Green's functions, *Phys. Rev. B* **111**, 125139 (2025).

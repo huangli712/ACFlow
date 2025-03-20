@@ -10,4 +10,4 @@ Please cite the following papers:
 
 **[3]** Li Huang, Shuang Liang, Reconstructing lattice QCD spectral functions with stochastic pole expansion and Nevanlinna analytic continuation, *Phys. Rev. D* **109**, 054508 (2024).
 
-**[4]** Li Huang, Changming Yue, Barycentric rational function approximation made simple: A fast analytic continuation method for Matsubara Green's functions, *arXiv*:2412.18813 (2024).
+**[4]** Li Huang, Changming Yue, Barycentric rational function approximation made simple: A fast analytic continuation method for Matsubara Green's functions, *Phys. Rev. B* **111**, 125139 (2025).
