@@ -77,7 +77,7 @@ Depth = 3
 
 2. Perhaps more ``\alpha`` could help. See [`nalph`](@ref stochac_nalph).
 
-3. Run it parallelly (use `Pacrun.jl`).
+3. Run it parallelly (use `util/acprun.jl`).
 
 ---
 
@@ -87,7 +87,7 @@ Depth = 3
 
 2. Increase `nfine` and `nstep`. See [`nfine`](@ref stochsk_nfine).
 
-3. Run it parallelly (use `Pacrun.jl`).
+3. Run it parallelly (use `util/acprun.jl`).
 
 ---
 
@@ -97,7 +97,7 @@ Depth = 3
 
 2. Increase `ntry`, `nstep` and `nbox`. See [`ntry`](@ref stochom_ntry).
 
-3. Run it parallelly (use `Pacrun.jl`).
+3. Run it parallelly (use `util/acprun.jl`).
 
 ---
 
@@ -105,7 +105,7 @@ Depth = 3
 
 1. If the spectrum is expected to be broad, please set `method = 'mean'`. If the spectrum is expected to be ``\delta``-like, please set `method = 'best'`. See [`method`](@ref stochpx_method).
 
-2. Run it parallelly (use `Pacrun.jl`).
+2. Run it parallelly (use `util/acprun.jl`).
 
 3. Increase `ntry` to get smooth spectrum. See [`ntry`](@ref stochpx_ntry).
 
