@@ -39,7 +39,7 @@ Depth = 3
 
 1. The `chi2kink` and `bryan` algorithms are recommended. See [`method`](@ref maxent_method).
 
-2. The Shannon-Jaynes entropy is recommented. But sometimes, if sharp features are essential, please choose the Bayesian Reconstruction entropy. See [`stype`](@ref maxent_stype).
+2. The Shannon-Jaynes entropy is recommented. But sometimes, if sharp features are essential, please choose the bayesian reconstruction entropy. See [`stype`](@ref maxent_stype).
 
 3. Adjust the [`nalph`](@ref maxent_nalph), [`alpha`](@ref maxent_alpha), [`ratio`](@ref maxent_ratio) parameters to make sure that the ``\chi^2(\alpha)`` curve is reasonable. It means that the `default model region` and the `noise-fitting region` should exhibit similar lengths.
 
@@ -126,3 +126,5 @@ Depth = 3
 8. If you want to obtain a smoother spectrum, please increase `eta`, or else reduce `eta`. See [`eta`](@ref stochpx_eta).
 
 9. If the spectrum contains many sharp features, the `constrained sampling algorithm` and `self-adaptive sampling algorithm` can help. See [`constrained sampling algorithm`](@ref stochpx_csa) and [`self-adaptive sampling algorithm`](@ref stochpx_ssa) for the basic principles.
+
+10. If you only want to change the `method` and `eta` parameters, it is not necessary to launch the StochPX solver again. The script `util/ppole.jl` could help.
