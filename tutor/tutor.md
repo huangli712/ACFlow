@@ -13,6 +13,7 @@
 
 * **T02**
     * Fermionic + Matsubara
+    * Green's function
     * StochOM solver
     * Flat model
     * Linear mesh
