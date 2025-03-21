@@ -35,7 +35,7 @@ Just as their names suggested, the `MaxEnt` solver implements the maximum entrop
 
 **Table 1 |** Major features of the ACFlow toolkit. `MaxEnt`, `BarRat`, `NevanAC`, `StochAC`, `StochSK`, `StochOM`, and `StochPX` are the seven analytic continuation solvers as implemented in this toolkit.
 
-In **Table 1**, `Y` means yes while `N` means no. `Interactive mode`, `Script mode`, and `Standard model` are three running modes supported by the ACFlow toolkit. We will introduce them later. The `MaxEnt` solver supports the `historic`, `classic`, `bryan`, and `chi2kink` algorithms to determine the ``\alpha`` parameter. The `StochAC` solver is only compatible with a flat model function, while the `BarRat`, `NevanAC`, `StochSK`, `StochOM`, and `StochPX` solvers don't rely on any default model functions.
+In **Table 1**, `Y` means yes while `N` means no. `Interactive mode`, `Script mode`, and `Standard model` are three running modes supported by the ACFlow toolkit. We will introduce them later. The `MaxEnt` solver supports the `historic`, `classic`, `bryan`, and `chi2kink` algorithms to determine the ``\alpha`` parameter. The `StochAC` solver is only compatible with a flat model function, while the `BarRat`, `NevanAC`, `StochSK`, `StochOM`, and `StochPX` solvers don't rely on any default model functions. For the `StochAC` and `StochPX` solvers, they can refine the nonlinear mesh for parameterization of ``\delta``-like peaks or poles, according to the spectral function generated in any previous runs or by some `a prioir` information. This is the so-called `self-adaptive parameteration`.
 
 !!! info
 
