@@ -15,7 +15,6 @@ makedocs(
         size_threshold = 409600, # 400kb
         assets = ["assets/acflow.css"],
     ),
-    #format = Documenter.LaTeX(platform = "none"),
     remotes = nothing,
     modules = [ACFlow],
     pages = [
