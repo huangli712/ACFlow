@@ -79,6 +79,8 @@ Depth = 3
 
 3. Run it parallelly (use `util/acprun.jl`).
 
+4. It supports both the `constrained sampling algorithm` and `self-adaptive sampling algorithm`.
+
 ---
 
 ## [StochSK solver](@id stochsk)
@@ -89,6 +91,8 @@ Depth = 3
 
 3. Run it parallelly (use `util/acprun.jl`).
 
+4. It supports the `constrained sampling algorithm`.
+
 ---
 
 ## [StochOM solver](@id stochom)
@@ -98,6 +102,8 @@ Depth = 3
 2. Increase `ntry`, `nstep` and `nbox`. See [`ntry`](@ref stochom_ntry).
 
 3. Run it parallelly (use `util/acprun.jl`).
+
+4. It supports the `constrained sampling algorithm`.
 
 ---
 
