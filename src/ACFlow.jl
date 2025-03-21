@@ -663,8 +663,8 @@ prony_omega     -> Evaluate Ωₚ for Prony approximation.
 BarRatContext   -> Essential struct for the BarRat solver.
 #
 solve           -> Wrapper function for the BarRat solver.
-init            -> Initialize barycentric rational function simulation.
-run             -> Perform barycentric rational function simulation.
+init            -> Initialize barycentric rational function approximation.
+run             -> Perform barycentric rational function approximation.
 last            -> Postprocess the calculated results and write them.
 poles!          -> Get pole representation for the Matsubara Green's function.
 ```
