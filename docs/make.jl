@@ -14,6 +14,7 @@ makedocs(
         repolink = "https://github.com/huangli712/ACFlow",
         size_threshold = 409600, # 400kb
         assets = ["assets/acflow.css"],
+        collapselevel = 1,
     ),
     remotes = nothing,
     modules = [ACFlow],
