@@ -31,7 +31,7 @@ Depth = 3
 
 7. Employ the [`pmesh`](@ref pmesh) and [`mesh`](@ref mesh) parameters to customize the real-frequency mesh if you know the positions for the sharp features in the spectra.
 
-8. Employ the [`exclude`](@ref exclude) parameters to limit the distributions of random fields for the `StochAC`, `StochSK`, and `StochPX` solvers, if you have rough estimations about the band edges or band gaps in the spectra. Actually, we can use the constrained algorithm to determine the positions for these sharp features.
+8. Employ the [`exclude`](@ref exclude) parameters to limit the distributions of random fields for the `StochAC`, `StochSK`, `StochOM` and `StochPX` solvers, if you have rough estimations about the band edges or band gaps in the spectra. Actually, we can use the constrained algorithm to determine the positions for these sharp features.
 
 ---
 
