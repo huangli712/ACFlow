@@ -6,7 +6,7 @@ This toolkit is currently under developement. **PLEASE USE IT AT YOUR OWN RISK!*
 
 ## Version
 
-v2.1.1-devel.241001
+v2.1.2-devel.250321
 
 ## License
 
@@ -14,4 +14,6 @@ GNU General Public License Version 3
 
 ## Documentation
 
-See `acflow/docs`.
+Source: See `acflow/docs`.
+
+Online: https://huangli712.github.io/projects/acflow/index.html
