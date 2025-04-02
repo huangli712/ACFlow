@@ -1,5 +1,7 @@
 #!/usr/bin/env julia
 
+haskey(ENV,"ACFLOW_PATH") && pushfirst!(LOAD_PATH, ENV["ACFLOW_PATH"])
+
 using Printf
 using ACFlow
 
