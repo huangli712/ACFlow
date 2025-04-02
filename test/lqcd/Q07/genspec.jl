@@ -13,6 +13,8 @@
 # (2) Try to create a nonlinear mesh by `../../../util/gmesh.jl ac.toml`
 #
 
+haskey(ENV,"ACFLOW_PATH") && pushfirst!(LOAD_PATH, ENV["ACFLOW_PATH"])
+
 using Random
 using Printf
 using ACFlow

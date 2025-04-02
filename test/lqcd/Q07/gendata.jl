@@ -10,6 +10,8 @@
 # Araw.inp -> T = 201 MeV (Fig. 7)
 #
 
+haskey(ENV,"ACFLOW_PATH") && pushfirst!(LOAD_PATH, ENV["ACFLOW_PATH"])
+
 using DelimitedFiles
 using Random
 using Printf

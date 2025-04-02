@@ -5,6 +5,8 @@
 # Resonance peak + Continuum spectral function
 #
 
+haskey(ENV,"ACFLOW_PATH") && pushfirst!(LOAD_PATH, ENV["ACFLOW_PATH"])
+
 using Random
 using Printf
 using ACFlow
