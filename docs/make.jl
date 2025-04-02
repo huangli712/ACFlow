@@ -1,4 +1,4 @@
-push!(LOAD_PATH, "../src")
+haskey(ENV,"ACFLOW_PATH") && pushfirst!(LOAD_PATH, ENV["ACFLOW_PATH"])
 
 using Documenter
 using Random
