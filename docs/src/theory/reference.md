@@ -8,11 +8,23 @@
 
 ---
 
+**Barycentric rational function approximation**
+
+[1] Li Huang, Changming Yue, Barycentric rational function approximation made simple: A fast analytic continuation method for Matsubara Green's functions, *Phys. Rev. B* **111**, 125139 (2025).
+
+---
+
+**Nevanlinna analytical continuation**
+
+[1] Jiani Fei, Chia-Nan Yeh, and Emanuel Gull, Nevanlinna Analytical Continuation, *Phys. Rev. Lett.* **126**, 056402 (2021).
+
+---
+
 **Stochastic analytic continuation**
 
 [1] A. W. Sandvik, Stochastic method for analytic continuation of quantum monte carlo data, *Phys. Rev. B* **57**, 10287 (1998)
 
-[2] K. S. D. Beach, Identifying the maximum entropy method as a special limit of stochastic analytic continuation, *arXiv:0403055* (2004).
+[2] K. S. D. Beach, Identifying the maximum entropy method as a special limit of stochastic analytic continuation, *arXiv:cond-mat/0403055* (2004).
 
 [3] A. W. Sandvik, Constrained sampling method for analytic continuation, *Phys. Rev. E* **94**, 063308 (2016).
 
@@ -35,9 +47,3 @@
 [1] Li Huang, Shuang Liang, Stochastic pole expansion method for analytic continuation of the Green's function, *Phys. Rev. B* **108**, 235143 (2023).
 
 [2] Li Huang, Shuang Liang, Reconstructing lattice QCD spectral functions with stochastic pole expansion and Nevanlinna analytic continuation, *Phys. Rev. D* **109**, 054508 (2024).
-
----
-
-**Barycentric rational function approximation**
-
-[1] Li Huang, Changming Yue, Barycentric rational function approximation made simple: A fast analytic continuation method for Matsubara Green's functions, *Phys. Rev. B* **111**, 125139 (2025).
