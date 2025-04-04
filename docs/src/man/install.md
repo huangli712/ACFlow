@@ -32,10 +32,33 @@ julia> Pkg.add(url = "https://github.com/huangli712/ACFlow")
 
 So the second step is optional. Furthermore, if the installed ACFlow toolkit is outdated, the users can use the following commands to upgrade ACFlow:
 
-```julia-repl
+```julia
 julia> using Pkg
 julia> Pkg.update("ACFlow")
 ```
+
+!!! note
+
+    How to verify whether the installation is successful? Please input the following codes in Julia's REPL:
+
+    ```julia-repl
+    julia> using ACFlow
+    ACFlow > Loading...
+    ACFlow > Well, ACFlow is compiled and loaded (214 functions).
+    ACFlow > We are ready to go!
+
+
+    julia> welcome()
+    ╔═╗╔═╗╔═╗┬  ┌─┐┬ ┬
+    ╠═╣║  ╠╣ │  │ ││││
+    ╩ ╩╚═╝╚  ┴─┘└─┘└┴┘
+    A Modern Toolkit for Analytical Continuation Problems
+    Package: ACFlow
+    Version: 2.1.4-devel.250405
+    Release: 2025/04
+
+
+    ```
 
 Finally, in order to generate the documentation, please type the following commands in the terminal:
 
