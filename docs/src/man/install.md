@@ -82,7 +82,7 @@ After a few seconds, the documentation is built and saved in the `acflow/docs/bu
     And then plug the following code in front of your Julia's scripts:
 
     ```julia
-    push!(LOAD_PATH, ENV["ACFLOW_HOME"])
+    haskey(ENV,"ACFLOW_HOME") && pushfirst!(LOAD_PATH, ENV["ACFLOW_HOME"])
     ```
 
     Or else Julia won't find the ACFlow package.
@@ -107,3 +107,7 @@ After a few seconds, the documentation is built and saved in the `acflow/docs/bu
     ```
 
     Note that `gradient_via_fd()` is based on the finite difference method, which is much slower and less accurate than the automatic differentiation approach. It is implemented in the `math.jl`.
+
+!!! note
+
+    If Julia fails to load the ACFlow package, please make sure: (1) it is correctly installed via `Pkg.add()`. (2) or the `ACFLOW_HOME` variable is corrected set and is put into `LOAD_PATH`.
