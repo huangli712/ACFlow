@@ -68,12 +68,12 @@ After a few seconds, the documentation is built and saved in the `acflow/docs/bu
 
     After v1.8.0, the ACFlow toolkit relies on the `Zygote.jl` package to calculate gradient. The Zygota.jl package adopts the automatic differentiation approach, which is more efficient than the finite difference method. If the users have trouble in installing the Zygote.jl package, we provide an internal function to bypass it.
 
-    Firstly, please disable Zygote in `ACFlow.jl`.
+    Firstly, please disable Zygote in `ACFlow.jl` (about line 73).
     ```julia
     # using Zygote
     ```
 
-    Secondly, fix `𝐽!(J::Vector{C64}, x::Vector{C64})` in `nac.jl`.
+    Secondly, fix `𝐽!(J::Vector{C64}, x::Vector{C64})` in `nac.jl` (about line 844).
     ```julia
     function 𝐽!(J::Vector{C64}, x::Vector{C64})
         #J .= Zygote.gradient(𝑓, x)[1]
