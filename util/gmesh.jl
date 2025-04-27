@@ -8,6 +8,9 @@
 # fine structure of the spectrum automatically. This script will launch
 # only 1 process.
 #
+# The `Aout.data` file could be generated manually, or collected from
+# previously analytic continuation calculations.
+#
 # Usage:
 #
 #     $ gmesh.jl ac.toml
