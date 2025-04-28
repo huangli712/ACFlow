@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/10/01
+# Last modified: 2025/04/28
 #
 
 #=
@@ -419,7 +419,7 @@ Convert a string (AbstractString) to a string array.
 * str -> A String.
 
 ### Returns
-* ass -> An array of String.
+* arr -> An array of String.
 
 ### Examples
 ```julia-repl
