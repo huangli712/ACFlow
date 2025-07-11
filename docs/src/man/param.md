@@ -361,7 +361,7 @@ Depth = 3
 
 !!! warning
 
-    Now only the `MaxEnt` and `StochPX` solvers supports this parameter. On the other hand, the `MaxEntAux` algorithm works always for the solvers that don't support this parameter. The `BarRat` solver support analytic continuations for off-diagonal Green's functions, but it will ignore this parameter.
+    Now only the `MaxEnt` and `StochPX` solvers supports this parameter. On the other hand, the `auxiliary Green's function` algorithm works always for the solvers that don't support this parameter. The `BarRat` solver support analytic continuations for off-diagonal Green's functions, but it will ignore this parameter.
 
 ### [fwrite](@id fwrite)
 
