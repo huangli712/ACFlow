@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/30
+# Last modified: 2025/07/17
 #
 
 #=
@@ -460,11 +460,11 @@ function warmup(MC::StochACMC, SE::StochACElement, SC::StochACContext)
     end
 
     # Reset the counters
-    fill!(MC.Macc, 0.0)
-    fill!(MC.Mtry, 0.0)
+    fill!(MC.Macc, 0)
+    fill!(MC.Mtry, 0)
 
-    fill!(MC.Sacc, 0.0)
-    fill!(MC.Stry, 0.0)
+    fill!(MC.Sacc, 0)
+    fill!(MC.Stry, 0)
 end
 
 """
@@ -577,10 +577,10 @@ function init_mc(S::StochACSolver)
     seed = rand(1:100000000)
     rng = MersenneTwister(seed)
     #
-    Macc = zeros(F64, nalph)
-    Mtry = zeros(F64, nalph)
-    Sacc = zeros(F64, nalph)
-    Stry = zeros(F64, nalph)
+    Macc = zeros(I64, nalph)
+    Mtry = zeros(I64, nalph)
+    Sacc = zeros(I64, nalph)
+    Stry = zeros(I64, nalph)
     #
     MC = StochACMC(rng, Macc, Mtry, Sacc, Stry)
 
