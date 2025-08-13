@@ -1368,7 +1368,8 @@ function calc_bayes(
     end
     Λ = (T * T') .* mec.hess
 
-    λ = eigvals(Hermitian(Λ))
+    nsvd = size(mec.Vₛ, 2)
+    λ = eigvals(Hermitian(Λ))[end - nsvd + 1 : end]
     filter!(x -> x > 0.0, λ)
     ng = -2.0 * α * S
     tr = sum(λ ./ (α .+ λ))
@@ -1430,7 +1431,8 @@ function calc_bayes_od(
     end
     Λ = (T * T') .* mec.hess
 
-    λ = eigvals(Hermitian(Λ))
+    nsvd = size(mec.Vₛ, 2)
+    λ = eigvals(Hermitian(Λ))[end - nsvd + 1 : end]
     filter!(x -> x > 0.0, λ)
     ng = -2.0 * α * S
     tr = sum(λ ./ (α .+ λ))
