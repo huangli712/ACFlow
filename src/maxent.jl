@@ -703,6 +703,7 @@ function precompute(
 
     # Compute the Hessian matrix
     @einsum hess[i,j] = Δ[i] * Δ[j] * K[k,i] * K[k,j] * σ²[k]
+    hess = (hess + hess') / 2.0
 
     return V, W₂, W₃, Bₘ, hess
 end
@@ -1368,6 +1369,7 @@ function calc_bayes(
     Λ = (T * T') .* mec.hess
 
     λ = eigvals(Hermitian(Λ))
+    filter!(x -> x > 0.0, λ)
     ng = -2.0 * α * S
     tr = sum(λ ./ (α .+ λ))
     conv = tr / ng
@@ -1429,6 +1431,7 @@ function calc_bayes_od(
     Λ = (T * T') .* mec.hess
 
     λ = eigvals(Hermitian(Λ))
+    filter!(x -> x > 0.0, λ)
     ng = -2.0 * α * S
     tr = sum(λ ./ (α .+ λ))
     conv = tr / ng
