@@ -6,7 +6,7 @@ This toolkit is currently under developement. **PLEASE USE IT AT YOUR OWN RISK!*
 
 ## Version
 
-v2.1.6-devel.250717
+v2.1.7-devel.250818
 
 ## License
 
