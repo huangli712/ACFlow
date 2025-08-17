@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/30
+# Last modified: 2025/08/18
 #
 
 #=
@@ -703,7 +703,7 @@ function precompute(
 
     # Compute the Hessian matrix
     @einsum hess[i,j] = Δ[i] * Δ[j] * K[k,i] * K[k,j] * σ²[k]
-    hess = (hess + hess') / 2.0
+    @. hess = (hess + hess') / 2.0
 
     return V, W₂, W₃, Bₘ, hess
 end
