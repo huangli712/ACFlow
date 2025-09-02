@@ -6,11 +6,11 @@
 
 ![gui1.png](../assets/gui1.png)
 
-**Figure 1 |** The `ACFlow` window 1 in the ZenGui app.
+**Figure 1 |** The `ACFlow` window 1 in the ZenGui app. We should setup the [[BASE] Block](@ref base_block) here.
 
 ![gui2.png](../assets/gui2.png)
 
-**Figure 2 |** The `ACFlow` window 2 in the ZenGui app.
+**Figure 2 |** The `ACFlow` window 2 in the ZenGui app. We should setup the analytic continuation solver selected here.
 
 !!! note
 

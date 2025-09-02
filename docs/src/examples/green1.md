@@ -47,7 +47,7 @@ wbox  = 0.02
 norm  = -1.0
 ```
 
-Then we use the `acrun.jl` or `acprun.jl` script to perform analytic continuation simulation. The calculated results are shown in **Fig.1**. As is seen in **Fig.1(a)**, both the sharp peak around 0.5 eV and the broad peak around -2.5 eV are correctly reproduced by the `StochOM` solver. In **Fig.1(b)**, the reconstructed Matsubara Green's function agrees quite well with the raw input data.
+Then we use the `acrun.jl` or `acprun.jl` script to perform analytic continuation simulation. The calculated results are shown in **Figure 1**. As is seen in **Figure 1(a)**, both the sharp peak around 0.5 eV and the broad peak around -2.5 eV are correctly reproduced by the `StochOM` solver. In **Figure 1(b)**, the reconstructed Matsubara Green's function agrees quite well with the raw input data.
 
 ![T_E2.png](../assets/T_E2.png)
 

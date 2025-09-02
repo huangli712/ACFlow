@@ -60,6 +60,8 @@ julia> Pkg.update("ACFlow")
 
     ```
 
+    If the `welcome()` function works correctly, it means that the ACFlow package is installed successfully.
+
 Finally, in order to generate the documentation, please type the following commands in the terminal:
 
 ```shell
@@ -110,4 +112,4 @@ After a few seconds, the documentation is built and saved in the `acflow/docs/bu
 
 !!! note
 
-    If Julia fails to load the ACFlow package, please make sure: (1) it is correctly installed via `Pkg.add()`. (2) or the `ACFLOW_HOME` variable is corrected set and is put into `LOAD_PATH`.
+    If Julia fails to load the ACFlow package, please make sure: (1) it is correctly installed via `Pkg.add()`. (2) or the `ACFLOW_HOME` environment variable is correctly set and is put into `LOAD_PATH`.
