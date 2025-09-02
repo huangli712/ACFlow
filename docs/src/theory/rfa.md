@@ -40,3 +40,7 @@ for all ``0 \le k \le 2N``.
 ## Relevant parameters
 
 See [[BarRat] Block](@ref barrat_block)
+
+## References
+
+**[1]** Li Huang, Changming Yue, Barycentric rational function approximation made simple: A fast analytic continuation method for Matsubara Green's functions, *Phys. Rev. B* **111**, 125139 (2025).

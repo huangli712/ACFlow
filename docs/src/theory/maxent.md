@@ -117,3 +117,9 @@ where ``a``, ``b``, ``c``, and ``d`` are fitting parameters. Then the optimal ``
 ## Relevant parameters
 
 See [[MaxEnt] Block](@ref maxent_block)
+
+## References
+
+**[1]** M. Jarrell and J. E. Gubernatis, Bayesian inference and the analytic continuation of imaginary-time quantum Monte Carlo data, *Phys. Rep.* **269**, 133 (1996).
+
+**[2]** D. Bergeron and A.-M. S. Tremblay, Algorithms for optimized maximum entropy and diagnostic tools for analytic continuation, *Phys. Rev. E* **94**, 023303 (2016).

@@ -41,3 +41,13 @@ where ``c`` is a constant of order 1, ``\chi^{2}_{\text{min}}`` is the minimum v
 ## Relevant parameters
 
 See [[StochSK] Block](@ref stochsk_block)
+
+## References
+
+**[1]** A. W. Sandvik, Stochastic method for analytic continuation of quantum Monte Carlo data, *Phys. Rev. B* **57**, 10287 (1998)
+
+**[2]** A. W. Sandvik, Constrained sampling method for analytic continuation, *Phys. Rev. E* **94**, 063308 (2016).
+
+**[3]** H. Shao, Y. Q. Qin, S. Capponi, S. Chesi, Z. Y. Meng, A. W. Sandvik, Nearly Deconfined Spinon Excitations in the Square-Lattice Spin-1/2 Heisenberg Antiferromagnet, *Phys. Rev. X* **7**, 041072 (2017).
+
+**[4]** H. Shao, A. W. Sandvik, Progress on stochastic analytic continuation of quantum Monte Carlo data, *Phys. Rep.* **1003**, 1 (2023).

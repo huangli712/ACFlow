@@ -71,3 +71,9 @@ where ``\lambda_i`` is a linear mesh in ``[\phi(\omega_{\text{min}}),\phi(\omega
 ## Relevant parameters
 
 See [[StochPX] Block](@ref stochpx_block)
+
+## References
+
+**[1]** Li Huang, Shuang Liang, Stochastic pole expansion method for analytic continuation of the Green's function, *Phys. Rev. B* **108**, 235143 (2023).
+
+**[2]** Li Huang, Shuang Liang, Reconstructing lattice QCD spectral functions with stochastic pole expansion and Nevanlinna analytic continuation, *Phys. Rev. D* **109**, 054508 (2024).

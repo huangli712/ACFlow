@@ -192,3 +192,7 @@ The weight of the candidate spectral function ``A`` is given by the likelihood f
 ## Relevant parameters
 
 See [[StochAC] Block](@ref stochac_block)
+
+## References
+
+**[1]** K. S. D. Beach, Identifying the maximum entropy method as a special limit of stochastic analytic continuation, *arXiv:cond-mat/0403055* (2004).

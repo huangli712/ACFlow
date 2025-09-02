@@ -86,3 +86,7 @@ one can perform analytic continuation for ``\tilde{G}(i\nu_n)`` via the standard
 ## Relevant parameters
 
 See [[NevanAC] Block](@ref nevanac_block)
+
+## References
+
+**[1]** Jiani Fei, Chia-Nan Yeh, and Emanuel Gull, Nevanlinna Analytical Continuation, *Phys. Rev. Lett.* **126**, 056402 (2021).
