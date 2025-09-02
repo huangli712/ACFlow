@@ -648,7 +648,7 @@ Depth = 3
 
 > This parameter is mandatory. But it is only useful when `denoise` is not "none". See [`denoise`](@ref barrat_denoise) for more details.
 >
-> `epsilon` should be set to the noise level of the input Matsubara data. It should not be too small or too large. In principle, `` \sigma[1] < \rm{epsilon} < \sigma[\rm{end}]``, where ``\sigma`` are the singular values.
+> `epsilon` should be set to the noise level of the input Matsubara data. It should not be too small or too large. In principle, `` \sigma[1] < \textrm{epsilon} < \sigma[\textrm{end}]``, where ``\sigma`` are the singular values.
 
 ### [pcut](@id barrat_pcut)
 
