@@ -16,7 +16,7 @@ just to name a few. We note that the maximum entropy method has dominated this f
 
 ## ACFlow
 
-In order to fill in this gap, we would like to present a new open source toolkit, called ACFlow, for analytic continuation. This toolkit implements three primary analytic continuation methods, namely the
+In order to fill in this gap, we would like to present a new open source toolkit, called **ACFlow**, for analytic continuation. This toolkit implements three primary analytic continuation methods, namely the
 
 * Maximum entropy method
 * Stochastic analytic continuation
