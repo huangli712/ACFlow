@@ -1,4 +1,4 @@
-Please cite the following papers:
+Please cite the following papers.
 
 **For the ACFlow toolkit:**
 

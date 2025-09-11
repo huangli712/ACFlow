@@ -8,15 +8,15 @@ makedocs(
     sitename = "ACFlow",
     clean = false,
     authors = "Li Huang <huangli@caep.cn> and contributors",
-    format = Documenter.HTML(
-        prettyurls = false,
-        ansicolor = true,
-        repolink = "https://github.com/huangli712/ACFlow",
-        size_threshold = 409600, # 400kb
-        assets = ["assets/acflow.css"],
-        collapselevel = 1,
-    ),
-    #format = Documenter.LaTeX(platform = "none"),
+    #format = Documenter.HTML(
+    #    prettyurls = false,
+    #    ansicolor = true,
+    #    repolink = "https://github.com/huangli712/ACFlow",
+    #    size_threshold = 409600, # 400kb
+    #    assets = ["assets/acflow.css"],
+    #    collapselevel = 1,
+    #),
+    format = Documenter.LaTeX(platform = "none"),
     remotes = nothing,
     modules = [ACFlow],
     pages = [

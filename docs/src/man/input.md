@@ -1,5 +1,3 @@
-# Input Files
-
 The input files for the ACFlow toolkit can be divided into two groups: data files and configuration files.
 
 ## Data Files

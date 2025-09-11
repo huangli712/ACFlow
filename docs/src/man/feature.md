@@ -1,5 +1,3 @@
-# Main Features
-
 Now the ACFlow toolkit supports six analytic continuation methods as introduced before. It includes seven different analytic continuation solvers, namely
 
 * `MaxEnt`

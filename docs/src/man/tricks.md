@@ -1,4 +1,4 @@
-# [Tricks and Tips](@id tricks)
+## [Analytic Continuation Is An Art](@id tricks)
 
 *A comprehensive guide about how to perform reliable analytic continuation.*
 
@@ -7,13 +7,6 @@ As is well-known, analytic continuation is a tedious, tricky, and complicated jo
 !!! warning
 
     The following tricks and tips are **MY** personal viewpoints or experiences. They are not general rules. They might be wrong or ineffective or useless for some cases. They are definitely not suitable for the other analytic continuation codes.
-
-## Contents
-
-```@contents
-Pages = ["tricks.md"]
-Depth = 3
-```
 
 ## [General rules](@id general)
 

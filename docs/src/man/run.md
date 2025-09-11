@@ -1,5 +1,3 @@
-# Running Modes
-
 The ACFlow toolkit is designed to be flexible and easy-to-use. It provides three running modes to facilitate analytic continuation calculations, namely the interactive, script, and standard modes.
 
 ## Interactive Mode

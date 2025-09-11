@@ -1,4 +1,4 @@
-# [Installation](@id install)
+## [Quick Installation](@id install)
 
 It is an easy task to install the ACFlow toolkit.
 
