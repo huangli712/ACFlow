@@ -1,5 +1,3 @@
-# Motivation
-
 In recent years, quite a few analytic continuation codes have been released, including
 
 * maxent (by Mark Jarrell)
