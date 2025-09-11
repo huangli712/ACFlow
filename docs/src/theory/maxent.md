@@ -4,73 +4,53 @@ Perhaps the maximum entropy method is the most frequently used approach for anal
 
 Bayes's theorem is the cornerstone of the maximum entropy method. Given two events ``a`` and ``b``, Bayes's theorem says:
 ```math
-\begin{align}
 P[a|b]P[b] = P[b|a]P[a],
-\end{align}
 ```
 where ``P[a]`` is the probability of event ``a``, ``P[a|b]`` is the conditional probability of event ``a`` with given event ``b``. In the scenario of analytic continuation problem, ``\bar{G}(\tau)`` and ``A(\omega)`` are treated as two events, where ``\bar{G}(\tau)`` denotes the measured value of ``G(\tau)``. So the best solution for ``A(\omega)`` is of course the one that maximizes ``P[A|\bar{G}]``, which is called the posterior probability. According to the Bayes's theorem, we get
 ```math
-\begin{align}
 P[A|\bar{G}] = \frac{P[\bar{G}|A]P[A]}{P[\bar{G}]},
-\end{align}
 ```
 where ``P[\bar{G}|A]`` is the likelihood function, ``P[A]`` is the prior probability, and ``P[\bar{G}]`` is the evidence. Since the evidence is a normalization constant depending on the prior probability and the likelihood function only, it is ignored in the following discussions. Thus,
 ```math
-\begin{align}
 P[A|\bar{G}] \propto P[\bar{G}|A]P[A].
-\end{align}
 ```
 
 ## Posterior Probability
 
 In the maximum entropy method, the likelihood function ``P[\bar{G}|A]`` is assumed to be in direct proportion to ``e^{-\chi^2/2}``. ``\chi^2`` is named as goodness-of-fit function, which measures distance between ``\bar{G}(\tau)`` and reconstructed imaginary time Green's function ``\tilde{G}(\tau)``:
 ```math
-\begin{align}
 \chi^2 = \sum^{L}_{i = 1} \left[\frac{\bar{G}_i(\tau) - \tilde{G}_i(\tau)}{\sigma_i}\right]^2,
-\end{align}
 ```
 ```math
-\begin{align}
 \tilde{G}_i = \sum_j K_{ij} A_j.
-\end{align}
 ```
 Here, ``L`` is number of imaginary time points, ``\sigma`` denotes the error bar (standard deviation) of ``\bar{G}(\tau)``. ``K_{ij}`` and ``A_j`` are discrete kernel and spectral functions, respectively. On the other hand, the prior probability ``P[A]`` is supposed to be in direct proportion to ``e^{\alpha S}``, where ``\alpha`` is a regulation parameter and ``S`` means entropy. Sometimes ``S`` is also known as the Kullback-Leibler distance (or the Shannon-Jaynes entropy). Its formula is as follows:
 ```math
-\begin{align}
 S= \int d\omega \left(A(\omega) - m(\omega) - A(\omega)\log\left[\frac{A(\omega)}{m(\omega)}\right]\right),
-\end{align}
 ```
 where ``m(\omega)`` is the default model function. The ACFlow toolkit also supports another kind of entropy, i.e., the Bayesian Reconstruction entropy. It reads:
 ```math
-\begin{align}
 S = \int d\omega \left(1 - \frac{A(\omega)}{m(\omega)} + \log \left[\frac{A(\omega)}{m(\omega)}\right]\right).
-\end{align}
 ```
 
 According to the Bayes's theorem, the posterior probability ``P[A|\bar{G}] \propto e^{Q}`` and
 ```math
-\begin{align}
 Q = \alpha S - \frac{\chi^2}{2}.
-\end{align}
 ```
 
 ## Various Algorithms
 
 Now the original analytic continuation problem becomes how to figure out the optimal ``A(\omega)`` that maximizes ``Q``. In other words, we have to solve the following equation:
 ```math
-\begin{align}
 \frac{\partial Q}{\partial A} \bigg|_{A = \hat{A}} = 0,
-\end{align}
 ```
-where ``\hat{A}(\omega)`` is the optimal ``A(\omega)``. Eq.(9) can be easily solved by using standard Newton method. However, the obtained ``\hat{A}(\omega)`` is ``\alpha``-dependent. That is to say, for a given ``\alpha``, there is always a ``\hat{A}(\omega)`` that satisfies Eq.(9). So, new problem arises because we have to find out a way to generate the final spectral function from these ``\alpha``-resolved ``\hat{A}(\omega)``. Now there exist four algorithms, namely `historic`, `classic`, `bryan`, and `chi2kink`. Next we will introduce them one by one.
+where ``\hat{A}(\omega)`` is the optimal ``A(\omega)``. This equation can be easily solved by using standard Newton method. However, the obtained ``\hat{A}(\omega)`` is ``\alpha``-dependent. That is to say, for a given ``\alpha``, there is always a ``\hat{A}(\omega)`` that satisfies this equation. So, new problem arises because we have to find out a way to generate the final spectral function from these ``\alpha``-resolved ``\hat{A}(\omega)``. Now there exist four algorithms, namely `historic`, `classic`, `bryan`, and `chi2kink`. Next we will introduce them one by one.
 
 ### Historic Algorithm
 
 The historic algorithm is quite simple. The ``\alpha`` parameter will be adjusted iteratively to meet the following criterion:
 ```math
-\begin{align}
 \chi^2 = N,
-\end{align}
 ```
 where ``N`` is the number of mesh points for spectral density ``A(\omega)``.
 
@@ -78,28 +58,22 @@ where ``N`` is the number of mesh points for spectral density ``A(\omega)``.
 
 The basic equation for the classic algorithm reads
 ```math
-\begin{align}
 -2 \alpha S(A_{\alpha}) = \text{Tr}
 \left[
 \frac{\Lambda(A_{\alpha})}{\alpha I + \Lambda(A_{\alpha})}
 \right],
-\end{align}
 ```
 where ``I`` is an identity matrix. The elements of ``\Lambda`` matrix are calculated as follows:
 ```math
-\begin{align}
 \Lambda_{ij} = \sqrt{A_i} \left(\sum_{kl} K_{ki} [C^{-1}]_{kl} K_{lj}\right) \sqrt{A_j},
-\end{align}
 ```
-where ``C`` is the covariance matrix. Eq.(11) will be iteratively solved until the optimal ``\alpha`` and ``\hat{A}(\omega)`` are figured out.
+where ``C`` is the covariance matrix. The basic equation will be iteratively solved until the optimal ``\alpha`` and ``\hat{A}(\omega)`` are figured out.
 
 ### Bryan Algorithm
 
 In both historic and classic algorithms, the spectral function ``\hat{A}(\omega)`` is always related to an optimal ``\alpha`` parameter. However, the spirit of the bryan algorithm is completely different. It tries to yield a series of ``\alpha`` parameters and calculate the corresponding ``A_{\alpha}(\omega)``. Then the final spectral function ``A(\omega)`` is obtained by evaluating the following integration:
 ```math
-\begin{align}
 \overline{A(\omega)} = \int d\alpha~A_{\alpha}(\omega) P[\alpha | \bar{G}].
-\end{align}
 ```
 
 ### Chi2kink Algorithm
