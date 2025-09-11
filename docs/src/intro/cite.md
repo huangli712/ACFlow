@@ -1,4 +1,3 @@
-# Citation
 
 Please cite the following papers:
 

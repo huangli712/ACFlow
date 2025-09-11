@@ -1,4 +1,3 @@
-# Analytic Continuation
 
 ## Analytic Continuation Problem
 
