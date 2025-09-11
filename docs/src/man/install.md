@@ -1,6 +1,6 @@
-## [Quick Installation](@id install)
-
 It is an easy task to install the ACFlow toolkit.
+
+## [Quick Installation](@id install)
 
 First, since it is written in pure Julia language, it is necessary to install the Julia runtime environment in advance. The newest version of Julia is always preferred (version > 1.60). Because the core codes only rely on Julia's built-in standard library, no the third-party packages are needed.
 
@@ -72,6 +72,8 @@ $ julia make.jl
 ```
 
 After a few seconds, the documentation is built and saved in the `acflow/docs/build` directory if everything is OK. The home page of the documentation is `acflow/docs/build/index.html`. The users can open it with any web browsers.
+
+## Technical Notes
 
 !!! info
 
