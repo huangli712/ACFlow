@@ -91,7 +91,7 @@ where ``I`` is an identity matrix. The elements of ``\Lambda`` matrix are calcul
 \Lambda_{ij} = \sqrt{A_i} \left(\sum_{kl} K_{ki} [C^{-1}]_{kl} K_{lj}\right) \sqrt{A_j},
 \end{align}
 ```
-where ``C`` is the covariance matrix. Eq.(10) will be iteratively solved until the optimal ``\alpha`` and ``\hat{A}(\omega)`` are figured out.
+where ``C`` is the covariance matrix. Eq.(11) will be iteratively solved until the optimal ``\alpha`` and ``\hat{A}(\omega)`` are figured out.
 
 ### Bryan Algorithm
 
