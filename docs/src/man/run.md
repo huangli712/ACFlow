@@ -45,7 +45,7 @@ $ /home/your_home/acflow/util/acprun.jl ac.toml
 
 Noted that the `acrun.jl` script runs sequentially, while the `acprun.jl` script supports parallel and distributed computing. The two scripts are in the `acflow/util` folder. As we can conclude from the filename extension of configuration file (`ac.toml`), it adopts the `TOML` specification. The users may edit it with any text-based editors. Next we will introduce syntax and format of the input data files and configuration files.
 
-## Parallel calculations
+## Parallel Calculations
 
 Besides the `MaxEnt` solver, the computational efficiencies of the `StochAC`, `StochSK`, `StochOM`, and `StochPX` solvers are rather low. So, these solvers are parallelized to accelerate the analytic continuation simulations. The ACFlow toolkit provides a script, namely `acprun.jl`, to drive parallel calculations. Now the users should specify the number of parallel workers in this script:
 
