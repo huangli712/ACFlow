@@ -13,7 +13,7 @@ Pages = ["tricks.md"]
 Depth = 2:2
 ```
 
-## [General rules](@id general)
+## [General Rules](@id general)
 
 1. It would be better to perform analytic continuation in Matsubara frequency axis, instead of imaginary time axis. See [`grid`](@ref grid) and [`ngrid`](@ref ngrid).
 
@@ -31,7 +31,7 @@ Depth = 2:2
 
 8. Employ the [`exclude`](@ref exclude) parameters to limit the distributions of random fields for the `StochAC`, `StochSK`, `StochOM` and `StochPX` solvers, if you have rough estimations about the band edges or band gaps in the spectra. Actually, we can use the constrained algorithm to determine the positions for these sharp features.
 
-## [MaxEnt solver](@id maxent)
+## [MaxEnt Solver](@id maxent)
 
 1. The `chi2kink` and `bryan` algorithms are recommended. See [`method`](@ref maxent_method).
 
@@ -41,7 +41,7 @@ Depth = 2:2
 
 4. If there is a `NaN` error, please decrease the [`nalph`](@ref maxent_nalph) parameter at first. And then you can increase the [`alpha`](@ref maxent_alpha) parameter. Of cource, a different scheme for determining optimal ``\alpha`` is also possible. See [`method`](@ref maxent_method).
 
-## [BarRat solver](@id barrat)
+## [BarRat Solver](@id barrat)
 
 1. If you know the possible type of the spectrum (continuum or discrete), please setup the `atype` parameter. See [`atype`](@ref barrat_atype).
 
@@ -55,13 +55,13 @@ Depth = 2:2
 
 6. If the spectrum is discrete, the BarRat solver will output the positions of the poles. Please adjust the `pcut` parameter to control how many poles are kept. See [`pcut`](@ref barrat_pcut).
 
-## [NevanAC solver](@id nevanac)
+## [NevanAC Solver](@id nevanac)
 
 1. It is extremely sensitive to the noise. So please make sure that the input data is smooth and is free of noise.
 
 2. Actually, I think it is not suitable for quantum Monte Carlo data.
 
-## [StochAC solver](@id stochac)
+## [StochAC Solver](@id stochac)
 
 1. Increase `nfine` to 20000. See [`nfine`](@ref stochac_nfine).
 
@@ -71,7 +71,7 @@ Depth = 2:2
 
 4. It supports both the `constrained sampling algorithm` and `self-adaptive sampling algorithm`.
 
-## [StochSK solver](@id stochsk)
+## [StochSK Solver](@id stochsk)
 
 1. The `chi2min` algorithm is recommended. See [`method`](@ref stochsk_method).
 
@@ -81,7 +81,7 @@ Depth = 2:2
 
 4. It supports the `constrained sampling algorithm`.
 
-## [StochOM solver](@id stochom)
+## [StochOM Solver](@id stochom)
 
 1. It is more efficient for Matsubara frequency Green's functions.
 
@@ -91,7 +91,7 @@ Depth = 2:2
 
 4. It supports the `constrained sampling algorithm`.
 
-## [StochPX solver](@id stochpx)
+## [StochPX Solver](@id stochpx)
 
 1. If the spectrum is expected to be broad, please set `method = 'mean'`. If the spectrum is expected to be ``\delta``-like, please set `method = 'best'`. See [`method`](@ref stochpx_method).
 
