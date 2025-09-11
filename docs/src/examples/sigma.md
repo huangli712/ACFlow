@@ -9,7 +9,7 @@
 
     within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/tutor/T*` folders.
 
-# [Matsubara Self-Energy Function](@id ex_sigma)
+## [Model](@id ex_sigma)
 
 Now let us consider the following single-band Hubbard model on a Bethe lattice at first:
 ```math
@@ -17,6 +17,8 @@ H = -t \sum_{\langle ij \rangle \sigma} c^{\dagger}_{i\sigma}c_{j\sigma}
  - \mu \sum_i n_i + U \sum_i n_{i\uparrow} n_{i\downarrow},
 ```
 where ``t`` is the hopping parameter, ``\mu`` is the chemical potential, ``U`` is the Coulomb interaction, ``n`` is the occupation number, ``\sigma`` denotes the spin, ``i`` and ``j`` are site indices. This model is solved by using the dynamical mean-field theory (dubbed DMFT) with the hybridization expansion continuous-time quantum Monte Carlo solver (dubbed CT-HYB) as implemented in the ``i``QIST package. The parameters used in the DMFT + CT-HYB calculation are ``t = 0.5``, ``U = 2.0``, ``\mu = 1.0``, and ``\beta = 10.0``. Once the DMFT self-consistent calculation is finished, the Matsubara self-energy function ``\Sigma(i\omega_n)`` is obtained. We are going to convert it to real frequency self-energy function ``\Sigma(\omega)``. The data of Matsubara self-energy function ``\Sigma(i\omega_n)`` have been preprocessed and stored in `siw.data`. This file contains five columns, which are used to record the Matsubara frequency ``\omega_n``, Re``\Sigma(i\omega_n)``, Im``\Sigma(i\omega_n)``, error bar of Re``\Sigma(i\omega_n)``, error bar of Im``\Sigma(i\omega_n)``, respectively. Only the first twenty Matsubara frequency points are kept, because the high-frequency data are somewhat noisy.
+
+## Analytic Continuation
 
 The purpose of this example is to demonstrate usage of the `MaxEnt` solver and the script mode of the ACFlow toolkit. Next we will explain the key steps in detail. As for the complete Julia script, please refer to `sigma.jl` and `gendata.jl` in the `/home/your_home/acflow/tutor/T01/` folder.
 

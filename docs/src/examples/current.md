@@ -9,8 +9,6 @@
 
     within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/tutor/T*` folders.
 
-# Current-Current Correlation Function
-
 The former three examples only concern fermionic correlators. How about bosonic correlators? In this example, we will demonstrate how to perform analytic continuation simulation for a typical bosonic correlator, the current-current correlation function ``\Pi(\tau)``, to obtain the optical conductivity ``\sigma(\omega)``. Note that this example is taken from *Phys. Rev. B 82, 165125 (2010)* directly.
 
 The exact optical conductivity ``\sigma(\omega)`` reads:

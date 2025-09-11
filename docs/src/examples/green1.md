@@ -9,8 +9,6 @@
 
     within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/tutor/T*` folders.
 
-# Matsubara Green's Function
-
 The purpose of the second example is to treat the Matsubara Green's function by using the `StochOM` solver.
 
 At first, please consider the following spectral density with two gaussian peaks:

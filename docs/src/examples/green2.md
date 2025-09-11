@@ -9,8 +9,6 @@
 
     within the script mode or standard mode. All of the necessary source codes and data files, which can be used to reproduce the results as shown in this section, are placed in the `/home/your_home/acflow/tutor/T*` folders.
 
-# Imaginary Time Green's Function
-
 In this example, analytic continuation of imaginary time Green's function will be tested. Note that this example is borrowed from *	arXiv:cond-mat/0403055* directly.
 
 The exact spectral function reads:
