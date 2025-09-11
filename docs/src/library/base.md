@@ -1,13 +1,4 @@
-# Core
-
 *Provide basic user's interfaces for the ACFlow toolkit.*
-
-## Contents
-
-```@contents
-Pages = ["base.md"]
-Depth = 2
-```
 
 ## Index
 

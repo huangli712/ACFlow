@@ -1,15 +1,6 @@
-# Models
-
 *For default model functions.*
 
 The ACFlow toolkit supports various model functions, such as flat, Gaussian, Lorentzian, and a few unusual models. They are useful for the `MaxEnt` and `StochAC` solvers. In order to build these model functions, we need some additional parameters, including ``\Gamma``, ``s``, ``s_1``, and ``s_2``. They should be setup by using the parameter [`pmodel`](@ref pmodel).
-
-## Contents
-
-```@contents
-Pages = ["model.md"]
-Depth = 2
-```
 
 ## Index
 

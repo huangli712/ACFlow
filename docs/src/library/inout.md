@@ -1,13 +1,4 @@
-# Input and Output
-
 *Define input and output functions for the ACFlow toolkit.*
-
-## Contents
-
-```@contents
-Pages = ["inout.md"]
-Depth = 2
-```
 
 ## Index
 

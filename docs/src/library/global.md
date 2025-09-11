@@ -1,13 +1,4 @@
-# Constants
-
 *Define some type aliases and string constants for the ACFlow toolkit.*
-
-## Contents
-
-```@contents
-Pages = ["global.md"]
-Depth = 2
-```
 
 ## Index
 

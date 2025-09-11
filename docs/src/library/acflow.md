@@ -1,5 +1,3 @@
-# ACFlow.jl
-
 *Declare the module and public members.*
 
 ## Modules

@@ -1,15 +1,6 @@
-# Meshes
-
 *Meshes on real axis.*
 
 The spectral functions are always defined on real axis. The ACFlow toolkit supports various uniform and non-uniform meshes. In order to build these meshes, we need some additional control parameters, including ``f_1`` and `cut`. They should be setup by using the parameter [`pmesh`](@ref pmesh).
-
-## Contents
-
-```@contents
-Pages = ["mesh.md"]
-Depth = 2
-```
 
 ## Index
 

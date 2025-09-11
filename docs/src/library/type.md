@@ -1,13 +1,4 @@
-# Types
-
 *Define some fundamental types and structs for the ACFlow toolkit.*
-
-## Contents
-
-```@contents
-Pages = ["type.md"]
-Depth = 2
-```
 
 ## Index
 

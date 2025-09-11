@@ -1,13 +1,4 @@
-# Math
-
 *Define some essential mathematical functions.*
-
-## Contents
-
-```@contents
-Pages = ["math.md"]
-Depth = 3
-```
 
 ## Index
 

@@ -1,13 +1,4 @@
-# Utilities
-
 *Provide some utility macros and functions for the ACFlow toolkit.*
-
-## Contents
-
-```@contents
-Pages = ["util.md"]
-Depth = 2
-```
 
 ## Index
 
