@@ -1,7 +1,5 @@
 *Read, parse, and extract the configuration parameters.*
 
-## Index
-
 ```@index
 Pages = ["config.md"]
 ```

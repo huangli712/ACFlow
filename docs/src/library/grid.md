@@ -2,8 +2,6 @@
 
 In the ACFlow toolkit, the input correlators are defined on `grid`, while the calculated spectral functions are defined on `mesh`. The ACFlow toolkit supports both imaginary time and Matsubara frequency grids. Note that for Matsubara frequency grid, the bosonic and fermionic grids are different.
 
-## Index
-
 ```@index
 Pages = ["grid.md"]
 ```

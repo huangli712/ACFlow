@@ -1,7 +1,5 @@
 *Provide basic user's interfaces for the ACFlow toolkit.*
 
-## Index
-
 ```@index
 Pages = ["base.md"]
 ```

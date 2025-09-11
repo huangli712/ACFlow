@@ -1,34 +1,32 @@
-## Index
-
-### Modules
+## Modules
 
 ```@index
 Modules = [ACFlow]
 Order = [:module]
 ```
 
-### Constants
+## Constants
 
 ```@index
 Modules = [ACFlow]
 Order = [:constant]
 ```
 
-### Types
+## Types
 
 ```@index
 Modules = [ACFlow]
 Order = [:type]
 ```
 
-### Macros
+## Macros
 
 ```@index
 Modules = [ACFlow]
 Order = [:macro]
 ```
 
-### Functions
+## Functions
 
 ```@index
 Modules = [ACFlow]

@@ -17,8 +17,6 @@ The ACFlow toolkit supports twelve types of kernel functions. They are:
 
 Note that the `MaxEnt`, `StochAC`, and `StochSK` solvers rely on the `make_kernel()` function to provide the kernel function. However, the kernel function or matrix used in the `StochOM` and `StochPX` solvers are implemented in their own `calc_lambda()` functions.
 
-## Index
-
 ```@index
 Pages = ["kernel.md"]
 ```

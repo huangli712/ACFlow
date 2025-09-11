@@ -1,7 +1,5 @@
 *Define some fundamental types and structs for the ACFlow toolkit.*
 
-## Index
-
 ```@index
 Pages = ["type.md"]
 ```

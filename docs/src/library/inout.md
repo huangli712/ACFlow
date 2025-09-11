@@ -1,7 +1,5 @@
 *Define input and output functions for the ACFlow toolkit.*
 
-## Index
-
 ```@index
 Pages = ["inout.md"]
 ```

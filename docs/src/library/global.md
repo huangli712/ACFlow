@@ -1,7 +1,5 @@
 *Define some type aliases and string constants for the ACFlow toolkit.*
 
-## Index
-
 ```@index
 Pages = ["global.md"]
 ```

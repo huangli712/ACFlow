@@ -1,7 +1,5 @@
 *Provide some utility macros and functions for the ACFlow toolkit.*
 
-## Index
-
 ```@index
 Pages = ["util.md"]
 ```

@@ -1,7 +1,5 @@
 *Define some essential mathematical functions.*
 
-## Index
-
 ```@index
 Pages = ["math.md"]
 ```
