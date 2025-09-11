@@ -1,4 +1,6 @@
-![logo.png](./assets/logo.png)
+```@raw html
+<img src="./assets/logo.png" alt="logo.png" width="50%" class="center"/>
+```
 
 *A full-fledged analytic continuation toolkit in Julia*
 
