@@ -1,6 +1,4 @@
-# References
-
-**Maximum entropy method**
+**Maximum Entropy Method**
 
 [1] J. E. Gubernatis, M. Jarrell, R. N. Silver, D. S. Sivia, Quantum Monte Carlo simulations and maximum entropy: Dynamics from imaginary-time data, *Phys. Rev. B* **44**, 6011 (1991).
 
@@ -8,19 +6,19 @@
 
 ---
 
-**Barycentric rational function approximation**
+**Barycentric Rational Function Approximation**
 
 [1] Li Huang, Changming Yue, Barycentric rational function approximation made simple: A fast analytic continuation method for Matsubara Green's functions, *Phys. Rev. B* **111**, 125139 (2025).
 
 ---
 
-**Nevanlinna analytical continuation**
+**Nevanlinna Analytical Continuation**
 
 [1] Jiani Fei, Chia-Nan Yeh, and Emanuel Gull, Nevanlinna Analytical Continuation, *Phys. Rev. Lett.* **126**, 056402 (2021).
 
 ---
 
-**Stochastic analytic continuation**
+**Stochastic Analytic Continuation**
 
 [1] A. W. Sandvik, Stochastic method for analytic continuation of quantum Monte Carlo data, *Phys. Rev. B* **57**, 10287 (1998)
 
@@ -34,7 +32,7 @@
 
 ---
 
-**Stochastic optimization method**
+**Stochastic Optimization Method**
 
 [1] A. S. Mishchenko, N. V. Prokof’ev, A. Sakamoto, B. V. Svistunov, Diagrammatic quantum Monte Carlo study of the frohlich polaron, *Phys. Rev. B* **62**, 6317 (2000).
 
@@ -42,7 +40,7 @@
 
 ---
 
-**Stochastic pole expansion**
+**Stochastic Pole Expansion**
 
 [1] Li Huang, Shuang Liang, Stochastic pole expansion method for analytic continuation of the Green's function, *Phys. Rev. B* **108**, 235143 (2023).
 

@@ -1,5 +1,3 @@
-# Basic Principles
-
 ## Finite Temperature Green's Functions
 
 Under the Wick's rotation ``t \to i\tau``, the time evolution operator in the Heisenberg picture ``e^{itH}`` will be replaced by ``e^{-\tau H}``. Such a transformation will increase efficiency of QMC random walking and suppress numerical oscillation (when ``t`` is large, the periodic oscillation of ``e^{itH}`` is quite obvious). This is an important reason why most of the finite temperature QMC algorithms are formulated in imaginary time axis. The outputs of finite temperature QMC simulations are usually single-particle or two-particle correlation functions. For example, the imaginary time Green's function ``G(\tau)`` is defined as follows:
@@ -23,7 +21,7 @@ Here, ``\beta`` means the inverse temperature (``\beta \equiv 1/T``) and ``\omeg
 
 ---
 
-## [Spectral representation](@id spectrum)
+## [Spectral Representation](@id spectrum)
 
 Supposed that the spectral density of the single-particle Green's function is ``A(\omega)``, then we have:
 ```math
@@ -42,7 +40,7 @@ G(i\omega_n) = \int^{+\infty}_{-\infty} d\omega
 ```
 The two equations denote the spectral representation of Green's function. We notice that the SPX method, as well as the other analytic continuation methods that are classified as ASM, are closely related to the spectral representation. Next we would like to make further discussions about this representation for the fermionic and bosonic correlators.
 
-### Fermionic correlators
+### Fermionic Correlators
 
 The spectral density ``A(\omega)`` is defined on ``(-\infty,\infty)``. It is positive definite, i.e., ``A(\omega) \ge 0``. Eq.(4) and Eq.(5) can be reformulated as:
 ```math
@@ -69,7 +67,7 @@ K(\omega_n,\omega) = \frac{1}{i\omega_n - \omega}.
 \end{align}
 ```
 
-### Bosonic correlators
+### Bosonic Correlators
 
 The spectral density ``A(\omega)`` obeys the following constraint: ``\text{sign}(\omega) A(\omega) \ge 0``. Thus, it is more convenient to define a new function ``\tilde{A}(\omega)`` where ``\tilde{A}(\omega) = A(\omega)/\omega``. Clearly, ``\tilde{A}(\omega)`` is always positive definite. As a result Eq.(4) and Eq.(5) can be rewritten as:
 ```math
@@ -99,7 +97,7 @@ K(\omega_n,\omega) = \frac{\omega}{i\omega_n - \omega}.
 ```
 Especially, ``K(0,0) = -1``. Besides the bosonic Green's function, typical correlator of this kind includes the transverse spin susceptibility ``\chi_{+-}(\tau) = \langle S_{+}(\tau) S_{-}(0) \rangle``, where ``S_{+} = S_x + iS_y`` and ``S_{-} = S_x - i S_y``.
 
-### Bosonic correlators of Hermitian operators
+### Bosonic Correlators of Hermitian Operators
 
 There is a special case of the previous observable kind with ``d = d^{\dagger}``. Here, ``A(\omega)`` becomes an odd function, and equivalently, ``\tilde{A}(\omega)`` is an even function [i.e., ``\tilde{A}(\omega) = \tilde{A}(-\omega)``]. Therefore the limits of integrations in Eq.(4) and Eq.(5) are reduced from ``(-\infty,\infty)`` to ``(0,\infty)``. So the two equations can be transformed into:
 ```math
@@ -136,7 +134,7 @@ In principle, for incomplete and noise ``G(\tau)`` or ``G(i\omega_n)``, the numb
 
 ---
 
-## Pole representation
+## Pole Representation
 
 It is well known that the finite temperature many-body Green's functions can be expressed within the Lehmann representation:
 ```math
@@ -156,7 +154,7 @@ G(z) = \sum^{N_p}_{\gamma = 1} \frac{A_{\gamma}}{z - P_{\gamma}}.
 ```
 Here, ``A_{\gamma}`` and ``P_{\gamma}`` mean the amplitude and location of the ``\gamma``-th pole, respectively. ``N_p`` means the number of poles, which is equal to the total number of nonzero ``A_{mn}``. Such an analytic expression of Green's function is called the `pole expansion`. It is valid for both fermionic and bosonic correlators.
 
-### Fermionic correlators
+### Fermionic Correlators
 
 For fermionic systems, the pole representation for Matsubara Green's function can be recast as:
 ```math
@@ -177,7 +175,7 @@ Note that ``A_{\gamma}`` and ``P_{\gamma}`` should satisfy the following constra
 \end{align}
 ```
 
-### Bosonic correlators
+### Bosonic Correlators
 
 For bosonic systems, the pole representation for Matsubara Green's function can be defined as follows:
 ```math
@@ -204,7 +202,7 @@ Note that ``\tilde{A}_{\gamma}`` and ``P_{\gamma}`` should satisfy the following
 \end{align}
 ```
 
-### Bosonic correlators of Hermitian operators
+### Bosonic Correlators of Hermitian Operators
 
 Its pole representation can be defined as follows (``\forall \gamma``, ``A_{\gamma} > 0`` and ``P_{\gamma} > 0``):
 ```math
@@ -232,7 +230,7 @@ Especially, ``\Xi(0,0) = -G_0``. The renormalized weight ``\tilde{A}_{\gamma}`` 
 ```
 The constraints for ``\tilde{A}_{\gamma}`` and ``P_{\gamma}`` are also defined in Eq.(26).
 
-### Matrix-valued Green's functions
+### Matrix-Valued Green's Functions
 
 As for the off-diagonal cases (``a \neq b``), it is lightly to prove that ``\sum_{\gamma} A_{\gamma} = 0``. It implies that there exist poles with negative weights. Hence we can split the poles into two groups according to the signs of their amplitudes. The Matsubara Green's function can be expressed as follows:
 ```math
@@ -264,6 +262,6 @@ and
 
 ---
 
-## Relevant parameters
+## Relevant Parameters
 
 See [[BASE] Block](@ref base_block)

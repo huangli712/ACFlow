@@ -1,8 +1,6 @@
-# [Maximum Entropy Method](@id mem)
-
 Perhaps the maximum entropy method is the most frequently used approach for analytic continuation problems because of its high computational efficiency. Next, we will discuss the basic principles and several variants of it.
 
-## Bayesian Inference
+## [Bayesian Inference](@id mem)
 
 Bayes's theorem is the cornerstone of the maximum entropy method. Given two events ``a`` and ``b``, Bayes's theorem says:
 ```math
@@ -114,7 +112,7 @@ This algorithm was proposed by Bergeron and Tremblay recently. The first step is
 ```
 where ``a``, ``b``, ``c``, and ``d`` are fitting parameters. Then the optimal ``\alpha`` is approximated by ``10^{c-f/d}``, where ``f`` is an empirical constant (The favorite value of ``f`` lies in ``[2,2.5]``).
 
-## Relevant parameters
+## Relevant Parameters
 
 See [[MaxEnt] Block](@ref maxent_block)
 
