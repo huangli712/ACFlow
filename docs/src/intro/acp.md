@@ -10,6 +10,6 @@ g(y) = \int K(y,x) f(x)~\text{d}x.
 ```
 Here, $K(y,x)$ is the known kernel function, ``f(x)`` is the model function, and ``g(y)`` denotes raw data. Given ``f(x)``, it is quite easy to get ``g(y)`` via numerical integration. However, given ``g(y)``, solving the Fredholm integral equation reversely to get ``f(x)`` is not as easy as expected. There is no universal solution. In some cases, even the existence of solution can not be guaranteed.
 
-## Available Analytic Continuation Methods
+## Analytic Continuation Methods
 
 The so-called analytic continuation problem can be reformulated in terms of the Fredholm integral equation. Thus, its objective is to seek a reasonable ``f(x)`` to satisfy the above equation. The QMC simulated data ``g(y)`` are noisy and the kernel function ``K(y,x)`` is ill conditioned, which make analytic continuation of QMC simulated data a huge challenge. In order to solve this problem, in the past decades peoples have developed numerous methods, including the least square fitting method, singular value decomposition, Pad``\text{\'{e}}`` approximation, Tikhonov-Philips regularization method, maximum entropy method, stochastic analytic continuation, stochastic optimization method, sparse modelling method, and machine learning method, etc. However, each method has its pros and cons. None of these methods can override the others. The analytic continuation problem is still far away from being completely solved.
