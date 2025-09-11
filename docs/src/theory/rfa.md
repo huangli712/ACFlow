@@ -2,7 +2,7 @@
 
     The BarRat solver is experimental. Please use it at your own risk.
 
-## [Barycentric Rational Function Approximation](@id rfa)
+## [Barycentric Rational Function](@id rfa)
 
 The barycentric formula takes the form of a quotient of two partial fractions,
 
