@@ -11,6 +11,8 @@
 
 In this example, analytic continuation of imaginary time Green's function will be tested. Note that this example is borrowed from *	arXiv:cond-mat/0403055* directly.
 
+## Model
+
 The exact spectral function reads:
 ```math
 A(\omega) =
@@ -20,6 +22,8 @@ A(\omega) =
 \end{cases}
 ```
 Here, ``W`` denotes bandwidth, and ``\Delta`` is used to control size of the energy gap. Let ``W = 6`` and ``2\Delta = 1``. This spectrum should exhibit flat shoulders, steep peaks, and sharp gap edges. Actually, it is the spectrum of a BCS superconductor.
+
+## Analytic Continuation
 
 First, the imaginary time Green's function ``G(\tau)`` is generated using ``\mathbf{G} = \mathbf{KA}``. Then a normally-distributed random noise is add to ``G(\tau)``. Maximum amplitude of the noise is 1e-4. The error bar of ``G(\tau)`` is fixed to 1e-3. The data are written in `gtau.data`.
 

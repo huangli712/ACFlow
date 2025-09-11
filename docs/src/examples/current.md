@@ -11,6 +11,8 @@
 
 The former three examples only concern fermionic correlators. How about bosonic correlators? In this example, we will demonstrate how to perform analytic continuation simulation for a typical bosonic correlator, the current-current correlation function ``\Pi(\tau)``, to obtain the optical conductivity ``\sigma(\omega)``. Note that this example is taken from *Phys. Rev. B 82, 165125 (2010)* directly.
 
+## Model
+
 The exact optical conductivity ``\sigma(\omega)`` reads:
 ```math
 \sigma(\omega) =
@@ -30,6 +32,8 @@ where the kernel function ``K(\tau,\omega)`` is different from the general form.
 K(\tau,\omega) = \frac{1}{\pi} \frac{\omega e^{-\tau\omega}}{1- e^{-\beta\omega}}.
 ```
 In this case, ``\beta`` is fixed to be 20.0.
+
+## Analytic Continuation
 
 At first, we use the above equations to prepare ``\Pi(\tau)``. The error bar of ``\Pi(\tau)`` is fixed to 1e-4. The calculated ``\Pi(\tau)`` is written in `chit.data`.
 
