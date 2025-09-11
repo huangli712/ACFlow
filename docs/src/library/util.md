@@ -44,7 +44,7 @@ sorry
 prompt
 ```
 
-## Input/output Operations
+## Input/Output Operations
 
 ```@docs
 line_to_array
