@@ -1,12 +1,17 @@
-## [Analytic Continuation Is An Art](@id tricks)
-
 *A comprehensive guide about how to perform reliable analytic continuation.*
+
+## [Overview](@id tricks)
 
 As is well-known, analytic continuation is a tedious, tricky, and complicated job. This page contains all of the details (and experiences), that need to be known by the users, about how to get reliable and accurate spectra by using various solvers as implemented in the ACFlow toolkit.
 
 !!! warning
 
     The following tricks and tips are **MY** personal viewpoints or experiences. They are not general rules. They might be wrong or ineffective or useless for some cases. They are definitely not suitable for the other analytic continuation codes.
+
+```@contents
+Pages = ["tricks.md"]
+Depth = 2:2
+```
 
 ## [General rules](@id general)
 
@@ -26,8 +31,6 @@ As is well-known, analytic continuation is a tedious, tricky, and complicated jo
 
 8. Employ the [`exclude`](@ref exclude) parameters to limit the distributions of random fields for the `StochAC`, `StochSK`, `StochOM` and `StochPX` solvers, if you have rough estimations about the band edges or band gaps in the spectra. Actually, we can use the constrained algorithm to determine the positions for these sharp features.
 
----
-
 ## [MaxEnt solver](@id maxent)
 
 1. The `chi2kink` and `bryan` algorithms are recommended. See [`method`](@ref maxent_method).
@@ -37,8 +40,6 @@ As is well-known, analytic continuation is a tedious, tricky, and complicated jo
 3. Adjust the [`nalph`](@ref maxent_nalph), [`alpha`](@ref maxent_alpha), [`ratio`](@ref maxent_ratio) parameters to make sure that the ``\chi^2(\alpha)`` curve is reasonable. It means that the `default model region` and the `noise-fitting region` should exhibit similar lengths.
 
 4. If there is a `NaN` error, please decrease the [`nalph`](@ref maxent_nalph) parameter at first. And then you can increase the [`alpha`](@ref maxent_alpha) parameter. Of cource, a different scheme for determining optimal ``\alpha`` is also possible. See [`method`](@ref maxent_method).
-
----
 
 ## [BarRat solver](@id barrat)
 
@@ -54,15 +55,11 @@ As is well-known, analytic continuation is a tedious, tricky, and complicated jo
 
 6. If the spectrum is discrete, the BarRat solver will output the positions of the poles. Please adjust the `pcut` parameter to control how many poles are kept. See [`pcut`](@ref barrat_pcut).
 
----
-
 ## [NevanAC solver](@id nevanac)
 
 1. It is extremely sensitive to the noise. So please make sure that the input data is smooth and is free of noise.
 
 2. Actually, I think it is not suitable for quantum Monte Carlo data.
-
----
 
 ## [StochAC solver](@id stochac)
 
@@ -74,8 +71,6 @@ As is well-known, analytic continuation is a tedious, tricky, and complicated jo
 
 4. It supports both the `constrained sampling algorithm` and `self-adaptive sampling algorithm`.
 
----
-
 ## [StochSK solver](@id stochsk)
 
 1. The `chi2min` algorithm is recommended. See [`method`](@ref stochsk_method).
@@ -86,8 +81,6 @@ As is well-known, analytic continuation is a tedious, tricky, and complicated jo
 
 4. It supports the `constrained sampling algorithm`.
 
----
-
 ## [StochOM solver](@id stochom)
 
 1. It is more efficient for Matsubara frequency Green's functions.
@@ -97,8 +90,6 @@ As is well-known, analytic continuation is a tedious, tricky, and complicated jo
 3. Run it parallelly (use `util/acprun.jl`).
 
 4. It supports the `constrained sampling algorithm`.
-
----
 
 ## [StochPX solver](@id stochpx)
 
