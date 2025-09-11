@@ -6,9 +6,7 @@
 
 It was early on realized that a different way to achieve a smooth spectrum is to average over many solutions with reasonable ``\chi^2`` values. Several years later, A. W. Sandvik introduced the stochastic analytic continuation in a slightly different form. He suggested that the spectral function ``A(\omega)`` can be parameterized using ``N`` ``\delta`` functions (Please see Fig.1 for schematic diagram):
 ```math
-\begin{align}
 A(\omega) = \sum^{N}_{i = 1} \gamma_i \delta(\omega - \omega_i),
-\end{align}
 ```
 where ``\gamma_i`` and ``\omega_i`` denote the amplitude and position of the ``i``-th ``\delta`` function, respectively. Next, the Metropolis important sampling algorithm is employed to sample the configuration space ``\mathcal{C} = \{\omega_i, \gamma_i\}``. In practice, there are two elementary Monte Carlo updates. One is to change the amplitudes of a pair of ``\delta`` functions under the constraint ``\sum_i \gamma_i = 1``. Another one is to shift position of a randomly chosen ``\delta`` function. Of course, block or global updates can be implemented to improve ergodicity and sampling efficiency.
 
@@ -18,21 +16,15 @@ where ``\gamma_i`` and ``\omega_i`` denote the amplitude and position of the ``i
 
 The transition probability of Monte Carlo updates reads:
 ```math
-\begin{align}
 p(\mathcal{C} \to \mathcal{C}') = \exp\left(-\frac{\Delta\chi^2}{2\Theta}\right),
-\end{align}
 ```
 where ``\chi^2`` is the goodness-of-fit function, ``\Theta`` is a regulation parameter which is similar to the ``\alpha`` parameter appeared in the maximum entropy method. Well, the remaining problem is how to fix ``\Theta``. Sandvik suggested to measure the following entropic term for some ``\Theta``:
 ```math
-\begin{align}
 S(\Theta) = - \sum^{N}_{i = 1} \gamma_i \log(\gamma_i) K(0,\omega_i),
-\end{align}
 ```
 where ``K`` is the kernel function as defined above. Then make a plot of ``S`` with respect to ``\log(\Theta^{-1})``. Overall, when ``\Theta`` is large, ``S`` exhibits large fluctuations. When ``\Theta`` is small, ``S`` will approach its global minimum steadily. A sharp drop in ``S`` before the approach to a constant value has been observed, and there is a local maximum at some ``\Theta = \hat{\Theta}`` preceding the drop. Thus, Sandvik postulated that ``\hat{\Theta}`` was the optimum value at which to accumulate and average the spectral function. Syljuasen *et al.* suggested that let ``\Theta = 1``. Fuchs *et al.* tried to fix ``\Theta`` by using Bayesian inference. Such that their approach was named as stochastic analytic inference. Very recently, Shao and Sandvik *et al.* proposed a smart method to determine the optimal value of ``\Theta``. ``\Theta`` is adjusted so that
 ```math
-\begin{align}
 \langle \chi^2(\Theta) \rangle \approx \chi^{2}_{\text{min}} + c \sqrt{2\chi^2_{\text{min}}},
-\end{align}
 ```
 where ``c`` is a constant of order 1, ``\chi^{2}_{\text{min}}`` is the minimum value of ``\chi^{2}`` at given ``\Theta``. Note that ``\chi^{2}_{\text{min}}`` can be obtained in a simulated annealing process to very low ``\Theta``.
 
