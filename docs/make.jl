@@ -5,8 +5,8 @@ using Random
 using ACFlow
 
 makedocs(
-    sitename = "ACFlow",
-    clean = false,
+    sitename = "ACFlow: The User Guide",
+    clean = true,
     authors = "Li Huang <huangli@caep.cn> and contributors",
     format = Documenter.HTML(
         prettyurls = false,
@@ -38,6 +38,7 @@ makedocs(
             "Tricks and Tips" => "man/tricks.md",
             "Graphic User Interface" => "man/gui.md",
             "Benchmark Tools" => "man/test.md",
+            "Performance" => "man/performance.md",
         ],
         "Examples" => Any[
             "Matsubara Self-Energy Function" => "examples/sigma.md",
