@@ -4,7 +4,7 @@
 
 ## Pole Representation
 
-Please read [pole representation](@ref pole_repr).
+Please read the [preliminary knowledge](@ref pole_repr).
 
 ## [Stochastic Optimization](@id spx)
 
