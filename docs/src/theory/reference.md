@@ -36,7 +36,7 @@
 
 [1] A. S. Mishchenko, N. V. Prokof’ev, A. Sakamoto, B. V. Svistunov, Diagrammatic quantum Monte Carlo study of the frohlich polaron, *Phys. Rev. B* **62**, 6317 (2000).
 
-[2] I. Krivenko, M. Harland, Triqs/som: Implementation of the stochastic optimization method for analytic continuation, *Comput. Phys. Commun.* **239**, 166 (2019).
+[2] I. Krivenko, M. Harland, TRIQS/SOM: Implementation of the stochastic optimization method for analytic continuation, *Comput. Phys. Commun.* **239**, 166 (2019).
 
 ---
 
