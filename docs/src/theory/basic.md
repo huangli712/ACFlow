@@ -98,7 +98,7 @@ In principle, for incomplete and noise ``G(\tau)`` or ``G(i\omega_n)``, the numb
 
 ---
 
-## Pole Representation
+## [Pole Representation](@id pole_repr)
 
 It is well known that the finite temperature many-body Green's functions can be expressed within the Lehmann representation:
 ```math
